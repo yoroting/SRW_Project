@@ -1,0 +1,13 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore>
+      <Breakpoint file="D:\SRW\Prototype\Assets\Project\Script\Core\GameSystem.cs" line="52" />
+      <Breakpoint file="D:\SRW\Prototype\Assets\Common\Plugins\PanelManager\PanelManager.cs" line="126" />
+      <Breakpoint file="D:\SRW\Prototype\Assets\Common\Plugins\PanelManager\PanelManager.cs" line="153" />
+      <Breakpoint file="D:\SRW\Prototype\Assets\Project\Script\Core\GameSystem.cs" line="65" />
+    </BreakpointStore>
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
