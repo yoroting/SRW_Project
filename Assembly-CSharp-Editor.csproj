@@ -5,7 +5,7 @@
 	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 	<ProductVersion>10.0.20506</ProductVersion>
 	<SchemaVersion>2.0</SchemaVersion>
-	<ProjectGuid>{473D78C7-2901-75B9-26E4-79E5B40C0FF9}</ProjectGuid>
+	<ProjectGuid>{48884D42-E680-42A6-8DFF-83D9C3735FAC}</ProjectGuid>
 	<OutputType>Library</OutputType>
 	<AppDesignerFolder>Properties</AppDesignerFolder>
 	<RootNamespace></RootNamespace>
@@ -178,13 +178,13 @@
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/Editor/UnityEditor.UI.dll</HintPath>
  </Reference>
  <Reference Include="Playcoo.Common">
- <HintPath>D:/SRW/Prototype/Assets/Common/Plugins/Playcoo.Common.dll</HintPath>
+ <HintPath>D:/SRW/SRW_Project/Assets/Common/Plugins/Playcoo.Common.dll</HintPath>
  </Reference>
  <Reference Include="JsonFx.Json">
- <HintPath>D:/SRW/Prototype/Assets/Common/Plugins/JsonFx/JsonFx.Json.dll</HintPath>
+ <HintPath>D:/SRW/SRW_Project/Assets/Common/Plugins/JsonFx/JsonFx.Json.dll</HintPath>
  </Reference>
  <Reference Include="ICSharpCode.SharpZipLib">
- <HintPath>D:/SRW/Prototype/Assets/Common/Plugins/SharpZipLib/ICSharpCode.SharpZipLib.dll</HintPath>
+ <HintPath>D:/SRW/SRW_Project/Assets/Common/Plugins/SharpZipLib/ICSharpCode.SharpZipLib.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.Graphs">
  <HintPath>C:/Program Files/Unity/Editor/Data/Managed/UnityEditor.Graphs.dll</HintPath>
@@ -222,7 +222,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Assembly-CSharp.csproj">
-      <Project>{B1235EE4-71EE-C815-28F8-C3378E5ADB84}</Project>      <Name>Assembly-CSharp</Name>    </ProjectReference>
+      <Project>{4FC533D3-75E6-77E7-000E-B9C52AE5B531}</Project>      <Name>Assembly-CSharp</Name>    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
