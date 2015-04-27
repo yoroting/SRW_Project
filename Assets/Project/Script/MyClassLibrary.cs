@@ -116,14 +116,14 @@ namespace MyClassLibrary
         }
 
         //判斷是否為空
-        bool IsEmpty(int nRaw, int nCol)
+		public bool IsEmpty(int nRaw, int nCol)
         {
             if ( GetString(nRaw, nCol) != null)
                 return false;
             return true;
         }
         // 在指定位置插入文字
-        void Insert(int nCol, string s)
+		public void Insert(int nCol, string s)
         {
             if (nCol < 0)
                 return;
