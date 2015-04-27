@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using MyClassLibrary;
 
 public class MainUIPanel : BasicPanel {
 
@@ -68,7 +69,18 @@ public class MainUIPanel : BasicPanel {
 	{
 		Debug.Log("Startevent");
 		// open story panel 
-		//PanelManager.Instance.GetOrCreatUI( "Panel_StoryUI" );
+		GameObject obj = PanelManager.Instance.GetOrCreatUI( "Panel_StoryUI" );
+		if (obj != null) {
+			PanelManager.Instance.CloseUI( "Panel_MainUI" );
+
+		}
+			string s1 = "linetext( 1 );LineText(\t2)\nPopChar(3 ,4);PopChar( 4 , 5 ,6)。\nSysText(  \"test\" )。";
+		
+			char[] colChars = { ' ', '(', ')',';', ',', '\t' };
+			char[] rowChars = { '\n' };	
+			cTextArray txt = new cTextArray(rowChars , colChars );
+			txt.SetText( s1 ); // 將猜解各字串
+
 	}
 
 }
