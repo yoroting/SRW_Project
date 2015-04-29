@@ -6,7 +6,26 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class GameSystem : MonoBehaviour {
-	
+
+	// 目前在進行那個模式
+	public enum eStageStatus
+	{
+		STORY 	=0 , // 故事中
+		STAGE 	=1 , // 戰場上
+		PREPARE =2 , // 整備
+		TALK 	=3 , // 對話 
+		BATTLE	= 4, // 戰鬥
+
+	};
+	// 操作 ststus
+	public enum eOPStatus
+	{
+		NONE = 0,
+		SEL_ALLY =1,
+		SEL_ENEMY=2,
+
+	};
+
 	public static bool isApplicationQuit = false;
 	
 	public static string SystemLogFormat(string log){
@@ -56,6 +75,10 @@ public class GameSystem : MonoBehaviour {
 				{ "5Main", new string[]{ "Panel_MainUI", /*"Panel_BattleList", */ } },
 			}
 		);
+		// 資料管理器
+		Debug.Log(SystemLogFormat("開始初始化 Manager: " + typeof(GameDataManager).ToString()));
+		GameDataManager.Instance.Initial (0);
+		//Const 管理器
 	}
 	
 	void Start()
@@ -80,4 +103,34 @@ public class GameSystem : MonoBehaviour {
 		#endif
 		isApplicationQuit = true;
 	}
+	// 目前操作
+
+	public static void PlayBGM( int nBGMIdx )
+	{
+		if( nBGMIdx <=0 )
+			AudioManager.Instance.Stop(AudioChannelType.BGM);
+		// 播放  mian BGM
+		DataRow row = ConstDataManager.Instance.GetRow("MUSIC", nBGMIdx );
+		if( row != null )
+		{
+			string strFile = row.Field< string >("s_FILENAME");
+			if( !String.IsNullOrEmpty( strFile ))
+			{
+				string audioPath = ResourcesManager.GetAudioClipPath( AudioChannelType.BGM ,  strFile );
+				AudioManager.Instance.Play( AudioChannelType.BGM ,  audioPath );				
+				
+			}
+		}
+	}
+
+	public static GameObject CreateCharacterGameObj( GameObject parent )
+	{
+		GameObject preObj = Resources.Load( "Panel/Panel_char" ) as GameObject;
+		if (preObj != null) {
+			return  NGUITools.AddChild ( parent, preObj);
+		}
+		return null;
+	}
+	// 目前的紀錄狀態
+	public PLAYER_DATA			m_cPlayerData;
 }

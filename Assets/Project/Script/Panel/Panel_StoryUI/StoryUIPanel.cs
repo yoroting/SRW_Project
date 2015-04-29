@@ -3,12 +3,17 @@ using System.Collections;
 
 public class StoryUIPanel : MonoBehaviour {
 
-	public static int m_StageID;
+	public STORY	m_StoryData;		// 目前操作的 story data
+	private int		m_nFlowIdx;		// 腳本演到哪段
 
 	void Awake(){
+		Debug.Log("StoryUIPanel:awake");
+
+		GameSystem.PlayBGM (2);
+
 		// load const stage data
 		// 播放  mian BGM
-		DataRow row = ConstDataManager.Instance.GetRow("STORE", m_StageID );
+		DataRow row = ConstDataManager.Instance.GetRow("STAGE_STORY", GameDataManager.Instance.m_nStageID );
 		if( row != null )
 		{
 			//		string strFile = row.Field< string >("s_FILENAME");
@@ -16,38 +21,24 @@ public class StoryUIPanel : MonoBehaviour {
 			//		{
 			//			string audioPath = ResourcesManager.GetAudioClipPath( AudioChannelType.BGM ,  strFile );
 			//			AudioManager.Instance.Play( AudioChannelType.BGM ,  audioPath );
-			//		}
-			
-			string prePath = "Panel/Panel_char";
-			GameObject preObj = Resources.Load( prePath ) as GameObject;
-			if( preObj != null )
+			GameObject char1obj = GameSystem.CreateCharacterGameObj( this.gameObject );
+			if( char1obj != null )
 			{
-				GameObject char1obj  = NGUITools.AddChild( this.gameObject , preObj );
-				if( char1obj != null )
-				{
-					Vector3 v = new Vector3( -50 , 50 ,0 );
-					char1obj.transform.position = v;
-				}
-				
-				
-				
-				GameObject char2obj  = NGUITools.AddChild( this.gameObject , preObj );
-				if( char2obj != null )
-				{
-					Vector3 v = new Vector3( 50 , +50 ,0 );
-					char2obj.transform.position = v;
-					
-				}
+				Vector3 v = new Vector3( -50 , 50 ,0 );
+				char1obj.transform.position = v;
 			}
 		}
 	}
 	// Use this for initialization
 	void Start () {
+		Debug.Log("StoryUIPanel:start");
 
 	}
 	
 	// Update is called once per frame
 	void Update () {
+	//	Debug.Log("StoryUIPanel:update");
+
 	
 	}
 }

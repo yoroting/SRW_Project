@@ -30,18 +30,20 @@ public class MainUIPanel : BasicPanel {
 		*/
 
 		// 播放  mian BGM
-		DataRow row = ConstDataManager.Instance.GetRow("MUSIC", 1);
-		if( row != null )
-		{
-			string strFile = row.Field< string >("s_FILENAME");
-			if( !String.IsNullOrEmpty( strFile ))
-			{
-				string audioPath = ResourcesManager.GetAudioClipPath( AudioChannelType.BGM ,  strFile );
-				AudioManager.Instance.Play( AudioChannelType.BGM ,  audioPath );
+		GameSystem.PlayBGM ( 1 );
+//		DataRow row = ConstDataManager.Instance.GetRow("MUSIC", 1);
+//		if( row != null )
+//		{
+//			string strFile = row.Field< string >("s_FILENAME");
+//			if( !String.IsNullOrEmpty( strFile ))
+//			{
+//				string audioPath = ResourcesManager.GetAudioClipPath( AudioChannelType.BGM ,  strFile );
+//				AudioManager.Instance.Play( AudioChannelType.BGM ,  audioPath );
+//			}
+//		}
 
-
-			}
-		}
+		// 回到第0 關
+		GameDataManager.Instance.m_nStageID = Config.StartStage; //回到第一關
 	}
 
 	// Use this for initialization
@@ -91,14 +93,14 @@ public class MainUIPanel : BasicPanel {
 		Debug.Log("Startevent");
 		// setup global stage =1;
 
-
+		// 回到第0 關
+		GameDataManager.Instance.m_nStageID = Config.StartStage;  //設定為 第一關
 		// open story panel 
-		StoryUIPanel.m_StageID = 1;  // start from startup stage 
+
 
 		GameObject obj = PanelManager.Instance.GetOrCreatUI( "Panel_StoryUI" );
 		if (obj != null) {
 			PanelManager.Instance.CloseUI( "Panel_MainUI" );
-
 		}
 
 //			string s1 = "linetext( 1 );LineText(\t2)\nPopChar(3 ,4);PopChar( 4 , 5 ,6)。\nSysText(  \"test\" )。";
@@ -107,27 +109,28 @@ public class MainUIPanel : BasicPanel {
 //			char[] rowChars = { '\n' };	
 //			cTextArray txt = new cTextArray(rowChars , colChars );
 //			txt.SetText( s1 ); // 將猜解各字串
-		string prePath = "Panel/Panel_char";
-		GameObject preObj = Resources.Load( prePath ) as GameObject;
-		if( preObj != null )
-		{
-			GameObject char1obj  = NGUITools.AddChild( obj , preObj );
-			if( char1obj != null )
-			{
-				Vector3 v = new Vector3( -150 , 50 ,0 );
-				char1obj.transform.localPosition = v;
-			}
+//		string prePath = "Panel/Panel_char";
+//		GameObject preObj = Resources.Load( prePath ) as GameObject;
+//		if( preObj != null )
+//		{
+//			GameObject char1obj  = NGUITools.AddChild( obj , preObj );
+//			if( char1obj != null )
+//			{
+//				Vector3 v = new Vector3( -150 , 50 ,0 );
+//				char1obj.transform.localPosition = v;
+//			}
 			
 			
 			
-			GameObject char2obj  = NGUITools.AddChild( obj , preObj );
-			if( char2obj != null )
-			{
-				Vector3 v = new Vector3( 50 , +150 ,0 );
-				char2obj.transform.localPosition = v;
-				
-			}
-		}
+//			GameObject char2obj  = NGUITools.AddChild( obj , preObj );
+//			if( char2obj != null )
+//			{
+//				Vector3 v = new Vector3( 50 , +150 ,0 );
+//				char2obj.transform.localPosition = v;				
+//			}
+//		}
+
+
 	}
 
 }
