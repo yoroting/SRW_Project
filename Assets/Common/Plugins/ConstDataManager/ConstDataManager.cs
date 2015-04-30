@@ -612,6 +612,7 @@ public partial class ConstDataManager
 		int length = br.ReadInt32();
 		return System.Text.Encoding.Unicode.GetString(br.ReadBytes(length));
 	}
+
 }
 
 public abstract class DataRow

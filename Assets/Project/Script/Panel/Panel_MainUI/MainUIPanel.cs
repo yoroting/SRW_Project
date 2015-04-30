@@ -54,6 +54,11 @@ public class MainUIPanel : BasicPanel {
 	// release game event 
 	void OnDestroy()
 	{
+		UIEventListener.Get(StartButton).onClick -= OnStartButtonClick;
+		UIEventListener.Get(LoadButton).onClick -= OnLoadButtonClick;
+		UIEventListener.Get(GalleryButton).onClick -= OnGalleryButtonClick;
+		UIEventListener.Get(SetUpButton).onClick -= OnSetUpButtonClick;
+
 		GameEventManager.RemoveEventListener( "startgame" , OnStartGameEvent );
 
 	}

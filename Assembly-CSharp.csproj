@@ -210,9 +210,11 @@
      <Compile Include="Assets\NGUI\Scripts\UI\UITexture.cs" />
      <Compile Include="Assets\NGUI\Scripts\UI\UITooltip.cs" />
      <Compile Include="Assets\NGUI\Scripts\UI\UIViewport.cs" />
+     <Compile Include="Assets\Project\Script\ConstDataClasses\PLAYER_DATA.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\STORY.cs" />
      <Compile Include="Assets\Project\Script\Core\Config.cs" />
      <Compile Include="Assets\Project\Script\Core\ConstDataTables.cs" />
+     <Compile Include="Assets\Project\Script\Core\GameDataManager.cs" />
      <Compile Include="Assets\Project\Script\Core\GameSystem.cs" />
      <Compile Include="Assets\Project\Script\Core\ObjectPool.cs" />
      <Compile Include="Assets\Project\Script\Core\ResourcesManager.cs" />

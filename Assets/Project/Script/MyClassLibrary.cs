@@ -38,8 +38,17 @@ namespace MyClassLibrary
 	    }
 
         //==============================
+		public cTextArray( )
+		{ 
+			char[] rowChars = { '\n' };	
+			char[] colChars = { ' ', '(', ')',';', ',', '\t' };
 
-        public cTextArray(char[] cRawToken, char[] cColToken )
+			m_sRawToken =  new string( rowChars );
+			m_sColToken =  new string( colChars );
+			m_kTextLinePool = new List<CTextLine>();
+		}
+
+		public cTextArray(char[] cRawToken, char[] cColToken  )
         { 
              m_sRawToken =  new string( cRawToken );
              m_sColToken =  new string( cColToken );
@@ -154,5 +163,29 @@ namespace MyClassLibrary
         private string m_sRawToken;
 	    private string m_sColToken;
 
+
+
     }
+
+	public class MyTool
+	{
+		// fast int parse :2.87 ns 
+		static public int IntParseFast(string value)
+		{
+			int result = 0;
+			for (int i = 0; i < value.Length; i++)
+			{
+				char letter = value[i];
+				result = 10 * result + (letter - 48);
+			}
+			return result;
+		}
+		
+		public static int IntParseFast(char value)
+		{
+			int result = 0;
+			result = 10 * result + (value - 48);
+			return result;
+		}
+	}
 }

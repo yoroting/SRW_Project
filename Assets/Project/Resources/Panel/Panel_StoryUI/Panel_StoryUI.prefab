@@ -67,9 +67,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 131960}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 22577cd150748b24289fcf601f0a33e7, type: 3}
+  m_Script: {fileID: 11500000, guid: 997b6d64378fe67409b864951f427618, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  BackGroundTex: {fileID: 161062}
 --- !u!114 &11461364
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -1,27 +1,33 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Project\Script\Panel\Panel_MainUI\MainUIPanel.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Project\Script\Panel\Panel_StoryUI\StoryUIPanel.cs">
     <Files>
-      <File FileName="Assets\Common\Plugins\Singleton\Singleton.cs" Line="17" Column="26" />
-      <File FileName="Assets\Common\Plugins\ConstDataManager\ConstDataManager.cs" Line="72" Column="3" />
-      <File FileName="Assets\Project\Script\Panel\Panel_MainUI\MainUIPanel.cs" Line="114" Column="62" />
-      <File FileName="Assets\Project\Script\Core\GameSystem.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Core\GameSystem.cs" Line="120" Column="28" />
+      <File FileName="Assets\Common\Plugins\Singleton\Singleton.cs" Line="52" Column="2" />
+      <File FileName="Assets\Common\Plugins\ConstDataManager\ConstDataManager.cs" Line="502" Column="16" />
+      <File FileName="Assets\Project\Script\Panel\Panel_MainUI\MainUIPanel.cs" Line="70" Column="29" />
       <File FileName="Assets\Project\Script\Core\ObjectPool.cs" Line="1" Column="1" />
-      <File FileName="Assets\Project\Script\Core\ConstDataTables.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Core\ConstDataTables.cs" Line="8" Column="1" />
       <File FileName="Assets\Common\Plugins\PanelManager\PanelManager.cs" Line="1" Column="1" />
-      <File FileName="Assets\Common\Plugins\PanelManager\OpenPanelData.cs" Line="1" Column="1" />
-      <File FileName="Assets\Common\Plugins\AppStartup\AppStartup.cs" Line="1" Column="1" />
-      <File FileName="Assets\Project\Script\Core\ResourcesManager.cs" Line="1" Column="1" />
-      <File FileName="Assets\Project\Script\Panel\ConstDataTest.cs" Line="1" Column="1" />
-      <File FileName="Assets\Project\Script\Panel\Panel_StoryUI\StoryUIPanel.cs" Line="12" Column="20" />
-      <File FileName="Assets\Project\Script\ConstDataClasses\STORY.cs" Line="15" Column="1" />
-      <File FileName="Assets\Common\Plugins\DebugConsole\DebugConsole.cs" Line="78" Column="19" />
+      <File FileName="Assets\Common\Plugins\PanelManager\OpenPanelData.cs" Line="14" Column="1" />
+      <File FileName="Assets\Common\Plugins\AppStartup\AppStartup.cs" Line="18" Column="1" />
+      <File FileName="Assets\Project\Script\Core\ResourcesManager.cs" Line="27" Column="1" />
+      <File FileName="Assets\Project\Script\Panel\ConstDataTest.cs" Line="23" Column="24" />
+      <File FileName="Assets\Project\Script\Panel\Panel_StoryUI\StoryUIPanel.cs" Line="80" Column="43" />
+      <File FileName="Assets\Project\Script\ConstDataClasses\STORY.cs" Line="17" Column="11" />
+      <File FileName="Assets\Project\Script\Core\GameDataManager.cs" Line="23" Column="2" />
+      <File FileName="Assets\Project\Script\Core\Config.cs" Line="18" Column="1" />
+      <File FileName="Assets\Project\Script\MyClassLibrary.cs" Line="170" Column="21" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
-      <Breakpoint file="D:\SRW\SRW_Project\Assets\Project\Script\Panel\Panel_StoryUI\StoryUIPanel.cs" line="11" />
-      <Breakpoint file="D:\SRW\SRW_Project\Assets\Project\Script\Panel\Panel_StoryUI\StoryUIPanel.cs" line="50" />
+      <Breakpoint file="D:\SRW\SRW_Project\Assets\Project\Script\Panel\Panel_StoryUI\StoryUIPanel.cs" line="238" />
+      <Breakpoint file="D:\SRW\SRW_Project\Assets\Project\Script\Panel\Panel_StoryUI\StoryUIPanel.cs" line="196" />
+      <Breakpoint file="D:\SRW\SRW_Project\Assets\Project\Script\Panel\Panel_StoryUI\StoryUIPanel.cs" line="149" />
+      <Breakpoint file="D:\SRW\SRW_Project\Assets\Project\Script\Panel\Panel_StoryUI\StoryUIPanel.cs" line="162" />
+      <Breakpoint file="D:\SRW\SRW_Project\Assets\Project\Script\Panel\Panel_StoryUI\StoryUIPanel.cs" line="174" />
+      <Breakpoint file="D:\SRW\SRW_Project\Assets\Project\Script\Panel\Panel_StoryUI\StoryUIPanel.cs" line="78" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
