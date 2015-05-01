@@ -4,21 +4,27 @@ using System.Collections.Generic;
 using MyClassLibrary;			// for parser string
 
 
-public class StoryUIPanel : MonoBehaviour {
+public class StoryUIPanel : BasicPanel {
 
 	public STORY_DATA	m_StoryData;		// 目前操作的 story data
 	private int		m_nFlowIdx;				// 腳本演到哪段
 	private int		m_nTargetIdx;			// 
 	private cTextArray m_cScript;			// 
 
+	// 
+	private int m_nTextIdx;					//  
+	private List<string> m_cTextList;		// 
+
 	private Dictionary<int, GameObject> m_idToCharObj; // 
 
 	public GameObject BackGroundTex;
+	public GameObject PanelStoryText;
 
 	void Awake(){
 		Debug.Log("StoryUIPanel:awake");
 		m_StoryData = new STORY_DATA();
 		m_idToCharObj = new Dictionary<int, GameObject>();
+		m_cTextList = new List<string> ();
 
 		// load const stage data
 		// 播放  mian BGM
@@ -48,6 +54,8 @@ public class StoryUIPanel : MonoBehaviour {
 
 
 		}
+		m_nFlowIdx = 0;
+		m_nTextIdx = 0;
 		m_nTargetIdx = 0;//m_cScript.GetMaxCol()-1;
 		// add on click event
 		//this.GetComponent( );
@@ -65,8 +73,8 @@ public class StoryUIPanel : MonoBehaviour {
 	//	Debug.Log("StoryUIPanel:update");
 		if( m_nFlowIdx < m_nTargetIdx )
 		{
-			// 
-			ParserScript( m_cScript.GetTextLine( m_nFlowIdx ) );
+			if( m_cScript != null )// 
+				ParserScript( m_cScript.GetTextLine( m_nFlowIdx ) );
 
 			m_nFlowIdx++;
 		}
@@ -75,9 +83,18 @@ public class StoryUIPanel : MonoBehaviour {
 	void OnPanelButtonClick(GameObject go)
 	{
 		Debug.Log("Back Panel click ");
+		if( m_cScript == null || m_cTextList == null )
+			return ;
+		//
+		if( m_nTextIdx < (m_cTextList.Count-1) )
+		{
+			m_nTextIdx++; // change text 
+			return ;
+		}
+
 		if( ++m_nTargetIdx >= m_cScript.GetMaxCol() )
 		{
-			m_nTargetIdx = m_cScript.GetMaxCol()-1;
+			m_nTargetIdx = m_cScript.GetMaxCol()-1; // change flow 
 		}
 
 	}
@@ -90,10 +107,36 @@ public class StoryUIPanel : MonoBehaviour {
 
 		if( m_idToCharObj.ContainsKey(nCharId) == false )
 		{
-			obj = GameSystem.CreateCharacterGameObj( this.gameObject );
-			if( obj != null ){
-				m_idToCharObj.Add( nCharId , obj );
+			obj = GameSystem.CreatePrefabGameObj( this.gameObject , "Panel/Panel_StoryUI/Panel_char" );
+			if( obj == null )return null;
+			
+			DataRow row = ConstDataManager.Instance.GetRow("CHARS", nCharId );
+			if( row != null )
+			{	
+				CHAR_DATA charData = new CHAR_DATA();
+				charData.FillDatabyDataRow( row );
+				// charge face text
+				
+				UITexture tex = obj.GetComponentInChildren<UITexture>();
+			
+				if( tex )
+				{
+					if(tex != null){
+						//	DynamicAssetBundleLoader.LoadTexture(tex,DynamicAssetBundleLoader.SSAssetType.Card, "CARD_" + card.PicName);
+						//string texpath = "char/" +charData.s_FILENAME +"_S";
+						string url = "Assets/Art/char/" + charData.s_FILENAME +"_S.png";
+						//Texture2D tex = Resources.LoadAssetAtPath(url, typeof(Texture2D)) as Texture2D;
+						Texture t= Resources.LoadAssetAtPath( url , typeof(Texture) ) as Texture; ;
+						tex.mainTexture = t;
+						//tex.mainTexture = Resources.Load( texpath) as Texture; 
+						tex.MakePixelPerfect();
+					}
+				}
 			}
+
+			NGUITools.SetActive( obj , true );
+
+			m_idToCharObj.Add( nCharId , obj );
 		}
 		else {
 			m_idToCharObj.TryGetValue( nCharId , out obj  );
@@ -110,21 +153,41 @@ public class StoryUIPanel : MonoBehaviour {
 		return null;
 	}
 
-	public void MoveChar( int nCharId , int nPosX , int PosY )
+	public void MoveChar( int nCharId , int nPosX , int nPosY )
 	{
 		GameObject obj = m_idToCharObj[nCharId];
 		if( obj == null )
 			return;
-		//GetComponent<TweenPosition>().Reset();
-		//obj.GetComponent( );
+		TweenPosition.Begin ( obj , 3.0f , new Vector3( nPosX , nPosY , obj.transform.localPosition.z) ); //直接移動
+		return;
 
-
+//		TweenPosition tp = null;
+//		tp = obj.GetComponent<TweenPosition>( );
+//		if( tp == null )
+//			tp = obj.AddComponent<TweenPosition>();
+//		if( tp != null )
+//		{
+//			tp.from = obj.transform.localPosition;;
+//			tp.to   = new Vector3( nPosX , nPosY , obj.transform.localPosition.z);		
+			//obj.active = true;
+//			tp.duration = 3.0f;
+//			tp.Play(true);
+//		}
 	}
 	public void DelChar( int nCharId , int nType)
 	{
+		GameObject obj = m_idToCharObj[nCharId];
+		if( obj == null )
+			return;
+		m_idToCharObj.Remove (nCharId);
+		NGUITools.Destroy (obj);
+
+
 	}
 	void ParserScript( cTextArray.CTextLine line )
 	{
+		m_cTextList.Clear();
+		m_nTextIdx = 0 ; // change text 
 
 		for( int i = 0 ; i < line.GetRowNum() ; i++ )
 		{
@@ -167,7 +230,8 @@ public class StoryUIPanel : MonoBehaviour {
 			else if( s == "TEXT" )
 			{
 				string sp1 = line.GetString( ++i );	if( sp1 == null ) return; //  null = error
-				
+				m_cTextList.Add( sp1 );
+
 			}
 			else if( s == "BGM" )
 			{

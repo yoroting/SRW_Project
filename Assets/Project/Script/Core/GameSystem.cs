@@ -123,9 +123,9 @@ public class GameSystem : MonoBehaviour {
 		}
 	}
 
-	public static GameObject CreateCharacterGameObj( GameObject parent )
+	public static GameObject CreatePrefabGameObj( GameObject parent , string sPrefabPath )
 	{
-		GameObject preObj = Resources.Load( "Panel/Panel_char" ) as GameObject;
+		GameObject preObj = Resources.Load( sPrefabPath ) as GameObject;
 		if (preObj != null) {
 			return  NGUITools.AddChild ( parent, preObj);
 		}
