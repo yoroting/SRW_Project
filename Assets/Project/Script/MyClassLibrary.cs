@@ -41,7 +41,7 @@ namespace MyClassLibrary
 		public cTextArray( )
 		{ 
 			char[] rowChars = { '\n' };	
-			char[] colChars = { ' ', '(', ')',';', ',', '\t' };
+			char[] colChars = { '(', ')',';', '\t' };
 
 			m_sRawToken =  new string( rowChars );
 			m_sColToken =  new string( colChars );
@@ -157,6 +157,20 @@ namespace MyClassLibrary
             }
         
         }
+		// Get param char ary
+		public static List<string> GetParamLst( string s )
+		{		
+			char [] cCol = { ',' , ':' };
+			string [] rows = s.Split( cCol );
+			List<string> lst = new List<string>();
+			foreach( string s2 in rows )
+			{
+				if( string.IsNullOrEmpty( s2) == false )
+				lst.Add( s2.Trim() );
+			}
+			return lst;
+		}
+
 
         private List< CTextLine> m_kTextLinePool;
 

@@ -25,7 +25,6 @@ GameObject:
   m_Component:
   - 4: {fileID: 401876}
   - 114: {fileID: 11414306}
-  - 114: {fileID: 11401140}
   m_Layer: 5
   m_Name: Texture - Char
   m_TagString: Untagged
@@ -58,44 +57,6 @@ Transform:
   - {fileID: 401876}
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!114 &11401140
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 196444}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9e2747e3775af504da1a4d5a46c5a1ce, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  method: 0
-  style: 0
-  animationCurve:
-    serializedVersion: 2
-    m_Curve:
-    - time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 1
-      tangentMode: 0
-    - time: 1
-      value: 1
-      inSlope: 1
-      outSlope: 0
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-  ignoreTimeScale: 1
-  delay: 0
-  duration: 1.5
-  steeperCurves: 0
-  tweenGroup: 0
-  onFinished: []
-  eventReceiver: {fileID: 0}
-  callWhenFinished: 
-  from: 0
-  to: 1
 --- !u!114 &11414306
 MonoBehaviour:
   m_ObjectHideFlags: 1
