@@ -1,7 +1,7 @@
-﻿//public enum ConstDataTables
-//{
-//	BALL=1,
-//	ACTOR=2,
-//	AREA_NAME=505,
-//
-//}
+﻿public enum ConstDataTables
+{
+	VARIABLE_FLOATING=1,		//
+	VARIABLE_INTEGER=2,
+	SCENE_NAME=3,
+
+}
