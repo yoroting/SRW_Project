@@ -227,7 +227,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _FaceTexObj: {fileID: 0}
   _TextLineObj: {fileID: 0}
-  m_lstsContextAll: []
+  m_lstsContextWait: []
   m_sPopText: 
   m_sShowText: 
 --- !u!114 &11482206
