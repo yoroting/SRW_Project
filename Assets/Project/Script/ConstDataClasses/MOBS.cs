@@ -1,0 +1,43 @@
+﻿using Playcoo.Common;
+public class MOBS : ConstDataRow<MOBS>
+{
+	public const int TableID = 18;
+	public const int DigitBase = 5;
+	public int n_ID;
+	public string s_NAME;
+	public string s_ID_MODEL_CLASS;
+	public int n_ID_MODEL;
+	public int n_ID_MAP;
+	public string s_OUTFIT;
+	public int n_BOUNDARY;
+	public int n_LEVEL;
+	public int n_RANK;
+	public float f_RATIO_EXP;
+	public string s_PROPERTIES;
+	public int n_MOVE;
+	public int n_AI_WANDER;
+	public int n_AI_COMBAT;
+	public int n_AI_TACTIC;
+	public string s_SKILLS;
+	public int n_DEADMISSILE;
+	public int n_CONDITION;
+	public int n_SKIN_COLOR;
+	public string s_FX_SELECT;
+	public int n_WATER_DOWN;
+	public string s_FX_GORE;
+	public int n_CREDIT;
+	public int n_MOB_APPEAR;
+	public int n_DROP_RANGE;
+	public int n_DROPS_EQUIPMENT;
+	public int n_DROPS_NORMAL;
+	public int n_DROPS_SPECIALLY;
+	public string s_QUEST_END;
+	public string s_ICON;
+	public string s_LOCATION;
+	public string s_ROLE_GRAPHIC;
+	public int n_MOB_USAGE;
+	public string s_HK_VER;
+	public string s_TC_VER;
+	public string s_JP_VER;
+	public string s_TH_VER;
+}

@@ -6,7 +6,7 @@ using MyClassLibrary;			// for parser string
 
 public class StoryUIPanel : MonoBehaviour {
 
-	public STORY_DATA	m_StoryData;		// 目前操作的 story data
+	public STAGE_STORY	m_StoryData;		// 目前操作的 story data
 	private int		m_nFlowIdx;				// 腳本演到哪段
 	private int		m_nTargetIdx;			// 劇本目標哪一段
 	private cTextArray m_cScript;			// 劇本 腳本集合
@@ -35,38 +35,9 @@ public class StoryUIPanel : MonoBehaviour {
 
 	void Awake(){
 		Debug.Log("StoryUIPanel:awake");
-		m_StoryData = new STORY_DATA();
+		nTweenObjCount = 0;
 		m_idToCharObj = new Dictionary<int, GameObject>();
 		m_cTextList = new List<string> ();
-		nTweenObjCount = 0;
-		// load const stage data
-		// 播放  mian BGM
-		DataRow row = ConstDataManager.Instance.GetRow("STAGE_STORY", GameDataManager.Instance.m_nStageID );
-		if( row != null )
-		{
-			if( m_StoryData.FillDatabyDataRow( row ) == false )
-				return ;
-			GameSystem.PlayBGM ( m_StoryData.n_SCENE_BGM );
-
-			m_cScript = new cTextArray( );
-			m_cScript.SetText( m_StoryData.s_CONTEXT );
-
-
-			//		string strFile = row.Field< string >("s_FILENAME");
-			//		if( !String.IsNullOrEmpty( strFile ))
-			//		{
-			//			string audioPath = ResourcesManager.GetAudioClipPath( AudioChannelType.BGM ,  strFile );
-			//			AudioManager.Instance.Play( AudioChannelType.BGM ,  audioPath );
-
-		//	GameObject char1obj = GameSystem.CreateCharacterGameObj( this.gameObject );
-		//	if( char1obj != null )
-		//	{
-		//		Vector3 v = new Vector3( -50 , 50 ,0 );
-		//		char1obj.transform.position = v;
-		//	}
-
-
-		}
 
 		m_bIsEnd = false;
 		m_nFlowIdx = 0;
@@ -83,6 +54,37 @@ public class StoryUIPanel : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		Debug.Log("StoryUIPanel:start");
+
+		// load const stage data
+		// 播放  mian BGM
+		m_StoryData =ConstDataManager.Instance.GetRow< STAGE_STORY> ( GameDataManager.Instance.nStageID );
+		DataRow row = ConstDataManager.Instance.GetRow("STAGE_STORY", GameDataManager.Instance.nStageID );
+		if( m_StoryData != null )
+		{
+			//	STAGE_STORY
+			//	if( m_StoryData.FillDatabyDataRow( row ) == false )
+			//		return ;
+			GameSystem.PlayBGM ( m_StoryData.n_BGM );
+			
+			m_cScript = new cTextArray( );
+			m_cScript.SetText( m_StoryData.s_CONTEXT );
+			
+			
+			//		string strFile = row.Field< string >("s_FILENAME");
+			//		if( !String.IsNullOrEmpty( strFile ))
+			//		{
+			//			string audioPath = ResourcesManager.GetAudioClipPath( AudioChannelType.BGM ,  strFile );
+			//			AudioManager.Instance.Play( AudioChannelType.BGM ,  audioPath );
+			
+			//	GameObject char1obj = GameSystem.CreateCharacterGameObj( this.gameObject );
+			//	if( char1obj != null )
+			//	{
+			//		Vector3 v = new Vector3( -50 , 50 ,0 );
+			//		char1obj.transform.position = v;
+			//	}
+			
+			
+		}
 
 	}
 	
@@ -181,14 +183,15 @@ public class StoryUIPanel : MonoBehaviour {
 
 		if( m_idToCharObj.ContainsKey(nCharId) == false )
 		{
-			obj = GameSystem.CreatePrefabGameObj( this.gameObject , "Panel/Panel_StoryUI/Panel_char" );
+			obj = ResourcesManager.CreatePrefabGameObj( this.gameObject , "Panel/Panel_StoryUI/Panel_char" );
 			if( obj == null )return null;
-			
-			DataRow row = ConstDataManager.Instance.GetRow("CHARS", nCharId );
-			if( row != null )
+			CHARS charData = ConstDataManager.Instance.GetRow<CHARS>( nCharId );
+			//DataRow row = ConstDataManager.Instance.GetRow("CHARS", nCharId );
+			//if( row != null )
+			if( charData != null)
 			{	
-				CHAR_DATA charData = new CHAR_DATA();
-				charData.FillDatabyDataRow( row );
+			//	CHAR_DATA charData = new CHAR_DATA();
+			//	charData.FillDatabyDataRow( row );
 				// charge face text
 				
 				UITexture tex = obj.GetComponentInChildren<UITexture>();
@@ -291,7 +294,7 @@ public class StoryUIPanel : MonoBehaviour {
 	{
 		ProcessText( 0 ); 
 
-		DataRow row = ConstDataManager.Instance.GetRow("CONTENT_STORY", StoryID );
+		DataRow row = ConstDataManager.Instance.GetRow("STORY_TEXT", StoryID );
 		if( row != null )
 		{	
 

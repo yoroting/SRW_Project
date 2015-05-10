@@ -68,6 +68,14 @@ public class ResourcesManager {
 
 		return gameObj;
 	}
+	public static GameObject CreatePrefabGameObj( GameObject parent , string sPrefabPath )
+	{
+		GameObject preObj = Resources.Load( sPrefabPath ) as GameObject;
+		if (preObj != null) {
+			return  NGUITools.AddChild ( parent, preObj);
+		}
+		return null;
+	}
 
 //	public static GameObject LoadModelPrefab (string name)
 //	{

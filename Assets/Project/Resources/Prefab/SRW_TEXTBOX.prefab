@@ -80,7 +80,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 175664}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 86, y: 202, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 450290}
@@ -225,8 +225,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 499879d1f8c300f4491f15b7a55127df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _FaceTexObj: {fileID: 0}
-  _TextLineObj: {fileID: 0}
+  _FaceTexObj: {fileID: 163206}
+  _TextLineObj: {fileID: 196452}
   m_lstsContextWait: []
   m_sPopText: 
   m_sShowText: 

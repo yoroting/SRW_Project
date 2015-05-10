@@ -131,6 +131,19 @@ public class GameSystem : MonoBehaviour {
 		}
 		return null;
 	}
-	// 目前的紀錄狀態
-	public PLAYER_DATA			m_cPlayerData;
+
+	public static string GetTalkText(int nSayID )
+	{
+		DataRow row = ConstDataManager.Instance.GetRow ( "TALK_TEXT" , nSayID );
+		if( row != null )
+		{
+			string s = row.Field<string>( "s_CONTENT");
+			return s;
+		}
+		
+		return null;	
+	}
+
+
+
 }

@@ -1,0 +1,45 @@
+﻿using Playcoo.Common;
+public class ITEM_MISC : ConstDataRow<ITEM_MISC>
+{
+	public const int TableID = 26;
+	public const int DigitBase = 5;
+	public int n_ID;
+	public string s_NAME;
+	public string s_ID_ICON;
+	public string s_ID_MODEL_PARTS;
+	public int n_ID_MODEL;
+	public int n_ID_MAP;
+	public int n_DROPMODEL_TYPE;
+	public string s_MODEL_EFFECT;
+	public int n_TAG_TRADE;
+	public int n_QUALITY;
+	public int n_ITEMLV;
+	public int n_CONDITION_LV;
+	public int n_CONDITION_GENDER;
+	public int n_CONDITION_CLASS;
+	public int n_CONDITION_CAMPS;
+	public int n_CONDITION_SKILL;
+	public int n_CONDITION_SKILLLV;
+	public int n_ICONSLOT;
+	public int n_EQUIPSLOT;
+	public int n_EQUIPTYPE;
+	public int n_EQUIPTYPE_EFFECT;
+	public int n_TAG_LOOT;
+	public string s_TAG_EXTRA;
+	public int n_ID_USAGE;
+	public int n_CD;
+	public int n_PRICE_BUY;
+	public int n_PRICE_VENDER;
+	public int n_QUATITY_STACK;
+	public string s_ITEM_EXIST;
+	public int n_ID_BUFF;
+	public string s_EQUIPFX;
+	public string s_VARYDATA;
+	public int n_BROADCAST;
+	public int n_BROADCAST_QUANTITY;
+	public int n_AVATAR_ADMIX;
+	public string s_HK_VER;
+	public string s_TC_VER;
+	public string s_JP_VER;
+	public string s_TH_VER;
+}
