@@ -11,6 +11,8 @@ public class Panel_Talk : MonoBehaviour {
 	//public GameObject StartButton;
 	private Dictionary<int, GameObject> m_idToObj; // 管理 產生的 Prefab 物件 
 
+	STAGE_TALK m_cStageTalk;				// talk data class
+
 
 	private int m_nTalkIdx;					// 文字目前在哪一行
 	//private List<string> m_cTextList;		// 內容集合
@@ -125,10 +127,28 @@ public class Panel_Talk : MonoBehaviour {
 
 	public void SetScript( int nScriptID )
 	{
-		m_nScriptIdx = 0;
+		m_nScriptIdx = 0; // current execute script
 
+		 m_cStageTalk = ConstDataManager.Instance.GetRow<STAGE_TALK> ( nScriptID );
+		if (m_cStageTalk == null)
+			return;
+
+		// change Back Tex
+		if (m_cStageTalk.n_SCENE_ID > 0) {
+			// load tex of sceneID
+
+		}
+
+		// change BGM
+		if (m_cStageTalk.n_TALK_BGM > 0) {
+			GameSystem.PlayBGM( m_cStageTalk.n_TALK_BGM );
+		}
+
+
+		m_cScript.SetText ( m_cStageTalk.s_CONTEXT );
 		// for test
-		m_cScript.SetText( "SETCHAR(0,2);SAY(0,1)\nSETCHAR(1,1);SAY(1,2)\nSAY(0,3)\nSAY(1,4)\nSAY(0,5)\nCLOSE(0,0)\nSAY(1,6)\nSETCHAR(0,20);SAY(0,7)\nSAY(1,8)\nSAY(1,9)");
+		//m_cScript.SetText( "SETCHAR(0,2);SAY(0,1)\nSETCHAR(1,1);SAY(1,2)\nSAY(0,3)\nSAY(1,4)\nSAY(0,5)\nCLOSE(0,0)\nSAY(1,6)\nSETCHAR(0,20);SAY(0,7)\nSAY(1,8)\nSAY(1,9)");
+		//m_cScript.SetText( "SETCHAR(1,1);SAY(1,9)");
 		//m_cScript.SetText( "SAY(0,3)");
 		//m_cScript.SetText( "SAY(1,9)\nCLOSE(1,0)");
 		// need get script for const data

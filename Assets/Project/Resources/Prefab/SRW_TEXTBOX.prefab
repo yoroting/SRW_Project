@@ -194,7 +194,7 @@ MonoBehaviour:
   mFontStyle: 0
   mAlignment: 1
   mEncoding: 1
-  mMaxLineCount: 0
+  mMaxLineCount: 4
   mEffectStyle: 0
   mEffectColor: {r: 0, g: 0, b: 0, a: 1}
   mSymbols: 1

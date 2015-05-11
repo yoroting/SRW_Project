@@ -106,7 +106,7 @@ BoxCollider:
 --- !u!4 &119997095 stripped
 Transform:
   m_PrefabParentObject: {fileID: 495848, guid: d8ae4f9a2399a454abe3655a10920221, type: 2}
-  m_PrefabInternal: {fileID: 693129022}
+  m_PrefabInternal: {fileID: 998295101}
 --- !u!1 &161096788
 GameObject:
   m_ObjectHideFlags: 0
@@ -684,56 +684,6 @@ GameObject:
 GameObject:
   m_PrefabParentObject: {fileID: 111384, guid: 97f80b513111b3442949b8d2885a19f8, type: 2}
   m_PrefabInternal: {fileID: 1609891924}
---- !u!1001 &693129022
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 161096790}
-    m_Modifications:
-    - target: {fileID: 495848, guid: d8ae4f9a2399a454abe3655a10920221, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 495848, guid: d8ae4f9a2399a454abe3655a10920221, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 495848, guid: d8ae4f9a2399a454abe3655a10920221, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 495848, guid: d8ae4f9a2399a454abe3655a10920221, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 495848, guid: d8ae4f9a2399a454abe3655a10920221, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 495848, guid: d8ae4f9a2399a454abe3655a10920221, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 495848, guid: d8ae4f9a2399a454abe3655a10920221, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 495848, guid: d8ae4f9a2399a454abe3655a10920221, type: 2}
-      propertyPath: m_RootOrder
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 156938, guid: d8ae4f9a2399a454abe3655a10920221, type: 2}
-      propertyPath: m_Name
-      value: Panel - StoryUI
-      objectReference: {fileID: 0}
-    - target: {fileID: 156938, guid: d8ae4f9a2399a454abe3655a10920221, type: 2}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: d8ae4f9a2399a454abe3655a10920221, type: 2}
-  m_IsPrefabParent: 0
 --- !u!1 &785877102 stripped
 GameObject:
   m_PrefabParentObject: {fileID: 135176, guid: 97f80b513111b3442949b8d2885a19f8, type: 2}
@@ -1132,6 +1082,56 @@ MonoBehaviour:
 GameObject:
   m_PrefabParentObject: {fileID: 113062, guid: 97f80b513111b3442949b8d2885a19f8, type: 2}
   m_PrefabInternal: {fileID: 1609891924}
+--- !u!1001 &998295101
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 161096790}
+    m_Modifications:
+    - target: {fileID: 495848, guid: d8ae4f9a2399a454abe3655a10920221, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 495848, guid: d8ae4f9a2399a454abe3655a10920221, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 495848, guid: d8ae4f9a2399a454abe3655a10920221, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 495848, guid: d8ae4f9a2399a454abe3655a10920221, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 495848, guid: d8ae4f9a2399a454abe3655a10920221, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 495848, guid: d8ae4f9a2399a454abe3655a10920221, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 495848, guid: d8ae4f9a2399a454abe3655a10920221, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 495848, guid: d8ae4f9a2399a454abe3655a10920221, type: 2}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 156938, guid: d8ae4f9a2399a454abe3655a10920221, type: 2}
+      propertyPath: m_Name
+      value: Panel - StoryUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 156938, guid: d8ae4f9a2399a454abe3655a10920221, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: d8ae4f9a2399a454abe3655a10920221, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1 &1136793751
 GameObject:
   m_ObjectHideFlags: 0
@@ -1971,7 +1971,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 193180, guid: 97f80b513111b3442949b8d2885a19f8, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11413618, guid: 97f80b513111b3442949b8d2885a19f8, type: 2}
       propertyPath: mFixedAspect

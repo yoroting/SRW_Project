@@ -31,7 +31,9 @@ public class GameSystem : MonoBehaviour {
 	public static string SystemLogFormat(string log){
 		return "<b><color=orange>[sys]" + log + "</color></b>";
 	}
-	
+	public static int m_nCurBGMIdx { set; get; }
+
+	//===============================
 	protected virtual void Awake () 
 	{
 		DontDestroyOnLoad(this.gameObject);
@@ -109,8 +111,12 @@ public class GameSystem : MonoBehaviour {
 	{
 		if( nBGMIdx <=0 )
 			AudioManager.Instance.Stop(AudioChannelType.BGM);
+
+		if (m_nCurBGMIdx == nBGMIdx)
+			return;
+
 		// 播放  mian BGM
-		DataRow row = ConstDataManager.Instance.GetRow("MUSIC", nBGMIdx );
+		DataRow row = ConstDataManager.Instance.GetRow("BGM", nBGMIdx );
 		if( row != null )
 		{
 			string strFile = row.Field< string >("s_FILENAME");
@@ -118,19 +124,20 @@ public class GameSystem : MonoBehaviour {
 			{
 				string audioPath = ResourcesManager.GetAudioClipPath( AudioChannelType.BGM ,  strFile );
 				AudioManager.Instance.Play( AudioChannelType.BGM ,  audioPath );				
-				
+
+				m_nCurBGMIdx = nBGMIdx;		// record current bgm
 			}
 		}
 	}
 
-	public static GameObject CreatePrefabGameObj( GameObject parent , string sPrefabPath )
-	{
-		GameObject preObj = Resources.Load( sPrefabPath ) as GameObject;
-		if (preObj != null) {
-			return  NGUITools.AddChild ( parent, preObj);
-		}
-		return null;
-	}
+//	public static GameObject CreatePrefabGameObj( GameObject parent , string sPrefabPath )
+//	{
+//		GameObject preObj = Resources.Load( sPrefabPath ) as GameObject;
+//		if (preObj != null) {
+//			return  NGUITools.AddChild ( parent, preObj);
+//		}
+//		return null;
+//	}
 
 	public static string GetTalkText(int nSayID )
 	{

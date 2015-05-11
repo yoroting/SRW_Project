@@ -14,10 +14,6 @@ public class StoryUIPanel : MonoBehaviour {
 	// 
 	private bool m_bIsEnd;					// 是否已經演完了
 
-	private int m_nTextIdx;					// 故事文字目前在哪一行
-	private List<string> m_cTextList;		// 故事內容集合
-	private string m_PopText;               // 是否有要秀出的文字
-
 	private Dictionary<int, GameObject> m_idToCharObj; // 管理 產生的角色物件 
 
 	public GameObject BackGroundTex;            // 大地圖背景貼圖
@@ -33,15 +29,14 @@ public class StoryUIPanel : MonoBehaviour {
 		}
 	}
 
+	// sys func
 	void Awake(){
 		Debug.Log("StoryUIPanel:awake");
 		nTweenObjCount = 0;
 		m_idToCharObj = new Dictionary<int, GameObject>();
-		m_cTextList = new List<string> ();
 
 		m_bIsEnd = false;
 		m_nFlowIdx = 0;
-		m_nTextIdx = 0;
 		m_nTargetIdx = 0;//m_cScript.GetMaxCol()-1;
 		ClearText();
 
@@ -58,67 +53,46 @@ public class StoryUIPanel : MonoBehaviour {
 		// load const stage data
 		// 播放  mian BGM
 		m_StoryData =ConstDataManager.Instance.GetRow< STAGE_STORY> ( GameDataManager.Instance.nStageID );
-		DataRow row = ConstDataManager.Instance.GetRow("STAGE_STORY", GameDataManager.Instance.nStageID );
 		if( m_StoryData != null )
 		{
-			//	STAGE_STORY
-			//	if( m_StoryData.FillDatabyDataRow( row ) == false )
-			//		return ;
 			GameSystem.PlayBGM ( m_StoryData.n_BGM );
 			
 			m_cScript = new cTextArray( );
-			m_cScript.SetText( m_StoryData.s_CONTEXT );
-			
-			
-			//		string strFile = row.Field< string >("s_FILENAME");
-			//		if( !String.IsNullOrEmpty( strFile ))
-			//		{
-			//			string audioPath = ResourcesManager.GetAudioClipPath( AudioChannelType.BGM ,  strFile );
-			//			AudioManager.Instance.Play( AudioChannelType.BGM ,  audioPath );
-			
-			//	GameObject char1obj = GameSystem.CreateCharacterGameObj( this.gameObject );
-			//	if( char1obj != null )
-			//	{
-			//		Vector3 v = new Vector3( -50 , 50 ,0 );
-			//		char1obj.transform.position = v;
-			//	}
-			
-			
+			m_cScript.SetText( m_StoryData.s_CONTEXT );			
+
+		}
+
+		// close prefab face		
+		SRW_TextBox pBox = PanelStoryText.GetComponent<SRW_TextBox>();
+		if (pBox != null) {
+			pBox.ChangeFace( 0 );
 		}
 
 	}
-	
+
+	public bool IsAllEnd ()
+	{
+		if( nTweenObjCount>0 )
+			return false ;
+
+		SRW_TextBox pBox = PanelStoryText.GetComponent<SRW_TextBox>();
+		if (pBox != null) {
+			if( pBox.IsEnd() == false ){
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	// Update is called once per frame
 	void Update () {
 		//	Debug.Log("StoryUIPanel:update");
 
 		// block when animate
-		if( nTweenObjCount>0 )
-			return;
 
-		if( string.IsNullOrEmpty( m_PopText ) == false )
-		{
-			if( PanelStoryText.activeSelf == false  )
-			{
-				PanelStoryText.SetActive( true );
-				ClearText();
-				TweenWidth t = TweenWidth.Begin<TweenWidth>(PanelStoryText , 0.5f );
-				if( t != null )
-				{
-					t.from = 0;
-					t.to = 700;
-					t.SetOnFinished( OnTweenNotifyEnd );
-					nTweenObjCount++;
-				}
-			}
-			else
-			{
-				ProcessText( 1 );
-			}
-			return;  // Dont go next script
-		}
-
-
+		if ( IsAllEnd () == false)
+			return; 
 
 		// move cur flow to target flow
 		if( m_nFlowIdx < m_nTargetIdx )
@@ -126,16 +100,11 @@ public class StoryUIPanel : MonoBehaviour {
 			if( m_cScript != null )
 			{
 				ParserScript( m_cScript.GetTextLine( m_nFlowIdx ) );
-
-				// auto push 1 story text
-				PopNextText();
 			}
 
 			++ m_nFlowIdx;
 		}
-
 	}
-
 
 	// Base Panel click
 	void OnPanelButtonClick(GameObject go)
@@ -144,35 +113,30 @@ public class StoryUIPanel : MonoBehaviour {
 		if( m_cScript == null  )
 			return ;
 		// check all tween obj complete
-		if( nTweenObjCount>0 )
-			return;
-
-		//
-		if( PopNextText() )
-		{
-			return ;
-		}
+		if ( IsAllEnd () == false)
+			return; 
 	
 		// go to next script
 		if( m_nTargetIdx == m_nFlowIdx ){ // only set with curscript complete
 			if( ++m_nTargetIdx >= m_cScript.GetMaxCol() )
 			{
 				m_nTargetIdx = m_cScript.GetMaxCol()-1; // change flow 
-
-				EndtoNext();
+				End();
 			}
 		}
-	
-
 	}
 
 	// end to enter next stage
-	public void EndtoNext()
+	public void End()
 	{
+		if (m_bIsEnd == true)
+			return; // avoid sdouble execute
+
 		if( m_bIsEnd == false )
 		{
 			m_bIsEnd = true;
 		}
+		// go to talk or stage
 
 	}
 
@@ -186,14 +150,9 @@ public class StoryUIPanel : MonoBehaviour {
 			obj = ResourcesManager.CreatePrefabGameObj( this.gameObject , "Panel/Panel_StoryUI/Panel_char" );
 			if( obj == null )return null;
 			CHARS charData = ConstDataManager.Instance.GetRow<CHARS>( nCharId );
-			//DataRow row = ConstDataManager.Instance.GetRow("CHARS", nCharId );
-			//if( row != null )
 			if( charData != null)
 			{	
-			//	CHAR_DATA charData = new CHAR_DATA();
-			//	charData.FillDatabyDataRow( row );
-				// charge face text
-				
+				// charge face text				
 				UITexture tex = obj.GetComponentInChildren<UITexture>();
 			
 				if( tex )
@@ -292,88 +251,50 @@ public class StoryUIPanel : MonoBehaviour {
 
 	public void AddStoryText( int StoryID )
 	{
-		ProcessText( 0 ); 
+		PanelStoryText.SetActive( true );
+		//ProcessText( 0 ); 
 
 		DataRow row = ConstDataManager.Instance.GetRow("STORY_TEXT", StoryID );
 		if( row != null )
 		{	
 
 			string content = row.Field<string>( "s_CONTENT");
-			cTextArray cTxt = new cTextArray( "\n".ToCharArray() , "".ToCharArray() );
-			cTxt.SetText( content );
-			for( int i = 0 ; i < cTxt.GetMaxCol() ; i++ )
+			SRW_TextBox pBox = PanelStoryText.GetComponent<SRW_TextBox>();
+			if( pBox )
 			{
-				cTextArray.CTextLine line = cTxt.GetTextLine( i );
-				foreach( string s in line.m_kTextPool )
-				{
-					if( s.IndexOf("//") >= 0 ) // is common
-						break; // giveup all of after
-					m_cTextList.Add( s );
-				}
+				pBox.AddText( content );
+
 			}
+
+//			cTextArray cTxt = new cTextArray( "\n".ToCharArray() , "".ToCharArray() );
+//			cTxt.SetText( content );
+//			for( int i = 0 ; i < cTxt.GetMaxCol() ; i++ )
+//			{
+//				cTextArray.CTextLine line = cTxt.GetTextLine( i );
+//				foreach( string s in line.m_kTextPool )
+//				{
+//					if( s.IndexOf("//") >= 0 ) // is common
+//						break; // giveup all of after
+//					m_cTextList.Add( s );
+//				}
+//			}
 		}
 	}
 	void ClearText()
 	{
-		UILabel lbl = PanelStoryText.GetComponentInChildren <UILabel>();
-		if( lbl ){
-			lbl.text = "";
-		}
-	}
-
-	bool PopNextText()
-	{
-		if( m_nTextIdx < (m_cTextList.Count) )
+		SRW_TextBox pBox = PanelStoryText.GetComponent<SRW_TextBox>();
+		if( pBox )
 		{
-			ClearText();
+			pBox.ClearText();
 			
-			m_PopText =  m_cTextList[ m_nTextIdx ];  // this should set to panel text
-			m_nTextIdx++; // change text 
-			return true;
-		}
-		return false;
+		}	
 	}
 
 	// this should be menthod  of text panel
-	void ProcessText( int nByte=0 )
-	{
-		if( string.IsNullOrEmpty(m_PopText) )
-			return;
-
-		string strSub;
-		string strTmp;
-
-		if( nByte > 0 )
-		{
-			strSub = m_PopText.Substring( 0 , nByte) ;
-
-			int nLen = m_PopText.Length-nByte ;
-			if( nLen > 0 )
-				strTmp = m_PopText.Substring(  nByte ,m_PopText.Length-nByte ) ;
-			else
-				strTmp = "";
-		}
-		else{
-			strSub = m_PopText;
-			strTmp = "";
-
-		}
-		UILabel lbl = PanelStoryText.GetComponentInChildren <UILabel>();
-		if( lbl ){
-			lbl.text += strSub;
-		}
-		m_PopText = strTmp;
-
-	}
-
-
 	// Sys func to parser one line script
 
 	void ParserScript( cTextArray.CTextLine line )
 	{
-		m_cTextList.Clear();
-		m_nTextIdx = 0 ; // change text 
-
 		for( int i = 0 ; i < line.GetRowNum() ; i++ )
 		{
 			string s = line.GetString( i ).ToUpper();
@@ -456,12 +377,14 @@ public class StoryUIPanel : MonoBehaviour {
 			else if( s == "BGM" )
 			{
 				string sp1 = line.GetString( ++i );	if( sp1 == null ) return; //  null = error
+				int nBgm = int.Parse( sp1 );
+				GameSystem.PlayBGM( nBgm ) ;
 				
 			}
 			else if( s == "END" )
 			{
 				// no need param
-				EndtoNext();
+				End();
 				return;
 			}
 		}

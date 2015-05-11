@@ -164,6 +164,9 @@ public class SRW_TextBox : MonoBehaviour {
 		foreach (string s in sary) {
 			if( s == null || s == " " || s == "\t")
 				continue;
+			if( s.IndexOf("//") >= 0 ) // have common
+				continue;			    // giveup this line
+
 			if(m_nMaxCharNum == 0 )
 			{
 				m_lstsContextWait.Add( s );
@@ -188,12 +191,12 @@ public class SRW_TextBox : MonoBehaviour {
 
 					int n  = s.IndexOf("[" , idx2 );
 
-					if(  idx2 < s.Length ){ 
-						string s2 = s.Substring( idx2 );  // for debug
-					}
-					if( n > 0 ){
-						string debug =  s.Substring( n );  // for debug
-					}
+				//	if(  idx2 < s.Length ){ 
+				//		string s2 = s.Substring( idx2 );  // for debug
+				//	}
+				//	if( n > 0 ){
+				//		string debug =  s.Substring( n );  // for debug
+				//	}
 
 					// check tag during this line
 					if( (n>=idx2) && n <= (m_nMaxCharNum+nOffset)  ) // check '[' is vaild
@@ -245,7 +248,7 @@ public class SRW_TextBox : MonoBehaviour {
 		NextLine ();
 		//m_sPopText = sText;
 	}
-	void NextLine()
+	public void NextLine()
 	{
 		if (m_lstsContextWait == null)
 			return;
@@ -329,6 +332,12 @@ public class SRW_TextBox : MonoBehaviour {
 
 	public void ChangeFace( int nCharId )
 	{
+		if( nCharId <= 0 ){
+
+			NGUITools.SetActive( _FaceTexObj ,  false );
+			return ;
+		}
+
 		CHARS charData = ConstDataManager.Instance.GetRow<CHARS>( nCharId );
 		//DataRow row = ConstDataManager.Instance.GetRow("CHARS", nCharId );
 		//if( row != null )
@@ -345,6 +354,7 @@ public class SRW_TextBox : MonoBehaviour {
 			if( tex )
 			{
 				if(tex != null){
+					NGUITools.SetActive( _FaceTexObj ,  true );
 					//	DynamicAssetBundleLoader.LoadTexture(tex,DynamicAssetBundleLoader.SSAssetType.Card, "CARD_" + card.PicName);
 					//string texpath = "char/" +charData.s_FILENAME +"_S";
 					string url = "Assets/Art/char/" + charData.s_FILENAME +"_S.png";
@@ -406,7 +416,7 @@ public class SRW_TextBox : MonoBehaviour {
 	}
 
 	// untility
-	int 	nTweenObjCount;
+	int 	nTweenObjCount=0;
 	public  void OnTweenNotifyEnd( )
 	{
 		if( --nTweenObjCount < 0 )
