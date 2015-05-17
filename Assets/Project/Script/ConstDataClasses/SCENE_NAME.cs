@@ -12,11 +12,8 @@ public class SCENE_NAME : ConstDataRow<SCENE_NAME>
 	public int n_SCENE_TYPE;
 	public int n_SCENE_SUBTYPE;
 	public int n_CLINE_TYPE;
-	public string s_SCENE_ICON;
-	public string s_MUSIC_FILE;
+	public int n_BGM;
 	public int n_SAVE;
-	public int n_MARKER;
-	public int n_VIDEO_NAME;
 	public string s_HK_VER;
 	public string s_TC_VER;
 	public string s_JP_VER;

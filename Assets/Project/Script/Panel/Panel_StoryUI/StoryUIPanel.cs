@@ -18,6 +18,7 @@ public class StoryUIPanel : MonoBehaviour {
 
 	public GameObject BackGroundTex;            // 大地圖背景貼圖
 	public GameObject PanelStoryText;           // 故事文字匡
+	public GameObject SkipButton;           	// 跳過
 
 	private int nTweenObjCount;
 	// Declare a delegate type for processing a book:
@@ -44,6 +45,11 @@ public class StoryUIPanel : MonoBehaviour {
 		// add on click event
 		//this.GetComponent( );
 		UIEventListener.Get(BackGroundTex).onClick += OnPanelButtonClick;
+		UIEventListener.Get(SkipButton).onClick += OnSkipButtonClick;
+
+		//
+		GameEventManager.AddEventListener(  StoryStartStageEvent.Name , OnStoryStartStageEvent );
+
 
 	}
 	// Use this for initialization
@@ -52,7 +58,7 @@ public class StoryUIPanel : MonoBehaviour {
 
 		// load const stage data
 		// 播放  mian BGM
-		m_StoryData =ConstDataManager.Instance.GetRow< STAGE_STORY> ( GameDataManager.Instance.nStageID );
+		m_StoryData =ConstDataManager.Instance.GetRow< STAGE_STORY> ( GameDataManager.Instance.nStoryID );
 		if( m_StoryData != null )
 		{
 			GameSystem.PlayBGM ( m_StoryData.n_BGM );
@@ -94,6 +100,10 @@ public class StoryUIPanel : MonoBehaviour {
 		if ( IsAllEnd () == false)
 			return; 
 
+		// skip script when end
+		if (m_bIsEnd)
+			return;
+
 		// move cur flow to target flow
 		if( m_nFlowIdx < m_nTargetIdx )
 		{
@@ -126,6 +136,42 @@ public class StoryUIPanel : MonoBehaviour {
 		}
 	}
 
+	// on skip click
+	void OnSkipButtonClick(GameObject go)
+	{
+		Debug.Log("Skip Button click ");
+		if ( IsAllEnd () == false)
+			return; 
+		// Go To End
+		End();
+
+	}
+
+	// Game event 
+	public void OnStoryStartStageEvent(GameEvent evt)
+	{
+		Debug.Log ("OnStoryStartStageEvent");
+		// setup global stage =1;
+		//string str = evt.ToString ();
+		//int stageid = int.Parse (str);
+		StoryStartStageEvent Evt = evt as StoryStartStageEvent;
+		if (Evt == null)
+			return;
+
+		GameDataManager.Instance.nStageID = Evt.StageID;
+		GameObject obj = PanelManager.Instance.GetOrCreatUI( "Panel_StageUI" );
+		// 回到第0 關
+
+		//GameDataManager.Instance.nStageID = Config.StartStage;  //設定為 第一關
+		// open story panel 
+
+//		if (obj != null) {
+			PanelManager.Instance.CloseUI ("Panel_StoryUI");
+//		}
+	}
+
+
+
 	// end to enter next stage
 	public void End()
 	{
@@ -137,6 +183,10 @@ public class StoryUIPanel : MonoBehaviour {
 			m_bIsEnd = true;
 		}
 		// go to talk or stage
+		StoryStartStageEvent evt = new StoryStartStageEvent ();
+		evt.StageID = m_StoryData.n_NEXT_STAGE;
+		GameEventManager.DispatchEvent ( evt );
+		// GameEventManager.DispatchEventByName( StoryStartStageEvent.Name  , evt );  
 
 	}
 
@@ -389,4 +439,6 @@ public class StoryUIPanel : MonoBehaviour {
 			}
 		}
 	}
+
+
 }

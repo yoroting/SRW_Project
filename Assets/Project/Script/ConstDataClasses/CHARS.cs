@@ -1,7 +1,7 @@
 ﻿using Playcoo.Common;
 public class CHARS : ConstDataRow<CHARS>
 {
-	public const int TableID = 10;
+	public const int TableID = 2;
 	public const int DigitBase = 5;
 	public int n_ID;
 	public string s_NAME;

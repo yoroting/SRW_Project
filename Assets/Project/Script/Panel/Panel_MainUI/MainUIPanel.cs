@@ -43,7 +43,7 @@ public class MainUIPanel : BasicPanel {
 //		}
 
 		// 回到第0 關
-		GameDataManager.Instance.nStageID = Config.StartStage; //回到第一關
+		GameDataManager.Instance.nStoryID = Config.StartStory; //回到第一關
 	}
 
 	// Use this for initialization
@@ -99,7 +99,7 @@ public class MainUIPanel : BasicPanel {
 		// setup global stage =1;
 
 		// 回到第0 關
-		GameDataManager.Instance.nStageID = Config.StartStage;  //設定為 第一關
+		GameDataManager.Instance.nStoryID = Config.StartStory;  //設定為 第一關
 		// open story panel 
 
 
