@@ -29,8 +29,10 @@ public class GameDataManager : Singleton<GameDataManager>
 	//	CreateChannel<SoundEffectChannel>(AudioChannelType.SoundFX);
 	}
 
+	public int nStoryID{ get; set; } 
 	public int nStageID{ get; set; } 
 	public int nTalkID{ get; set; } 
+	public int nBattleID{ get; set; } 
 	// 目前的紀錄狀態
 	public PLAYER_DATA			cPlayerData;
 

@@ -10,8 +10,8 @@ public class Config
 		"TEXTDATA",
 	};
 
-	public static int TileW = 64;
-	public static int TileH = 64;
+	public static int TileW = 100;
+	public static int TileH = 100;
 	public static int TileMAX = 40;
-	public static int StartStage = 1;
+	public static int StartStory = 1;
 }
