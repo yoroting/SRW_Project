@@ -68,7 +68,9 @@ public class GameSystem : MonoBehaviour {
 		//		ConstDataManager.Instance.useUnregistedTables = false;
 		ConstDataManager.Instance.isLazyMode = false;
 		StartCoroutine(ConstDataManager.Instance.ReadDataStreaming("pcz/", Config.COMMON_DATA_NAMES));
-		
+
+		Config.LoadConstData = true;
+
 		//初始化 PanelManager
 		Debug.Log(SystemLogFormat("開始初始化 Manager: " + typeof(PanelManager).ToString()));
 		PanelManager.Instance.Initial(

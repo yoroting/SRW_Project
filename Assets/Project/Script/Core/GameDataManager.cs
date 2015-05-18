@@ -33,6 +33,12 @@ public class GameDataManager : Singleton<GameDataManager>
 	public int nStageID{ get; set; } 
 	public int nTalkID{ get; set; } 
 	public int nBattleID{ get; set; } 
+
+
+	//
+	public int nRound{ get; set; } 
+	public int nActiveFaction{ get; set; }  // 
+
 	// 目前的紀錄狀態
 	public PLAYER_DATA			cPlayerData;
 

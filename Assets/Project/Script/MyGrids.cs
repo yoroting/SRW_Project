@@ -7,7 +7,7 @@ using System.IO;
 namespace MYGRIDS
 {
     // tile type 的列舉
-    enum _TILE{
+   public enum _TILE{
         _NULL       = 0,   // 無效
         _GREEN      = 1,    // 綠地
         _LAND       = 2,    // 平原
@@ -18,7 +18,7 @@ namespace MYGRIDS
     }
 
     // int 的 2維向量。將來可能會使用到
-    class iVec2
+    public class iVec2
     {
         public int X { set; get; }
         public int Y { set; get; }
@@ -165,7 +165,7 @@ namespace MYGRIDS
     }
 
     //定義一個矩行。最小 size = 1 ,1 。永不為零。永不反相
-    class iRect
+	public class iRect
     {   
         int nStX;
         int nStY;
@@ -236,8 +236,13 @@ namespace MYGRIDS
     }
 
     // 各 Cell 的最小單位
+	// 坐標系 必須有 0,0 存在才能對稱又吻合數學計算
+	//  (-1,1) , (0,1) , (1,1) 
+	//  (-1,0) , (0,0) , (1,0)
+	//  (-1,-1), (0,-1), (1,-1)
+	//
 
-    class cMyCell
+	public class cMyCell
     {
         public static int nVersion = 1 ; // cell version
 
@@ -309,7 +314,7 @@ namespace MYGRIDS
     }
 
     // 一層 layer。要注意 layer 從0 開始
-    class cMyLayer
+	public class cMyLayer
     {
         int nVersion;
 
@@ -457,7 +462,7 @@ namespace MYGRIDS
     
 
     //  整體的操作容器 。座標是以(0,0) 為座標系的( （- HW ～ HW ）
-    class cMyGrids 
+	public class cMyGrids 
     {
         int nVersion { set; get; }
 
@@ -569,13 +574,13 @@ namespace MYGRIDS
 
 
         // 建立 layer
-        // 了確保　建立的必為　2的幕次方大小。所以　設定都是半徑
+        // 了確保　建立的必為　2的幕次方大小+1。所以　設定都是半徑
         public void CreateLayer(int nhalfW, int nhalfH)
         {
             hW = nhalfW;
             hH = nhalfH;
-            MaxW = 2 * hW;
-            MaxH = 2 * hH;
+            MaxW = (2*hW) + 1 ;  // add 0 x-axie
+            MaxH = (2*hH) + 1 ;  // add 0 y-axie
             
 
 
@@ -651,36 +656,11 @@ namespace MYGRIDS
         }
 
         // 座標轉換
-        public iVec2 GetVec2FromPos( int px , int py ) 
-        {
-            iVec2 v = new iVec2();
-            v.X = (px / PW);
-            int divX = px % PW;
-            if (divX > 0) v.X++;
-            else if (divX < 0) v.X--;
 
-            v.Y = (py / PH);
-            int divY = py % PH;
-            if (divY > 0) v.Y++;
-            else if (divY < 0) v.Y--;
-
-
-            return v;
-        }
 
         public float GetRealX( int nX )
         {   
-
-            float fX =  nX * PW;
-            if( nX > 0 ){
-                fX += hPW;
-            }
-            else if( nX < 0){
-                fX -= hPW;
-            }
-            else{
-                fX = 0;
-            }
+            float fX = nX * PW;
             return fX;
 
         }
@@ -688,18 +668,6 @@ namespace MYGRIDS
         {
 
             float fY = nY * PH;
-            if (nY > 0)
-            {
-                fY += hPH;
-            }
-            else if (nY < 0)
-            {
-                fY -= hPH;
-            }
-            else
-            {
-                fY = 0;
-            }
             return fY;
         }
         public void GetRealXY( ref float fX , ref float fY , iVec2 v )
