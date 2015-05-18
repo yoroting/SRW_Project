@@ -14,4 +14,7 @@ public class Config
 	public static int TileH = 100;
 	public static int TileMAX = 40;
 	public static int StartStory = 1;
+
+
+	public static bool LoadConstData = false;
 }

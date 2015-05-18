@@ -45,6 +45,7 @@ GameObject:
   - 114: {fileID: 11456976}
   - 114: {fileID: 11401162}
   - 54: {fileID: 5471032}
+  - 114: {fileID: 11469828}
   m_Layer: 5
   m_Name: Panel_StageUI
   m_TagString: Untagged
@@ -62,7 +63,7 @@ GameObject:
   - 4: {fileID: 449650}
   - 114: {fileID: 11402340}
   m_Layer: 5
-  m_Name: Panel - Tile
+  m_Name: Panel - Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -70,7 +71,7 @@ GameObject:
   m_IsActive: 1
 --- !u!1 &180176
 GameObject:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 4
@@ -83,7 +84,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &416910
 Transform:
   m_ObjectHideFlags: 1
@@ -91,11 +92,11 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 180176}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 371, y: 210, z: 0}
+  m_LocalPosition: {x: 371.000031, y: 210, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 447770}
-  m_RootOrder: 1
+  m_Father: {fileID: 449650}
+  m_RootOrder: 0
 --- !u!4 &447770
 Transform:
   m_ObjectHideFlags: 1
@@ -103,11 +104,10 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 156318}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -1.75175643, y: -2.71194386, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 449650}
-  - {fileID: 416910}
   - {fileID: 481662}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -118,9 +118,10 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 173382}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -5.70023537, y: -.0187354088, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 416910}
   m_Father: {fileID: 447770}
   m_RootOrder: 0
 --- !u!4 &476470
@@ -147,7 +148,7 @@ Transform:
   m_Children:
   - {fileID: 476470}
   m_Father: {fileID: 447770}
-  m_RootOrder: 2
+  m_RootOrder: 1
 --- !u!54 &5471032
 Rigidbody:
   m_ObjectHideFlags: 1
@@ -173,7 +174,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 936, y: 520, z: 0}
+  m_Size: {x: 960, y: 640, z: 0}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &11401162
 MonoBehaviour:
@@ -225,13 +226,13 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3003
+  startingRenderQueue: 3001
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 0
   mClipRange: {x: 0, y: 0, z: 300, w: 200}
   mClipSoftness: {x: 4, y: 4}
-  mDepth: -2
+  mDepth: 4
   mSortingOrder: 0
   mClipOffset: {x: 0, y: 0}
 --- !u!114 &11456976
@@ -285,15 +286,42 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3003
+  startingRenderQueue: 3000
   mClipTexture: {fileID: 0}
   mAlpha: 1
-  mClipping: 0
-  mClipRange: {x: 0, y: 0, z: 300, w: 200}
+  mClipping: 4
+  mClipRange: {x: 0, y: 0, z: 960, w: 640}
   mClipSoftness: {x: 4, y: 4}
   mDepth: 3
   mSortingOrder: 0
   mClipOffset: {x: 0, y: 0}
+--- !u!114 &11469828
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 156318}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d81807633ea807d4c8e3fff7e10c6000, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  movement: 0
+  dragEffect: 2
+  restrictWithinPanel: 1
+  disableDragIfFits: 0
+  smoothDragStart: 1
+  iOSDragEmulation: 1
+  scrollWheelFactor: .25
+  momentumAmount: 100
+  horizontalScrollBar: {fileID: 0}
+  verticalScrollBar: {fileID: 0}
+  showScrollBars: 1
+  customMovement: {x: 1, y: 0}
+  contentPivot: 0
+  scale: {x: 0, y: 0, z: 0}
+  relativePositionOnReset: {x: 0, y: 0}
+  centerOnChild: {fileID: 0}
 --- !u!114 &11481184
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -306,31 +334,31 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   leftAnchor:
-    target: {fileID: 0}
+    target: {fileID: 447770}
     relative: 0
     absolute: 0
   rightAnchor:
-    target: {fileID: 0}
+    target: {fileID: 447770}
     relative: 1
     absolute: 0
   bottomAnchor:
-    target: {fileID: 0}
+    target: {fileID: 447770}
     relative: 0
     absolute: 0
   topAnchor:
-    target: {fileID: 0}
+    target: {fileID: 447770}
     relative: 1
     absolute: 0
   updateAnchors: 1
   mColor: {r: 0, g: 0, b: 0, a: 1}
   mPivot: 4
-  mWidth: 936
-  mHeight: 520
-  mDepth: -3
+  mWidth: 960
+  mHeight: 640
+  mDepth: -6
   autoResizeBoxCollider: 1
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 1.79999995
+  aspectRatio: 1.65517247
   mType: 1
   mFillDirection: 4
   mFillAmount: 1
@@ -374,8 +402,8 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: .343283594, g: .343283594, b: .343283594, a: .360784322}
   mPivot: 4
-  mWidth: 936
-  mHeight: 520
+  mWidth: 960
+  mHeight: 640
   mDepth: -2
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
