@@ -37,19 +37,18 @@ public class Panel_StageUI : MonoBehaviour {
 	Dictionary< int , GameObject > AllyPool;			// EnemyPool
 
 
-	void Awake( ){
+	Dictionary< int , UNIT_DATA > UnitDataPool;			// ConstData pool
 
-		if( Config.LoadConstData == false )
-		{
-			//初始化 ConstData 系統
-		//	Debug.Log(SystemLogFormat("開始初始化 Manager: " + typeof(ConstDataManager).ToString()));
-			//ConstData只讀有註冊並設定lazyMode
-			//		ConstDataManager.Instance.useUnregistedTables = false;
-			ConstDataManager.Instance.isLazyMode = false;
-			StartCoroutine(ConstDataManager.Instance.ReadDataStreaming("pcz/", Config.COMMON_DATA_NAMES));		
-			Config.LoadConstData = true;
-		}
+	// ScreenRatio
+	float fUIRatio;
 
+
+	void Awake( ){	
+
+		UIRoot mRoot = NGUITools.FindInParents<UIRoot>(gameObject);	
+		fUIRatio = (float)mRoot.activeHeight / Screen.height;
+
+		//float ratio = (float)mRoot.activeHeight / Screen.height;
 
 		// UI Event
 		// UIEventListener.Get(BackGroundObj).onClick += OnBackGroundClick;
@@ -165,21 +164,26 @@ public class Panel_StageUI : MonoBehaviour {
 			{
 				GameObject obj = PanelManager.Instance.GetOrCreatUI( "Panel_CMDSYSUI" );
 				if (obj != null) {
-//				Vector3 vLoc = obj.transform.localPosition;
-//				vLoc.x = UICamera.lastHit.point.x ; 
-//				vLoc.y = UICamera.lastHit.point.y ; 
-//				obj.transform.localPosition = vLoc;
+					NGUITools.SetActive(obj, true );
+					Vector3 vLoc = this.gameObject.transform.localPosition ;
+					//UICamera.mainCamera.ScreenPointToRay
 
-				// set cmd list type
-//					Panel_CmdUI cmdUI = obj.GetComponent<Panel_CmdUI>();
-//					if( cmdUI != null )
-//					{
-//						cmdUI.CreateCMDList( ( _CMD_TYPE) 1 ) ; // Cmd list Type
+					UIRoot mRoot = NGUITools.FindInParents<UIRoot>(gameObject);
+					
+					float ratio = (float)mRoot.activeHeight / Screen.height;
+
+					vLoc.x = MyTool.ScreenToLocX( Input.mousePosition.x );
+					vLoc.y = MyTool.ScreenToLocY( Input.mousePosition.y );
+
+					obj.transform.localPosition = vLoc;// MousePosition;
+
+//					Panel_CmdSysUI co = obj.GetComponent< Panel_CmdSysUI >();
+//					if( co )
+//					{					
 //					}
 				}
 			}
 		}
-
 	}
 
 	

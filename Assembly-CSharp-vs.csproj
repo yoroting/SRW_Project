@@ -273,10 +273,12 @@
      <Compile Include="Assets\Project\Script\Core\ConstDataTables.cs" />
      <Compile Include="Assets\Project\Script\Core\GameDataManager.cs" />
      <Compile Include="Assets\Project\Script\Core\GameSystem.cs" />
+     <Compile Include="Assets\Project\Script\Core\MyTool.cs" />
      <Compile Include="Assets\Project\Script\Core\ObjectPool.cs" />
      <Compile Include="Assets\Project\Script\Core\ResourcesManager.cs" />
      <Compile Include="Assets\Project\Script\Core\SRWGameEvent.cs" />
      <Compile Include="Assets\Project\Script\Data\PLAYER_DATA.cs" />
+     <Compile Include="Assets\Project\Script\Data\Unit_Data.cs" />
      <Compile Include="Assets\Project\Script\FX\FightBullet\FightBulletFX.cs" />
      <Compile Include="Assets\Project\Script\FX\FightBullet\FightBulletTween_Attraction.cs" />
      <Compile Include="Assets\Project\Script\FX\FightBullet\FightBulletTween_Direction.cs" />
@@ -287,10 +289,12 @@
      <Compile Include="Assets\Project\Script\Panel\Effect\AlphaFadeInOut.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_CMDSysUI\Panel_CmdSysUI.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_CMDUI\Panel_CmdUI.cs" />
+     <Compile Include="Assets\Project\Script\Panel\Panel_CMDUnitUI\Panel_CMDUnitUI.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_MainUI\MainUIPanel.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_StageUI\Panel_StageUI.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_StoryUI\StoryUIPanel.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_TalkUI\Panel_Talk.cs" />
+     <Compile Include="Assets\Project\Script\Panel_unit.cs" />
      <Compile Include="Assets\Project\Script\SRW_TextBox.cs" />
      <Compile Include="Assets\Project\Script\UnitCell.cs" />
      <None Include="Assets\NGUI\Examples\Shaders\Unlit - Depth Cutout.shader" />

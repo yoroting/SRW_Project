@@ -15,6 +15,6 @@ public class Config
 	public static int TileMAX = 40;
 	public static int StartStory = 1;
 
-
-	public static bool LoadConstData = false;
+	// Cache value
+	public static float fScnRatio = 1.0f;		// screen (active/ real ) ratio. for cal mouse in local pos
 }

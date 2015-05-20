@@ -75,9 +75,7 @@ public class GameSystem : MonoBehaviour {
 		//		ConstDataManager.Instance.useUnregistedTables = false;
 		ConstDataManager.Instance.isLazyMode = false;
 		StartCoroutine(ConstDataManager.Instance.ReadDataStreaming("pcz/", Config.COMMON_DATA_NAMES));
-		
-		Config.LoadConstData = true;
-		
+	
 		//初始化 PanelManager
 		Debug.Log(SystemLogFormat("開始初始化 Manager: " + typeof(PanelManager).ToString()));
 		PanelManager.Instance.Initial(
@@ -89,6 +87,11 @@ public class GameSystem : MonoBehaviour {
 		// 資料管理器
 		Debug.Log(SystemLogFormat("開始初始化 Manager: " + typeof(GameDataManager).ToString()));
 		GameDataManager.Instance.Initial (0);
+
+
+		// Cal cache value
+		UIRoot mRoot = NGUITools.FindInParents<UIRoot>(gameObject);	
+		MyTool.fScnRatio = (float)mRoot.activeHeight / Screen.height;
 
 	}
 	
