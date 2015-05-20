@@ -343,7 +343,7 @@ public class StoryUIPanel : MonoBehaviour {
 	// this should be menthod  of text panel
 	// Sys func to parser one line script
 
-	void ParserScript( cTextArray.CTextLine line )
+	void ParserScript( CTextLine line )
 	{
 		for( int i = 0 ; i < line.GetRowNum() ; i++ )
 		{

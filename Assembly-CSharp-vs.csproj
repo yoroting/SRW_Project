@@ -226,6 +226,8 @@
      <Compile Include="Assets\NGUI\Scripts\UI\UITexture.cs" />
      <Compile Include="Assets\NGUI\Scripts\UI\UITooltip.cs" />
      <Compile Include="Assets\NGUI\Scripts\UI\UIViewport.cs" />
+     <Compile Include="Assets\NGUIExtension\TweenGrayLevel.cs" />
+     <Compile Include="Assets\Project\Script\ColorButton.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\AI_COMBAT.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\AI_TACTIC.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\AI_WANDER.cs" />
@@ -283,6 +285,8 @@
      <Compile Include="Assets\Project\Script\Panel\ConstDataTest.cs" />
      <Compile Include="Assets\Project\Script\Panel\Effect\APanelEffect.cs" />
      <Compile Include="Assets\Project\Script\Panel\Effect\AlphaFadeInOut.cs" />
+     <Compile Include="Assets\Project\Script\Panel\Panel_CMDSysUI\Panel_CmdSysUI.cs" />
+     <Compile Include="Assets\Project\Script\Panel\Panel_CMDUI\Panel_CmdUI.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_MainUI\MainUIPanel.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_StageUI\Panel_StageUI.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_StoryUI\StoryUIPanel.cs" />
@@ -307,6 +311,7 @@
      <None Include="Assets\NGUI\Examples\Atlases\Wooden\Arimo18.txt" />
      <None Include="Assets\NGUI\Resources\Shaders\Unlit - Transparent Colored (TextureClip).shader" />
      <None Include="Assets\NGUI\Examples\Atlases\SciFi\SciFi Font - Header.txt" />
+     <None Include="Assets\Project\Resources\Shader\GrayLevel (AlphaClip).shader" />
      <None Include="Assets\JMO Assets\Cartoon FX\Shaders (Mobile)\CFXM_MobileParticleAlphaBlend_Alpha8.shader" />
      <None Include="Assets\NGUI\Resources\Shaders\Unlit - Transparent Colored 1.shader" />
      <None Include="Assets\NGUI\Examples\Atlases\Fantasy\Fantasy Font - Normal.txt" />
@@ -336,8 +341,10 @@
      <None Include="Assets\NGUI\Examples\Shaders\Refractive.shader" />
      <None Include="Assets\NGUI\Resources\Shaders\Unlit - Text (TextureClip).shader" />
      <None Include="Assets\NGUI\Examples\Shaders\Unlit - Depth.shader" />
+     <None Include="Assets\Project\Resources\Shader\GrayLevel.shader" />
      <None Include="Assets\NGUI\Examples\Atlases\SciFi\SciFi Font - Normal.txt" />
      <None Include="Assets\HexTileManager\GPLv3.txt" />
+     <None Include="Assets\Project\Resources\Shader\GrayLevel (SoftClip).shader" />
      <None Include="Assets\HexTileManager\License.txt" />
      <None Include="Assets\NGUI\Examples\Models\Orc Armor\Orc Armor.shader" />
      <None Include="Assets\NGUI\Examples\Resources\Localization.txt" />

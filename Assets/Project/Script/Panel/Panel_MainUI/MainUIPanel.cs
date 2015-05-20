@@ -13,6 +13,9 @@ public class MainUIPanel : BasicPanel {
 	public GameObject SetUpButton;
 
 	void Awake(){
+#if DEBUG && UNITY_EDITOR
+		// Avoid Const data null for debug
+#endif
 		// UI Event
 		UIEventListener.Get(StartButton).onClick += OnStartButtonClick;
 		UIEventListener.Get(LoadButton).onClick += OnLoadButtonClick;

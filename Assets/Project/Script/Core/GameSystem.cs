@@ -31,11 +31,19 @@ public class GameSystem : MonoBehaviour {
 	public static string SystemLogFormat(string log){
 		return "<b><color=orange>[sys]" + log + "</color></b>";
 	}
+
+	static bool isSystemAwaked = false;
+
 	public static int m_nCurBGMIdx { set; get; }
 
 	//===============================
 	protected virtual void Awake () 
 	{
+		// for game sys run once only
+		if( isSystemAwaked == true )
+			return ;
+		isSystemAwaked = true;
+
 		DontDestroyOnLoad(this.gameObject);
 		
 		// Lock all other device orientation in the beginning
@@ -57,7 +65,6 @@ public class GameSystem : MonoBehaviour {
 		Application.targetFrameRate = 35;
 		#endif
 		
-		
 		//初始化音效系統
 		Debug.Log(SystemLogFormat("開始初始化 Manager: " + typeof(ResourcesManager).ToString()));
 		AudioManager.Instance.Initial(ResourcesManager.LoadClip);
@@ -68,9 +75,9 @@ public class GameSystem : MonoBehaviour {
 		//		ConstDataManager.Instance.useUnregistedTables = false;
 		ConstDataManager.Instance.isLazyMode = false;
 		StartCoroutine(ConstDataManager.Instance.ReadDataStreaming("pcz/", Config.COMMON_DATA_NAMES));
-
+		
 		Config.LoadConstData = true;
-
+		
 		//初始化 PanelManager
 		Debug.Log(SystemLogFormat("開始初始化 Manager: " + typeof(PanelManager).ToString()));
 		PanelManager.Instance.Initial(
@@ -82,7 +89,7 @@ public class GameSystem : MonoBehaviour {
 		// 資料管理器
 		Debug.Log(SystemLogFormat("開始初始化 Manager: " + typeof(GameDataManager).ToString()));
 		GameDataManager.Instance.Initial (0);
-		//Const 管理器
+
 	}
 	
 	void Start()
@@ -107,6 +114,7 @@ public class GameSystem : MonoBehaviour {
 		#endif
 		isApplicationQuit = true;
 	}
+
 	// 目前操作
 
 	public static void PlayBGM( int nBGMIdx )

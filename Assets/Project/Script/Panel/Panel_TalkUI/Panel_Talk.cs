@@ -166,7 +166,7 @@ public class Panel_Talk : MonoBehaviour {
 	}
 
 
-	void ParserScript( cTextArray.CTextLine line )
+	void ParserScript( CTextLine line )
 	{
 		//m_cTextList.Clear();
 		//m_nTextIdx = 0 ; // change text 

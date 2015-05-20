@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using _SRW_CMD;
 using MYGRIDS;
 using MyClassLibrary;			// for parser string
 
@@ -8,8 +9,6 @@ public class Panel_StageUI : MonoBehaviour {
 
 	public GameObject BackGroundObj; // back ground
 	public GameObject TilePlaneObj; // plane of all tiles sprite
-
-	public bool ReadCompleted ;
 
 	cMyGrids	Grids;				// main grids
 	STAGE_DATA	StageData;
@@ -20,11 +19,23 @@ public class Panel_StageUI : MonoBehaviour {
 	float fMinOffY ;
 	float fMaxOffY ;
 
+	// 
+
+
+
+	// widget
 	Dictionary< int , STAGE_EVENT > EvtPool;			// add event id 
 	STAGE_EVENT						NextEvent;
 	private cTextArray 				m_cScript;			// 劇本 腳本集合
 	private int						m_nFlowIdx;			// 腳本演到哪段
 	bool							IsEventEnd;			// 
+
+
+	Dictionary< int , int > EvtCompletePool;			// record event complete round 
+
+	Dictionary< int , GameObject > EnemyPool;			// EnemyPool
+	Dictionary< int , GameObject > AllyPool;			// EnemyPool
+
 
 	void Awake( ){
 
@@ -44,7 +55,6 @@ public class Panel_StageUI : MonoBehaviour {
 		// UIEventListener.Get(BackGroundObj).onClick += OnBackGroundClick;
 	
 		Grids = new cMyGrids ();
-		ReadCompleted = false;
 		StageData = new STAGE_DATA();
 		EvtPool = new Dictionary< int , STAGE_EVENT >();			// add event id 
 		// Debug Code jump to stage
@@ -85,9 +95,6 @@ public class Panel_StageUI : MonoBehaviour {
 		// EVENT 
 		GameDataManager.Instance.nRound = 0;
 		GameDataManager.Instance.nActiveFaction  = 0;
-
-		// 
-		ReadCompleted = true;
 
 		//Record All Event to execute
 		EvtPool.Clear();
@@ -135,14 +142,13 @@ public class Panel_StageUI : MonoBehaviour {
 
 		}
 		//==================	
-		RunEvent( );
+	//	RunEvent( );
 
 	
 	}
 
 	void OnDestroy()
 	{
-		ReadCompleted = false;
 	}
 
 
@@ -153,6 +159,25 @@ public class Panel_StageUI : MonoBehaviour {
 		if( unit != null ){
 			string str = string.Format( "CellOnClick( {0},{1}) " , unit.X() , unit.Y() );
 			Debug.Log(str);
+
+			// avoid re open
+//			if( PanelManager.Instance.CheckUIIsOpening( "Panel_CMDUI" ) == false  )
+			{
+				GameObject obj = PanelManager.Instance.GetOrCreatUI( "Panel_CMDSYSUI" );
+				if (obj != null) {
+//				Vector3 vLoc = obj.transform.localPosition;
+//				vLoc.x = UICamera.lastHit.point.x ; 
+//				vLoc.y = UICamera.lastHit.point.y ; 
+//				obj.transform.localPosition = vLoc;
+
+				// set cmd list type
+//					Panel_CmdUI cmdUI = obj.GetComponent<Panel_CmdUI>();
+//					if( cmdUI != null )
+//					{
+//						cmdUI.CreateCMDList( ( _CMD_TYPE) 1 ) ; // Cmd list Type
+//					}
+				}
+			}
 		}
 
 	}
@@ -217,11 +242,150 @@ public class Panel_StageUI : MonoBehaviour {
 
 		return null;
 	}
-
+	// Check event
 	bool CheckEvent( STAGE_EVENT evt )
 	{
+		cTextArray sCond = new cTextArray( );
+		sCond.SetText( evt.s_CONDITION );
+		// check all line . if one line success . this event check return true
 
+		int nCol = sCond.GetMaxCol();
+		for( int i= 0 ; i <nCol ; i++ )
+		{
+			if( CheckEventCondition( sCond.GetTextLine( nCol ) ) )
+			{
+				return true;
+			}
+		}
 		return false;
+	}
+
+	bool CheckEventCondition( CTextLine line )
+	{
+		List<cTextFunc> funcList =line.GetFuncList();
+		foreach( cTextFunc func in funcList )
+		{
+			if( func.sFunc == "ENEMYDEAD" )
+			{
+				if( ConditionEnemyDead( func.At(0) ) == false )
+				{
+					return false;
+				}				
+			}
+			else if( func.sFunc == "ALLYDEAD"  )
+			{
+				if( ConditionAllyDead( func.At(0) ) == false )
+				{
+					return false;
+				}				
+			}
+			else if( func.sFunc == "ROUNDSTART"  )
+			{
+				if( ConditionRoundStart( func.At(0) ) == false )
+				{
+					return false;
+				}				
+			}
+			else if( func.sFunc == "ROUNDEND"  )
+			{
+				if( ConditionRoundEnd( func.At(0) ) == false )
+				{
+					return false;
+				}				
+			}
+			else if( func.sFunc == "AFTER"  )
+			{
+				if( ConditionAfter( func.At(0),func.At(1)  ) == false )
+				{
+					return false;
+				}				
+			}
+		}
+		return true;
+	}
+
+	// condition check 
+	bool ConditionEnemyDead( int nID )
+	{
+		// 0 == all dead
+		if(0 == nID){
+			return (EnemyPool.Count==0);
+
+		}
+		// assign id
+		if( EnemyPool.ContainsKey( nID ) ){
+			return false;
+		}
+		return true;
+	}
+
+	bool ConditionAllyDead( int nID )
+	{
+		// 0 == all dead
+		if(0 == nID){
+			return (AllyPool.Count==0);
+			
+		}
+		// assign id
+		if( AllyPool.ContainsKey( nID ) ){
+			return false;
+		}
+		return true;
+	}
+
+	bool ConditionRoundStart( int nID )
+	{
+		if( GameDataManager.Instance.nRoundStatus != 0 )
+			return false;
+
+		return (GameDataManager.Instance.nRound >=nID ) ;
+	}
+
+	bool ConditionRoundEnd( int nID )
+	{
+		if( GameDataManager.Instance.nRoundStatus != 1 )
+			return false;
+		return (GameDataManager.Instance.nRound >=nID);
+	}
+
+	bool ConditionAfter( int nID , int nRound  )
+	{
+		if( EvtCompletePool.ContainsKey( nID )  ){
+			int nCompleteRound = EvtCompletePool[ nID ];
+
+			return ( GameDataManager.Instance.nRound >= ( nCompleteRound + nRound ) );
+		}
+		return false;
+	}
+
+	//==========Execute Event =================
+	void RunEvent(  )
+	{
+		if( NextEvent == null )
+		{
+			// get next event to run
+			foreach( KeyValuePair< int ,STAGE_EVENT > pair in EvtPool ) 
+			{
+				if( CheckEvent( pair.Value ) ){		// check if this event need run
+					NextEvent = pair.Value ; 		// run in next loop
+					EvtPool.Remove( pair.Key );		// remove key , never check it again
+					
+					EcecuteEvent();					// parser event to run
+					break;							// run one event once time only
+				}
+			}
+		}
+		else  //run event
+		{
+			//NextLine();					// parser event to run
+			if( IsNextEventCompleted() )
+			{
+				// clear event for next
+				NextEvent = null;
+				IsEventEnd = false;
+			}
+		}
+		
 	}
 
 	void EcecuteEvent(  )
@@ -241,71 +405,47 @@ public class Panel_StageUI : MonoBehaviour {
 
 	void NextLine()
 	{
+		if( IsEventEnd == true )
+			return;
 		//if( m_nFlowIdx  )
-		cTextArray.CTextLine line = m_cScript.GetTextLine( m_nFlowIdx );
+		CTextLine line = m_cScript.GetTextLine( m_nFlowIdx );
 		if( line != null )
 		{
 			ParserScript( line );
 			m_nFlowIdx++;
 		}
-		else{
-			IsEventEnd = true; // all script complete
-		}
 	}
 
-	bool IsEventCompleted()
+	// check Next Event is completed
+	bool IsNextEventCompleted()
 	{
+		if( IsEventEnd == true )
+			return true;
 
+		if( m_nFlowIdx < m_cScript.GetMaxCol() )
+			return false;
+		// is all tween complete
 
 		return true ;
 	}
 
-	void RunEvent(  )
+
+	void ParserScript( CTextLine line )
 	{
-		if( NextEvent == null )
+		List<cTextFunc> funcList =line.GetFuncList();
+		foreach( cTextFunc func in funcList )
 		{
-			foreach( KeyValuePair< int ,STAGE_EVENT > pair in EvtPool ) 
-			{
-				if( CheckEvent( pair.Value ) ){
-					NextEvent = pair.Value ; 		// run in next loop
-					EvtPool.Remove( pair.Key );		// remove key , never check it again
-
-					EcecuteEvent();					// parser event to run
-				}
-			}
-		}
-		else  //run event
-		{
-			//NextLine();					// parser event to run
-			if( IsEventCompleted() )
-			{
-				// clear event for next
-				NextEvent = null;
-				IsEventEnd = false;
-			}
-		}
-
-	}
-	void ParserScript( cTextArray.CTextLine line )
-	{
-		for( int i = 0 ; i < line.GetRowNum() ; i++ )
-		{
-			string s = line.GetString( i ).ToUpper();
-			if( s == "ADDCHAR" )
+			if( func.sFunc == "ADDCHAR" )
 			{
 
-			}
-			else if( s == "TALKEVENT" )
-			{
-				string sp= line.GetString( ++i );	if( sp == null ) return; //  null = error 
-				//List<string> lst = cTextArray.GetParamLst( sp );
-				
-				// only 1 par default value
-				int nID = 0;
-				nID = int.Parse( sp.Trim() );
 
-				// 
 			}
+			else if( func.sFunc == "TALK"  )
+			{
+
+
+			}
+
 		}
 	}
 }

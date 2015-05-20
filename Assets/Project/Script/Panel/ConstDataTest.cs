@@ -8,21 +8,21 @@ public class ConstDataTest : MonoBehaviour {
 
 	void Awake()
 	{
+
+	}
+
+	// Use this for initialization
+	void Start () {
 		popList = GetComponent<UIPopupList>();
 		if(popList == null)
 			return;
-
+		
 		popList.Clear();
 		List<DataTable> tableList = ConstDataManager.Instance.ListTables();
 		foreach(DataTable table in tableList)
 		{
 			popList.AddItem(table.Name);
 		}
-	}
-
-	// Use this for initialization
-	void Start () {
-	
 	}
 	
 	// Update is called once per frame

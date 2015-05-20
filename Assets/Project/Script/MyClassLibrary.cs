@@ -19,23 +19,82 @@ namespace MyClassLibrary
 	//	txt.SetText( s1 ); // 將猜解各字串
 
 
+    // Script unit
+    public class cTextFunc
+    {
+        public cTextFunc()
+        {
+            sFunc = "";                      // avoid null
+            nArg  = new List< int>();         // 摻數集合
+        }
+        public string   sFunc;        // function name
+        List< int >     nArg;           // arg list
+        public int GetArnNum() { return nArg.Count; }
+        public int At(int nIdx) {           // 取得指定位置 參數
+            if (nIdx >= nArg.Count)
+                return 0;
+            return nArg[nIdx];
+        }
+
+        public void SetArg( string sArg ) 
+        {
+            nArg.Clear();
+
+            char[] split = { ',' };
+            string[] list = sArg.Split(split );
+            foreach (string s in list)
+            {
+                nArg.Add( int.Parse( s.Trim() )  );
+            }
+        }
+    }
+
+    // text line 
+    public class CTextLine
+    {
+        public CTextLine()
+        {
+            m_kTextPool = new List<string>();
+        }
+        public int GetRowNum() { return m_kTextPool.Count; }
+        public List<string> m_kTextPool;
+
+        public string GetString(int nRow)
+        {
+            if (nRow < 0 || (nRow >= m_kTextPool.Count))
+                return null;
+            return m_kTextPool[nRow];
+        }
+
+        // 動態產生 ary list
+        public List<cTextFunc> GetFuncList()
+        {
+            List<cTextFunc> funclist = new List<cTextFunc>();
+
+            for (int i = 0; i < m_kTextPool.Count; i++)
+            {
+                string sFunc = m_kTextPool[i];
+                string sParam = m_kTextPool[++i];
+                if (sFunc == null || sParam == null) {
+                    break;
+                }
+                cTextFunc func = new cTextFunc();
+                func.sFunc = sFunc.ToUpper();
+
+                func.SetArg(sParam);
+                funclist.Add (func );
+            
+            }
+
+            return funclist;
+        }
+    }
+
+
+    // Text Arry
     public class cTextArray
     {
-        // text line 
-        public  class CTextLine 
-    	{
-            public CTextLine()
-            { 
-                m_kTextPool = new List<string>();
-            }
-            public int GetRowNum() { return m_kTextPool.Count; }
-		    public List< string >	m_kTextPool;
-
-            public string GetString( int nRow ) {
-                if (nRow < 0 || (nRow >= m_kTextPool.Count))
-                    return null;
-                return m_kTextPool[nRow]; }
-	    }
+        
 
         //==============================
 		public cTextArray( )
@@ -66,7 +125,11 @@ namespace MyClassLibrary
         {
             Clear();
             if (String.IsNullOrEmpty(sText))
-                return;        
+                return;
+
+            sText = sText.Replace(" ", "");     // 過濾空白字元 防止錯誤
+            sText = sText.Replace("()", "(0)"); // 無參數時傳0為參數。以吻和 parser 時 一個命令，一個 param 的結構
+
 
             // 拆解 lines
             string[] lines = sText.Split( m_sRawToken.ToCharArray() );            
@@ -157,6 +220,8 @@ namespace MyClassLibrary
             }
         
         }
+
+
 		// Get param char ary
 		public static List<string> GetParamLst( string s )
 		{		
@@ -171,6 +236,21 @@ namespace MyClassLibrary
 			return lst;
 		}
 
+        public static int[] GetParamIntAry(string s)
+        {
+            int [] ary = new int []{0};
+
+            List<string> lst = GetParamLst(s);
+            int c = 0;
+            foreach ( string s2 in lst )
+            {
+                if (string.IsNullOrEmpty(s2) == false)
+                {
+                    ary[c++] = int.Parse( s2.Trim() );                    
+                }
+            }
+            return ary;
+        }
 
         private List< CTextLine> m_kTextLinePool;
 
