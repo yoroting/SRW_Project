@@ -59,6 +59,7 @@ public class Panel_CmdSysUI : MonoBehaviour {
 	}
 	void OnRoundEndButtonClick(GameObject go)
 	{
+		GameDataManager.Instance.NextFaction();
 	}
 	void OnGameEndButtonClick(GameObject go)
 	{

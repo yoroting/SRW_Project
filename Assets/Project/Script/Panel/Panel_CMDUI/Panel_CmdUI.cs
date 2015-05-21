@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using _SRW_CMD;
+using _SRW;
 
 public class Panel_CmdUI : MonoBehaviour {
 

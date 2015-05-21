@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+using MYGRIDS;
 // 
 public class MyTool {
 
@@ -19,9 +19,18 @@ public class MyTool {
 		return y;
 	}
 
-	public static Vector3 LocToScreenX( GameSystem obj )
+	public static Vector3 LocToScreenX( GameObject obj )
 	{
-		return  UICamera.currentCamera.WorldToScreenPoint( obj.gameObject.transform.position );
+		return  UICamera.currentCamera.WorldToScreenPoint( obj.transform.position );
+	}
+
+	public static Vector3 SnyGridtoLocalPos( int x , int y ,  ref cMyGrids grids  )
+	{
+		Vector3 v = new Vector3();
+		v.x = grids.GetRealX( x );
+		v.y = grids.GetRealY( y );
+		return v;
+
 	}
 
 	// 动态的计算出现在manualHeight的高度。
@@ -38,4 +47,5 @@ public class MyTool {
 				uiRoot.manualHeight = ManualHeight;
 		}
 	}
+
 }

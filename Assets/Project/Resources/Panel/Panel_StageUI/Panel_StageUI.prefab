@@ -189,7 +189,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BackGroundObj: {fileID: 151088}
   TilePlaneObj: {fileID: 173382}
-  ReadCompleted: 0
 --- !u!114 &11402340
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -301,7 +300,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 156318}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d81807633ea807d4c8e3fff7e10c6000, type: 3}
   m_Name: 

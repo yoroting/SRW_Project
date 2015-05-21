@@ -11,10 +11,17 @@ public class Panel_unit : MonoBehaviour {
 
 	public int  CharID;
 	public iVec2 Loc;
+	public UNIT_DATA pUnitData;  // always need to check before use it
 
+
+	// ensure Loc exist
+	public Panel_unit()
+	{
+		Loc = new iVec2( 0 , 0 );
+	}
 	// Awake
 	void Awake(){
-		Loc = new iVec2( 0 , 0 );
+
 		
 	}
 	// Use this for initialization
@@ -29,7 +36,7 @@ public class Panel_unit : MonoBehaviour {
 	}
 
 	void OnDestory () {
-
+		GameDataManager.Instance.DelUnit( pUnitData );
 	}
 
 	//click
@@ -48,5 +55,13 @@ public class Panel_unit : MonoBehaviour {
 	public iVec2 GetXY() { return Loc; }
 	public void SetXY( int x , int y ) { X(x);Y(y); }
 
+	public void CreateChar( int nCharID , int x , int y )
+	{
+		pUnitData = GameDataManager.Instance.CreateChar( nCharID );
+		if( pUnitData == null )
+			return;
+
+		SetXY( x , y );
+	}
 
 }

@@ -140,8 +140,8 @@ public class StoryUIPanel : MonoBehaviour {
 	void OnSkipButtonClick(GameObject go)
 	{
 		Debug.Log("Skip Button click ");
-		if ( IsAllEnd () == false)
-			return; 
+	//	if ( IsAllEnd () == false)
+	//		return; 
 		// Go To End
 		End();
 

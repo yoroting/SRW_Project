@@ -1,11 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using _SRW_CMD;
+using _SRW;
 using MYGRIDS;
 using MyClassLibrary;			// for parser string
 
+
+
 public class Panel_StageUI : MonoBehaviour {
+
+
+
 
 	public GameObject BackGroundObj; // back ground
 	public GameObject TilePlaneObj; // plane of all tiles sprite
@@ -25,28 +30,32 @@ public class Panel_StageUI : MonoBehaviour {
 
 	// widget
 	Dictionary< int , STAGE_EVENT > EvtPool;			// add event id 
+	List< STAGE_EVENT >				WaitPool;			// wait to exec pool
+	Dictionary< int , int > EvtCompletePool;			// record event complete round 
+
 	STAGE_EVENT						NextEvent;
 	private cTextArray 				m_cScript;			// 劇本 腳本集合
 	private int						m_nFlowIdx;			// 腳本演到哪段
 	bool							IsEventEnd;			// 
+	bool							CheckEventPause;	// 	event check pause
 
 
-	Dictionary< int , int > EvtCompletePool;			// record event complete round 
-
-	Dictionary< int , GameObject > EnemyPool;			// EnemyPool
-	Dictionary< int , GameObject > AllyPool;			// EnemyPool
 
 
+	//Dictionary< int , GameObject > EnemyPool;			// EnemyPool this should be group pool
+
+
+	Dictionary< int , GameObject > IdentToObj;			// allyPool
 	Dictionary< int , UNIT_DATA > UnitDataPool;			// ConstData pool
 
 	// ScreenRatio
-	float fUIRatio;
+	// float fUIRatio;
 
 
 	void Awake( ){	
 
-		UIRoot mRoot = NGUITools.FindInParents<UIRoot>(gameObject);	
-		fUIRatio = (float)mRoot.activeHeight / Screen.height;
+		//UIRoot mRoot = NGUITools.FindInParents<UIRoot>(gameObject);	
+		//fUIRatio = (float)mRoot.activeHeight / Screen.height;
 
 		//float ratio = (float)mRoot.activeHeight / Screen.height;
 
@@ -56,6 +65,12 @@ public class Panel_StageUI : MonoBehaviour {
 		Grids = new cMyGrids ();
 		StageData = new STAGE_DATA();
 		EvtPool = new Dictionary< int , STAGE_EVENT >();			// add event id 
+
+		WaitPool = new List< STAGE_EVENT >();					// check ok. waitinf to execute event
+		EvtCompletePool = new Dictionary< int , int >();
+
+		IdentToObj = new Dictionary< int , GameObject >();
+		UnitDataPool = new Dictionary< int , UNIT_DATA >();
 		// Debug Code jump to stage
 		GameDataManager.Instance.nStageID = 1;
 	}
@@ -69,27 +84,8 @@ public class Panel_StageUI : MonoBehaviour {
 			return ;
 
 		// load scene file
-		SCENE_NAME scn = ConstDataManager.Instance.GetRow<SCENE_NAME> (  StageData.n_SCENE_ID );
-		if (scn == null)
-			return;
-		string filename = "Assets/StreamingAssets/scn/"+scn.s_MODLE_ID+".scn";
-
-		bool bRes = Grids.Load( filename );
-
-		// start to create sprite
-		for( int i = -Grids.hW ; i <= Grids.hW ; i++ ){
-			for( int j = -Grids.hH ; j <= Grids.hH ; j++ )
-			{			
-				_TILE t = Grids.GetValue( i , j  );
-
-				GameObject cell = GetTileCellPrefab( i , j , t ); 
-			
-			}
-		}
-		// reget the drag limit 
-		Resize();
-		// change bgm 
-		GameSystem.PlayBGM ( scn.n_BGM );
+		if( LoadScene( StageData.n_SCENE_ID ) == false )
+			return ;
 
 		// EVENT 
 		GameDataManager.Instance.nRound = 0;
@@ -138,22 +134,50 @@ public class Panel_StageUI : MonoBehaviour {
 				vOffset.y = fMaxOffY;
 			}
 			TilePlaneObj.transform.localPosition = vOffset;
-
 		}
-		//==================	
-	//	RunEvent( );
 
-	
+
+		// block other event
+		if( IsAnyActionRunning() == true )
+			return;
+
+		//=== Unit Action ====
+		// Atk / mov / other action need to preform first
+		RunUnitAction();
+
+		//==================	
+		RunEvent( );				// this will throw many unit action
+
+		if( IsRunningEvent() == true  )
+			return; // block other action  
+
+		//===================		// this will throw unit action or trig Event
+		if ( RunFactionAI( GameDataManager.Instance.nActiveFaction ) == false )
+		{
+			// no ai to run. go to next faction
+			GameDataManager.Instance.NextFaction();
+		}
+
+		//
+
 	}
 
 	void OnDestroy()
 	{
+	
 	}
 
 
 
 	void OnCellClick(GameObject go)
 	{
+		if( IsAnyActionRunning() == true )
+			return;
+		
+		if( IsRunningEvent() == true  )
+			return; // block other action  
+
+
 		UnitCell unit = go.GetComponent<UnitCell>() ;
 		if( unit != null ){
 			string str = string.Format( "CellOnClick( {0},{1}) " , unit.X() , unit.Y() );
@@ -167,10 +191,8 @@ public class Panel_StageUI : MonoBehaviour {
 					NGUITools.SetActive(obj, true );
 					Vector3 vLoc = this.gameObject.transform.localPosition ;
 					//UICamera.mainCamera.ScreenPointToRay
-
-					UIRoot mRoot = NGUITools.FindInParents<UIRoot>(gameObject);
-					
-					float ratio = (float)mRoot.activeHeight / Screen.height;
+				//	UIRoot mRoot = NGUITools.FindInParents<UIRoot>(gameObject);					
+				//	float ratio = (float)mRoot.activeHeight / Screen.height;
 
 					vLoc.x = MyTool.ScreenToLocX( Input.mousePosition.x );
 					vLoc.y = MyTool.ScreenToLocY( Input.mousePosition.y );
@@ -186,7 +208,34 @@ public class Panel_StageUI : MonoBehaviour {
 		}
 	}
 
-	
+	bool LoadScene( int nScnid )
+	{
+		SCENE_NAME scn = ConstDataManager.Instance.GetRow<SCENE_NAME> ( nScnid );
+		if (scn == null)
+			return false;
+		string filename = "Assets/StreamingAssets/scn/"+scn.s_MODLE_ID+".scn";
+		
+		bool bRes = Grids.Load( filename );
+		
+		// start to create sprite
+		for( int i = -Grids.hW ; i <= Grids.hW ; i++ ){
+			for( int j = -Grids.hH ; j <= Grids.hH ; j++ )
+			{			
+				_TILE t = Grids.GetValue( i , j  );
+				
+				GameObject cell = GetTileCellPrefab( i , j , t ); 
+				
+			}
+		}
+		// reget the drag limit 
+		Resize();
+
+		// change bgm '
+		GameSystem.PlayBGM ( scn.n_BGM );
+
+
+		return true;
+	}
 	public void Resize( )
 	{	
 		Grids.SetPixelWH (Config.TileW, Config.TileH);  // re size
@@ -246,6 +295,71 @@ public class Panel_StageUI : MonoBehaviour {
 
 		return null;
 	}
+	// Check any action is running
+
+	bool IsAnyActionRunning()
+	{
+		if( PanelManager.Instance.CheckUIIsOpening( "Panel_Talk" ) == true )
+			return true;
+
+		return false;
+	}
+
+	// UnitAction
+	void RunUnitAction()
+	{
+
+
+	}
+
+
+	// Faction AI
+	bool RunFactionAI( int nFaction )
+	{
+		// our faction don't need AI process
+		if( nFaction == 0 )
+			return true; // player is playing 
+
+		// change faction if all unit moved or dead.
+		FactionUnit unit = GameDataManager.Instance.GetFaction( nFaction );
+		if( unit != null )
+		{
+			if( unit.memLst.Count <= 0 ){
+				return false;
+			}
+			// Run one unit AI
+
+			return true;
+		}
+		return false;
+	}
+
+
+	void CheckEventToRun()
+	{
+		if( EvtPool.Count <= 0 )
+			return ;
+
+		List< int > removeLst = new List< int >();
+		// get next event to run
+		foreach( KeyValuePair< int ,STAGE_EVENT > pair in EvtPool ) 
+		{
+			if( CheckEvent( pair.Value ) == true ){		// check if this event need run
+				//NextEvent = pair.Value ; 		// run in next loop
+				WaitPool.Add( pair.Value );
+				removeLst.Add( pair.Key );
+			}
+		}
+		// remove key , never check it again
+		foreach( int key in removeLst )
+		{
+			if( EvtPool.ContainsKey( key ) )
+			{
+				EvtPool.Remove( key );
+			}
+		}
+	}
+
 	// Check event
 	bool CheckEvent( STAGE_EVENT evt )
 	{
@@ -256,7 +370,7 @@ public class Panel_StageUI : MonoBehaviour {
 		int nCol = sCond.GetMaxCol();
 		for( int i= 0 ; i <nCol ; i++ )
 		{
-			if( CheckEventCondition( sCond.GetTextLine( nCol ) ) )
+			if( CheckEventCondition( sCond.GetTextLine( i ) ) )
 			{
 				return true;
 			}
@@ -266,37 +380,40 @@ public class Panel_StageUI : MonoBehaviour {
 
 	bool CheckEventCondition( CTextLine line )
 	{
+		if( line == null )
+			return false;
+
 		List<cTextFunc> funcList =line.GetFuncList();
 		foreach( cTextFunc func in funcList )
 		{
-			if( func.sFunc == "ENEMYDEAD" )
+			if( func.sFunc == "GO" )
 			{
-				if( ConditionEnemyDead( func.At(0) ) == false )
+				if( ConditionGO( ) == false )
+				{
+					return false;
+				}	
+			}
+			if( func.sFunc == "ALLDEAD" )
+			{
+				if( ConditionAllDead( func.At(0) ) == false )
 				{
 					return false;
 				}				
 			}
-			else if( func.sFunc == "ALLYDEAD"  )
+			else if( func.sFunc == "DEAD"  )
 			{
-				if( ConditionAllyDead( func.At(0) ) == false )
+				if( ConditionUnitDead( func.At(0), func.At(1) ) == false )
 				{
 					return false;
 				}				
 			}
-			else if( func.sFunc == "ROUNDSTART"  )
+			else if( func.sFunc == "ROUND"  )
 			{
-				if( ConditionRoundStart( func.At(0) ) == false )
+				if( ConditionRound( func.At(0) ) == false )
 				{
 					return false;
 				}				
-			}
-			else if( func.sFunc == "ROUNDEND"  )
-			{
-				if( ConditionRoundEnd( func.At(0) ) == false )
-				{
-					return false;
-				}				
-			}
+			}		
 			else if( func.sFunc == "AFTER"  )
 			{
 				if( ConditionAfter( func.At(0),func.At(1)  ) == false )
@@ -309,49 +426,48 @@ public class Panel_StageUI : MonoBehaviour {
 	}
 
 	// condition check 
-	bool ConditionEnemyDead( int nID )
+	bool ConditionGO(  ) // always active
 	{
-		// 0 == all dead
-		if(0 == nID){
-			return (EnemyPool.Count==0);
+		return true;
+	}
 
-		}
+	bool ConditionAllDead( int nFactID )
+	{
 		// assign id
-		if( EnemyPool.ContainsKey( nID ) ){
-			return false;
+		FactionUnit unit = GameDataManager.Instance.GetFaction( nFactID );
+		if( unit != null )
+		{
+			return (unit.memLst.Count<=0) ;
 		}
 		return true;
 	}
 
-	bool ConditionAllyDead( int nID )
+	bool ConditionUnitDead( int nFactID ,int nID )
 	{
-		// 0 == all dead
-		if(0 == nID){
-			return (AllyPool.Count==0);
-			
-		}
 		// assign id
-		if( AllyPool.ContainsKey( nID ) ){
-			return false;
+		FactionUnit unit = GameDataManager.Instance.GetFaction( nFactID );
+		if( unit != null )
+		{
+			foreach( int no in  unit.memLst )
+			{
+				GameObject obj = this.IdentToObj[ no ];
+				if( obj != null )
+				{
+
+
+				}
+			}
 		}
 		return true;
 	}
 
-	bool ConditionRoundStart( int nID )
+	bool ConditionRound( int nID )
 	{
-		if( GameDataManager.Instance.nRoundStatus != 0 )
-			return false;
+	//	if( GameDataManager.Instance.nRoundStatus != 0 )
+	//		return false;
 
 		return (GameDataManager.Instance.nRound >=nID ) ;
 	}
-
-	bool ConditionRoundEnd( int nID )
-	{
-		if( GameDataManager.Instance.nRoundStatus != 1 )
-			return false;
-		return (GameDataManager.Instance.nRound >=nID);
-	}
-
 	bool ConditionAfter( int nID , int nRound  )
 	{
 		if( EvtCompletePool.ContainsKey( nID )  ){
@@ -365,34 +481,63 @@ public class Panel_StageUI : MonoBehaviour {
 	//==========Execute Event =================
 	void RunEvent(  )
 	{
+		// always check to wait list
+		CheckEventToRun();
+
+		// get next event
 		if( NextEvent == null )
 		{
-			// get next event to run
-			foreach( KeyValuePair< int ,STAGE_EVENT > pair in EvtPool ) 
+			if( this.WaitPool.Count > 0 )
 			{
-				if( CheckEvent( pair.Value ) ){		// check if this event need run
-					NextEvent = pair.Value ; 		// run in next loop
-					EvtPool.Remove( pair.Key );		// remove key , never check it again
-					
-					EcecuteEvent();					// parser event to run
-					break;							// run one event once time only
-				}
+				NextEvent =  WaitPool[0];
+				WaitPool.RemoveAt( 0 );
+
+				PreEcecuteEvent();					// parser event to run
 			}
+
+			// get next event to run
+
 		}
-		else  //run event
+
+		// if event id running
+
+		  //run event
+		if( NextEvent != null )
 		{
+			NextLine();					// execute one line
+
 			//NextLine();					// parser event to run
 			if( IsNextEventCompleted() )
 			{
 				// clear event for next
 				NextEvent = null;
-				IsEventEnd = false;
+				IsEventEnd = true;
+
+				// all end . check again  for new condition status
+				if( WaitPool.Count <= 0 ){
+					CheckEventToRun();
+				}
 			}
 		}
-		
+
+		// switch status
+		//GameDataManager.Instance.nRound = 0;
+		//GameDataManager.Instance.nActiveFaction  = 0;
+
 	}
 
-	void EcecuteEvent(  )
+	// check any event is runing or wait running
+	bool IsRunningEvent ()
+	{
+		if( WaitPool.Count > 0 )
+			return true;
+		if( NextEvent != null )
+			return true;
+
+		return false;
+	}
+
+	void PreEcecuteEvent(  )
 	{
 		if( NextEvent == null ){
 			return ;
@@ -404,19 +549,20 @@ public class Panel_StageUI : MonoBehaviour {
 		m_cScript.SetText( NextEvent.s_BEHAVIOR );	
 
 		m_nFlowIdx = 0;
-		NextLine();			// script to run
+		//NextLine();			// script to run
 	}
 
-	void NextLine()
+	void NextLine()// script to run
 	{
 		if( IsEventEnd == true )
 			return;
+		if( m_nFlowIdx >= m_cScript.GetMaxCol() )
+			return;
 		//if( m_nFlowIdx  )
-		CTextLine line = m_cScript.GetTextLine( m_nFlowIdx );
+		CTextLine line = m_cScript.GetTextLine( m_nFlowIdx++ );
 		if( line != null )
 		{
 			ParserScript( line );
-			m_nFlowIdx++;
 		}
 	}
 
@@ -439,17 +585,105 @@ public class Panel_StageUI : MonoBehaviour {
 		List<cTextFunc> funcList =line.GetFuncList();
 		foreach( cTextFunc func in funcList )
 		{
-			if( func.sFunc == "ADDCHAR" )
+			if( func.sFunc == "POPCHAR" )
 			{
+				int charid = func.At( 0 );
+				GameObject obj = AddChar( charid , func.At( 1) , func.At( 2 ) );
+				if( obj != null )
+				{
+					Panel_unit unitobj = obj.GetComponent<Panel_unit>();
+					//set as ally
 
 
+					GameDataManager.Instance.AddFactionMember( 0 , unitobj.pUnitData.n_Ident ); // global game data
+
+					IdentToObj.Add( unitobj.pUnitData.n_Ident , obj  ) ;// stage gameobj
+				}
+			}
+			else if( func.sFunc == "POPMOB" )
+			{
+				int charid = func.At( 0 );
+				GameObject obj = AddChar( charid , func.At( 1) , func.At( 2 ) );
+				if( obj != null )
+				{
+					Panel_unit unitobj = obj.GetComponent<Panel_unit>();
+					//set as enemy
+
+					GameDataManager.Instance.AddFactionMember( 1 , unitobj.pUnitData.n_Ident );		// global game data
+
+					IdentToObj.Add( unitobj.pUnitData.n_Ident , obj  ) ; // stage gameobj
+				}
 			}
 			else if( func.sFunc == "TALK"  )
 			{
+				Talk( func.At( 0 ) );
+			}
+			else if( func.sFunc == "BGM"  )
+			{
+				int nID = func.At( 0 );
+				// change bgm 
+				GameSystem.PlayBGM ( nID );
 
 
 			}
-
 		}
 	}
+
+
+		 
+	GameObject AddChar( int nCharID , int x , int y )
+	{
+		CHARS charData = ConstDataManager.Instance.GetRow<CHARS>( nCharID );
+		if( charData == null)
+			return null;
+		// get data from Const data
+		GameObject obj = ResourcesManager.CreatePrefabGameObj( TilePlaneObj , "Prefab/Panel_Unit" );
+		if( obj == null )return null;
+			
+		// charge face text				
+		UITexture tex = obj.GetComponentInChildren<UITexture>();
+			
+		if( tex )
+		{
+			if(tex != null){
+					//	DynamicAssetBundleLoader.LoadTexture(tex,DynamicAssetBundleLoader.SSAssetType.Card, "CARD_" + card.PicName);
+
+				string url = "Assets/Art/char/" + charData.s_FILENAME +"_S.png";
+				Texture t= Resources.LoadAssetAtPath( url , typeof(Texture) ) as Texture; ;
+				tex.mainTexture = t;
+					// tex.MakePixelPerfect(); don't make pixel it
+			}
+		}
+		// regedit to gamedata manager
+		Panel_unit unitobj = obj.GetComponent<Panel_unit>();
+		//UNIT_DATA unit = GameDataManager.Instance.CreateChar( nCharID );
+		if( unitobj != null )
+		{
+			// setup param
+			unitobj.CreateChar( nCharID , x , y );
+		}
+
+		// position
+		obj.transform.localPosition =  MyTool.SnyGridtoLocalPos( x , y , ref Grids ) ; 
+
+
+
+		// all ready
+		NGUITools.SetActive( obj , true );
+		return obj;
+	}
+
+	void DelChar()
+	{
+
+
+	}
+
+	void Talk( int nTalkID  )
+	{
+		GameDataManager.Instance.nTalkID = nTalkID;
+		// start talk UI
+		GameObject obj = PanelManager.Instance.GetOrCreatUI( Panel_Talk.Name );
+	}
+
 }

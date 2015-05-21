@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using MyClassLibrary;			// for parser string
 
 public class Panel_Talk : MonoBehaviour {
+	public const string Name = "Panel_Talk";
 
 	public GameObject Tex_BackGround;
 	public GameObject TalkWindow_Up;
 	public GameObject TalkWindow_Down;
+	public GameObject Skip_Button;
 	//public GameObject StartButton;
 	private Dictionary<int, GameObject> m_idToObj; // 管理 產生的 Prefab 物件 
 
@@ -44,6 +46,9 @@ public class Panel_Talk : MonoBehaviour {
 		nTweenObjCount = 0;
 
 		UIEventListener.Get(this.gameObject).onClick += OnPanelClick; // for trig next line
+		UIEventListener.Get(Skip_Button).onClick += OnSkipClick; // for trig next line
+
+
 		// for fast debug 
 		ConstDataManager.Instance.isLazyMode = false;
 		StartCoroutine(ConstDataManager.Instance.ReadDataStreaming("pcz/", Config.COMMON_DATA_NAMES));
@@ -53,9 +58,7 @@ public class Panel_Talk : MonoBehaviour {
 	void Start () {
 //		TalkWindow_Up.SetActive (false);
 //		TalkWindow_Down.SetActive (false);
-
-
-		SetScript (0); // 0 is STAGE_TALK.ID
+		SetScript ( GameDataManager.Instance.nTalkID ); 
 	}
 	
 	// Update is called once per frame
@@ -75,6 +78,21 @@ public class Panel_Talk : MonoBehaviour {
 		{
 			m_bClickScript = true; // go next script
 		}
+	}
+	void OnSkipClick(GameObject go)
+	{
+		//if (IsAllEnd())
+		{
+			m_bClickScript = true; // go next script
+		}
+		EndTalk();
+	}
+
+	// close talk panel
+	void EndTalk()
+	{
+		PanelManager.Instance.CloseUI( Panel_Talk.Name );
+
 	}
 
 	public GameObject SelTextBoxObjByType( int nType )
@@ -159,7 +177,10 @@ public class Panel_Talk : MonoBehaviour {
 	public void NextLine()
 	{
 		if (m_nScriptIdx >= m_cScript.GetMaxCol ())
+		{
+			EndTalk();
 			return;
+		}
 
 		ParserScript ( m_cScript.GetTextLine( m_nScriptIdx++ )  );
 		m_bClickScript = false;
