@@ -143,6 +143,12 @@ public class GameSystem : MonoBehaviour {
 		}
 	}
 
+	public static void TalkEvent( int nTalkID )
+	{
+		GameDataManager.Instance.nTalkID = nTalkID;
+		// start talk UI
+		PanelManager.Instance.GetOrCreatUI( Panel_Talk.Name );
+	}
 //	public static GameObject CreatePrefabGameObj( GameObject parent , string sPrefabPath )
 //	{
 //		GameObject preObj = Resources.Load( sPrefabPath ) as GameObject;

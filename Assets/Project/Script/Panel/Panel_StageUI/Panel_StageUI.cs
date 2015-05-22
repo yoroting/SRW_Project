@@ -9,13 +9,13 @@ using MyClassLibrary;			// for parser string
 
 public class Panel_StageUI : MonoBehaviour {
 
-
-
+	public const string Name = "Panel_StageUI";
 
 	public GameObject BackGroundObj; // back ground
 	public GameObject TilePlaneObj; // plane of all tiles sprite
 
-	cMyGrids	Grids;				// main grids
+	public static cMyGrids	Grids;				// main grids . only one
+
 	STAGE_DATA	StageData;
 
 	// drag canvas limit								
@@ -45,7 +45,7 @@ public class Panel_StageUI : MonoBehaviour {
 	//Dictionary< int , GameObject > EnemyPool;			// EnemyPool this should be group pool
 
 
-	Dictionary< int , GameObject > IdentToObj;			// allyPool
+	Dictionary< int , Panel_unit > IdentToUnit;			// allyPool
 	Dictionary< int , UNIT_DATA > UnitDataPool;			// ConstData pool
 
 	// ScreenRatio
@@ -62,17 +62,32 @@ public class Panel_StageUI : MonoBehaviour {
 		// UI Event
 		// UIEventListener.Get(BackGroundObj).onClick += OnBackGroundClick;
 	
+		// grid
 		Grids = new cMyGrids ();
 		StageData = new STAGE_DATA();
+		//event
 		EvtPool = new Dictionary< int , STAGE_EVENT >();			// add event id 
-
 		WaitPool = new List< STAGE_EVENT >();					// check ok. waitinf to execute event
 		EvtCompletePool = new Dictionary< int , int >();
 
-		IdentToObj = new Dictionary< int , GameObject >();
+		// unit
+		IdentToUnit = new Dictionary< int , Panel_unit >();		//
 		UnitDataPool = new Dictionary< int , UNIT_DATA >();
 		// Debug Code jump to stage
 		GameDataManager.Instance.nStageID = 1;
+
+		// Stage Event
+		GameEventManager.AddEventListener(  StageBGMEvent.Name , OnStageBGMEvent );
+
+		GameEventManager.AddEventListener(  StagePopCharEvent.Name , OnStagePopCharEvent );
+		GameEventManager.AddEventListener(  StagePopMobEvent.Name , OnStagePopMobEvent );
+		GameEventManager.AddEventListener(  StagePopMobGroupEvent.Name , OnStagePopMobGroupEvent );
+
+		GameEventManager.AddEventListener(  StageDelCharEvent.Name , OnStageDelCharEvent );
+		GameEventManager.AddEventListener(  StageDelMobEvent.Name , OnStageDelMobEvent );
+
+		// char event 
+		GameEventManager.AddEventListener(  StageCharMoveEvent.Name , OnStageCharMoveEvent );
 	}
 
 	// Use this for initialization
@@ -89,7 +104,7 @@ public class Panel_StageUI : MonoBehaviour {
 
 		// EVENT 
 		GameDataManager.Instance.nRound = 0;
-		GameDataManager.Instance.nActiveFaction  = 0;
+		GameDataManager.Instance.nActiveCamp  = _CAMP._PLAYER;
 
 		//Record All Event to execute
 		EvtPool.Clear();
@@ -152,10 +167,10 @@ public class Panel_StageUI : MonoBehaviour {
 			return; // block other action  
 
 		//===================		// this will throw unit action or trig Event
-		if ( RunFactionAI( GameDataManager.Instance.nActiveFaction ) == false )
+		if ( RunCampAI( GameDataManager.Instance.nActiveCamp ) == false )
 		{
 			// no ai to run. go to next faction
-			GameDataManager.Instance.NextFaction();
+			GameDataManager.Instance.NextCamp();
 		}
 
 		//
@@ -183,12 +198,26 @@ public class Panel_StageUI : MonoBehaviour {
 			string str = string.Format( "CellOnClick( {0},{1}) " , unit.X() , unit.Y() );
 			Debug.Log(str);
 
+			//test code to move 
+			if( PanelManager.Instance.CheckUIIsOpening( Panel_CMDUnitUI.Name )  )
+			{
+
+				StageCharMoveEvent evt = new StageCharMoveEvent ();
+				evt.nIdent  = Panel_CMDUnitUI.nCharIdent; // current oper ident 
+				evt.nX		= unit.X();
+				evt.nY		= unit.Y();
+				GameEventManager.DispatchEvent ( evt );
+
+				return ;
+			}
+
+
 			// avoid re open
 //			if( PanelManager.Instance.CheckUIIsOpening( "Panel_CMDUI" ) == false  )
 			{
-				GameObject obj = PanelManager.Instance.GetOrCreatUI( "Panel_CMDSYSUI" );
+				GameObject obj = PanelManager.Instance.GetOrCreatUI( Panel_CmdSysUI.Name );
 				if (obj != null) {
-					NGUITools.SetActive(obj, true );
+					NGUITools.SetActive( obj, true );
 					Vector3 vLoc = this.gameObject.transform.localPosition ;
 					//UICamera.mainCamera.ScreenPointToRay
 				//	UIRoot mRoot = NGUITools.FindInParents<UIRoot>(gameObject);					
@@ -208,27 +237,67 @@ public class Panel_StageUI : MonoBehaviour {
 		}
 	}
 
+	// if any char be click
+	void OnCharClick(GameObject go)
+	{
+		if( IsAnyActionRunning() == true )
+			return;
+		
+		if( IsRunningEvent() == true  )
+			return; // block other action  
+
+		// avoid any ui opening
+
+		Panel_unit unit = go.GetComponent<Panel_unit>() ;
+		if( unit == null )
+			return ;
+
+		// start cmd
+		//Panel_CMDUnitUI.nCharIdent = unit.ID();
+		// open cmd ui
+		GameObject obj = PanelManager.Instance.GetOrCreatUI( Panel_CMDUnitUI.Name ) ;
+		if( obj != null )
+		{
+			Panel_CMDUnitUI panel = obj.GetComponent<Panel_CMDUnitUI>();
+			if( panel != null )
+			{
+				panel.Setup( unit );
+			}
+		}
+		//if( PanelManager.Instance.CheckUIIsOpening( Panel_CMDUnitUI.Name ) )
+		//unit.OnClick( this );
+
+		//unit.Identify;
+	}
+
 	bool LoadScene( int nScnid )
 	{
 		SCENE_NAME scn = ConstDataManager.Instance.GetRow<SCENE_NAME> ( nScnid );
 		if (scn == null)
 			return false;
-		string filename = "Assets/StreamingAssets/scn/"+scn.s_MODLE_ID+".scn";
-		
-		bool bRes = Grids.Load( filename );
-		
-		// start to create sprite
-		for( int i = -Grids.hW ; i <= Grids.hW ; i++ ){
-			for( int j = -Grids.hH ; j <= Grids.hH ; j++ )
-			{			
-				_TILE t = Grids.GetValue( i , j  );
+		string filename = "Assets/StreamingAssets/scn/"+scn.s_MODLE_ID+".scn";		
+		 
+		if( Grids.Load( filename )==true )
+		{
+			// start to create sprite
+			for( int i = -Grids.hW ; i <= Grids.hW ; i++ ){
+				for( int j = -Grids.hH ; j <= Grids.hH ; j++ )
+				{			
+					_TILE t = Grids.GetValue( i , j  );
 				
-				GameObject cell = GetTileCellPrefab( i , j , t ); 
-				
+					GameObject cell = GetTileCellPrefab( i , j , t ); 
+					if( cell == null )
+					{
+						// debug message
+						string err = string.Format( "Error: Create Tile Failed in Scene({0}),X({1},Y({2},T({3} )" , scn.s_MODLE_ID , i , j ,t ); 
+						Debug.Log(err);
+
+					}
+				}
 			}
+			// reget the drag limit 
+			Resize();
 		}
-		// reget the drag limit 
-		Resize();
 
 		// change bgm '
 		GameSystem.PlayBGM ( scn.n_BGM );
@@ -306,6 +375,15 @@ public class Panel_StageUI : MonoBehaviour {
 	}
 
 	// UnitAction
+	public Panel_unit GetUnitByIdent( int Ident ) 
+	{
+		if( IdentToUnit.ContainsKey( Ident ) == true ) 
+		{
+			return IdentToUnit[ Ident ];
+		}
+		return null;
+	}
+
 	void RunUnitAction()
 	{
 
@@ -314,14 +392,14 @@ public class Panel_StageUI : MonoBehaviour {
 
 
 	// Faction AI
-	bool RunFactionAI( int nFaction )
+	bool RunCampAI( _CAMP nCamp )
 	{
 		// our faction don't need AI process
-		if( nFaction == 0 )
+		if( nCamp == _CAMP._PLAYER )
 			return true; // player is playing 
 
 		// change faction if all unit moved or dead.
-		FactionUnit unit = GameDataManager.Instance.GetFaction( nFaction );
+		cCamp unit = GameDataManager.Instance.GetCamp( nCamp );
 		if( unit != null )
 		{
 			if( unit.memLst.Count <= 0 ){
@@ -431,10 +509,10 @@ public class Panel_StageUI : MonoBehaviour {
 		return true;
 	}
 
-	bool ConditionAllDead( int nFactID )
+	bool ConditionAllDead( int nCampID )
 	{
 		// assign id
-		FactionUnit unit = GameDataManager.Instance.GetFaction( nFactID );
+		cCamp unit = GameDataManager.Instance.GetCamp( (_CAMP)nCampID );
 		if( unit != null )
 		{
 			return (unit.memLst.Count<=0) ;
@@ -442,19 +520,21 @@ public class Panel_StageUI : MonoBehaviour {
 		return true;
 	}
 
-	bool ConditionUnitDead( int nFactID ,int nID )
+	bool ConditionUnitDead( int nCampID ,int nCharID )
 	{
 		// assign id
-		FactionUnit unit = GameDataManager.Instance.GetFaction( nFactID );
-		if( unit != null )
+		cCamp camp = GameDataManager.Instance.GetCamp( (_CAMP)nCampID );
+		if( camp != null )
 		{
-			foreach( int no in  unit.memLst )
+			foreach( int no in  camp.memLst )
 			{
-				GameObject obj = this.IdentToObj[ no ];
-				if( obj != null )
+				Panel_unit unit = this.IdentToUnit[ no ];
+				if( unit != null )
 				{
-
-
+					if( unit.CharID ==  nCharID )
+					{
+						return false;
+					}
 				}
 			}
 		}
@@ -588,35 +668,33 @@ public class Panel_StageUI : MonoBehaviour {
 			if( func.sFunc == "POPCHAR" )
 			{
 				int charid = func.At( 0 );
-				GameObject obj = AddChar( charid , func.At( 1) , func.At( 2 ) );
-				if( obj != null )
-				{
-					Panel_unit unitobj = obj.GetComponent<Panel_unit>();
-					//set as ally
-
-
-					GameDataManager.Instance.AddFactionMember( 0 , unitobj.pUnitData.n_Ident ); // global game data
-
-					IdentToObj.Add( unitobj.pUnitData.n_Ident , obj  ) ;// stage gameobj
-				}
+				StagePopCharEvent evt = new StagePopCharEvent ();
+				evt.nCharID = func.At( 0 );
+				evt.nX		= func.At( 1 );
+				evt.nY		= func.At( 2 );
+				GameEventManager.DispatchEvent ( evt );
 			}
 			else if( func.sFunc == "POPMOB" )
 			{
 				int charid = func.At( 0 );
-				GameObject obj = AddChar( charid , func.At( 1) , func.At( 2 ) );
-				if( obj != null )
-				{
-					Panel_unit unitobj = obj.GetComponent<Panel_unit>();
-					//set as enemy
+				StagePopMobEvent evt = new StagePopMobEvent ();
+				evt.nCharID = func.At( 0 );
+				evt.nX		= func.At( 1 );
+				evt.nY		= func.At( 2 );
+				GameEventManager.DispatchEvent ( evt );
+			}
+			else if( func.sFunc == "POPMOBGROUP" )
+			{
+				// create from cline table
 
-					GameDataManager.Instance.AddFactionMember( 1 , unitobj.pUnitData.n_Ident );		// global game data
-
-					IdentToObj.Add( unitobj.pUnitData.n_Ident , obj  ) ; // stage gameobj
-				}
 			}
 			else if( func.sFunc == "TALK"  )
 			{
-				Talk( func.At( 0 ) );
+#if UNITY_EDITOR
+				return ;
+#endif
+				int nID = func.At( 0 );
+				GameSystem.TalkEvent( nID );
 			}
 			else if( func.sFunc == "BGM"  )
 			{
@@ -630,7 +708,7 @@ public class Panel_StageUI : MonoBehaviour {
 	}
 
 
-		 
+	// Widget func	 
 	GameObject AddChar( int nCharID , int x , int y )
 	{
 		CHARS charData = ConstDataManager.Instance.GetRow<CHARS>( nCharID );
@@ -666,24 +744,160 @@ public class Panel_StageUI : MonoBehaviour {
 		// position
 		obj.transform.localPosition =  MyTool.SnyGridtoLocalPos( x , y , ref Grids ) ; 
 
-
-
+		UIEventListener.Get(obj).onClick += OnCharClick;
 		// all ready
 		NGUITools.SetActive( obj , true );
 		return obj;
 	}
 
-	void DelChar()
+	// Take care use ident to delete
+	void DelChar( _CAMP nCampID , int nChar )
 	{
+		cCamp camp =  GameDataManager.Instance.GetCamp( nCampID );
+		if( camp == null )
+			return ;
+		List< int > remove = new List< int >();
+		foreach( int id in camp.memLst )
+		{
+			if( IdentToUnit.ContainsKey( id ) == true )
+			{
+				Panel_unit unit = IdentToUnit[ id ];
+				if( unit != null )
+				{
+					if( nChar != unit.CharID )
+					{
+						continue;
+					}
+					//unit.pUnitData; 
+					NGUITools.Destroy( unit.gameObject );
+				}
+				IdentToUnit.Remove( id );
+				remove.Add( id );
+			}
+			else{
+				// fail obj??
+				remove.Add( id );
+			}
+		}
 
+		foreach( int id in remove )
+		{
+			camp.memLst.Remove( id );
+		}
+	}
+
+	// Game event func
+	public void OnStageBGMEvent(GameEvent evt)
+	{
+		//Debug.Log ("OnStagePopCharEvent");
+		StageBGMEvent Evt = evt as StageBGMEvent;
+		if (Evt == null)
+			return;
+		if( StageData != null )
+		{
+			SCENE_NAME scn = ConstDataManager.Instance.GetRow<SCENE_NAME> ( StageData.n_SCENE_ID );
+			if (scn == null)
+				return ;
+
+			GameSystem.PlayBGM( scn.n_BGM );
+		}
+	}
+
+	public void OnStagePopCharEvent(GameEvent evt)
+	{
+		//Debug.Log ("OnStagePopCharEvent");
+		StagePopCharEvent Evt = evt as StagePopCharEvent;
+		if (Evt == null)
+			return;
+		GameObject obj = AddChar( Evt.nCharID , Evt.nX , Evt.nY );
+		if( obj != null )
+		{
+			Panel_unit unit = obj.GetComponent<Panel_unit>();
+			//set as ally			
+			GameDataManager.Instance.AddCampMember( _CAMP._PLAYER , unit.pUnitData.n_Ident ); // global game data
+			
+			IdentToUnit.Add( unit.pUnitData.n_Ident , unit  ) ;// stage gameobj
+		}
+		else{
+			Debug.Log ( string.Format("OnStagePopCharEvent Fail with charid({0})" , Evt.nCharID ));
+
+		}
 
 	}
 
-	void Talk( int nTalkID  )
+	public void OnStagePopMobEvent(GameEvent evt)
 	{
-		GameDataManager.Instance.nTalkID = nTalkID;
-		// start talk UI
-		GameObject obj = PanelManager.Instance.GetOrCreatUI( Panel_Talk.Name );
+		//Debug.Log ("OnStagePopMobEvent");
+		StagePopMobEvent Evt = evt as StagePopMobEvent;
+		if (Evt == null)
+			return;
+		GameObject obj = AddChar( Evt.nCharID , Evt.nX , Evt.nY );
+		if( obj != null )
+		{
+			Panel_unit unitobj = obj.GetComponent<Panel_unit>();
+			//set as ally						
+			GameDataManager.Instance.AddCampMember( _CAMP._ENEMY , unitobj.pUnitData.n_Ident ); // global game data
+			
+			IdentToUnit.Add( unitobj.pUnitData.n_Ident , unitobj  ) ;// stage gameobj
+		}
+		else{
+			Debug.Log ( string.Format("OnStagePopCharEvent Fail with charid({0})" , Evt.nCharID ));
+			
+		}
+	}
+
+	public void OnStagePopMobGroupEvent(GameEvent evt)
+	{
+		Debug.Log ("OnStagePopMobGroupEvent");
+		StagePopMobGroupEvent Evt = evt as StagePopMobGroupEvent;
+		if (Evt == null)
+			return;
+		
+	}
+
+	public void OnStageDelCharEvent(GameEvent evt)
+	{
+		//Debug.Log ("OnStagePopCharEvent");
+		StageDelCharEvent Evt = evt as StageDelCharEvent;
+		if (Evt == null)
+			return;
+		int nCharid = Evt.nCharID;
+		DelChar( _CAMP._PLAYER , nCharid );
+
+	}
+
+	public void OnStageDelMobEvent(GameEvent evt)
+	{
+		//Debug.Log ("OnStagePopCharEvent");
+		StageDelMobEvent Evt = evt as StageDelMobEvent;
+		if (Evt == null)
+			return;
+		int nCharid = Evt.nCharID;
+		DelChar( _CAMP._ENEMY , nCharid );
+	}
+
+	public void OnStageCharMoveEvent(GameEvent evt)
+	{
+		//Debug.Log ("OnStagePopCharEvent");
+		StageCharMoveEvent Evt = evt as StageCharMoveEvent;
+		if (Evt == null)
+			return;
+		int nIdent = Evt.nIdent;
+		int nX =  Evt.nX;
+		int nY =  Evt.nY;
+		if( IdentToUnit.ContainsKey(nIdent) == false )  {
+			Debug.Log( "ERR: can't find unit to move" );
+
+		}
+		Panel_unit unit = IdentToUnit[ nIdent ];
+		if( unit != null )
+		{
+			unit.MoveTo( nX , nY ); 
+		}
+		//DelChar( _CAMP._ENEMY , nCharid );
+
+		// Close UI
+		PanelManager.Instance.CloseUI( Panel_CMDUnitUI.Name );
 	}
 
 }

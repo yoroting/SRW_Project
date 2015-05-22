@@ -2,6 +2,7 @@
 using System.Collections;
 
 public class Panel_CmdSysUI : MonoBehaviour {
+	public const string Name = "Panel_CmdSysUI";
 
 	public GameObject InfoButton;
 	public GameObject SaveButton;
@@ -59,7 +60,7 @@ public class Panel_CmdSysUI : MonoBehaviour {
 	}
 	void OnRoundEndButtonClick(GameObject go)
 	{
-		GameDataManager.Instance.NextFaction();
+		GameDataManager.Instance.NextCamp();
 	}
 	void OnGameEndButtonClick(GameObject go)
 	{
@@ -68,6 +69,6 @@ public class Panel_CmdSysUI : MonoBehaviour {
 	void OnCancelButtonClick(GameObject go)
 	{
 		// 取消
-		PanelManager.Instance.CloseUI( "Panel_CMDSYSUI" );
+		PanelManager.Instance.CloseUI( Name );
 	}
 }

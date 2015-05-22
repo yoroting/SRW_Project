@@ -6,6 +6,8 @@ using MyClassLibrary;			// for parser string
 
 public class StoryUIPanel : MonoBehaviour {
 
+	public const string Name = "StoryUIPanel";
+
 	public STAGE_STORY	m_StoryData;		// 目前操作的 story data
 	private int		m_nFlowIdx;				// 腳本演到哪段
 	private int		m_nTargetIdx;			// 劇本目標哪一段

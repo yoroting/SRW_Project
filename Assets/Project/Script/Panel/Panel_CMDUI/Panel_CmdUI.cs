@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using _SRW;
 
 public class Panel_CmdUI : MonoBehaviour {
+	public const string Name = "Panel_CmdUI";
 
 	public GameObject nGrid;
 
@@ -53,7 +54,7 @@ public class Panel_CmdUI : MonoBehaviour {
 			int nArg1 = 0;
 			int nArg2 = 0;
 			int nArg3 = 0;	
-			GameObject cBtn = CreateCMDButton(cmdid , nArg1 , nArg2 ,nArg3 );
+			CreateCMDButton(cmdid , nArg1 , nArg2 ,nArg3 );
 
 		}
 	}
@@ -92,7 +93,7 @@ public class Panel_CmdUI : MonoBehaviour {
 		{
 			if( btn.CMD_ID == _CMD_ID._CANCEL )
 			{
-				PanelManager.Instance.CloseUI( "Panel_CMDUI" );
+				PanelManager.Instance.CloseUI( Name );
 
 			}
 		}

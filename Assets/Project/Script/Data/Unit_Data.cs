@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 // current stage runtime data
 public class UNIT_DATA{
-	public int n_Ident;
+	public int n_Ident;		// auto create by game system
 	public int n_CharID;
 	public int n_EXP;
 	public int n_X;

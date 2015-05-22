@@ -2,10 +2,18 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
+using _SRW;
+using MYGRIDS;
 // All SRW enum list
 namespace _SRW
 {
+	public enum _CAMP
+	{
+		_PLAYER=0,
+		_ENEMY =1,
+		_FRIEND=2,
+	}
+
 	public enum _CMD_TYPE
 	{
 		_SYS = 0,
@@ -37,12 +45,12 @@ namespace _SRW
 }//_SRW_CMD
 
 //
-public class FactionUnit
+public class cCamp
 {
-	public int FactionID { set; get; }
+	public _CAMP CampID { set; get; }
 	public List<int> memLst;
 
-	public FactionUnit()
+	public cCamp()
 	{
 		memLst = new List<int>();
 	}
@@ -64,7 +72,7 @@ public class GameDataManager : Singleton<GameDataManager>
 		hadInit = true;
 		//this.GetAudioClipFunc = getAudioClipFunc;
 		UnitPool = new Dictionary< int , UNIT_DATA >();
-		FactionPool = new Dictionary< int , FactionUnit >();
+		CampPool = new Dictionary< _CAMP , cCamp >();
 	}
 
 
@@ -74,28 +82,36 @@ public class GameDataManager : Singleton<GameDataManager>
 	public int nTalkID{ get; set; } 
 	public int nBattleID{ get; set; } 
 
+	// Operation Token ID 
+	public int nOpCharIdent{ get; set; } 				//
+	public int nOpMobIdent{ get; set; } 				//
+	public int nOpFriendIdent{ get; set; } 				//
 
+	public int nOpCellX{ get; set; } 				//
+	public int nOpCellY{ get; set; } 				//
 	//
 	public int nRound{ get; set; } 
 	public _SRW._ROUND_STATUS nRoundStatus{ get; set; }    // 0- start ,1- running, 2- end
-	public int nActiveFaction{ get; set; }  // 
+
+	// Camp
+	public _CAMP nActiveCamp{ get; set; }  // 
 
 
-	// Faction
-	public Dictionary< int , FactionUnit > FactionPool;			// add faction
-	public FactionUnit GetFaction( int nFactionID )
+	// Camp
+	public Dictionary< _CAMP , cCamp > CampPool;			// add Camp
+	public cCamp GetCamp( _CAMP nCampID )
 	{
-		if( FactionPool.ContainsKey( nFactionID ) )
+		if( CampPool.ContainsKey( nCampID ) )
 		{
-			return FactionPool[ nFactionID ];
+			return CampPool[ nCampID ];
 		}
 		return null;
 	}
 
-	public void AddFactionMember( int nFactionID , int nMemIdent )
+	public void AddCampMember( _CAMP nCampID , int nMemIdent )
 	{
-		if( FactionPool.ContainsKey( nFactionID ) ){
-			FactionUnit unit = FactionPool[ nFactionID ];
+		if( CampPool.ContainsKey( nCampID ) ){
+			cCamp unit = CampPool[ nCampID ];
 			if( unit != null ){
 				if( unit.memLst.Contains( nMemIdent ) == false  )
 				{
@@ -104,37 +120,37 @@ public class GameDataManager : Singleton<GameDataManager>
 			}
 		}
 		else{
-			FactionUnit unit = new FactionUnit();
-			unit.FactionID = nFactionID;
+			cCamp unit = new cCamp();
+			unit.CampID = nCampID;
 			unit.memLst.Add( nMemIdent );
-			FactionPool.Add( nFactionID , unit );
+			CampPool.Add( nCampID , unit );
 		}
 
 	}
-	public void DelFactionMember( int nFactionID , int nMemIdent )
+	public void DelCampMember( _CAMP nCampID , int nMemIdent )
 	{
-		if( FactionPool.ContainsKey( nFactionID ) ){
-			FactionUnit unit = FactionPool[ nFactionID ];
+		if( CampPool.ContainsKey( nCampID ) ){
+			cCamp unit = CampPool[ nCampID ];
 			if( unit != null )
 			{
 				unit.memLst.Remove( nMemIdent );
 			}
 		}
 	}
-	// switch to next faction. return true if round change
-	public bool NextFaction()
+	// switch to next Camp. return true if round change
+	public bool NextCamp()
 	{
-		if( nActiveFaction == 0 )
+		if( nActiveCamp == _CAMP._PLAYER )
 		{
-			nActiveFaction++;
-			nRoundStatus = _SRW._ROUND_STATUS._START;
+			nActiveCamp++;
+			nRoundStatus = _ROUND_STATUS._START;
 			return false;
 		}
-		else if( nActiveFaction == 1 )
+		else if( nActiveCamp == _CAMP._ENEMY )
 		{
-			nActiveFaction = 0; //
+			nActiveCamp = _CAMP._PLAYER; //
 			nRound++;
-			nRoundStatus = _SRW._ROUND_STATUS._START;
+			nRoundStatus = _ROUND_STATUS._START;
 			return true;
 		}
 		return true;	 

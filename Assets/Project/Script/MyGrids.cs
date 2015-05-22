@@ -686,7 +686,30 @@ namespace MYGRIDS
         {
             return GetRealY(nY) - SY;
         }
+		// Get Path list
+		public List<iVec2> GetPathList( iVec2 st , iVec2 ed )
+		{
+			List<iVec2> lst = new List<iVec2>();
 
+			int Diffx = ed.X- st.X;
+			int Diffy = ed.Y- st.Y;
+			iVec2 p1 = new iVec2();
+			if( Diffx > Diffy )
+			{
+				p1.X = ed.X;
+				p1.Y = st.Y;
+			}
+			else{
+				p1.X = st.X;
+				p1.Y = ed.Y;
+			}
+			lst.Add( p1 );
+
+
+			lst.Add( ed );
+
+			return lst;
+		}
 
         // Math utility func 
         public List<iVec2> GetRangePool( iVec2 v , int dist ) { 

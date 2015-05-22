@@ -48,10 +48,21 @@ public class Panel_Talk : MonoBehaviour {
 		UIEventListener.Get(this.gameObject).onClick += OnPanelClick; // for trig next line
 		UIEventListener.Get(Skip_Button).onClick += OnSkipClick; // for trig next line
 
-
+		// templete
+		TalkWindow_Up.SetActive( false );
+		TalkWindow_Down.SetActive( false );
+	//	m_idToObj.Add(  0 , TalkWindow_Up );
+	//	m_idToObj.Add(  1 , TalkWindow_Down );
 		// for fast debug 
-		ConstDataManager.Instance.isLazyMode = false;
-		StartCoroutine(ConstDataManager.Instance.ReadDataStreaming("pcz/", Config.COMMON_DATA_NAMES));
+		//ConstDataManager.Instance.isLazyMode = false;
+		//StartCoroutine(ConstDataManager.Instance.ReadDataStreaming("pcz/", Config.COMMON_DATA_NAMES));
+
+		// cause some mob pop in talk event. player can't skip talk event to avoid bug
+		NGUITools.SetActive( Skip_Button , false );
+
+#if UNITY_EDITOR
+		NGUITools.SetActive( Skip_Button , true );	
+#endif 
 
 	}
 	// Use this for initialization
@@ -120,16 +131,6 @@ public class Panel_Talk : MonoBehaviour {
 			m_idToObj.TryGetValue( nType , out obj  );
 		}
 
-//		if( obj != null )
-//			return obj.GetComponent<SRW_TextBox>( );
-
-//		if (nType == 0) {
-//			return TalkWindow_Up.GetComponent<SRW_TextBox>( );
-			//return TalkWindow_Up;
-//		}
-//		else if (nType == 1) {
-//			return TalkWindow_Down.GetComponent<SRW_TextBox>( );
-//		}
 
 		return obj;
 	}
@@ -191,82 +192,76 @@ public class Panel_Talk : MonoBehaviour {
 	{
 		//m_cTextList.Clear();
 		//m_nTextIdx = 0 ; // change text 
-		
-		for (int i = 0; i < line.GetRowNum(); i++) {
-			string s = line.GetString (i).ToUpper ();
-			if (s == "SAY") {
-				string sp = line.GetString (++i); // get parameter
-				if (sp == null)
-					return; //  null = error
-				List<string> lst = cTextArray.GetParamLst (sp); // 
-				
-				// default value			
-				int[] array1 = new int[2]{ 0, 0};
-				int j = 0 ; 
-				foreach (string s2 in lst) {
-					array1 [j++] = int.Parse (s2.Trim ());
-					
-				}
-				
-				// AddChar (array1 [0], array1 [1], array1 [2]);
-				Say( array1 [0], array1 [1] );
+		List<cTextFunc> funcList =line.GetFuncList();
+		foreach( cTextFunc func in funcList )
+		{
+			if( func.sFunc == "SAY" )
+			{
+				Say( func.At(0), func.At(1) );
+			}
+			else if( func.sFunc == "SETCHAR" )
+			{
+				SetChar( func.At(0), func.At(1) );
+			}		
+			else if( func.sFunc == "CHANGEBACK") 
+			{
 				
 			}
-			else if (s == "SETCHAR") {
-				string sp = line.GetString (++i); // get parameter
-				if (sp == null)
-					return; //  null = error
-				List<string> lst = cTextArray.GetParamLst (sp); // 
-				
-				// default value			
-				int[] array1 = new int[2]{ 0, 0 };
-				int j = 0 ; 
-				foreach (string s2 in lst) {
-					array1 [j++] = int.Parse (s2.Trim ());
-					
-				}
-
-				SetChar( array1 [0], array1 [1] );
+			else if( func.sFunc  == "CLOSE") 
+			{
+				CloseBox( func.At(0), func.At(1) );
 			}
-			else if (s == "SHOCK") {
-				string sp = line.GetString (++i); // get parameter
-				if (sp == null)
-					return; //  null = error
-				List<string> lst = cTextArray.GetParamLst (sp); // 
-				
-				// default value			
-				int[] array1 = new int[2]{ 0, 0 };
-				int j = 0 ; 
-				foreach (string s2 in lst) {
-					array1 [j++] = int.Parse (s2.Trim ());
-					
-				}
-				
-				SetShock( array1 [0], array1 [1] );
+			else if( func.sFunc  == "BGM") 
+			{
+				int id = func.At(0);
+				GameSystem.PlayBGM( id ); 
+				//CloseBox( func.At(0), func.At(1) );
+			}
+			// stage event
+			else if( func.sFunc  == "STAGEBGM") 
+			{
+				GameEventManager.DispatchEvent ( new StageBGMEvent()  );
 
 			}
-			else if( s == "BACK") 
+			// pop unit in stage
+			else if( func.sFunc  == "POPCHAR") 
+			{
+				int charid = func.At( 0 );
+				StagePopCharEvent evt = new StagePopCharEvent ();
+				evt.nCharID = func.At( 0 );
+				evt.nX		= func.At( 1 );
+				evt.nY		= func.At( 2 );
+				GameEventManager.DispatchEvent ( evt );
+			}
+			else if( func.sFunc  == "POPMOB") 
+			{
+				int charid = func.At( 0 );
+				StagePopMobEvent evt = new StagePopMobEvent ();
+				evt.nCharID = func.At( 0 );
+				evt.nX		= func.At( 1 );
+				evt.nY		= func.At( 2 );
+				GameEventManager.DispatchEvent ( evt );
+			}
+			else if( func.sFunc  == "POPGROUP")  //  pop a group of mob
 			{
 
 			}
-			else if( s == "CLOSE") 
+			else if( func.sFunc  == "DELCHAR") 
 			{
-				string sp = line.GetString (++i); // get parameter
-				if (sp == null)
-					return; //  null = error
-				List<string> lst = cTextArray.GetParamLst (sp); // 
-				// default value			
-				int[] array1 = new int[2]{ 0, 0 };
-				int j = 0 ; 
-				foreach (string s2 in lst) {
-					array1 [j++] = int.Parse (s2.Trim ());
-					
-				}
-				
-				CloseBox( array1 [0], array1 [1] );
-
+				int charid = func.At( 0 );
+				StageDelCharEvent evt = new StageDelCharEvent ();
+				evt.nCharID = func.At( 0 );
+				GameEventManager.DispatchEvent ( evt );
+			}
+			else if( func.sFunc  == "DELMOB") 
+			{
+				int charid = func.At( 0 );
+				StageDelMobEvent evt = new StageDelMobEvent ();
+				evt.nCharID = func.At( 0 );
+				GameEventManager.DispatchEvent ( evt );
 			}
 		}
+
 
 
 	}
@@ -334,18 +329,11 @@ public class Panel_Talk : MonoBehaviour {
 	}
 	public void CloseBox( int nType , int nCloseType )
 	{
-	//	SRW_TextBox obj = SelTextBoxObjByType (nType);
-	//	SetTextBoxActive ( nType , false );
 		GameObject obj = SelTextBoxObjByType (nType) ;
 		if (obj) {
 			NGUITools.Destroy( obj );
 			m_idToObj.Remove( nType );
-			// get Text form talk_text
-			//SRW_TextBox pBox = obj.GetComponent<SRW_TextBox> ();
-			//if (pBox) {
-				//pBox.ChangeFace (nCharID);
-
-			//}
+		
 		}
 	}
 	// widget func

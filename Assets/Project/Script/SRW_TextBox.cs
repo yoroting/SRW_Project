@@ -51,7 +51,10 @@ public class SRW_TextBox : MonoBehaviour {
 				m_nMaxLineCount = lbl.maxLineCount;
 			}
 		}
-
+		if( _FaceTexObj != null  )
+		{
+			NGUITools.SetActive( _FaceTexObj , false );
+		}
 	//	m_lstsContextAll  = new List<string> ();
 		m_lstsContextWait = new List<string> ();
 		nTweenObjCount = 0;
@@ -95,7 +98,8 @@ public class SRW_TextBox : MonoBehaviour {
 		if (nTweenObjCount > 0)
 			return;
 
-		if (m_nTextSpeed++ < 1) {
+		// text pop speed
+		if (++m_nTextSpeed < Config.TextSpeed ) {
 			return;
 		}
 		m_nTextSpeed = 0;
@@ -349,8 +353,8 @@ public class SRW_TextBox : MonoBehaviour {
 		//	charData.FillDatabyDataRow( row );
 			// charge face text
 			
-			UITexture tex = _FaceTexObj.GetComponentInChildren<UITexture>();
-			
+			//UITexture tex = _FaceTexObj.GetComponentInChildren<UITexture>();
+			UITexture tex = _FaceTexObj.GetComponent<UITexture>();
 			if( tex )
 			{
 				if(tex != null){
@@ -360,9 +364,18 @@ public class SRW_TextBox : MonoBehaviour {
 					string url = "Assets/Art/char/" + charData.s_FILENAME +"_S.png";
 					//Texture2D tex = Resources.LoadAssetAtPath(url, typeof(Texture2D)) as Texture2D;
 					Texture t= Resources.LoadAssetAtPath( url , typeof(Texture) ) as Texture; ;
-					tex.mainTexture = t;
-					//tex.mainTexture = Resources.Load( texpath) as Texture; 
+					tex.mainTexture = t;				
 					//tex.MakePixelPerfect();
+
+					TweenHeight twH = TweenHeight.Begin<TweenHeight>( _FaceTexObj , 0.2f );
+					if( twH )
+					{
+						twH.from = 0;
+						twH.to =  tex.height;
+						twH.SetOnFinished( OnTweenNotifyEnd );
+						nTweenObjCount++;
+					}
+
 				}
 			}
 		}
@@ -370,54 +383,31 @@ public class SRW_TextBox : MonoBehaviour {
 
 	public void ChangeLayout( int layout = 0 )
 	{
-		UITexture tex = GetComponentInChildren<UITexture>();
+	//	UITexture tex = GetComponentInChildren<UITexture>();
 	//	UILabel lbl = GetComponentInChildren <UILabel> ();
+
 
 		if (layout == 0) {
 			// base pos
 			Vector3 vPos = new Vector3( 86 ,200 , 0 );
 			this.transform.localPosition = vPos; 
-
-			if( tex != null )
-			{
-				TweenX t = TweenX.Begin<TweenX>( this.gameObject , 2f );
-				if( t != null )
-				{
-					t.from = -810 ;
-					t.to =  85 ;
-					t.SetOnFinished( OnTweenNotifyEnd );
-					nTweenObjCount++;
-				}
-			}
-
-		
-
 		}
 		else {
 			Vector3 vPos = new Vector3( -62 ,-200 , 0 );
 			this.transform.localPosition = vPos; 
-			
-			if( tex != null )
-			{
-				Vector3 vTexPos = tex.transform.localPosition;
-				vTexPos.x = 400;
-				tex.transform.localPosition = vTexPos;
 
-				TweenX t = TweenX.Begin<TweenX>(this.gameObject , 0.5f );
-				if( t != null )
-				{
-					t.from =  820 ;
-					t.to =  -80;
-					t.SetOnFinished( OnTweenNotifyEnd );
-					nTweenObjCount++;
-				}
+			if( _FaceTexObj )
+			{
+				Vector3 vTexPos = _FaceTexObj.transform.localPosition;
+				vTexPos.x = 400;
+				_FaceTexObj.transform.localPosition = vTexPos;				
 			}
 		}
 	}
 
 	// untility
 	int 	nTweenObjCount=0;
-	public  void OnTweenNotifyEnd( )
+	public  void OnTweenNotifyEnd(  )
 	{
 		if( --nTweenObjCount < 0 )
 		{
