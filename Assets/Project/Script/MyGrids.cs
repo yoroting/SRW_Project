@@ -676,6 +676,17 @@ namespace MYGRIDS
             fY = GetRealY( v.Y );
         }
 
+		public int GetGridX( float fRealX )
+		{
+			int X = ((int)fRealX / PW);
+			return X;
+		}
+
+		public int GetGridY( float fRealY )
+		{
+			int Y = ((int)fRealY / PH);
+			return Y;
+		}
         //螢幕顯示的座標
         public float GetScnX(int nX)
         {

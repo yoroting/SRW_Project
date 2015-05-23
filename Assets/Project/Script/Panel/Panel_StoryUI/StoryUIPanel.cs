@@ -6,7 +6,7 @@ using MyClassLibrary;			// for parser string
 
 public class StoryUIPanel : MonoBehaviour {
 
-	public const string Name = "StoryUIPanel";
+	public const string Name = "Panel_StoryUI";
 
 	public STAGE_STORY	m_StoryData;		// 目前操作的 story data
 	private int		m_nFlowIdx;				// 腳本演到哪段
@@ -161,14 +161,14 @@ public class StoryUIPanel : MonoBehaviour {
 			return;
 
 		GameDataManager.Instance.nStageID = Evt.StageID;
-		GameObject obj = PanelManager.Instance.GetOrCreatUI( "Panel_StageUI" );
+		GameObject obj = PanelManager.Instance.OpenUI( Panel_StageUI.Name );//"Panel_StageUI"
 		// 回到第0 關
 
 		//GameDataManager.Instance.nStageID = Config.StartStage;  //設定為 第一關
 		// open story panel 
 
 //		if (obj != null) {
-			PanelManager.Instance.CloseUI ("Panel_StoryUI");
+			PanelManager.Instance.CloseUI (Name);
 //		}
 	}
 

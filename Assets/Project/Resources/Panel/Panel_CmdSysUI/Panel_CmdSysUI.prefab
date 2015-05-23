@@ -2014,7 +2014,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7294a446be2b18d4e928ce7db5a8d708, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PanelType: 1
+  PanelType: 2
   Mutex: 1
   ExclusiveToMutex: 0
   ShowBlocker: 1

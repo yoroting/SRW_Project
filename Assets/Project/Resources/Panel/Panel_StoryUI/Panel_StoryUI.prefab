@@ -496,8 +496,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PanelType: 1
-  Mutex: 1
-  ExclusiveToMutex: 0
+  Mutex: 0
+  ExclusiveToMutex: 1
   ShowBlocker: 1
 --- !u!114 &11437050
 MonoBehaviour:

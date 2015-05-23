@@ -6,7 +6,7 @@ using MyClassLibrary;
 //using Playcoo.Common;
 
 public class MainUIPanel : BasicPanel {
-	public const string Name = "MainUIPanel";
+	//public const string Name = "MainUIPanel";
 
 	public GameObject StartButton;
 	public GameObject LoadButton;
@@ -46,8 +46,13 @@ public class MainUIPanel : BasicPanel {
 //			}
 //		}
 
-		// 回到第0 關
-		GameDataManager.Instance.nStoryID = Config.StartStory; //回到第一關
+		// Cal cache value again to avoid gamesystem ceatate with no UI
+		UIRoot mRoot = NGUITools.FindInParents<UIRoot>(gameObject);	
+		if (mRoot != null) {
+			MyTool.fScnRatio = (float)mRoot.activeHeight / Screen.height;
+		}
+
+
 	}
 
 	// Use this for initialization
@@ -72,7 +77,9 @@ public class MainUIPanel : BasicPanel {
 	{
 		// When start button clicked do :
 		Debug.Log("Start click ");
-		GameEventManager.DispatchEventByName( "startgame"  , 1 );  
+		// 回到第0 關
+		GameDataManager.Instance.nStoryID = Config.StartStory; //回到第一關
+		GameEventManager.DispatchEventByName( "startgame"  , GameDataManager.Instance.nStoryID );  
 
 
 
@@ -107,9 +114,9 @@ public class MainUIPanel : BasicPanel {
 		// open story panel 
 
 
-		GameObject obj = PanelManager.Instance.GetOrCreatUI( "Panel_StoryUI" );
+		GameObject obj = PanelManager.Instance.OpenUI( StoryUIPanel.Name );
 		if (obj != null) {
-			PanelManager.Instance.CloseUI( "Panel_MainUI" );
+			PanelManager.Instance.CloseUI( "Panel_MainUI" ); 
 		}
 
 //			string s1 = "linetext( 1 );LineText(\t2)\nPopChar(3 ,4);PopChar( 4 , 5 ,6)。\nSysText(  \"test\" )。";

@@ -15,7 +15,9 @@ public class Panel_unit : MonoBehaviour {
 	public UNIT_DATA pUnitData;  // always need to check before use it
 	public List< iVec2 > PathList;
 
-	iVec2	TarPos;
+	iVec2	TarPos;					   //目標左標
+	public int TarIdent { set; get ;}  //攻擊對象
+
 //	public int  Identify;		avoid double 
 
 	public int  ID() 
@@ -48,9 +50,8 @@ public class Panel_unit : MonoBehaviour {
 	void Update () {
 
 		// check if need to move
-		if( IsMoveing() == false )
-		{
-			MoveNextPoint();			// auto move
+		if (IsMoveing () == false) {
+			MoveNextPoint ();			// auto move
 		}
 
 
@@ -82,22 +83,29 @@ public class Panel_unit : MonoBehaviour {
 
 	public void CreateChar( int nCharID , int x , int y )
 	{
+		CharID = nCharID;
+		SetXY( x , y );
 		pUnitData = GameDataManager.Instance.CreateChar( nCharID );
 		if( pUnitData == null )
 			return;
 
-		SetXY( x , y );
+
 	}
 
 	public void MoveTo( int x , int y )
 	{
-		PathList = Panel_StageUI.Grids.GetPathList( Loc , new iVec2( x ,y ) ) ;
+		TarPos = new iVec2 (x, y);
+		//TarPos.X = x;
+		//TarPos.Y = y;
+		if (Loc == TarPos)
+			return;
 
+		PathList = Panel_StageUI.Grids.GetPathList( Loc , TarPos ) ;
 		MoveNextPoint();
 	}
 	public bool IsMoveing()
 	{
-		if( nTweenMoveCount > 0 )
+		if( nTweenMoveCount != 0 )
 			return true;
 		if( (PathList!=null) && PathList.Count > 0  )
 			return true;
@@ -110,15 +118,17 @@ public class Panel_unit : MonoBehaviour {
 			return ;
 		iVec2 v = PathList[0];
 		PathList.RemoveAt( 0 );
-		TarPos = v;
+		//TarPos = v;
 
 		int iDist = Loc.Dist( v );
-		float during = iDist* (0.5f);
+		float during = iDist* (0.2f);
 
 		// cal target location position
 		Vector3 tar = this.gameObject.transform.localPosition;
 		tar.x =  Panel_StageUI.Grids.GetRealX( v.X );
 		tar.y =  Panel_StageUI.Grids.GetRealY( v.Y );
+
+		Loc = v; // record target pos as current pos
 		// Tween move
 		TweenPosition tw = TweenPosition.Begin( this.gameObject , during , tar );
 		if( tw )
@@ -129,13 +139,27 @@ public class Panel_unit : MonoBehaviour {
 
 	}
 
+	// 待機中 可下命令
+	bool IsIdle()
+	{
+		if (IsMoveing ())
+			return false;
+
+		return true;
+	}
+
 	// call back func
 	int	   nTweenMoveCount	= 0;		// check move is done
 	public  void OnTweenNotifyMoveEnd(  )
 	{
 		nTweenMoveCount--;
+		if (nTweenMoveCount < 0)
+			nTweenMoveCount = 0;
 		// Update pos
-		Loc = TarPos;		// update pos
+	//	Vector3 v = transform.localPosition;
+	//	Loc.X = Panel_StageUI.Grids.GetGridX( v.x );
+	//	Loc.Y = Panel_StageUI.Grids.GetGridY( v.y );
+		//Loc = TarPos;		// update pos
 
 		MoveNextPoint();
 	}

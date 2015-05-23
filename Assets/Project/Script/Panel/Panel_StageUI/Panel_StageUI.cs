@@ -215,7 +215,7 @@ public class Panel_StageUI : MonoBehaviour {
 			// avoid re open
 //			if( PanelManager.Instance.CheckUIIsOpening( "Panel_CMDUI" ) == false  )
 			{
-				GameObject obj = PanelManager.Instance.GetOrCreatUI( Panel_CmdSysUI.Name );
+				GameObject obj = PanelManager.Instance.OpenUI( Panel_CmdSysUI.Name );
 				if (obj != null) {
 					NGUITools.SetActive( obj, true );
 					Vector3 vLoc = this.gameObject.transform.localPosition ;
@@ -255,7 +255,7 @@ public class Panel_StageUI : MonoBehaviour {
 		// start cmd
 		//Panel_CMDUnitUI.nCharIdent = unit.ID();
 		// open cmd ui
-		GameObject obj = PanelManager.Instance.GetOrCreatUI( Panel_CMDUnitUI.Name ) ;
+		GameObject obj = PanelManager.Instance.OpenUI( Panel_CMDUnitUI.Name ) ;
 		if( obj != null )
 		{
 			Panel_CMDUnitUI panel = obj.GetComponent<Panel_CMDUnitUI>();
@@ -415,8 +415,10 @@ public class Panel_StageUI : MonoBehaviour {
 
 	void CheckEventToRun()
 	{
-		if( EvtPool.Count <= 0 )
+		if( (EvtPool==null) )
 			return ;
+		if( EvtPool.Count<=0)
+			return;
 
 		List< int > removeLst = new List< int >();
 		// get next event to run
@@ -691,7 +693,7 @@ public class Panel_StageUI : MonoBehaviour {
 			else if( func.sFunc == "TALK"  )
 			{
 #if UNITY_EDITOR
-				return ;
+			//	return ;
 #endif
 				int nID = func.At( 0 );
 				GameSystem.TalkEvent( nID );

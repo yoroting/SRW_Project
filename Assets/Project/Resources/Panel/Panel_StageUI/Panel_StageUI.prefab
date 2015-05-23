@@ -245,9 +245,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7294a446be2b18d4e928ce7db5a8d708, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PanelType: 2
-  Mutex: 1
-  ExclusiveToMutex: 0
+  PanelType: 1
+  Mutex: 0
+  ExclusiveToMutex: 1
   ShowBlocker: 1
 --- !u!114 &11463910
 MonoBehaviour:

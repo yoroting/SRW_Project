@@ -91,7 +91,9 @@ public class GameSystem : MonoBehaviour {
 
 		// Cal cache value
 		UIRoot mRoot = NGUITools.FindInParents<UIRoot>(gameObject);	
-		MyTool.fScnRatio = (float)mRoot.activeHeight / Screen.height;
+		if (mRoot != null) {
+			MyTool.fScnRatio = (float)mRoot.activeHeight / Screen.height;
+		}
 
 	}
 	
@@ -147,7 +149,7 @@ public class GameSystem : MonoBehaviour {
 	{
 		GameDataManager.Instance.nTalkID = nTalkID;
 		// start talk UI
-		PanelManager.Instance.GetOrCreatUI( Panel_Talk.Name );
+		PanelManager.Instance.OpenUI( Panel_Talk.Name );
 	}
 //	public static GameObject CreatePrefabGameObj( GameObject parent , string sPrefabPath )
 //	{

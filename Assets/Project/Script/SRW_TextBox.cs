@@ -159,7 +159,6 @@ public class SRW_TextBox : MonoBehaviour {
 			m_sShowText += m_sPopText;
 		}
 		// change poptext
-
 		// push m_sShowText to line
 	
 		m_sShowText = "";

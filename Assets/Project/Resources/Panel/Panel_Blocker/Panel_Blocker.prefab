@@ -69,8 +69,10 @@ BoxCollider2D:
   m_Enabled: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
   m_Size: {x: 703, y: 1056}
-  m_Center: {x: 0, y: 0}
 --- !u!114 &11406826
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -137,7 +139,7 @@ MonoBehaviour:
   rightType: 1
   bottomType: 1
   topType: 1
-  mAtlas: {fileID: 11466322, guid: f8f0c2e1e4af07c4e9315698138b0961, type: 2}
+  mAtlas: {fileID: 0}
   mSpriteName: U_SHARE_001
   mFillCenter: 1
 --- !u!114 &11406834
@@ -152,7 +154,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PanelType: 1
-  Mutex: 1
+  Mutex: 0
   ExclusiveToMutex: 1
   ShowBlocker: 0
 --- !u!114 &11406836
@@ -211,4 +213,3 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 106836}
   m_IsPrefabParent: 1
-  m_IsExploded: 1

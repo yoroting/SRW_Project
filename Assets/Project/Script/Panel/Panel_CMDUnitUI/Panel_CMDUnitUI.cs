@@ -43,7 +43,7 @@ public class Panel_CMDUnitUI : MonoBehaviour {
 	void Update () {
 		if( pUnit == null )
 		{
-			Debug.Log( "ERR: SysCMDUI with NULL Unit" );
+			Debug.LogError( "ERR: SysCMDUI with NULL Unit" );
 			nCharIdent 	= 0;
 			PanelManager.Instance.CloseUI( Name );
 		}

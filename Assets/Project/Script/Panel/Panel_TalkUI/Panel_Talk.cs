@@ -260,6 +260,11 @@ public class Panel_Talk : MonoBehaviour {
 				evt.nCharID = func.At( 0 );
 				GameEventManager.DispatchEvent ( evt );
 			}
+			else{
+				// error 
+
+				Debug.Log( string.Format( "Error-Can't find script func '{0}'" , func.sFunc ) );
+			}
 		}
 
 
@@ -301,9 +306,11 @@ public class Panel_Talk : MonoBehaviour {
 
 		// get Text form talk_text
 		string s = GameSystem.GetTalkText ( nSayTextID );
+		string sText = s.Replace ( "$P" , Config.PlayerName ); // replace player name
+
 		SRW_TextBox pBox = obj.GetComponent<SRW_TextBox>();
 		if (pBox) {
-			pBox.AddText (s);
+			pBox.AddText (sText);
 		}
 	}
 

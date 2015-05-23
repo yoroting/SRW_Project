@@ -57,7 +57,7 @@ public class cCamp
 }
 /// <summary>預設存在的 Channel Type</summary>
 
-public class GameDataManager : Singleton<GameDataManager>
+public partial class GameDataManager 
 {
 	//public delegate AudioClip GetAudioClipDelegate (string audioPath);
 
@@ -75,8 +75,27 @@ public class GameDataManager : Singleton<GameDataManager>
 		CampPool = new Dictionary< _CAMP , cCamp >();
 	}
 
+	private static GameDataManager instance;
+	public static GameDataManager Instance
+	{
+		get 
+		{
+			if (instance == null)
+			{
+				instance = new GameDataManager();
+				instance.Clear();
+			}
+			
+			return instance;
+		}
+	}
 
+	public void Clear()
+	{
 
+	}
+
+	//===================================================
 	public int nStoryID{ get; set; } 
 	public int nStageID{ get; set; } 
 	public int nTalkID{ get; set; } 

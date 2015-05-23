@@ -26,16 +26,16 @@ public partial class PanelManager : Singleton<PanelManager>
 
     public enum Depth
     {
-        Zero = 0,
+        Zero = -10,
 
         #region Normal Panel的Depth範圍
-        NormalMin = 400,
-        NormalMax = 450,
+        NormalMin = 0,
+        NormalMax = 20,
         #endregion
 
         #region Top Panel的Depth範圍
-        TopMin = 460,
-        TopMax = 480,
+        TopMin = 30,
+        TopMax = 50,
         #endregion
     }
 
@@ -285,6 +285,10 @@ public partial class PanelManager : Singleton<PanelManager>
             return 0;
         }
 
+		// yoro : normal panel dom't assign depth.
+		if (panelSetting.PanelType == PanelSetting.Type.Normal) {
+			return GetPanelDepth( panelSetting.gameObject );
+		}
 //        panelSetting.OpenedByEditorDepth = useEditorDepth;
 		
 		int newDepth = GetMaxDepth(panelSetting.PanelType) + DepthPlusToNewUI;
@@ -393,9 +397,11 @@ public partial class PanelManager : Singleton<PanelManager>
 
     private bool IsNeedRearrangeDepth(PanelSetting.Type panelType ,int newMaxDepth)
     {
-        if (panelType == PanelSetting.Type.Normal)
-            return (newMaxDepth < (int)Depth.NormalMin || newMaxDepth > (int)Depth.NormalMax);
-        else if (panelType == PanelSetting.Type.Top)
+		// yoro canel noraml panel auto depth
+//        if (panelType == PanelSetting.Type.Normal)
+  //          return (newMaxDepth < (int)Depth.NormalMin || newMaxDepth > (int)Depth.NormalMax);
+    //    else 
+		if (panelType == PanelSetting.Type.Top)
             return (newMaxDepth < (int)Depth.TopMin || newMaxDepth > (int)Depth.TopMax);
 
         return false;
@@ -422,6 +428,9 @@ public partial class PanelManager : Singleton<PanelManager>
             if (panelSetting == null)
                 continue;
 
+			// Yoro add for avoid normal panel
+			if (panelSetting.PanelType == PanelSetting.Type.Normal)
+				continue;
 //            if (panelSetting.OpenedByEditorDepth)
 //                continue;
 
@@ -581,6 +590,8 @@ public partial class PanelManager : Singleton<PanelManager>
 
         uiPanel.depth = depth;
     }
+
+
 
     private int GetMaxDepth(PanelSetting.Type type)
     {
