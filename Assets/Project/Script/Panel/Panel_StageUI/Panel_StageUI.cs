@@ -7,14 +7,15 @@ using MyClassLibrary;			// for parser string
 
 
 
-public class Panel_StageUI : MonoBehaviour {
-
+public class Panel_StageUI : MonoBehaviour 
+//public class Panel_StageUI : Singleton<Panel_StageUI>
+{
 	public const string Name = "Panel_StageUI";
 
 	public GameObject BackGroundObj; // back ground
 	public GameObject TilePlaneObj; // plane of all tiles sprite
 
-	public static cMyGrids	Grids;				// main grids . only one
+	public cMyGrids	Grids;				// main grids . only one
 
 	STAGE_DATA	StageData;
 
@@ -39,8 +40,10 @@ public class Panel_StageUI : MonoBehaviour {
 	bool							IsEventEnd;			// 
 	bool							CheckEventPause;	// 	event check pause
 
-
-
+	// Select effect
+	Dictionary< string , GameObject >  OverCellPool;			// Over tile effect pool ( in = cell key )
+	Dictionary< string , GameObject >  OverCellAtkPool;			// Over tile effect pool( attack ) ( in = cell key )
+	//List< GameObject >				OverCellPool;			 
 
 	//Dictionary< int , GameObject > EnemyPool;			// EnemyPool this should be group pool
 
@@ -63,7 +66,11 @@ public class Panel_StageUI : MonoBehaviour {
 		// UIEventListener.Get(BackGroundObj).onClick += OnBackGroundClick;
 	
 		// grid
-		Grids = new cMyGrids ();
+		//Grids = new cMyGrids ();
+		GameScene.Instance.Initial ();
+
+		Grids = GameScene.Instance.Grids;						// smart pointer reference
+
 		StageData = new STAGE_DATA();
 		//event
 		EvtPool = new Dictionary< int , STAGE_EVENT >();			// add event id 
@@ -73,6 +80,10 @@ public class Panel_StageUI : MonoBehaviour {
 		// unit
 		IdentToUnit = new Dictionary< int , Panel_unit >();		//
 		UnitDataPool = new Dictionary< int , UNIT_DATA >();
+
+		OverCellPool 	= new Dictionary< string , GameObject >();			// Over tile effect pool ( in = cell key )
+		OverCellAtkPool = new Dictionary< string , GameObject >();			
+
 		// Debug Code jump to stage
 		GameDataManager.Instance.nStageID = 1;
 
@@ -88,6 +99,15 @@ public class Panel_StageUI : MonoBehaviour {
 
 		// char event 
 		GameEventManager.AddEventListener(  StageCharMoveEvent.Name , OnStageCharMoveEvent );
+
+		// cmd event
+		GameEventManager.AddEventListener(  StageShowMoveRangeEvent.Name , OnStageShowMoveRangeEvent );
+		GameEventManager.AddEventListener(  StageShowAttackRangeEvent.Name , OnStageShowAttackRangeEvent );
+		GameEventManager.AddEventListener(  StageRestorePosEvent.Name , OnStageRestorePosEvent );
+
+		// create singloten
+
+		// can't open panel in awake
 	}
 
 	// Use this for initialization
@@ -182,8 +202,6 @@ public class Panel_StageUI : MonoBehaviour {
 	
 	}
 
-
-
 	void OnCellClick(GameObject go)
 	{
 		if( IsAnyActionRunning() == true )
@@ -198,19 +216,42 @@ public class Panel_StageUI : MonoBehaviour {
 			string str = string.Format( "CellOnClick( {0},{1}) " , unit.X() , unit.Y() );
 			Debug.Log(str);
 
-			//test code to move 
-			if( PanelManager.Instance.CheckUIIsOpening( Panel_CMDUnitUI.Name )  )
-			{
 
-				StageCharMoveEvent evt = new StageCharMoveEvent ();
-				evt.nIdent  = Panel_CMDUnitUI.nCharIdent; // current oper ident 
-				evt.nX		= unit.X();
-				evt.nY		= unit.Y();
-				GameEventManager.DispatchEvent ( evt );
+			if (PanelManager.Instance.CheckUIIsOpening (Panel_CMDUnitUI.Name)) {						
+				// don't clear over effect first. need it to check
+				//test code to move 
+					if( cCMD.Instance.eCMDSTAT == _CMD_STATUS._WAIT || 
+				  		 cCMD.Instance.eCMDSTAT == _CMD_STATUS._MOVE   ){
+				 // check in pool
+					string sKey =	unit.Loc.GetKey();
+					Debug.Log( sKey ); 
+					if( OverCellPool.ContainsKey( sKey ) == true  )
+					{	
+						ClearOverCellEffect( );
 
-				return ;
+						StageCharMoveEvent evt = new StageCharMoveEvent ();
+						evt.nIdent =  cCMD.Instance.nCmderIdent; // current oper ident 
+						evt.nX = unit.X ();
+						evt.nY = unit.Y ();
+						GameEventManager.DispatchEvent (evt);		
+						return;
+					}
+					else if( cCMD.Instance.eCMDSTAT == _CMD_STATUS._TARGET )
+					{
+						// need cancel cmd
+						Panel_CMDUnitUI panel = MyTool.GetPanel<Panel_CMDUnitUI>( PanelManager.Instance.JustGetUI(Panel_CMDUnitUI.Name)) ;
+						if( panel != null )
+						{
+							panel.CancelCmd();
+						}
+						ClearOverCellEffect();
+					}
+				}
+
 			}
 
+			// clear over effect
+			ClearOverCellEffect( );
 
 			// avoid re open
 //			if( PanelManager.Instance.CheckUIIsOpening( "Panel_CMDUI" ) == false  )
@@ -247,36 +288,75 @@ public class Panel_StageUI : MonoBehaviour {
 			return; // block other action  
 
 		// avoid any ui opening
+		// clear over effect
+
+
 
 		Panel_unit unit = go.GetComponent<Panel_unit>() ;
 		if( unit == null )
 			return ;
 
-		// start cmd
-		//Panel_CMDUnitUI.nCharIdent = unit.ID();
-		// open cmd ui
 		GameObject obj = PanelManager.Instance.OpenUI( Panel_CMDUnitUI.Name ) ;
-		if( obj != null )
-		{
-			Panel_CMDUnitUI panel = obj.GetComponent<Panel_CMDUnitUI>();
-			if( panel != null )
-			{
-				panel.Setup( unit );
+		Panel_CMDUnitUI panel = MyTool.GetPanel<Panel_CMDUnitUI> (obj);
+		if (panel != null) {
+			if (cCMD.Instance.eCMDSTAT == _CMD_STATUS._WAIT) {						
+				panel.SetCmder (unit);
+				CreateMoveOverEffect (unit);
+			} else if (cCMD.Instance.eCMDSTAT == _CMD_STATUS._TARGET) {
+				ClearOverCellEffect ();
+				panel.SetTarget (unit);
+
 			}
 		}
+//		if( obj != null )
+//		{
+//			Panel_CMDUnitUI panel = obj.GetComponent<Panel_CMDUnitUI>();
+//			if( panel != null )
+//			{
+//				panel.Setup( unit );
+//			}
+
+//		}
 		//if( PanelManager.Instance.CheckUIIsOpening( Panel_CMDUnitUI.Name ) )
 		//unit.OnClick( this );
 
 		//unit.Identify;
 	}
 
+
+	void OnMobClick(GameObject go)
+	{
+		if( IsAnyActionRunning() == true )
+			return;
+		
+		if( IsRunningEvent() == true  )
+			return; // block other action  
+		
+		// avoid any ui opening
+		// clear over effect
+		Panel_unit unit = go.GetComponent<Panel_unit>() ;
+		if( unit == null )
+			return ;
+
+		// close sel 
+		ClearOverCellEffect(  );
+		if (PanelManager.Instance.CheckUIIsOpening ( Panel_CMDUnitUI.Name )) {
+			Panel_CMDUnitUI panel = MyTool.GetPanel< Panel_CMDUnitUI >( PanelManager.Instance.JustGetUI( Panel_CMDUnitUI.Name ) ); 
+
+			if ( cCMD.Instance.eCMDSTAT == _CMD_STATUS._TARGET) {
+				panel.SetTarget (unit);
+			}
+		}
+
+	}
 	bool LoadScene( int nScnid )
 	{
 		SCENE_NAME scn = ConstDataManager.Instance.GetRow<SCENE_NAME> ( nScnid );
 		if (scn == null)
 			return false;
 		string filename = "Assets/StreamingAssets/scn/"+scn.s_MODLE_ID+".scn";		
-		 
+
+
 		if( Grids.Load( filename )==true )
 		{
 			// start to create sprite
@@ -337,14 +417,14 @@ public class Panel_StageUI : MonoBehaviour {
 			}
 
 			// tranform
-			float locx =0, locy =0;
-			Grids.GetRealXY(ref locx , ref locy , new iVec2( x , y ) );
-			
-			Vector3 pos = new Vector3( locx , locy , 0 );
+//			float locx =0, locy =0;
+//			Grids.GetRealXY(ref locx , ref locy , new iVec2( x , y ) );			
+//			Vector3 pos = new Vector3( locx , locy , 0 );
 			if( cell != null ){
-				cell.transform.localPosition = pos; 
-				cell.name = string.Format("Cell({0},{1},{2})", x , y , 0 );
+				SynGridToLocalPos( cell , x, y ) ;
+				//cell.transform.localPosition = pos; 
 
+				cell.name = string.Format("Cell({0},{1},{2})", x , y , 0 );
 
 				UnitCell unit = cell.GetComponent<UnitCell>() ;
 				if( unit != null ){
@@ -352,7 +432,6 @@ public class Panel_StageUI : MonoBehaviour {
 					unit.Y( y );
 
 				}
-
 				//==========================================================
 				UIEventListener.Get(cell).onClick += OnCellClick;
 			}
@@ -363,6 +442,92 @@ public class Panel_StageUI : MonoBehaviour {
 			//_TILE._GREEN
 
 		return null;
+	}
+
+	void ClearOverCellEffect(  )
+	{
+		// clear eff
+		//OverCellPool
+		foreach( KeyValuePair< string , GameObject> pair in OverCellPool )
+		{
+			if( pair.Value != null )
+			{
+				NGUITools.Destroy( pair.Value );
+				//pair.Value = null;
+			}
+		}
+		OverCellPool.Clear ();
+		foreach( KeyValuePair< string , GameObject> pair in OverCellAtkPool )
+		{
+			if( pair.Value != null )
+			{
+				NGUITools.Destroy( pair.Value );
+				//pair.Value = null;
+			}
+		}
+		OverCellAtkPool.Clear ();
+
+	}
+
+	void CreateMoveOverEffect( Panel_unit unit )
+	{
+		foreach( KeyValuePair< string , GameObject> pair in OverCellPool )
+		{
+			if( pair.Value != null )
+			{
+				NGUITools.Destroy( pair.Value );
+				//pair.Value = null;
+			}
+		}
+		OverCellPool.Clear ();
+		if (unit == null)
+			return;
+
+		List<iVec2> moveList =  Grids.GetRangePool (unit.Loc, 4);
+		// start create over eff
+		foreach( iVec2 v in moveList )
+		{
+			GameObject over = ResourcesManager.CreatePrefabGameObj(TilePlaneObj, "Prefab/MoveOverEffect");
+			if( over != null )
+			{
+				over.name = string.Format("Over({0},{1},{2})", v.X , v.Y , 0 );
+				SynGridToLocalPos( over , v.X , v.Y) ;
+				
+				//UIEventListener.Get(over).onClick += OnOverClick;
+				
+				OverCellPool.Add( v.GetKey() , over );
+			}
+		}
+	}
+
+	void CreateAttackOverEffect( Panel_unit unit )
+	{
+		foreach( KeyValuePair< string , GameObject> pair in OverCellAtkPool )
+		{
+			if( pair.Value != null )
+			{
+				NGUITools.Destroy( pair.Value );
+				//pair.Value = null;
+			}
+		}
+		OverCellAtkPool.Clear ();
+		if (unit == null)
+			return;
+
+		List<iVec2> AtkList =  Grids.GetRangePool ( unit.Loc, 1 );
+		AtkList.RemoveAt (0); // remove self pos
+
+		foreach( iVec2 v in AtkList )
+		{
+			GameObject over = ResourcesManager.CreatePrefabGameObj(TilePlaneObj, "Prefab/AttackOverEffect");
+			if( over != null )
+			{
+				over.name = string.Format("Over({0},{1},{2})", v.X , v.Y , 0 );
+				SynGridToLocalPos( over , v.X , v.Y) ;
+				OverCellAtkPool.Add( v.GetKey() , over );
+			}
+		}
+
 	}
 	// Check any action is running
 
@@ -711,7 +876,7 @@ public class Panel_StageUI : MonoBehaviour {
 
 
 	// Widget func	 
-	GameObject AddChar( int nCharID , int x , int y )
+	GameObject AddChar( _CAMP nCampID , int nCharID , int x , int y )
 	{
 		CHARS charData = ConstDataManager.Instance.GetRow<CHARS>( nCharID );
 		if( charData == null)
@@ -746,7 +911,12 @@ public class Panel_StageUI : MonoBehaviour {
 		// position
 		obj.transform.localPosition =  MyTool.SnyGridtoLocalPos( x , y , ref Grids ) ; 
 
-		UIEventListener.Get(obj).onClick += OnCharClick;
+		if (nCampID == _CAMP._PLAYER) {		
+			UIEventListener.Get (obj).onClick += OnCharClick;
+		} else if (nCampID == _CAMP._ENEMY) {
+			UIEventListener.Get (obj).onClick += OnMobClick;
+		}
+
 		// all ready
 		NGUITools.SetActive( obj , true );
 		return obj;
@@ -788,6 +958,14 @@ public class Panel_StageUI : MonoBehaviour {
 		}
 	}
 
+	public void SynGridToLocalPos( GameObject obj , int nx , int ny )
+	{
+		Vector3 v = obj.transform.localPosition;
+		v.x = Grids.GetRealX ( nx );
+		v.y = Grids.GetRealY ( ny );
+		obj.transform.localPosition = v ;
+	}
+
 	// Game event func
 	public void OnStageBGMEvent(GameEvent evt)
 	{
@@ -811,7 +989,7 @@ public class Panel_StageUI : MonoBehaviour {
 		StagePopCharEvent Evt = evt as StagePopCharEvent;
 		if (Evt == null)
 			return;
-		GameObject obj = AddChar( Evt.nCharID , Evt.nX , Evt.nY );
+		GameObject obj = AddChar( _CAMP._PLAYER , Evt.nCharID , Evt.nX , Evt.nY );
 		if( obj != null )
 		{
 			Panel_unit unit = obj.GetComponent<Panel_unit>();
@@ -833,7 +1011,7 @@ public class Panel_StageUI : MonoBehaviour {
 		StagePopMobEvent Evt = evt as StagePopMobEvent;
 		if (Evt == null)
 			return;
-		GameObject obj = AddChar( Evt.nCharID , Evt.nX , Evt.nY );
+		GameObject obj = AddChar( _CAMP._ENEMY , Evt.nCharID , Evt.nX , Evt.nY );
 		if( obj != null )
 		{
 			Panel_unit unitobj = obj.GetComponent<Panel_unit>();
@@ -887,19 +1065,65 @@ public class Panel_StageUI : MonoBehaviour {
 		int nIdent = Evt.nIdent;
 		int nX =  Evt.nX;
 		int nY =  Evt.nY;
-		if( IdentToUnit.ContainsKey(nIdent) == false )  {
-			Debug.Log( "ERR: can't find unit to move" );
+//		if( IdentToUnit.ContainsKey(nIdent) == false )  {
+//			Debug.Log( "ERR: can't find unit to move" );
+//		}
 
-		}
-		Panel_unit unit = IdentToUnit[ nIdent ];
+		Panel_unit unit = this.GetUnitByIdent ( nIdent); // IdentToUnit[ nIdent ];
 		if( unit != null )
 		{
 			unit.MoveTo( nX , nY ); 
 		}
 		//DelChar( _CAMP._ENEMY , nCharid );
 
+		// throw move event to cmd ui
 		// Close UI
-		PanelManager.Instance.CloseUI( Panel_CMDUnitUI.Name );
+		//PanelManager.Instance.CloseUI( Panel_CMDUnitUI.Name );
+		CmdCharMoveEvent cmd = new CmdCharMoveEvent ();
+		cmd.nIdent = nIdent;
+		cmd.nX = nX;
+		cmd.nY = nY;
+
+		GameEventManager.DispatchEvent ( cmd );
 	}
 
+	public void OnStageShowMoveRangeEvent(GameEvent evt)
+	{
+		//Debug.Log ("OnStagePopCharEvent");
+		StageShowMoveRangeEvent Evt = evt as StageShowMoveRangeEvent;
+		if (Evt == null)
+			return;
+		Panel_unit pUnit = GetUnitByIdent (Evt.nIdent);
+		if (pUnit == null)
+			return;
+
+		CreateMoveOverEffect (pUnit);
+
+	}
+	public void OnStageShowAttackRangeEvent(GameEvent evt)
+	{
+		//Debug.Log ("OnStagePopCharEvent");
+		StageShowAttackRangeEvent Evt = evt as StageShowAttackRangeEvent;
+		if (Evt == null)
+			return;
+		Panel_unit pUnit = GetUnitByIdent (Evt.nIdent);
+		if (pUnit == null)
+			return;
+		CreateAttackOverEffect (pUnit);
+
+	}
+	public void OnStageRestorePosEvent(GameEvent evt)
+	{
+		//Debug.Log ("OnStagePopCharEvent");
+		StageRestorePosEvent Evt = evt as StageRestorePosEvent;
+		if (Evt == null)
+			return;
+		Panel_unit pUnit = GetUnitByIdent (Evt.nIdent);
+		if (pUnit == null)
+			return;
+
+	}
+
+
+	// 
 }

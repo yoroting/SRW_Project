@@ -23,16 +23,24 @@ namespace _SRW
 		_MENU =4	
 	}
 
+	public enum _CMD_STATUS
+	{
+		_WAIT = 0,
+		_MOVE ,
+		_TARGET ,
+	}
+
 	public enum _CMD_ID  // 
 	{
-		_MOVE = 0,			// 
-		_ATK =1,			// 
-		_DEF =2,			// 	
-		_SKILL =3,			// 	
-		_ABILITY =4,			// 	
-		_ITEM =5,			//  use		
-		_INFO =6,			// 	
-		_CANCEL =7,			// 	
+		_NONE = 0,			// 
+		_MOVE ,			// 
+		_ATK ,			// 
+		_DEF ,			// 	
+		_SKILL ,			// 	
+		_ABILITY ,			// 	
+		_ITEM ,			//  No use		
+		_INFO ,			// 	
+		_CANCEL ,			// 	
 	}
 
 	public enum _ROUND_STATUS
@@ -218,3 +226,117 @@ public partial class GameDataManager
 			UnitPool.Remove( unit.n_Ident );
 	}
 };
+
+public partial class GameScene
+{
+	//public delegate AudioClip GetAudioClipDelegate (string audioPath);
+	
+	private bool hadInit = false;
+	public bool HadInit{ get{ return hadInit; } }
+	
+	public cMyGrids	Grids;				// main grids . only one
+
+	
+	//	private Dictionary<int, AudioChannelBase> channels = new Dictionary<int, AudioChannelBase>();
+	
+	public void Initial( ){
+		if (hadInit)return;
+
+		hadInit = true;
+		//this.GetAudioClipFunc = getAudioClipFunc;
+		//UnitPool = new Dictionary< int , UNIT_DATA >();
+		//CampPool = new Dictionary< _CAMP , cCamp >();
+		Grids = new cMyGrids();
+	}
+	
+	private static GameScene instance;
+	public static GameScene Instance
+	{
+		get 
+		{
+			if (instance == null)
+			{
+				instance = new GameScene();
+				instance.Clear();
+			}
+			
+			return instance;
+		}
+	}
+	
+	public void Clear()
+	{
+
+	}
+}
+
+public class cCMD{
+
+	private bool hadInit = false;
+	public bool HadInit{ get{ return hadInit; } }
+	
+	public cMyGrids	Grids;				// main grids . only one
+	
+	
+	//	private Dictionary<int, AudioChannelBase> channels = new Dictionary<int, AudioChannelBase>();
+	
+	public void Initial( ){
+		if (hadInit)return;
+		
+		hadInit = true;
+		//this.GetAudioClipFunc = getAudioClipFunc;
+		//UnitPool = new Dictionary< int , UNIT_DATA >();
+		//CampPool = new Dictionary< _CAMP , cCamp >();
+	}
+
+	private static cCMD instance;
+	public static cCMD Instance
+	{
+		get 
+		{
+			if (instance == null)
+			{
+				instance = new cCMD();
+				instance.Clear();
+			}
+			
+			return instance;
+		}
+	}
+
+	public int nCmderIdent;			// Operatr char ident
+	public _CMD_STATUS 	eCMDSTAT;		// cmd status
+	public _CMD_ID 		eCMDID;			// cmd ID
+	
+	public int nTarIdent;
+	
+	public int nOrgGridX;
+	public int nOrgGridY;
+	
+	public int nTarGridX;
+	public int nTarGridY;
+	
+	public int nSkillID;
+	public int nAvilityID;
+	public int nItemID;
+	
+	public void Clear()
+	{
+		nCmderIdent = 0;
+		eCMDSTAT  = _CMD_STATUS._WAIT;
+		eCMDID 	  = _CMD_ID._NONE;
+		nTarIdent = 0;		
+		nOrgGridX = 0;
+		nOrgGridY = 0;
+		
+		nTarGridX = 0;
+		nTarGridY = 0;
+		
+		nSkillID = 0;
+		nAvilityID = 0;
+		nItemID = 0;
+		
+		
+	}
+}
+

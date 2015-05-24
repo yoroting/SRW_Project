@@ -10,7 +10,7 @@ public class Panel_unit : MonoBehaviour {
 	public GameObject HpBarObj;
 	public GameObject DefBarObj;
 
-	public int  CharID;
+	public int  CharID;			// not identift
 	public iVec2 Loc;
 	public UNIT_DATA pUnitData;  // always need to check before use it
 	public List< iVec2 > PathList;
@@ -18,9 +18,11 @@ public class Panel_unit : MonoBehaviour {
 	iVec2	TarPos;					   //目標左標
 	public int TarIdent { set; get ;}  //攻擊對象
 
-//	public int  Identify;		avoid double 
 
-	public int  ID() 
+//	public int  Identify;		avoid double 
+	bool bOnSelected;
+
+	public int  Ident() 
 	{
 		if( pUnitData != null  ){
 			return pUnitData.n_Ident;
@@ -37,7 +39,7 @@ public class Panel_unit : MonoBehaviour {
 
 	// Awake
 	void Awake(){
-
+		bOnSelected = false;
 		
 	}
 	// Use this for initialization
@@ -49,10 +51,16 @@ public class Panel_unit : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+		// STOP UPDATE OTHER ACTION
+		if (IsAnimate () == true)
+			return;
+
 		// check if need to move
-		if (IsMoveing () == false) {
+		//if (IsMoveing () == false ) {			// check have null point
+		if ((PathList != null) && (PathList.Count > 0)) {
 			MoveNextPoint ();			// auto move
 		}
+		//}
 
 
 	}
@@ -97,16 +105,28 @@ public class Panel_unit : MonoBehaviour {
 		TarPos = new iVec2 (x, y);
 		//TarPos.X = x;
 		//TarPos.Y = y;
-		if (Loc == TarPos)
+		if (TarPos.Collision (Loc)) {
+			// this case won't trig move end event.
 			return;
+		}
 
-		PathList = Panel_StageUI.Grids.GetPathList( Loc , TarPos ) ;
+		PathList =  GameScene.Instance.Grids.GetPathList( Loc , TarPos ) ;
 		MoveNextPoint();
 	}
-	public bool IsMoveing()
+
+	public bool IsAnimate()
 	{
 		if( nTweenMoveCount != 0 )
 			return true;
+
+		return false;
+	}
+
+	public bool IsMoving()
+	{
+		if( nTweenMoveCount != 0 )
+			return true;
+
 		if( (PathList!=null) && PathList.Count > 0  )
 			return true;
 
@@ -114,19 +134,33 @@ public class Panel_unit : MonoBehaviour {
 	}
 	public void MoveNextPoint( )
 	{
-		if( (PathList== null) || (PathList.Count <= 0)  )
+		if( (PathList== null)   )
 			return ;
+		if ((PathList.Count <= 0)) {
+			// move end
+			PathList = null;
+		
+			return ;
+		}
+
+
 		iVec2 v = PathList[0];
 		PathList.RemoveAt( 0 );
+
+		// avoid the same point
+		if ( v.Collision(Loc) )
+			return;
 		//TarPos = v;
+
+		Vector3 tar = this.gameObject.transform.localPosition;
+		tar.x =  GameScene.Instance.Grids.GetRealX( v.X );
+		tar.y =  GameScene.Instance.Grids.GetRealY( v.Y );
+
 
 		int iDist = Loc.Dist( v );
 		float during = iDist* (0.2f);
 
 		// cal target location position
-		Vector3 tar = this.gameObject.transform.localPosition;
-		tar.x =  Panel_StageUI.Grids.GetRealX( v.X );
-		tar.y =  Panel_StageUI.Grids.GetRealY( v.Y );
 
 		Loc = v; // record target pos as current pos
 		// Tween move
@@ -142,11 +176,54 @@ public class Panel_unit : MonoBehaviour {
 	// 待機中 可下命令
 	bool IsIdle()
 	{
-		if (IsMoveing ())
+		if (IsMoving ())
 			return false;
 
 		return true;
 	}
+
+	public void OnSelected( bool OnOff )
+	{
+		if( bOnSelected == OnOff )
+			return ;
+
+		if (OnOff) {
+			TweenScale tw = this.GetComponent<TweenScale>( );
+			if( tw )
+			{
+				tw.ResetToBeginning();
+				tw.enabled = true;
+				tw.Play( true );
+				//NGUITools.SetActive( tw , true );
+			}
+		
+			bOnSelected = true;
+		} else 
+		{
+			TweenScale tw = this.GetComponent<TweenScale>( );
+			if( tw )
+			{
+				tw.ResetToBeginning();
+				tw.enabled = false;
+
+				Vector3 s = new Vector3( 1.0f , 1.0f ,1.0f );
+				this.gameObject.transform.localScale = s; 
+				//NGUITools.SetActive( tw , false );
+			}
+
+			// close 
+			bOnSelected = false;
+		}
+	}
+
+	public void OnAtcioned( bool OnOff )
+	{
+		if (OnOff) {			
+		} else 
+		{
+		}
+	}
+
 
 	// call back func
 	int	   nTweenMoveCount	= 0;		// check move is done

@@ -93,8 +93,10 @@ public class Panel_Talk : MonoBehaviour {
 	void OnSkipClick(GameObject go)
 	{
 		//if (IsAllEnd())
+
+		while( m_nScriptIdx< m_cScript.GetMaxCol ())
 		{
-			m_bClickScript = true; // go next script
+			NextLine ();
 		}
 		EndTalk();
 	}

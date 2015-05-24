@@ -88,7 +88,7 @@ public class StageDelMobEvent: GameEvent {
 	}
 }
 
-// Char Cmd Event
+
 public class StageCharMoveEvent: GameEvent {
 	public const string Name = "StageCharMoveEvent";
 	public int nIdent = 0;
@@ -96,6 +96,54 @@ public class StageCharMoveEvent: GameEvent {
 	public int nY = 0;
 
 	public StageCharMoveEvent(){
+		name = Name;		// important.  must have this line as key
+	}
+}
+
+
+
+public class StageShowMoveRangeEvent: GameEvent {
+	public const string Name = "StageShowMoveRangeEvent";
+	public int nIdent = 0;
+	public int nX = 0;
+	public int nY = 0;
+	
+	public StageShowMoveRangeEvent(){
+		name = Name;		// important.  must have this line as key
+	}
+}
+
+public class StageShowAttackRangeEvent: GameEvent {
+	public const string Name = "StageShowAttackRangeEvent";
+	public int nIdent = 0;
+	public int nX = 0;
+	public int nY = 0;
+	
+	public StageShowAttackRangeEvent(){
+		name = Name;		// important.  must have this line as key
+	}
+}
+
+public class StageRestorePosEvent: GameEvent {
+	public const string Name = "StageRestorePosEvent";
+	public int nIdent = 0;
+	public int nX = 0;
+	public int nY = 0;
+	
+	public StageRestorePosEvent(){
+		name = Name;		// important.  must have this line as key
+	}
+}
+
+
+// Char Cmd UI Event
+public class CmdCharMoveEvent: GameEvent {
+	public const string Name = "CmdCharMoveEvent";
+	public int nIdent = 0;
+	public int nX = 0;
+	public int nY = 0;
+	
+	public CmdCharMoveEvent(){
 		name = Name;		// important.  must have this line as key
 	}
 }

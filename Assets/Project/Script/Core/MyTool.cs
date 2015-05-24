@@ -33,6 +33,10 @@ public class MyTool {
 
 	}
 
+	public static T GetPanel<T>( GameObject obj   )
+	{	
+		return obj.GetComponent< T > ();  
+	}
 	// 动态的计算出现在manualHeight的高度。
 	static private void AdaptiveUI()
 	{

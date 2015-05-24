@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Panel_CmdSysUI : MonoBehaviour {
+public class Panel_CmdSysUI : MonoBehaviour
+{
 	public const string Name = "Panel_CmdSysUI";
 
 	public GameObject InfoButton;

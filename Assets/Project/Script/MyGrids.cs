@@ -705,7 +705,7 @@ namespace MYGRIDS
 			int Diffx = ed.X- st.X;
 			int Diffy = ed.Y- st.Y;
 			iVec2 p1 = new iVec2();
-			if( Diffx > Diffy )
+			if( Diffy == 0 )
 			{
 				p1.X = ed.X;
 				p1.Y = st.Y;
