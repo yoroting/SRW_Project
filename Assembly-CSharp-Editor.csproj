@@ -138,6 +138,7 @@
      <Compile Include="Assets\NGUI\Scripts\Editor\UIWidgetInspector.cs" />
      <Compile Include="Assets\NGUI\Scripts\Editor\UIWrapContentEditor.cs" />
      <Compile Include="Assets\NGUIExtension\Editor\TweenGrayLevelEditor.cs" />
+     <Compile Include="Assets\Pathfinding\Editor\WaypointEditor.cs" />
      <None Include="Assets\NGUI\Examples\Shaders\Unlit - Depth Cutout.shader" />
      <None Include="Assets\NGUI\ReadMe - 3.8.0.txt" />
      <None Include="Assets\Project\Resources\Shader\Unlit - Transparent Colored DOUBLE.shader" />

@@ -18,7 +18,6 @@ public class Panel_unit : MonoBehaviour {
 	iVec2	TarPos;					   //目標左標
 	public int TarIdent { set; get ;}  //攻擊對象
 
-
 //	public int  Identify;		avoid double 
 	bool bOnSelected;
 
@@ -40,12 +39,16 @@ public class Panel_unit : MonoBehaviour {
 	// Awake
 	void Awake(){
 		bOnSelected = false;
+
+		GameObject instance = ResourcesManager.CreatePrefabGameObj ( this.gameObject ,"FX/Cartoon FX/CFXM4 Hit A (Blue, CFX Blend)" );
+		//GameObject instance = Resources.Load ( "/FX/Cartoon FX" );
+		//GameObject instance = CFX_SpawnSystem.GetNextObject ( CFX_SpawnSystem.instance.objectsToPreload[3] );
 		
 	}
 	// Use this for initialization
 	void Start () {
 		// change Texture
-
+	
 	}
 	
 	// Update is called once per frame
@@ -61,7 +64,6 @@ public class Panel_unit : MonoBehaviour {
 			MoveNextPoint ();			// auto move
 		}
 		//}
-
 
 	}
 

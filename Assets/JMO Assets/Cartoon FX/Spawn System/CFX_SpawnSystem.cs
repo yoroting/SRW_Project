@@ -89,7 +89,7 @@ public class CFX_SpawnSystem : MonoBehaviour
 	
 	// INTERNAL SYSTEM ----------------------------------------------------------------------------------------------------------------------------------------
 	
-	static private CFX_SpawnSystem instance;
+	static public CFX_SpawnSystem instance;
 	
 	public GameObject[] objectsToPreload = new GameObject[0];
 	public int[] objectsToPreloadTimes = new int[0];

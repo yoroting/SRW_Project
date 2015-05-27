@@ -142,6 +142,9 @@ public class Panel_StageUI : MonoBehaviour
 
 		IsEventEnd = false;
 		//Dictionary< int , STAGE_EVENT > EvtPool;			// add event id 
+
+	
+
 	}
 	
 	// Update is called once per frame
