@@ -7,8 +7,8 @@ using MyClassLibrary;			// for parser string
 
 
 
-public class Panel_StageUI : MonoBehaviour 
-//public class Panel_StageUI : Singleton<Panel_StageUI>
+//public class Panel_StageUI : MonoBehaviour 
+public class Panel_StageUI : Singleton<Panel_StageUI>
 {
 	public const string Name = "Panel_StageUI";
 
@@ -253,6 +253,8 @@ public class Panel_StageUI : MonoBehaviour
 
 			}
 
+
+			cCMD.Instance.eCMDTYPE = _CMD_TYPE._CELL;
 			// clear over effect
 			ClearOverCellEffect( );
 
@@ -299,6 +301,8 @@ public class Panel_StageUI : MonoBehaviour
 		if( unit == null )
 			return ;
 
+		cCMD.Instance.eCMDTYPE = _CMD_TYPE._ALLY;
+
 		GameObject obj = PanelManager.Instance.OpenUI( Panel_CMDUnitUI.Name ) ;
 		Panel_CMDUnitUI panel = MyTool.GetPanel<Panel_CMDUnitUI> (obj);
 		if (panel != null) {
@@ -342,6 +346,8 @@ public class Panel_StageUI : MonoBehaviour
 			return ;
 
 		// close sel 
+		cCMD.Instance.eCMDTYPE = _CMD_TYPE._ALLY;
+
 		ClearOverCellEffect(  );
 		if (PanelManager.Instance.CheckUIIsOpening ( Panel_CMDUnitUI.Name )) {
 			Panel_CMDUnitUI panel = MyTool.GetPanel< Panel_CMDUnitUI >( PanelManager.Instance.JustGetUI( Panel_CMDUnitUI.Name ) ); 
@@ -447,7 +453,7 @@ public class Panel_StageUI : MonoBehaviour
 		return null;
 	}
 
-	void ClearOverCellEffect(  )
+	public void ClearOverCellEffect(  )
 	{
 		// clear eff
 		//OverCellPool
@@ -472,7 +478,7 @@ public class Panel_StageUI : MonoBehaviour
 
 	}
 
-	void CreateMoveOverEffect( Panel_unit unit )
+	public void CreateMoveOverEffect( Panel_unit unit )
 	{
 		foreach( KeyValuePair< string , GameObject> pair in OverCellPool )
 		{
@@ -503,7 +509,7 @@ public class Panel_StageUI : MonoBehaviour
 		}
 	}
 
-	void CreateAttackOverEffect( Panel_unit unit )
+	public void CreateAttackOverEffect( Panel_unit unit )
 	{
 		foreach( KeyValuePair< string , GameObject> pair in OverCellAtkPool )
 		{

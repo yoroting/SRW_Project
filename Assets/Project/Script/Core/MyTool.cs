@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using Enum = System.Enum;
 using MYGRIDS;
+using _SRW;
+
 // 
 public class MyTool {
 
@@ -32,6 +36,46 @@ public class MyTool {
 		return v;
 
 	}
+	//
+	public static List <GameObject > GetChildPool( GameObject obj)
+	{
+		if (obj == null)
+			return null;
+
+		List <GameObject > pool = new List <GameObject >();
+
+		foreach (Transform child in obj.transform)
+		{
+			//child is your child transform
+
+			pool.Add( child.gameObject );
+
+		}
+		return pool;
+	}
+
+
+	// Get CmdID key name
+	public static string GetCMDNameByID( _CMD_ID eID )
+	{
+		return eID.ToString ();
+	}
+	public static _CMD_ID GetCMDIDByName( string name )
+	{
+		string[] names = Enum.GetNames(typeof(_CMD_ID));
+		_CMD_ID[] values = (_CMD_ID[])Enum.GetValues(typeof(_CMD_ID));
+		
+		for( int i = 0; i < names.Length; i++ )
+		{
+			if( name == names[i] ){
+				return values[i];
+			}
+
+		}
+		return _CMD_ID._NONE;
+
+	}
+
 
 	public static T GetPanel<T>( GameObject obj   )
 	{	

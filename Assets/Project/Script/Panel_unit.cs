@@ -40,7 +40,20 @@ public class Panel_unit : MonoBehaviour {
 	void Awake(){
 		bOnSelected = false;
 
-		GameObject instance = ResourcesManager.CreatePrefabGameObj ( this.gameObject ,"FX/Cartoon FX/CFXM4 Hit A (Blue, CFX Blend)" );
+
+		//ParticleSystemRenderer
+
+		GameObject instance = ResourcesManager.CreatePrefabGameObj ( this.gameObject ,"FX/Cartoon FX/CFXM4 Splash" );
+
+		ParticleSystem ps =instance.GetComponent< ParticleSystem>();
+		if (ps!= null) {
+
+		}
+		ParticleSystemRenderer psr =instance.GetComponent< ParticleSystemRenderer>();
+		if (psr != null) {
+			psr.sortingLayerName = "FX";
+		}
+
 		//GameObject instance = Resources.Load ( "/FX/Cartoon FX" );
 		//GameObject instance = CFX_SpawnSystem.GetNextObject ( CFX_SpawnSystem.instance.objectsToPreload[3] );
 		

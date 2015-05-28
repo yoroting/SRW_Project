@@ -1,19 +1,25 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using _SRW;
 
 
 
-public class Panel_CMDUnitUI : MonoBehaviour 
-//public class Panel_CMDUnitUI : Singleton<Panel_CMDUnitUI>
+//public class Panel_CMDUnitUI : MonoBehaviour 
+public class Panel_CMDUnitUI : Singleton<Panel_CMDUnitUI>
 {
 
 	public const string Name = "Panel_CMDUnitUI";
+
+
 
 	//static public  cCommand CMD;							// for global operate
 	public  cCMD CMD;							// for global operate
 
 	public Panel_unit pUnit; 						// setup it
+
+	public GameObject NGuiGrids;
+
 	public GameObject InfoButton;
 	public GameObject MoveButton;
 	public GameObject AttackButton;
@@ -35,6 +41,8 @@ public class Panel_CMDUnitUI : MonoBehaviour
 	{
 		CMD = cCMD.Instance;
 
+	
+
 		UIEventListener.Get(InfoButton).onClick += OnInfoButtonClick;
 		UIEventListener.Get(MoveButton).onClick += OnMoveButtonClick;;
 		UIEventListener.Get(AttackButton).onClick += OnAttackButtonClick;;
@@ -42,8 +50,12 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		UIEventListener.Get(SchoolButton).onClick += OnSchoolButtonClick;
 		UIEventListener.Get(CancelButton).onClick += OnCancelButtonClick;;
 
+
 		//
 		GameEventManager.AddEventListener(  CmdCharMoveEvent.Name , OnCmdCharMoveEvent );
+
+		//==============================
+		ClearCmdPool ();
 	}
 
 	void Start () {
@@ -92,8 +104,10 @@ public class Panel_CMDUnitUI : MonoBehaviour
 	//	}
 	}
 
-	void OnEnable()
+	void OnEnable() // before start
 	{
+		// create cmd by type
+		CreateCMDList ( cCMD.Instance.eCMDTYPE );
 
 	//	if (pUnit != null) {
 	//		pUnit.OnSelected( true );
@@ -102,9 +116,63 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
 	void OnDisable()
 	{
+		ClearCmdPool ();
 	//	if (pUnit != null) {
 	//		pUnit.OnSelected( false );
 	//	}
+	}
+
+	void ClearCmdPool()
+	{
+		if (NGuiGrids == null) {
+			return ;
+		}
+		UIGrid grid = NGuiGrids.GetComponent<UIGrid>(); 
+		if (grid == null) {
+			return ;
+		}
+		List< Transform > lst = grid.GetChildList ();
+		//List< GameObject > CmdBtnList = MyTool.GetChildPool( NGuiGrids );
+
+		if (lst == null)
+			return;
+
+		foreach ( Transform t in lst) {
+
+			///UIEventListener.Get(obj).onClick -= OnCMDButtonClick;;  // no need.. destory soon
+			NGUITools.Destroy( t.gameObject );
+		}
+
+	}
+
+	void CreateCMDList( _CMD_TYPE eType )
+	{
+		ClearCmdPool ();
+		List< _CMD_ID >  cmdList =  cCMD.Instance.GetCmdList ( eType );
+		if (cmdList == null)
+			return;
+	
+		foreach( _CMD_ID id in cmdList )
+		{
+			GameObject obj = ResourcesManager.CreatePrefabGameObj( this.NGuiGrids , "Prefab/CMD_BTN" ); // create cmd and add to grid
+			if( obj != null )
+			{
+				obj.name = MyTool.GetCMDNameByID( id );
+				UILabel lbl = obj.GetComponentInChildren<UILabel> ();
+				if( lbl != null )
+				{
+					lbl.text = obj.name ;
+					// Load Label by const data
+				}
+				UIEventListener.Get(obj).onClick += OnCMDButtonClick;
+			}
+		}
+		// update
+		UIGrid grid = NGuiGrids.GetComponent<UIGrid>(); 
+		grid.repositionNow = true;		// need this for second pop to re pos
+
+		//NGuiGrids.SetActive (true);
+
 	}
 
 	public void SetCmder( Panel_unit unit )
@@ -149,6 +217,24 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		PanelManager.Instance.CloseUI( Name );
 	}
 	//click
+	void OnCMDButtonClick(GameObject go)
+	{
+		string name = go.name;
+
+		//_CMD_ID id = MyTool.GetCMDIDByName ( name );
+		if (name == _CMD_ID._INFO.ToString ()) {
+		}
+		else if (name == _CMD_ID._MOVE.ToString ()) {
+		}
+		else if (name == _CMD_ID._ATK.ToString ()) {
+		}
+		else if (name == _CMD_ID._ABILITY.ToString ()) {
+		}
+		else if (name == _CMD_ID._CANCEL.ToString ()) {
+			OnCancelButtonClick( go );
+		}
+	}
+
 	void OnInfoButtonClick(GameObject go)
 	{
 		// 查情報
@@ -178,6 +264,8 @@ public class Panel_CMDUnitUI : MonoBehaviour
 //		pUnit 		= null;
 		PanelManager.Instance.CloseUI( Name );
 
+		// send clear over
+		Panel_StageUI.Instance.ClearOverCellEffect ();
 	}
 
 	// Game Event

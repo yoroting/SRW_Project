@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Enum = System.Enum;
 using _SRW;
 using MYGRIDS;
 // All SRW enum list
@@ -17,13 +18,17 @@ namespace _SRW
 	public enum _CMD_TYPE
 	{
 		_SYS = 0,
-		_CELL =1	,
-		_ALLY =2	,
-		_ENEMY =3	,
-		_MENU =4	
+		_CELL ,
+		_ALLY 	,
+		_ENEMY 	,
+		_MENU 	 ,
+		_WAITATK ,
+		_WAITMOVE ,
+		_COUNTER,
+		_MAX ,
 	}
 
-	public enum _CMD_STATUS
+	public enum _CMD_STATUS  // 
 	{
 		_WAIT = 0,
 		_MOVE ,
@@ -38,9 +43,16 @@ namespace _SRW
 		_DEF ,			// 	
 		_SKILL ,			// 	
 		_ABILITY ,			// 	
+		_SCHOOL ,			// 	
 		_ITEM ,			//  No use		
 		_INFO ,			// 	
 		_CANCEL ,			// 	
+		_NEWGAME,
+		_SAVE,
+		_LOAD,
+		_ROUNDEND,
+		_GAMEEND,
+		_OPTION,
 	}
 
 	public enum _ROUND_STATUS
@@ -274,7 +286,9 @@ public class cCMD{
 
 	private bool hadInit = false;
 	public bool HadInit{ get{ return hadInit; } }
-	
+
+	public List<_CMD_ID>[] CmdlistArray ;
+
 	public cMyGrids	Grids;				// main grids . only one
 	
 	
@@ -284,9 +298,70 @@ public class cCMD{
 		if (hadInit)return;
 		
 		hadInit = true;
-		//this.GetAudioClipFunc = getAudioClipFunc;
-		//UnitPool = new Dictionary< int , UNIT_DATA >();
-		//CampPool = new Dictionary< _CAMP , cCamp >();
+
+		CmdlistArray = new List<_CMD_ID>[ (int)_CMD_TYPE._MAX ];
+
+		int idx = 0;
+		// create cmd list
+		idx = (int)_CMD_TYPE._SYS;
+		CmdlistArray [idx] = new List<_CMD_ID> ();
+		CmdlistArray [idx].Add ( _CMD_ID._NEWGAME ); 
+		CmdlistArray [idx].Add ( _CMD_ID._LOAD );
+		CmdlistArray [idx].Add ( _CMD_ID._OPTION );
+
+		// cell
+		idx = (int)_CMD_TYPE._CELL;
+		CmdlistArray [idx] = new List<_CMD_ID> ();
+		CmdlistArray [idx].Add ( _CMD_ID._INFO ); 
+		CmdlistArray [idx].Add ( _CMD_ID._SAVE ); 
+		CmdlistArray [idx].Add ( _CMD_ID._LOAD ); 
+		CmdlistArray [idx].Add ( _CMD_ID._ROUNDEND ); 
+		CmdlistArray [idx].Add ( _CMD_ID._GAMEEND ); 
+		CmdlistArray [idx].Add ( _CMD_ID._CANCEL ); 
+
+		// ally
+		idx = (int)_CMD_TYPE._ALLY;
+		CmdlistArray [idx] = new List<_CMD_ID> ();
+		CmdlistArray [idx].Add ( _CMD_ID._INFO ); 
+		CmdlistArray [idx].Add ( _CMD_ID._MOVE ); 
+		CmdlistArray [idx].Add ( _CMD_ID._ATK ); 
+		CmdlistArray [idx].Add ( _CMD_ID._SCHOOL ); 
+		CmdlistArray [idx].Add ( _CMD_ID._ABILITY ); 
+		CmdlistArray [idx].Add ( _CMD_ID._DEF ); 
+		CmdlistArray [idx].Add ( _CMD_ID._SCHOOL ); 
+		CmdlistArray [idx].Add ( _CMD_ID._CANCEL ); 
+
+		// enemy
+		idx = (int)_CMD_TYPE._ENEMY;
+		CmdlistArray [idx] = new List<_CMD_ID> ();
+		CmdlistArray [idx].Add (  _CMD_ID._INFO  );
+		CmdlistArray [idx].Add ( _CMD_ID._CANCEL );
+
+		//
+		idx = (int)_CMD_TYPE._MENU;
+		CmdlistArray [idx] = new List<_CMD_ID> ();
+		CmdlistArray [idx].Add ( _CMD_ID._CANCEL ); 
+
+		// wait sel a target to atk
+		idx = (int)_CMD_TYPE._WAITATK;
+		CmdlistArray [idx] = new List<_CMD_ID> ();
+		CmdlistArray [idx].Add ( _CMD_ID._ATK ); 
+		CmdlistArray [idx].Add ( _CMD_ID._SCHOOL ); 
+		CmdlistArray [idx].Add ( _CMD_ID._CANCEL ); 
+
+		// wait sel a pos
+		idx = (int)_CMD_TYPE._WAITMOVE;
+		CmdlistArray [idx] = new List<_CMD_ID> ();
+		CmdlistArray [idx].Add ( _CMD_ID._CANCEL ); 
+
+		// counter 
+		idx = (int)_CMD_TYPE._COUNTER;
+		CmdlistArray [idx] = new List<_CMD_ID> (); // 反及
+		CmdlistArray [idx].Add ( _CMD_ID._ATK ); 
+		CmdlistArray [idx].Add ( _CMD_ID._ABILITY ); 
+		CmdlistArray [idx].Add ( _CMD_ID._CANCEL ); 
+
+
 	}
 
 	private static cCMD instance;
@@ -305,9 +380,11 @@ public class cCMD{
 	}
 
 	public int nCmderIdent;			// Operatr char ident
+	public _CMD_TYPE	eCMDTYPE;		// Cmd type
 	public _CMD_STATUS 	eCMDSTAT;		// cmd status
-	public _CMD_ID 		eCMDID;			// cmd ID
-	
+	public _CMD_ID 		eCMDID;			// current cmd ID
+	public _CMD_ID 		eLastCMDID;		// Last cmd ID
+
 	public int nTarIdent;
 	
 	public int nOrgGridX;
@@ -323,8 +400,13 @@ public class cCMD{
 	public void Clear()
 	{
 		nCmderIdent = 0;
+		eCMDTYPE = _CMD_TYPE._SYS;
 		eCMDSTAT  = _CMD_STATUS._WAIT;
+
+	
+
 		eCMDID 	  = _CMD_ID._NONE;
+		eLastCMDID = _CMD_ID._NONE;
 		nTarIdent = 0;		
 		nOrgGridX = 0;
 		nOrgGridY = 0;
@@ -337,6 +419,15 @@ public class cCMD{
 		nItemID = 0;
 		
 		
+	}
+
+	public List<_CMD_ID> GetCmdList( _CMD_TYPE eType)
+	{
+		int itype = (int)eType;
+		if (itype < 0 || itype >= CmdlistArray.Length) {
+			return null;
+		}
+		return CmdlistArray [itype];
 	}
 }
 

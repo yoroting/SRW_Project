@@ -1531,6 +1531,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7801f97cf1cfd66448a971fd75bbfa6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pUnit: {fileID: 0}
+  NGuiGrids: {fileID: 172222}
   InfoButton: {fileID: 156146}
   MoveButton: {fileID: 194060}
   AttackButton: {fileID: 114886}

@@ -101,7 +101,6 @@ public class StageCharMoveEvent: GameEvent {
 }
 
 
-
 public class StageShowMoveRangeEvent: GameEvent {
 	public const string Name = "StageShowMoveRangeEvent";
 	public int nIdent = 0;
