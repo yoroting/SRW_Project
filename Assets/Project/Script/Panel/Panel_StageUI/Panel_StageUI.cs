@@ -14,6 +14,7 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 
 	public GameObject BackGroundObj; // back ground
 	public GameObject TilePlaneObj; // plane of all tiles sprite
+	public GameObject MaskPanelObj; // plane mask
 
 	public cMyGrids	Grids;				// main grids . only one
 
@@ -146,16 +147,15 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 	
 
 	}
-	
-	// Update is called once per frame
-	void Update () {
 
+	void FixPlanePosition()
+	{
 		// ensure canvrs in screen
 		if( TilePlaneObj != null )
 		{
 			//float fMouseX = Input.mousePosition.x;
 			//float fMouseY = Input.mousePosition.y;
-
+			
 			Vector3 vOffset = TilePlaneObj.transform.localPosition;
 			// X 
 			if( vOffset.x < fMinOffX ){
@@ -174,6 +174,14 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 			TilePlaneObj.transform.localPosition = vOffset;
 		}
 
+	}
+
+	// Update is called once per frame
+	void Update () {
+
+		FixPlanePosition ();
+
+
 
 		// block other event
 		if( IsAnyActionRunning() == true )
@@ -183,11 +191,21 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		// Atk / mov / other action need to preform first
 		RunUnitAction();
 
+		if (BattleManager.Instance.IsBattlePhase ()) {// this will throw many unit action
+			BattleManager.Instance.Run();
+			return;
+		}
+
 		//==================	
 		RunEvent( );				// this will throw many unit action
 
 		if( IsRunningEvent() == true  )
 			return; // block other action  
+
+		// check if need pop cmd UI auto
+		if ( CheckPopNextCMD () == true)
+			return;
+
 
 		//===================		// this will throw unit action or trig Event
 		if ( RunCampAI( GameDataManager.Instance.nActiveCamp ) == false )
@@ -205,6 +223,39 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 	
 	}
 
+	Panel_CMDUnitUI OpenCMDUI( _CMD_TYPE type , Panel_unit cmder )
+	{
+		cCMD.Instance.eCMDTYPE = type; 
+		Panel_CMDUnitUI panel = MyTool.GetPanel<Panel_CMDUnitUI> ( PanelManager.Instance.OpenUI (Panel_CMDUnitUI.Name) );
+		if( panel != null )
+		{
+			panel.SetCmder( cmder );
+		}
+		cCMD.Instance.eCMDSTATUS = _CMD_STATUS._WAIT_CMDID;
+
+		return panel;
+	}
+
+	void CloseCMDUI()
+	{
+		Panel_CMDUnitUI panel = MyTool.GetPanel<Panel_CMDUnitUI>( PanelManager.Instance.JustGetUI(Panel_CMDUnitUI.Name)) ;
+		if( panel != null )
+		{
+			panel.CancelCmd();
+		}
+		ClearOverCellEffect();
+		cCMD.Instance.eCMDSTATUS = _CMD_STATUS._NONE;
+	}
+
+	void RollBackCMDUIWaitTargetMode()
+	{
+		cCMD.Instance.eCMDSTATUS = _CMD_STATUS._WAIT_CMDID;
+		cCMD.Instance.eCMDID 	   = _CMD_ID._NONE;
+		cCMD.Instance.eCMDTARGET = _CMD_TARGET._ALL;   // only unit
+		ClearOverCellEffect ();
+		PanelManager.Instance.OpenUI( Panel_CMDUnitUI.Name );
+	}
+
 	void OnCellClick(GameObject go)
 	{
 		if( IsAnyActionRunning() == true )
@@ -217,20 +268,17 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		UnitCell unit = go.GetComponent<UnitCell>() ;
 		if( unit != null ){
 			string str = string.Format( "CellOnClick( {0},{1}) " , unit.X() , unit.Y() );
+			string sKey =	unit.Loc.GetKey();
 			Debug.Log(str);
-
-
-			if (PanelManager.Instance.CheckUIIsOpening (Panel_CMDUnitUI.Name)) {						
-				// don't clear over effect first. need it to check
-				//test code to move 
-					if( cCMD.Instance.eCMDSTAT == _CMD_STATUS._WAIT || 
-				  		 cCMD.Instance.eCMDSTAT == _CMD_STATUS._MOVE   ){
-				 // check in pool
-					string sKey =	unit.Loc.GetKey();
-					Debug.Log( sKey ); 
+			if( cCMD.Instance.eCMDSTATUS == _CMD_STATUS._WAIT_CMDID ) // is waiting cmd id. this is moving act 
+			{
+				if( cCMD.Instance.eCMDTYPE == _CMD_TYPE._ALLY )
+				{
 					if( OverCellPool.ContainsKey( sKey ) == true  )
 					{	
 						ClearOverCellEffect( );
+						cCMD.Instance.eNEXTCMDTYPE = _CMD_TYPE._WAITATK;
+						PanelManager.Instance.CloseUI( Panel_CMDUnitUI.Name ); //only colse ui to wait
 
 						StageCharMoveEvent evt = new StageCharMoveEvent ();
 						evt.nIdent =  cCMD.Instance.nCmderIdent; // current oper ident 
@@ -239,47 +287,69 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 						GameEventManager.DispatchEvent (evt);		
 						return;
 					}
-					else if( cCMD.Instance.eCMDSTAT == _CMD_STATUS._TARGET )
+					else if( cCMD.Instance.eCMDTARGET == _CMD_TARGET._UNIT )
 					{
+						CloseCMDUI();
 						// need cancel cmd
-						Panel_CMDUnitUI panel = MyTool.GetPanel<Panel_CMDUnitUI>( PanelManager.Instance.JustGetUI(Panel_CMDUnitUI.Name)) ;
-						if( panel != null )
-						{
-							panel.CancelCmd();
-						}
-						ClearOverCellEffect();
+					
+					}
+					return ;
+				}
+				else 
+				{
+					// close 
+					CloseCMDUI();
+				}
+			}
+			else if( cCMD.Instance.eCMDSTATUS == _CMD_STATUS._WAIT_TARGET )
+			{
+				if( cCMD.Instance.eCMDTARGET == _CMD_TARGET._ALL || 
+				   cCMD.Instance.eCMDTARGET == _CMD_TARGET._POS   ){
+
+					// make one map skill cmd
+
+				}
+				else { 
+					// this is impossible
+					if( OverCellAtkPool.ContainsKey( sKey ) == false   )
+					{
+						RollBackCMDUIWaitTargetMode();
+						//Panel_CMDUnitUI.BackWaitCmd();		// back if the cmd is not exists	
 					}
 				}
-
+				return ;
 			}
 
 
-			cCMD.Instance.eCMDTYPE = _CMD_TYPE._CELL;
+			//cCMD.Instance.eCMDTYPE = _CMD_TYPE._CELL;
 			// clear over effect
-			ClearOverCellEffect( );
+		//	ClearOverCellEffect( );
 
+			// check to open sys ui
 			// avoid re open
 //			if( PanelManager.Instance.CheckUIIsOpening( "Panel_CMDUI" ) == false  )
-			{
-				GameObject obj = PanelManager.Instance.OpenUI( Panel_CmdSysUI.Name );
-				if (obj != null) {
-					NGUITools.SetActive( obj, true );
-					Vector3 vLoc = this.gameObject.transform.localPosition ;
+//			{
+			OpenCMDUI( _CMD_TYPE._CELL , null );
+//			cCMD.Instance.eCMDTYPE = _CMD_TYPE._CELL; 
+//				GameObject obj = PanelManager.Instance.OpenUI( Panel_CmdSysUI.Name );
+//				if (obj != null) {
+				//	NGUITools.SetActive( obj, true );
+				//	Vector3 vLoc = this.gameObject.transform.localPosition ;
 					//UICamera.mainCamera.ScreenPointToRay
 				//	UIRoot mRoot = NGUITools.FindInParents<UIRoot>(gameObject);					
 				//	float ratio = (float)mRoot.activeHeight / Screen.height;
 
-					vLoc.x = MyTool.ScreenToLocX( Input.mousePosition.x );
-					vLoc.y = MyTool.ScreenToLocY( Input.mousePosition.y );
+				//	vLoc.x = MyTool.ScreenToLocX( Input.mousePosition.x );
+				//	vLoc.y = MyTool.ScreenToLocY( Input.mousePosition.y );
 
-					obj.transform.localPosition = vLoc;// MousePosition;
-
+				//	obj.transform.localPosition = vLoc;// MousePosition;
+					//
 //					Panel_CmdSysUI co = obj.GetComponent< Panel_CmdSysUI >();
 //					if( co )
 //					{					
 //					}
-				}
-			}
+//				}
+//			}
 		}
 	}
 
@@ -301,20 +371,32 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		if( unit == null )
 			return ;
 
-		cCMD.Instance.eCMDTYPE = _CMD_TYPE._ALLY;
-
-		GameObject obj = PanelManager.Instance.OpenUI( Panel_CMDUnitUI.Name ) ;
-		Panel_CMDUnitUI panel = MyTool.GetPanel<Panel_CMDUnitUI> (obj);
-		if (panel != null) {
-			if (cCMD.Instance.eCMDSTAT == _CMD_STATUS._WAIT) {						
-				panel.SetCmder (unit);
-				CreateMoveOverEffect (unit);
-			} else if (cCMD.Instance.eCMDSTAT == _CMD_STATUS._TARGET) {
-				ClearOverCellEffect ();
-				panel.SetTarget (unit);
-
-			}
+		if (cCMD.Instance.eCMDSTATUS == _CMD_STATUS._NONE) {
+			//GameObject obj = PanelManager.Instance.OpenUI (Panel_CMDUnitUI.Name);
+			Panel_CMDUnitUI panel = OpenCMDUI( _CMD_TYPE._ALLY , unit );
+			CreateMoveOverEffect (unit);
+			return;
 		}
+		else if (cCMD.Instance.eCMDSTATUS == _CMD_STATUS._WAIT_TARGET ){
+//			Panel_CMDUnitUI panel = MyTool.GetPanel< Panel_CMDUnitUI >( PanelManager.Instance.JustGetUI( Panel_CMDUnitUI.Name ) ); 
+//			if( panel )
+//				panel.CancelCmd();
+			//GameObject obj = PanelManager.Instance.OpenUI (Panel_CMDUnitUI.Name);
+			string sKey = unit.Loc.GetKey ();
+			Debug.Log( "OnCharClick" + sKey + ";Ident"+unit.Ident() ); 
+			if ( OverCellAtkPool.ContainsKey (sKey) == true) {
+				Panel_CMDUnitUI panel = MyTool.GetPanel<Panel_CMDUnitUI> ( PanelManager.Instance.OpenUI (Panel_CMDUnitUI.Name) );
+				if (panel != null) {
+					panel.SetTarget( unit );
+			}
+			}
+			ClearOverCellEffect ();
+
+		}
+
+
+
+
 //		if( obj != null )
 //		{
 //			Panel_CMDUnitUI panel = obj.GetComponent<Panel_CMDUnitUI>();
@@ -344,18 +426,40 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		Panel_unit unit = go.GetComponent<Panel_unit>() ;
 		if( unit == null )
 			return ;
+		string sKey = unit.Loc.GetKey ();
+		Debug.Log( "OnMobClick" + sKey + ";Ident"+unit.Ident() ); 
 
-		// close sel 
-		cCMD.Instance.eCMDTYPE = _CMD_TYPE._ALLY;
+		// open new cmd ui when this idn't a new cmd
+		if (cCMD.Instance.eCMDSTATUS == _CMD_STATUS._WAIT_TARGET ) {		
+			if ( OverCellAtkPool.ContainsKey (sKey) == true) {
+				// send atk cmd
+				Panel_CMDUnitUI panel = MyTool.GetPanel< Panel_CMDUnitUI >( PanelManager.Instance.JustGetUI( Panel_CMDUnitUI.Name ) ); 
+				panel.SetTarget( unit );
+			}
+
+			ClearOverCellEffect(  );
+			return;
+		}
+
 
 		ClearOverCellEffect(  );
-		if (PanelManager.Instance.CheckUIIsOpening ( Panel_CMDUnitUI.Name )) {
-			Panel_CMDUnitUI panel = MyTool.GetPanel< Panel_CMDUnitUI >( PanelManager.Instance.JustGetUI( Panel_CMDUnitUI.Name ) ); 
 
-			if ( cCMD.Instance.eCMDSTAT == _CMD_STATUS._TARGET) {
-				panel.SetTarget (unit);
-			}
-		}
+		OpenCMDUI ( _CMD_TYPE._ENEMY , unit );
+
+		CreateMoveOverEffect ( unit );
+
+		// close sel 
+		//cCMD.Instance.eCMDTYPE = _CMD_TYPE._ALLY;
+
+
+
+//		if (PanelManager.Instance.CheckUIIsOpening ( Panel_CMDUnitUI.Name )) {
+//			Panel_CMDUnitUI panel = MyTool.GetPanel< Panel_CMDUnitUI >( PanelManager.Instance.JustGetUI( Panel_CMDUnitUI.Name ) ); 
+
+//			if ( cCMD.Instance.eCMDTARGET == _CMD_TARGET._UNIT || cCMD.Instance.eCMDTARGET == _CMD_TARGET._ALL ) {
+//				panel.SetTarget (unit);
+//			}
+//		}
 
 	}
 	bool LoadScene( int nScnid )
@@ -542,8 +646,27 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 
 	bool IsAnyActionRunning()
 	{
+		if (BattleMsg.nMsgCount > 0)
+			return true;
+
 		if( PanelManager.Instance.CheckUIIsOpening( "Panel_Talk" ) == true )
 			return true;
+
+		foreach( KeyValuePair< int , Panel_unit > pair in IdentToUnit )
+		{
+			if( pair.Value == null )
+				continue;
+			if( pair.Value.IsMoving() )
+			{
+				return true;
+			}
+			if( pair.Value.IsAnimate() )
+			{
+				return true;
+			}
+		}
+
+
 
 		return false;
 	}
@@ -917,8 +1040,8 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 			unitobj.CreateChar( nCharID , x , y );
 		}
 
-		// position
-		obj.transform.localPosition =  MyTool.SnyGridtoLocalPos( x , y , ref Grids ) ; 
+		// position // set in create
+		//obj.transform.localPosition =  MyTool.SnyGridtoLocalPos( x , y , ref Grids ) ; 
 
 		if (nCampID == _CAMP._PLAYER) {		
 			UIEventListener.Get (obj).onClick += OnCharClick;
@@ -974,6 +1097,22 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		v.y = Grids.GetRealY ( ny );
 		obj.transform.localPosition = v ;
 	}
+
+	public bool CheckPopNextCMD()
+	{
+		if (cCMD.Instance.eNEXTCMDTYPE == _CMD_TYPE._WAITATK || 
+		    cCMD.Instance.eNEXTCMDTYPE == _CMD_TYPE._WAITMOVE )
+		{
+
+			cCMD.Instance.eCMDTYPE = cCMD.Instance.eNEXTCMDTYPE;
+			cCMD.Instance.eNEXTCMDTYPE = _CMD_TYPE._SYS;
+
+			PanelManager.Instance.OpenUI( Panel_CMDUnitUI.Name ); // only open UI. don't change other param
+			return  true;
+		}	
+		return false;
+	}
+
 
 	// Game event func
 	public void OnStageBGMEvent(GameEvent evt)
@@ -1078,7 +1217,7 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 //			Debug.Log( "ERR: can't find unit to move" );
 //		}
 
-		Panel_unit unit = this.GetUnitByIdent ( nIdent); // IdentToUnit[ nIdent ];
+		Panel_unit unit = GetUnitByIdent ( nIdent); // IdentToUnit[ nIdent ];
 		if( unit != null )
 		{
 			unit.MoveTo( nX , nY ); 

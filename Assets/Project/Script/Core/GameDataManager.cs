@@ -15,7 +15,7 @@ namespace _SRW
 		_FRIEND=2,
 	}
 
-	public enum _CMD_TYPE
+	public enum _CMD_TYPE // what kind of cmd list
 	{
 		_SYS = 0,
 		_CELL ,
@@ -28,14 +28,22 @@ namespace _SRW
 		_MAX ,
 	}
 
-	public enum _CMD_STATUS  // 
+	public enum _CMD_STATUS // what kind of cmd list
 	{
-		_WAIT = 0,
-		_MOVE ,
-		_TARGET ,
+		_NONE=0,
+		_WAIT_CMDID,
+		_WAIT_TARGET,
+
 	}
 
-	public enum _CMD_ID  // 
+	public enum _CMD_TARGET  // target type
+	{
+		_ALL = 0,
+		_POS ,
+		_UNIT,
+	}
+
+	public enum _CMD_ID  // list of cmd btn id
 	{
 		_NONE = 0,			// 
 		_MOVE ,			// 
@@ -45,6 +53,7 @@ namespace _SRW
 		_ABILITY ,			// 	
 		_SCHOOL ,			// 	
 		_ITEM ,			//  No use		
+		_WAIT,			//
 		_INFO ,			// 	
 		_CANCEL ,			// 	
 		_NEWGAME,
@@ -347,21 +356,26 @@ public class cCMD{
 		CmdlistArray [idx] = new List<_CMD_ID> ();
 		CmdlistArray [idx].Add ( _CMD_ID._ATK ); 
 		CmdlistArray [idx].Add ( _CMD_ID._SCHOOL ); 
+		CmdlistArray [idx].Add ( _CMD_ID._WAIT ); 
 		CmdlistArray [idx].Add ( _CMD_ID._CANCEL ); 
 
 		// wait sel a pos
 		idx = (int)_CMD_TYPE._WAITMOVE;
 		CmdlistArray [idx] = new List<_CMD_ID> ();
-		CmdlistArray [idx].Add ( _CMD_ID._CANCEL ); 
+		CmdlistArray [idx].Add ( _CMD_ID._WAIT ); 
+		//CmdlistArray [idx].Add ( _CMD_ID._CANCEL ); 
 
 		// counter 
 		idx = (int)_CMD_TYPE._COUNTER;
 		CmdlistArray [idx] = new List<_CMD_ID> (); // 反及
 		CmdlistArray [idx].Add ( _CMD_ID._ATK ); 
 		CmdlistArray [idx].Add ( _CMD_ID._ABILITY ); 
-		CmdlistArray [idx].Add ( _CMD_ID._CANCEL ); 
+		CmdlistArray [idx].Add ( _CMD_ID._SKILL ); 
+		CmdlistArray [idx].Add ( _CMD_ID._DEF ); 
+		//CmdlistArray [idx].Add ( _CMD_ID._CANCEL ); 
 
-
+		// initial cmd data
+		Clear ();
 	}
 
 	private static cCMD instance;
@@ -381,10 +395,13 @@ public class cCMD{
 
 	public int nCmderIdent;			// Operatr char ident
 	public _CMD_TYPE	eCMDTYPE;		// Cmd type
-	public _CMD_STATUS 	eCMDSTAT;		// cmd status
+	public _CMD_STATUS  eCMDSTATUS;		// current cmd status
+	public _CMD_TARGET 	eCMDTARGET;		// cmd status
 	public _CMD_ID 		eCMDID;			// current cmd ID
+
 	public _CMD_ID 		eLastCMDID;		// Last cmd ID
 
+	public _CMD_TYPE	eNEXTCMDTYPE;		// NEXT Cmd type
 	public int nTarIdent;
 	
 	public int nOrgGridX;
@@ -401,12 +418,14 @@ public class cCMD{
 	{
 		nCmderIdent = 0;
 		eCMDTYPE = _CMD_TYPE._SYS;
-		eCMDSTAT  = _CMD_STATUS._WAIT;
-
-	
+		eCMDSTATUS = _CMD_STATUS._NONE;
+		eCMDTARGET  = _CMD_TARGET._ALL;
 
 		eCMDID 	  = _CMD_ID._NONE;
 		eLastCMDID = _CMD_ID._NONE;
+
+		eNEXTCMDTYPE = _CMD_TYPE._SYS;
+
 		nTarIdent = 0;		
 		nOrgGridX = 0;
 		nOrgGridY = 0;

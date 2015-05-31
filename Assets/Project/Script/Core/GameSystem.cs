@@ -8,23 +8,22 @@ using System.Collections.Generic;
 public class GameSystem : MonoBehaviour {
 
 	// 目前在進行那個模式
-	public enum eStageStatus
-	{
-		STORY 	=0 , // 故事中
-		STAGE 	=1 , // 戰場上
-		PREPARE =2 , // 整備
-		TALK 	=3 , // 對話 
-		BATTLE	= 4, // 戰鬥
+//	public enum eStageStatus
+//	{
+//		STORY 	=0 , // 故事中
+//		STAGE 	=1 , // 戰場上
+//		PREPARE =2 , // 整備
+//		TALK 	=3 , // 對話 
+//		BATTLE	= 4, // 戰鬥
+//	};
 
-	};
 	// 操作 ststus
-	public enum eOPStatus
-	{
-		NONE = 0,
-		SEL_ALLY =1,
-		SEL_ENEMY=2,
-
-	};
+//	public enum eOPStatus
+//	{
+//		NONE = 0,
+//		SEL_ALLY =1,
+//		SEL_ENEMY=2,
+//	};
 
 	public static bool isApplicationQuit = false;
 	
@@ -94,6 +93,9 @@ public class GameSystem : MonoBehaviour {
 		Debug.Log(SystemLogFormat("開始初始化 Manager: " + typeof(cCMD).ToString()));
 		cCMD.Instance.Initial ();
 
+		Debug.Log(SystemLogFormat("開始初始化 Manager: " + typeof(BattleManager).ToString()));
+		BattleManager.Instance.Initial ();
+
 		// Cal cache value
 		UIRoot mRoot = NGUITools.FindInParents<UIRoot>(gameObject);	
 		if (mRoot != null) {
@@ -126,6 +128,26 @@ public class GameSystem : MonoBehaviour {
 	}
 
 	// 目前操作
+	public static GameObject PlayFX( GameObject go , string name )
+	{
+		if (go == null)
+			return null;
+
+		string path = "FX/Cartoon FX/" + name;
+
+		GameObject instance = ResourcesManager.CreatePrefabGameObj ( go ,path );
+		
+		ParticleSystem ps =instance.GetComponent< ParticleSystem>();
+		if (ps!= null) {
+			
+		}
+		ParticleSystemRenderer psr =instance.GetComponent< ParticleSystemRenderer>();
+		if (psr != null) {
+			psr.sortingLayerName = "FX";
+		}
+		return instance;
+	}
+
 
 	public static void PlayBGM( int nBGMIdx )
 	{

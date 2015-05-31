@@ -9,6 +9,7 @@ public class Panel_unit : MonoBehaviour {
 	public GameObject FaceObj;
 	public GameObject HpBarObj;
 	public GameObject DefBarObj;
+	public GameObject MaskObj;
 
 	public int  CharID;			// not identift
 	public iVec2 Loc;
@@ -21,12 +22,18 @@ public class Panel_unit : MonoBehaviour {
 //	public int  Identify;		avoid double 
 	bool bOnSelected;
 
+	int nActionTime=1;			//
+
 	public int  Ident() 
 	{
 		if( pUnitData != null  ){
 			return pUnitData.n_Ident;
 		}
 		return 0;
+	}
+	public bool CanAction()
+	{
+		return nActionTime>0;
 	}
 
 	// ensure Loc exist
@@ -39,7 +46,7 @@ public class Panel_unit : MonoBehaviour {
 	// Awake
 	void Awake(){
 		bOnSelected = false;
-
+		nActionTime = 1;				// default is 1
 
 		//ParticleSystemRenderer
 
@@ -77,7 +84,12 @@ public class Panel_unit : MonoBehaviour {
 			MoveNextPoint ();			// auto move
 		}
 		//}
-
+		if (nActionTime <= 0) {
+			nActionTime = 0;
+			MaskObj.SetActive (true);
+		} else {
+			MaskObj.SetActive (false);
+		}
 	}
 
 	void OnDestory () {
@@ -90,19 +102,30 @@ public class Panel_unit : MonoBehaviour {
 		// 查情報
 //	}
 
-	public void OnDoCmd(  )
+	public void ActionFinished(  )
 	{
+		nActionTime--;
 
+	}
+
+	public void AddActionTime( int nTime )
+	{
+		nActionTime +=nTime ;		
 	}
 
 	// Cell utility Func 
 	public int X(){ return Loc.X; } 
 	public int Y(){ return Loc.Y; } 
-	public void X( int x ){ Loc.X=x; } 
-	public void Y( int y ){ Loc.Y=y; } 
+//	public void X( int x ){ Loc.X=x; } 
+//	public void Y( int y ){ Loc.Y=y; } 
 	
 	public iVec2 GetXY() { return Loc; }
-	public void SetXY( int x , int y ) { X(x);Y(y); }
+	public void SetXY( int x , int y ) {
+		Loc.X = x;
+		Loc.Y = y;
+		if( GameScene.Instance != null )
+			gameObject.transform.localPosition =  MyTool.SnyGridtoLocalPos( x , y , ref GameScene.Instance.Grids ) ; 
+	}
 
 	public void CreateChar( int nCharID , int x , int y )
 	{

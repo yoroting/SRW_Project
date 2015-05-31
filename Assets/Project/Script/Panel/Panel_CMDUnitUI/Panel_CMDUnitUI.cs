@@ -5,8 +5,8 @@ using _SRW;
 
 
 
-//public class Panel_CMDUnitUI : MonoBehaviour 
-public class Panel_CMDUnitUI : Singleton<Panel_CMDUnitUI>
+public class Panel_CMDUnitUI : MonoBehaviour 
+//public class Panel_CMDUnitUI : Singleton<Panel_CMDUnitUI>
 {
 
 	public const string Name = "Panel_CMDUnitUI";
@@ -16,7 +16,7 @@ public class Panel_CMDUnitUI : Singleton<Panel_CMDUnitUI>
 	//static public  cCommand CMD;							// for global operate
 	public  cCMD CMD;							// for global operate
 
-	public Panel_unit pUnit; 						// setup it
+	public Panel_unit pCmder; 						// setup it
 
 	public GameObject NGuiGrids;
 
@@ -28,14 +28,16 @@ public class Panel_CMDUnitUI : Singleton<Panel_CMDUnitUI>
 	public GameObject CancelButton;
 
 
-	bool bWaitMoveFinish ; 
+//	bool bWaitMoveFinish ; 
 	// widget Data
 
-	void Clear()
-	{
-		pUnit = null;
-		bWaitMoveFinish = false;
-	}
+//	void Clear()
+//	{
+//		pCmder = null;
+//		CMD.Clear ();
+
+		//bWaitMoveFinish = false;
+//	}
 	// Use this for initialization
 	void Awake()
 	{
@@ -43,18 +45,18 @@ public class Panel_CMDUnitUI : Singleton<Panel_CMDUnitUI>
 
 	
 
-		UIEventListener.Get(InfoButton).onClick += OnInfoButtonClick;
-		UIEventListener.Get(MoveButton).onClick += OnMoveButtonClick;;
-		UIEventListener.Get(AttackButton).onClick += OnAttackButtonClick;;
-		UIEventListener.Get(SkillButton).onClick += OnSkillButtonClick;;
-		UIEventListener.Get(SchoolButton).onClick += OnSchoolButtonClick;
-		UIEventListener.Get(CancelButton).onClick += OnCancelButtonClick;;
+//		UIEventListener.Get(InfoButton).onClick += OnInfoButtonClick;
+//		UIEventListener.Get(MoveButton).onClick += OnMoveButtonClick;;
+//		UIEventListener.Get(AttackButton).onClick += OnAttackButtonClick;;
+//		UIEventListener.Get(SkillButton).onClick += OnSkillButtonClick;;
+//		UIEventListener.Get(SchoolButton).onClick += OnSchoolButtonClick;
+//		UIEventListener.Get(CancelButton).onClick += OnCancelButtonClick;;
 
 
 		//
-		GameEventManager.AddEventListener(  CmdCharMoveEvent.Name , OnCmdCharMoveEvent );
+		//GameEventManager.AddEventListener(  CmdCharMoveEvent.Name , OnCmdCharMoveEvent );
 
-		//==============================
+		//==============================		
 		ClearCmdPool ();
 	}
 
@@ -62,9 +64,9 @@ public class Panel_CMDUnitUI : Singleton<Panel_CMDUnitUI>
 		//Clear ();  This line will cause first open Ui clear data with setuped. don't clear here
 	}
 	
-	// Update is called once per frame
+	// Update is called once per frame, but it don't called when disable. can't become a trigger
 	void Update () {
-		if( pUnit == null )
+		if( pCmder == null )
 		{
 			//Debug.LogError( "ERR: UnitCMDUI with NULL Unit" );
 		//	Clear();
@@ -73,22 +75,22 @@ public class Panel_CMDUnitUI : Singleton<Panel_CMDUnitUI>
 			return ;
 		}
 
-		if ( CMD.eCMDSTAT == _CMD_STATUS._TARGET) {  // sel target only
+		if ( CMD.eCMDTARGET == _CMD_TARGET._UNIT ) {  // sel target only
 			// check if move end.
-			if( pUnit.IsMoving() == false )
+	//		if( pCmder.IsMoving() == false )
 			{
 				// show atk range
-				if( bWaitMoveFinish == true )
+//				if( bWaitMoveFinish == true )
 				{
-					bWaitMoveFinish = false;
-					StageShowAttackRangeEvent evt = new StageShowAttackRangeEvent();
-					evt.nIdent = CMD.nCmderIdent;
-					GameEventManager.DispatchEvent ( evt );
+//					bWaitMoveFinish = false;
+//					StageShowAttackRangeEvent evt = new StageShowAttackRangeEvent();
+//					evt.nIdent = CMD.nCmderIdent;
+//					GameEventManager.DispatchEvent ( evt );
 				}
 
 			}
 		}
-		else if (CMD.eCMDSTAT == _CMD_STATUS._MOVE) {  // move only
+		else if (CMD.eCMDTARGET == _CMD_TARGET._POS) {  // move only
 			
 		}
 		else // normal
@@ -116,7 +118,8 @@ public class Panel_CMDUnitUI : Singleton<Panel_CMDUnitUI>
 
 	void OnDisable()
 	{
-		ClearCmdPool ();
+		// don't cleat in disable. this bug in close api
+	//	ClearCmdPool ();
 	//	if (pUnit != null) {
 	//		pUnit.OnSelected( false );
 	//	}
@@ -147,11 +150,14 @@ public class Panel_CMDUnitUI : Singleton<Panel_CMDUnitUI>
 
 	void CreateCMDList( _CMD_TYPE eType )
 	{
-		ClearCmdPool ();
+		ClearCmdPool (); // always clear first
 		List< _CMD_ID >  cmdList =  cCMD.Instance.GetCmdList ( eType );
 		if (cmdList == null)
 			return;
 	
+		if (NGuiGrids == null)
+			return;
+
 		foreach( _CMD_ID id in cmdList )
 		{
 			GameObject obj = ResourcesManager.CreatePrefabGameObj( this.NGuiGrids , "Prefab/CMD_BTN" ); // create cmd and add to grid
@@ -175,29 +181,142 @@ public class Panel_CMDUnitUI : Singleton<Panel_CMDUnitUI>
 
 	}
 
+
+
+	public void CancelCmd( )
+	{
+
+		// send clear over
+		Panel_StageUI.Instance.ClearOverCellEffect ();
+
+		// if it is wait mode. restore it
+		if( CMD.eCMDTYPE == _CMD_TYPE._WAITATK ||
+		    CMD.eCMDTYPE == _CMD_TYPE._WAITMOVE //
+		   )
+		{
+			// restore cmd 
+			RestoreCMD( );
+			return;
+		}
+		// normal clear
+		if( pCmder != null )
+			pCmder.OnSelected ( false );
+		pCmder = null;
+		CMD.Clear ();
+		//Clear ();
+		PanelManager.Instance.CloseUI( Name );
+	}
+
+
+	public void WaitCmd( )
+	{
+		// this is one kind of cmd that reduce cmd times
+		if (pCmder)
+			pCmder.ActionFinished ();
+
+		//Clear ();
+		PanelManager.Instance.CloseUI( Name );
+		if( pCmder != null )
+			pCmder.OnSelected ( false );
+		pCmder = null;
+		CMD.Clear ();
+
+		// send clear over
+		Panel_StageUI.Instance.ClearOverCellEffect ();
+	}
+	public void AttackCmd( )
+	{
+		CMD.eCMDSTATUS = _CMD_STATUS._WAIT_TARGET;
+		CMD.eCMDID 	   = _CMD_ID._ATK;
+		CMD.eCMDTARGET = _CMD_TARGET._UNIT;   // only unit
+
+
+		Panel_StageUI.Instance.ClearOverCellEffect ();
+		Panel_StageUI.Instance.CreateAttackOverEffect (pCmder);
+		PanelManager.Instance.CloseUI( Name );
+	}
+
+	public void  RoundEndCmd(  )
+	{
+		PanelManager.Instance.CloseUI( Name );
+		if( pCmder != null )
+			pCmder.OnSelected ( false );
+		pCmder = null;
+		CMD.Clear ();
+		
+		// send clear over
+		Panel_StageUI.Instance.ClearOverCellEffect ();
+
+		GameDataManager.Instance.NextCamp();
+
+		// restore all allay cmd times;
+	}
+
+
+	// untility func
+	public void RestoreCMD( )
+	{
+		Panel_StageUI.Instance.ClearOverCellEffect ();
+		if( pCmder )
+		{
+			//Panel_StageUI.Instance.SynGridToLocalPos( pCmder.gameObject , CMD.nOrgGridX , CMD.nOrgGridY );
+			pCmder.SetXY(  CMD.nOrgGridX , CMD.nOrgGridY  );
+			Panel_StageUI.Instance.CreateMoveOverEffect ( pCmder );
+		}
+		CMD.eCMDSTATUS  = _CMD_STATUS._WAIT_CMDID;
+		CMD.eCMDTYPE 	= _CMD_TYPE._ALLY; // only ally can restore
+		CMD.eCMDID = _CMD_ID._NONE;
+		CMD.eCMDTARGET = _CMD_TARGET._ALL;
+
+		// reopen for build cmd list
+		PanelManager.Instance.CloseUI( Name );
+		PanelManager.Instance.OpenUI( Name );
+		//CreateCMDList ( cCMD.Instance.eCMDTYPE );
+	}
+	// pre
 	public void SetCmder( Panel_unit unit )
 	{
 		//cancel old
-		if (pUnit != null) {
-			pUnit.OnSelected( false );
+		if (pCmder != null) {
+			pCmder.OnSelected( false );
 		}
-		// clear
-		Clear ();
-		if( unit == null ){
+		// clear	
 
+		// setup origin param
+		pCmder = unit;
+		if( pCmder == null ){			
 			return ;
 		}
-		// setup origin param
-		pUnit = unit;
-		CMD.nCmderIdent = pUnit.Ident();
+
+
 		// who will disable
-		pUnit.OnSelected (true);
+		pCmder.OnSelected (true);
 
-		CMD.nOrgGridX = pUnit.X();
-		CMD.nOrgGridY = pUnit.Y();
+		// CMD param
+		CMD.nCmderIdent = pCmder.Ident();
+		CMD.nOrgGridX = pCmder.X();
+		CMD.nOrgGridY = pCmder.Y();
 
+		// keep cmd type
+		CMD.eCMDSTATUS = _CMD_STATUS._WAIT_CMDID;
+		CMD.eCMDTARGET = _CMD_TARGET._ALL;
+		CMD.eCMDID 	   = _CMD_ID._NONE;	
 
 	}
+	//post
+	public void SetPos( int nGridX , int nGridY )
+	{
+		// trig attack event
+		
+		// close cmd ui
+		//Clear ();
+		MakeCmd ();
+		// check Need Make Cmd
+
+		PanelManager.Instance.CloseUI( Name );
+	}
+
+
 	public void SetTarget( Panel_unit unit )
 	{
 		CMD.nTarIdent = 0;
@@ -205,17 +324,55 @@ public class Panel_CMDUnitUI : Singleton<Panel_CMDUnitUI>
 			CMD.nTarIdent = unit.Ident();
 		}
 		// trig attack event
-
+		// check Need Make Cmd
+		MakeCmd ();
 		// close cmd ui
-		Clear ();
+		//Clear ();
 		PanelManager.Instance.CloseUI( Name );
 	}
 
-	public void CancelCmd( )
-	{
-		Clear ();
-		PanelManager.Instance.CloseUI( Name );
+
+
+	public void MakeCmd( )
+	{	
+		if (pCmder == null) {
+			return ;
+		}
+		// make cmd and send to all plane
+		pCmder.OnSelected ( false );
+		switch (CMD.eCMDTARGET)
+		{
+			case _CMD_TARGET._POS:
+			{
+
+			}break;
+
+			case _CMD_TARGET._UNIT:
+			{
+				switch( CMD.eCMDID )
+				{
+					case _CMD_ID._ATK:{ // attack cmd
+						BattleManager.Instance.nAtkerID = CMD.nCmderIdent;
+						BattleManager.Instance.nDeferID = CMD.nTarIdent;
+						
+					
+					}break;
+					case _CMD_ID._ABILITY:{ // attack cmd
+				
+				
+					}break;
+
+				}
+			}break;
+		}
+		// send clear over
+		Panel_StageUI.Instance.ClearOverCellEffect ();
+		CMD.Clear ();				// clear cmd status
+		PanelManager.Instance.CloseUI (Name);
+		// start battle
+		BattleManager.Instance.Play();
 	}
+
 	//click
 	void OnCMDButtonClick(GameObject go)
 	{
@@ -227,12 +384,20 @@ public class Panel_CMDUnitUI : Singleton<Panel_CMDUnitUI>
 		else if (name == _CMD_ID._MOVE.ToString ()) {
 		}
 		else if (name == _CMD_ID._ATK.ToString ()) {
+			AttackCmd(  );
 		}
 		else if (name == _CMD_ID._ABILITY.ToString ()) {
 		}
-		else if (name == _CMD_ID._CANCEL.ToString ()) {
-			OnCancelButtonClick( go );
+		else if (name == _CMD_ID._WAIT.ToString ()) {
+			WaitCmd();
 		}
+		else if (name == _CMD_ID._CANCEL.ToString ()) {
+			CancelCmd(  );
+		}
+		else if (name == _CMD_ID._ROUNDEND.ToString ()) {
+			RoundEndCmd(  );
+		}
+
 	}
 
 	void OnInfoButtonClick(GameObject go)
@@ -245,6 +410,8 @@ public class Panel_CMDUnitUI : Singleton<Panel_CMDUnitUI>
 	}
 	void OnAttackButtonClick(GameObject go)
 	{
+
+
 	}
 	void OnSkillButtonClick(GameObject go)
 	{
@@ -254,18 +421,7 @@ public class Panel_CMDUnitUI : Singleton<Panel_CMDUnitUI>
 		// 結束遊戲
 	}
 	void OnCancelButtonClick(GameObject go)	{
-		if (pUnit != null) {
-			pUnit.OnSelected (false);
-		}
-
-		// 取消
-		Clear ();
-//		nCharIdent 	= 0;
-//		pUnit 		= null;
-		PanelManager.Instance.CloseUI( Name );
-
-		// send clear over
-		Panel_StageUI.Instance.ClearOverCellEffect ();
+		CancelCmd ();
 	}
 
 	// Game Event
@@ -280,8 +436,10 @@ public class Panel_CMDUnitUI : Singleton<Panel_CMDUnitUI>
 		if (nIdent != CMD.nCmderIdent)
 			return;
 		// entry next phase
-		CMD.eCMDSTAT  = _CMD_STATUS._TARGET; // sel target only
-		bWaitMoveFinish = true;
+	//	CMD.eCMDTYPE = _CMD_TYPE._WAITATK;  // change cmd type
+		//CMD.eCMDSTAT  = _CMD_TARGET._TARGET; // sel target only
+
+	//	bWaitMoveFinish = true;
 
 
 	}

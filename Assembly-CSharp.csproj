@@ -250,6 +250,7 @@
      <Compile Include="Assets\Pathfinding\Scripts\WaypointListNode.cs" />
      <Compile Include="Assets\Pathfinding\Scripts\WaypointNode.cs" />
      <Compile Include="Assets\Pathfinding\Scripts\WaypointPathfinder.cs" />
+     <Compile Include="Assets\Project\Script\BattleMsg.cs" />
      <Compile Include="Assets\Project\Script\ColorButton.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\AI_COMBAT.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\AI_TACTIC.cs" />
@@ -292,6 +293,7 @@
      <Compile Include="Assets\Project\Script\ConstDataClasses\TIP_MESSAGE.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\UI_MESSAGE.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\VARIABLE.cs" />
+     <Compile Include="Assets\Project\Script\Core\BattleManager.cs" />
      <Compile Include="Assets\Project\Script\Core\Config.cs" />
      <Compile Include="Assets\Project\Script\Core\ConstDataTables.cs" />
      <Compile Include="Assets\Project\Script\Core\GameDataManager.cs" />
