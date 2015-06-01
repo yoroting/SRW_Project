@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using _SRW;
 
 // start Stage
 public class StoryStartStageEvent: GameEvent {
@@ -64,9 +65,19 @@ public class StagePopMobGroupEvent: GameEvent {
 	}
 }
 
+public class StageDelUnitByIdentEvent: GameEvent {
+	public const string Name = "StageDelUnitByIdentEvent";
+	public _CAMP eCamp=  _CAMP._PLAYER ;
+	public int nIdent = 0; 
+
+	public StageDelUnitByIdentEvent(){
+		name = Name;		// important.  must have this line as key
+	}
+}
+
+
 public class StageDelCharEvent: GameEvent {
 	public const string Name = "StageDelCharEvent";
-	
 	public int nCharID = 0; 
 	public int nValue1 ; 
 	public int nValue2 ; 
@@ -130,6 +141,23 @@ public class StageRestorePosEvent: GameEvent {
 	public int nY = 0;
 	
 	public StageRestorePosEvent(){
+		name = Name;		// important.  must have this line as key
+	}
+}
+// unit action finished
+public class StageUnitActionFinishEvent: GameEvent {
+	public const string Name = "StageUnitActionFinishEvent";
+	public int nIdent = 0;
+	public StageUnitActionFinishEvent(){
+		name = Name;		// important.  must have this line as key
+	}
+}
+
+// unit action finished
+public class StageWeakUpCampEvent: GameEvent {
+	public const string Name = "StageWeakUpCampEvent";
+	public _CAMP nCamp = _CAMP._PLAYER;
+	public StageWeakUpCampEvent(){
 		name = Name;		// important.  must have this line as key
 	}
 }

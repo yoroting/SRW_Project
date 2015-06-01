@@ -85,11 +85,22 @@ public partial class BattleManager
 			nPhase++;
 			break;
 		case 5:			// fight end . show exp
-
+			Panel_unit unit = Panel_StageUI.Instance.GetUnitByIdent( nDeferID ); 
+			if( unit.eCampID == _CAMP._ENEMY )
+			{
+				unit.SetDead();
+			}
 			nPhase++;
 			break;
 		case 6:			// close all 
 			nPhase++;
+
+			// cmd finish
+			StageUnitActionFinishEvent cmd = new StageUnitActionFinishEvent ();
+			cmd.nIdent = nAtkerID;
+			GameEventManager.DispatchEvent ( cmd );
+
+
 
 			bIsBattle = false;
 			break;

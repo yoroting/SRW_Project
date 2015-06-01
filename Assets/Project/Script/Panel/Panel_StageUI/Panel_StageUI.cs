@@ -95,11 +95,17 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		GameEventManager.AddEventListener(  StagePopMobEvent.Name , OnStagePopMobEvent );
 		GameEventManager.AddEventListener(  StagePopMobGroupEvent.Name , OnStagePopMobGroupEvent );
 
-		GameEventManager.AddEventListener(  StageDelCharEvent.Name , OnStageDelCharEvent );
+		GameEventManager.AddEventListener(  StageDelCharEvent.Name , OnStageDelCharEvent ); // different func form some little different process
 		GameEventManager.AddEventListener(  StageDelMobEvent.Name , OnStageDelMobEvent );
+
+		GameEventManager.AddEventListener(  StageDelUnitByIdentEvent.Name , OnStageDelUnitByIdentEvent );
+
 
 		// char event 
 		GameEventManager.AddEventListener(  StageCharMoveEvent.Name , OnStageCharMoveEvent );
+		GameEventManager.AddEventListener(  StageUnitActionFinishEvent.Name , OnStageUnitActionFinishEvent );
+		GameEventManager.AddEventListener(  StageWeakUpCampEvent.Name , OnStageWeakUpCampEvent );
+
 
 		// cmd event
 		GameEventManager.AddEventListener(  StageShowMoveRangeEvent.Name , OnStageShowMoveRangeEvent );
@@ -264,6 +270,8 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		if( IsRunningEvent() == true  )
 			return; // block other action  
 
+		if (GameDataManager.Instance.nActiveCamp != _CAMP._PLAYER)
+			return;
 
 		UnitCell unit = go.GetComponent<UnitCell>() ;
 		if( unit != null ){
@@ -362,6 +370,8 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		if( IsRunningEvent() == true  )
 			return; // block other action  
 
+		if (GameDataManager.Instance.nActiveCamp != _CAMP._PLAYER)
+			return;
 		// avoid any ui opening
 		// clear over effect
 
@@ -420,7 +430,9 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		
 		if( IsRunningEvent() == true  )
 			return; // block other action  
-		
+
+		if (GameDataManager.Instance.nActiveCamp != _CAMP._PLAYER)
+			return;
 		// avoid any ui opening
 		// clear over effect
 		Panel_unit unit = go.GetComponent<Panel_unit>() ;
@@ -689,6 +701,24 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 
 
 	// Faction AI
+	public List<Panel_unit> GetUnitListByCamp( _CAMP nCamp )
+	{
+		List<Panel_unit> lst = new List<Panel_unit> ();
+		cCamp camp = GameDataManager.Instance.GetCamp( nCamp );
+		if (camp != null) {
+			foreach( int ident in camp.memLst )
+			{
+				Panel_unit unit = GetUnitByIdent( ident ); 
+				if( unit != null )
+				{
+					lst.Add( unit );
+				}
+			}
+		}
+
+		return lst;
+	}
+
 	bool RunCampAI( _CAMP nCamp )
 	{
 		// our faction don't need AI process
@@ -696,15 +726,13 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 			return true; // player is playing 
 
 		// change faction if all unit moved or dead.
-		cCamp unit = GameDataManager.Instance.GetCamp( nCamp );
-		if( unit != null )
-		{
-			if( unit.memLst.Count <= 0 ){
-				return false;
+		List<Panel_unit> lst = GetUnitListByCamp (nCamp);
+		foreach (Panel_unit unit in lst ) {
+			if( unit.CanAction() )
+			{
+				unit.RunAI();
+				return true;
 			}
-			// Run one unit AI
-
-			return true;
 		}
 		return false;
 	}
@@ -1054,6 +1082,21 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		return obj;
 	}
 
+	void DelUnitbyIdent( _CAMP nCampID , int nIdent )
+	{
+		cCamp camp =  GameDataManager.Instance.GetCamp( nCampID );
+		if( camp == null )
+			return ;
+		camp.memLst.Remove ( nIdent );
+		Panel_unit unit = IdentToUnit[ nIdent ];
+		if( unit != null )
+		{
+			//unit.pUnitData; 
+			NGUITools.Destroy( unit.gameObject );
+		}
+		IdentToUnit.Remove( nIdent );
+	}
+
 	// Take care use ident to delete
 	void DelChar( _CAMP nCampID , int nChar )
 	{
@@ -1143,8 +1186,10 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 			Panel_unit unit = obj.GetComponent<Panel_unit>();
 			//set as ally			
 			GameDataManager.Instance.AddCampMember( _CAMP._PLAYER , unit.pUnitData.n_Ident ); // global game data
-			
-			IdentToUnit.Add( unit.pUnitData.n_Ident , unit  ) ;// stage gameobj
+
+			unit.eCampID = _CAMP._PLAYER;
+
+			IdentToUnit.Add( unit.Ident() , unit  ) ;// stage gameobj
 		}
 		else{
 			Debug.Log ( string.Format("OnStagePopCharEvent Fail with charid({0})" , Evt.nCharID ));
@@ -1162,11 +1207,13 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		GameObject obj = AddChar( _CAMP._ENEMY , Evt.nCharID , Evt.nX , Evt.nY );
 		if( obj != null )
 		{
-			Panel_unit unitobj = obj.GetComponent<Panel_unit>();
+			Panel_unit unit = obj.GetComponent<Panel_unit>();
 			//set as ally						
-			GameDataManager.Instance.AddCampMember( _CAMP._ENEMY , unitobj.pUnitData.n_Ident ); // global game data
-			
-			IdentToUnit.Add( unitobj.pUnitData.n_Ident , unitobj  ) ;// stage gameobj
+			GameDataManager.Instance.AddCampMember( _CAMP._ENEMY , unit.pUnitData.n_Ident ); // global game data
+
+			unit.eCampID = _CAMP._ENEMY;
+
+			IdentToUnit.Add( unit.Ident() , unit  ) ;// stage gameobj
 		}
 		else{
 			Debug.Log ( string.Format("OnStagePopCharEvent Fail with charid({0})" , Evt.nCharID ));
@@ -1180,8 +1227,17 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		StagePopMobGroupEvent Evt = evt as StagePopMobGroupEvent;
 		if (Evt == null)
 			return;
-		
+
 	}
+
+	public void OnStageDelUnitByIdentEvent(GameEvent evt)
+	{
+		StageDelUnitByIdentEvent Evt = evt as StageDelUnitByIdentEvent;
+		if (Evt == null)
+			return;
+		DelUnitbyIdent ( Evt.eCamp , Evt.nIdent );
+	}
+	
 
 	public void OnStageDelCharEvent(GameEvent evt)
 	{
@@ -1233,6 +1289,29 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		cmd.nY = nY;
 
 		GameEventManager.DispatchEvent ( cmd );
+	}
+
+	public void OnStageUnitActionFinishEvent(GameEvent evt)
+	{
+		StageUnitActionFinishEvent Evt = evt as StageUnitActionFinishEvent;
+		if (Evt == null)
+			return;
+		int nIdent = Evt.nIdent;
+		Panel_unit unit = GetUnitByIdent ( nIdent); // IdentToUnit[ nIdent ];
+		if (unit != null) {
+			unit.ActionFinished();
+		}
+	}
+	public void OnStageWeakUpCampEvent(GameEvent evt)
+	{
+		StageWeakUpCampEvent Evt = evt as StageWeakUpCampEvent;
+		if (Evt == null)
+			return;
+		List< Panel_unit > lst = GetUnitListByCamp ( Evt.nCamp );
+		foreach( Panel_unit unit in lst )
+		{
+			unit.AddActionTime( 1 ); // al add 1 time to action
+		}
 	}
 
 	public void OnStageShowMoveRangeEvent(GameEvent evt)

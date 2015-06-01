@@ -3,6 +3,27 @@ using System.Collections;
 using System.Collections.Generic;
 using MYGRIDS;
 using MyClassLibrary;
+using _SRW;
+// maybe don't use this
+public class cAI_CMD{
+	public enum _AI_TYPE
+	{
+		_NONE,
+		_MOVE,
+		_ATK,
+		_DEF,
+		_ABILITY,
+		_WAIT,
+	};
+
+	public int nTarIdent { set; get; }
+	public int nTarX { set; get; }
+	public int nTarY { set; get; }
+	public int nSkillID { set; get; }
+	public int nAbilityID { set; get; }
+
+}
+
 
 public class Panel_unit : MonoBehaviour {
 
@@ -11,7 +32,8 @@ public class Panel_unit : MonoBehaviour {
 	public GameObject DefBarObj;
 	public GameObject MaskObj;
 
-	public int  CharID;			// not identift
+	public _CAMP 	eCampID;
+	public int  	CharID;			// not identift
 	public iVec2 Loc;
 	public UNIT_DATA pUnitData;  // always need to check before use it
 	public List< iVec2 > PathList;
@@ -77,6 +99,10 @@ public class Panel_unit : MonoBehaviour {
 		// STOP UPDATE OTHER ACTION
 		if (IsAnimate () == true)
 			return;
+
+		// stop update when msg 
+		if (BattleMsg.nMsgCount > 0)
+			return ;
 
 		// check if need to move
 		//if (IsMoveing () == false ) {			// check have null point
@@ -254,14 +280,36 @@ public class Panel_unit : MonoBehaviour {
 		}
 	}
 
-	public void OnAtcioned( bool OnOff )
+
+
+	public void SetDead()
 	{
-		if (OnOff) {			
-		} else 
-		{
+		TweenScale tw = TweenScale.Begin <TweenScale >(this.gameObject, 1.0f);
+		if (tw) {
+			Vector2 vfrom = new Vector3( 1.0f , 1.0f , 1.0f );
+			Vector2 vto   = new Vector3( 0.0f , 10.0f, 1.0f );
+			tw.from = vfrom;
+			tw.to   = vto;
+			tw.style = UITweener.Style.Once; // PLAY ONCE
+			tw.SetOnFinished( OnDead );
 		}
 	}
 
+	public void OnDead()
+	{	// remove char
+		StageDelUnitByIdentEvent evt = new StageDelUnitByIdentEvent ();
+		evt.eCamp  = eCampID;
+		evt.nIdent = this.Ident ();
+
+		GameEventManager.DispatchEvent ( evt );
+	}
+	// enemy use
+	public void RunAI( )
+	{
+		// select to wait
+		BattleManager.Instance.ShowBattleMsg (this, "waiting");
+		ActionFinished ();
+	}
 
 	// call back func
 	int	   nTweenMoveCount	= 0;		// check move is done

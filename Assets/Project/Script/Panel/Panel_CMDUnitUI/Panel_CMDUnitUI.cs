@@ -211,13 +211,20 @@ public class Panel_CMDUnitUI : MonoBehaviour
 	public void WaitCmd( )
 	{
 		// this is one kind of cmd that reduce cmd times
-		if (pCmder)
+		if (pCmder) {
 			pCmder.ActionFinished ();
+			// cmd finish
+			//StageUnitActionFinishEvent cmd = new StageUnitActionFinishEvent ();
+			//cmd.nIdent = pCmder.Ident();
+			//GameEventManager.DispatchEvent ( cmd );
+
+		}
 
 		//Clear ();
 		PanelManager.Instance.CloseUI( Name );
-		if( pCmder != null )
-			pCmder.OnSelected ( false );
+		if (pCmder != null) {
+			pCmder.OnSelected (false);
+		}
 		pCmder = null;
 		CMD.Clear ();
 

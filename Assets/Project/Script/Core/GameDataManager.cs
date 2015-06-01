@@ -188,20 +188,32 @@ public partial class GameDataManager
 	// switch to next Camp. return true if round change
 	public bool NextCamp()
 	{
+		// weakup current camp first for remove unit mask
+		StageWeakUpCampEvent cmd = new StageWeakUpCampEvent ();
+		cmd.nCamp = nActiveCamp;
+		GameEventManager.DispatchEvent ( cmd );
+
+		// 
+		bool bRoundChange = false;
 		if( nActiveCamp == _CAMP._PLAYER )
 		{
-			nActiveCamp++;
+			nActiveCamp = _CAMP._ENEMY;
 			nRoundStatus = _ROUND_STATUS._START;
-			return false;
+
+			bRoundChange = false;
 		}
 		else if( nActiveCamp == _CAMP._ENEMY )
 		{
 			nActiveCamp = _CAMP._PLAYER; //
 			nRound++;
 			nRoundStatus = _ROUND_STATUS._START;
-			return true;
+
+			bRoundChange =  true;
 		}
-		return true;	 
+
+		// open . round change panel ui
+
+		return bRoundChange;	 
 	}
 
 
