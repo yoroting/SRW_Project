@@ -43,6 +43,7 @@ GameObject:
   - 4: {fileID: 499638}
   - 114: {fileID: 11407600}
   - 114: {fileID: 11499638}
+  - 54: {fileID: 5485400}
   m_Layer: 5
   m_Name: Panel_Loading
   m_TagString: Untagged
@@ -118,6 +119,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 499638}
   m_RootOrder: 0
+--- !u!54 &5485400
+Rigidbody:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 199638}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: .0500000007
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!114 &11407600
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -160,7 +176,7 @@ MonoBehaviour:
   mClipping: 0
   mClipRange: {x: 0, y: 0, z: 300, w: 200}
   mClipSoftness: {x: 4, y: 4}
-  mDepth: 0
+  mDepth: 12
   mSortingOrder: 0
   mClipOffset: {x: 0, y: 0}
 --- !u!114 &11428810
@@ -249,8 +265,8 @@ MonoBehaviour:
   rightType: 1
   bottomType: 1
   topType: 1
-  mAtlas: {fileID: 11466322, guid: f8f0c2e1e4af07c4e9315698138b0961, type: 2}
-  mSpriteName: U_SHARE_135
+  mAtlas: {fileID: 11400000, guid: 62adb30369acbf943a67cee0f69267a3, type: 2}
+  mSpriteName: Window
   mFillCenter: 1
 --- !u!114 &11428814
 MonoBehaviour:
@@ -282,7 +298,7 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 134
+  mWidth: 128
   mHeight: 30
   mDepth: 1
   autoResizeBoxCollider: 0
@@ -381,8 +397,8 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: .494117647, g: .494117647, b: .494117647, a: 1}
   mPivot: 4
-  mWidth: 1200
-  mHeight: 800
+  mWidth: 961
+  mHeight: 641
   mDepth: 0
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
@@ -404,7 +420,7 @@ MonoBehaviour:
     y: 0
     width: 1
     height: 1
-  mTexture: {fileID: 2800000, guid: b2a0b95cc58d55b4c82e248bd0f303d3, type: 3}
+  mTexture: {fileID: 2800000, guid: e950636c300acaa45a3365cbe5b186ab, type: 3}
   mMat: {fileID: 0}
   mShader: {fileID: 4800000, guid: e75727d9555d9d14ca51d91908c681bc, type: 3}
   mBorder: {x: 0, y: 0, z: 0, w: 0}
@@ -420,4 +436,3 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 199638}
   m_IsPrefabParent: 1
-  m_IsExploded: 1

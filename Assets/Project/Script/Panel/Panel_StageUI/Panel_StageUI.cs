@@ -117,24 +117,50 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		// can't open panel in awake
 	}
 
+	void Clear()
+	{
+		//
+		ClearOverCellEffect ();
+
+		// clear unit 
+		foreach (KeyValuePair<int , Panel_unit  > pair in IdentToUnit) {
+			NGUITools.Destroy( pair.Value.gameObject );
+		}
+		IdentToUnit.Clear ();
+
+		// EVENT 
+		GameDataManager.Instance.ResetStage ();
+
+		//GameDataManager.Instance.nRound = 0;		// many mob pop in talk ui. we need a 0 round to avoid issue
+		//GameDataManager.Instance.nActiveCamp  = _CAMP._PLAYER;
+		
+		//Record All Event to execute
+		EvtPool.Clear();
+
+		WaitPool.Clear ();
+		EvtCompletePool.Clear ();
+
+		IsEventEnd = false;
+	}
 	// Use this for initialization
 	void Start () {
 
+		Clear ();
 		// load const data
 		StageData = ConstDataManager.Instance.GetRow<STAGE_DATA> ( GameDataManager.Instance.nStageID );
 		if( StageData == null )
 			return ;
-
+		
 		// load scene file
 		if( LoadScene( StageData.n_SCENE_ID ) == false )
 			return ;
-
+		
 		// EVENT 
-		GameDataManager.Instance.nRound = 0;
-		GameDataManager.Instance.nActiveCamp  = _CAMP._PLAYER;
-
+		//GameDataManager.Instance.nRound = 0;		// many mob pop in talk ui. we need a 0 round to avoid issue
+		//GameDataManager.Instance.nActiveCamp  = _CAMP._PLAYER;
+		
 		//Record All Event to execute
-		EvtPool.Clear();
+		//EvtPool.Clear();
 		char [] split = { ';' };
 		string [] strEvent = StageData.s_EVENT.Split( split );
 		for( int i = 0 ; i< strEvent.Length ; i++ )
@@ -145,13 +171,15 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 				EvtPool.Add( nEventID , evt );
 			}
 		}
-
-
-		IsEventEnd = false;
+		
+		
+		
 		//Dictionary< int , STAGE_EVENT > EvtPool;			// add event id 
+	}
 
-	
-
+	void OnEnable()
+	{
+		// some error in game startup
 	}
 
 	void FixPlanePosition()
@@ -916,6 +944,9 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 			//NextLine();					// parser event to run
 			if( IsNextEventCompleted() )
 			{
+				// record event comp
+				EvtCompletePool.Add( NextEvent.n_ID , GameDataManager.Instance.nRound );
+
 				// clear event for next
 				NextEvent = null;
 				IsEventEnd = true;
@@ -1077,6 +1108,9 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 			UIEventListener.Get (obj).onClick += OnMobClick;
 		}
 
+		// if obj out of screen. move to it auto
+		MoveToGameObj ( obj , true );
+
 		// all ready
 		NGUITools.SetActive( obj , true );
 		return obj;
@@ -1156,6 +1190,30 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		return false;
 	}
 
+	public void MoveToGameObj( GameObject obj , bool force)
+	{
+		if (obj == null)
+			return;
+		Vector3 v = obj.transform.localPosition;
+		Vector3 canv = TilePlaneObj.transform.localPosition; // shift
+
+		if (force == false)
+		{
+			Vector3 realpos = v + canv;
+		    if( (realpos.x < 480 && realpos.x > -480) && (realpos.y < 320 && realpos.x > -320) )
+				return; // pass
+		}
+
+		//TilePlaneObj.transform.localPosition = -v;
+		float during = 1.0f;
+
+		TweenPosition tw = TweenPosition.Begin<TweenPosition> (TilePlaneObj, during);
+		if (tw != null) {
+			tw.from = canv;
+			tw.to = -v;
+		}
+
+	}
 
 	// Game event func
 	public void OnStageBGMEvent(GameEvent evt)

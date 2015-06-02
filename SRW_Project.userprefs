@@ -1,20 +1,26 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Project\Script\Panel_unit.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Project\Script\Panel\Panel_StageUI\Panel_StageUI.cs">
     <Files>
-      <File FileName="Assets\Project\Script\Panel\Panel_CMDUnitUI\Panel_CMDUnitUI.cs" Line="219" Column="45" />
-      <File FileName="Assets\Project\Script\Core\BattleManager.cs" Line="91" Column="20" />
-      <File FileName="Assets\Project\Script\Core\GameSystem.cs" Line="136" Column="22" />
-      <File FileName="Assets\Project\Script\Core\GameDataManager.cs" Line="198" Column="35" />
-      <File FileName="Assets\Project\Script\Panel_unit.cs" Line="302" Column="30" />
-      <File FileName="Assets\Project\Script\Core\ResourcesManager.cs" Line="1" Column="1" />
-      <File FileName="Assets\Project\Script\Panel\Panel_StageUI\Panel_StageUI.cs" Line="1224" Column="52" />
-      <File FileName="Assets\Project\Script\Core\SRWGameEvent.cs" Line="68" Column="38" />
-      <File FileName="Assets\NGUI\Scripts\Internal\UIRect.cs" Line="461" Column="1" />
+      <File FileName="Assets\Project\Script\Panel\Panel_StageUI\Panel_StageUI.cs" Line="242" Column="3" />
+      <File FileName="Assets\Project\Script\Panel\Panel_CMDUnitUI\Panel_CMDUnitUI.cs" Line="161" Column="8" />
+      <File FileName="Assets\Project\Script\Core\BattleManager.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Core\GameSystem.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Panel_unit.cs" Line="292" Column="18" />
+      <File FileName="Assets\Project\Script\Core\SRWGameEvent.cs" Line="1" Column="1" />
+      <File FileName="Assets\NGUI\Scripts\Internal\UIRect.cs" Line="1" Column="1" />
+      <File FileName="Assets\Common\Plugins\PanelManager\PanelManager.cs" Line="744" Column="1" />
+      <File FileName="Assets\Project\Script\Panel\Panel_TalkUI\Panel_Talk.cs" Line="102" Column="16" />
+      <File FileName="g:\Unity Projects\SRW_Project\Assets\Common\Plugins\AudioManager\AudioManager.cs" Line="111" Column="3" />
+      <File FileName="Assets\Project\Script\Core\GameDataManager.cs" Line="131" Column="13" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="G:\Unity Projects\SRW_Project\Assets\Project\Script\Panel\Panel_StageUI\Panel_StageUI.cs" line="908" />
+      <Breakpoint file="G:\Unity Projects\SRW_Project\Assets\Project\Script\Panel\Panel_StageUI\Panel_StageUI.cs" line="123" />
+      <Breakpoint file="G:\Unity Projects\SRW_Project\Assets\Project\Script\Core\GameDataManager.cs" line="129" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
 </Properties>

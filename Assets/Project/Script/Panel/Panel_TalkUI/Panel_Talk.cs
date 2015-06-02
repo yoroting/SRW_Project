@@ -69,9 +69,30 @@ public class Panel_Talk : MonoBehaviour {
 	void Start () {
 //		TalkWindow_Up.SetActive (false);
 //		TalkWindow_Down.SetActive (false);
+		//SetScript ( GameDataManager.Instance.nTalkID ); 
+	}
+
+	void Clear()
+	{
+		foreach( KeyValuePair<int , GameObject > pair in m_idToObj )
+		{
+			if( pair.Value != null )
+			{
+				NGUITools.Destroy( pair.Value );	
+			}
+		}
+		m_idToObj.Clear ();
+
+	}
+
+
+	void OnEnable () {
+		// clear all
+		Clear ();
+
 		SetScript ( GameDataManager.Instance.nTalkID ); 
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
 		if (IsAllEnd () == false)
@@ -165,6 +186,7 @@ public class Panel_Talk : MonoBehaviour {
 			GameSystem.PlayBGM( m_cStageTalk.n_TALK_BGM );
 		}
 
+		m_nScriptIdx = 0;
 
 		m_cScript.SetText ( m_cStageTalk.s_CONTEXT );
 		// for test

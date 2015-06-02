@@ -124,6 +124,14 @@ public partial class GameDataManager
 
 	}
 
+	public void ResetStage()
+	{
+		nRound = 0;
+		nActiveCamp = _CAMP._PLAYER;
+	//	UnitPool.Clear ();
+		CampPool.Clear ();
+	}
+
 	//===================================================
 	public int nStoryID{ get; set; } 
 	public int nStageID{ get; set; } 
