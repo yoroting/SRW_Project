@@ -174,3 +174,39 @@ public class CmdCharMoveEvent: GameEvent {
 		name = Name;		// important.  must have this line as key
 	}
 }
+
+// Talk UI EVent
+public class TalkSayEvent: GameEvent {
+	public const string Name = "TalkSayEvent";
+	public int nChar = 0;
+	public int nType  ;
+	public int nSayID ;
+	
+	public TalkSayEvent(){
+		name = Name;		// important.  must have this line as key
+	}
+}
+
+public class TalkSetCharEvent: GameEvent {
+	public const string Name = "TalkSetCharEvent";
+	public int nChar = 0;
+	public int nType  ;
+	
+	public TalkSetCharEvent(){
+		name = Name;		// important.  must have this line as key
+	}
+}
+
+
+// Talk UI EVent
+public class TalkSayEndEvent: GameEvent {
+	public const string Name = "TalkSayEndEvent";
+	public int nChar = 0;
+	public int nType  ;
+	
+	public TalkSayEndEvent(){
+		name = Name;		// important.  must have this line as key
+	}
+}
+
+

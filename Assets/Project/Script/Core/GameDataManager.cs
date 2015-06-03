@@ -102,6 +102,7 @@ public partial class GameDataManager
 		//this.GetAudioClipFunc = getAudioClipFunc;
 		UnitPool = new Dictionary< int , UNIT_DATA >();
 		CampPool = new Dictionary< _CAMP , cCamp >();
+		EvtDonePool = new Dictionary< int , int > ();			// record event complete round 
 	}
 
 	private static GameDataManager instance;
@@ -220,6 +221,8 @@ public partial class GameDataManager
 		}
 
 		// open . round change panel ui
+		PanelManager.Instance.OpenUI( Panel_Round.Name );
+
 
 		return bRoundChange;	 
 	}
@@ -266,6 +269,10 @@ public partial class GameDataManager
 		if( unit != null )
 			UnitPool.Remove( unit.n_Ident );
 	}
+	// Event Status
+	public Dictionary< int , int > EvtDonePool;			// record event complete round 
+
+
 };
 
 public partial class GameScene

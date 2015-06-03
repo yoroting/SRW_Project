@@ -8,6 +8,9 @@ public class SRW_TextBox : MonoBehaviour {
 
 	public GameObject	_FaceTexObj;  // Face Texture
 	public GameObject	_TextLineObj; // text show
+
+
+	public int CharID { set; get; }
 	//public List<string>		m_lstsContextAll; // all ine of text
 	public List<string>		m_lstsContextWait; //  wait to pop
 	public string		m_sPopText;
@@ -340,6 +343,14 @@ public class SRW_TextBox : MonoBehaviour {
 			NGUITools.SetActive( _FaceTexObj ,  false );
 			return ;
 		}
+		// 
+		if( nCharId == CharID )
+		{
+			return ;
+		}
+		CharID = nCharId;
+
+		// set face texture
 
 		CHARS charData = ConstDataManager.Instance.GetRow<CHARS>( nCharId );
 		//DataRow row = ConstDataManager.Instance.GetRow("CHARS", nCharId );
@@ -403,6 +414,8 @@ public class SRW_TextBox : MonoBehaviour {
 			}
 		}
 	}
+
+
 
 	// untility
 	int 	nTweenObjCount=0;

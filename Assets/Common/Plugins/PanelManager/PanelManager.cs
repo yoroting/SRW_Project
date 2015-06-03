@@ -243,6 +243,64 @@ public partial class PanelManager : Singleton<PanelManager>
 //		}
     }
 
+	/// <summary>
+	/// DestoryUI Panel
+	/// </summary>
+	/// <param name="panelName">要關閉的Panel名字</param>
+	public void DestoryUI(string panelName)
+	{
+		GameObject panelObject = JustGetUI(panelName);
+		if (panelObject == null)
+			return;
+		
+		DestoryUI(panelObject);
+	}
+	
+	/// <summary>
+	/// DestoryUI Panel
+	/// </summary>
+	/// <param name="gameObject">要關閉的Panel</param>
+	public void DestoryUI(GameObject gameObject)
+	{
+		#region 基本檢查
+		if (gameObject == null)
+		{
+			Debug.LogError("Close null gameObject in PanelManager.");
+			return;
+		}
+		
+		PanelSetting panelSetting = gameObject.GetComponent<PanelSetting>();
+		if (panelSetting == null)
+		{
+			Debug.LogError("PanelSetting is null.");
+			return;
+		}
+		
+		//if (!NGUITools.GetActive(gameObject))
+		//	return;
+		#endregion
+		
+		
+		//Debug.Log("<color=red>CloseUI.(name=" + gameObject.name + "</color>");
+		
+		//NGUITools.SetActive(gameObject, false);
+		
+		//Debug.Log("<color=red>panelSetting.ShowBlocker=" + panelSetting.ShowBlocker.ToString() + ", updateBlocker=" + updateBlocker.ToString() + "</color>");
+		//        if (gameObject.name != "Panel - TouchBlocker")
+
+		DelPanel( gameObject );
+
+		NGUITools.Destroy( gameObject );
+		if (gameObject.name != BlockerPanelName)
+			UpdateBlockerDepth();
+		
+		
+		//		if(OnPanelSwitch != null){
+		//			StartCoroutine(CallOnPanelSwitch());
+		//		}
+
+	}
+
     /// <summary>
     /// 打開Blocker
     /// </summary>
@@ -550,6 +608,31 @@ public partial class PanelManager : Singleton<PanelManager>
 		_panelList.Add(panelName, newPanelGameObject);
     }
 
+	private void DelPanel(GameObject newPanelGameObject)
+	{
+		
+		string panelName = newPanelGameObject.name;
+		
+		if (newPanelGameObject == null)
+		{
+			Debug.LogError("Del null panel to PanelManager.");
+			return;
+		}
+		
+		if (string.IsNullOrEmpty(panelName))
+		{
+			Debug.LogError("Del null panel name to PanelManager.");
+			return;            
+		}
+		
+		if (_panelList.ContainsKey(panelName)== false )
+		{
+			Debug.LogError("Del no key panel to PanelManager.(name=" + panelName + ")");
+			return;
+		}
+		_panelList.Remove( panelName );
+
+	}
     private int GetPanelDepth(GameObject panelObject)
     {
         if (panelObject == null)

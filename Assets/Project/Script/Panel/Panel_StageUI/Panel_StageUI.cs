@@ -33,7 +33,7 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 	// widget
 	Dictionary< int , STAGE_EVENT > EvtPool;			// add event id 
 	List< STAGE_EVENT >				WaitPool;			// wait to exec pool
-	Dictionary< int , int > EvtCompletePool;			// record event complete round 
+//	Dictionary< int , int > EvtCompletePool;			// record event complete round 
 
 	STAGE_EVENT						NextEvent;
 	private cTextArray 				m_cScript;			// 劇本 腳本集合
@@ -76,7 +76,7 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		//event
 		EvtPool = new Dictionary< int , STAGE_EVENT >();			// add event id 
 		WaitPool = new List< STAGE_EVENT >();					// check ok. waitinf to execute event
-		EvtCompletePool = new Dictionary< int , int >();
+		//EvtCompletePool = new Dictionary< int , int >();
 
 		// unit
 		IdentToUnit = new Dictionary< int , Panel_unit >();		//
@@ -138,7 +138,7 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		EvtPool.Clear();
 
 		WaitPool.Clear ();
-		EvtCompletePool.Clear ();
+		//EvtCompletePool.Clear ();
 
 		IsEventEnd = false;
 	}
@@ -146,6 +146,7 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 	void Start () {
 
 		Clear ();
+
 		// load const data
 		StageData = ConstDataManager.Instance.GetRow<STAGE_DATA> ( GameDataManager.Instance.nStageID );
 		if( StageData == null )
@@ -215,11 +216,9 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 
 		FixPlanePosition ();
 
-
-
 		// block other event
-		if( IsAnyActionRunning() == true )
-			return;
+		if( IsAnyActionRunning() == true ) // wait all tween / fx / textbox / battle msg finish / unit move
+			return;							// don't check event run finish here.
 
 		//=== Unit Action ====
 		// Atk / mov / other action need to preform first
@@ -231,10 +230,15 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		}
 
 		//==================	
-		RunEvent( );				// this will throw many unit action
+		if( RunEvent( ) == true )// this will throw many unit action
+			return ;
 
-		if( IsRunningEvent() == true  )
-			return; // block other action  
+	//	if( GetEventToRun() == true )
+	//		return;
+
+	//	if( IsRunningEvent() == true  )
+	//		return true; // block other action  
+
 
 		// check if need pop cmd UI auto
 		if ( CheckPopNextCMD () == true)
@@ -248,7 +252,17 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 			GameDataManager.Instance.NextCamp();
 		}
 
-		//
+		//===================
+
+		// startup panel when opening event done.
+		if( GameDataManager.Instance.nRound == 0 )
+		{
+			GameDataManager.Instance.nRound  =1;			  // Go to round 1 	
+			PanelManager.Instance.OpenUI( Panel_Round.Name ); 
+			//StageWeakUpCampEvent cmd = new StageWeakUpCampEvent ();
+			//cmd.nCamp = GameDataManager.Instance.nActiveCamp;
+			//GameEventManager.DispatchEvent ( cmd );
+		}
 
 	}
 
@@ -689,8 +703,11 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		if (BattleMsg.nMsgCount > 0)
 			return true;
 
-		if( PanelManager.Instance.CheckUIIsOpening( "Panel_Talk" ) == true )
+		if( PanelManager.Instance.CheckUIIsOpening( Panel_Talk.Name) == true )
 			return true;
+
+		if( PanelManager.Instance.CheckUIIsOpening( Panel_Round.Name ) == true )
+			return true;	
 
 		foreach( KeyValuePair< int , Panel_unit > pair in IdentToUnit )
 		{
@@ -766,18 +783,92 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 	}
 
 
-	void CheckEventToRun()
-	{
-		if( (EvtPool==null) )
-			return ;
-		if( EvtPool.Count<=0)
-			return;
 
+	// Check event
+	bool CheckEventCanRun( STAGE_EVENT evt )
+	{
+		cTextArray sCond = new cTextArray( );
+		sCond.SetText( evt.s_CONDITION );
+		// check all line . if one line success . this event check return true
+
+		int nCol = sCond.GetMaxCol();
+		for( int i= 0 ; i <nCol ; i++ )
+		{
+			//if( CheckEventCondition( sCond.GetTextLine( i ) ) )
+			if( MyScript.Instance.CheckEventCondition( sCond.GetTextLine( i ) ) )
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+	//==========Execute Event =================
+	// true : is running
+	bool RunEvent(  )
+	{
+		// always check to wait list
+		//GetEventToRun();
+
+		// get next event
+		if( NextEvent == null )
+		{
+			GetEventToRun();
+			// get next event to run
+
+		}
+
+		// if event is running
+
+		  //run event
+		if( NextEvent != null )
+		{
+			NextLine();					// execute one line
+
+			//NextLine();					// parser event to run
+			if( IsNextEventCompleted() )
+			{
+				// record event comp
+				//EvtCompletePool.Add( NextEvent.n_ID , GameDataManager.Instance.nRound );
+				GameDataManager.Instance.EvtDonePool.Add( NextEvent.n_ID , GameDataManager.Instance.nRound );
+
+				// clear event for next
+				NextEvent = null;
+				IsEventEnd = true;
+
+				// all end . check again  for new condition status
+			//	if( WaitPool.Count <= 0 ){
+				if( IsRunningEvent() == false )
+				{
+					GetEventToRun();
+				}
+			//	}
+
+			}
+		}
+
+//		 switch status
+//		GameDataManager.Instance.nRound = 0;
+//		GameDataManager.Instance.nActiveFaction  = 0;
+		return ( IsRunningEvent() );
+	}
+
+	void GetEventToRun()
+	{
+		//if( IsRunningEvent() )
+		if( NextEvent != null )		// avoid double run
+			return ;
+		if( (EvtPool==null) )
+			return  ;
+		if( EvtPool.Count<=0)
+			return ;
+		
 		List< int > removeLst = new List< int >();
 		// get next event to run
 		foreach( KeyValuePair< int ,STAGE_EVENT > pair in EvtPool ) 
 		{
-			if( CheckEvent( pair.Value ) == true ){		// check if this event need run
+			if( CheckEventCanRun( pair.Value ) == true ){		// check if this event need run
 				//NextEvent = pair.Value ; 		// run in next loop
 				WaitPool.Add( pair.Value );
 				removeLst.Add( pair.Key );
@@ -791,178 +882,18 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 				EvtPool.Remove( key );
 			}
 		}
-	}
-
-	// Check event
-	bool CheckEvent( STAGE_EVENT evt )
-	{
-		cTextArray sCond = new cTextArray( );
-		sCond.SetText( evt.s_CONDITION );
-		// check all line . if one line success . this event check return true
-
-		int nCol = sCond.GetMaxCol();
-		for( int i= 0 ; i <nCol ; i++ )
+		// prepare event to run
+		if( WaitPool.Count > 0 )
 		{
-			if( CheckEventCondition( sCond.GetTextLine( i ) ) )
-			{
-				return true;
-			}
-		}
-		return false;
-	}
-
-	bool CheckEventCondition( CTextLine line )
-	{
-		if( line == null )
-			return false;
-
-		List<cTextFunc> funcList =line.GetFuncList();
-		foreach( cTextFunc func in funcList )
-		{
-			if( func.sFunc == "GO" )
-			{
-				if( ConditionGO( ) == false )
-				{
-					return false;
-				}	
-			}
-			if( func.sFunc == "ALLDEAD" )
-			{
-				if( ConditionAllDead( func.At(0) ) == false )
-				{
-					return false;
-				}				
-			}
-			else if( func.sFunc == "DEAD"  )
-			{
-				if( ConditionUnitDead( func.At(0), func.At(1) ) == false )
-				{
-					return false;
-				}				
-			}
-			else if( func.sFunc == "ROUND"  )
-			{
-				if( ConditionRound( func.At(0) ) == false )
-				{
-					return false;
-				}				
-			}		
-			else if( func.sFunc == "AFTER"  )
-			{
-				if( ConditionAfter( func.At(0),func.At(1)  ) == false )
-				{
-					return false;
-				}				
-			}
-		}
-		return true;
-	}
-
-	// condition check 
-	bool ConditionGO(  ) // always active
-	{
-		return true;
-	}
-
-	bool ConditionAllDead( int nCampID )
-	{
-		// assign id
-		cCamp unit = GameDataManager.Instance.GetCamp( (_CAMP)nCampID );
-		if( unit != null )
-		{
-			return (unit.memLst.Count<=0) ;
-		}
-		return true;
-	}
-
-	bool ConditionUnitDead( int nCampID ,int nCharID )
-	{
-		// assign id
-		cCamp camp = GameDataManager.Instance.GetCamp( (_CAMP)nCampID );
-		if( camp != null )
-		{
-			foreach( int no in  camp.memLst )
-			{
-				Panel_unit unit = this.IdentToUnit[ no ];
-				if( unit != null )
-				{
-					if( unit.CharID ==  nCharID )
-					{
-						return false;
-					}
-				}
-			}
-		}
-		return true;
-	}
-
-	bool ConditionRound( int nID )
-	{
-	//	if( GameDataManager.Instance.nRoundStatus != 0 )
-	//		return false;
-
-		return (GameDataManager.Instance.nRound >=nID ) ;
-	}
-	bool ConditionAfter( int nID , int nRound  )
-	{
-		if( EvtCompletePool.ContainsKey( nID )  ){
-			int nCompleteRound = EvtCompletePool[ nID ];
-
-			return ( GameDataManager.Instance.nRound >= ( nCompleteRound + nRound ) );
-		}
-		return false;
-	}
-
-	//==========Execute Event =================
-	void RunEvent(  )
-	{
-		// always check to wait list
-		CheckEventToRun();
-
-		// get next event
-		if( NextEvent == null )
-		{
-			if( this.WaitPool.Count > 0 )
-			{
-				NextEvent =  WaitPool[0];
-				WaitPool.RemoveAt( 0 );
-
-				PreEcecuteEvent();					// parser event to run
-			}
-
-			// get next event to run
-
+			NextEvent =  WaitPool[0];
+			WaitPool.RemoveAt( 0 );
+			
+			PreEcecuteEvent();					// parser next event to run
 		}
 
-		// if event id running
-
-		  //run event
-		if( NextEvent != null )
-		{
-			NextLine();					// execute one line
-
-			//NextLine();					// parser event to run
-			if( IsNextEventCompleted() )
-			{
-				// record event comp
-				EvtCompletePool.Add( NextEvent.n_ID , GameDataManager.Instance.nRound );
-
-				// clear event for next
-				NextEvent = null;
-				IsEventEnd = true;
-
-				// all end . check again  for new condition status
-				if( WaitPool.Count <= 0 ){
-					CheckEventToRun();
-				}
-			}
-		}
-
-		// switch status
-		//GameDataManager.Instance.nRound = 0;
-		//GameDataManager.Instance.nActiveFaction  = 0;
-
+		// return (WaitPool.Count > 0 || NextEvent !=null);
 	}
+
 
 	// check any event is runing or wait running
 	bool IsRunningEvent ()
@@ -971,6 +902,12 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 			return true;
 		if( NextEvent != null )
 			return true;
+
+		// running talk ui is running event too
+		if( IsAnyActionRunning() ) // many trig action. all event need wait them complete
+			return true;
+		//if( PanelManager.Instance.CheckUIIsOpening( Panel_Talk.Name) == true )
+		//	return true;
 
 		return false;
 	}
@@ -1000,7 +937,8 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		CTextLine line = m_cScript.GetTextLine( m_nFlowIdx++ );
 		if( line != null )
 		{
-			ParserScript( line );
+
+			MyScript.Instance.ParserScript( line );
 		}
 	}
 
@@ -1018,52 +956,6 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 	}
 
 
-	void ParserScript( CTextLine line )
-	{
-		List<cTextFunc> funcList =line.GetFuncList();
-		foreach( cTextFunc func in funcList )
-		{
-			if( func.sFunc == "POPCHAR" )
-			{
-				int charid = func.At( 0 );
-				StagePopCharEvent evt = new StagePopCharEvent ();
-				evt.nCharID = func.At( 0 );
-				evt.nX		= func.At( 1 );
-				evt.nY		= func.At( 2 );
-				GameEventManager.DispatchEvent ( evt );
-			}
-			else if( func.sFunc == "POPMOB" )
-			{
-				int charid = func.At( 0 );
-				StagePopMobEvent evt = new StagePopMobEvent ();
-				evt.nCharID = func.At( 0 );
-				evt.nX		= func.At( 1 );
-				evt.nY		= func.At( 2 );
-				GameEventManager.DispatchEvent ( evt );
-			}
-			else if( func.sFunc == "POPMOBGROUP" )
-			{
-				// create from cline table
-
-			}
-			else if( func.sFunc == "TALK"  )
-			{
-#if UNITY_EDITOR
-			//	return ;
-#endif
-				int nID = func.At( 0 );
-				GameSystem.TalkEvent( nID );
-			}
-			else if( func.sFunc == "BGM"  )
-			{
-				int nID = func.At( 0 );
-				// change bgm 
-				GameSystem.PlayBGM ( nID );
-
-
-			}
-		}
-	}
 
 
 	// Widget func	 
@@ -1109,7 +1001,7 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		}
 
 		// if obj out of screen. move to it auto
-		MoveToGameObj ( obj , true );
+		MoveToGameObj ( obj , false );
 
 		// all ready
 		NGUITools.SetActive( obj , true );

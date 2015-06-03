@@ -263,6 +263,7 @@ Transform:
   - {fileID: 1910512781}
   - {fileID: 253145923}
   - {fileID: 53552501}
+  - {fileID: 1068478395}
   m_Father: {fileID: 916965768}
   m_RootOrder: 0
 --- !u!114 &161096791
@@ -2396,6 +2397,10 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d8ae4f9a2399a454abe3655a10920221, type: 2}
   m_IsPrefabParent: 0
+--- !u!4 &1068478395 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 440252, guid: b8bf5029d3354e142beeff44e5dc8496, type: 2}
+  m_PrefabInternal: {fileID: 1294841465}
 --- !u!1 &1136793751
 GameObject:
   m_ObjectHideFlags: 0
@@ -3125,6 +3130,60 @@ Transform:
   m_Children: []
   m_Father: {fileID: 437874424}
   m_RootOrder: 1
+--- !u!1001 &1294841465
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 161096790}
+    m_Modifications:
+    - target: {fileID: 440252, guid: b8bf5029d3354e142beeff44e5dc8496, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 440252, guid: b8bf5029d3354e142beeff44e5dc8496, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 440252, guid: b8bf5029d3354e142beeff44e5dc8496, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 440252, guid: b8bf5029d3354e142beeff44e5dc8496, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 440252, guid: b8bf5029d3354e142beeff44e5dc8496, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 440252, guid: b8bf5029d3354e142beeff44e5dc8496, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 440252, guid: b8bf5029d3354e142beeff44e5dc8496, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 440252, guid: b8bf5029d3354e142beeff44e5dc8496, type: 2}
+      propertyPath: m_RootOrder
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 126468, guid: b8bf5029d3354e142beeff44e5dc8496, type: 2}
+      propertyPath: m_Name
+      value: Panel - Round
+      objectReference: {fileID: 0}
+    - target: {fileID: 11485748, guid: b8bf5029d3354e142beeff44e5dc8496, type: 2}
+      propertyPath: aspectRatio
+      value: 4.02083349
+      objectReference: {fileID: 0}
+    - target: {fileID: 126468, guid: b8bf5029d3354e142beeff44e5dc8496, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: b8bf5029d3354e142beeff44e5dc8496, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1 &1382221444
 GameObject:
   m_ObjectHideFlags: 0

@@ -227,6 +227,7 @@
      <Compile Include="Assets\NGUI\Scripts\UI\UITooltip.cs" />
      <Compile Include="Assets\NGUI\Scripts\UI\UIViewport.cs" />
      <Compile Include="Assets\NGUIExtension\TweenGrayLevel.cs" />
+     <Compile Include="Assets\NGUIExtension\TweenShake.cs" />
      <Compile Include="Assets\Pathfinding\Scenes\Scripts\AI.cs" />
      <Compile Include="Assets\Pathfinding\Scenes\Scripts\GridPlayer.cs" />
      <Compile Include="Assets\Pathfinding\Scenes\Scripts\GridPlayer2D.cs" />
@@ -298,6 +299,7 @@
      <Compile Include="Assets\Project\Script\Core\ConstDataTables.cs" />
      <Compile Include="Assets\Project\Script\Core\GameDataManager.cs" />
      <Compile Include="Assets\Project\Script\Core\GameSystem.cs" />
+     <Compile Include="Assets\Project\Script\Core\MyScript.cs" />
      <Compile Include="Assets\Project\Script\Core\MyTool.cs" />
      <Compile Include="Assets\Project\Script\Core\ObjectPool.cs" />
      <Compile Include="Assets\Project\Script\Core\ResourcesManager.cs" />
@@ -316,6 +318,7 @@
      <Compile Include="Assets\Project\Script\Panel\Panel_CMDUI\Panel_CmdUI.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_CMDUnitUI\Panel_CMDUnitUI.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_MainUI\MainUIPanel.cs" />
+     <Compile Include="Assets\Project\Script\Panel\Panel_Round\Panel_Round.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_StageUI\Panel_StageUI.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_StoryUI\StoryUIPanel.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_TalkUI\Panel_Talk.cs" />
@@ -382,13 +385,13 @@
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
  <Reference Include="Playcoo.Common">
- <HintPath>G:/Unity Projects/SRW_Project/Assets/Common/Plugins/Playcoo.Common.dll</HintPath>
+ <HintPath>D:/SRW/SRW_Project/Assets/Common/Plugins/Playcoo.Common.dll</HintPath>
  </Reference>
  <Reference Include="JsonFx.Json">
- <HintPath>G:/Unity Projects/SRW_Project/Assets/Common/Plugins/JsonFx/JsonFx.Json.dll</HintPath>
+ <HintPath>D:/SRW/SRW_Project/Assets/Common/Plugins/JsonFx/JsonFx.Json.dll</HintPath>
  </Reference>
  <Reference Include="ICSharpCode.SharpZipLib">
- <HintPath>G:/Unity Projects/SRW_Project/Assets/Common/Plugins/SharpZipLib/ICSharpCode.SharpZipLib.dll</HintPath>
+ <HintPath>D:/SRW/SRW_Project/Assets/Common/Plugins/SharpZipLib/ICSharpCode.SharpZipLib.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.iOS.Extensions.Xcode">
  <HintPath>C:/Program Files/Unity/Editor/Data/PlaybackEngines/iossupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
