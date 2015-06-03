@@ -142,29 +142,21 @@ Prefab:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 198856, guid: 2037c546c9b19e34b994cf63b56d4c9f, type: 2}
-      propertyPath: m_Layer
-      value: 5
+    - target: {fileID: 11460254, guid: 2037c546c9b19e34b994cf63b56d4c9f, type: 2}
+      propertyPath: mColor.r
+      value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 109880, guid: 2037c546c9b19e34b994cf63b56d4c9f, type: 2}
-      propertyPath: m_Layer
-      value: 5
+    - target: {fileID: 11460254, guid: 2037c546c9b19e34b994cf63b56d4c9f, type: 2}
+      propertyPath: mColor.b
+      value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 180232, guid: 2037c546c9b19e34b994cf63b56d4c9f, type: 2}
-      propertyPath: m_Layer
-      value: 5
+    - target: {fileID: 11460254, guid: 2037c546c9b19e34b994cf63b56d4c9f, type: 2}
+      propertyPath: mColor.g
+      value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 136958, guid: 2037c546c9b19e34b994cf63b56d4c9f, type: 2}
-      propertyPath: m_Layer
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 11418630, guid: 2037c546c9b19e34b994cf63b56d4c9f, type: 2}
-      propertyPath: mShader
-      value: 
-      objectReference: {fileID: 4800000, guid: 4f20449ee8fceed4a9a19c1bc4c5ebce, type: 3}
-    - target: {fileID: 446078, guid: 2037c546c9b19e34b994cf63b56d4c9f, type: 2}
-      propertyPath: m_RootOrder
-      value: 0
+    - target: {fileID: 11462236, guid: 2037c546c9b19e34b994cf63b56d4c9f, type: 2}
+      propertyPath: style
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 2037c546c9b19e34b994cf63b56d4c9f, type: 2}
@@ -3814,48 +3806,6 @@ MonoBehaviour:
   mAtlas: {fileID: 11400000, guid: 62adb30369acbf943a67cee0f69267a3, type: 2}
   mSpriteName: Button
   mFillCenter: 1
---- !u!1 &1627813130 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 170208, guid: 2037c546c9b19e34b994cf63b56d4c9f, type: 2}
-  m_PrefabInternal: {fileID: 53552500}
---- !u!114 &1627813133
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1627813130}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5987530bbe283c843a55d3700f064f4b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  method: 0
-  style: 0
-  animationCurve:
-    serializedVersion: 2
-    m_Curve:
-    - time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 1
-      tangentMode: 0
-    - time: 1
-      value: 1
-      inSlope: 1
-      outSlope: 0
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-  ignoreTimeScale: 1
-  delay: 0
-  duration: 3
-  steeperCurves: 0
-  tweenGroup: 0
-  onFinished: []
-  eventReceiver: {fileID: 0}
-  callWhenFinished: 
-  from: 0
-  to: 1
 --- !u!1 &1650871337
 GameObject:
   m_ObjectHideFlags: 0

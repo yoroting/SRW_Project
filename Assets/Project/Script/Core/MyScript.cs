@@ -37,7 +37,7 @@ public class MyScript {
 					return false;
 				}	
 			}
-			if( func.sFunc == "ALLDEAD" )
+			else if( func.sFunc == "ALLDEAD" )
 			{
 				if( ConditionAllDead( func.At(0) ) == false )
 				{
@@ -64,6 +64,23 @@ public class MyScript {
 				{
 					return false;
 				}				
+			}
+			else if( func.sFunc == "COMBAT"  )
+			{
+				if( ConditionCombat( func.At(0),func.At(1)  ) == false )
+				{
+					return false;
+				}		
+			}
+			else if( func.sFunc == "DIST"  )
+			{
+				if( ConditionDist( func.At(0),func.At(1) ,func.At(2) ) == false )
+				{
+					return false;
+				}	
+			}
+			else{
+				Debug.LogError( string.Format( "Error-Can't find script cond func '{0}'" , func.sFunc ) );
 			}
 		}
 		return true;
@@ -142,6 +159,19 @@ public class MyScript {
 		}
 		return false;
 	}
+	bool ConditionCombat( int nChar1 , int nChar2  )
+	{
+
+
+		return false;
+	}
+	bool ConditionDist( int nChar1 , int nChar2 , int nDist )
+	{
+		Panel_StageUI.Instance.GetUnitByCharID (nChar1);
+
+		return false;
+	}
+	
 	//------------------
 	// Stage Run
 	//-----------------
@@ -152,8 +182,8 @@ public class MyScript {
 		{
 			if( func.sFunc == "POPCHAR" )
 			{
-				int charid = func.At( 0 );
-				StagePopCharEvent evt = new StagePopCharEvent ();
+				StagePopUnitEvent evt = new StagePopUnitEvent ();
+				evt.eCamp   = _CAMP._PLAYER;
 				evt.nCharID = func.At( 0 );
 				evt.nX		= func.At( 1 );
 				evt.nY		= func.At( 2 );
@@ -161,14 +191,23 @@ public class MyScript {
 			}
 			else if( func.sFunc == "POPMOB" )
 			{
-				int charid = func.At( 0 );
-				StagePopMobEvent evt = new StagePopMobEvent ();
+				StagePopUnitEvent evt = new StagePopUnitEvent ();
+				evt.eCamp   = _CAMP._ENEMY;
 				evt.nCharID = func.At( 0 );
 				evt.nX		= func.At( 1 );
 				evt.nY		= func.At( 2 );
 				GameEventManager.DispatchEvent ( evt );
 			}
-		
+			else if( func.sFunc == "POP" )
+			{
+				StagePopUnitEvent evt = new StagePopUnitEvent ();
+				evt.eCamp 	= (_CAMP)func.At( 0 );
+				evt.nCharID = func.At( 1 );
+				evt.nX		= func.At( 2 );
+				evt.nY		= func.At( 3 );
+				GameEventManager.DispatchEvent ( evt );
+
+			}
 			else if( func.sFunc == "TALK"  ) // open talkui
 			{
 				#if UNITY_EDITOR
@@ -206,7 +245,7 @@ public class MyScript {
 			{
 				
 			}
-			else if( func.sFunc  == "SCLOSE") 
+			else if( func.sFunc  == "SAYEND") 
 			{
 				TalkSayEndEvent evt = new TalkSayEndEvent();
 				//evt.nType = func.At(0);
@@ -225,17 +264,10 @@ public class MyScript {
 			{
 				
 			}
-			else if( func.sFunc  == "DELCHAR") 
-			{
-				int charid = func.At( 0 );
-				StageDelCharEvent evt = new StageDelCharEvent ();
-				evt.nCharID = func.At( 0 );
-				GameEventManager.DispatchEvent ( evt );
-			}
-			else if( func.sFunc  == "DELMOB") 
-			{
-				int charid = func.At( 0 );
-				StageDelMobEvent evt = new StageDelMobEvent ();
+			else if( func.sFunc  == "DELUNIT") 
+			{			
+				StageDelUnitEvent evt = new StageDelUnitEvent ();
+				//evt.eCamp = (_CAMP)func.At( 0 );
 				evt.nCharID = func.At( 0 );
 				GameEventManager.DispatchEvent ( evt );
 			}

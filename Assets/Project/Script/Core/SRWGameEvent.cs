@@ -23,33 +23,32 @@ public class StageBGMEvent: GameEvent {
 	}
 }
 
-public class StagePopCharEvent: GameEvent {
-	public const string Name = "StagePopCharEvent";
-	
-	public int nCharID = 0; 
-	public int nX	   ; 
-	public int nY	   ; 
-	public int nValue1 ; 
-	public int nValue2 ; 
 
-	public StagePopCharEvent(){
-		name = Name;		// important.  must have this line as key
-	}
-}
+public class StagePopUnitEvent: GameEvent {
+	public const string Name = "StagePopUnitEvent";
 
-public class StagePopMobEvent: GameEvent {
-	public const string Name = "StagePopMobEvent";
-	
 	public int nCharID = 0; 
+	public _CAMP eCamp =  _CAMP._PLAYER ; 
 	public int nX	   ; 
 	public int nY	   ; 
 	public int nValue1 ; 
 	public int nValue2 ; 
 	
-	public StagePopMobEvent(){
+	public StagePopUnitEvent(){
 		name = Name;		// important.  must have this line as key
 	}
 }
+public class StageDelUnitEvent: GameEvent {
+	public const string Name = "StageDelUnitEvent";
+	public _CAMP eCamp=  _CAMP._PLAYER ;
+	public int nCharID = 0; 
+	
+	public StageDelUnitEvent(){
+		name = Name;		// important.  must have this line as key
+	}
+}
+
+
 
 public class StagePopMobGroupEvent: GameEvent {
 	public const string Name = "StagePopMobGroupEvent";
@@ -71,30 +70,6 @@ public class StageDelUnitByIdentEvent: GameEvent {
 	public int nIdent = 0; 
 
 	public StageDelUnitByIdentEvent(){
-		name = Name;		// important.  must have this line as key
-	}
-}
-
-
-public class StageDelCharEvent: GameEvent {
-	public const string Name = "StageDelCharEvent";
-	public int nCharID = 0; 
-	public int nValue1 ; 
-	public int nValue2 ; 
-	
-	public StageDelCharEvent(){
-		name = Name;		// important.  must have this line as key
-	}
-}
-
-public class StageDelMobEvent: GameEvent {
-	public const string Name = "StageDelMobEvent";
-	
-	public int nCharID = 0;
-	public int nValue1 ; 
-	public int nValue2 ; 
-	
-	public StageDelMobEvent(){
 		name = Name;		// important.  must have this line as key
 	}
 }

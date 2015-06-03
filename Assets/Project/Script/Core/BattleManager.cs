@@ -63,6 +63,8 @@ public partial class BattleManager
 	public void Run()
 	{
 		//
+		Panel_unit unDef = Panel_StageUI.Instance.GetUnitByIdent( nDeferID ); 
+
 		switch( nPhase )
 		{
 		case 0:			// atack pre show 
@@ -81,14 +83,23 @@ public partial class BattleManager
 			break;
 		case 4:			// figher
 
+			if( unDef != null ){
+				TweenShake tw = TweenShake.Begin<TweenShake>( unDef.gameObject , 0.5f );
+				if( tw )
+				{
+					//tw.style = UITweener.Style.Once;
+					tw.shakeY = false;
+				}
+
+			}
 			ShowBattleFX(nDeferID , "CFXM4 Hit B (Orange, CFX Blend)"  );
 			nPhase++;
 			break;
 		case 5:			// fight end . show exp
-			Panel_unit unit = Panel_StageUI.Instance.GetUnitByIdent( nDeferID ); 
-			if( unit.eCampID == _CAMP._ENEMY )
+			if( unDef!= null )
 			{
-				unit.SetDead();
+				if( unDef.eCampID == _CAMP._ENEMY )
+					unDef.SetDead();
 			}
 			nPhase++;
 			break;

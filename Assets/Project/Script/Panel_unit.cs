@@ -31,6 +31,7 @@ public class Panel_unit : MonoBehaviour {
 	public GameObject HpBarObj;
 	public GameObject DefBarObj;
 	public GameObject MaskObj;
+	public GameObject BGObj;
 
 	public _CAMP 	eCampID;
 	public int  	CharID;			// not identift
@@ -302,6 +303,32 @@ public class Panel_unit : MonoBehaviour {
 		evt.nIdent = this.Ident ();
 
 		GameEventManager.DispatchEvent ( evt );
+	}
+
+
+	public void SetCamp( _CAMP camp )
+	{
+		eCampID = camp;
+		UISprite sp = BGObj.GetComponent<UISprite>();
+		if (sp == null)			return;
+
+		switch (camp) {
+		case _CAMP._PLAYER:
+			sp.color = new Color( 0.0f , 0.0f , 1.0f );
+			break;
+
+		case _CAMP._ENEMY:
+			sp.color = new Color( 1.0f , 0.0f , 0.0f );
+			break;
+
+		default:
+			sp.color = new Color( 1.0f , 1.0f , 0.0f );
+			break;
+		}
+
+		sp.alpha= 0.5f;
+
+
 	}
 	// enemy use
 	public void RunAI( )
