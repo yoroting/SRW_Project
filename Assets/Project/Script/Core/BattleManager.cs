@@ -60,28 +60,31 @@ public partial class BattleManager
 
 
 
-	public void Run()
+	public void RunBattle()
 	{
 		//
 		Panel_unit unDef = Panel_StageUI.Instance.GetUnitByIdent( nDeferID ); 
 
 		switch( nPhase )
 		{
-		case 0:			// atack pre show 
+		case 0:	// prepare for event check
+			nPhase++;
+			break;
+		case 1:			// atack pre show 
 			ShowBattleMsg( nAtkerID , "attack" );
 			nPhase++;
 			break;
-		case 1:			// def pre show 
+		case 2:			// def pre show 
 			ShowBattleMsg( nDeferID , "counter" );
 			nPhase++;
 			break;
-		case 2:			// atack assist pre show 
+		case 3:			// atack assist pre show 
 			nPhase++;
 			break;
-		case 3:			// def assist pre show 
+		case 4:			// def assist pre show 
 			nPhase++;
 			break;
-		case 4:			// figher
+		case 5:			// figher
 
 			if( unDef != null ){
 				TweenShake tw = TweenShake.Begin<TweenShake>( unDef.gameObject , 0.5f );
@@ -95,7 +98,7 @@ public partial class BattleManager
 			ShowBattleFX(nDeferID , "CFXM4 Hit B (Orange, CFX Blend)"  );
 			nPhase++;
 			break;
-		case 5:			// fight end . show exp
+		case 6:			// fight end . show exp
 			if( unDef!= null )
 			{
 				if( unDef.eCampID == _CAMP._ENEMY )
@@ -103,7 +106,7 @@ public partial class BattleManager
 			}
 			nPhase++;
 			break;
-		case 6:			// close all 
+		case 7:			// close all 
 			nPhase++;
 
 			// cmd finish
@@ -124,6 +127,7 @@ public partial class BattleManager
 
 	//===================================================
 	public bool bIsBattle { get; set; } 
+	public bool bPause { get; set; } 
 
 	public int nAtkerID{ get; set; } 
 	public int nDeferID{ get; set; } 

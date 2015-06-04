@@ -1,18 +1,30 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Project\Script\Core\MyScript.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Project\Script\Panel\Panel_UnitInfo\Panel_UnitInfo.cs">
     <Files>
-      <File FileName="Assets\Project\Script\Panel_unit.cs" Line="309" Column="31" />
-      <File FileName="Assets\Project\Script\Panel\Panel_TalkUI\Panel_Talk.cs" Line="185" Column="38" />
-      <File FileName="Assets\Project\Script\Core\MyScript.cs" Line="43" Column="6" />
-      <File FileName="Assets\Project\Script\Core\SRWGameEvent.cs" Line="168" Column="21" />
-      <File FileName="Assets\Project\Script\Panel\Panel_StageUI\Panel_StageUI.cs" Line="745" Column="27" />
-      <File FileName="Assets\Project\Script\Core\GameDataManager.cs" Line="253" Column="43" />
-      <File FileName="Assets\Project\Script\Core\BattleManager.cs" Line="99" Column="22" />
+      <File FileName="Assets\Project\Script\Data\cUnitData.cs" Line="234" Column="3" />
+      <File FileName="Assets\Project\Script\Core\GameDataManager.cs" Line="306" Column="29" />
+      <File FileName="Assets\Common\Plugins\ConstDataManager\ConstDataManager.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Panel_unit.cs" Line="145" Column="34" />
+      <File FileName="Assets\Project\Script\Panel\Panel_TalkUI\Panel_Talk.cs" Line="53" Column="36" />
+      <File FileName="Assets\Project\Script\Core\MyScript.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Core\SRWGameEvent.cs" Line="23" Column="3" />
+      <File FileName="Assets\Project\Script\Panel\Panel_StageUI\Panel_StageUI.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Core\BattleManager.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Panel\Panel_CMDUnitUI\Panel_CMDUnitUI.cs" Line="242" Column="49" />
+      <File FileName="Assets\Project\Script\ConstDataClasses\CHARS.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\BattleMsg.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\MyClassLibrary.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Core\Config.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Panel\Panel_UnitInfo\Panel_UnitInfo.cs" Line="42" Column="30" />
+      <File FileName="Assets\Project\Script\Panel\Panel_Round\Panel_Round.cs" Line="70" Column="43" />
+      <File FileName="Assets\Project\Script\SRW_TextBox.cs" Line="377" Column="30" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="G:\Unity Projects\SRW_Project\Assets\Project\Script\Core\BattleManager.cs" line="66" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
 </Properties>

@@ -7,7 +7,8 @@ public class SCHOOL : ConstDataRow<SCHOOL>
 	public string s_NAME;
 	public string s_ICON;
 	public int n_MAXLV;
-	public int n_PASSIVE_EFFECT;
+	public int n_TYPE;
+	public int n_RELATIVE;
 	public int n_MOV;
 	public int n_RANK;
 	public float f_MAR_LVUP;

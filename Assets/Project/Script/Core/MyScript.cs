@@ -161,14 +161,57 @@ public class MyScript {
 	}
 	bool ConditionCombat( int nChar1 , int nChar2  )
 	{
+		if( BattleManager.Instance.bIsBattle )
+		{
+			Panel_unit atker = Panel_StageUI.Instance.GetUnitByIdent( BattleManager.Instance.nAtkerID );
+			Panel_unit defer = Panel_StageUI.Instance.GetUnitByIdent( BattleManager.Instance.nDeferID );
+			int atkerid = 0;
+			int deferid = 0;
+			if( atker!=null )
+			{
+				atkerid = atker.CharID;
+			}
+			if( defer!=null )
+			{
+				deferid = defer.CharID;
+			}
 
+			if( nChar1 != 0 )
+			{
+				if( (atkerid!=nChar1) && ( deferid!=nChar1) )
+				{
+					return false;
+				}
+			}
+			if( nChar2 != 0 )
+			{
+				if( (atkerid!=nChar2) && ( deferid!=nChar2) )
+				{
+					return false;
+				}
+			}
+			return true;
+
+		}
 
 		return false;
 	}
 	bool ConditionDist( int nChar1 , int nChar2 , int nDist )
 	{
-		Panel_StageUI.Instance.GetUnitByCharID (nChar1);
+		// don't check suring cmd
+		if (cCMD.Instance.eCMDSTATUS != _CMD_STATUS._NONE)
+			return false;
 
+		//check range
+		Panel_unit unit1 = Panel_StageUI.Instance.GetUnitByCharID (nChar1);
+		Panel_unit unit2 = Panel_StageUI.Instance.GetUnitByCharID (nChar2);
+		if ((unit1 != null) && (unit2 != null)) {
+			int dist = unit1.Loc.Dist( unit2.Loc );
+			if( dist <= nDist )
+			{
+				return true;
+			}
+		}
 		return false;
 	}
 	

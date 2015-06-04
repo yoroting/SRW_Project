@@ -5,7 +5,7 @@ public class ITEM_MISC_TIP : ConstDataRow<ITEM_MISC_TIP>
 	public const int DigitBase = 5;
 	public int n_ID;
 	public string s_NAME;
-	public string s_CONTENT;
+	public string s_COMMON;
 	public string s_EQUIPED;
 	public string s_USED;
 }

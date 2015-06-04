@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using _SRW;
@@ -39,7 +39,8 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 	private cTextArray 				m_cScript;			// 劇本 腳本集合
 	private int						m_nFlowIdx;			// 腳本演到哪段
 	bool							IsEventEnd;			// 
-	bool							CheckEventPause;	// 	event check pause
+	bool							IsPreBattleEvent;	// is prebattle event
+//	bool							CheckEventPause;	// 	event check pause
 
 	// Select effect
 	Dictionary< string , GameObject >  OverCellPool;			// Over tile effect pool ( in = cell key )
@@ -50,7 +51,7 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 
 
 	Dictionary< int , Panel_unit > IdentToUnit;			// allyPool
-	Dictionary< int , UNIT_DATA > UnitDataPool;			// ConstData pool
+	//Dictionary< int , UNIT_DATA > UnitDataPool;			// ConstData pool
 
 	// ScreenRatio
 	// float fUIRatio;
@@ -80,7 +81,7 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 
 		// unit
 		IdentToUnit = new Dictionary< int , Panel_unit >();		//
-		UnitDataPool = new Dictionary< int , UNIT_DATA >();
+
 
 		OverCellPool 	= new Dictionary< string , GameObject >();			// Over tile effect pool ( in = cell key )
 		OverCellAtkPool = new Dictionary< string , GameObject >();			
@@ -224,14 +225,17 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		// Atk / mov / other action need to preform first
 		RunUnitAction();
 
-		if (BattleManager.Instance.IsBattlePhase ()) {// this will throw many unit action
-			BattleManager.Instance.Run();
-			return;
-		}
+
 
 		//==================	
 		if( RunEvent( ) == true )// this will throw many unit action
 			return ;
+
+		// if one event need to run battle. it should pause ein event
+		if (BattleManager.Instance.IsBattlePhase ()) {// this will throw many unit action
+			BattleManager.Instance.RunBattle();
+			return;
+		}
 
 	//	if( GetEventToRun() == true )
 	//		return;
@@ -977,7 +981,7 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 
 	GameObject AddUnit( _CAMP nCampID , int nCharID , int x , int y )
 	{
-		CHARS charData = ConstDataManager.Instance.GetRow<CHARS>( nCharID );
+		CHARS charData = GameDataManager.Instance.GetConstCharData (nCharID); //ConstDataManager.Instance.GetRow<CHARS>( nCharID );
 		if( charData == null)
 			return null;
 		// get data from Const data
@@ -1007,10 +1011,7 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		{
 			// setup param
 			unit.CreateChar( nCharID , x , y );
-			unit.SetCamp( nCampID );
-
-			GameDataManager.Instance.AddCampMember( nCampID , unit.Ident() ); // global game data
-			
+			unit.SetCamp( nCampID );			
 			IdentToUnit.Add( unit.Ident() , unit  ) ;// stage gameobj
 
 		}

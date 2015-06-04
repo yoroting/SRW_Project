@@ -13,7 +13,7 @@ public class OutPutPczData {
 		//預設 pcz 資料夾
 		string path = Application.dataPath + "/StreamingAssets/pcz/";
 		//輸出資料夾
-		string outputPath = Application.dataPath+"/_Project/Script/ConstDataClasses";
+		string outputPath = Application.dataPath+"/Project/Script/ConstDataClasses";
 		
 		string fileName = EditorUtility.OpenFilePanel(
                 "Output PCZ Class",

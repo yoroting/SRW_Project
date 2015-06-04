@@ -20,4 +20,12 @@ public class Config
 	public static float fScnRatio = 1.0f;		// screen (active/ real ) ratio. for cal mouse in local pos
 
 	public static string PlayerName = "主人公";
+
+	public static int	MaxCharLevel = 20;
+	public static float CharMarLVUp = 1.0f;
+	public static int 	CharBaseSp = 20;
+	public static int 	CharSpLVUp = 4;
+
+
+	public static float HIT	=50.0f;
 }

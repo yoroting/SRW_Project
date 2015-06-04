@@ -255,7 +255,6 @@
      <Compile Include="Assets\Project\Script\ColorButton.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\AI_COMBAT.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\AI_TACTIC.cs" />
-     <Compile Include="Assets\Project\Script\ConstDataClasses\AI_WANDER.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\BEHAVIOR.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\BGM.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\BUFF.cs" />
@@ -304,8 +303,8 @@
      <Compile Include="Assets\Project\Script\Core\ObjectPool.cs" />
      <Compile Include="Assets\Project\Script\Core\ResourcesManager.cs" />
      <Compile Include="Assets\Project\Script\Core\SRWGameEvent.cs" />
-     <Compile Include="Assets\Project\Script\Data\PLAYER_DATA.cs" />
-     <Compile Include="Assets\Project\Script\Data\Unit_Data.cs" />
+     <Compile Include="Assets\Project\Script\Data\cSaveData.cs" />
+     <Compile Include="Assets\Project\Script\Data\cUnitData.cs" />
      <Compile Include="Assets\Project\Script\FX\FightBullet\FightBulletFX.cs" />
      <Compile Include="Assets\Project\Script\FX\FightBullet\FightBulletTween_Attraction.cs" />
      <Compile Include="Assets\Project\Script\FX\FightBullet\FightBulletTween_Direction.cs" />
@@ -322,6 +321,7 @@
      <Compile Include="Assets\Project\Script\Panel\Panel_StageUI\Panel_StageUI.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_StoryUI\StoryUIPanel.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_TalkUI\Panel_Talk.cs" />
+     <Compile Include="Assets\Project\Script\Panel\Panel_UnitInfo\Panel_UnitInfo.cs" />
      <Compile Include="Assets\Project\Script\Panel_unit.cs" />
      <Compile Include="Assets\Project\Script\SRW_TextBox.cs" />
      <Compile Include="Assets\Project\Script\UnitCell.cs" />

@@ -181,7 +181,17 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
 	}
 
-
+	void NormalCloseCmdUI()
+	{
+		PanelManager.Instance.CloseUI( Name );
+		if (pCmder != null) {
+			pCmder.OnSelected (false);
+		}
+		pCmder = null;
+		CMD.Clear ();
+		// send clear over
+		Panel_StageUI.Instance.ClearOverCellEffect ();
+	}
 
 	public void CancelCmd( )
 	{
@@ -231,6 +241,17 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		// send clear over
 		Panel_StageUI.Instance.ClearOverCellEffect ();
 	}
+
+	public void CharInfoCmd( )
+	{
+		GameDataManager.Instance.nInfoIdent = pCmder.Ident ();
+
+		PanelManager.Instance.OpenUI ( Panel_UnitInfo.Name );
+
+		//Clear ();
+		NormalCloseCmdUI ();
+	}
+
 	public void AttackCmd( )
 	{
 		CMD.eCMDSTATUS = _CMD_STATUS._WAIT_TARGET;
@@ -259,7 +280,18 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		// restore all allay cmd times;
 	}
 
-
+	public void  RoundSuicide(  )
+	{
+		PanelManager.Instance.CloseUI( Name );
+		if (pCmder != null) {
+			pCmder.OnSelected ( false );
+			pCmder.SetDead ();
+		}
+		pCmder = null;
+		CMD.Clear ();
+		// send clear over
+		Panel_StageUI.Instance.ClearOverCellEffect ();
+	}
 	// untility func
 	public void RestoreCMD( )
 	{
@@ -387,6 +419,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
 		//_CMD_ID id = MyTool.GetCMDIDByName ( name );
 		if (name == _CMD_ID._INFO.ToString ()) {
+			CharInfoCmd();
 		}
 		else if (name == _CMD_ID._MOVE.ToString ()) {
 		}
@@ -404,6 +437,13 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		else if (name == _CMD_ID._ROUNDEND.ToString ()) {
 			RoundEndCmd(  );
 		}
+
+// cheat code
+		else if (name == _CMD_ID._SUICIDE.ToString ()) {
+			RoundSuicide(  );
+		}
+//
+
 
 	}
 

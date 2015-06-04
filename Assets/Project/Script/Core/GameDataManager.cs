@@ -55,6 +55,7 @@ namespace _SRW
 		_ITEM ,			//  No use		
 		_WAIT,			//
 		_INFO ,			// 	
+		_STAGEINFO ,			// 	
 		_CANCEL ,			// 	
 		_NEWGAME,
 		_SAVE,
@@ -62,6 +63,9 @@ namespace _SRW
 		_ROUNDEND,
 		_GAMEEND,
 		_OPTION,
+		_SUICIDE,
+		_CHEAT,
+		_SYSCHEAT
 	}
 
 	public enum _ROUND_STATUS
@@ -100,9 +104,15 @@ public partial class GameDataManager
 	public void Initial( int fileindex =0 ){
 		hadInit = true;
 		//this.GetAudioClipFunc = getAudioClipFunc;
-		UnitPool = new Dictionary< int , UNIT_DATA >();
+		UnitPool = new Dictionary< int , cUnitData >();
 		CampPool = new Dictionary< _CAMP , cCamp >();
 		EvtDonePool = new Dictionary< int , int > ();			// record event complete round 
+		ConCharPool = new Dictionary< int , CHARS >();
+
+		ConCharPool   = new Dictionary< int , CHARS >() ;
+		ConSchoolPool = new Dictionary< int , SCHOOL >() ;
+		ConSkillPool  = new Dictionary< int , SKILL >() ;
+
 	}
 
 	private static GameDataManager instance;
@@ -146,6 +156,10 @@ public partial class GameDataManager
 
 	public int nOpCellX{ get; set; } 				//
 	public int nOpCellY{ get; set; } 				//
+
+	public int nInfoIdent{ get; set; }							//
+//	public int nInfoCharID{ get; set; }							
+
 	//
 	public int nRound{ get; set; } 
 	public _SRW._ROUND_STATUS nRoundStatus{ get; set; }    // 0- start ,1- running, 2- end
@@ -226,45 +240,106 @@ public partial class GameDataManager
 
 		return bRoundChange;	 
 	}
+	// Constdata
+	Dictionary< int , CHARS > ConCharPool;
+	Dictionary< int , SCHOOL > ConSchoolPool;
+	Dictionary< int , SKILL > ConSkillPool;
+	//Dictionary< int , Abil > ConAbilityPool;
+	public CHARS GetConstCharData( int nCharId )
+	{
+		CHARS p = null;
+		if (ConCharPool.TryGetValue (nCharId, out p)) {
+			return p;
+		}
+		p = ConstDataManager.Instance.GetRow<CHARS> (nCharId);
+		if (p == null) {
+			Debug.LogErrorFormat( "can't get char constdata {0}" , nCharId );
+			p = new CHARS(); // fill empty value
+		}
+		ConCharPool.Add (nCharId, p);
 
+		return p;
+	}
+
+	public SCHOOL GetConstSchoolData( int nSchoolId )
+	{
+		SCHOOL p = null;
+		if (ConSchoolPool.TryGetValue (nSchoolId, out p)) {
+			return p;
+		}
+		p = ConstDataManager.Instance.GetRow<SCHOOL> (nSchoolId);
+		if (p == null) {
+			Debug.LogErrorFormat( "can't get school constdata {0}" , nSchoolId );
+			p = new SCHOOL(); // fill empty value
+		}
+		ConSchoolPool.Add (nSchoolId, p);
+		
+		return p;		
+	}
+
+
+	public SKILL GetConstSkillData( int nSkillId )
+	{
+		SKILL p = null;
+		if (ConSkillPool.TryGetValue (nSkillId, out p)) {
+			return p;
+		}
+		p = ConstDataManager.Instance.GetRow<SKILL> (nSkillId);
+		if (p == null) {
+			Debug.LogErrorFormat( "can't get SKILL constdata {0}" , nSkillId );
+			p = new SKILL(); // fill empty value
+		}
+		ConSkillPool.Add (nSkillId, p);
+		
+		return p;
+		
+	}
 
 	// 目前的紀錄狀態
-	public PLAYER_DATA			cPlayerData;
+	//public PLAYER_DATA			cPlayerData;
+	public cSaveData		curSaveData;
 
 
 
 	// don't public this
 	int nSerialNO;		// object serial NO
-	Dictionary< int , UNIT_DATA > UnitPool;			// add event id 
+	Dictionary< int , cUnitData > UnitPool;			// add event id 
 
  	int GenerSerialNO( ){ return ++nSerialNO ; }
 	int GenerMobSerialNO( ){ return (++nSerialNO)*(-1) ; }
 
 
-	public UNIT_DATA CreateChar( int nCharID )
+	public cUnitData CreateChar( int nCharID )
 	{
-		UNIT_DATA unit = new UNIT_DATA();
+		cUnitData unit = new cUnitData();
 		unit.n_Ident = GenerSerialNO( );
 		unit.n_CharID = nCharID;
+		unit.SetContData( GetConstCharData ( nCharID ) );
+
 		UnitPool.Add( unit.n_Ident , unit );
 		return unit;
 	}
 
-	public UNIT_DATA CreateMob( int nCharID )
+	public cUnitData GetUnitDateByIdent( int nIdent )
 	{
-		UNIT_DATA unit = new UNIT_DATA();
-		unit.n_Ident = GenerMobSerialNO() ; 
-		unit.n_CharID = nCharID;		
-		UnitPool.Add( unit.n_Ident , unit );
-		return unit;
+		return UnitPool[ nIdent ];
 	}
+
+//	public cUnitData CreateMob( int nCharID )
+//	{
+//		cUnitData unit = new cUnitData();
+//		unit.n_Ident = GenerMobSerialNO() ; 
+//		unit.n_CharID = nCharID;		
+//		UnitPool.Add( unit.n_Ident , unit );
+//		return unit;
+//	}
 
 	public void DelUnit( int nIdent )
 	{
 		UnitPool.Remove( nIdent );
 
 	}
-	public void DelUnit( UNIT_DATA unit )
+	public void DelUnit( cUnitData unit )
 	{
 		if( unit != null )
 			UnitPool.Remove( unit.n_Ident );
@@ -348,12 +423,16 @@ public class cCMD{
 		// cell
 		idx = (int)_CMD_TYPE._CELL;
 		CmdlistArray [idx] = new List<_CMD_ID> ();
-		CmdlistArray [idx].Add ( _CMD_ID._INFO ); 
+		CmdlistArray [idx].Add ( _CMD_ID._STAGEINFO ); 
 		CmdlistArray [idx].Add ( _CMD_ID._SAVE ); 
 		CmdlistArray [idx].Add ( _CMD_ID._LOAD ); 
 		CmdlistArray [idx].Add ( _CMD_ID._ROUNDEND ); 
 		CmdlistArray [idx].Add ( _CMD_ID._GAMEEND ); 
 		CmdlistArray [idx].Add ( _CMD_ID._CANCEL ); 
+
+
+		CmdlistArray [idx].Add ( _CMD_ID._SYSCHEAT );
+
 
 		// ally
 		idx = (int)_CMD_TYPE._ALLY;
@@ -367,11 +446,17 @@ public class cCMD{
 		CmdlistArray [idx].Add ( _CMD_ID._SCHOOL ); 
 		CmdlistArray [idx].Add ( _CMD_ID._CANCEL ); 
 
+		CmdlistArray [idx].Add ( _CMD_ID._SUICIDE );
+		CmdlistArray [idx].Add ( _CMD_ID._CHEAT );
+
 		// enemy
 		idx = (int)_CMD_TYPE._ENEMY;
 		CmdlistArray [idx] = new List<_CMD_ID> ();
 		CmdlistArray [idx].Add (  _CMD_ID._INFO  );
 		CmdlistArray [idx].Add ( _CMD_ID._CANCEL );
+		CmdlistArray [idx].Add ( _CMD_ID._SUICIDE );
+		CmdlistArray [idx].Add ( _CMD_ID._CHEAT );
+
 
 		//
 		idx = (int)_CMD_TYPE._MENU;

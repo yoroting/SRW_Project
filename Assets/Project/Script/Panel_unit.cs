@@ -36,7 +36,7 @@ public class Panel_unit : MonoBehaviour {
 	public _CAMP 	eCampID;
 	public int  	CharID;			// not identift
 	public iVec2 Loc;
-	public UNIT_DATA pUnitData;  // always need to check before use it
+	public cUnitData pUnitData;  
 	public List< iVec2 > PathList;
 
 	iVec2	TarPos;					   //目標左標
@@ -285,12 +285,26 @@ public class Panel_unit : MonoBehaviour {
 
 	public void SetDead()
 	{
-		TweenScale tw = TweenScale.Begin <TweenScale >(this.gameObject, 1.0f);
+		// check if ant event need to run?
+
+		//
+		BGObj.SetActive (false);
+
+		// shake
+		TweenShake tws = TweenShake.Begin<TweenShake>( this.gameObject , 1.0f);
+		if( tws )
+		{
+
+		}
+
+		//TweenGrayLevel
+		//Vector2 vfrom = new Vector3( 1.0f , 1.0f , 1.0f );
+		//Vector2 vto   = new Vector3( 0.0f , 10.0f, 1.0f );
+		TweenGrayLevel tw = TweenScale.Begin <TweenGrayLevel >( FaceObj, 1.0f);
 		if (tw) {
-			Vector2 vfrom = new Vector3( 1.0f , 1.0f , 1.0f );
-			Vector2 vto   = new Vector3( 0.0f , 10.0f, 1.0f );
-			tw.from = vfrom;
-			tw.to   = vto;
+
+			tw.from = 0.0f;
+			tw.to   = 1.0f;
 			tw.style = UITweener.Style.Once; // PLAY ONCE
 			tw.SetOnFinished( OnDead );
 		}
@@ -299,7 +313,7 @@ public class Panel_unit : MonoBehaviour {
 	public void OnDead()
 	{	// remove char
 		StageDelUnitByIdentEvent evt = new StageDelUnitByIdentEvent ();
-		evt.eCamp  = eCampID;
+		//evt.eCamp  = eCampID; // no need
 		evt.nIdent = this.Ident ();
 
 		GameEventManager.DispatchEvent ( evt );
@@ -308,6 +322,8 @@ public class Panel_unit : MonoBehaviour {
 
 	public void SetCamp( _CAMP camp )
 	{
+		GameDataManager.Instance.DelCampMember( eCampID , Ident() ); // global game data
+
 		eCampID = camp;
 		UISprite sp = BGObj.GetComponent<UISprite>();
 		if (sp == null)			return;
@@ -328,6 +344,7 @@ public class Panel_unit : MonoBehaviour {
 
 		sp.alpha= 0.5f;
 
+		GameDataManager.Instance.AddCampMember( camp , Ident() ); // global game data
 
 	}
 	// enemy use
