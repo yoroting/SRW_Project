@@ -54,6 +54,34 @@ public class MyTool {
 		return pool;
 	}
 
+	//
+	public static void SetLabelText( GameObject go , string sText )
+	{
+		UILabel lbl = go.GetComponent< UILabel >();
+		if( lbl != null )
+		{
+			lbl.text = sText;
+		}
+	}
+	
+	public static void SetLabelInt( GameObject go , int nValue )
+	{
+		UILabel lbl = go.GetComponent< UILabel >();
+		if( lbl != null )
+		{
+			lbl.text =  nValue.ToString();
+		}
+	}
+	
+	public static void SetLabelFloat( GameObject go , float fValue )
+	{
+		UILabel lbl = go.GetComponent< UILabel >();
+		if( lbl != null )
+		{
+			lbl.text =  fValue.ToString();
+		}
+	}
+
 
 	// Get CmdID key name
 	public static string GetCMDNameByID( _CMD_ID eID )

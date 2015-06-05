@@ -568,12 +568,12 @@ MonoBehaviour:
   mColor: {r: 0, g: 0, b: 0, a: .149019599}
   mPivot: 4
   mWidth: 82
-  mHeight: 2
+  mHeight: 4
   mDepth: 1
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 41
+  aspectRatio: 20.5
   mType: 2
   mFillDirection: 4
   mFillAmount: 1
@@ -1002,7 +1002,7 @@ MonoBehaviour:
   bottomType: 1
   topType: 1
   mAtlas: {fileID: 11400000, guid: 62adb30369acbf943a67cee0f69267a3, type: 2}
-  mSpriteName: Window
+  mSpriteName: Highlight - Thin
   mFillCenter: 1
 --- !u!114 &11462236
 MonoBehaviour:
@@ -1059,7 +1059,7 @@ MonoBehaviour:
   mFG: {fileID: 11492770}
   mValue: 1
   mFill: 0
-  numberOfSteps: 20
+  numberOfSteps: 0
   onChange:
   - mTarget: {fileID: 11491154}
     mMethodName: SetCurrentPercent
@@ -1097,16 +1097,16 @@ MonoBehaviour:
     relative: 0
     absolute: 12
   updateAnchors: 1
-  mColor: {r: .977941155, g: .179768592, b: .179768592, a: .90196079}
+  mColor: {r: .977941155, g: .179768592, b: .179768592, a: 1}
   mPivot: 4
   mWidth: 90
-  mHeight: 8
+  mHeight: 12
   mDepth: 2
   autoResizeBoxCollider: 1
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 11.25
-  mType: 0
+  aspectRatio: 7.5
+  mType: 1
   mFillDirection: 4
   mFillAmount: 1
   mInvert: 0
@@ -1212,15 +1212,15 @@ MonoBehaviour:
     relative: 1
     absolute: -4
   updateAnchors: 1
-  mColor: {r: 1, g: 0, b: 0, a: .90196079}
+  mColor: {r: 1, g: 0, b: 0, a: 1}
   mPivot: 4
   mWidth: 82
-  mHeight: 2
+  mHeight: 4
   mDepth: 2
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 41
+  aspectRatio: 20.5
   mType: 2
   mFillDirection: 4
   mFillAmount: 1

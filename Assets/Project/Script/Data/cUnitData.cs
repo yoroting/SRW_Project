@@ -34,8 +34,8 @@ public class cUnitData{
 	public int n_Rank;		// max school lv
 
 	// save data
-	public int n_EXP;
 	public int n_Lv;
+	public int n_EXP;
 	public int n_X;
 	public int n_Y;
 
@@ -77,6 +77,7 @@ public class cUnitData{
 		Attr = new Dictionary< int , cAttrData > (); 
 		nActSch = new int []{0,0};
 		bUpdateFlag = new bool[]{ true,true,true,true } ;
+		n_Lv = 1; // base lv
 	}
 
 	// setup update flag
@@ -147,6 +148,9 @@ public class cUnitData{
 		AvtiveSchool (0, cData.n_INT_SCHOOL);
 		AvtiveSchool (1, cData.n_EXT_SCHOOL);
 
+
+		// fill base data;
+		Relive();
 	}
 
 	public void AvtiveSchool( int index , int School )
@@ -279,11 +283,63 @@ public class cUnitData{
 		return attr;
 	}
 
+	public void Relive()
+	{
+		n_HP = GetMaxHP();
+		n_MP = GetMaxMP();
+		n_SP = GetMaxSP();
+		n_DEF = GetMaxDef();
+	}
+
+	public void AddHp( int nhp )
+	{
+		if( nhp > 0 )
+		{
+			 // heal 
+			n_HP += nhp;
+			int maxhp = GetMaxHP();
+			if( n_HP > maxhp )
+			{
+				n_HP = maxhp;
+			}
+
+		}
+		else 
+		{
+			// damg
+			n_DEF += nhp;
+			if(	n_DEF < 0)
+			{
+				n_HP +=n_DEF;
+				n_DEF = 0;
+			}
+
+			if( n_HP <= 0 )
+			{
+				n_HP =0;
+				// set to dead.
+			}
+		}
+
+//		Panel_unit p = Panel_StageUI.Instance.GetUnitByIdent(  n_Ident );
+//		if( p != null )
+//		{
+//			p.OnDamage( nhp );
+//		}
+
+	}
+
+	public void AddDef( int ndef )
+	{
+		
+		
+	}
+
 	// Get Data func
 	public int GetMaxHP()
 	{
 		UpdateAttr(); // update first to get newest data
-		int nHp = 0;
+		int nHp = cCharData.n_HP ;		// base HP
 		foreach( KeyValuePair< int ,cAttrData > pair  in Attr )
 		{
 			nHp +=pair.Value.n_HP;
@@ -340,7 +396,7 @@ public class cUnitData{
 		return (int)(fScaleAtk* n);
 	}
 
-	public int GetDef()
+	public int GetMaxDef()
 	{
 		UpdateAttr(); // update first to get newest data
 		int n = 0;

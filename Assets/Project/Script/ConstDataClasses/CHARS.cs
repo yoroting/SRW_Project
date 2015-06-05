@@ -10,9 +10,10 @@ public class CHARS : ConstDataRow<CHARS>
 	public int n_TYPE;
 	public int n_RANK;
 	public int n_MOBAI;
-	public string s_DEATH_FX;
+	public int n_DEATH_FX;
 	public int n_MONEY;
 	public int n_GALLERY;
+	public int n_HP;
 	public int n_ITEM1;
 	public int n_ITEM2;
 	public string s_BUFF;

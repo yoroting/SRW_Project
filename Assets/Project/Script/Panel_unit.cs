@@ -44,8 +44,12 @@ public class Panel_unit : MonoBehaviour {
 
 //	public int  Identify;		avoid double 
 	bool bOnSelected;
-
+	bool bIsDead;
 	int nActionTime=1;			//
+
+	bool bIsAtking  = false;
+	bool bIsCasting = false;
+	bool bIsShaking = false;
 
 	public int  Ident() 
 	{
@@ -64,6 +68,12 @@ public class Panel_unit : MonoBehaviour {
 	{
 		Loc 	= new iVec2( 0 , 0 );
 		TarPos  = new iVec2( 0 , 0 );
+
+		CharID = 0;
+		nActionTime = 1;
+		bOnSelected = true;
+		bIsDead = false;
+		TarIdent = 0;
 	}
 
 	// Awake
@@ -117,10 +127,37 @@ public class Panel_unit : MonoBehaviour {
 		} else {
 			MaskObj.SetActive (false);
 		}
+
+		// If not null 
+		if( pUnitData != null )
+		{
+			// Update HP
+			UISlider hpbar = HpBarObj.GetComponent<UISlider>();
+			if( hpbar != null ){
+				float hp 	= pUnitData.n_HP;
+				float nMaxhp  = pUnitData.GetMaxHP();
+				hpbar.value = hp / nMaxhp;
+			}
+			// Update Def
+			UISlider defbar = DefBarObj.GetComponent<UISlider>();
+			if( defbar != null ){
+				float def 	= pUnitData.n_DEF;
+				float nMaxdef  = pUnitData.GetMaxDef();
+				hpbar.value = def / nMaxdef;
+			}
+
+			if( pUnitData.n_HP <= 0 )
+			{
+				 // trigger dead event
+				SetDead();
+
+			}
+
+		}	
 	}
 
 	void OnDestory () {
-		GameDataManager.Instance.DelUnit( pUnitData );
+		GameDataManager.Instance.DelUnit( Ident() );
 	}
 
 	//click
@@ -182,6 +219,9 @@ public class Panel_unit : MonoBehaviour {
 	public bool IsAnimate()
 	{
 		if( nTweenMoveCount != 0 )
+			return true;
+
+		if( bIsAtking || bIsShaking || bIsCasting )
 			return true;
 
 		return false;
@@ -281,6 +321,90 @@ public class Panel_unit : MonoBehaviour {
 		}
 	}
 
+	public void Attack( int tarid )
+	{
+		TarIdent = tarid;
+		Panel_unit defer = Panel_StageUI.Instance.GetUnitByIdent( TarIdent );
+
+		Vector3 vOrg = this.transform.localPosition;
+		Vector3 vTar = defer.transform.localPosition;
+
+		TweenPosition tw = TweenPosition.Begin< TweenPosition >( this.gameObject , 0.2f );
+		if( tw != null )
+		{
+			tw.from = vOrg;
+			tw.to	= vTar;
+	//		tw.onFinished.Clear();
+			tw.SetOnFinished(  OnTwAtkHit ) ; // this will add 
+
+			bIsAtking = true;
+		}
+		// add 
+
+
+	}
+
+	public void OnTwAtkHit( )
+	{
+
+		//BattleManager.Instance.DoAttackEvent( Ident() , TarIdent );
+		// move back 
+
+		Vector3  vTar = MyTool.SnyGridtoLocalPos(Loc.X , Loc.Y , ref GameScene.Instance.Grids );
+		//Vector3 vTar = defer.transform.localPosition;
+		
+		TweenPosition tw = TweenPosition.Begin< TweenPosition >( this.gameObject , 0.3f );
+		if( tw != null )
+		{
+			//tw.from = vOrg;
+			tw.SetStartToCurrentValue();
+			tw.to	= vTar;
+			//tw.onFinished.Clear();
+			tw.SetOnFinished(  OnTwAtkEnd ) ;
+		}
+		// play effect
+	
+		BattleManager.Instance.ShowBattleFX( TarIdent , "CFXM4 Hit B (Orange, CFX Blend)"  );
+
+		Panel_unit pDef = Panel_StageUI.Instance.GetUnitByIdent( TarIdent );
+		if( pDef ){
+			pDef.OnDamage(-1);
+		}
+
+	}
+	public void OnTwAtkEnd( )
+	{
+		bIsAtking = false;
+		TarIdent = 0;
+	}
+
+
+	public void OnDamage( int nHp )
+	{
+		return ;
+
+		if( nHp < 0 )
+		{
+			// shake
+			TweenShake tw = TweenShake.Begin<TweenShake>( gameObject , 0.5f );
+			if( tw )
+			{
+				//tw.style = UITweener.Style.Once;
+				tw.shakeY = false;
+				tw.SetOnFinished( OnTwShakeEnd );
+
+
+				bIsShaking = true;
+			}
+		}
+
+		// show dmg effect
+
+	}
+	public void OnTwShakeEnd( )
+	{
+		bIsShaking = false;
+	}
 
 
 	public void SetDead()
@@ -289,6 +413,7 @@ public class Panel_unit : MonoBehaviour {
 
 		//
 		BGObj.SetActive (false);
+		bIsDead = true; // set dead
 
 		// shake
 		TweenShake tws = TweenShake.Begin<TweenShake>( this.gameObject , 1.0f);
@@ -300,7 +425,7 @@ public class Panel_unit : MonoBehaviour {
 		//TweenGrayLevel
 		//Vector2 vfrom = new Vector3( 1.0f , 1.0f , 1.0f );
 		//Vector2 vto   = new Vector3( 0.0f , 10.0f, 1.0f );
-		TweenGrayLevel tw = TweenScale.Begin <TweenGrayLevel >( FaceObj, 1.0f);
+		TweenGrayLevel tw = TweenGrayLevel.Begin <TweenGrayLevel >( FaceObj, 1.0f);
 		if (tw) {
 
 			tw.from = 0.0f;
@@ -311,7 +436,8 @@ public class Panel_unit : MonoBehaviour {
 	}
 
 	public void OnDead()
-	{	// remove char
+	{	
+		// remove char
 		StageDelUnitByIdentEvent evt = new StageDelUnitByIdentEvent ();
 		//evt.eCamp  = eCampID; // no need
 		evt.nIdent = this.Ident ();

@@ -63,7 +63,7 @@ public partial class BattleManager
 	public void RunBattle()
 	{
 		//
-		Panel_unit unDef = Panel_StageUI.Instance.GetUnitByIdent( nDeferID ); 
+		//Panel_unit unDef = Panel_StageUI.Instance.GetUnitByIdent( nDeferID ); 
 
 		switch( nPhase )
 		{
@@ -75,7 +75,8 @@ public partial class BattleManager
 			nPhase++;
 			break;
 		case 2:			// def pre show 
-			ShowBattleMsg( nDeferID , "counter" );
+			//ShowBattleMsg( nDeferID , "counter" );
+			 // show assist
 			nPhase++;
 			break;
 		case 3:			// atack assist pre show 
@@ -84,29 +85,35 @@ public partial class BattleManager
 		case 4:			// def assist pre show 
 			nPhase++;
 			break;
-		case 5:			// figher
-
-			if( unDef != null ){
-				TweenShake tw = TweenShake.Begin<TweenShake>( unDef.gameObject , 0.5f );
-				if( tw )
-				{
-					//tw.style = UITweener.Style.Once;
-					tw.shakeY = false;
-				}
-
-			}
-			ShowBattleFX(nDeferID , "CFXM4 Hit B (Orange, CFX Blend)"  );
-			nPhase++;
-			break;
-		case 6:			// fight end . show exp
-			if( unDef!= null )
+		case 5:			// atk -> def 
+		//	DoAttackEvent( nAtkerID , nDeferID );
+			Panel_unit unitAtk = Panel_StageUI.Instance.GetUnitByIdent( nAtkerID );
+			//Panel_unit unitDef = Panel_StageUI.Instance.GetUnitByIdent( nDeferID );
+			if( unitAtk != null )
 			{
-				if( unDef.eCampID == _CAMP._ENEMY )
-					unDef.SetDead();
+				unitAtk.Attack( nDeferID );
+			}
+
+			nPhase++;
+			break;
+		case 6:			//  def -> atk
+			if( bDefMode  == false )
+			{
+//				Panel_unit unitDef = Panel_StageUI.Instance.GetUnitByIdent( nDeferID );
+//				if( unitDef != null )
+//				{
+//					unitDef.Attack( nAtkerID );
+//				}
+
+		//		DoAttackEvent( nDeferID , nAtkerID );
 			}
 			nPhase++;
 			break;
-		case 7:			// close all 
+		case 7: 	// fight end . show exp
+
+			nPhase++;
+			break;
+		case 8:			// close all 
 			nPhase++;
 
 			// cmd finish
@@ -114,9 +121,10 @@ public partial class BattleManager
 			cmd.nIdent = nAtkerID;
 			GameEventManager.DispatchEvent ( cmd );
 
-
-
 			bIsBattle = false;
+
+			// Do Counter
+
 			break;
 
 		}
@@ -132,6 +140,8 @@ public partial class BattleManager
 	public int nAtkerID{ get; set; } 
 	public int nDeferID{ get; set; } 
 
+	public bool bDefMode{ get; set; } 
+
 	public int nAtkerSkillID{ get; set; } 
 	public int nDeferSkillID{ get; set; } 
 
@@ -140,7 +150,7 @@ public partial class BattleManager
 
 	public int nBattleID{ get; set; } 
 
-
+	//===================================================
 	int nPhase = 0; // 
 
 
@@ -192,11 +202,73 @@ public partial class BattleManager
 		}
 	}
 
+	public void DoAttackEvent( int nAtker , int nDefer )
+	{
+		cUnitData pAtker = GameDataManager.Instance.GetUnitDateByIdent( nAtker ); 	//Panel_StageUI.Instance.GetUnitByIdent( nAtker ); 
+		cUnitData pDefer = GameDataManager.Instance.GetUnitDateByIdent( nDefer );	//Panel_StageUI.Instance.GetUnitByIdent( nDefer ); 
+		if ( (pAtker == null) || (pDefer == null) )
+			return;
+
+		// buff effect
+		float AtkMarPlus = 0.0f;
+		float DefMarPlus = 0.0f;
+		int AtkPowPlus = 0;
+		int DefPowPlus = 0;
+		int AtkPlus = 0;
+
+
+
+		float AtkMar =  pAtker.GetMar() + AtkMarPlus;
+		float DefMar =  pDefer.GetMar() + DefMarPlus ;
+
+
+		float HitRate = ((AtkMar-DefMar) + Config.HIT) / 100.0f; // add base rate
+		if( HitRate < 0.0f )
+			HitRate = 0.0f;
+
+
+		int AtkPow =  pAtker.GetPow() + AtkPowPlus;
+		int DefPow =  pDefer.GetPow() + DefPowPlus ;
+
+		int PowDmg = (int)(HitRate*(pAtker.GetPow()-pDefer.GetPow())); // 
+
+		if( PowDmg > 0 ){
+	//		pDefer.AddHp( -PowDmg );
+		}
+		else if( PowDmg < 0 ){
+	//		pAtker.AddHp( PowDmg );
+			// show atk effect om atker ?
+
+		}
+
+		// buff effect
+		int Atk = pAtker.GetAtk() + AtkPlus;
+		int DefAC = 0; // armor
+
+		float fAtkDmg 	= (HitRate*Atk) - DefAC  ; 
+
+
+
+		fAtkDmg = (fAtkDmg<0)? 0: fAtkDmg;
+		if( bDefMode )
+		{
+			fAtkDmg = (fAtkDmg*Config.DefReduce /100.0f);
+		}
+
+
+	//	pDefer.AddHp( -(int)(fAtkDmg) ); // it should cal latter
+
+		// show atk effect on defer 
+	//	ShowBattleFX( nDefer , "CFXM4 Hit B (Orange, CFX Blend)"  );
+
+
+	}
+
 	// Operation Token ID 
 	public int nOpCellX{ get; set; } 				//
 	public int nOpCellY{ get; set; } 				//
 	//
-	public int nRound{ get; set; } 
+
 
 };
 

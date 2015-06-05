@@ -322,7 +322,16 @@ public partial class GameDataManager
 
 	public cUnitData GetUnitDateByIdent( int nIdent )
 	{
-		return UnitPool[ nIdent ];
+		cUnitData data;
+		if( UnitPool.TryGetValue( nIdent , out data ) == true ){
+			return  data;
+		}
+		else
+		{
+			Debug.LogErrorFormat( "gamedata manager.GetUnitDateByIdent woth no key {0}" ,  nIdent  );
+			return null;
+		}
+
 	}
 
 //	public cUnitData CreateMob( int nCharID )

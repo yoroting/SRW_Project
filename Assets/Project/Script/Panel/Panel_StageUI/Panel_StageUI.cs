@@ -427,16 +427,23 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		if( unit == null )
 			return ;
 
-		if (cCMD.Instance.eCMDSTATUS == _CMD_STATUS._NONE) {
+		if (cCMD.Instance.eCMDSTATUS == _CMD_STATUS._NONE  ) {
 			//GameObject obj = PanelManager.Instance.OpenUI (Panel_CMDUnitUI.Name);
+			//CloseCMDUI();
+
 			Panel_CMDUnitUI panel = OpenCMDUI( _CMD_TYPE._ALLY , unit );
 			CreateMoveOverEffect (unit);
 			return;
 		}
+		else if (cCMD.Instance.eCMDSTATUS == _CMD_STATUS._WAIT_CMDID ){
+			CloseCMDUI();
+			Panel_CMDUnitUI panel = OpenCMDUI( _CMD_TYPE._ALLY , unit );			
+			CreateMoveOverEffect (unit);
+		}
 		else if (cCMD.Instance.eCMDSTATUS == _CMD_STATUS._WAIT_TARGET ){
-//			Panel_CMDUnitUI panel = MyTool.GetPanel< Panel_CMDUnitUI >( PanelManager.Instance.JustGetUI( Panel_CMDUnitUI.Name ) ); 
-//			if( panel )
-//				panel.CancelCmd();
+		//	Panel_CMDUnitUI panel = MyTool.GetPanel< Panel_CMDUnitUI >( PanelManager.Instance.JustGetUI( Panel_CMDUnitUI.Name ) ); 
+		//	if( panel )
+		//		panel.CancelCmd();
 			//GameObject obj = PanelManager.Instance.OpenUI (Panel_CMDUnitUI.Name);
 			string sKey = unit.Loc.GetKey ();
 			Debug.Log( "OnCharClick" + sKey + ";Ident"+unit.Ident() ); 
@@ -449,6 +456,7 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 			ClearOverCellEffect ();
 
 		}
+
 
 
 
