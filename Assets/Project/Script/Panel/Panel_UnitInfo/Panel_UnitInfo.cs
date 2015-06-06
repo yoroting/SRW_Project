@@ -74,13 +74,17 @@ public class Panel_UnitInfo : MonoBehaviour {
 		// def 
 		int nMaxDef = data.GetMaxDef();
 		MyTool.SetLabelText( DefObj , string.Format( "{0}/{1}" , data.n_DEF , nMaxDef ) );
+
+		// pow
+		MyTool.SetLabelInt( PowObj , data.GetPow() );
+
 		// school name
 
 		SCHOOL inSch = GameDataManager.Instance.GetConstSchoolData( data.nActSch[0] ); // int 
 		MyTool.SetLabelText( IntSchObj ,inSch.s_NAME );
 
 		SCHOOL exSch = GameDataManager.Instance.GetConstSchoolData( data.nActSch[1] ); // ext 
-		MyTool.SetLabelText( ExtSchObj ,inSch.s_NAME );
+		MyTool.SetLabelText( ExtSchObj ,exSch.s_NAME );
 
 	}
 

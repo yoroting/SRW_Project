@@ -19,8 +19,8 @@ public class CHARS : ConstDataRow<CHARS>
 	public string s_BUFF;
 	public string s_SCHOOL;
 	public string s_ABILITY;
-	public int n_EXT_SCHOOL;
 	public int n_INT_SCHOOL;
+	public int n_EXT_SCHOOL;
 	public string s_EXT_SKILL;
 	public string s_EXT_TAG;
 }

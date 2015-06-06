@@ -8,7 +8,22 @@ using MYGRIDS;
 // All SRW enum list
 /// <summary>預設存在的 Channel Type</summary>
 
+public class cFightResult
+{
+	public int AtkIdent { set; get;}
+	public int DefIdent { set; get;}
+	public int AtkSchool { set; get;}
+	public int DefSchool { set; get;}
+	public int AtkSkill { set; get;}
+	public int DefSkill { set; get;}
 
+	// hp modify
+	public int AtkHp { set; get;}
+	public int DefHp { set; get;}
+
+	// change Pos 
+
+};
 
 public partial class BattleManager
 {
@@ -91,7 +106,7 @@ public partial class BattleManager
 			//Panel_unit unitDef = Panel_StageUI.Instance.GetUnitByIdent( nDeferID );
 			if( unitAtk != null )
 			{
-				unitAtk.Attack( nDeferID );
+				unitAtk.ActionAttack( nDeferID );
 			}
 
 			nPhase++;
@@ -99,13 +114,11 @@ public partial class BattleManager
 		case 6:			//  def -> atk
 			if( bDefMode  == false )
 			{
-//				Panel_unit unitDef = Panel_StageUI.Instance.GetUnitByIdent( nDeferID );
-//				if( unitDef != null )
-//				{
-//					unitDef.Attack( nAtkerID );
-//				}
-
-		//		DoAttackEvent( nDeferID , nAtkerID );
+				Panel_unit unitDef = Panel_StageUI.Instance.GetUnitByIdent( nDeferID );
+				if( unitDef != null )
+				{
+					unitDef.ActionAttack( nAtkerID );
+				}
 			}
 			nPhase++;
 			break;
@@ -202,12 +215,57 @@ public partial class BattleManager
 		}
 	}
 
-	public void DoAttackEvent( int nAtker , int nDefer )
+	public void ShowBattleResValue( int nIdent , int nValue , int nMode)
+	{
+		Panel_unit unit = Panel_StageUI.Instance.GetUnitByIdent( nIdent ); 
+		if (unit == null)
+			return;
+		ShowBattleResValue ( unit.gameObject , nValue , nMode );
+	}
+	public void ShowBattleResValue( GameObject obj , int nValue , int nMode )
+	{	
+		Vector3 v = new Vector3 (0, 0, 0);
+		if ( obj != null) {
+			// show in screen center
+			v = obj.transform.position;
+		}
+		
+		GameObject go = ResourcesManager.CreatePrefabGameObj ( Panel_StageUI.Instance.MaskPanelObj , "Prefab/BattleValue" );
+		//string path = "Prefab/BattleValue";
+		//GameObject go = ResourcesManager.CreatePrefabGameObj ( obj , path );
+		//GameObject go = GameSystem.PlayFX ( unit.gameObject , fx  );
+		if (go != null) {
+			go.transform.position = v;
+			UILabel lbl = go.GetComponent< UILabel >();
+			if( lbl )
+			{
+				if( nValue > 0 )
+				{
+					// heal 
+					
+					lbl.gradientTop = new Color( 0.0f, 1.0f , 0.0f );
+				}
+				else{ 
+					// damage
+					lbl.gradientTop = new Color( 1.0f, 0.0f , 0.0f );
+				}
+				lbl.text = nValue.ToString();
+			}
+		}
+	}
+
+
+	public cFightResult CalAttackResult( int nAtker , int nDefer )
 	{
 		cUnitData pAtker = GameDataManager.Instance.GetUnitDateByIdent( nAtker ); 	//Panel_StageUI.Instance.GetUnitByIdent( nAtker ); 
 		cUnitData pDefer = GameDataManager.Instance.GetUnitDateByIdent( nDefer );	//Panel_StageUI.Instance.GetUnitByIdent( nDefer ); 
 		if ( (pAtker == null) || (pDefer == null) )
-			return;
+			return null;
+
+		// create result
+		cFightResult res = new cFightResult ();
+		res.AtkIdent = nAtker;
+		res.DefIdent = nDefer;
 
 		// buff effect
 		float AtkMarPlus = 0.0f;
@@ -221,8 +279,8 @@ public partial class BattleManager
 		float AtkMar =  pAtker.GetMar() + AtkMarPlus;
 		float DefMar =  pDefer.GetMar() + DefMarPlus ;
 
-
-		float HitRate = ((AtkMar-DefMar) + Config.HIT) / 100.0f; // add base rate
+		// 1 mar = 0.5% hit rate
+		float HitRate = ((AtkMar-DefMar) + Config.HIT) / 200.0f; // add base rate
 		if( HitRate < 0.0f )
 			HitRate = 0.0f;
 
@@ -233,11 +291,12 @@ public partial class BattleManager
 		int PowDmg = (int)(HitRate*(pAtker.GetPow()-pDefer.GetPow())); // 
 
 		if( PowDmg > 0 ){
-	//		pDefer.AddHp( -PowDmg );
+			res.DefHp -= PowDmg;
+	
 		}
 		else if( PowDmg < 0 ){
-	//		pAtker.AddHp( PowDmg );
-			// show atk effect om atker ?
+			res.AtkHp = PowDmg; // it is neg value already
+	
 
 		}
 
@@ -255,13 +314,9 @@ public partial class BattleManager
 			fAtkDmg = (fAtkDmg*Config.DefReduce /100.0f);
 		}
 
+		res.DefHp -= (int)(fAtkDmg);
 
-	//	pDefer.AddHp( -(int)(fAtkDmg) ); // it should cal latter
-
-		// show atk effect on defer 
-	//	ShowBattleFX( nDefer , "CFXM4 Hit B (Orange, CFX Blend)"  );
-
-
+		return res;
 	}
 
 	// Operation Token ID 

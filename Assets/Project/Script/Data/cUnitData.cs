@@ -221,7 +221,11 @@ public class cUnitData{
 
 	void UpdateSchoolAttr( int nIdx , int nSchool )
 	{	
-		int nLv = SchoolPool[ nSchool ];
+		int nLv = 0;
+		if (SchoolPool.TryGetValue (nSchool, out nLv) == false ) {
+			Debug.LogErrorFormat( "UpdateSchoolAttr err! Unit{0} don't have School{1} , " , n_CharID ,nSchool );
+			return ;
+		}	
 		 
 		cAttrData attr =GetAttrData( nIdx ) ;
 		//===========================================================================
@@ -293,6 +297,14 @@ public class cUnitData{
 
 	public void AddHp( int nhp )
 	{
+		if ( (Config.GOD==true) && nhp < 0 ) {
+			Panel_unit p = Panel_StageUI.Instance.GetUnitByIdent( this.n_Ident );
+			if( p != null && p.eCampID == _SRW._CAMP._ENEMY )
+			{
+				nhp *= 10;
+			}
+		}
+
 		if( nhp > 0 )
 		{
 			 // heal 

@@ -404,6 +404,8 @@ public class Panel_CMDUnitUI : MonoBehaviour
 				}
 			}break;
 		}
+		// Set pos
+
 		// send clear over
 		Panel_StageUI.Instance.ClearOverCellEffect ();
 		CMD.Clear ();				// clear cmd status

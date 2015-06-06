@@ -27,7 +27,9 @@ public class Config
 	public static int 	CharSpLVUp = 4;
 
 
-	public static float HIT	=50.0f;
+	public static float HIT	=100.0f;
 	public static float DefReduce	=50.0f;			// 純防禦的減傷
 
+
+	public static bool GOD = false;
 }

@@ -50,6 +50,8 @@ public class Panel_unit : MonoBehaviour {
 	bool bIsAtking  = false;
 	bool bIsCasting = false;
 	bool bIsShaking = false;
+	bool bIsMoving 	= false;
+
 
 	public int  Ident() 
 	{
@@ -218,10 +220,10 @@ public class Panel_unit : MonoBehaviour {
 
 	public bool IsAnimate()
 	{
-		if( nTweenMoveCount != 0 )
-			return true;
+//		if( nTweenMoveCount != 0 )
+//			return true;
 
-		if( bIsAtking || bIsShaking || bIsCasting )
+		if( bIsAtking || bIsShaking || bIsCasting || bIsMoving )
 			return true;
 
 		return false;
@@ -265,6 +267,9 @@ public class Panel_unit : MonoBehaviour {
 		int iDist = Loc.Dist( v );
 		float during = iDist* (0.2f);
 
+		if (Config.GOD == true) {
+			during = 0.2f; // always 0.2f
+		}
 		// cal target location position
 
 		Loc = v; // record target pos as current pos
@@ -273,19 +278,16 @@ public class Panel_unit : MonoBehaviour {
 		if( tw )
 		{
 			nTweenMoveCount++;	
-			tw.SetOnFinished( OnTweenNotifyMoveEnd );
+
+//			tw.SetOnFinished( OnTweenNotifyMoveEnd );
+			MyTool.TweenSetOneShotOnFinish( tw , OnTweenNotifyMoveEnd );
+
+			bIsMoving = true;
 		}
 
 	}
 
-	// 待機中 可下命令
-	bool IsIdle()
-	{
-		if (IsMoving ())
-			return false;
 
-		return true;
-	}
 
 	public void OnSelected( bool OnOff )
 	{
@@ -321,21 +323,31 @@ public class Panel_unit : MonoBehaviour {
 		}
 	}
 
-	public void Attack( int tarid )
+	public void ActionAttack( int tarident )
 	{
-		TarIdent = tarid;
+		TarIdent = tarident;
 		Panel_unit defer = Panel_StageUI.Instance.GetUnitByIdent( TarIdent );
+		if (defer == null) {
+			Debug.LogErrorFormat( "unit {0} attack null target{1}  " , Ident() , TarIdent );
+			return;
+		}
 
-		Vector3 vOrg = this.transform.localPosition;
-		Vector3 vTar = defer.transform.localPosition;
+		//Vector3 vOrg = this.transform.localPosition;
+		//Vector3 vTar = defer.transform.localPosition;
 
 		TweenPosition tw = TweenPosition.Begin< TweenPosition >( this.gameObject , 0.2f );
 		if( tw != null )
 		{
-			tw.from = vOrg;
-			tw.to	= vTar;
-	//		tw.onFinished.Clear();
-			tw.SetOnFinished(  OnTwAtkHit ) ; // this will add 
+			tw.SetStartToCurrentValue();
+			tw.to	= defer.transform.localPosition;
+
+			Debug.LogFormat("ActionAttack from {0} , {1} , locPos {2} , {3} ", tw.from.x, tw.from.y , transform.localPosition.x ,  transform.localPosition.y );
+//			EventDelegate del = new EventDelegate( OnTwAtkHit );
+//			del.oneShot = true;
+//			tw.SetOnFinished(  del ) ; // this will add 
+
+			MyTool.TweenSetOneShotOnFinish( tw , OnTwAtkHit ); // for once only
+//			tw.SetOnFinished( OnTwAtkHit );
 
 			bIsAtking = true;
 		}
@@ -346,58 +358,99 @@ public class Panel_unit : MonoBehaviour {
 
 	public void OnTwAtkHit( )
 	{
-
-		//BattleManager.Instance.DoAttackEvent( Ident() , TarIdent );
 		// move back 
+		Debug.LogFormat (this.ToString () + " hit Target{0}", TarIdent);
 
 		Vector3  vTar = MyTool.SnyGridtoLocalPos(Loc.X , Loc.Y , ref GameScene.Instance.Grids );
 		//Vector3 vTar = defer.transform.localPosition;
-		
+
+		//TweenPosition tw = new TweenPosition (); 
+
 		TweenPosition tw = TweenPosition.Begin< TweenPosition >( this.gameObject , 0.3f );
 		if( tw != null )
 		{
 			//tw.from = vOrg;
 			tw.SetStartToCurrentValue();
+			Debug.LogFormat("ActionHit from {0} , {1} ,loc Pos {2} , {3}  ", tw.from.x, tw.from.y , transform.localPosition.x ,  transform.localPosition.y );
 			tw.to	= vTar;
+			Debug.LogFormat("ActionHit to {0} , {1} ,loc  {2} , {3}  ", tw.to.x, tw.to.y , Loc.X , Loc.Y );
 			//tw.onFinished.Clear();
-			tw.SetOnFinished(  OnTwAtkEnd ) ;
+			MyTool.TweenSetOneShotOnFinish( tw , OnTwAtkEnd ); // for once only
+			//tw.SetOnFinished(  OnTwAtkEnd ) ;
+			//tw.Play();
 		}
 		// play effect
 	
 		BattleManager.Instance.ShowBattleFX( TarIdent , "CFXM4 Hit B (Orange, CFX Blend)"  );
 
-		Panel_unit pDef = Panel_StageUI.Instance.GetUnitByIdent( TarIdent );
-		if( pDef ){
-			pDef.OnDamage(-1);
+		cFightResult res = BattleManager.Instance.CalAttackResult( Ident() , TarIdent );
+		if (res != null) {
+			// show effect
+			Panel_unit pAtk = Panel_StageUI.Instance.GetUnitByIdent (res.AtkIdent);
+			if (pAtk) {
+				pAtk.ShowValueEffect ( res.AtkHp , 0 );
+			}
+
+
+			Panel_unit pDef = Panel_StageUI.Instance.GetUnitByIdent (res.DefIdent);
+			if (pDef) {
+				pDef.ShowValueEffect ( res.DefHp , 0 );
+			}
+			// modify data
+			if( res.AtkIdent!=0 && res.AtkHp!=0 ){
+				cUnitData pAtker = GameDataManager.Instance.GetUnitDateByIdent( res.AtkIdent );
+				if( pAtker != null ){
+					pAtker.AddHp( res.AtkHp );
+				}
+
+			}
+			if( res.DefIdent!=0 && res.DefHp!=0 ){
+				cUnitData pDefer  = GameDataManager.Instance.GetUnitDateByIdent( res.DefIdent );
+				if( pDefer != null ){
+					pDefer.AddHp( res.DefHp );
+				}
+			}
+
 		}
+
+//		bIsAtking = false;
+//		TarIdent = 0;
 
 	}
 	public void OnTwAtkEnd( )
 	{
+		// move to loc pos
+
+		transform.localPosition =  MyTool.SnyGridtoLocalPos(Loc.X , Loc.Y , ref GameScene.Instance.Grids );
+
 		bIsAtking = false;
 		TarIdent = 0;
 	}
 
 
-	public void OnDamage( int nHp )
+	public void ShowValueEffect( int nValue , int nMode )
 	{
-		return ;
+		if (nValue < 0) {
 
-		if( nHp < 0 )
-		{
+
 			// shake
-			TweenShake tw = TweenShake.Begin<TweenShake>( gameObject , 0.5f );
-			if( tw )
-			{
+			TweenShake tw = TweenShake.Begin(gameObject, 0.2f , 10 );
+			if (tw) {
+				//tw.OriginPosSet = false; // Important!
 				//tw.style = UITweener.Style.Once;
 				tw.shakeY = false;
-				tw.SetOnFinished( OnTwShakeEnd );
+				MyTool.TweenSetOneShotOnFinish( tw , OnTwShakeEnd );
 
-
+				//tw.SetOnFinished (OnTwShakeEnd);
 				bIsShaking = true;
 			}
-		}
 
+			BattleManager.Instance.ShowBattleResValue( this.gameObject , nValue , nMode );
+		} else if (nValue > 0) {
+			// heal
+
+			BattleManager.Instance.ShowBattleResValue( this.gameObject , nValue , nMode );
+		}
 		// show dmg effect
 
 	}
@@ -409,17 +462,21 @@ public class Panel_unit : MonoBehaviour {
 
 	public void SetDead()
 	{
-		// check if ant event need to run?
+		// avoid double run
+		if (bIsDead == true)
+			return;
 
+		// check if ant event need to run?
 		//
 		BGObj.SetActive (false);
 		bIsDead = true; // set dead
 
 		// shake
-		TweenShake tws = TweenShake.Begin<TweenShake>( this.gameObject , 1.0f);
+		TweenShake tws = TweenShake.Begin(gameObject, 1.0f , 15 );
 		if( tws )
 		{
-
+			tws.shakeX = true;
+			tws.shakeY = true;
 		}
 
 		//TweenGrayLevel
@@ -430,8 +487,9 @@ public class Panel_unit : MonoBehaviour {
 
 			tw.from = 0.0f;
 			tw.to   = 1.0f;
-			tw.style = UITweener.Style.Once; // PLAY ONCE
-			tw.SetOnFinished( OnDead );
+			MyTool.TweenSetOneShotOnFinish( tw , OnDead );
+//			tw.style = UITweener.Style.Once; // PLAY ONCE
+//			tw.SetOnFinished( OnDead );
 		}
 	}
 
@@ -485,6 +543,7 @@ public class Panel_unit : MonoBehaviour {
 	int	   nTweenMoveCount	= 0;		// check move is done
 	public  void OnTweenNotifyMoveEnd(  )
 	{
+		bIsMoving = false;
 		nTweenMoveCount--;
 		if (nTweenMoveCount < 0)
 			nTweenMoveCount = 0;

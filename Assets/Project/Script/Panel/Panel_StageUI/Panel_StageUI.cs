@@ -328,7 +328,7 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 			{
 				if( cCMD.Instance.eCMDTYPE == _CMD_TYPE._ALLY )
 				{
-					if( OverCellPool.ContainsKey( sKey ) == true  )
+					if( OverCellPool.ContainsKey( sKey ) == true || Config.GOD ) // god for cheat warp
 					{	
 						ClearOverCellEffect( );
 						cCMD.Instance.eNEXTCMDTYPE = _CMD_TYPE._WAITATK;
@@ -365,7 +365,7 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 				}
 				else { 
 					// this is impossible
-					if( OverCellAtkPool.ContainsKey( sKey ) == false   )
+					if( OverCellAtkPool.ContainsKey( sKey ) == false    )
 					{
 						RollBackCMDUIWaitTargetMode();
 						//Panel_CMDUnitUI.BackWaitCmd();		// back if the cmd is not exists	

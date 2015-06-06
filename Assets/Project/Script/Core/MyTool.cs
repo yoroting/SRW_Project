@@ -83,6 +83,16 @@ public class MyTool {
 	}
 
 
+	public static void TweenSetOneShotOnFinish( UITweener Tween , EventDelegate.Callback call )
+	{
+		if (Tween != null) {
+			Tween.style = UITweener.Style.Once;
+
+			EventDelegate del = new EventDelegate( call );
+			del.oneShot = true;
+			Tween.SetOnFinished( del );
+		}
+	}
 	// Get CmdID key name
 	public static string GetCMDNameByID( _CMD_ID eID )
 	{

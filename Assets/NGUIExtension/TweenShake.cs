@@ -34,7 +34,7 @@ public class TweenShake : UITweener {
 	private int counter = 1;
 	private float totalTime = 0;
 	private Vector3 mPos;
-	private bool OriginPosSet = false;
+	public bool OriginPosSet = false;
 
 	override protected void OnUpdate (float factor, bool isFinished) {
 
@@ -83,6 +83,11 @@ public class TweenShake : UITweener {
 		comp.playPeriod = period;
 		comp.stopAfterSec = duration;
 		comp.totalTime = 0f;
+
+		comp.shakeX = true;
+		comp.shakeY = true;
+
+		comp.OriginPosSet = false;
 
 		if (duration <= 0f)
 		{
