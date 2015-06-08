@@ -184,4 +184,15 @@ public class TalkSayEndEvent: GameEvent {
 	}
 }
 
+// Battle
+public class StageBattleAttackEvent: GameEvent {
+	public const string Name = "StageBattleAttackEvent";
+	public int nAtkCharID = 0;
+	public int nDefCharID = 0;
+	public int nAtkSkillID = 0;
+	
+	public StageBattleAttackEvent(){
+		name = Name;		// important.  must have this line as key
+	}
+}
 

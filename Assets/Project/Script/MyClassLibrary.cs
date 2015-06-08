@@ -25,26 +25,56 @@ namespace MyClassLibrary
         public cTextFunc()
         {
             sFunc = "";                      // avoid null
-            nArg  = new List< int>();         // 摻數集合
+		//	nArg  = new List< int >();         // 摻數集合
+			sArg  = new List< string >();         // 摻數集合
         }
         public string   sFunc;        // function name
-        List< int >     nArg;           // arg list
-        public int GetArnNum() { return nArg.Count; }
-        public int At(int nIdx) {           // 取得指定位置 參數
-            if (nIdx >= nArg.Count)
-                return 0;
-            return nArg[nIdx];
-        }
+		//List< int >     nArg;           // arg list
+		List< string >  sArg;           // arg list
 
-        public void SetArg( string sArg ) 
+		public int GetArnNum() { return sArg.Count; }
+//        public int At(int nIdx) {           // 取得指定位置 參數
+//            if (nIdx >= nArg.Count)
+//                return 0;
+//			return nArg[nIdx] ;
+//        }
+		public int I(int nIdx) {           // 取得指定位置 參數
+			if (nIdx >= sArg.Count)
+				return 0;
+			int i = 0;
+			int.TryParse( sArg[nIdx] , out i ); // some param is string
+
+			return i ;
+		}
+
+		public float F(int nIdx) {           // 取得指定位置 參數
+			if (nIdx >= sArg.Count)
+				return 0.0f;
+			float f = 0.0f;
+			float.TryParse( sArg[nIdx] , out f ); // some param is string
+			
+			return f ;
+		}
+
+		public string S(int nIdx) {           // 取得指定位置 參數
+			if (nIdx >= sArg.Count)
+				return "";
+			return sArg[nIdx];
+		}
+
+        public void SetArg( string arg ) 
         {
-            nArg.Clear();
-
+			//nArg.Clear();
+			sArg.Clear();
             char[] split = { ',' };
-            string[] list = sArg.Split(split );
+			string[] list = arg.Split(split );
             foreach (string s in list)
             {
-                nArg.Add( int.Parse( s.Trim() )  );
+				string ts = s.Trim();
+				sArg.Add( ts );
+			//	int res = 0;
+			//	int.TryParse( ts , out res ); // some param is string
+			//	nArg.Add( res );
             }
         }
     }

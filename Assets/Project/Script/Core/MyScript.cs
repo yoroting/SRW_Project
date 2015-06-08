@@ -39,46 +39,54 @@ public class MyScript {
 			}
 			else if( func.sFunc == "ALLDEAD" )
 			{
-				if( ConditionAllDead( func.At(0) ) == false )
+				if( ConditionAllDead( func.I(0) ) == false )
 				{
 					return false;
 				}				
 			}
 			else if( func.sFunc == "DEAD"  )
 			{
-				if( ConditionUnitDead( func.At(0), func.At(1) ) == false )
+				if( ConditionUnitDead( func.I(0), func.I(1) ) == false )
 				{
 					return false;
 				}				
 			}
 			else if( func.sFunc == "ROUND"  )
 			{
-				if( ConditionRound( func.At(0) ) == false )
+				if( ConditionRound( func.I(0) ) == false )
 				{
 					return false;
 				}				
 			}		
 			else if( func.sFunc == "AFTER"  )
 			{
-				if( ConditionAfter( func.At(0),func.At(1)  ) == false )
+				if( ConditionAfter( func.I(0),func.I(1)  ) == false )
 				{
 					return false;
 				}				
 			}
 			else if( func.sFunc == "COMBAT"  )
 			{
-				if( ConditionCombat( func.At(0),func.At(1)  ) == false )
+				if( ConditionCombat( func.I(0),func.I(1)  ) == false )
 				{
 					return false;
 				}		
 			}
 			else if( func.sFunc == "DIST"  )
 			{
-				if( ConditionDist( func.At(0),func.At(1) ,func.At(2) ) == false )
+				if( ConditionDist( func.I(0),func.I(1) ,func.I(2) ) == false )
 				{
 					return false;
 				}	
 			}
+			else if( func.sFunc == "HP"  )
+			{
+				if( ConditionHp( func.I(0), func.S(1)  ,func.F(2) ) == false )
+				{
+					return false;
+				}	
+			}
+
 			else{
 				Debug.LogError( string.Format( "Error-Can't find script cond func '{0}'" , func.sFunc ) );
 			}
@@ -214,7 +222,35 @@ public class MyScript {
 		}
 		return false;
 	}
-	
+
+	bool ConditionHp( int nChar1 , string op , float fValue )
+	{
+		cUnitData unit = GameDataManager.Instance.GetUnitDateByCharID ( nChar1 );
+		if (unit != null) {
+			float fPer = unit.n_HP / unit.GetMaxHP();
+
+			if( op == "<"){
+				return (fPer < fValue);
+			}
+			else if( op == "<="){
+				return (fPer <= fValue);
+			}
+			else if( op == "=="){
+				return (fPer == fValue);
+			}
+			else if( op == "!="){
+				return (fPer != fValue);
+			}
+			else if( op == ">"){
+				return (fPer > fValue);
+			}
+			else if( op == ">="){
+				return (fPer >= fValue);
+			}
+		}
+		return false;
+	}
+
 	//------------------
 	// Stage Run
 	//-----------------
@@ -227,27 +263,27 @@ public class MyScript {
 			{
 				StagePopUnitEvent evt = new StagePopUnitEvent ();
 				evt.eCamp   = _CAMP._PLAYER;
-				evt.nCharID = func.At( 0 );
-				evt.nX		= func.At( 1 );
-				evt.nY		= func.At( 2 );
+				evt.nCharID = func.I( 0 );
+				evt.nX		= func.I( 1 );
+				evt.nY		= func.I( 2 );
 				GameEventManager.DispatchEvent ( evt );
 			}
 			else if( func.sFunc == "POPMOB" )
 			{
 				StagePopUnitEvent evt = new StagePopUnitEvent ();
 				evt.eCamp   = _CAMP._ENEMY;
-				evt.nCharID = func.At( 0 );
-				evt.nX		= func.At( 1 );
-				evt.nY		= func.At( 2 );
+				evt.nCharID = func.I( 0 );
+				evt.nX		= func.I( 1 );
+				evt.nY		= func.I( 2 );
 				GameEventManager.DispatchEvent ( evt );
 			}
 			else if( func.sFunc == "POP" )
 			{
 				StagePopUnitEvent evt = new StagePopUnitEvent ();
-				evt.eCamp 	= (_CAMP)func.At( 0 );
-				evt.nCharID = func.At( 1 );
-				evt.nX		= func.At( 2 );
-				evt.nY		= func.At( 3 );
+				evt.eCamp 	= (_CAMP)func.I( 0 );
+				evt.nCharID = func.I( 1 );
+				evt.nX		= func.I( 2 );
+				evt.nY		= func.I( 3 );
 				GameEventManager.DispatchEvent ( evt );
 
 			}
@@ -256,32 +292,32 @@ public class MyScript {
 				#if UNITY_EDITOR
 				//	return ;
 				#endif
-				int nID = func.At( 0 );
+				int nID = func.I( 0 );
 				GameSystem.TalkEvent( nID );
 			}
 			else if( func.sFunc == "BGM"  )
 			{
-				int nID = func.At( 0 );
+				int nID = func.I( 0 );
 				// change bgm 
 				GameSystem.PlayBGM ( nID );
 			}
 			else if( func.sFunc == "SAY" )
 			{
 				TalkSayEvent evt = new TalkSayEvent();
-				//evt.nType  = func.At(0);
-				evt.nChar  = func.At(0);
-				evt.nSayID = func.At(1);
+				//evt.nType  = func.I(0);
+				evt.nChar  = func.I(0);
+				evt.nSayID = func.I(1);
 
-				//Say( func.At(0), func.At(1) );
+				//Say( func.I(0), func.I(1) );
 				GameEventManager.DispatchEvent ( evt  );
 			}
 			else if( func.sFunc == "SETCHAR" )
 			{
 				TalkSetCharEvent evt = new TalkSetCharEvent();
-				evt.nType  = func.At(0);
-				evt.nChar  = func.At(1);
+				evt.nType  = func.I(0);
+				evt.nChar  = func.I(1);
 				
-				//Say( func.At(0), func.At(1) );
+				//Say( func.I(0), func.I(1) );
 				GameEventManager.DispatchEvent ( evt  );
 			}		
 			else if( func.sFunc == "CHANGEBACK") 
@@ -291,28 +327,44 @@ public class MyScript {
 			else if( func.sFunc  == "SAYEND") 
 			{
 				TalkSayEndEvent evt = new TalkSayEndEvent();
-				//evt.nType = func.At(0);
-				evt.nChar = func.At(0);
+				//evt.nType = func.I(0);
+				evt.nChar = func.I(0);
 				GameEventManager.DispatchEvent ( evt  );
-//				CloseBox( func.At(0), func.At(1) );
+//				CloseBox( func.I(0), func.I(1) );
 			}
 			// stage event
 			else if( func.sFunc  == "STAGEBGM") 
 			{
-				GameEventManager.DispatchEvent ( new StageBGMEvent()  );
-				
+				GameEventManager.DispatchEvent ( new StageBGMEvent()  );				
 			}
 
 			else if( func.sFunc  == "POPGROUP")  //  pop a group of mob
 			{
 				
 			}
+			else if( func.sFunc  == "ATTACK")  //  pop a group of mob
+			{
+
+				StageBattleAttackEvent evt = new StageBattleAttackEvent();
+				evt.nAtkCharID = func.I(0);
+				evt.nDefCharID = func.I(1);
+				evt.nAtkSkillID = func.I(2);
+				GameEventManager.DispatchEvent ( evt  );
+			}
 			else if( func.sFunc  == "DELUNIT") 
 			{			
 				StageDelUnitEvent evt = new StageDelUnitEvent ();
-				//evt.eCamp = (_CAMP)func.At( 0 );
-				evt.nCharID = func.At( 0 );
+				//evt.eCamp = (_CAMP)func.I( 0 );
+				evt.nCharID = func.I( 0 );
 				GameEventManager.DispatchEvent ( evt );
+			}
+			else if( func.sFunc  == "WIN") 
+			{
+
+			}
+			else if( func.sFunc  == "LOST") 
+			{
+				
 			}
 			else 
 			{

@@ -11,6 +11,8 @@ public class Panel_Talk : MonoBehaviour {
 	public GameObject TalkWindow_Down;
 	public GameObject Skip_Button;
 
+
+	public GameObject TalkWindow_new;
 	//public GameObject StartButton;
 	private Dictionary<int, SRW_TextBox> m_idToObj; // 管理 產生的 Prefab 物件 
 
@@ -52,6 +54,7 @@ public class Panel_Talk : MonoBehaviour {
 		// templete
 		TalkWindow_Up.SetActive( false );
 		TalkWindow_Down.SetActive( false );
+	//	TalkWindow_new.SetActive( false );
 	//	m_idToObj.Add(  0 , TalkWindow_Up );
 	//	m_idToObj.Add(  1 , TalkWindow_Down );
 		// for fast debug 
@@ -65,7 +68,7 @@ public class Panel_Talk : MonoBehaviour {
 
 
 
-
+	//	CharSay( 1  , 9 );
 		// cause some mob pop in talk event. player can't skip talk event to avoid bug
 	//	NGUITools.SetActive( Skip_Button , false );
 //#if UNITY_EDITOR

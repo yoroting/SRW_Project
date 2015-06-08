@@ -36,6 +36,23 @@ public class MyTool {
 		return v;
 
 	}
+
+	public static string GetUnitSchoolFullName( int nIdent , int nSchool )
+	{
+		cUnitData data = GameDataManager.Instance.GetUnitDateByIdent (nIdent);
+		if (data == null)
+			return "Error-No Unit";
+
+		SCHOOL sch = GameDataManager.Instance.GetConstSchoolData ( nSchool );
+		if (sch == null)
+			return "Error-No Skill";
+
+		int nLv = 0;
+		if (data.SchoolPool.TryGetValue (nSchool, out nLv) == true ) {
+			return sch.s_NAME + "(" +nLv.ToString() + ")";
+		}
+		return "Error- No Leran School" + nSchool.ToString();
+	}
 	//
 	public static List <GameObject > GetChildPool( GameObject obj)
 	{

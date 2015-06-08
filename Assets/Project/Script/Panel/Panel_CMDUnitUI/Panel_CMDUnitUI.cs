@@ -221,14 +221,14 @@ public class Panel_CMDUnitUI : MonoBehaviour
 	public void WaitCmd( )
 	{
 		// this is one kind of cmd that reduce cmd times
-		if (pCmder) {
-			pCmder.ActionFinished ();
+		//if (pCmder) {
+		//	pCmder.ActionFinished ();
 			// cmd finish
 			//StageUnitActionFinishEvent cmd = new StageUnitActionFinishEvent ();
 			//cmd.nIdent = pCmder.Ident();
 			//GameEventManager.DispatchEvent ( cmd );
-
-		}
+		//}
+		ActionManager.Instance.CreateWaitingAction ( pCmder.Ident() );
 
 		//Clear ();
 		PanelManager.Instance.CloseUI( Name );
@@ -280,12 +280,16 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		// restore all allay cmd times;
 	}
 
-	public void  RoundSuicide(  )
+	public void  RunSuicide(  )
 	{
 		PanelManager.Instance.CloseUI( Name );
 		if (pCmder != null) {
 			pCmder.OnSelected ( false );
-			pCmder.SetDead ();
+			cUnitData pCmdData  = GameDataManager.Instance.GetUnitDateByIdent( pCmder.Ident() );
+			if( pCmdData != null ){
+				pCmdData.AddHp( -999999999 );
+			}
+			//pCmder.SetDead ();
 		}
 		pCmder = null;
 		CMD.Clear ();
@@ -442,7 +446,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
 // cheat code
 		else if (name == _CMD_ID._SUICIDE.ToString ()) {
-			RoundSuicide(  );
+			RunSuicide(  );
 		}
 //
 

@@ -8,6 +8,7 @@ using MYGRIDS;
 // All SRW enum list
 /// <summary>預設存在的 Channel Type</summary>
 
+
 public class cFightResult
 {
 	public int AtkIdent { set; get;}
@@ -36,13 +37,14 @@ public partial class BattleManager
 
 //	private Dictionary<int, AudioChannelBase> channels = new Dictionary<int, AudioChannelBase>();
 
-	public void Initial( int fileindex =0 ){
+	public void Initial(  ){
 		hadInit = true;
 
 		bIsBattle = false;
 		//this.GetAudioClipFunc = getAudioClipFunc;
 	//	UnitPool = new Dictionary< int , UNIT_DATA >();
 	//	CampPool = new Dictionary< _CAMP , cCamp >();
+
 	}
 
 	private static BattleManager instance;
@@ -79,14 +81,14 @@ public partial class BattleManager
 	{
 		//
 		//Panel_unit unDef = Panel_StageUI.Instance.GetUnitByIdent( nDeferID ); 
-
+		uAction pAct = null;
 		switch( nPhase )
 		{
 		case 0:	// prepare for event check
 			nPhase++;
 			break;
 		case 1:			// atack pre show 
-			ShowBattleMsg( nAtkerID , "attack" );
+			//ShowBattleMsg( nAtkerID , "attack" );
 			nPhase++;
 			break;
 		case 2:			// def pre show 
@@ -101,24 +103,33 @@ public partial class BattleManager
 			nPhase++;
 			break;
 		case 5:			// atk -> def 
-		//	DoAttackEvent( nAtkerID , nDeferID );
-			Panel_unit unitAtk = Panel_StageUI.Instance.GetUnitByIdent( nAtkerID );
-			//Panel_unit unitDef = Panel_StageUI.Instance.GetUnitByIdent( nDeferID );
-			if( unitAtk != null )
-			{
-				unitAtk.ActionAttack( nDeferID );
+			pAct = ActionManager.Instance.CreateAction( nAtkerID , _ACTION._ATK );
+			if( pAct != null ){
+				pAct.nTarIdent = nDeferID;
 			}
+
+
+//			Panel_unit unitAtk = Panel_StageUI.Instance.GetUnitByIdent( nAtkerID );
+//			if( unitAtk != null )
+//			{
+//				unitAtk.ActionAttack( nDeferID );
+//			}
 
 			nPhase++;
 			break;
 		case 6:			//  def -> atk
 			if( bDefMode  == false )
 			{
-				Panel_unit unitDef = Panel_StageUI.Instance.GetUnitByIdent( nDeferID );
-				if( unitDef != null )
-				{
-					unitDef.ActionAttack( nAtkerID );
+				pAct = ActionManager.Instance.CreateAction( nDeferID , _ACTION._ATK );
+				if( pAct != null ){
+					pAct.nTarIdent = nAtkerID;
 				}
+
+//				Panel_unit unitDef = Panel_StageUI.Instance.GetUnitByIdent( nDeferID );
+//				if( unitDef != null )
+//				{
+//					unitDef.ActionAttack( nAtkerID );
+//				}
 			}
 			nPhase++;
 			break;

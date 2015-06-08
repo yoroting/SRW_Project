@@ -80,11 +80,11 @@ public class Panel_UnitInfo : MonoBehaviour {
 
 		// school name
 
-		SCHOOL inSch = GameDataManager.Instance.GetConstSchoolData( data.nActSch[0] ); // int 
-		MyTool.SetLabelText( IntSchObj ,inSch.s_NAME );
+		//SCHOOL inSch = GameDataManager.Instance.GetConstSchoolData( data.nActSch[0] ); // int 
+		MyTool.SetLabelText( IntSchObj , MyTool.GetUnitSchoolFullName( GameDataManager.Instance.nInfoIdent , data.nActSch[0] )  );
 
 		SCHOOL exSch = GameDataManager.Instance.GetConstSchoolData( data.nActSch[1] ); // ext 
-		MyTool.SetLabelText( ExtSchObj ,exSch.s_NAME );
+		MyTool.SetLabelText( ExtSchObj , MyTool.GetUnitSchoolFullName( GameDataManager.Instance.nInfoIdent , data.nActSch[1] ) );
 
 	}
 

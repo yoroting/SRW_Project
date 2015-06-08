@@ -60,11 +60,11 @@ public class cUnitData{
 	Dictionary< int , cAttrData > Attr; 		// 0-內功 , 1-外功  , 2-等級 , 3- buff 
 
 	// school
-	Dictionary< int , int >		SchoolPool;			// all study school < school id , lv >
-	Dictionary< int , int >		AbilityPool;		// all ability school < ability id , lv can use >
+	public Dictionary< int , int >		SchoolPool;			// all study school < school id , lv >
+	public Dictionary< int , int >		AbilityPool;		// all ability school < ability id , lv can use >
 
-	List<cBuffData>				BuffPool;			// all buff pool , need save /load
-	Dictionary< int , int >		CDPool;				// all study school < cd type , round >
+	public List<cBuffData>				BuffPool;			// all buff pool , need save /load
+	public Dictionary< int , int >		CDPool;				// all study school < cd type , round >
 	// Buff list
 
 	public cUnitData()

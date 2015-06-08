@@ -8,5 +8,5 @@ public class STAGE_EVENT : ConstDataRow<STAGE_EVENT>
 	public string s_SOUND;
 	public string s_CONDITION;
 	public string s_BEHAVIOR;
-	public int n_MESSAGE_TYPE;
+	public int n_TYPE;
 }

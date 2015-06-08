@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using MYGRIDS;
 using MyClassLibrary;
 using _SRW;
@@ -37,6 +38,9 @@ public class Panel_unit : MonoBehaviour {
 	public int  	CharID;			// not identift
 	public iVec2 Loc;
 	public cUnitData pUnitData;  
+	uAction CurAction;
+	int		nSubActFlow;			// index of action run
+
 	public List< iVec2 > PathList;
 
 	iVec2	TarPos;					   //目標左標
@@ -44,13 +48,14 @@ public class Panel_unit : MonoBehaviour {
 
 //	public int  Identify;		avoid double 
 	bool bOnSelected;
-	bool bIsDead;
+
 	int nActionTime=1;			//
 
-	bool bIsAtking  = false;
-	bool bIsCasting = false;
-	bool bIsShaking = false;
-	bool bIsMoving 	= false;
+	public bool bIsDead = false;
+	public bool bIsAtking  = false;
+	public bool bIsCasting = false;
+	public bool bIsShaking = false;
+	public bool bIsMoving 	= false;
 
 
 	public int  Ident() 
@@ -60,7 +65,7 @@ public class Panel_unit : MonoBehaviour {
 		}
 		return 0;
 	}
-	public bool CanAction()
+	public bool CanDoCmd()
 	{
 		return nActionTime>0;
 	}
@@ -76,6 +81,7 @@ public class Panel_unit : MonoBehaviour {
 		bOnSelected = true;
 		bIsDead = false;
 		TarIdent = 0;
+
 	}
 
 	// Awake
@@ -123,12 +129,16 @@ public class Panel_unit : MonoBehaviour {
 			MoveNextPoint ();			// auto move
 		}
 		//}
-		if (nActionTime <= 0) {
-			nActionTime = 0;
-			MaskObj.SetActive (true);
-		} else {
-			MaskObj.SetActive (false);
-		}
+
+		RunAction ();
+
+
+			if (nActionTime <= 0) {
+				nActionTime = 0;
+				MaskObj.SetActive (true);
+			} else {
+				MaskObj.SetActive (false);
+			}
 
 		// If not null 
 		if( pUnitData != null )
@@ -148,11 +158,26 @@ public class Panel_unit : MonoBehaviour {
 				hpbar.value = def / nMaxdef;
 			}
 
-			if( pUnitData.n_HP <= 0 )
-			{
-				 // trigger dead event
-				SetDead();
+			if( pUnitData.n_HP <= 0 ){				 
+				pUnitData.n_HP =0;
+			}
+			if( pUnitData.n_MP <= 0 ){
+				pUnitData.n_MP =0;
+			}
+			if( pUnitData.n_DEF <= 0 ){
+				pUnitData.n_DEF =0;
+			}
+			if( pUnitData.n_SP <= 0 ){
+				pUnitData.n_SP =0;
+			}
 
+			UISlider hpSlider = HpBarObj.GetComponent<UISlider>();
+			if( hpSlider != null ){
+				hpSlider.value =  (float) pUnitData.n_HP /  (float) pUnitData.GetMaxHP() ;
+			}
+			UISlider defSlider = DefBarObj.GetComponent<UISlider>();
+			if( defSlider != null ){
+				defSlider.value =  (float) pUnitData.n_DEF /  (float) pUnitData.GetMaxDef() ;
 			}
 
 		}	
@@ -160,6 +185,23 @@ public class Panel_unit : MonoBehaviour {
 
 	void OnDestory () {
 		GameDataManager.Instance.DelUnit( Ident() );
+	}
+
+	public bool IsIdle		()
+	{
+		if( IsMoving() )
+		{
+			return false;
+		}
+		if( IsAnimate() )
+		{
+			return false;
+		}
+		if( IsAction() )
+		{
+			return false;
+		}
+		return true; 
 	}
 
 	//click
@@ -323,6 +365,86 @@ public class Panel_unit : MonoBehaviour {
 		}
 	}
 
+	public bool IsAction()
+	{
+		if (CurAction != null)
+			return true;
+
+		return false;
+	}
+
+	public bool SetAction( uAction act )
+	{
+		if (CurAction != null)
+			return false;
+		//need a pool for multi act
+		CurAction = act;
+		nSubActFlow = 0;
+		//RunAction (); // don't first run. it will broke unit update flow
+		return true;
+	}
+
+	public void RunAction()
+	{
+		if (CurAction == null)
+			return;
+
+		switch( CurAction.eAct )
+		{
+		case _ACTION._WAIT:
+			switch( nSubActFlow )
+			{
+			case 0:
+				ActionWait();
+				nSubActFlow++;
+				break;
+			case 1:
+				ActionFinished ();
+				CurAction = null; // clear act
+				nSubActFlow++;
+				break;
+			}
+
+			break;
+		case _ACTION._ATK:
+			switch( nSubActFlow )
+			{
+			case 0:
+				BattleManager.Instance.ShowBattleMsg( Ident() , MyTool.GetUnitSchoolFullName(Ident(),pUnitData.nActSch[1] ) );  // Get school name
+				nSubActFlow++;
+				break;
+			case 1:
+				ActionAttack( CurAction.nTarIdent );
+				nSubActFlow++;
+				break;
+			case 2:
+				ActionFinished ();
+				CurAction = null; // clear act
+				nSubActFlow++;
+				break;
+			}
+
+
+
+			break;
+		case _ACTION._MOVE:
+			switch( nSubActFlow )
+			{
+			case 0:
+				nSubActFlow++;
+				ActionMove( CurAction.nTarGridX , CurAction.nTarGridY  );
+				break;
+			case 1:
+				nSubActFlow++;
+				CurAction = null; // clear act
+				break;
+			}
+			break;
+		}
+	}
+
+
+
 	public void ActionAttack( int tarident )
 	{
 		TarIdent = tarident;
@@ -356,6 +478,23 @@ public class Panel_unit : MonoBehaviour {
 
 	}
 
+
+	public void ActionMove( int GridX , int GridY )
+	{
+		// maybe need some other process in the future
+
+		MoveTo ( GridX , GridY );
+	}
+
+	public void ActionWait( )
+	{
+		// select to wait
+		BattleManager.Instance.ShowBattleMsg (this, "waiting");
+	//	ActionFinished ();
+	}
+
+
+	//==============Tween CAll back
 	public void OnTwAtkHit( )
 	{
 		// move back 
@@ -531,13 +670,67 @@ public class Panel_unit : MonoBehaviour {
 		GameDataManager.Instance.AddCampMember( camp , Ident() ); // global game data
 
 	}
+
+	public bool CanPK( Panel_unit  unit ) 	
+	{
+		if (unit == null)
+			return false;
+		if (unit.eCampID != this.eCampID) {
+			if( unit.eCampID == _CAMP._ENEMY || eCampID == _CAMP._ENEMY )
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	// enemy use
 	public void RunAI( )
 	{
-		// select to wait
-		BattleManager.Instance.ShowBattleMsg (this, "waiting");
-		ActionFinished ();
+		if (Config.MOBAI == false) {
+
+			ActionWait();
+			return;
+		}
+		// find a target
+
+
+		// find a pos 
+		Dictionary< Panel_unit , int > pool = Panel_StageUI.Instance.GetUnitDistPool ( this , true );
+		var items = from pair in pool orderby pair.Value ascending select pair;
+		//Dictionary< Panel_unit , int > items = from pair in pool orderby pair.Value ascending select pair;
+		foreach (KeyValuePair<Panel_unit , int> pair in items)
+		{
+			Debug.LogFormat("{0}: {1}", pair.Key, pair.Value);
+			// throw event
+			GameScene.Instance.Grids.SetIgnorePool(  Panel_StageUI.Instance.GetUnitPosList() );
+
+			List< iVec2> path = GameScene.Instance.Grids.PathFinding( this.Loc , pair.Key.Loc , 4 , 99 );
+			//PathFinding
+
+			if( path.Count > 2 )
+			{
+				iVec2 last = path[path.Count -2 ];
+				ActionManager.Instance.CreateMoveAction( Ident() , last.X , last.Y );	
+			}
+//			int nDist = Loc.Dist (pair.Key.Loc);
+//			if (nDist > 4 ) {
+//				// send move act
+//				iVec2 tarPos =   Panel_StageUI.Instance.FindEmptyPos( pair.Key.Loc );
+//				ActionManager.Instance.CreateMoveAction( Ident() , tarPos.X , tarPos.Y );				
+//				
+//			}
+			
+			// send attack
+			ActionManager.Instance.CreateAttackAction( Ident() , pair.Key.Ident(), 0 );
+
+	//		ActionManager.Instance.CreateWaitingAction( Ident() );
+
+			return; // one unit once time
+		}
 	}
+
 
 	// call back func
 	int	   nTweenMoveCount	= 0;		// check move is done

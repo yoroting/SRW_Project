@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using SimpleAStarExample;
 
 namespace MYGRIDS
 {
@@ -570,6 +571,9 @@ namespace MYGRIDS
             CreateLayer(1, 1); //預設一層
             //
             ThingPool = new Dictionary<string, cMyCell>();     // 地上物
+
+			// path find
+		//	IgnorePool = new  List<Point>();     				  // ignore for pathfind
         }
 
 
@@ -882,6 +886,20 @@ namespace MYGRIDS
             return lst;
         }
 
+		// Check if pos in grid
+		public bool Contain( iVec2 v )
+		{
+			if( v.X < -hW || v.X > hW )
+			{
+				return false;
+			}
+			if( v.Y < -hH || v.Y > hH )
+			{
+				return false;
+			}
+
+			return true;
+		}
 
         // File I / O
         public bool Save(string sFileName)
@@ -986,6 +1004,10 @@ namespace MYGRIDS
             {
                 fileStream.Close();               
             }
+			// create path findere map
+
+			InitializePathFindMap (); // maybe move out later
+		
             return true;
 
         }
@@ -993,7 +1015,83 @@ namespace MYGRIDS
         // Layer 的實體
         cMyLayer Layer;                                   //不公開。以免被誤操作。 （兩造 座標系不同）
         public Dictionary<string, cMyCell> ThingPool;     // 地上物 集合
-    
+
+		//=============================================================
+		// Widget for pathfinding
+		//=============================================================
+		private bool[,] map;							  // path find 	
+		private bool[,] mask;							  // ignore path find 	
+		//public List<Point> DynMask;     				  // ignore for pathfind
+		private SearchParameters searchParameters;
+		//private PathFinder pathfinder;
+		//List<Point> IgnorePool;     				  // ignore for pathfind
+
+
+		public void SetIgnorePool( List<iVec2> ivecPool )
+		{
+			this.mask = new bool[ MaxW , MaxH ];
+			for (int y = 0; y < MaxH ; y++)
+				for (int x = 0; x < MaxW ; x++)
+					mask[x, y] = true;
+
+			if (ivecPool == null) {
+				//GetPathFinder ().SetIgnorePool ( IgnorePool ); // clear all mask
+				return ;
+			}
+
+			foreach( iVec2 v in ivecPool )
+			{
+				mask[ v.X+hW , v.Y+hH ] = false;
+				//IgnorePool.Add( new Point( v.X+hW , v.Y+hH ) );
+			}
+			//GetPathFinder ().SetIgnorePool ( IgnorePool );
+		}
+
+		// path find func . take care to use it
+		public List<iVec2> PathFinding( iVec2 st , iVec2 ed , int nDist , int MaxStep = 99 )
+		{
+			List<iVec2> pool = new List<iVec2> ();
+
+			//InitializePathFindMap (); // maybe move out later
+
+			var startLocation = new Point(st.X+hW, st.Y+hH);  // convert srw  to path find 
+			var endLocation = new Point(ed.X+hW, ed.Y+hH);
+			this.searchParameters = new SearchParameters(startLocation, endLocation, map , mask );
+			PathFinder pathFinder = new PathFinder(searchParameters);
+			//GetPathFinder().SetIgnorePool ( IgnorePool );
+
+			pathFinder.ApplyMaskNodes (mask);
+			List<Point> path = pathFinder.FindPath(startLocation , endLocation);
+			foreach( Point pt in path)
+			{
+				iVec2 pos = new iVec2( pt.X-hW , pt.Y -hH );
+				pool.Add( pos );
+			}
+
+			return  pool;
+		}
+
+		private void InitializePathFindMap()
+		{
+			//  □ □ □ □ □ □ □
+			//  □ □ □ □ □ □ □
+			//  □ S □ □ □ F □
+			//  □ □ □ □ □ □ □
+			//  □ □ □ □ □ □ □
+			
+			this.map = new bool[ MaxW , MaxH ];
+			for (int y = 0; y < MaxH ; y++)
+				for (int x = 0; x < MaxW ; x++)
+					map[x, y] = true;
+
+			this.mask = new bool[ MaxW , MaxH ];
+			for (int y = 0; y < MaxH ; y++)
+				for (int x = 0; x < MaxW ; x++)
+					mask[x, y] = true;
+
+		}
+
+
     }
 
 };

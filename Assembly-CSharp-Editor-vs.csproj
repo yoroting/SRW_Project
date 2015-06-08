@@ -139,7 +139,6 @@
      <Compile Include="Assets\NGUI\Scripts\Editor\UIWrapContentEditor.cs" />
      <Compile Include="Assets\NGUIExtension\Editor\TweenGrayLevelEditor.cs" />
      <Compile Include="Assets\NGUIExtension\Editor\TweenShakeInspector.cs" />
-     <Compile Include="Assets\Pathfinding\Editor\WaypointEditor.cs" />
      <None Include="Assets\NGUI\Examples\Shaders\Unlit - Depth Cutout.shader" />
      <None Include="Assets\NGUI\ReadMe - 3.8.0.txt" />
      <None Include="Assets\Project\Resources\Shader\Unlit - Transparent Colored DOUBLE.shader" />
@@ -196,9 +195,6 @@
      <None Include="Assets\NGUI\Examples\Models\Orc Armor\Orc Armor.shader" />
      <None Include="Assets\NGUI\Examples\Resources\Localization.txt" />
      <None Include="Assets\HexTileManager\Demo\TileMaps\Platformer Tiles\Read.txt" />
- <Reference Include="Assembly-UnityScript">
- <HintPath>G:/Unity Projects/SRW_Project/Library/ScriptAssemblies/Assembly-UnityScript.dll</HintPath>
- </Reference>
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>

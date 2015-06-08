@@ -32,4 +32,6 @@ public class Config
 
 
 	public static bool GOD = false;
+	public static bool MOBAI = true;				// all mob no atk 
+
 }

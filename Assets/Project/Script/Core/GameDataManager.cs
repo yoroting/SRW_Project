@@ -303,7 +303,8 @@ public partial class GameDataManager
 
 	// don't public this
 	int nSerialNO;		// object serial NO
-	Dictionary< int , cUnitData > UnitPool;			// add event id 
+
+	public Dictionary< int , cUnitData > UnitPool;			// add event id 
 
  	int GenerSerialNO( ){ return ++nSerialNO ; }
 	int GenerMobSerialNO( ){ return (++nSerialNO)*(-1) ; }
@@ -332,6 +333,18 @@ public partial class GameDataManager
 			return null;
 		}
 
+	}
+
+	public cUnitData GetUnitDateByCharID( int nCharID )
+	{
+		foreach (KeyValuePair< int ,cUnitData > pair in UnitPool) {
+			if( pair.Value != null && pair.Value.n_CharID == nCharID )
+			{
+				return pair.Value;
+			}
+		}
+
+		return null;
 	}
 
 //	public cUnitData CreateMob( int nCharID )

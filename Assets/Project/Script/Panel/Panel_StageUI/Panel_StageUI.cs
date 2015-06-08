@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using _SRW;
 using MYGRIDS;
 using MyClassLibrary;			// for parser string
@@ -53,6 +54,7 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 	Dictionary< int , Panel_unit > IdentToUnit;			// allyPool
 	//Dictionary< int , UNIT_DATA > UnitDataPool;			// ConstData pool
 
+
 	// ScreenRatio
 	// float fUIRatio;
 
@@ -86,6 +88,8 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		OverCellPool 	= new Dictionary< string , GameObject >();			// Over tile effect pool ( in = cell key )
 		OverCellAtkPool = new Dictionary< string , GameObject >();			
 
+
+	//	ActionPool = List< uAction >();				// record all action to do 
 		// Debug Code jump to stage
 		GameDataManager.Instance.nStageID = 1;
 
@@ -113,6 +117,8 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		GameEventManager.AddEventListener(  StageShowAttackRangeEvent.Name , OnStageShowAttackRangeEvent );
 		GameEventManager.AddEventListener(  StageRestorePosEvent.Name , OnStageRestorePosEvent );
 
+
+		GameEventManager.AddEventListener(  StageBattleAttackEvent.Name , OnStageBattleAttackEvent );
 		// create singloten
 
 		// can't open panel in awake
@@ -223,9 +229,12 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 
 		//=== Unit Action ====
 		// Atk / mov / other action need to preform first
-		RunUnitAction();
+		if (ActionManager.Instance.Run () == true)
+			return;
 
-
+		// avoid event close soon when call talkui already
+		if( PanelManager.Instance.CheckUIIsOpening( Panel_Talk.Name) == true )
+			return ;
 
 		//==================	
 		if( RunEvent( ) == true )// this will throw many unit action
@@ -246,6 +255,9 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 
 		// check if need pop cmd UI auto
 		if ( CheckPopNextCMD () == true)
+			return;
+
+		if (CheckUnitDead () == true) // check here for event_manager  can detect hp ==0 first , some event may relive the deading unit
 			return;
 
 
@@ -715,8 +727,8 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		if (BattleMsg.nMsgCount > 0)
 			return true;
 
-		if( PanelManager.Instance.CheckUIIsOpening( Panel_Talk.Name) == true )
-			return true;
+//		if( PanelManager.Instance.CheckUIIsOpening( Panel_Talk.Name) == true )
+//			return true;
 
 		if( PanelManager.Instance.CheckUIIsOpening( Panel_Round.Name ) == true )
 			return true;	
@@ -725,14 +737,8 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		{
 			if( pair.Value == null )
 				continue;
-			if( pair.Value.IsMoving() )
-			{
+			if( pair.Value.IsIdle() == false )
 				return true;
-			}
-			if( pair.Value.IsAnimate() )
-			{
-				return true;
-			}
 		}
 
 
@@ -765,12 +771,6 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		return null;
 	}
 
-	void RunUnitAction()
-	{
-
-
-	}
-
 
 	// Faction AI
 	public List<Panel_unit> GetUnitListByCamp( _CAMP nCamp )
@@ -791,6 +791,22 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		return lst;
 	}
 
+	// get nearest pk unit
+	public Dictionary< Panel_unit , int > GetUnitDistPool( Panel_unit unit , bool bCanPK )
+	{
+		Dictionary< Panel_unit , int > pool = new Dictionary< Panel_unit , int > (); // unit , dist
+		foreach( KeyValuePair<int ,Panel_unit > pair in IdentToUnit )
+		{
+			if( unit.CanPK( pair.Value ) == bCanPK )
+			{
+				int nDist = pair.Value.Loc.Dist( unit.Loc );
+				pool.Add( pair.Value , nDist );
+			}
+		}
+		return pool;
+	}
+
+
 	bool RunCampAI( _CAMP nCamp )
 	{
 		// our faction don't need AI process
@@ -800,7 +816,7 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		// change faction if all unit moved or dead.
 		List<Panel_unit> lst = GetUnitListByCamp (nCamp);
 		foreach (Panel_unit unit in lst ) {
-			if( unit.CanAction() )
+			if( unit.CanDoCmd() )
 			{
 				unit.RunAI();
 				return true;
@@ -858,7 +874,14 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 			{
 				// record event comp
 				//EvtCompletePool.Add( NextEvent.n_ID , GameDataManager.Instance.nRound );
-				GameDataManager.Instance.EvtDonePool.Add( NextEvent.n_ID , GameDataManager.Instance.nRound );
+
+				if( GameDataManager.Instance.EvtDonePool.ContainsKey( NextEvent.n_ID )  )
+				{
+					GameDataManager.Instance.EvtDonePool[ NextEvent.n_ID ] = GameDataManager.Instance.nRound; // update newest complete round
+				}
+				else{
+					GameDataManager.Instance.EvtDonePool.Add( NextEvent.n_ID , GameDataManager.Instance.nRound );
+				}
 
 				// clear event for next
 				NextEvent = null;
@@ -881,6 +904,16 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		return ( IsRunningEvent() );
 	}
 
+	public bool IsLoopEvent( STAGE_EVENT evt )
+	{
+		if (evt != null) {
+			if ( (evt.n_TYPE & 1) > 0  )  // 1 is loop event
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 	void GetEventToRun()
 	{
 		//if( IsRunningEvent() )
@@ -898,7 +931,11 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 			if( CheckEventCanRun( pair.Value ) == true ){		// check if this event need run
 				//NextEvent = pair.Value ; 		// run in next loop
 				WaitPool.Add( pair.Value );
-				removeLst.Add( pair.Key );
+				// check is loop event?
+				if( IsLoopEvent( pair.Value )== false  )
+				{
+					removeLst.Add( pair.Key );
+				}
 			}
 		}
 		// remove key , never check it again
@@ -933,8 +970,10 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		// running talk ui is running event too
 		if( IsAnyActionRunning() ) // many trig action. all event need wait them complete
 			return true;
-		//if( PanelManager.Instance.CheckUIIsOpening( Panel_Talk.Name) == true )
-		//	return true;
+
+		//avoid event close soon when call talkui already
+		if( PanelManager.Instance.CheckUIIsOpening( Panel_Talk.Name) == true )
+			return true;
 
 		return false;
 	}
@@ -1145,6 +1184,37 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		return false;
 	}
 
+	public bool CheckUnitDead()
+	{
+		foreach ( KeyValuePair<int , cUnitData > pair in GameDataManager.Instance.UnitPool) {
+			if( pair.Value != null )
+			{
+				// it should die
+				if( pair.Value.n_HP <= 0  )
+				{
+					// checked if DictionaryEntry already
+					Panel_unit punit = Panel_StageUI.Instance.GetUnitByIdent( pair.Key );
+					if( punit!= null ){
+						if( punit.bIsDead == false )
+						{
+							punit.SetDead();
+							return true;
+						}
+
+					}
+
+				}
+			}
+
+		}
+		
+
+
+
+		return false;
+	}
+
+
 	public void MoveToGameObj( GameObject obj , bool force)
 	{
 		if (obj == null)
@@ -1325,6 +1395,122 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 
 	}
 
+	public void OnStageBattleAttackEvent(GameEvent evt)
+	{
+		//Debug.Log ("OnStagePopCharEvent");
+		StageBattleAttackEvent Evt = evt as StageBattleAttackEvent;
+		if (Evt == null)
+			return;
+		Panel_unit pAtkUnit = GetUnitByCharID ( Evt.nAtkCharID );
+		Panel_unit pDefUnit = GetUnitByCharID ( Evt.nDefCharID );
+		if (pAtkUnit == null || pDefUnit == null)
+			return;
+		int nRange = 1;
+		if (Evt.nAtkSkillID != 0) {
 
+		}
+
+		// check if need move 
+		int nDist = pAtkUnit.Loc.Dist (pDefUnit.Loc);
+		if (nDist > nRange) {
+
+			List< iVec2> path = GameScene.Instance.Grids.PathFinding( pAtkUnit.Loc , pDefUnit.Loc , 4 , 99 );
+			//PathFinding
+			
+			if( path.Count > 2 )
+			{
+				iVec2 last = path[path.Count -2 ];
+				ActionManager.Instance.CreateMoveAction( pAtkUnit.Ident() , last.X , last.Y );	
+			}
+
+			// send move act
+
+			//iVec2 tarPos =  FindEmptyPos( pDefUnit.Loc );
+			//ActionManager.Instance.CreateMoveAction( pAtkUnit.Ident() , tarPos.X , tarPos.Y );
+
+
+		}
+
+		// send attack
+		ActionManager.Instance.CreateAttackAction( pAtkUnit.Ident() , pDefUnit.Ident(), Evt.nAtkSkillID );
+		
+	}
+
+
+	public bool CheckIsEmptyPos( iVec2 pos )
+	{
+		if (Grids.Contain (pos) == false)
+			return false;
+
+		// check tile
+
+		// check thiing
+
+		// check unit
+		foreach( KeyValuePair< int , Panel_unit  > pair in IdentToUnit )
+		{
+			if( pair.Value.Loc.Collision( pos ) ){
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	public iVec2 FindEmptyPos( iVec2 st )
+	{
+		// get a empty pos that can pop 
+		int w = Grids.hW *2;
+		int h = Grids.hH *2;
+
+		for( int j = 0 ; j <h ; j++ ) {
+			for (int i = 0; i < w; i++)
+			{
+				iVec2 pos = st.MoveXY( i , j );
+				if( CheckIsEmptyPos(pos) )
+				{
+					return pos;
+				}
+				if( i != 0 ){
+					 pos = st.MoveXY( -i , j );
+					if( CheckIsEmptyPos(pos) )
+					{
+						return pos;
+					}
+				}
+				if( j != 0 ){
+					 pos = st.MoveXY( i , -j );
+					if( CheckIsEmptyPos(pos) )
+					{
+						return pos;
+					}
+				}
+				if( i!= 0 && j != 0 )
+				{
+					 pos = st.MoveXY( -i , -j );
+					if( CheckIsEmptyPos(pos) )
+					{
+						return pos;
+					}
+				}
+
+			}
+		}
+
+
+		Debug.Log ( " Error ! can't find a Empty Pos");
+		return null;
+
+
+	}
 	// 
+	public List< iVec2> GetUnitPosList( )
+	{
+		List< iVec2> lst = new List< iVec2> ();
+		foreach (KeyValuePair < int , Panel_unit > p in IdentToUnit) {
+			lst.Add( p.Value.Loc );
+		}
+
+		return lst;
+	}
 }
