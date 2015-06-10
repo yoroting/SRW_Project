@@ -8,9 +8,21 @@ using MYGRIDS;
 // All SRW enum list
 /// <summary>預設存在的 Channel Type</summary>
 
-
-public class cFightResult
+// this is enum all battle behavior need to Performance
+public enum _BATTLE
 {
+	_NONE	 = 0 ,			// no battle
+	_ATTACK  	 ,			// attack / skill
+	_CAST  	 	 ,			// cast a skill on pos
+	_SCRIPT  	 ,			// play a  battle script
+};
+
+public class cHitResult
+{
+	public cHitResult( int nAtkIdent , int nDefIdent ){
+		AtkIdent = nAtkIdent;
+		DefIdent = nDefIdent;
+	 }
 	public int AtkIdent { set; get;}
 	public int DefIdent { set; get;}
 	public int AtkSchool { set; get;}
@@ -40,7 +52,9 @@ public partial class BattleManager
 	public void Initial(  ){
 		hadInit = true;
 
-		bIsBattle = false;
+		Clear ();
+
+	//	bIsBattle = false;
 		//this.GetAudioClipFunc = getAudioClipFunc;
 	//	UnitPool = new Dictionary< int , UNIT_DATA >();
 	//	CampPool = new Dictionary< _CAMP , cCamp >();
@@ -64,12 +78,32 @@ public partial class BattleManager
 
 	public void Clear()
 	{
+		eBattleType = _BATTLE._NONE;
+		eAtkCmdID = _CMD_ID._NONE;
+		eDefCmdID = _CMD_ID._NONE;
+
+		bPause = false;
+		
+		nAtkerID = 0;
+		nDeferID = 0;
+		
+		nAtkerSkillID = 0;
+		nDeferSkillID = 0;		
+	
+		nTarGridX = 0;
+		nTarGridY = 0;
+
+	
+		nBattleID = 0;
+		
+		//===================================================
+		nPhase = 0; // 
 
 	}
 
 	public bool IsBattlePhase()
 	{
-		if (bIsBattle)
+		if (eBattleType != _BATTLE._NONE)
 			return true;
 
 		return false;
@@ -77,23 +111,63 @@ public partial class BattleManager
 
 
 
-	public void RunBattle()
+	public void Run()
+	{
+		if (eBattleType == _BATTLE._NONE)
+			return;
+		if (bPause)
+			return;
+
+		switch (eBattleType) {
+		case _BATTLE._ATTACK:
+			RunAttack();
+			break;
+		case _BATTLE._CAST:
+			RunCast();
+			break;
+
+		case _BATTLE._SCRIPT:
+			RunScript();
+			break;
+
+		default:
+			break;
+		}
+
+
+
+
+		return ;
+	}
+
+	public void RunAttack()
 	{
 		//
-		//Panel_unit unDef = Panel_StageUI.Instance.GetUnitByIdent( nDeferID ); 
-		uAction pAct = null;
-		switch( nPhase )
-		{
+		Panel_unit unDef = Panel_StageUI.Instance.GetUnitByIdent( nDeferID ); 
+		
+		switch (nPhase) {
 		case 0:	// prepare for event check
+			// open CMD UI for def player
+			if (unDef != null && (unDef.eCampID == _CAMP._PLAYER)) {
+				// set open CMD 
+				Panel_CMDUnitUI.OpenCMDUI( _CMD_TYPE._COUNTER , unDef );
+				
+			}
+			
+			
 			nPhase++;
 			break;
 		case 1:			// atack pre show 
+			if( PanelManager.Instance.CheckUIIsOpening( Panel_CMDUnitUI.Name ) == false )
+			{
+
 			//ShowBattleMsg( nAtkerID , "attack" );
-			nPhase++;
+				nPhase++;
+			}
 			break;
 		case 2:			// def pre show 
 			//ShowBattleMsg( nDeferID , "counter" );
-			 // show assist
+			// show assist
 			nPhase++;
 			break;
 		case 3:			// atack assist pre show 
@@ -103,87 +177,119 @@ public partial class BattleManager
 			nPhase++;
 			break;
 		case 5:			// atk -> def 
-			pAct = ActionManager.Instance.CreateAction( nAtkerID , _ACTION._ATK );
-			if( pAct != null ){
-				pAct.nTarIdent = nDeferID;
+			uAction pAtkAct = ActionManager.Instance.CreateAction (nAtkerID, _ACTION._ATK);
+			if (pAtkAct != null) {
+				pAtkAct.nTarIdent = nDeferID;
 			}
-
-
-//			Panel_unit unitAtk = Panel_StageUI.Instance.GetUnitByIdent( nAtkerID );
-//			if( unitAtk != null )
-//			{
-//				unitAtk.ActionAttack( nDeferID );
-//			}
-
+			
+			
+			//			Panel_unit unitAtk = Panel_StageUI.Instance.GetUnitByIdent( nAtkerID );
+			//			if( unitAtk != null )
+			//			{
+			//				unitAtk.ActionAttack( nDeferID );
+			//			}
+			
 			nPhase++;
 			break;
 		case 6:			//  def -> atk
-			if( bDefMode  == false )
-			{
-				pAct = ActionManager.Instance.CreateAction( nDeferID , _ACTION._ATK );
-				if( pAct != null ){
-					pAct.nTarIdent = nAtkerID;
-				}
+			if (eDefCmdID  !=  _CMD_ID._DEF) {
 
-//				Panel_unit unitDef = Panel_StageUI.Instance.GetUnitByIdent( nDeferID );
-//				if( unitDef != null )
-//				{
-//					unitDef.ActionAttack( nAtkerID );
-//				}
+				uAction pCountAct = ActionManager.Instance.CreateAction (nDeferID, _ACTION._ATK);
+				if (pCountAct != null) {
+					pCountAct.nTarIdent = nAtkerID;
+				}
+				
+				//				Panel_unit unitDef = Panel_StageUI.Instance.GetUnitByIdent( nDeferID );
+				//				if( unitDef != null )
+				//				{
+				//					unitDef.ActionAttack( nAtkerID );
+				//				}
 			}
 			nPhase++;
 			break;
 		case 7: 	// fight end . show exp
-
+			
 			nPhase++;
 			break;
 		case 8:			// close all 
 			nPhase++;
-
+			
 			// cmd finish
-			StageUnitActionFinishEvent cmd = new StageUnitActionFinishEvent ();
-			cmd.nIdent = nAtkerID;
-			GameEventManager.DispatchEvent ( cmd );
-
-			bIsBattle = false;
-
+			
+			// action finish in atk action
+			//		StageUnitActionFinishEvent cmd = new StageUnitActionFinishEvent ();
+			//		cmd.nIdent = nAtkerID;
+			//		GameEventManager.DispatchEvent ( cmd );
+			
 			// Do Counter
-
+			Clear ();
 			break;
-
 		}
+	}
+	public void RunCast()
+	{
 
-		return ;
+	}
+	public void RunScript()
+	{
+
 	}
 
 
 	//===================================================
-	public bool bIsBattle { get; set; } 
+	public _BATTLE eBattleType { get; set; } 
+//	public bool bIsBattle { get; set; } 
 	public bool bPause { get; set; } 
+
+	public _CMD_ID eAtkCmdID{ get; set; } 
+	public _CMD_ID eDefCmdID{ get; set; } 
 
 	public int nAtkerID{ get; set; } 
 	public int nDeferID{ get; set; } 
 
-	public bool bDefMode{ get; set; } 
+//	public bool bDefMode{ get; set; } 
 
 	public int nAtkerSkillID{ get; set; } 
 	public int nDeferSkillID{ get; set; } 
 
 	public bool bIsDefenceMode { get; set; } 		// 
 
+	public int nTarGridX{ get; set; } 				//
+	public int nTarGridY{ get; set; } 				//
 
 	public int nBattleID{ get; set; } 
 
 	//===================================================
-	int nPhase = 0; // 
+	private int nPhase = 0; // 
 
 
-
-	public void Play()
+	public void PlayAttack (int nAtkIdent, int nDefIdent, int nAtkerSkillID)
 	{
-		nPhase = 0;
-		bIsBattle = true;
+		nAtkerID = nAtkIdent;
+		nDeferID = nDefIdent;
+		nAtkerSkillID = nAtkerSkillID;
+
+		eBattleType = _BATTLE._ATTACK;
 	}
+	public void PlayCast (int nAtkIdent, int nGridX , int nGridY , int nAtkerSkillID)
+	{
+		nAtkerID = nAtkIdent;
+		nTarGridX = nGridX;
+		nTarGridY = nGridY;
+
+		nAtkerSkillID = nAtkerSkillID;
+		
+		eBattleType = _BATTLE._ATTACK;
+	}
+
+	public void PlayBattleID (int nBattleID )
+	{
+		nBattleID = nBattleID;
+	}
+//	public void Play()
+//	{
+//		bPause = false;
+//	}
 
 	public void ShowBattleMsg( int nIdent , string msg )
 	{
@@ -265,19 +371,27 @@ public partial class BattleManager
 		}
 	}
 
+	public void ShowAtkAssist( int nAtkIdent ,  int nDefIdent )
+	{
+		
+	}
+	
+	public void ShowDefAssist( int nAtkIdent ,  int nDefIdent )
+	{
+		
+	}
 
-	public cFightResult CalAttackResult( int nAtker , int nDefer )
+
+	public List<cHitResult> CalAttackResult( int nAtker , int nDefer )
 	{
 		cUnitData pAtker = GameDataManager.Instance.GetUnitDateByIdent( nAtker ); 	//Panel_StageUI.Instance.GetUnitByIdent( nAtker ); 
 		cUnitData pDefer = GameDataManager.Instance.GetUnitDateByIdent( nDefer );	//Panel_StageUI.Instance.GetUnitByIdent( nDefer ); 
 		if ( (pAtker == null) || (pDefer == null) )
 			return null;
 
-		// create result
-		cFightResult res = new cFightResult ();
-		res.AtkIdent = nAtker;
-		res.DefIdent = nDefer;
+		// create result pool
 
+		List<cHitResult> resPool = new List<cHitResult> ();
 		// buff effect
 		float AtkMarPlus = 0.0f;
 		float DefMarPlus = 0.0f;
@@ -285,7 +399,9 @@ public partial class BattleManager
 		int DefPowPlus = 0;
 		int AtkPlus = 0;
 
-
+		// dmg rec
+		int nAtkHp = 0;
+		int nDefHp = 0;
 
 		float AtkMar =  pAtker.GetMar() + AtkMarPlus;
 		float DefMar =  pDefer.GetMar() + DefMarPlus ;
@@ -302,11 +418,11 @@ public partial class BattleManager
 		int PowDmg = (int)(HitRate*(pAtker.GetPow()-pDefer.GetPow())); // 
 
 		if( PowDmg > 0 ){
-			res.DefHp -= PowDmg;
+			nDefHp -= PowDmg;
 	
 		}
 		else if( PowDmg < 0 ){
-			res.AtkHp = PowDmg; // it is neg value already
+			nAtkHp = PowDmg; // it is neg value already
 	
 
 		}
@@ -320,19 +436,23 @@ public partial class BattleManager
 
 
 		fAtkDmg = (fAtkDmg<0)? 0: fAtkDmg;
-		if( bDefMode )
+		if( eDefCmdID  ==  _CMD_ID._DEF )
 		{
 			fAtkDmg = (fAtkDmg*Config.DefReduce /100.0f);
 		}
 
-		res.DefHp -= (int)(fAtkDmg);
+		nDefHp -= (int)(fAtkDmg);
 
-		return res;
+		cHitResult res = new cHitResult (nAtker, nDefer );
+		res.AtkHp = nAtkHp;
+		res.DefHp = nDefHp;
+
+		resPool.Add (res);
+
+		return resPool;
 	}
 
 	// Operation Token ID 
-	public int nOpCellX{ get; set; } 				//
-	public int nOpCellY{ get; set; } 				//
 	//
 
 

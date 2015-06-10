@@ -157,6 +157,8 @@ public class Panel_CMDUnitUI : MonoBehaviour
 	
 		if (NGuiGrids == null)
 			return;
+		// record cmd type
+		CMD.eCMDTYPE = eType;
 
 		foreach( _CMD_ID id in cmdList )
 		{
@@ -181,24 +183,20 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
 	}
 
-	void NormalCloseCmdUI()
-	{
-		PanelManager.Instance.CloseUI( Name );
-		if (pCmder != null) {
-			pCmder.OnSelected (false);
-		}
-		pCmder = null;
-		CMD.Clear ();
-		// send clear over
-		Panel_StageUI.Instance.ClearOverCellEffect ();
-	}
+//	void NormalCloseCmdUI()
+//	{
+//		PanelManager.Instance.CloseUI( Name );
+//		if (pCmder != null) {
+//			pCmder.OnSelected (false);
+//		}
+//		pCmder = null;
+//		CMD.Clear ();
+//		// send clear over
+//		Panel_StageUI.Instance.ClearOverCellEffect ();
+//	}
 
 	public void CancelCmd( )
 	{
-
-		// send clear over
-		Panel_StageUI.Instance.ClearOverCellEffect ();
-
 		// if it is wait mode. restore it
 		if( CMD.eCMDTYPE == _CMD_TYPE._WAITATK ||
 		    CMD.eCMDTYPE == _CMD_TYPE._WAITMOVE //
@@ -208,13 +206,9 @@ public class Panel_CMDUnitUI : MonoBehaviour
 			RestoreCMD( );
 			return;
 		}
-		// normal clear
-		if( pCmder != null )
-			pCmder.OnSelected ( false );
-		pCmder = null;
-		CMD.Clear ();
-		//Clear ();
-		PanelManager.Instance.CloseUI( Name );
+	
+		EndCMDUI (); // really close
+
 	}
 
 
@@ -230,16 +224,9 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		//}
 		ActionManager.Instance.CreateWaitingAction ( pCmder.Ident() );
 
-		//Clear ();
-		PanelManager.Instance.CloseUI( Name );
-		if (pCmder != null) {
-			pCmder.OnSelected (false);
-		}
-		pCmder = null;
-		CMD.Clear ();
+	
+		EndCMDUI (); // really close
 
-		// send clear over
-		Panel_StageUI.Instance.ClearOverCellEffect ();
 	}
 
 	public void CharInfoCmd( )
@@ -249,11 +236,21 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		PanelManager.Instance.OpenUI ( Panel_UnitInfo.Name );
 
 		//Clear ();
-		NormalCloseCmdUI ();
+		//NormalCloseCmdUI ();.
+		EndCMDUI (); // really close
 	}
 
 	public void AttackCmd( )
 	{
+		if (CMD.eCMDTYPE == _CMD_TYPE._COUNTER) {
+			BattleManager.Instance.nDeferSkillID = 0; // counter normaly
+
+			EndCMDUI();					
+			return ;				// 
+		}
+
+		// normal atk
+
 		CMD.eCMDSTATUS = _CMD_STATUS._WAIT_TARGET;
 		CMD.eCMDID 	   = _CMD_ID._ATK;
 		CMD.eCMDTARGET = _CMD_TARGET._UNIT;   // only unit
@@ -263,21 +260,25 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		Panel_StageUI.Instance.CreateAttackOverEffect (pCmder);
 		PanelManager.Instance.CloseUI( Name );
 	}
-
+	public void CounterCmd( )
+	{
+		BattleManager.Instance.nDeferSkillID = 0; // counter normaly
+			
+		EndCMDUI ();					
+	}
 	public void  RoundEndCmd(  )
 	{
-		PanelManager.Instance.CloseUI( Name );
-		if( pCmder != null )
-			pCmder.OnSelected ( false );
-		pCmder = null;
-		CMD.Clear ();
-		
-		// send clear over
-		Panel_StageUI.Instance.ClearOverCellEffect ();
-
 		GameDataManager.Instance.NextCamp();
 
 		// restore all allay cmd times;
+		EndCMDUI (); // really close
+	}
+
+	public void DefCmd( ) // only in count mode
+	{
+		BattleManager.Instance.eDefCmdID = _CMD_ID._DEF;
+
+		EndCMDUI (); // really close
 	}
 
 	public void  RunSuicide(  )
@@ -395,9 +396,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 				switch( CMD.eCMDID )
 				{
 					case _CMD_ID._ATK:{ // attack cmd
-						BattleManager.Instance.nAtkerID = CMD.nCmderIdent;
-						BattleManager.Instance.nDeferID = CMD.nTarIdent;
-						
+						BattleManager.Instance.PlayAttack( CMD.nCmderIdent , CMD.nTarIdent ,CMD.nSkillID );
 					
 					}break;
 					case _CMD_ID._ABILITY:{ // attack cmd
@@ -415,7 +414,6 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		CMD.Clear ();				// clear cmd status
 		PanelManager.Instance.CloseUI (Name);
 		// start battle
-		BattleManager.Instance.Play();
 	}
 
 	//click
@@ -425,23 +423,21 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
 		//_CMD_ID id = MyTool.GetCMDIDByName ( name );
 		if (name == _CMD_ID._INFO.ToString ()) {
-			CharInfoCmd();
-		}
-		else if (name == _CMD_ID._MOVE.ToString ()) {
-		}
-		else if (name == _CMD_ID._ATK.ToString ()) {
-			AttackCmd(  );
-		}
-		else if (name == _CMD_ID._ABILITY.ToString ()) {
-		}
-		else if (name == _CMD_ID._WAIT.ToString ()) {
-			WaitCmd();
-		}
-		else if (name == _CMD_ID._CANCEL.ToString ()) {
-			CancelCmd(  );
-		}
-		else if (name == _CMD_ID._ROUNDEND.ToString ()) {
-			RoundEndCmd(  );
+			CharInfoCmd ();
+		} else if (name == _CMD_ID._MOVE.ToString ()) {
+		} else if (name == _CMD_ID._ATK.ToString ()) {
+			AttackCmd ();
+		} else if (name == _CMD_ID._ABILITY.ToString ()) {
+		} else if (name == _CMD_ID._WAIT.ToString ()) {
+			WaitCmd ();
+		} else if (name == _CMD_ID._CANCEL.ToString ()) {
+			CancelCmd ();
+		} else if (name == _CMD_ID._ROUNDEND.ToString ()) {
+			RoundEndCmd ();
+		} else if (name == _CMD_ID._DEF.ToString ()) {
+			DefCmd ();
+		} else if (name == _CMD_ID._COUNTER.ToString ()) {
+			CounterCmd ();
 		}
 
 // cheat code
@@ -495,5 +491,59 @@ public class Panel_CMDUnitUI : MonoBehaviour
 	//	bWaitMoveFinish = true;
 
 
+	}
+
+	// cmd STATIC FUNC 
+	public static Panel_CMDUnitUI OpenCMDUI( _CMD_TYPE type , Panel_unit cmder )
+	{
+		cCMD.Instance.eCMDTYPE = type; 
+		Panel_CMDUnitUI panel = MyTool.GetPanel<Panel_CMDUnitUI> ( PanelManager.Instance.OpenUI (Panel_CMDUnitUI.Name) );
+		if( panel != null )
+		{
+			panel.SetCmder( cmder );
+		}
+		cCMD.Instance.eCMDSTATUS = _CMD_STATUS._WAIT_CMDID;
+		
+		return panel;
+	}
+
+	// not reall close cmd ui . SOME param keep for ui re open or restore
+	public static void CloseCMDUI()
+	{
+		Panel_CMDUnitUI panel = MyTool.GetPanel<Panel_CMDUnitUI>( PanelManager.Instance.JustGetUI(Panel_CMDUnitUI.Name)) ;
+		if( panel != null )
+		{
+			panel.CancelCmd();
+		}
+		if (panel.pCmder != null) {
+			panel.pCmder.OnSelected ( false );
+		}
+
+		Panel_StageUI.Instance.ClearOverCellEffect();
+		cCMD.Instance.eCMDSTATUS = _CMD_STATUS._NONE;
+	}
+	
+	public static void RollBackCMDUIWaitTargetMode()
+	{
+		cCMD.Instance.eCMDSTATUS = _CMD_STATUS._WAIT_CMDID;
+		cCMD.Instance.eCMDID 	   = _CMD_ID._NONE;
+		cCMD.Instance.eCMDTARGET = _CMD_TARGET._ALL;   // only unit
+		Panel_StageUI.Instance.ClearOverCellEffect ();
+		PanelManager.Instance.OpenUI( Panel_CMDUnitUI.Name );
+	}
+
+	// really close Cmd UI . all param be clear
+	void EndCMDUI(  )
+	{
+		Panel_StageUI.Instance.ClearOverCellEffect();
+//		cCMD.Instance.eCMDSTATUS = _CMD_STATUS._NONE;
+		PanelManager.Instance.CloseUI( Name );
+
+		if (pCmder != null) {
+			pCmder.OnSelected ( false );
+			//pCmder.SetDead ();
+			pCmder = null;
+		}
+		CMD.Clear ();
 	}
 }

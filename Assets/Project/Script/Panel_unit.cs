@@ -42,6 +42,7 @@ public class Panel_unit : MonoBehaviour {
 	int		nSubActFlow;			// index of action run
 
 	public List< iVec2 > PathList;
+	List< iVec2 > pathfind;				// if have findinf path
 
 	iVec2	TarPos;					   //目標左標
 	public int TarIdent { set; get ;}  //攻擊對象
@@ -56,7 +57,7 @@ public class Panel_unit : MonoBehaviour {
 	public bool bIsCasting = false;
 	public bool bIsShaking = false;
 	public bool bIsMoving 	= false;
-
+	public bool bIsBorning = false;
 
 	public int  Ident() 
 	{
@@ -102,6 +103,7 @@ public class Panel_unit : MonoBehaviour {
 			psr.sortingLayerName = "FX";
 		}
 
+		SetBorn (); // start born animate
 		//GameObject instance = Resources.Load ( "/FX/Cartoon FX" );
 		//GameObject instance = CFX_SpawnSystem.GetNextObject ( CFX_SpawnSystem.instance.objectsToPreload[3] );
 		
@@ -253,10 +255,20 @@ public class Panel_unit : MonoBehaviour {
 		//TarPos.Y = y;
 		if (TarPos.Collision (Loc)) {
 			// this case won't trig move end event.
+
 			return;
 		}
+		if (pathfind != null) {
+			PathList = pathfind;
+			pathfind = null;
+		} else {
+			PathList = Panel_StageUI.Instance.PathFinding( this  , Loc , TarPos  ); // ensure  we can reach 
 
-		PathList =  GameScene.Instance.Grids.GetPathList( Loc , TarPos ) ;
+			if( PathList == null ) // move direct if no path can find
+			{
+				PathList = GameScene.Instance.Grids.GetPathList (Loc, TarPos);
+			}
+		}
 		MoveNextPoint();
 	}
 
@@ -265,7 +277,7 @@ public class Panel_unit : MonoBehaviour {
 //		if( nTweenMoveCount != 0 )
 //			return true;
 
-		if( bIsAtking || bIsShaking || bIsCasting || bIsMoving )
+		if( bIsAtking || bIsShaking || bIsCasting || bIsMoving || bIsBorning )
 			return true;
 
 		return false;
@@ -273,7 +285,7 @@ public class Panel_unit : MonoBehaviour {
 
 	public bool IsMoving()
 	{
-		if( nTweenMoveCount != 0 )
+		if( nTweenMoveCount != 0  || bIsMoving )
 			return true;
 
 		if( (PathList!=null) && PathList.Count > 0  )
@@ -326,6 +338,9 @@ public class Panel_unit : MonoBehaviour {
 
 			bIsMoving = true;
 		}
+
+		// move camera to unit
+		Panel_StageUI.Instance.MoveToGameObj (this.gameObject, false);
 
 	}
 
@@ -482,6 +497,8 @@ public class Panel_unit : MonoBehaviour {
 	public void ActionMove( int GridX , int GridY )
 	{
 		// maybe need some other process in the future
+		// Panel_StageUI.Instance.TraceUnit (this); // no good here
+
 
 		MoveTo ( GridX , GridY );
 	}
@@ -518,40 +535,42 @@ public class Panel_unit : MonoBehaviour {
 			//tw.SetOnFinished(  OnTwAtkEnd ) ;
 			//tw.Play();
 		}
-		// play effect
+		// play effect , get by ext school 
 	
 		BattleManager.Instance.ShowBattleFX( TarIdent , "CFXM4 Hit B (Orange, CFX Blend)"  );
 
-		cFightResult res = BattleManager.Instance.CalAttackResult( Ident() , TarIdent );
-		if (res != null) {
-			// show effect
-			Panel_unit pAtk = Panel_StageUI.Instance.GetUnitByIdent (res.AtkIdent);
-			if (pAtk) {
-				pAtk.ShowValueEffect ( res.AtkHp , 0 );
-			}
+		List< cHitResult>  resPool = BattleManager.Instance.CalAttackResult( Ident() , TarIdent );
+
+		foreach (cHitResult res in resPool) {
+			if (res != null) {
+				// show effect
+				Panel_unit pAtk = Panel_StageUI.Instance.GetUnitByIdent (res.AtkIdent);
+				if (pAtk) {
+					pAtk.ShowValueEffect (res.AtkHp, 0);
+				}
 
 
-			Panel_unit pDef = Panel_StageUI.Instance.GetUnitByIdent (res.DefIdent);
-			if (pDef) {
-				pDef.ShowValueEffect ( res.DefHp , 0 );
-			}
-			// modify data
-			if( res.AtkIdent!=0 && res.AtkHp!=0 ){
-				cUnitData pAtker = GameDataManager.Instance.GetUnitDateByIdent( res.AtkIdent );
-				if( pAtker != null ){
-					pAtker.AddHp( res.AtkHp );
+				Panel_unit pDef = Panel_StageUI.Instance.GetUnitByIdent (res.DefIdent);
+				if (pDef) {
+					pDef.ShowValueEffect (res.DefHp, 0);
+				}
+				// modify data
+				if (res.AtkIdent != 0 && res.AtkHp != 0) {
+					cUnitData pAtker = GameDataManager.Instance.GetUnitDateByIdent (res.AtkIdent);
+					if (pAtker != null) {
+						pAtker.AddHp (res.AtkHp);
+					}
+
+				}
+				if (res.DefIdent != 0 && res.DefHp != 0) {
+					cUnitData pDefer = GameDataManager.Instance.GetUnitDateByIdent (res.DefIdent);
+					if (pDefer != null) {
+						pDefer.AddHp (res.DefHp);
+					}
 				}
 
 			}
-			if( res.DefIdent!=0 && res.DefHp!=0 ){
-				cUnitData pDefer  = GameDataManager.Instance.GetUnitDateByIdent( res.DefIdent );
-				if( pDefer != null ){
-					pDefer.AddHp( res.DefHp );
-				}
-			}
-
 		}
-
 //		bIsAtking = false;
 //		TarIdent = 0;
 
@@ -642,6 +661,25 @@ public class Panel_unit : MonoBehaviour {
 		GameEventManager.DispatchEvent ( evt );
 	}
 
+	public void SetBorn()
+	{
+		// avoid double run
+		if (bIsBorning == true)
+			return;
+		bIsBorning = true;
+
+		TweenHeight tw = TweenHeight.Begin<TweenHeight>(  FaceObj , 0.5f );
+		if (tw != null) {
+			tw.from = 0;
+			tw.SetEndToCurrentValue();
+			MyTool.TweenSetOneShotOnFinish( tw , OnBornFinish );
+		}
+
+	}
+	public void OnBornFinish()
+	{
+		bIsBorning = false;
+	}
 
 	public void SetCamp( _CAMP camp )
 	{
@@ -685,6 +723,24 @@ public class Panel_unit : MonoBehaviour {
 		return false;
 	}
 
+
+	public List< Panel_unit  > GetPKUnitPool( bool bCanPK )
+	{
+		List< Panel_unit  > pool = new List< Panel_unit  >();
+
+
+		return pool;
+	}
+
+	public List<iVec2 > GetPKPosPool( bool bCanPK )
+	{
+		List< iVec2  > pool = new List< iVec2  >();
+		List< Panel_unit  > unitpool = GetPKUnitPool (bCanPK);
+
+		
+		return pool;
+	}
+
 	// enemy use
 	public void RunAI( )
 	{
@@ -693,9 +749,7 @@ public class Panel_unit : MonoBehaviour {
 			ActionWait();
 			return;
 		}
-		// find a target
-
-
+	
 		// find a pos 
 		Dictionary< Panel_unit , int > pool = Panel_StageUI.Instance.GetUnitDistPool ( this , true );
 		var items = from pair in pool orderby pair.Value ascending select pair;
@@ -703,16 +757,72 @@ public class Panel_unit : MonoBehaviour {
 		foreach (KeyValuePair<Panel_unit , int> pair in items)
 		{
 			Debug.LogFormat("{0}: {1}", pair.Key, pair.Value);
-			// throw event
-			GameScene.Instance.Grids.SetIgnorePool(  Panel_StageUI.Instance.GetUnitPosList() );
+			int nDist = pair.Value;
+			cUnitData data = GameDataManager.Instance.GetUnitDateByIdent( pair.Key.Ident() ); 
 
-			List< iVec2> path = GameScene.Instance.Grids.PathFinding( this.Loc , pair.Key.Loc , 4 , 99 );
-			//PathFinding
-
-			if( path.Count > 2 )
+			int nMove  = data.GetMov() ; // mob movement;
+			// path find when dist > 1
+			if( nDist > 1 )
 			{
-				iVec2 last = path[path.Count -2 ];
-				ActionManager.Instance.CreateMoveAction( Ident() , last.X , last.Y );	
+				// throw event
+			//	GameScene.Instance.Grids.ClearIgnorePool();
+
+				//GameScene.Instance.Grids.AddIgnorePool(  GetPKPosPool(  true )  ); // need check camp
+
+				// 目標 周圍 不可以站人
+				//GameScene.Instance.Grids.AddIgnorePool( pair.Key.Loc.AdjacentList()  );
+		//		foreach( iVec2 p in pair.Key.Loc.AdjacentList() )
+		//		{
+		//			if( Panel_StageUI.Instance.CheckIsEmptyPos( p ) == false  ){
+		//				GameScene.Instance.Grids.AddIgnorePos( p );
+		//			}
+		//		}
+				iVec2 last = null;
+				// start pathfind
+				List< iVec2> path = Panel_StageUI.Instance.PathFinding( this  , this.Loc , pair.Key.Loc , 999  ); // get a vaild path to run
+
+
+				// limit out side
+				path = MyTool.CutList<iVec2>( path ,nMove  );
+
+//				List<iVec2> cutpath = new List<iVec2> ();
+//				int c = 0;
+//				foreach( iVec2 v in path)
+//				{
+//					//iVec2 pos = new iVec2( pt.X-hW , pt.Y -hH );
+//					cutpath.Add( v );
+//					if( ++c >= nMove  )
+//					{
+//						break;
+//					}
+//				}
+//				path = cutpath;
+
+
+				// avoid stand on invalid pos
+				while( path.Count > 0 )
+				{
+					last = path[path.Count-1];
+					if ( Panel_StageUI.Instance.CheckIsEmptyPos( last ) == false ) 
+					{
+						path.RemoveAt( path.Count-1 ); // then go again
+
+					}
+					else
+					{
+						// success
+						pathfind = path; 
+						// check if last pos is attack able pos
+						ActionManager.Instance.CreateMoveAction( Ident() , last.X , last.Y );	
+						break;
+					}
+				}
+				if( last != null ){
+					nDist = last.Dist ( pair.Key.Loc);  // final dist
+				}
+				else {
+					nDist = -1 ; // can't find
+				}
 			}
 //			int nDist = Loc.Dist (pair.Key.Loc);
 //			if (nDist > 4 ) {
@@ -723,8 +833,20 @@ public class Panel_unit : MonoBehaviour {
 //			}
 			
 			// send attack
-			ActionManager.Instance.CreateAttackAction( Ident() , pair.Key.Ident(), 0 );
 
+			if ( nDist >=0 && nDist<= 1) {
+				Panel_StageUI.Instance.MoveToGameObj(pair.Key.gameObject);  // move to def 
+
+				ActionManager.Instance.CreateAttackCMD( Ident (), pair.Key.Ident (), 0); // create Attack CMD . need battle manage to run
+				//ActionManager.Instance.CreateAttackAction (Ident (), pair.Key.Ident (), 0);
+			}
+			else{
+				//  can't attavk . waiting only 
+				ActionManager.Instance.CreateWaitingAction( Ident() );
+			}
+
+
+			Panel_StageUI.Instance.MoveToGameObj ( this.gameObject , false );
 	//		ActionManager.Instance.CreateWaitingAction( Ident() );
 
 			return; // one unit once time

@@ -18,14 +18,12 @@ namespace SimpleAStarExample
         
         public bool[,] Map { get; set; }
 
-		public bool[,] Mask { get; set; }
 
-		public SearchParameters(Point startLocation, Point endLocation, bool[,] map , bool[,] mask )
+		public SearchParameters(Point startLocation, Point endLocation, bool[,] map )
         {
             this.StartLocation = startLocation;
             this.EndLocation = endLocation;
             this.Map = map;
-			this.Mask = mask;
         }
     }
 }

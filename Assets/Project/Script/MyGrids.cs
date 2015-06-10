@@ -16,8 +16,34 @@ namespace MYGRIDS
         _LAKE       = 4,    // 湖
         _SNOW       = 5,    // 雪
         _SAND       = 6,    // 沙地
-    }
+	};
 
+	public enum _THING{
+		_NULL       = 0,   // 無效
+		_TREE		= 1,
+		_BIGTREE	=2,
+		_STONE		=3,
+		_HILL		=4,
+		_SNOWHILL   =5,
+		_MOUNT		=6,
+		_SNOWMOUNT	=7,
+		_FIREMOUNT	=8,
+
+		_WALLLT		=9,
+		_WALLRT		=10,
+		_WALLLD		=11,
+		_WALLRD		=12,
+		_WALLV		=13,
+		_WALLH		=14,
+		_HOUSE		=15,
+		_VILLAGE	=16,
+		_CASTLLE	=17,
+		_DOOR_V		=18,
+		_DOOR_H		=19,
+		_BRIDGE_V	=20,
+		_BRIDGE_H	=21,
+
+	};
     // int 的 2維向量。將來可能會使用到
     public class iVec2
     {
@@ -80,13 +106,17 @@ namespace MYGRIDS
         // v = 目的座標，　 E 的敵方座標
         public bool ZocCheck(iVec2 C, iVec2 E )
         {
+			// it wont zoc if the same point
+			if( Collision( C ) || Collision( E ) || C.Collision(E))
+				return false;
             //距離短的的絕不會是 ZOC
-            if (Dist(C) < Dist(E))
+			int distc = Dist (C);
+			int diste = Dist (E);
+			if ( distc <= diste )
                 return false;
             // 座標在相對45度以上 不會是ZOC
             double ang1 = GetAngleFromTwoPoint(C, E); ;
-
-            if ( Math.Abs( ang1 ) > 45)
+            if ( Math.Abs( ang1 ) > 26 ) // 45 is too large ...
                 return false;
 
             // 由目標點夾角判斷。這邊不知道對不對
@@ -104,6 +134,15 @@ namespace MYGRIDS
 
         }
 
+		public List< iVec2 > AdjacentList()
+		{
+			List< iVec2 > lst = new List< iVec2 > ();
+			lst.Add (new iVec2 (X-1, Y));
+			lst.Add (new iVec2 (X, Y-1));
+			lst.Add (new iVec2 (X+1, Y));
+			lst.Add (new iVec2 (X, Y+1));
+			return lst;
+		}
         // 移動座標
         public iVec2 MoveX ( int nX )
         {
@@ -162,7 +201,6 @@ namespace MYGRIDS
             v3.Y = (int)(v1.Y / f);
             return v3;
         }
-
     }
 
     //定義一個矩行。最小 size = 1 ,1 。永不為零。永不反相
@@ -727,20 +765,20 @@ namespace MYGRIDS
 		}
 
         // Math utility func 
-        public List<iVec2> GetRangePool( iVec2 v , int dist ) { 
+        public List<iVec2> GetRangePool( iVec2 v , int dist , int min=0 ) { 
             // 取得指定座標 對應距離內的 pool
             List<iVec2> lst = new List<iVec2>();
 
             // 正向
-            for (int i = 0; i <= dist; i++) // 0 不用計算
+			for (int i = 0; i <= dist; i++) // 0 不用計算
             {
                 int x1 = v.X + i;           // 正
                 if (x1 <= hW)
                 {
                     for (int j = 0; j <= dist; j++) // 0 不用計算
                     {
-
-                        if (i + j > dist)
+						int tmp = i + j;
+						if ( tmp > dist || tmp < min )
                             continue;
 
 
@@ -769,9 +807,10 @@ namespace MYGRIDS
                 int x2 = v.X - i;           // 反
                 if (x2 >= -hW)
                 {
-                    for (int j = 0; j <= dist; j++) // 0 不用計算
-                    {
-                        if( i + j > dist )
+					for (int j = 0; j <= dist; j++) // 0 不用計算
+                    {                        
+						int tmp = i + j;
+						if ( tmp > dist || tmp < min )
                             continue ;          // over dist 
 
                         int y1 = v.Y + j;           // 正
@@ -790,10 +829,8 @@ namespace MYGRIDS
                             lst.Add(new iVec2(x2, y2));
                         }
 
-                    }
-                    
+                    }                    
                 }
-
             }
             // 
 
@@ -867,7 +904,7 @@ namespace MYGRIDS
                 bool bCol = false;
                 foreach (iVec2 v2 in enemy )
                 {
-                    if (v.ZocCheck(v , v2 ))
+					if (self.ZocCheck( v, v2 ))
                     {
                         bCol = true;
                         break;
@@ -1020,35 +1057,46 @@ namespace MYGRIDS
 		// Widget for pathfinding
 		//=============================================================
 		private bool[,] map;							  // path find 	
-		private bool[,] mask;							  // ignore path find 	
+	//	private bool[,] mask;							  // ignore path find 	
 		//public List<Point> DynMask;     				  // ignore for pathfind
 		private SearchParameters searchParameters;
 		//private PathFinder pathfinder;
-		//List<Point> IgnorePool;     				  // ignore for pathfind
+		List<Point> IgnorePool;     				  // ignore for pathfind
 
-
-		public void SetIgnorePool( List<iVec2> ivecPool )
+		public void ClearIgnorePool()
 		{
-			this.mask = new bool[ MaxW , MaxH ];
-			for (int y = 0; y < MaxH ; y++)
-				for (int x = 0; x < MaxW ; x++)
-					mask[x, y] = true;
+			if( IgnorePool != null )
+				IgnorePool.Clear ();
+		}
 
+		public void  AddIgnorePool( List<iVec2> ivecPool )
+		{
 			if (ivecPool == null) {
 				//GetPathFinder ().SetIgnorePool ( IgnorePool ); // clear all mask
 				return ;
 			}
+			if(IgnorePool == null  )
+				IgnorePool = new List<Point>();
 
 			foreach( iVec2 v in ivecPool )
 			{
-				mask[ v.X+hW , v.Y+hH ] = false;
-				//IgnorePool.Add( new Point( v.X+hW , v.Y+hH ) );
+			//	mask[ v.X+hW , v.Y+hH ] = false;
+				IgnorePool.Add( new Point( v.X+hW , v.Y+hH ) );
 			}
+
 			//GetPathFinder ().SetIgnorePool ( IgnorePool );
 		}
 
+		public void  AddIgnorePos( iVec2 v )
+		{
+			if(IgnorePool == null  )
+				IgnorePool = new List<Point>();
+
+			IgnorePool.Add (new Point( v.X+hW , v.Y+hH ));
+		}
+
 		// path find func . take care to use it
-		public List<iVec2> PathFinding( iVec2 st , iVec2 ed , int nDist , int MaxStep = 99 )
+		public List<iVec2> PathFinding( iVec2 st , iVec2 ed , int nDist )
 		{
 			List<iVec2> pool = new List<iVec2> ();
 
@@ -1056,12 +1104,16 @@ namespace MYGRIDS
 
 			var startLocation = new Point(st.X+hW, st.Y+hH);  // convert srw  to path find 
 			var endLocation = new Point(ed.X+hW, ed.Y+hH);
-			this.searchParameters = new SearchParameters(startLocation, endLocation, map , mask );
+			this.searchParameters = new SearchParameters(startLocation, endLocation, map );
 			PathFinder pathFinder = new PathFinder(searchParameters);
 			//GetPathFinder().SetIgnorePool ( IgnorePool );
+			pathFinder.nMaxStep = nDist;			// max dist
 
-			pathFinder.ApplyMaskNodes (mask);
+			pathFinder.ApplyMaskPoint (IgnorePool);
+
 			List<Point> path = pathFinder.FindPath(startLocation , endLocation);
+
+		
 			foreach( Point pt in path)
 			{
 				iVec2 pos = new iVec2( pt.X-hW , pt.Y -hH );
@@ -1080,18 +1132,29 @@ namespace MYGRIDS
 			//  □ □ □ □ □ □ □
 			
 			this.map = new bool[ MaxW , MaxH ];
-			for (int y = 0; y < MaxH ; y++)
-				for (int x = 0; x < MaxW ; x++)
-					map[x, y] = true;
-
-			this.mask = new bool[ MaxW , MaxH ];
-			for (int y = 0; y < MaxH ; y++)
-				for (int x = 0; x < MaxW ; x++)
-					mask[x, y] = true;
+			for (int y = 0; y < MaxH; y++) {
+				for (int x = 0; x < MaxW; x++){
+					map [x, y] = IsWalkAbleTile( Layer.GetValue( x , y ) );
+				}
+			}
+//			this.mask = new bool[ MaxW , MaxH ];
+//			for (int y = 0; y < MaxH ; y++)
+//				for (int x = 0; x < MaxW ; x++)
+//					mask[x, y] = true;
 
 		}
 
-
+		public static bool IsWalkAbleTile( _TILE t )	
+		{
+			if ( t == _TILE._NULL ||
+			     t == _TILE._RIVER||    // 河流
+			     t == _TILE._LAKE // 湖
+			    ) 
+			{
+				return false;
+			} 
+			return true;
+		}
     }
 
 };

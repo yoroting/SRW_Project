@@ -169,7 +169,7 @@ public class MyScript {
 	}
 	bool ConditionCombat( int nChar1 , int nChar2  )
 	{
-		if( BattleManager.Instance.bIsBattle )
+		if( BattleManager.Instance.IsBattlePhase() )
 		{
 			Panel_unit atker = Panel_StageUI.Instance.GetUnitByIdent( BattleManager.Instance.nAtkerID );
 			Panel_unit defer = Panel_StageUI.Instance.GetUnitByIdent( BattleManager.Instance.nDeferID );
@@ -266,6 +266,7 @@ public class MyScript {
 				evt.nCharID = func.I( 0 );
 				evt.nX		= func.I( 1 );
 				evt.nY		= func.I( 2 );
+				evt.nValue1 = func.I( 3 ); // pop num
 				GameEventManager.DispatchEvent ( evt );
 			}
 			else if( func.sFunc == "POPMOB" )
@@ -275,6 +276,9 @@ public class MyScript {
 				evt.nCharID = func.I( 0 );
 				evt.nX		= func.I( 1 );
 				evt.nY		= func.I( 2 );
+				evt.nValue1 = func.I( 3 ); // pop num
+				//test code 
+
 				GameEventManager.DispatchEvent ( evt );
 			}
 			else if( func.sFunc == "POP" )
@@ -284,6 +288,7 @@ public class MyScript {
 				evt.nCharID = func.I( 1 );
 				evt.nX		= func.I( 2 );
 				evt.nY		= func.I( 3 );
+				evt.nValue1 = func.I( 4 ); // pop num
 				GameEventManager.DispatchEvent ( evt );
 
 			}

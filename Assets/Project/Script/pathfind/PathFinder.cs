@@ -17,6 +17,8 @@ namespace SimpleAStarExample
         private Node endNode;
         private SearchParameters searchParameters;
 
+
+		public  int nMaxStep;		// limit of path find
 	     /// <summary>
         /// Create a new instance of PathFinder
         /// </summary>
@@ -24,7 +26,7 @@ namespace SimpleAStarExample
         public PathFinder(SearchParameters searchParameters)
         {
             this.searchParameters = searchParameters;
-            InitializeNodes(searchParameters.Map);
+            InitializeNodes(searchParameters.Map);	//  it create node. 
             this.startNode = this.nodes[searchParameters.StartLocation.X, searchParameters.StartLocation.Y];
             this.startNode.State = NodeState.Open;
             this.endNode = this.nodes[searchParameters.EndLocation.X, searchParameters.EndLocation.Y];
@@ -54,7 +56,10 @@ namespace SimpleAStarExample
         {
             // The start node is the first entry in the 'open' list
             List<Point> path = new List<Point>();
-            bool success = Search(startNode);
+           
+
+			bool success = AStarSearch ( startNode );
+			//bool success = Search(startNode);
             if (success)
             {
                 // If a path was found, follow the parents from the end node to build a list of locations
@@ -90,7 +95,7 @@ namespace SimpleAStarExample
             }
         }
 
-		public void ApplyMaskNodes(bool[,] mask)
+		public void ApplyMaskNodes(bool[,] mask , bool bWalkAble = false )
 		{
 			int tw = mask.GetLength(0);
 			int th = mask.GetLength(1);
@@ -100,18 +105,36 @@ namespace SimpleAStarExample
 				{
 					if( mask[ x , y ] == false  )// false == can't move
 					{
-						this.nodes[x, y].IsWalkable = false;
+						this.nodes[x, y].IsWalkable = bWalkAble;
 					}
 					//this.nodes[x, y] = new Node(x, y, map[x, y], this.searchParameters.EndLocation);
 				}
 			}
 		}
 
+		public void ApplyMaskPoint( List< Point> pool )
+		{
+			if (pool == null)
+				return;
+			foreach(Point p in  pool )
+			{
+				Node n = this.nodes[ p.X, p.Y ]; 
+				if( n != null )
+				{
+					n.IsWalkable = false;
+				}
+			}
+
+		}
+
+
         /// <summary>
         /// Attempts to find a path to the destination node using <paramref name="currentNode"/> as the starting location
         /// </summary>
         /// <param name="currentNode">The node from which to find a path</param>
         /// <returns>True if a path to the destination has been found, otherwise false</returns>
+		/// 
+		/// this is not a-star. it only a path finder need a new func
         private bool Search(Node currentNode)
         {
             // Set the current node to Closed since it cannot be traversed more than once
@@ -139,6 +162,51 @@ namespace SimpleAStarExample
             return false;
         }
 
+		private bool AStarSearch(Node currentNode)
+		{
+			Node parentnode;
+			// open list
+			bool bFind = false;
+			bool bStop = false;
+			int  nNewG = 0;
+			List<Node> openlst = new List<Node>();
+		//	List<Node> closelst = new List<Node>();
+		//	List<Node> maxsteplst = new List<Node>();  // record  the max step node
+
+			openlst.Add (currentNode); // push
+			while ( openlst.Count > 0 ) {
+				parentnode = openlst[ 0 ] ; // GET FIRST NODE for short len
+				if (parentnode.Location == this.endNode.Location){
+					bFind = true;
+					break; // find
+				}
+
+				//openlst.RemoveAt[ openlst.Count-1 ]; // pop
+				openlst.Remove( parentnode );
+				parentnode.State = NodeState.Closed; // close this 
+		//		closelst.Add( parentnode );  // add x to closedset      //将x节点插入已经被估算的节点
+
+				// if need check max step
+				if( nMaxStep > 0 )
+				{
+					if( parentnode.G >= nMaxStep ){
+		//				maxsteplst.Add( parentnode );
+						continue;
+					}
+				}
+
+				// find all next node L + G
+				List<Node> nextNodes = GetAdjacentWalkableNodes(parentnode); // close node won't return
+				foreach (var nextNode in nextNodes)
+				{
+					//if( closelst.IndexOf(nextNode)>=0 )  		//if y in closedset           //若y已被估值，跳过
+					//	continue;
+					openlst.Add( nextNode );
+					//nextNode.State = NodeState.Closed; // close this 
+				}
+			}
+			return bFind;
+		}
         /// <summary>
         /// Returns any nodes that are adjacent to <paramref name="fromNode"/> and may be considered to form the next step in the path
         /// </summary>
@@ -172,7 +240,7 @@ namespace SimpleAStarExample
                 {
                     float traversalCost = Node.GetTraversalCost(node.Location, node.ParentNode.Location);
                     float gTemp = fromNode.G + traversalCost;
-                    if (gTemp < node.G)
+                    if (gTemp < node.G) // change parent if better
                     {
                         node.ParentNode = fromNode;
                         walkableNodes.Add(node);

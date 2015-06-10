@@ -17,6 +17,9 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 	public GameObject TilePlaneObj; // plane of all tiles sprite
 	public GameObject MaskPanelObj; // plane mask
 
+
+	Panel_unit TarceMoveingUnit; //  Trace the moving unit
+
 	public cMyGrids	Grids;				// main grids . only one
 
 	STAGE_DATA	StageData;
@@ -46,6 +49,8 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 	// Select effect
 	Dictionary< string , GameObject >  OverCellPool;			// Over tile effect pool ( in = cell key )
 	Dictionary< string , GameObject >  OverCellAtkPool;			// Over tile effect pool( attack ) ( in = cell key )
+
+	Dictionary< string , GameObject > OverCellPathPool;
 	//List< GameObject >				OverCellPool;			 
 
 	//Dictionary< int , GameObject > EnemyPool;			// EnemyPool this should be group pool
@@ -88,6 +93,7 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		OverCellPool 	= new Dictionary< string , GameObject >();			// Over tile effect pool ( in = cell key )
 		OverCellAtkPool = new Dictionary< string , GameObject >();			
 
+		OverCellPathPool= new Dictionary< string , GameObject >();			
 
 	//	ActionPool = List< uAction >();				// record all action to do 
 		// Debug Code jump to stage
@@ -195,6 +201,20 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		// ensure canvrs in screen
 		if( TilePlaneObj != null )
 		{
+
+			if (TarceMoveingUnit != null ) {
+				// force to unit
+				Vector3 v = TarceMoveingUnit.transform.localPosition;
+				v.x *= -1;
+				v.y *= -1;
+				TilePlaneObj.transform.localPosition  = v ;
+				
+				if( TarceMoveingUnit.IsMoving()== false )
+				{
+					TarceMoveingUnit = null;
+				}
+			}
+
 			//float fMouseX = Input.mousePosition.x;
 			//float fMouseY = Input.mousePosition.y;
 			
@@ -223,6 +243,8 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 
 		FixPlanePosition ();
 
+	
+
 		// block other event
 		if( IsAnyActionRunning() == true ) // wait all tween / fx / textbox / battle msg finish / unit move
 			return;							// don't check event run finish here.
@@ -242,7 +264,7 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 
 		// if one event need to run battle. it should pause ein event
 		if (BattleManager.Instance.IsBattlePhase ()) {// this will throw many unit action
-			BattleManager.Instance.RunBattle();
+			BattleManager.Instance.Run();
 			return;
 		}
 
@@ -287,38 +309,7 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 	
 	}
 
-	Panel_CMDUnitUI OpenCMDUI( _CMD_TYPE type , Panel_unit cmder )
-	{
-		cCMD.Instance.eCMDTYPE = type; 
-		Panel_CMDUnitUI panel = MyTool.GetPanel<Panel_CMDUnitUI> ( PanelManager.Instance.OpenUI (Panel_CMDUnitUI.Name) );
-		if( panel != null )
-		{
-			panel.SetCmder( cmder );
-		}
-		cCMD.Instance.eCMDSTATUS = _CMD_STATUS._WAIT_CMDID;
 
-		return panel;
-	}
-
-	void CloseCMDUI()
-	{
-		Panel_CMDUnitUI panel = MyTool.GetPanel<Panel_CMDUnitUI>( PanelManager.Instance.JustGetUI(Panel_CMDUnitUI.Name)) ;
-		if( panel != null )
-		{
-			panel.CancelCmd();
-		}
-		ClearOverCellEffect();
-		cCMD.Instance.eCMDSTATUS = _CMD_STATUS._NONE;
-	}
-
-	void RollBackCMDUIWaitTargetMode()
-	{
-		cCMD.Instance.eCMDSTATUS = _CMD_STATUS._WAIT_CMDID;
-		cCMD.Instance.eCMDID 	   = _CMD_ID._NONE;
-		cCMD.Instance.eCMDTARGET = _CMD_TARGET._ALL;   // only unit
-		ClearOverCellEffect ();
-		PanelManager.Instance.OpenUI( Panel_CMDUnitUI.Name );
-	}
 
 	void OnCellClick(GameObject go)
 	{
@@ -355,7 +346,7 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 					}
 					else if( cCMD.Instance.eCMDTARGET == _CMD_TARGET._UNIT )
 					{
-						CloseCMDUI();
+						Panel_CMDUnitUI.CloseCMDUI();
 						// need cancel cmd
 					
 					}
@@ -364,7 +355,7 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 				else 
 				{
 					// close 
-					CloseCMDUI();
+					Panel_CMDUnitUI.CloseCMDUI();
 				}
 			}
 			else if( cCMD.Instance.eCMDSTATUS == _CMD_STATUS._WAIT_TARGET )
@@ -379,7 +370,7 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 					// this is impossible
 					if( OverCellAtkPool.ContainsKey( sKey ) == false    )
 					{
-						RollBackCMDUIWaitTargetMode();
+						Panel_CMDUnitUI.RollBackCMDUIWaitTargetMode();
 						//Panel_CMDUnitUI.BackWaitCmd();		// back if the cmd is not exists	
 					}
 				}
@@ -395,7 +386,7 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 			// avoid re open
 //			if( PanelManager.Instance.CheckUIIsOpening( "Panel_CMDUI" ) == false  )
 //			{
-			OpenCMDUI( _CMD_TYPE._CELL , null );
+			Panel_CMDUnitUI.OpenCMDUI( _CMD_TYPE._CELL , null );
 //			cCMD.Instance.eCMDTYPE = _CMD_TYPE._CELL; 
 //				GameObject obj = PanelManager.Instance.OpenUI( Panel_CmdSysUI.Name );
 //				if (obj != null) {
@@ -443,13 +434,13 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 			//GameObject obj = PanelManager.Instance.OpenUI (Panel_CMDUnitUI.Name);
 			//CloseCMDUI();
 
-			Panel_CMDUnitUI panel = OpenCMDUI( _CMD_TYPE._ALLY , unit );
+			Panel_CMDUnitUI panel = Panel_CMDUnitUI.OpenCMDUI( _CMD_TYPE._ALLY , unit );
 			CreateMoveOverEffect (unit);
 			return;
 		}
 		else if (cCMD.Instance.eCMDSTATUS == _CMD_STATUS._WAIT_CMDID ){
-			CloseCMDUI();
-			Panel_CMDUnitUI panel = OpenCMDUI( _CMD_TYPE._ALLY , unit );			
+			Panel_CMDUnitUI.CloseCMDUI();
+			Panel_CMDUnitUI panel = Panel_CMDUnitUI.OpenCMDUI( _CMD_TYPE._ALLY , unit );			
 			CreateMoveOverEffect (unit);
 		}
 		else if (cCMD.Instance.eCMDSTATUS == _CMD_STATUS._WAIT_TARGET ){
@@ -522,7 +513,7 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 
 		ClearOverCellEffect(  );
 
-		OpenCMDUI ( _CMD_TYPE._ENEMY , unit );
+		Panel_CMDUnitUI.OpenCMDUI ( _CMD_TYPE._ENEMY , unit );
 
 		CreateMoveOverEffect ( unit );
 
@@ -674,10 +665,30 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		if (unit == null)
 			return;
 
-		List<iVec2> moveList =  Grids.GetRangePool (unit.Loc, 4);
+		// find move
+		cUnitData pdata = GameDataManager.Instance.GetUnitDateByIdent ( unit.Ident() ); 
+
+		List<iVec2> moveList =  Grids.GetRangePool (unit.Loc, pdata.GetMov()  , 1);
+
+		// don't zoc 
+	//	List<iVec2> posList = GetUnitPosList ();
+		// try ZOC!!!
+	//	List<iVec2> final = Panel_StageUI.Instance.Grids.FilterZocPool (unit.Loc, ref moveList, ref posList);
+	//	moveList = final;
+
 		// start create over eff
 		foreach( iVec2 v in moveList )
 		{
+			if ( cMyGrids.IsWalkAbleTile( Grids.GetValue( v ) ) == false  )
+			{
+				continue;
+			}
+			// check if this vec can reach
+			List<iVec2> path = PathFinding( unit , unit.Loc , v , pdata.GetMov() );
+			if( path.Count <= 0 )
+				continue;
+
+			// create move over cell
 			GameObject over = ResourcesManager.CreatePrefabGameObj(TilePlaneObj, "Prefab/MoveOverEffect");
 			if( over != null )
 			{
@@ -716,6 +727,37 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 				over.name = string.Format("Over({0},{1},{2})", v.X , v.Y , 0 );
 				SynGridToLocalPos( over , v.X , v.Y) ;
 				OverCellAtkPool.Add( v.GetKey() , over );
+			}
+		}
+
+	}
+
+	// unity func
+	public void CreatePathOverEffect( List<iVec2> path )
+	{
+		foreach( KeyValuePair< string , GameObject> pair in OverCellPathPool )
+		{
+			if( pair.Value != null )
+			{
+				NGUITools.Destroy( pair.Value );
+				//pair.Value = null;
+			}
+		}
+		OverCellPathPool.Clear ();
+		if (path == null)
+			return;
+
+		foreach( iVec2 v in path )
+		{
+			GameObject over = ResourcesManager.CreatePrefabGameObj(TilePlaneObj, "Prefab/PathOverEffect");
+			if( over != null )
+			{
+				over.name = string.Format("Over({0},{1},{2})", v.X , v.Y , 0 );
+				SynGridToLocalPos( over , v.X , v.Y) ;
+				
+				//UIEventListener.Get(over).onClick += OnOverClick;
+				
+				OverCellPathPool.Add( v.GetKey() , over );
 			}
 		}
 
@@ -1056,9 +1098,12 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		//UNIT_DATA unit = GameDataManager.Instance.CreateChar( nCharID );
 		if( unit != null )
 		{
+			iVec2 pos = FindEmptyPos( new iVec2(x , y));
 			// setup param
-			unit.CreateChar( nCharID , x , y );
-			unit.SetCamp( nCampID );			
+			unit.CreateChar( nCharID , pos.X , pos.Y );
+			unit.SetCamp( nCampID );		
+			// fix to a valid pos
+
 			IdentToUnit.Add( unit.Ident() , unit  ) ;// stage gameobj
 
 		}
@@ -1214,8 +1259,16 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		return false;
 	}
 
+	public void TraceUnit( Panel_unit unit )
+	{
+		if (unit == null)
+			return;
 
-	public void MoveToGameObj( GameObject obj , bool force)
+		TarceMoveingUnit = unit;
+	}
+
+
+	public void MoveToGameObj( GameObject obj , bool force = false )
 	{
 		if (obj == null)
 			return;
@@ -1225,7 +1278,9 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		if (force == false)
 		{
 			Vector3 realpos = v + canv;
-		    if( (realpos.x < 480 && realpos.x > -480) && (realpos.y < 320 && realpos.x > -320) )
+			int hW = Config.WIDTH/2;
+			int hH = Config.HEIGHT/2;
+			if( (realpos.x < hW  && realpos.x > -hW ) && (realpos.y < hH && realpos.y > -hH ) )
 				return; // pass
 		}
 
@@ -1263,13 +1318,16 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		StagePopUnitEvent Evt = evt as StagePopUnitEvent;
 		if (Evt == null)
 			return;
+		int nPopNum = 1;
+		if (Evt.nValue1 > 1)
+			nPopNum = Evt.nValue1;
 
-		GameObject obj = AddUnit( Evt.eCamp , Evt.nCharID , Evt.nX , Evt.nY );
-		if( obj != null )
-		{		
-		}
-		else{
-			Debug.Log ( string.Format("OnStagePopCharEvent Fail with charid({0})" , Evt.nCharID ));			
+		for (int i=0; i < nPopNum; i++) {
+			GameObject obj = AddUnit (Evt.eCamp, Evt.nCharID, Evt.nX, Evt.nY);
+			if (obj != null) {		
+			} else {
+				Debug.Log (string.Format ("OnStagePopUnitEvent Fail with charid({0}) num({1})", Evt.nCharID  , nPopNum )  );			
+			}
 		}
 	}
 
@@ -1414,13 +1472,14 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		int nDist = pAtkUnit.Loc.Dist (pDefUnit.Loc);
 		if (nDist > nRange) {
 
-			List< iVec2> path = GameScene.Instance.Grids.PathFinding( pAtkUnit.Loc , pDefUnit.Loc , 4 , 99 );
+			List< iVec2> path = GameScene.Instance.Grids.PathFinding( pAtkUnit.Loc , pDefUnit.Loc , 0  ); // no any block
 			//PathFinding
 			
 			if( path.Count > 2 )
 			{
 				iVec2 last = path[path.Count -2 ];
 				ActionManager.Instance.CreateMoveAction( pAtkUnit.Ident() , last.X , last.Y );	
+				TraceUnit( pAtkUnit );
 			}
 
 			// send move act
@@ -1432,6 +1491,7 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		}
 
 		// send attack
+		Panel_StageUI.Instance.MoveToGameObj(pDefUnit.gameObject , false );  // move to def 
 		ActionManager.Instance.CreateAttackAction( pAtkUnit.Ident() , pDefUnit.Ident(), Evt.nAtkSkillID );
 		
 	}
@@ -1443,6 +1503,8 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 			return false;
 
 		// check tile
+		if( cMyGrids.IsWalkAbleTile( Grids.GetValue( pos ) ) == false )
+			return false;
 
 		// check thiing
 
@@ -1457,43 +1519,22 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		return true;
 	}
 
-	public iVec2 FindEmptyPos( iVec2 st )
+	public iVec2 FindEmptyPos( iVec2 st  , int len = 999 )
 	{
+		if (CheckIsEmptyPos (st)) {
+			return st;
+		}
 		// get a empty pos that can pop 
-		int w = Grids.hW *2;
-		int h = Grids.hH *2;
 
-		for( int j = 0 ; j <h ; j++ ) {
-			for (int i = 0; i < w; i++)
+		for (int i=1; i < len; i++) {
+			List<iVec2> pool = Grids.GetRangePool( st , i , i-1 );
+			if( pool == null )
+					continue;
+			foreach( iVec2 pos in pool )
 			{
-				iVec2 pos = st.MoveXY( i , j );
-				if( CheckIsEmptyPos(pos) )
-				{
+				if( CheckIsEmptyPos(pos) ){
 					return pos;
 				}
-				if( i != 0 ){
-					 pos = st.MoveXY( -i , j );
-					if( CheckIsEmptyPos(pos) )
-					{
-						return pos;
-					}
-				}
-				if( j != 0 ){
-					 pos = st.MoveXY( i , -j );
-					if( CheckIsEmptyPos(pos) )
-					{
-						return pos;
-					}
-				}
-				if( i!= 0 && j != 0 )
-				{
-					 pos = st.MoveXY( -i , -j );
-					if( CheckIsEmptyPos(pos) )
-					{
-						return pos;
-					}
-				}
-
 			}
 		}
 
@@ -1512,5 +1553,29 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		}
 
 		return lst;
+	}
+
+	public List< iVec2 > PathFinding( Panel_unit unit , iVec2 st , iVec2 ed , int nStep = 999)
+	{
+		// nStep = 999; // debug
+
+		List< iVec2 > path = null;
+		Grids.ClearIgnorePool();
+		Grids.AddIgnorePool ( GetUnitPosList() );  // all is block in first find
+		path = Grids.PathFinding( st , ed , nStep  );
+
+		if (path == null) {
+			Grids.ClearIgnorePool();
+			Grids.AddIgnorePool ( GetUnitPosList() );  // only enemy is block in first find
+			Grids.AddIgnorePool( unit.GetPKPosPool( true ) ); //
+			path = Grids.PathFinding( st , ed , nStep  );
+		}
+
+		CreatePathOverEffect (path); // draw path
+
+
+
+		return path;
+
 	}
 }

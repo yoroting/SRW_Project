@@ -67,6 +67,7 @@ namespace SimpleAStarExample
             {
                 // When setting the parent, also calculate the traversal cost from the start node to here (the 'G' value)
                 this.parentNode = value;
+
                 this.G = this.parentNode.G + GetTraversalCost(this.Location, this.parentNode.Location);
             }
         }
@@ -83,7 +84,7 @@ namespace SimpleAStarExample
             this.Location = new Point(x, y);
             this.State = NodeState.Untested;
             this.IsWalkable = isWalkable;
-            this.H = GetTraversalCost(this.Location, endLocation);
+            this.H = GetTraversalCost(this.Location, endLocation); // 
             this.G = 0;
         }
 
@@ -97,8 +98,8 @@ namespace SimpleAStarExample
         /// </summary>
         internal static float GetTraversalCost(Point location, Point otherLocation)
         {
-            //float deltaX = otherLocation.X - location.X;
-            //float deltaY = otherLocation.Y - location.Y;
+           // float deltaX = otherLocation.X - location.X;
+           // float deltaY = otherLocation.Y - location.Y;
 			return Math.Abs( otherLocation.X - location.X ) + Math.Abs( otherLocation.Y - location.Y );
 
             //return (float)Math.Sqrt(deltaX * deltaX + deltaY * deltaY);

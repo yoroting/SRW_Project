@@ -24,7 +24,7 @@ namespace _SRW
 		_MENU 	 ,
 		_WAITATK ,
 		_WAITMOVE ,
-		_COUNTER,
+		_COUNTER,		// _COUNTER for mob atk
 		_MAX ,
 	}
 
@@ -55,6 +55,7 @@ namespace _SRW
 		_ITEM ,			//  No use		
 		_WAIT,			//
 		_INFO ,			// 	
+		_COUNTER,			// 反擊	
 		_STAGEINFO ,			// 	
 		_CANCEL ,			// 	
 		_NEWGAME,
@@ -460,11 +461,11 @@ public class cCMD{
 		idx = (int)_CMD_TYPE._ALLY;
 		CmdlistArray [idx] = new List<_CMD_ID> ();
 		CmdlistArray [idx].Add ( _CMD_ID._INFO ); 
-		CmdlistArray [idx].Add ( _CMD_ID._MOVE ); 
+//		CmdlistArray [idx].Add ( _CMD_ID._MOVE ); 
 		CmdlistArray [idx].Add ( _CMD_ID._ATK ); 
 		CmdlistArray [idx].Add ( _CMD_ID._SCHOOL ); 
 		CmdlistArray [idx].Add ( _CMD_ID._ABILITY ); 
-		CmdlistArray [idx].Add ( _CMD_ID._DEF ); 
+	//	CmdlistArray [idx].Add ( _CMD_ID._DEF ); 
 		CmdlistArray [idx].Add ( _CMD_ID._SCHOOL ); 
 		CmdlistArray [idx].Add ( _CMD_ID._CANCEL ); 
 
@@ -502,7 +503,7 @@ public class cCMD{
 		// counter 
 		idx = (int)_CMD_TYPE._COUNTER;
 		CmdlistArray [idx] = new List<_CMD_ID> (); // 反及
-		CmdlistArray [idx].Add ( _CMD_ID._ATK ); 
+		CmdlistArray [idx].Add ( _CMD_ID._COUNTER ); 
 		CmdlistArray [idx].Add ( _CMD_ID._ABILITY ); 
 		CmdlistArray [idx].Add ( _CMD_ID._SKILL ); 
 		CmdlistArray [idx].Add ( _CMD_ID._DEF ); 

@@ -285,6 +285,13 @@ public class Panel_Talk : MonoBehaviour {
 		if (Evt == null)
 			return;
 		CharSay( Evt.nChar  , Evt.nSayID );
+
+
+		// find obj to move
+		Panel_unit unit = Panel_StageUI.Instance.GetUnitByCharID ( Evt.nChar );
+		if (unit != null) {
+			Panel_StageUI.Instance.MoveToGameObj (unit.gameObject, false);
+		}
 //		SetChar( Evt.nType , Evt.nChar );
 //		Say( Evt.nType , Evt.nSayID );
 

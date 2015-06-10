@@ -136,6 +136,22 @@ public class MyTool {
 	{	
 		return obj.GetComponent< T > ();  
 	}
+
+	public static List<T> CutList<T>( List<T> lst , int Len )
+	{
+		List<T> cut = new List<T> ();
+		int c = 0;
+		foreach( T t in lst)
+		{
+			//iVec2 pos = new iVec2( pt.X-hW , pt.Y -hH );
+			cut.Add( t );
+			if( ++c >= Len  )
+			{
+				break;
+			}
+		}
+		return cut;
+	}
 	// 动态的计算出现在manualHeight的高度。
 	static private void AdaptiveUI()
 	{
