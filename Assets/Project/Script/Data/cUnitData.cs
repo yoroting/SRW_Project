@@ -153,6 +153,16 @@ public class cUnitData{
 		Relive();
 	}
 
+	public int GetSchoolLv( int School )
+	{
+		int nLv = 0;
+		if (SchoolPool.TryGetValue(School, out nLv ) == false) {
+			Debug.LogErrorFormat( "Unit can't get school{1} lv , charid={1},identid={2} " ,School , n_CharID, n_Ident );
+				return 0;
+		}
+		return nLv;
+	}
+
 	public void AvtiveSchool( int index , int School )
 	{
 		if (SchoolPool.ContainsKey (School) == false) {
@@ -165,7 +175,7 @@ public class cUnitData{
 		//UpdateSchoolAttr (index , School ); 
 	}
 
-	void SetLevel( int lv )
+	public void SetLevel( int lv )
 	{
 		if( lv > Config.MaxCharLevel ){			
 			lv = Config.MaxCharLevel;

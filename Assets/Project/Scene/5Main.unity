@@ -203,6 +203,56 @@ Transform:
 Transform:
   m_PrefabParentObject: {fileID: 499638, guid: fbb113e2777fa804ab17b7dd1d7b43d9, type: 2}
   m_PrefabInternal: {fileID: 634578501}
+--- !u!1001 &116704657
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 161096790}
+    m_Modifications:
+    - target: {fileID: 479972, guid: 109913b346d2e96478c369ab6be7a50c, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: -125
+      objectReference: {fileID: 0}
+    - target: {fileID: 479972, guid: 109913b346d2e96478c369ab6be7a50c, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 479972, guid: 109913b346d2e96478c369ab6be7a50c, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 479972, guid: 109913b346d2e96478c369ab6be7a50c, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 479972, guid: 109913b346d2e96478c369ab6be7a50c, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 479972, guid: 109913b346d2e96478c369ab6be7a50c, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 479972, guid: 109913b346d2e96478c369ab6be7a50c, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 479972, guid: 109913b346d2e96478c369ab6be7a50c, type: 2}
+      propertyPath: m_RootOrder
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 110006, guid: 109913b346d2e96478c369ab6be7a50c, type: 2}
+      propertyPath: m_Name
+      value: Panel - Skill
+      objectReference: {fileID: 0}
+    - target: {fileID: 110006, guid: 109913b346d2e96478c369ab6be7a50c, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 109913b346d2e96478c369ab6be7a50c, type: 2}
+  m_IsPrefabParent: 0
 --- !u!4 &119997095 stripped
 Transform:
   m_PrefabParentObject: {fileID: 495848, guid: d8ae4f9a2399a454abe3655a10920221, type: 2}
@@ -291,6 +341,7 @@ Transform:
   - {fileID: 1068478395}
   - {fileID: 53552501}
   - {fileID: 717951943}
+  - {fileID: 259996569}
   m_Father: {fileID: 916965768}
   m_RootOrder: 0
 --- !u!114 &161096791
@@ -466,6 +517,10 @@ MonoBehaviour:
   mAtlas: {fileID: 11400000, guid: 62adb30369acbf943a67cee0f69267a3, type: 2}
   mSpriteName: Stripes 3
   mFillCenter: 1
+--- !u!4 &259996569 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 479972, guid: 109913b346d2e96478c369ab6be7a50c, type: 2}
+  m_PrefabInternal: {fileID: 116704657}
 --- !u!4 &269819548 stripped
 Transform:
   m_PrefabParentObject: {fileID: 460126, guid: cfa057b5163a60741bb67ec2db63f91c, type: 2}
@@ -1399,7 +1454,7 @@ MonoBehaviour:
   keepAspectRatio: 0
   aspectRatio: 6.95238113
   keepCrispWhenShrunk: 0
-  mTrueTypeFont: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+  mTrueTypeFont: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 3}
   mFont: {fileID: 0}
   mText: Setup
   mFontSize: 40
@@ -2651,7 +2706,7 @@ MonoBehaviour:
   keepAspectRatio: 0
   aspectRatio: 6.95238113
   keepCrispWhenShrunk: 0
-  mTrueTypeFont: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+  mTrueTypeFont: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 3}
   mFont: {fileID: 0}
   mText: Load
   mFontSize: 40
@@ -2844,7 +2899,7 @@ MonoBehaviour:
   keepAspectRatio: 0
   aspectRatio: 6.95238113
   keepCrispWhenShrunk: 0
-  mTrueTypeFont: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+  mTrueTypeFont: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 3}
   mFont: {fileID: 0}
   mText: Gallery
   mFontSize: 40
@@ -2984,7 +3039,7 @@ MonoBehaviour:
   keepAspectRatio: 0
   aspectRatio: 6.95238113
   keepCrispWhenShrunk: 0
-  mTrueTypeFont: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+  mTrueTypeFont: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 3}
   mFont: {fileID: 0}
   mText: Start
   mFontSize: 40

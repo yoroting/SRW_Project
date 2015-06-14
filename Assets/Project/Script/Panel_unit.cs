@@ -709,6 +709,20 @@ public class Panel_unit : MonoBehaviour {
 
 	}
 
+	public void SetLevel( int nLV )
+	{
+		if (nLV < 1)
+			nLV = 1;
+
+		if (nLV > Config.MaxCharLevel)
+			nLV = Config.MaxCharLevel;
+
+		cUnitData data = GameDataManager.Instance.GetUnitDateByIdent ( Ident() );
+		if (data != null) {
+			data.SetLevel ( nLV );
+		}
+	}
+
 	public bool CanPK( Panel_unit  unit ) 	
 	{
 		if (unit == null)

@@ -236,6 +236,7 @@
      <Compile Include="Assets\Project\Script\ConstDataClasses\BEHAVIOR.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\BGM.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\BUFF.cs" />
+     <Compile Include="Assets\Project\Script\ConstDataClasses\BUFF_BAK.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\BUFF_TIP.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\CD_TIMER.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\CHARS.cs" />
@@ -288,6 +289,7 @@
      <Compile Include="Assets\Project\Script\FX\FightBullet\FightBulletFX.cs" />
      <Compile Include="Assets\Project\Script\FX\FightBullet\FightBulletTween_Attraction.cs" />
      <Compile Include="Assets\Project\Script\FX\FightBullet\FightBulletTween_Direction.cs" />
+     <Compile Include="Assets\Project\Script\Item_Skill.cs" />
      <Compile Include="Assets\Project\Script\MyClassLibrary.cs" />
      <Compile Include="Assets\Project\Script\MyGrids.cs" />
      <Compile Include="Assets\Project\Script\Panel\ConstDataTest.cs" />
@@ -298,6 +300,7 @@
      <Compile Include="Assets\Project\Script\Panel\Panel_CMDUnitUI\Panel_CMDUnitUI.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_MainUI\MainUIPanel.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_Round\Panel_Round.cs" />
+     <Compile Include="Assets\Project\Script\Panel\Panel_Skill\Panel_Skill.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_StageUI\Panel_StageUI.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_StoryUI\StoryUIPanel.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_TalkUI\Panel_Talk.cs" />

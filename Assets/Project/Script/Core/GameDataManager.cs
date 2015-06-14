@@ -463,7 +463,7 @@ public class cCMD{
 		CmdlistArray [idx].Add ( _CMD_ID._INFO ); 
 //		CmdlistArray [idx].Add ( _CMD_ID._MOVE ); 
 		CmdlistArray [idx].Add ( _CMD_ID._ATK ); 
-		CmdlistArray [idx].Add ( _CMD_ID._SCHOOL ); 
+		CmdlistArray [idx].Add ( _CMD_ID._SKILL ); 
 		CmdlistArray [idx].Add ( _CMD_ID._ABILITY ); 
 	//	CmdlistArray [idx].Add ( _CMD_ID._DEF ); 
 		CmdlistArray [idx].Add ( _CMD_ID._SCHOOL ); 

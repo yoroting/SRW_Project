@@ -13,9 +13,4 @@ public class BUFF : ConstDataRow<BUFF>
 	public string s_CONDITIONAL_BUFF;
 	public string s_CONSTANT_BUFF;
 	public string s_BUFF_FXS;
-	public string s_BUFF_FXS_RIGHT;
-	public string s_BUFF_FXS_LEFT;
-	public int n_ANIMATION_RANK;
-	public string s_ANIMATION_REPLACE;
-	public int n_POTENT_SKILL_ID;
 }

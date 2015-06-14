@@ -7,13 +7,23 @@ public class SKILL : ConstDataRow<SKILL>
 	public int n_LEVEL_LEARN;
 	public string s_ICON;
 	public int n_PASSIVE;
+	public string s_NAME;
 	public int n_SCHOOL;
-	public string s_CONDITIONAL_AMITY;
-	public int n_PASSIVE_EFFECT;
+	public int n_TYPE;
 	public int n_CD;
 	public int n_TARGET;
-	public int n_ITEM;
-	public int n_SP_COST;
+	public int n_SP;
+	public int n_MP;
+	public int n_RANGE;
+	public int n_CAST_FX;
+	public int n_HIT_FX;
+	public int n_AREA;
+	public string s_TAG;
 	public string s_CAST_CONDITION;
 	public string s_CAST_BEHAVIOR;
+	public string s_TRIG_CONDITION;
+	public string s_TRIG_BEHAVIOR;
+	public float f_ATK;
+	public float f_DEF;
+	public float f_POW;
 }

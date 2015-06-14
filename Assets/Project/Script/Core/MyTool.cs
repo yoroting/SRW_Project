@@ -152,6 +152,8 @@ public class MyTool {
 		}
 		return cut;
 	}
+
+
 	// 动态的计算出现在manualHeight的高度。
 	static private void AdaptiveUI()
 	{

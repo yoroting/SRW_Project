@@ -1101,7 +1101,9 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 			iVec2 pos = FindEmptyPos( new iVec2(x , y));
 			// setup param
 			unit.CreateChar( nCharID , pos.X , pos.Y );
-			unit.SetCamp( nCampID );		
+			unit.SetCamp( nCampID );	
+
+			unit.SetLevel( StageData.n_MOB_LV );
 			// fix to a valid pos
 
 			IdentToUnit.Add( unit.Ident() , unit  ) ;// stage gameobj

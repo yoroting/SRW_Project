@@ -242,12 +242,6 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
 	public void AttackCmd( )
 	{
-		if (CMD.eCMDTYPE == _CMD_TYPE._COUNTER) {
-			BattleManager.Instance.nDeferSkillID = 0; // counter normaly
-
-			EndCMDUI();					
-			return ;				// 
-		}
 
 		// normal atk
 
@@ -260,6 +254,15 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		Panel_StageUI.Instance.CreateAttackOverEffect (pCmder);
 		PanelManager.Instance.CloseUI( Name );
 	}
+
+	public void SkillCmd( )
+	{
+		if (pCmder != null) {
+			Panel_Skill.OpenUI (pCmder.Ident ());
+		}
+	}
+	
+
 	public void CounterCmd( )
 	{
 		BattleManager.Instance.nDeferSkillID = 0; // counter normaly
@@ -428,6 +431,8 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		} else if (name == _CMD_ID._ATK.ToString ()) {
 			AttackCmd ();
 		} else if (name == _CMD_ID._ABILITY.ToString ()) {
+		} else if (name == _CMD_ID._SKILL.ToString ()) {
+			SkillCmd ();
 		} else if (name == _CMD_ID._WAIT.ToString ()) {
 			WaitCmd ();
 		} else if (name == _CMD_ID._CANCEL.ToString ()) {
