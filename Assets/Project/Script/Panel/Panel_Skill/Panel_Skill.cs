@@ -59,10 +59,11 @@ public class Panel_Skill : MonoBehaviour {
 	//	List<SKILL> lst = pTable.ListRows<SKILL> ();
 		foreach( SKILL skl in pTable )
 		{
-			if( skl.n_SCHOOL != ESch )
-				continue;
-			if( skl.n_LEVEL_LEARN > ELv )
-				continue;
+			// all open for trace grid
+		//	if( skl.n_SCHOOL != ESch )
+		//		continue;
+		//	if( skl.n_LEVEL_LEARN > ELv )
+		//		continue;
 
 			// add this skill
 			GameObject go = ResourcesManager.CreatePrefabGameObj( SkillGrid , "Prefab/Item_Skill" ); 

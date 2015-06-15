@@ -1,26 +1,27 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Project\Script\Panel\Panel_Skill\Panel_Skill.cs">
     <Files>
-      <File FileName="Assets\Project\Script\Panel\Panel_StageUI\Panel_StageUI.cs" Line="613" Column="18" />
+      <File FileName="Assets\Project\Script\pathfind\PathFinder.cs" Line="69" Column="1" />
+      <File FileName="Assets\Project\Script\Panel\Panel_StageUI\Panel_StageUI.cs" Line="1290" Column="23" />
       <File FileName="Assets\Project\Script\Panel_unit.cs" Line="1" Column="1" />
-      <File FileName="Assets\Project\Script\pathfind\PathFinder.cs" Line="1" Column="1" />
       <File FileName="Assets\Project\Script\Panel\Panel_CMDUnitUI\Panel_CMDUnitUI.cs" Line="1" Column="1" />
-      <File FileName="Assets\Project\Script\Core\GameDataManager.cs" Line="466" Column="42" />
+      <File FileName="Assets\Project\Script\Core\GameDataManager.cs" Line="1" Column="1" />
       <File FileName="Assets\Project\Script\Core\SRWGameEvent.cs" Line="1" Column="1" />
       <File FileName="Assets\Project\Script\SRW_TextBox.cs" Line="1" Column="1" />
       <File FileName="Assets\Project\Script\Core\GameSystem.cs" Line="1" Column="1" />
-      <File FileName="Assets\Project\Script\Core\ActionManager.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Core\ActionManager.cs" Line="16" Column="22" />
       <File FileName="Assets\Project\Script\Core\MyScript.cs" Line="1" Column="1" />
-      <File FileName="Assets\Project\Script\Panel\Panel_Skill\Panel_Skill.cs" Line="135" Column="12" />
-      <File FileName="Assets\Common\Plugins\List\Base\UIItemList.cs" Line="182" Column="28" />
+      <File FileName="Assets\Project\Script\Panel\Panel_Skill\Panel_Skill.cs" Line="135" Column="32" />
+      <File FileName="Assets\Common\Plugins\List\Base\UIItemList.cs" Line="1" Column="1" />
       <File FileName="Assets\Common\Plugins\List\Base\UIList.cs" Line="1" Column="1" />
       <File FileName="Assets\Common\Plugins\List\Base\UIComponent.cs" Line="1" Column="1" />
       <File FileName="Assets\Project\Script\Panel\Panel_TalkUI\Panel_Talk.cs" Line="1" Column="1" />
       <File FileName="Assets\Project\Script\Data\cUnitData.cs" Line="1" Column="1" />
       <File FileName="Assets\Project\Script\ConstDataClasses\SKILL.cs" Line="1" Column="1" />
-      <File FileName="Assets\Common\Plugins\ConstDataManager\ConstDataManager.cs" Line="707" Column="30" />
-      <File FileName="Assets\Project\Script\Item_Skill.cs" Line="18" Column="2" />
+      <File FileName="Assets\Common\Plugins\ConstDataManager\ConstDataManager.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Item_Skill.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\MyGrids.cs" Line="1133" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
@@ -28,8 +29,6 @@
       <Breakpoint file="G:\Unity Projects\SRW_Project\Assets\Project\Script\SRW_TextBox.cs" line="181" />
       <Breakpoint file="G:\Unity Projects\SRW_Project\Assets\Project\Script\Panel\Panel_StageUI\Panel_StageUI.cs" line="1496" />
       <Breakpoint file="G:\Unity Projects\SRW_Project\Assets\Project\Script\Core\ActionManager.cs" line="102" />
-      <Breakpoint file="G:\Unity Projects\SRW_Project\Assets\Project\Script\Panel\Panel_Skill\Panel_Skill.cs" line="68" />
-      <Breakpoint file="G:\Unity Projects\SRW_Project\Assets\Project\Script\Panel\Panel_Skill\Panel_Skill.cs" line="133" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />

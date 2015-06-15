@@ -1060,8 +1060,11 @@ namespace MYGRIDS
 	//	private bool[,] mask;							  // ignore path find 	
 		//public List<Point> DynMask;     				  // ignore for pathfind
 		//private SearchParameters searchParameters;
+	
 		private PathFinder pathfinder;
+
 		List<Point> IgnorePool;     				  // ignore for pathfind
+
 		public PathFinder GetPathFinder()
 		{
 			if( pathfinder  == null )
@@ -1092,7 +1095,6 @@ namespace MYGRIDS
 			//	mask[ v.X+hW , v.Y+hH ] = false;
 				IgnorePool.Add( new Point( v.X+hW , v.Y+hH ) );
 			}
-
 			//GetPathFinder ().SetIgnorePool ( IgnorePool );
 		}
 
@@ -1116,12 +1118,12 @@ namespace MYGRIDS
 
 			PathFinder pathFinder = GetPathFinder();			// new method to get path
 
-			pathFinder.ApplyMap( map );			// need apply every time for new find
-
-
+		
+			pathFinder.ApplyMap (map);			// need apply every time for new find
+			pathFinder.ApplyMaskPoint (IgnorePool);	// need apply every time. 			
+		
+		
 			pathFinder.nMaxStep = nDist;			// max dist
-
-			pathFinder.ApplyMaskPoint (IgnorePool);	// need apply every time. 
 
 			List<Point> path = pathFinder.FindPath(startLocation , endLocation);
 

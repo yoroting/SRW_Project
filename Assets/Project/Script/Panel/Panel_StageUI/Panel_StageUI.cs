@@ -1280,8 +1280,8 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		if (force == false)
 		{
 			Vector3 realpos = v + canv;
-			int hW = Config.WIDTH/2;
-			int hH = Config.HEIGHT/2;
+			int hW = (Config.WIDTH -100)/2;
+			int hH = (Config.HEIGHT-100)/2;
 			if( (realpos.x < hW  && realpos.x > -hW ) && (realpos.y < hH && realpos.y > -hH ) )
 				return; // pass
 		}

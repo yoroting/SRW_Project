@@ -17,7 +17,6 @@ namespace SimpleAStarExample
         private Node endNode;
         private SearchParameters searchParameters;
 
-
 		public  int nMaxStep;		// limit of path find
 	     /// <summary>
         /// Create a new instance of PathFinder
@@ -30,6 +29,7 @@ namespace SimpleAStarExample
             this.startNode = this.nodes[searchParameters.StartLocation.X, searchParameters.StartLocation.Y];
             this.startNode.State = NodeState.Open;
             this.endNode = this.nodes[searchParameters.EndLocation.X, searchParameters.EndLocation.Y];
+
         }
 
 		public PathFinder( bool [,] map )
@@ -62,9 +62,13 @@ namespace SimpleAStarExample
         {
             // The start node is the first entry in the 'open' list
             List<Point> path = new List<Point>();
-           
+			bool success = FastSearch( startNode ); // use fast search first
 
-			bool success = AStarSearch ( startNode );
+
+			if (success == false) {
+				success = AStarSearch (startNode);		// use a star when fast is fail
+			}
+
 			//bool success = Search(startNode);
             if (success)
             {
@@ -238,6 +242,145 @@ namespace SimpleAStarExample
 				}
 			}
 			return bFind;
+		}
+
+
+		private bool FastSearch(Node currentNode)
+		{
+			//bool bFind = false;
+			int nDiffX = (endNode.Location.X - currentNode.Location.X);
+			int nDiffY = (endNode.Location.Y - currentNode.Location.Y);
+			int nAbsX = Math.Abs ( nDiffX );
+			int nAbsY = Math.Abs ( nDiffY );
+			Node parentNode = null;
+
+
+			int nDeltX = nDiffX > 0 ? 1 : -1;
+			int nDeltY = nDiffY > 0 ? 1 : -1;
+			// try x first
+			int x = currentNode.Location.X;
+			int y = currentNode.Location.Y;
+			parentNode = currentNode;
+			for (int i=0 ; i< nAbsX; i++ ,x=x+nDeltX) {
+				Node node = this.nodes[x, y];				
+				if( node.IsWalkable == false ) {
+					break;
+				}
+				else{
+					Node node2 = new Node( x , y , true );	
+					node2.ParentNode =  parentNode;
+					parentNode = node2;
+					
+				}
+
+				// check is target node
+				if( (parentNode.Location.X==endNode.Location.X) && (parentNode.Location.Y==endNode.Location.Y) )
+				{
+					endNode = parentNode; // set end to new node for trace parent outside
+					return true;
+				}
+			}
+
+			if (x == endNode.Location.X) {
+				for (int j=0; j<= nAbsY; j++ , y+=nDeltY) {
+					Node node = this.nodes[x, y];				
+					if( node.IsWalkable == false ) {
+						break;
+					}
+					else{
+						Node node2 = new Node( x , y , true );	
+						node2.ParentNode =  parentNode;
+						parentNode = node2;
+						
+					}
+					
+					// check is target node
+					if( (parentNode.Location.X==endNode.Location.X) && (parentNode.Location.Y==endNode.Location.Y) )
+					{
+						endNode = parentNode; // set end to new node for trace parent outside
+						return true;
+					}
+				}
+			}
+
+			// test y first
+			x = currentNode.Location.X;
+			y = currentNode.Location.Y;
+			parentNode = currentNode;
+			for (int j=0; j< nAbsY; j++ , y+=nDeltY) {
+				Node node = this.nodes[x, y];				
+				if( node.IsWalkable == false ) {
+					break;
+				}
+				else{
+					Node node2 = new Node( x , y , true );	
+					node2.ParentNode =  parentNode;
+					parentNode = node2;
+					
+				}
+				
+				// check is target node
+				if( (parentNode.Location.X==endNode.Location.X) && (parentNode.Location.Y==endNode.Location.Y) )
+				{
+					endNode = parentNode; // set end to new node for trace parent outside
+					return true;
+				}
+			}
+			if (y == endNode.Location.Y) {
+				for (int i=0 ; i<= nAbsX; i++ ,x=x+nDeltX) {
+					Node node = this.nodes[x, y];				
+					if( node.IsWalkable == false ) {
+						break;
+					}
+					else{
+						Node node2 = new Node( x , y , true );	
+						node2.ParentNode =  parentNode;
+						parentNode = node2;
+						
+					}
+					
+					// check is target node
+					if( (parentNode.Location.X==endNode.Location.X) && (parentNode.Location.Y==endNode.Location.Y) )
+					{
+						endNode = parentNode; // set end to new node for trace parent outside
+						return true;
+					}
+				}
+			}
+			// try y if x fail
+			//if (bFind == false)
+//			{
+//				parentNode = currentNode;
+//				for (int j=0,y=currentNode.Location.Y ; j<= nAbsY; j++ , y+=nDeltY)
+//					for (int i=0 , x=currentNode.Location.X ; i<= nAbsX; i++ ,x=x+nDeltX ){
+//
+//					//Node node = new Node();
+//					//int x = currentNode.Location.X + (i*nDeltX);
+//					//int y = currentNode.Location.Y + (j*nDeltY);
+//					Node node = this.nodes[x, y];
+//					if( node.IsWalkable == false ) 
+//					{
+//						//bFind = false;
+//						j = nAbsY +1;
+//						break;
+//					}
+//					else{
+//						Node node2 = new Node( x , y , true );	
+//						node2.ParentNode =  parentNode;
+//						parentNode = node2;
+//						
+//					}
+//
+//					if( (parentNode.Location.X==endNode.Location.X) && (parentNode.Location.Y==endNode.Location.Y) )
+//					{
+//						endNode = parentNode; // set end to new node for trace parent outside
+//						return true;
+//					}
+//
+//				}
+//			}
+
+			return false;
 		}
         /// <summary>
         /// Returns any nodes that are adjacent to <paramref name="fromNode"/> and may be considered to form the next step in the path
