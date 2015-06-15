@@ -32,6 +32,12 @@ namespace SimpleAStarExample
             this.endNode = this.nodes[searchParameters.EndLocation.X, searchParameters.EndLocation.Y];
         }
 
+		public PathFinder( bool [,] map )
+		{
+			ApplyMap( map );
+
+		}
+
 		/// <summary>
 		/// Find Direct
 		/// </summary>
@@ -95,6 +101,30 @@ namespace SimpleAStarExample
             }
         }
 
+		public void ApplyMap( bool[,] map  )
+		{
+			this.width = map.GetLength(0);
+			this.height = map.GetLength(1);
+			if( this.nodes == null )
+				this.nodes = new Node[this.width, this.height];
+			for (int y = 0; y < this.height; y++)
+			{
+				for (int x = 0; x < this.width; x++)
+				{
+					Node node = this.nodes[x, y];
+					if( node  == null )
+					{
+						node = new Node(x, y, map[x, y] );
+						this.nodes[x, y] = node;
+					}
+					else {
+						node.Reset();
+						node.IsWalkable = map[x, y];
+					}
+				}
+			}
+		}
+
 		public void ApplyMaskNodes(bool[,] mask , bool bWalkAble = false )
 		{
 			int tw = mask.GetLength(0);
@@ -105,7 +135,9 @@ namespace SimpleAStarExample
 				{
 					if( mask[ x , y ] == false  )// false == can't move
 					{
-						this.nodes[x, y].IsWalkable = bWalkAble;
+						Node node = this.nodes[x, y];
+						if( node  != null )
+							node.IsWalkable = bWalkAble;
 					}
 					//this.nodes[x, y] = new Node(x, y, map[x, y], this.searchParameters.EndLocation);
 				}

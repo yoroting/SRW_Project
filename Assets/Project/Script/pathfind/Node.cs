@@ -88,6 +88,15 @@ namespace SimpleAStarExample
             this.G = 0;
         }
 
+		public Node(int x, int y, bool isWalkable)
+		{
+			this.Location = new Point(x, y);
+			this.State = NodeState.Untested;
+			this.IsWalkable = isWalkable;
+			this.H = 0; // 
+			this.G = 0;
+		}
+
         public override string ToString()
         {
             return string.Format("{0}, {1}: {2}", this.Location.X, this.Location.Y, this.State);
@@ -104,5 +113,14 @@ namespace SimpleAStarExample
 
             //return (float)Math.Sqrt(deltaX * deltaX + deltaY * deltaY);
         }
+
+		public void Reset()
+		{
+			State = NodeState.Untested;
+			parentNode = null;
+			IsWalkable = true;
+			H = 0;
+			G = 0;
+		}
     }
 }

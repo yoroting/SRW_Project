@@ -1562,13 +1562,21 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		// nStep = 999; // debug
 
 		List< iVec2 > path = null;
+		List< iVec2 > unitList =  GetUnitPosList();
+
+		// try the short path
+
+
+
+
+
 		Grids.ClearIgnorePool();
-		Grids.AddIgnorePool ( GetUnitPosList() );  // all is block in first find
+		Grids.AddIgnorePool (  unitList );  // all is block in first find
 		path = Grids.PathFinding( st , ed , nStep  );
 
 		if (path == null) {
 			Grids.ClearIgnorePool();
-			Grids.AddIgnorePool ( GetUnitPosList() );  // only enemy is block in first find
+			//Grids.AddIgnorePool ( GetUnitPosList() );  // only enemy is block in second find
 			Grids.AddIgnorePool( unit.GetPKPosPool( true ) ); //
 			path = Grids.PathFinding( st , ed , nStep  );
 		}
