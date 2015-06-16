@@ -23,5 +23,15 @@ public class Item_Skill : MonoBehaviour {
 		MyTool.SetLabelInt ( CostObj , nCost );
 
 	}
+
+	public void SetScrollView( GameObject go )
+	{
+		UIDragScrollView dsv = this.GetComponent<UIDragScrollView> ();
+		if (dsv != null) {
+			dsv.scrollView = go.GetComponent< UIScrollView >();
+		}
+
+
+	}
 }
 

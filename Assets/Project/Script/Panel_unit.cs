@@ -425,7 +425,21 @@ public class Panel_unit : MonoBehaviour {
 			switch( nSubActFlow )
 			{
 			case 0:
-				BattleManager.Instance.ShowBattleMsg( Ident() , MyTool.GetUnitSchoolFullName(Ident(),pUnitData.nActSch[1] ) );  // Get school name
+				if( CurAction.nSkillID == 0 ){
+					BattleManager.Instance.ShowBattleMsg( Ident() , MyTool.GetUnitSchoolFullName(Ident(),pUnitData.nActSch[1] ) );  // Get school name
+				}
+				else{
+					// Get Skill
+					SKILL skl = ConstDataManager.Instance.GetRow<SKILL>( CurAction.nSkillID );
+					if( skl != null ){
+						BattleManager.Instance.ShowBattleMsg( Ident() , skl.s_NAME );
+
+						// play fx
+						GameSystem.PlayFX( this.gameObject , "CFXM4 Magic Drain Fast" );
+					}
+
+				}
+
 				nSubActFlow++;
 				break;
 			case 1:

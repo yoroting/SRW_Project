@@ -260,7 +260,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3005
+  startingRenderQueue: 3000
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 0
@@ -470,7 +470,7 @@ MonoBehaviour:
 --- !u!4 &259996569 stripped
 Transform:
   m_PrefabParentObject: {fileID: 479972, guid: 109913b346d2e96478c369ab6be7a50c, type: 2}
-  m_PrefabInternal: {fileID: 1611582992}
+  m_PrefabInternal: {fileID: 605359189}
 --- !u!4 &269819548 stripped
 Transform:
   m_PrefabParentObject: {fileID: 460126, guid: cfa057b5163a60741bb67ec2db63f91c, type: 2}
@@ -544,7 +544,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3005
+  startingRenderQueue: 3000
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 0
@@ -804,6 +804,56 @@ MonoBehaviour:
   mAtlas: {fileID: 11400000, guid: 62adb30369acbf943a67cee0f69267a3, type: 2}
   mSpriteName: Stripes 3
   mFillCenter: 1
+--- !u!1001 &605359189
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 161096790}
+    m_Modifications:
+    - target: {fileID: 479972, guid: 109913b346d2e96478c369ab6be7a50c, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: -125
+      objectReference: {fileID: 0}
+    - target: {fileID: 479972, guid: 109913b346d2e96478c369ab6be7a50c, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 479972, guid: 109913b346d2e96478c369ab6be7a50c, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 479972, guid: 109913b346d2e96478c369ab6be7a50c, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 479972, guid: 109913b346d2e96478c369ab6be7a50c, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 479972, guid: 109913b346d2e96478c369ab6be7a50c, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 479972, guid: 109913b346d2e96478c369ab6be7a50c, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 479972, guid: 109913b346d2e96478c369ab6be7a50c, type: 2}
+      propertyPath: m_RootOrder
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 110006, guid: 109913b346d2e96478c369ab6be7a50c, type: 2}
+      propertyPath: m_Name
+      value: Panel - Skill
+      objectReference: {fileID: 0}
+    - target: {fileID: 110006, guid: 109913b346d2e96478c369ab6be7a50c, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 109913b346d2e96478c369ab6be7a50c, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1001 &634578501
 Prefab:
   m_ObjectHideFlags: 0
@@ -1198,7 +1248,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967039
+    m_Bits: 4294967295
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -2397,52 +2447,6 @@ MonoBehaviour:
   mAtlas: {fileID: 11400000, guid: 62adb30369acbf943a67cee0f69267a3, type: 2}
   mSpriteName: Button
   mFillCenter: 1
---- !u!1001 &1611582992
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 161096790}
-    m_Modifications:
-    - target: {fileID: 479972, guid: 109913b346d2e96478c369ab6be7a50c, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: -125
-      objectReference: {fileID: 0}
-    - target: {fileID: 479972, guid: 109913b346d2e96478c369ab6be7a50c, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 479972, guid: 109913b346d2e96478c369ab6be7a50c, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 479972, guid: 109913b346d2e96478c369ab6be7a50c, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 479972, guid: 109913b346d2e96478c369ab6be7a50c, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 479972, guid: 109913b346d2e96478c369ab6be7a50c, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 479972, guid: 109913b346d2e96478c369ab6be7a50c, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 479972, guid: 109913b346d2e96478c369ab6be7a50c, type: 2}
-      propertyPath: m_RootOrder
-      value: 12
-      objectReference: {fileID: 0}
-    - target: {fileID: 110006, guid: 109913b346d2e96478c369ab6be7a50c, type: 2}
-      propertyPath: m_Name
-      value: Panel - Skill
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: 109913b346d2e96478c369ab6be7a50c, type: 2}
-  m_IsPrefabParent: 0
 --- !u!1001 &1708836876
 Prefab:
   m_ObjectHideFlags: 0

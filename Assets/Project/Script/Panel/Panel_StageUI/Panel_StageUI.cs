@@ -702,7 +702,7 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		}
 	}
 
-	public void CreateAttackOverEffect( Panel_unit unit )
+	public void CreateAttackOverEffect( Panel_unit unit , int nRange=1)
 	{
 		foreach( KeyValuePair< string , GameObject> pair in OverCellAtkPool )
 		{
@@ -716,7 +716,10 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		if (unit == null)
 			return;
 
-		List<iVec2> AtkList =  Grids.GetRangePool ( unit.Loc, 1 );
+		if (nRange < 1)
+			nRange = 1;
+
+		List<iVec2> AtkList =  Grids.GetRangePool ( unit.Loc, nRange );
 		AtkList.RemoveAt (0); // remove self pos
 
 		foreach( iVec2 v in AtkList )

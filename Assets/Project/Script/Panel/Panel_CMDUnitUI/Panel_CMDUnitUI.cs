@@ -378,7 +378,32 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		PanelManager.Instance.CloseUI( Name );
 	}
 
+	public void SetSkillID( int nSkillID )
+	{
+		if (0 == nSkillID) {
+			// cancel skill ui
+			CMD.nSkillID = 0;
+		}
+		else {
+			// set a skill
+			CMD.nSkillID = nSkillID;
 
+			SKILL skl = ConstDataManager.Instance.GetRow<SKILL>( nSkillID ); 
+			// if skill need a target. go to target mode
+			CMD.eCMDSTATUS = _CMD_STATUS._WAIT_TARGET;
+			CMD.eCMDID 	   = _CMD_ID._ATK;			// enter atk mode
+
+			Panel_StageUI.Instance.ClearOverCellEffect ();
+			Panel_StageUI.Instance.CreateAttackOverEffect (pCmder , skl.n_RANGE );
+
+			CMD.eCMDTARGET = _CMD_TARGET._UNIT;
+
+		}
+		//
+
+
+		PanelManager.Instance.CloseUI( Name );
+	}
 
 	public void MakeCmd( )
 	{	
@@ -391,7 +416,13 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		{
 			case _CMD_TARGET._POS:
 			{
-
+				switch( CMD.eCMDID )
+				{
+					case _CMD_ID._ATK:{ // attack cmd
+						BattleManager.Instance.PlayCast( CMD.nCmderIdent , CMD.nTarGridX , CMD.nTarGridY ,CMD.nSkillID );
+				
+					}break;
+				}
 			}break;
 
 			case _CMD_TARGET._UNIT:
@@ -402,11 +433,6 @@ public class Panel_CMDUnitUI : MonoBehaviour
 						BattleManager.Instance.PlayAttack( CMD.nCmderIdent , CMD.nTarIdent ,CMD.nSkillID );
 					
 					}break;
-					case _CMD_ID._ABILITY:{ // attack cmd
-				
-				
-					}break;
-
 				}
 			}break;
 		}

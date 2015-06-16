@@ -160,7 +160,8 @@ public partial class BattleManager
 		case 1:			// atack pre show 
 			if( PanelManager.Instance.CheckUIIsOpening( Panel_CMDUnitUI.Name ) == false )
 			{
-
+				AtkerSkill = ConstDataManager.Instance.GetRow< SKILL >( nAtkerSkillID ) ;
+				DeferSkill = ConstDataManager.Instance.GetRow< SKILL >( nDeferSkillID ) ;
 			//ShowBattleMsg( nAtkerID , "attack" );
 				nPhase++;
 			}
@@ -177,10 +178,8 @@ public partial class BattleManager
 			nPhase++;
 			break;
 		case 5:			// atk -> def 
-			uAction pAtkAct = ActionManager.Instance.CreateAction (nAtkerID, _ACTION._ATK);
-			if (pAtkAct != null) {
-				pAtkAct.nTarIdent = nDeferID;
-			}
+			uAction pAtkAct = ActionManager.Instance.CreateAttackAction(nAtkerID,nDeferID,nAtkerSkillID  );
+			//should cal atk hit result for performance
 			
 			
 			//			Panel_unit unitAtk = Panel_StageUI.Instance.GetUnitByIdent( nAtkerID );
@@ -194,10 +193,10 @@ public partial class BattleManager
 		case 6:			//  def -> atk
 			if (eDefCmdID  !=  _CMD_ID._DEF) {
 
-				uAction pCountAct = ActionManager.Instance.CreateAction (nDeferID, _ACTION._ATK);
-				if (pCountAct != null) {
-					pCountAct.nTarIdent = nAtkerID;
-				}
+				uAction pCountAct = ActionManager.Instance.CreateAttackAction (nDeferID,nAtkerID, nDeferSkillID );
+//				if (pCountAct != null) {
+//					pCountAct.nTarIdent = nAtkerID;
+//				}
 				
 				//				Panel_unit unitDef = Panel_StageUI.Instance.GetUnitByIdent( nDeferID );
 				//				if( unitDef != null )
@@ -261,23 +260,24 @@ public partial class BattleManager
 
 	//===================================================
 	private int nPhase = 0; // 
+	SKILL	AtkerSkill = null;
+	SKILL	DeferSkill = null;
 
-
-	public void PlayAttack (int nAtkIdent, int nDefIdent, int nAtkerSkillID)
+	public void PlayAttack (int nAtkIdent, int nDefIdent, int nSkillID)
 	{
 		nAtkerID = nAtkIdent;
 		nDeferID = nDefIdent;
-		nAtkerSkillID = nAtkerSkillID;
+		nAtkerSkillID = nSkillID ;
 
 		eBattleType = _BATTLE._ATTACK;
 	}
-	public void PlayCast (int nAtkIdent, int nGridX , int nGridY , int nAtkerSkillID)
+	public void PlayCast (int nAtkIdent, int nGridX , int nGridY , int nSkillID)
 	{
 		nAtkerID = nAtkIdent;
 		nTarGridX = nGridX;
 		nTarGridY = nGridY;
 
-		nAtkerSkillID = nAtkerSkillID;
+		nAtkerSkillID = nSkillID;
 		
 		eBattleType = _BATTLE._ATTACK;
 	}

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using MyClassLibrary;			// for parser string
+using _SRW;
 
 public class Panel_Skill : MonoBehaviour {
 	public const string Name = "Panel_Skill";
@@ -9,6 +10,10 @@ public class Panel_Skill : MonoBehaviour {
 	public GameObject OkBtn;
 	public GameObject CloseBtn;
 	public GameObject SkillGrid;
+	public GameObject ScrollView;
+	public GameObject SkillContent;
+
+	public int 	nOpSkillID;			// current select skill ID
 
 	int nOpIdent;
 	int nOpCharID;
@@ -23,6 +28,8 @@ public class Panel_Skill : MonoBehaviour {
 		
 		UIEventListener.Get(OkBtn).onClick += OnOkClick; // for trig next line
 		UIEventListener.Get(CloseBtn).onClick += OnCloseClick; // for trig next line
+
+		nOpSkillID = 0;
 	}
 
 	// Use this for initialization
@@ -72,14 +79,23 @@ public class Panel_Skill : MonoBehaviour {
 
 			Item_Skill item = go.GetComponent<Item_Skill> ();
 			item.SetItemData( skl.s_NAME , skl.n_RANGE , skl.n_MP );
+			item.SetScrollView( ScrollView );
 
 			UIEventListener.Get(go).onClick += OnSkillClick; // for trig next line
 
 			sklPool.Add(  go , skl );
 		}
 
+		// default to 1 st skill
 
+		foreach (KeyValuePair<GameObject  , SKILL> pair in sklPool) {
+			SetSkill( pair.Value );			// set to first 
+			break;
+		}
 
+		// for grid re pos
+		UIGrid grid = SkillGrid.GetComponent<UIGrid>(); 
+		grid.repositionNow = true;		// need this for second pop to re pos
 
 	}
 
@@ -120,11 +136,26 @@ public class Panel_Skill : MonoBehaviour {
 
 	void OnOkClick(GameObject go)
 	{
-		
+
+		// use skill to atk
+		//GameDataManager.Instance
+		// send skill ok command
+
+
+		Panel_CMDUnitUI panel = MyTool.GetPanel<Panel_CMDUnitUI> ( PanelManager.Instance.OpenUI (Panel_CMDUnitUI.Name) );
+		if (panel != null) {
+			panel.SetSkillID( nOpSkillID );
+		}
+
+		PanelManager.Instance.CloseUI ( Name ); // close CMD UI
 	}
 
 	void OnCloseClick(GameObject go)
 	{
+		Panel_CMDUnitUI panel = MyTool.GetPanel<Panel_CMDUnitUI> ( PanelManager.Instance.OpenUI (Panel_CMDUnitUI.Name) );
+		if (panel != null) {
+			panel.SetSkillID( 0  ); // 0 is cancel
+		}
 		PanelManager.Instance.CloseUI ( Name );
 
 	}
@@ -136,7 +167,14 @@ public class Panel_Skill : MonoBehaviour {
 			return ;
 		}
 		// show skill detail
+		SetSkill ( skl );
 	}
-
+	void SetSkill( SKILL skl )
+	{
+		if (skl == null)
+			return;
+		MyTool.SetLabelText (SkillContent, skl.s_NAME);
+		nOpSkillID = skl.n_ID;
+	}
 
 }
