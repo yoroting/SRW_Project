@@ -18,6 +18,7 @@
 	MOBS	 = 18,
 	CLINE = 20,
 	BGM = 27,
+	FX = 28,
 
 	SCENE_TILE = 32,
 	MARKER = 33,

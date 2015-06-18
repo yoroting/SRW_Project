@@ -17,6 +17,8 @@ namespace SimpleAStarExample
         private Node endNode;
         private SearchParameters searchParameters;
 
+		//===
+		public bool bIsDirty = true;		// check if need refresh
 		public  int nMaxStep;		// limit of path find
 	     /// <summary>
         /// Create a new instance of PathFinder
@@ -30,12 +32,14 @@ namespace SimpleAStarExample
             this.startNode.State = NodeState.Open;
             this.endNode = this.nodes[searchParameters.EndLocation.X, searchParameters.EndLocation.Y];
 
+			bIsDirty = true;
         }
 
 		public PathFinder( bool [,] map )
 		{
 			ApplyMap( map );
 
+			bIsDirty = true;
 		}
 
 		/// <summary>
@@ -111,6 +115,7 @@ namespace SimpleAStarExample
 			this.height = map.GetLength(1);
 			if( this.nodes == null )
 				this.nodes = new Node[this.width, this.height];
+
 			for (int y = 0; y < this.height; y++)
 			{
 				for (int x = 0; x < this.width; x++)
@@ -146,6 +151,7 @@ namespace SimpleAStarExample
 					//this.nodes[x, y] = new Node(x, y, map[x, y], this.searchParameters.EndLocation);
 				}
 			}
+
 		}
 
 		public void ApplyMaskPoint( List< Point> pool )
@@ -194,6 +200,7 @@ namespace SimpleAStarExample
                 }
             }
 
+			bIsDirty = true;
             // The method returns false if this path leads to be a dead end
             return false;
         }
@@ -241,6 +248,7 @@ namespace SimpleAStarExample
 					//nextNode.State = NodeState.Closed; // close this 
 				}
 			}
+			bIsDirty = true;
 			return bFind;
 		}
 
@@ -347,38 +355,7 @@ namespace SimpleAStarExample
 					}
 				}
 			}
-			// try y if x fail
-			//if (bFind == false)
-//			{
-//				parentNode = currentNode;
-//				for (int j=0,y=currentNode.Location.Y ; j<= nAbsY; j++ , y+=nDeltY)
-//					for (int i=0 , x=currentNode.Location.X ; i<= nAbsX; i++ ,x=x+nDeltX ){
-//
-//					//Node node = new Node();
-//					//int x = currentNode.Location.X + (i*nDeltX);
-//					//int y = currentNode.Location.Y + (j*nDeltY);
-//					Node node = this.nodes[x, y];
-//					if( node.IsWalkable == false ) 
-//					{
-//						//bFind = false;
-//						j = nAbsY +1;
-//						break;
-//					}
-//					else{
-//						Node node2 = new Node( x , y , true );	
-//						node2.ParentNode =  parentNode;
-//						parentNode = node2;
-//						
-//					}
-//
-//					if( (parentNode.Location.X==endNode.Location.X) && (parentNode.Location.Y==endNode.Location.Y) )
-//					{
-//						endNode = parentNode; // set end to new node for trace parent outside
-//						return true;
-//					}
-//
-//				}
-//			}
+
 
 			return false;
 		}

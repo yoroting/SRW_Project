@@ -16,6 +16,9 @@ namespace MYGRIDS
         _LAKE       = 4,    // 湖
         _SNOW       = 5,    // 雪
         _SAND       = 6,    // 沙地
+		_DIRT       = 7,    // 泥版
+		_ROAD		= 8,	// 道路	
+
 	};
 
 	public enum _THING{
@@ -766,6 +769,7 @@ namespace MYGRIDS
 
         // Math utility func 
         public List<iVec2> GetRangePool( iVec2 v , int dist , int min=0 ) { 
+
             // 取得指定座標 對應距離內的 pool
             List<iVec2> lst = new List<iVec2>();
 
@@ -847,7 +851,7 @@ namespace MYGRIDS
             foreach (iVec2 v in pool)
             {
                 _TILE value = Layer.GetValue(  v.X  , v.Y ) ;
-                if (value != _TILE._NULL ) // 只有合法的才保留　
+				if ( IsWalkAbleTile(value) ) // 只有合法的才保留　
                 {
                     lst.Add( v );
                 }
@@ -1079,6 +1083,8 @@ namespace MYGRIDS
 		{
 			if( IgnorePool != null )
 				IgnorePool.Clear ();
+
+			GetPathFinder().bIsDirty = true;
 		}
 
 		public void  AddIgnorePool( List<iVec2> ivecPool )
@@ -1096,6 +1102,7 @@ namespace MYGRIDS
 				IgnorePool.Add( new Point( v.X+hW , v.Y+hH ) );
 			}
 			//GetPathFinder ().SetIgnorePool ( IgnorePool );
+			GetPathFinder().bIsDirty = true;
 		}
 
 		public void  AddIgnorePos( iVec2 v )
@@ -1104,6 +1111,8 @@ namespace MYGRIDS
 				IgnorePool = new List<Point>();
 
 			IgnorePool.Add (new Point( v.X+hW , v.Y+hH ));
+
+			GetPathFinder().bIsDirty = true;
 		}
 
 		// path find func . take care to use it
@@ -1118,10 +1127,13 @@ namespace MYGRIDS
 
 			PathFinder pathFinder = GetPathFinder();			// new method to get path
 
-		
-			pathFinder.ApplyMap (map);			// need apply every time for new find
-			pathFinder.ApplyMaskPoint (IgnorePool);	// need apply every time. 			
-		
+			// check if need refresh
+			if( pathFinder.bIsDirty  == true )
+			{		
+				pathFinder.ApplyMap (map);			// need apply every time for new find
+				pathFinder.ApplyMaskPoint (IgnorePool);	// need apply every time. 			
+				pathFinder.bIsDirty = false;
+			}
 		
 			pathFinder.nMaxStep = nDist;			// max dist
 
