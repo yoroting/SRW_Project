@@ -22,7 +22,10 @@ public class MyScript {
 		}
 	}
 
-	public bool CheckEventCondition( CTextLine line )
+	List<cHitResult> CacheHitResultPool;
+
+
+	public bool CheckEventCondition( CTextLine line  )
 	{
 		if( line == null )
 			return false;
@@ -87,6 +90,7 @@ public class MyScript {
 				}	
 			}
 
+
 			else{
 				Debug.LogError( string.Format( "Error-Can't find script cond func '{0}'" , func.sFunc ) );
 			}
@@ -111,6 +115,7 @@ public class MyScript {
 		}
 		return false;
 	}
+
 
 	// Condition
 	// condition check 
@@ -227,7 +232,7 @@ public class MyScript {
 	{
 		cUnitData unit = GameDataManager.Instance.GetUnitDateByCharID ( nChar1 );
 		if (unit != null) {
-			float fPer = unit.n_HP / unit.GetMaxHP();
+			float fPer = (float)unit.n_HP / (float)unit.GetMaxHP();
 
 			if( op == "<"){
 				return (fPer < fValue);
@@ -251,10 +256,57 @@ public class MyScript {
 		return false;
 	}
 
+	//============================================================
+	public bool ConditionFloat( float fVal_I , string op , float fVal_E )
+	{
+		if( op == "<"){
+			return (fVal_I < fVal_E);
+		}
+		else if( op == "<="){
+			return (fVal_I <= fVal_E);
+		}
+		else if( op == "=="){
+			return (fVal_I == fVal_E);
+		}
+		else if( op == "!="){
+			return (fVal_I != fVal_E);
+		}
+		else if( op == ">"){
+			return (fVal_I > fVal_E);
+		}
+		else if( op == ">="){
+			return (fVal_I >= fVal_E);
+		}
+		return false;
+	}
+
+	public bool ConditionInt( float nInt_I , string op , float nInt_E )
+	{
+		if( op == "<"){
+			return (nInt_I < nInt_E);
+		}
+		else if( op == "<="){
+			return (nInt_I <= nInt_E);
+		}
+		else if( op == "=="){
+			return (nInt_I == nInt_E);
+		}
+		else if( op == "!="){
+			return (nInt_I != nInt_E);
+		}
+		else if( op == ">"){
+			return (nInt_I > nInt_E);
+		}
+		else if( op == ">="){
+			return (nInt_I >= nInt_E);
+		}
+		return false;
+	}
+
 	//------------------
 	// Stage Run
 	//-----------------
-	public void ParserScript( CTextLine line )
+	public void ParserScript( CTextLine line ,cUnitData data_I=null , cUnitData data_E=null )
 	{
 		List<cTextFunc> funcList =line.GetFuncList();
 		foreach( cTextFunc func in funcList )
@@ -365,12 +417,13 @@ public class MyScript {
 			}
 			else if( func.sFunc  == "WIN") 
 			{
-
+				PanelManager.Instance.OpenUI(  Panel_Win.Name );
 			}
 			else if( func.sFunc  == "LOST") 
 			{
 				
 			}
+
 			else 
 			{
 				Debug.LogError( string.Format( "Error-Can't find script func '{0}'" , func.sFunc ) );
@@ -381,6 +434,207 @@ public class MyScript {
 	public void ParserStoryScript( CTextLine line )
 	{
 
+
+	}
+
+
+	// Check skill trig effect
+//	public bool CheckSkillCond(  string  strCond , cUnitData unit_i  , cUnitData unit_e )
+//	{
+//		if ( unit_i == null )
+//			return false;
+//
+//		//cUnitData unit_e = GameDataManager.Instance.GetUnitDateByIdent ( unit.FightAttr.TarIdent );
+//
+//		cTextArray sCond = new cTextArray( );
+//		sCond.SetText( strCond );
+//		// check all line . if one line success . this event check return true
+//		
+//		int nCol = sCond.GetMaxCol();
+//		for( int i= 0 ; i <nCol ; i++ )
+//		{
+//			if( CheckFightEventCondition( sCond.GetTextLine( i ) , unit_i , unit_e  ) )
+//			{
+//				return true;
+//			}
+//		}
+//		return false;
+//	}
+
+//	public void RunSkillEffect( cUnitData atker  , cUnitData defer  , string strEffect , ref List<cHitResult>  pool )
+//	{
+//		if (atker == null )
+//			return;
+//		
+//		//cUnitData unit_e = GameDataManager.Instance.GetUnitDateByIdent ( unit.FightAttr.TarIdent );
+//		cTextArray Script = new cTextArray ();
+//		Script.SetText (strEffect);
+//
+//		CacheHitResultPool = pool;
+//
+//		CTextLine line = Script.GetTextLine( 0 );
+//		if( line != null )
+//		{
+//			
+//			ParserScript( line , atker , defer );
+//		}
+//
+//		CacheHitResultPool = null;
+//
+//	}
+
+//	public bool CheckFightEventCondition( CTextLine line, cUnitData data_I , cUnitData data_E  )
+//	{
+//		if( line == null || data_I == null )
+//			return false;
+//		
+//		List<cTextFunc> funcList =line.GetFuncList();
+//		foreach( cTextFunc func in funcList )
+//		{
+//			if( func.sFunc == "GO" )
+//			{
+//				return  true;
+//			}
+//			
+//			 if( func.sFunc == "HP_I"  )
+//			{
+//				
+//				return false;
+//			}
+//			else if( func.sFunc == "HP_E"  )
+//			{
+//				
+//				return false;
+//			}
+//			else if( func.sFunc == "MAR_I"  )
+//			{
+//				float f1 = data_I.GetMar();
+//				float f2 = 0.0f;
+//				if( func.S( 1 ) == "E" )
+//				{
+//					if( data_E != null ){
+//						f2 = data_E.GetMar();
+//					}else{
+//						return false; // no enemy is false
+//					}
+//				}
+//				else{
+//					f2 = func.F( 1 );
+//				}
+//
+//				if( ConditionFloat( f1 , func.S(0) ,f2  ) == false  ){
+//					return false;
+//				}
+//			}
+//			else if( func.sFunc == "MAR_E"  )
+//			{
+//				
+//				return false;
+//			}
+//			else if( func.sFunc == "BUFF_I"  )
+//			{
+//				
+//				return false;
+//			}
+//			else if( func.sFunc == "BUFF_E"  )
+//			{
+//				
+//				return false;
+//			}
+//			else if( func.sFunc == "SCHOOL_I"  )
+//			{
+//				
+//				return false;
+//			}
+//			else if( func.sFunc == "SCHOOL_E"  )
+//			{
+//				
+//				return false;
+//			}
+//			else if( func.sFunc == "SKILL_I"  )
+//			{
+//				
+//				return false;
+//			}
+//			else if( func.sFunc == "SKILL_E"  )
+//			{
+//				
+//				return false;
+//			}
+//			else if( func.sFunc == "RANGE_E"  )
+//			{
+//				
+//				return false;
+//			}
+//			else{
+//				Debug.LogError( string.Format( "Error-Can't find script cond func '{0}'" , func.sFunc ) );
+//			}
+//		}
+//		return true;
+//	}
+
+	public List< cEffect > CreateEffectPool( string str )
+	{
+		List< cEffect > pool = new List< cEffect > ();
+
+		cTextArray sEff = new cTextArray( );
+		sEff.SetText( str );
+		// check all line . if one line success . this event check return true
+
+	
+		int nCol = sEff.GetMaxCol();
+		for( int i= 0 ; i <nCol ; i++ )
+		{
+			CTextLine line = sEff.GetTextLine( i );
+			List<cTextFunc> funcList = line.GetFuncList();
+			foreach( cTextFunc func in funcList )
+			{
+				// Fight Effect
+				if( func.sFunc  == "ADDBUFF_E") 
+				{
+					int nBuffID = func.I(0);
+					pool.Add( new ADDBUFF_E( nBuffID ) );
+				//	CacheHitResultPool.Add( new cHitResult(cHitResult._TYPE._ADDBUFF , data_E.n_Ident , nBuffID )  );
+					
+				}
+				else if( func.sFunc  == "ADDBUFF_I") 
+				{
+					int nBuffID = func.I(0);
+					pool.Add( new ADDBUFF_I( nBuffID ) );
+				//	CacheHitResultPool.Add( new cHitResult(cHitResult._TYPE._ADDBUFF , data_I.n_Ident , nBuffID )  );
+					
+				}
+				// Attr
+				else if( func.sFunc  == "ADD_MAR") 
+				{
+					float f = func.F(0);
+					pool.Add( new ADD_MAR( f ) );
+				}
+				else if( func.sFunc  == "ADD_MAR_DIFF") 
+				{
+					float f = func.F(0);
+					pool.Add( new ADD_MAR_DIFF( f ) );
+				}
+
+			}
+
+		}
+
+		return pool;
+	}
+
+	public cEffectCondition CreateEffectCondition( string str )
+	{
+		cEffectCondition pCon = new cEffectCondition ();
+		cTextArray sCond = new cTextArray( );
+		sCond.SetText( str );
+		int nCol = sCond.GetMaxCol();
+		for (int i= 0; i <nCol; i++) {
+			CTextLine line = sCond.GetTextLine (i);
+			//List<cTextFunc> funcList = line.GetFuncList ();
+			pCon.Add( line );
+		}
+		return pCon;
 
 	}
 }

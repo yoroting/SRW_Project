@@ -244,6 +244,7 @@
      <Compile Include="Assets\Project\Script\ConstDataClasses\CLINE.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\DIRTYMARK.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\FACTION.cs" />
+     <Compile Include="Assets\Project\Script\ConstDataClasses\FX.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\ITEM_MISC.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\ITEM_MISC_TIP.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\MARKER.cs" />
@@ -284,7 +285,9 @@
      <Compile Include="Assets\Project\Script\Core\ObjectPool.cs" />
      <Compile Include="Assets\Project\Script\Core\ResourcesManager.cs" />
      <Compile Include="Assets\Project\Script\Core\SRWGameEvent.cs" />
+     <Compile Include="Assets\Project\Script\Data\cBuffData.cs" />
      <Compile Include="Assets\Project\Script\Data\cSaveData.cs" />
+     <Compile Include="Assets\Project\Script\Data\cSkillData.cs" />
      <Compile Include="Assets\Project\Script\Data\cUnitData.cs" />
      <Compile Include="Assets\Project\Script\FX\FightBullet\FightBulletFX.cs" />
      <Compile Include="Assets\Project\Script\FX\FightBullet\FightBulletTween_Attraction.cs" />
@@ -299,12 +302,14 @@
      <Compile Include="Assets\Project\Script\Panel\Panel_CMDUI\Panel_CmdUI.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_CMDUnitUI\Panel_CMDUnitUI.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_MainUI\MainUIPanel.cs" />
+     <Compile Include="Assets\Project\Script\Panel\Panel_Mainten\Panel_Mainten.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_Round\Panel_Round.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_Skill\Panel_Skill.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_StageUI\Panel_StageUI.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_StoryUI\StoryUIPanel.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_TalkUI\Panel_Talk.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_UnitInfo\Panel_UnitInfo.cs" />
+     <Compile Include="Assets\Project\Script\Panel\Panel_Win\Panel_Win.cs" />
      <Compile Include="Assets\Project\Script\Panel_unit.cs" />
      <Compile Include="Assets\Project\Script\SRW_TextBox.cs" />
      <Compile Include="Assets\Project\Script\UnitCell.cs" />

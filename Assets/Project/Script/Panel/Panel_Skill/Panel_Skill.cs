@@ -147,7 +147,8 @@ public class Panel_Skill : MonoBehaviour {
 			panel.SetSkillID( nOpSkillID );
 		}
 
-		PanelManager.Instance.CloseUI ( Name ); // close CMD UI
+		PanelManager.Instance.DestoryUI ( Name );
+		//PanelManager.Instance.CloseUI ( Name ); // close SKILL UI
 	}
 
 	void OnCloseClick(GameObject go)
@@ -168,6 +169,9 @@ public class Panel_Skill : MonoBehaviour {
 		}
 		// show skill detail
 		SetSkill ( skl );
+
+		// 
+		OnOkClick (go);
 	}
 	void SetSkill( SKILL skl )
 	{

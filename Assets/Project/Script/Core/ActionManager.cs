@@ -13,7 +13,11 @@ public enum _ACTION
 	_MOVE,
 	_ATK,
 	_DEF,
-	_CAST,			// to a pos
+
+	_CAST,			// atk a pos or AOE
+
+	_CASTING,		// cast a skill  
+
 	_HITED,
 	_ASSIST_ATK,
 	_ASSIST_DEF,
@@ -38,6 +42,23 @@ public class uAction
 
 	public int nActVar1 { set; get;}
 	public int nActVar2 { set; get;}
+
+	public List<cHitResult> HitResult;
+
+	public uAction(){
+		HitResult = new List<cHitResult>();
+	}
+
+	public void AddHitResult( List<cHitResult> pool )
+	{
+		if( HitResult == null )
+			HitResult = new List<cHitResult>();
+
+		foreach (cHitResult hit in pool) {
+			HitResult.Add( hit );
+		}
+	}
+
 
 };
 
@@ -195,8 +216,98 @@ public partial class ActionManager
 		return  act;
 	}
 
+	public uAction CreateCastingAction( int nAtkIdent , int nSkillID )
+	{
+		uAction act = CreateAction (nAtkIdent, _ACTION._CASTING);
+		if( act != null )  {
+			act.nSkillID = nSkillID;
+		}
+		return  act;
+	}
 
-	// ====
+	public uAction CreateCastoutAction( int nAtkIdent , int X , int Y , int nSkillID )
+	{
+		uAction act = CreateAction (nAtkIdent, _ACTION._CAST);
+		if( act != null )  {
+			act.nSkillID = nSkillID;
+			act.nTarGridX = X;
+			act.nTarGridY = Y;
+		}
+		return  act;
+	}
+
+
+
+
+
+	public void ExecActionHitResult(  uAction action )
+	{
+		if (action == null)
+			return;
+		List< cHitResult> resPool = action.HitResult;
+		if( resPool != null ){
+			foreach (cHitResult res in resPool) {
+				if (res != null) {
+					// show effect
+					Panel_unit pUnit = Panel_StageUI.Instance.GetUnitByIdent (res.Ident);
+					if (pUnit) {
+
+						switch( res.eHitType )
+						{
+						case cHitResult._TYPE._HP:{
+							pUnit.ShowValueEffect( res.Value1 , 0 ); // HP
+							if( res.Value1 != 0 ) // maybe change data in  battle manage
+							{
+								cUnitData pData = GameDataManager.Instance.GetUnitDateByIdent (res.Ident);
+								if (pData != null) {
+									pData.AddHp (res.Value1  );
+								}
+							}
+							
+						}break;
+						case cHitResult._TYPE._ADDBUFF: // add buff
+						{
+							if( res.Value1 != 0 ) // maybe change data in  battle manage
+							{
+								cUnitData pData = GameDataManager.Instance.GetUnitDateByIdent (res.Ident);
+								if (pData != null) {
+									pData.Buff.AddBuff( res.Value1 );
+								}
+							}
+							
+						}break;
+						case cHitResult._TYPE._DELBUFF: // remove buff
+						{
+							
+							
+						}break;
+						case cHitResult._TYPE._HITBACK: // HitBack
+						{
+							
+							
+						}break;
+						case cHitResult._TYPE._HIT: // Hit
+						{
+							
+							
+						}break;		
+						case cHitResult._TYPE._BEHIT: // Hit
+						{
+							// it should have fx
+							
+						}break;		
+						}
+					}
+					
+					
+				}
+			}
+		}
+
+	}
+
+
+	// ==== Mob AI use
 	// CMD
 	public uAction CreateAttackCMD( int nAtkIdent , int nDefIdent , int nSkillID , int nVar1=0, int nVar2=0 )
 	{
@@ -222,6 +333,5 @@ public partial class ActionManager
 		}
 		return act;
 	}
-
 };
 

@@ -425,20 +425,7 @@ public class Panel_unit : MonoBehaviour {
 			switch( nSubActFlow )
 			{
 			case 0:
-				if( CurAction.nSkillID == 0 ){
-					BattleManager.Instance.ShowBattleMsg( Ident() , MyTool.GetUnitSchoolFullName(Ident(),pUnitData.nActSch[1] ) );  // Get school name
-				}
-				else{
-					// Get Skill
-					SKILL skl = ConstDataManager.Instance.GetRow<SKILL>( CurAction.nSkillID );
-					if( skl != null ){
-						BattleManager.Instance.ShowBattleMsg( Ident() , skl.s_NAME );
 
-						// play fx
-						GameSystem.PlayFX( this.gameObject , "CFXM4 Magic Drain Fast" );
-					}
-
-				}
 
 				nSubActFlow++;
 				break;
@@ -447,6 +434,13 @@ public class Panel_unit : MonoBehaviour {
 				nSubActFlow++;
 				break;
 			case 2:
+				// wait all hit result preform
+				if( IsAnimate() == false ){
+					nSubActFlow++;
+				}
+				break;
+
+			case 3:
 				ActionFinished ();
 				CurAction = null; // clear act
 				nSubActFlow++;
@@ -462,6 +456,34 @@ public class Panel_unit : MonoBehaviour {
 			case 0:
 				nSubActFlow++;
 				ActionMove( CurAction.nTarGridX , CurAction.nTarGridY  );
+				break;
+			case 1:
+				nSubActFlow++;
+				CurAction = null; // clear act
+				break;
+			}
+			break;
+		case _ACTION._CASTING:			// casting
+			switch( nSubActFlow )
+			{
+			case 0:
+				nSubActFlow++;
+				ActionCasting( CurAction.nSkillID );
+				//ActionMove( CurAction.nTarGridX , CurAction.nTarGridY  );
+				break;
+			case 1:
+				nSubActFlow++;
+				CurAction = null; // clear act
+				break;
+			}
+			break;
+		case _ACTION._CAST:			// castout
+			switch( nSubActFlow )
+			{
+			case 0:
+				nSubActFlow++;
+				ActionCastout( CurAction.nSkillID ,CurAction.nTarGridX , CurAction.nTarGridY );
+				//ActionMove( CurAction.nTarGridX , CurAction.nTarGridY  );
 				break;
 			case 1:
 				nSubActFlow++;
@@ -506,7 +528,14 @@ public class Panel_unit : MonoBehaviour {
 
 
 	}
+	public void ActionCastout( int nSkill , int GridX , int GridY )
+	{
+		// add preform in the future
 
+		// do hitresult direct
+		ActionManager.Instance.ExecActionHitResult ( CurAction );			// this is very import . all preform and data modify here!!
+	}
+	
 
 	public void ActionMove( int GridX , int GridY )
 	{
@@ -524,6 +553,27 @@ public class Panel_unit : MonoBehaviour {
 	//	ActionFinished ();
 	}
 
+	public void ActionCasting( int nSkillID )
+	{
+		if( CurAction.nSkillID == 0 ){
+			BattleManager.Instance.ShowBattleMsg( this  , MyTool.GetUnitSchoolFullName(Ident(), pUnitData.nActSch[1] ) );  // Get school name
+		}
+		else{
+			// Get Skill
+			SKILL skl = ConstDataManager.Instance.GetRow<SKILL>( CurAction.nSkillID );
+			if( skl != null ){
+				BattleManager.Instance.ShowBattleMsg( this, skl.s_NAME );
+				
+				// play fx
+				GameSystem.PlayFX( this.gameObject , "CFXM4 Magic Drain Fast" );
+			}
+			
+		}
+		ActionManager.Instance.ExecActionHitResult ( CurAction  );
+
+
+	}
+
 
 	//==============Tween CAll back
 	public void OnTwAtkHit( )
@@ -536,7 +586,19 @@ public class Panel_unit : MonoBehaviour {
 
 		//TweenPosition tw = new TweenPosition (); 
 
-		TweenPosition tw = TweenPosition.Begin< TweenPosition >( this.gameObject , 0.3f );
+	
+		// play effect , get by ext school 
+	
+		BattleManager.Instance.ShowBattleFX( TarIdent , "CFXM4 Hit B (Orange, CFX Blend)"  );
+
+		//List< cHitResult>  resPool = BattleManager.Instance.CalAttackResult( Ident() , TarIdent );
+
+		//===========================================================
+		ActionManager.Instance.ExecActionHitResult ( CurAction );			// this is very import . all preform and data modify here!!
+		//===========================================================
+//		bIsAtking = false;
+//		TarIdent = 0;
+		TweenPosition tw = TweenPosition.Begin< TweenPosition >( this.gameObject , 0.3f ); // always move back to start pos
 		if( tw != null )
 		{
 			//tw.from = vOrg;
@@ -549,44 +611,6 @@ public class Panel_unit : MonoBehaviour {
 			//tw.SetOnFinished(  OnTwAtkEnd ) ;
 			//tw.Play();
 		}
-		// play effect , get by ext school 
-	
-		BattleManager.Instance.ShowBattleFX( TarIdent , "CFXM4 Hit B (Orange, CFX Blend)"  );
-
-		List< cHitResult>  resPool = BattleManager.Instance.CalAttackResult( Ident() , TarIdent );
-
-		foreach (cHitResult res in resPool) {
-			if (res != null) {
-				// show effect
-				Panel_unit pAtk = Panel_StageUI.Instance.GetUnitByIdent (res.AtkIdent);
-				if (pAtk) {
-					pAtk.ShowValueEffect (res.AtkHp, 0);
-				}
-
-
-				Panel_unit pDef = Panel_StageUI.Instance.GetUnitByIdent (res.DefIdent);
-				if (pDef) {
-					pDef.ShowValueEffect (res.DefHp, 0);
-				}
-				// modify data
-				if (res.AtkIdent != 0 && res.AtkHp != 0) {
-					cUnitData pAtker = GameDataManager.Instance.GetUnitDateByIdent (res.AtkIdent);
-					if (pAtker != null) {
-						pAtker.AddHp (res.AtkHp);
-					}
-
-				}
-				if (res.DefIdent != 0 && res.DefHp != 0) {
-					cUnitData pDefer = GameDataManager.Instance.GetUnitDateByIdent (res.DefIdent);
-					if (pDefer != null) {
-						pDefer.AddHp (res.DefHp);
-					}
-				}
-
-			}
-		}
-//		bIsAtking = false;
-//		TarIdent = 0;
 
 	}
 	public void OnTwAtkEnd( )
@@ -898,4 +922,18 @@ public class Panel_unit : MonoBehaviour {
 
 		MoveNextPoint();
 	}
+
+
+	//====== Fight 
+	public void AddBuff( int nBuffID )
+	{
+		pUnitData.Buff.AddBuff (nBuffID);
+
+
+	}
+	public void DelBuff( int nBuffID )
+	{
+		pUnitData.Buff.DelBuff(nBuffID);
+	}
+
 }

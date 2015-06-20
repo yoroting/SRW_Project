@@ -152,6 +152,72 @@ public class MyTool {
 		}
 		return cut;
 	}
+	//取得指定CDTYPE 有多少回合
+	public static int GetRoundByCD( int nCD )
+	{
+		CD_TIMER cd = ConstDataManager.Instance.GetRow<CD_TIMER> (nCD);
+		if (cd != null ) {
+			return cd.n_TIME;
+		}
+		return 0;
+	}
+
+	public static void DoSkillEffect( cUnitData atker , List< cEffect > effPool , cEffectCondition EffCond, List< cEffect > CondEffPool , ref List<cHitResult>  pool  )
+	{
+		if (atker == null || effPool == null )
+			return;
+
+		cUnitData defer = GameDataManager.Instance.GetUnitDateByIdent ( atker.FightAttr.TarIdent );
+
+		// normal eff
+		foreach( cEffect eft  in effPool )
+		{
+			eft._Do( atker , defer , ref  pool );
+		}
+		if ( EffCond == null || CondEffPool == null)
+			return;
+
+		//cond eff
+		//if (MyScript.Instance.CheckSkillCond (strCond, atker, defer) == true)
+		if( EffCond.Check( atker , defer  ) == true )
+		{
+
+			foreach( cEffect eft  in CondEffPool )
+			{
+				eft._Do( atker , defer , ref pool );
+			}
+		}
+
+	}
+	public static void AttrSkillEffect( cUnitData atker , List< cEffect > effPool , cEffectCondition EffCond, List< cEffect > CondEffPool )
+	{
+		if (atker == null || effPool == null )
+			return;
+		cAttrData attr = atker.FightAttr;
+
+		cUnitData defer = GameDataManager.Instance.GetUnitDateByIdent ( atker.FightAttr.TarIdent );
+		
+		// normal eff
+		foreach( cEffect eft  in effPool )
+		{
+			eft._Attr(atker , defer , ref attr  )  ;
+		}
+		if ( EffCond == null || CondEffPool == null)
+			return;
+		
+		//cond eff
+		//if (MyScript.Instance.CheckSkillCond (strCond, atker, defer) == true)
+		if( EffCond.Check( atker , defer  ) == true )
+		{
+			
+			foreach( cEffect eft  in CondEffPool )
+			{
+				eft._Attr(atker , defer ,ref attr  )  ;
+			}
+		}
+		
+	}
+
 
 
 	// 动态的计算出现在manualHeight的高度。
@@ -168,5 +234,7 @@ public class MyTool {
 				uiRoot.manualHeight = ManualHeight;
 		}
 	}
+
+
 
 }

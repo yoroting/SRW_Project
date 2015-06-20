@@ -130,6 +130,12 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		// can't open panel in awake
 	}
 
+	void OnEnable()
+	{
+		// start the loading panel
+		PanelManager.Instance.OpenUI ( "Panel_Loading");
+	}
+
 	void Clear()
 	{
 		//
@@ -189,11 +195,7 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		
 		
 		//Dictionary< int , STAGE_EVENT > EvtPool;			// add event id 
-	}
-
-	void OnEnable()
-	{
-		// some error in game startup
+		PanelManager.Instance.CloseUI( "Panel_Loading");
 	}
 
 	void FixPlanePosition()
@@ -240,6 +242,10 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 
 	// Update is called once per frame
 	void Update () {
+
+
+		GameDataManager.Instance.Update();
+
 
 		FixPlanePosition ();
 

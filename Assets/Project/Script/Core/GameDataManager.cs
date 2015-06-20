@@ -144,6 +144,15 @@ public partial class GameDataManager
 		CampPool.Clear ();
 	}
 
+	// need this to update all data's attr
+	public void Update()
+	{
+		// update all unit's attr
+		foreach (KeyValuePair< int , cUnitData > pair in UnitPool) {
+			pair.Value.UpdateAttr();
+		}
+	}
+
 	//===================================================
 	public int nStoryID{ get; set; } 
 	public int nStageID{ get; set; } 
@@ -197,6 +206,12 @@ public partial class GameDataManager
 			unit.memLst.Add( nMemIdent );
 			CampPool.Add( nCampID , unit );
 		}
+		// find unit to set camp
+		cUnitData data = GetUnitDateByIdent ( nMemIdent );
+		if (data != null) {
+			data.eCampID = nCampID;
+		}
+
 
 	}
 	public void DelCampMember( _CAMP nCampID , int nMemIdent )
@@ -324,6 +339,8 @@ public partial class GameDataManager
 
 	public cUnitData GetUnitDateByIdent( int nIdent )
 	{
+		if (nIdent == 0)			return null; // return direct to avoid no key err log
+
 		cUnitData data;
 		if( UnitPool.TryGetValue( nIdent , out data ) == true ){
 			return  data;
@@ -369,6 +386,8 @@ public partial class GameDataManager
 	}
 	// Event Status
 	public Dictionary< int , int > EvtDonePool;			// record event complete round 
+
+
 
 
 };
