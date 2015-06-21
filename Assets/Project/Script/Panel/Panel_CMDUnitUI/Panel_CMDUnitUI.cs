@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using _SRW;
+//using _SRW;
 
 
 
@@ -255,10 +255,17 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		PanelManager.Instance.CloseUI( Name );
 	}
 
+	public void AbilityCmd( )
+	{
+		if (pCmder != null) {
+			Panel_Skill.OpenUI (pCmder.Ident () , _SKILL_TYPE._ABILITY );
+		}
+	}
+
 	public void SkillCmd( )
 	{
 		if (pCmder != null) {
-			Panel_Skill.OpenUI (pCmder.Ident ());
+			Panel_Skill.OpenUI (pCmder.Ident () , _SKILL_TYPE._SKILL );
 		}
 	}
 	
@@ -474,9 +481,11 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		if (name == _CMD_ID._INFO.ToString ()) {
 			CharInfoCmd ();
 		} else if (name == _CMD_ID._MOVE.ToString ()) {
+			// no need 
 		} else if (name == _CMD_ID._ATK.ToString ()) {
 			AttackCmd ();
 		} else if (name == _CMD_ID._ABILITY.ToString ()) {
+			AbilityCmd();
 		} else if (name == _CMD_ID._SKILL.ToString ()) {
 			SkillCmd ();
 		} else if (name == _CMD_ID._WAIT.ToString ()) {
@@ -495,34 +504,42 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		else if (name == _CMD_ID._SUICIDE.ToString ()) {
 			RunSuicide(  );
 		}
+		else if (name == _CMD_ID._WIN.ToString ()) {
+			PanelManager.Instance.OpenUI( Panel_Win.Name );
+			//RunSuicide(  );
+		}
+		else if (name == _CMD_ID._LOST.ToString ()) {
+			//RunSuicide(  );
+			PanelManager.Instance.OpenUI( Panel_Lost.Name );
+		}
 //
 
 
 	}
 
-	void OnInfoButtonClick(GameObject go)
-	{
-		// 查情報
-
-	}
-	void OnMoveButtonClick(GameObject go)
-	{
-	}
-	void OnAttackButtonClick(GameObject go)
-	{
-
-
-	}
-	void OnSkillButtonClick(GameObject go)
-	{
-	}
-	void OnSchoolButtonClick(GameObject go)
-	{
-		// 結束遊戲
-	}
-	void OnCancelButtonClick(GameObject go)	{
-		CancelCmd ();
-	}
+//	void OnInfoButtonClick(GameObject go)
+//	{
+//		// 查情報
+//
+//	}
+//	void OnMoveButtonClick(GameObject go)
+//	{
+//	}
+//	void OnAttackButtonClick(GameObject go)
+//	{
+//
+//
+//	}
+//	void OnSkillButtonClick(GameObject go)
+//	{
+//	}
+//	void OnSchoolButtonClick(GameObject go)
+//	{
+//		// 結束遊戲
+//	}
+//	void OnCancelButtonClick(GameObject go)	{
+//		CancelCmd ();
+//	}
 
 	// Game Event
 	public void OnCmdCharMoveEvent(GameEvent evt)

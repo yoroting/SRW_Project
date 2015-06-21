@@ -3,16 +3,22 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Enum = System.Enum;
-using _SRW;
+//using _SRW;
 using MYGRIDS;
 // All SRW enum list
-namespace _SRW
-{
+//namespace _SRW
+//{
 	public enum _CAMP
 	{
 		_PLAYER=0,
 		_ENEMY =1,
 		_FRIEND=2,
+	}
+
+	public enum _SKILL_TYPE
+	{
+		_ABILITY = 0,
+		_SKILL 	 ,
 	}
 
 	public enum _CMD_TYPE // what kind of cmd list
@@ -66,17 +72,22 @@ namespace _SRW
 		_OPTION,
 		_SUICIDE,
 		_CHEAT,
-		_SYSCHEAT
+		_SYSCHEAT,
+		_WIN,
+		_LOST,
 	}
 
-	public enum _ROUND_STATUS
-	{
-		_START =0,
-		_RUNNING , 
-		_END     ,
+//	public enum _ROUND_STATUS
+//	{
+//		_START =0,
+//		_RUNNING , 
+//		_END     ,
+//
+//	}
 
-	}
-}//_SRW_CMD
+//}//_SRW_CMD
+
+
 
 //
 public class cCamp
@@ -172,7 +183,7 @@ public partial class GameDataManager
 
 	//
 	public int nRound{ get; set; } 
-	public _SRW._ROUND_STATUS nRoundStatus{ get; set; }    // 0- start ,1- running, 2- end
+//	public _ROUND_STATUS nRoundStatus{ get; set; }    // 0- start ,1- running, 2- end
 
 	// Camp
 	public _CAMP nActiveCamp{ get; set; }  // 
@@ -237,7 +248,7 @@ public partial class GameDataManager
 		if( nActiveCamp == _CAMP._PLAYER )
 		{
 			nActiveCamp = _CAMP._ENEMY;
-			nRoundStatus = _ROUND_STATUS._START;
+//			nRoundStatus = _ROUND_STATUS._START;
 
 			bRoundChange = false;
 		}
@@ -245,7 +256,7 @@ public partial class GameDataManager
 		{
 			nActiveCamp = _CAMP._PLAYER; //
 			nRound++;
-			nRoundStatus = _ROUND_STATUS._START;
+	//		nRoundStatus = _ROUND_STATUS._START;
 
 			bRoundChange =  true;
 		}
@@ -392,48 +403,6 @@ public partial class GameDataManager
 
 };
 
-public partial class GameScene
-{
-	//public delegate AudioClip GetAudioClipDelegate (string audioPath);
-	
-	private bool hadInit = false;
-	public bool HadInit{ get{ return hadInit; } }
-	
-	public cMyGrids	Grids;				// main grids . only one
-
-	
-	//	private Dictionary<int, AudioChannelBase> channels = new Dictionary<int, AudioChannelBase>();
-	
-	public void Initial( ){
-		if (hadInit)return;
-
-		hadInit = true;
-		//this.GetAudioClipFunc = getAudioClipFunc;
-		//UnitPool = new Dictionary< int , UNIT_DATA >();
-		//CampPool = new Dictionary< _CAMP , cCamp >();
-		Grids = new cMyGrids();
-	}
-	
-	private static GameScene instance;
-	public static GameScene Instance
-	{
-		get 
-		{
-			if (instance == null)
-			{
-				instance = new GameScene();
-				instance.Clear();
-			}
-			
-			return instance;
-		}
-	}
-	
-	public void Clear()
-	{
-
-	}
-}
 
 public class cCMD{
 
@@ -472,8 +441,11 @@ public class cCMD{
 		CmdlistArray [idx].Add ( _CMD_ID._GAMEEND ); 
 		CmdlistArray [idx].Add ( _CMD_ID._CANCEL ); 
 
-
-		CmdlistArray [idx].Add ( _CMD_ID._SYSCHEAT );
+		if (Config.GOD == true) {
+			CmdlistArray [idx].Add (_CMD_ID._SYSCHEAT);
+			CmdlistArray [idx].Add (_CMD_ID._WIN);
+			CmdlistArray [idx].Add (_CMD_ID._LOST);
+		}
 
 
 		// ally

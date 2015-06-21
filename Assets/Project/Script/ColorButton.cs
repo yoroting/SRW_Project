@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using _SRW;
+//using _SRW;
 
 public class ColorButton : MonoBehaviour {
 

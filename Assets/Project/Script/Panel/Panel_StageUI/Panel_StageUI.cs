@@ -2,16 +2,38 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using _SRW;
+//using _SRW;
 using MYGRIDS;
 using MyClassLibrary;			// for parser string
 
 
 
-//public class Panel_StageUI : MonoBehaviour 
-public class Panel_StageUI : Singleton<Panel_StageUI>
+public class Panel_StageUI : MonoBehaviour 
+//public class Panel_StageUI : Singleton<Panel_StageUI>
 {
 	public const string Name = "Panel_StageUI";
+	static Panel_StageUI instance;
+	public static Panel_StageUI Instance
+	{
+		get
+		{
+//			#if UNITY_EDITOR
+//			if (isApplicationQuit)
+//				return null;
+//			#endif
+
+			if(instance == null) // special get 
+			{
+				GameObject go = PanelManager.Instance.JustGetUI( Name );
+				if( go ){
+					instance = go.GetComponent<Panel_StageUI>(); 
+					//return go.GetComponent<Panel_StageUI>(); 
+				}
+			}			
+			return instance;
+		}
+	}
+
 
 	public GameObject BackGroundObj; // back ground
 	public GameObject TilePlaneObj; // plane of all tiles sprite
@@ -24,15 +46,12 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 
 	STAGE_DATA	StageData;
 
+	bool	bIsLoading	;
 	// drag canvas limit								
 	float fMinOffX ;
 	float fMaxOffX ;
 	float fMinOffY ;
 	float fMaxOffY ;
-
-	// 
-
-
 
 	// widget
 	Dictionary< int , STAGE_EVENT > EvtPool;			// add event id 
@@ -63,9 +82,8 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 	// ScreenRatio
 	// float fUIRatio;
 
-
 	void Awake( ){	
-
+		instance = this; 		// special singleton
 		//UIRoot mRoot = NGUITools.FindInParents<UIRoot>(gameObject);	
 		//fUIRatio = (float)mRoot.activeHeight / Screen.height;
 
@@ -76,7 +94,9 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 	
 		// grid
 		//Grids = new cMyGrids ();
-		GameScene.Instance.Initial ();
+		GameScene.Instance.Initial ();							// it will avoid double initial inside.
+																//  if it active in scene initial,panel_stage.awake will before Panel_main.awake.
+
 
 		Grids = GameScene.Instance.Grids;						// smart pointer reference
 
@@ -97,7 +117,7 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 
 	//	ActionPool = List< uAction >();				// record all action to do 
 		// Debug Code jump to stage
-		GameDataManager.Instance.nStageID = 1;
+	//	GameDataManager.Instance.nStageID = 1;
 
 		// Stage Event
 		GameEventManager.AddEventListener(  StageBGMEvent.Name , OnStageBGMEvent );
@@ -128,12 +148,33 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		// create singloten
 
 		// can't open panel in awake
+		// Don't open create panel in stage awake. i have develop mode that place stage in scene initial. the panelmanager don't initial here
+	
 	}
+
+	IEnumerator StageLoading(  )
+	{
+		// Custom Update Routine which repeats forever
+		do
+		{
+			// wait one frame and continue
+			yield return 1;
+			
+			if ( bIsLoading == false )
+			{
+				// end
+				PanelManager.Instance.CloseUI( "Panel_Loading");
+				yield break;
+			}			
+			
+		} while (true);
+	}
+
 
 	void OnEnable()
 	{
 		// start the loading panel
-		PanelManager.Instance.OpenUI ( "Panel_Loading");
+
 	}
 
 	void Clear()
@@ -164,6 +205,12 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 	// Use this for initialization
 	void Start () {
 
+		// loading panel
+		PanelManager.Instance.OpenUI( "Panel_Loading");
+		bIsLoading = true;
+		StartCoroutine("StageLoading", 0.5f);
+
+		// clear data
 		Clear ();
 
 		// load const data
@@ -195,7 +242,8 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		
 		
 		//Dictionary< int , STAGE_EVENT > EvtPool;			// add event id 
-		PanelManager.Instance.CloseUI( "Panel_Loading");
+		bIsLoading = false;
+	
 	}
 
 	void FixPlanePosition()
@@ -312,7 +360,38 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 
 	void OnDestroy()
 	{
-	
+		// free singl
+		instance = null;
+
+		// need remove. or it will send to a destory obj
+		GameEventManager.RemoveEventListener(  StageBGMEvent.Name , OnStageBGMEvent );
+		
+		GameEventManager.RemoveEventListener(  StagePopUnitEvent.Name , OnStagePopUnitEvent );
+		GameEventManager.RemoveEventListener(  StagePopMobGroupEvent.Name , OnStagePopMobGroupEvent );
+		
+		//	GameEventManager.AddEventListener(  StageDelCharEvent.Name , OnStageDelCharEvent ); // different func form some little different process
+		//	GameEventManager.AddEventListener(  StageDelMobEvent.Name , OnStageDelMobEvent );
+		GameEventManager.RemoveEventListener(  StageDelUnitEvent.Name , OnStageDelUnitEvent );
+		
+		GameEventManager.RemoveEventListener(  StageDelUnitByIdentEvent.Name , OnStageDelUnitByIdentEvent );
+		
+		
+		// char event 
+		GameEventManager.RemoveEventListener(  StageCharMoveEvent.Name , OnStageCharMoveEvent );
+		GameEventManager.RemoveEventListener(  StageUnitActionFinishEvent.Name , OnStageUnitActionFinishEvent );
+		GameEventManager.RemoveEventListener(  StageWeakUpCampEvent.Name , OnStageWeakUpCampEvent );
+		
+		
+		// cmd event
+		GameEventManager.RemoveEventListener(  StageShowMoveRangeEvent.Name , OnStageShowMoveRangeEvent );
+		GameEventManager.RemoveEventListener(  StageShowAttackRangeEvent.Name , OnStageShowAttackRangeEvent );
+		GameEventManager.RemoveEventListener(  StageRestorePosEvent.Name , OnStageRestorePosEvent );
+		
+		
+		GameEventManager.RemoveEventListener(  StageBattleAttackEvent.Name , OnStageBattleAttackEvent );
+		// create singloten
+
+
 	}
 
 
@@ -413,6 +492,21 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 //					}
 //				}
 //			}
+		}
+	}
+
+	// give up this month now
+	void OnCellPress(GameObject go ,bool pressed)
+	{
+		if (pressed == false) {
+			Debug.Log( "cell gree press");
+			// if cast skill
+			if (cCMD.Instance.nSkillID > 0) {
+				//do cast cmd
+				Debug.LogFormat ("cast out skill {0}", cCMD.Instance.nSkillID);
+			}
+		} else {
+			Debug.Log( "cell  press");
 		}
 	}
 
@@ -622,6 +716,8 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 				}
 				//==========================================================
 				UIEventListener.Get(cell).onClick += OnCellClick;
+			//	UIEventListener.Get(cell).onPress += OnCellPress;
+
 			}
 
 
@@ -1083,6 +1179,10 @@ public class Panel_StageUI : Singleton<Panel_StageUI>
 		if( charData == null)
 			return null;
 		// get data from Const data
+		if (TilePlaneObj == null) {
+			Debug.Log( "Stage Addunit to null TilePlane" );
+			return null;
+		}
 		GameObject obj = ResourcesManager.CreatePrefabGameObj( TilePlaneObj , "Prefab/Panel_Unit" );
 		if( obj == null )return null;
 		obj.name = string.Format ("unit-{0}",nCharID );	

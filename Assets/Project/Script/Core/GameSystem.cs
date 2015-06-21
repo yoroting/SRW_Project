@@ -99,7 +99,10 @@ public class GameSystem : MonoBehaviour {
 		Debug.Log(SystemLogFormat("開始初始化 Manager: " + typeof(ActionManager).ToString()));
 		ActionManager.Instance.Initial ();
 
+		Debug.Log(SystemLogFormat("開始初始化 Manager: " + typeof(GameScene).ToString()));
+		GameScene.Instance.Initial ();
 
+		GameDataManager.Instance.nStageID = 1;	// first stage default
 		// Cal cache value
 		UIRoot mRoot = NGUITools.FindInParents<UIRoot>(gameObject);	
 		if (mRoot != null) {

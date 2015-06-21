@@ -23,20 +23,18 @@ public class Panel_Mainten : MonoBehaviour {
 		// close stage UI!!
 		if (PanelManager.Instance.CheckUIIsOpening (Panel_StageUI.Name)) {
 
-			// PanelManager.Instance.DestoryUI( Panel_StageUI.Name ); // don't destory .. this is singoleten obj.. may be need to free singolten 
-
+			 PanelManager.Instance.DestoryUI( Panel_StageUI.Name ); // don't destory .. this is singoleten obj.. may be need to free singolten 
+			//PanelManager.Instance.CloseUI( Panel_StageUI.Name );
+			// need to free all stage resource
 		}
-
-
-
 	}
 
 
 	void OnNextStageClick( GameObject go )
 	{
 		//GameDataManager.Instance.nStageID += 1;
-		PanelManager.Instance.OpenUI ( Panel_StageUI.Name );
-
+		PanelManager.Instance.OpenUI ( StoryUIPanel.Name );
+		PanelManager.Instance.CloseUI ( Name );			// close this ui
 
 	}
 }

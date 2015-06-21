@@ -235,79 +235,79 @@ public class SRW_TextBox : MonoBehaviour {
 
 
 		// old method to float text 
-
-		foreach (string s in sary) {
-			if( s == null || s == " " || s == "\t")
-				continue;
-			if( s.IndexOf("//") >= 0 ) // have common
-				continue;			    // giveup this line
-
-			if(m_nMaxCharNum == 0 )
-			{
-				m_lstsContextWait.Add( s );
-				continue;
-			}
-
-			//string sTemp = strRemain+s; // cur line
-			int idx = 0;
-			while( idx < s.Length )
-			{
-				int nLen = s.Length-idx;
-				if( nLen > m_nMaxCharNum)
-				{
-					nLen = m_nMaxCharNum ;
-				}
-
-				int nOffset = 0; // tag len of maxchar
-				int idx2 = idx; // temp idx
-				do{
-					if( idx2 >= s.Length )
-						break;
-
-					int n  = s.IndexOf("[" , idx2 );
-			// check tag during this line
-					if( (n>=idx2) && n <= (m_nMaxCharNum+nOffset)  ) // check '[' is vaild
-					{
-						int nEnd = s.IndexOf("]" , n );
-						if( nEnd < 0 )
-							break;
-
-						int shift = nEnd-n+1;
-
-						nOffset += shift;
-						nLen +=shift;   // for sub str
-
-						idx2 =nEnd+1;   // idx2 move next to ']' for while
-
-						// due to the tag always need a close "[-]". calcul it at the same time to avoid [-] in 17 byte and cut line soon
-				}
-					else{
-						break; // the first '[' out of maxchar
-
-					}
-					// check break;
-					if( (idx2 - nOffset) > m_nMaxCharNum )
-						break;
-
-				}while( true );				
-
-				if( (idx+nLen) > (s.Length+nOffset) )
-				{
-					// last string
-					m_lstsContextWait.Add( s.Substring( idx ) );
-					break;
-				}
-				// modify nlen for [xx ] tag
-
-
-				m_lstsContextWait.Add( s.Substring( idx , nLen ) );
-				idx +=nLen;
-
-			}//while( idx < s.Length )	
-		}
-
-		NextLine ();
-		//m_sPopText = sText;
+//
+//		foreach (string s in sary) {
+//			if( s == null || s == " " || s == "\t")
+//				continue;
+//			if( s.IndexOf("//") >= 0 ) // have common
+//				continue;			    // giveup this line
+//
+//			if(m_nMaxCharNum == 0 )
+//			{
+//				m_lstsContextWait.Add( s );
+//				continue;
+//			}
+//
+//			//string sTemp = strRemain+s; // cur line
+//			int idx = 0;
+//			while( idx < s.Length )
+//			{
+//				int nLen = s.Length-idx;
+//				if( nLen > m_nMaxCharNum)
+//				{
+//					nLen = m_nMaxCharNum ;
+//				}
+//
+//				int nOffset = 0; // tag len of maxchar
+//				int idx2 = idx; // temp idx
+//				do{
+//					if( idx2 >= s.Length )
+//						break;
+//
+//					int n  = s.IndexOf("[" , idx2 );
+//			// check tag during this line
+//					if( (n>=idx2) && n <= (m_nMaxCharNum+nOffset)  ) // check '[' is vaild
+//					{
+//						int nEnd = s.IndexOf("]" , n );
+//						if( nEnd < 0 )
+//							break;
+//
+//						int shift = nEnd-n+1;
+//
+//						nOffset += shift;
+//						nLen +=shift;   // for sub str
+//
+//						idx2 =nEnd+1;   // idx2 move next to ']' for while
+//
+//						// due to the tag always need a close "[-]". calcul it at the same time to avoid [-] in 17 byte and cut line soon
+//				}
+//					else{
+//						break; // the first '[' out of maxchar
+//
+//					}
+//					// check break;
+//					if( (idx2 - nOffset) > m_nMaxCharNum )
+//						break;
+//
+//				}while( true );				
+//
+//				if( (idx+nLen) > (s.Length+nOffset) )
+//				{
+//					// last string
+//					m_lstsContextWait.Add( s.Substring( idx ) );
+//					break;
+//				}
+//				// modify nlen for [xx ] tag
+//
+//
+//				m_lstsContextWait.Add( s.Substring( idx , nLen ) );
+//				idx +=nLen;
+//
+//			}//while( idx < s.Length )	
+//		}
+//
+//		NextLine ();
+//		//m_sPopText = sText;
 	}
 
 

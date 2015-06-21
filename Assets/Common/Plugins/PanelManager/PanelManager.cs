@@ -283,7 +283,7 @@ public partial class PanelManager : Singleton<PanelManager>
 		
 		//Debug.Log("<color=red>CloseUI.(name=" + gameObject.name + "</color>");
 		
-		//NGUITools.SetActive(gameObject, false);
+		NGUITools.SetActive(gameObject, false);
 		
 		//Debug.Log("<color=red>panelSetting.ShowBlocker=" + panelSetting.ShowBlocker.ToString() + ", updateBlocker=" + updateBlocker.ToString() + "</color>");
 		//        if (gameObject.name != "Panel - TouchBlocker")

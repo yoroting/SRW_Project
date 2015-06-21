@@ -279,6 +279,7 @@
      <Compile Include="Assets\Project\Script\Core\Config.cs" />
      <Compile Include="Assets\Project\Script\Core\ConstDataTables.cs" />
      <Compile Include="Assets\Project\Script\Core\GameDataManager.cs" />
+     <Compile Include="Assets\Project\Script\Core\GameScene.cs" />
      <Compile Include="Assets\Project\Script\Core\GameSystem.cs" />
      <Compile Include="Assets\Project\Script\Core\MyScript.cs" />
      <Compile Include="Assets\Project\Script\Core\MyTool.cs" />
@@ -286,6 +287,7 @@
      <Compile Include="Assets\Project\Script\Core\ResourcesManager.cs" />
      <Compile Include="Assets\Project\Script\Core\SRWGameEvent.cs" />
      <Compile Include="Assets\Project\Script\Data\cBuffData.cs" />
+     <Compile Include="Assets\Project\Script\Data\cEffect.cs" />
      <Compile Include="Assets\Project\Script\Data\cSaveData.cs" />
      <Compile Include="Assets\Project\Script\Data\cSkillData.cs" />
      <Compile Include="Assets\Project\Script\Data\cUnitData.cs" />
@@ -301,6 +303,7 @@
      <Compile Include="Assets\Project\Script\Panel\Panel_CMDSysUI\Panel_CmdSysUI.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_CMDUI\Panel_CmdUI.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_CMDUnitUI\Panel_CMDUnitUI.cs" />
+     <Compile Include="Assets\Project\Script\Panel\Panel_Lost\Panel_Lost.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_MainUI\MainUIPanel.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_Mainten\Panel_Mainten.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_Round\Panel_Round.cs" />

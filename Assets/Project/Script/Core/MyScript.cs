@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Enum = System.Enum;
 using MYGRIDS;
-using _SRW;
+//using _SRW;
 using MyClassLibrary;			// for parser string
 // 
 public class MyScript {
@@ -421,7 +421,7 @@ public class MyScript {
 			}
 			else if( func.sFunc  == "LOST") 
 			{
-				
+				PanelManager.Instance.OpenUI(  Panel_Lost.Name );
 			}
 
 			else 

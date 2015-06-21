@@ -3,13 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using Enum = System.Enum;
 using MYGRIDS;
-using _SRW;
+//using _SRW;
 
 // 
 public class MyTool {
 
 	// cache value
-	public static float fScnRatio { set; get; }
+	public static float fScnRatio ;
 
 	// All static func as tool
 	public static float ScreenToLocX( float ScnX )
@@ -35,6 +35,11 @@ public class MyTool {
 		v.y = grids.GetRealY( y );
 		return v;
 
+	}
+
+	public static Panel_CMDUnitUI CMDUI()
+	{
+		return MyTool.GetPanel<Panel_CMDUnitUI> ( PanelManager.Instance.OpenUI (Panel_CMDUnitUI.Name) );
 	}
 
 	public static string GetUnitSchoolFullName( int nIdent , int nSchool )

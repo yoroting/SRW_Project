@@ -22,6 +22,7 @@ public class StoryUIPanel : MonoBehaviour {
 	public GameObject PanelStoryText;           // 故事文字匡
 	public GameObject SkipButton;           	// 跳過
 
+	bool 	bIsLoading;							// load story ui
 	private int nTweenObjCount;
 	// Declare a delegate type for processing a book:
 	public  void OnTweenNotifyEnd( )
@@ -31,6 +32,7 @@ public class StoryUIPanel : MonoBehaviour {
 			nTweenObjCount = 0;
 		}
 	}
+
 
 	// sys func
 	void Awake(){
@@ -53,7 +55,29 @@ public class StoryUIPanel : MonoBehaviour {
 		GameEventManager.AddEventListener(  StoryStartStageEvent.Name , OnStoryStartStageEvent );
 
 
+		PanelManager.Instance.OpenUI( "Panel_Loading");
+		bIsLoading = true;
+		StartCoroutine("StoryLoading", 0.5);
 	}
+
+	IEnumerator StoryLoading()
+	{
+		// Custom Update Routine which repeats forever
+		do
+		{
+			// wait one frame and continue
+			yield return 1;
+			
+			if ( bIsLoading == false )
+			{
+				// end
+				PanelManager.Instance.CloseUI( "Panel_Loading");
+				yield break;
+			}			
+			
+		} while (true);
+	}
+
 	// Use this for initialization
 	void Start () {
 		Debug.Log("StoryUIPanel:start");
@@ -76,8 +100,9 @@ public class StoryUIPanel : MonoBehaviour {
 			pBox.ChangeFace( 0 );
 		}
 
+		bIsLoading = false;
 	}
-
+	
 	public bool IsAllEnd ()
 	{
 		if( nTweenObjCount>0 )
@@ -116,6 +141,11 @@ public class StoryUIPanel : MonoBehaviour {
 
 			++ m_nFlowIdx;
 		}
+	}
+
+	void OnDestroy()
+	{
+		GameEventManager.RemoveEventListener(  StoryStartStageEvent.Name , OnStoryStartStageEvent );
 	}
 
 	// Base Panel click
@@ -184,12 +214,15 @@ public class StoryUIPanel : MonoBehaviour {
 		{
 			m_bIsEnd = true;
 		}
+
 		// go to talk or stage
 		StoryStartStageEvent evt = new StoryStartStageEvent ();
 		evt.StageID = m_StoryData.n_NEXT_STAGE;
 		GameEventManager.DispatchEvent ( evt );
 		// GameEventManager.DispatchEventByName( StoryStartStageEvent.Name  , evt );  
 
+
+		PanelManager.Instance.DestoryUI (Name );
 	}
 
 	public GameObject AddChar( int nCharId , int nPosX , int PosY )

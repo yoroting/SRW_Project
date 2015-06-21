@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MYGRIDS;
 using MyClassLibrary;
-using _SRW;
+//using _SRW;
 // maybe don't use this
 public class cAI_CMD{
 	public enum _AI_TYPE

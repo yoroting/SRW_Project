@@ -114,6 +114,13 @@ public class Panel_Talk : MonoBehaviour {
 		}
 	}
 
+	void OnDestroy () {
+		// cmd event
+		GameEventManager.RemoveEventListener(  TalkSayEvent.Name , OnTalkSayEvent );
+		GameEventManager.RemoveEventListener(  TalkSetCharEvent.Name , OnTalkSetCharEvent );
+		GameEventManager.RemoveEventListener(  TalkSayEndEvent.Name , OnTalkSayEndEvent );
+
+	}
 	// Base Panel click
 	void OnPanelClick(GameObject go)
 	{

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-using _SRW;
+//using _SRW;
 
 // start Stage
 public class StoryStartStageEvent: GameEvent {

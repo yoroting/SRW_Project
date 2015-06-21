@@ -16,7 +16,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &128812
 GameObject:
   m_ObjectHideFlags: 0
@@ -170,13 +170,13 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3000
+  startingRenderQueue: 3003
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 0
   mClipRange: {x: 0, y: 0, z: 300, w: 200}
   mClipSoftness: {x: 4, y: 4}
-  mDepth: 12
+  mDepth: 14
   mSortingOrder: 0
   mClipOffset: {x: 0, y: 0}
 --- !u!114 &11428810
@@ -298,13 +298,13 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 128
+  mWidth: 134
   mHeight: 30
   mDepth: 1
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 4.4666667
+  aspectRatio: 4.26666689
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   mFont: {fileID: 0}
@@ -397,8 +397,8 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: .494117647, g: .494117647, b: .494117647, a: 1}
   mPivot: 4
-  mWidth: 961
-  mHeight: 641
+  mWidth: 960
+  mHeight: 640
   mDepth: 0
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0

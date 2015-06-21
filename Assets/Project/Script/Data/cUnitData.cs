@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using MyClassLibrary;
-using _SRW;
+//using _SRW;
 
 
 public enum _UNITSTATE
@@ -28,9 +28,9 @@ public class cAttrData
 	public static int _MAX 	  = _FIGHT+1; // not use
 
 	//========================
+
 	public float f_MAR;
 
-	// load data
 	public int n_HP;
 	public int n_MP;
 	public int n_SP;
@@ -47,7 +47,12 @@ public class cAttrData
 	public float fPowRate;
 
 
+	public float fBurstRate;	//	曾商
+	public float fDamageRate; 	// 承受傷害
 
+
+	public float fDropRate;
+	public float fCostRate;
 	public int n_MOV;
 
 	public void ClearBase(){
@@ -60,6 +65,11 @@ public class cAttrData
 		n_POW = 0;
 		n_MOV = 0;
 
+		fBurstRate = 0.0f;
+		fDamageRate = 0.0f;
+
+		fDropRate = 0.0f;
+		fCostRate = 0.0f;
 
 		fHpRate	=0.0f;
 		fMpRate	=0.0f;
@@ -202,8 +212,66 @@ public class cUnitData{
 		// update both for save
 		SetUpdate (0);
 		SetUpdate (1);
+
+		// ADD school's auto ability?
+		DataTable tbl = ConstDataManager.Instance.GetTable< SKILL > ();
+		if (tbl != null) {
+			foreach( SKILL skl in tbl )
+			{
+				// pass 
+				if( skl.n_BUFF == 0 )
+					continue;
+				if( skl.n_SCHOOL != id )
+					continue;
+
+				if( skl.n_LEVEL_LEARN > nLv && (!Config.GOD) )
+				{
+					continue;
+				}
+
+				// add buff.
+				Buff.AddBuff( skl.n_ID);
+				SetUpdate( cAttrData._BUFF );
+			}
+		}
+
 	}
 
+	public void SetAbility( int id , int nLv ) // this is record all ability. but not all active soon
+	{
+		if (nLv <= 0)
+			nLv = 1;
+		
+		int lv = 0;
+		if (AbilityPool.TryGetValue (id, out lv)) {
+			if( nLv < lv ) // replace if more less lv
+			{
+				AbilityPool[ id ] = nLv;
+			}
+			
+		}
+		else {
+			AbilityPool.Add(id , nLv );
+		}
+		// update both for save
+
+		SetUpdate ( cAttrData._CHARLV ); // update with char lv
+	}
+
+	public void RemoveAbility( int id  )
+	{
+		if (AbilityPool.ContainsKey (id)) {
+			SKILL skl = ConstDataManager.Instance.GetRow< SKILL> ( id );
+			if( skl != null ){
+				if( skl.n_BUFF > 0 ){
+					Buff.DelBuff( skl.n_BUFF );
+					SetUpdate( cAttrData._BUFF );
+				}
+			}
+
+			AbilityPool.Remove( id );
+		}
+	}
 
 
 	public void SetContData( CHARS cData )
@@ -238,7 +306,28 @@ public class cUnitData{
 			}
 		}
 		// set Ability
-
+		TA.SetText (cData.s_ABILITY);
+		for( int i = 0 ; i < TA.GetMaxCol(); i++ )
+		{
+			CTextLine line  = TA.GetTextLine( i );
+			for( int j = 0 ; j < line.GetRowNum() ; j++ )
+			{
+				string s = line.m_kTextPool[ j ];
+				
+				string [] arg = s.Split( ",".ToCharArray() );
+				if( arg[0] != null )
+				{
+					int ability= int.Parse( arg[0] );
+					int lv = 1;
+					if( arg[1] != null )
+					{
+						lv = int.Parse( arg[1] );
+					}
+					SetAbility( ability , lv  );
+					//SetSchool( school , lv  );
+				}
+			}
+		}
 		//Set Buff
 
 		// active school
@@ -322,12 +411,39 @@ public class cUnitData{
 	void UpdateLevelAttr( int nLV )
 	{
 		cAttrData attr =GetAttrData( cAttrData._CHARLV ) ;
+		attr.Reset();
+
 		if ( nLV > Config.MaxCharLevel ) {
 			nLV = Config.MaxCharLevel;
 		}
 		attr.n_SP = Config.CharBaseSp + nLV * Config.CharSpLVUp;
-
 		attr.f_MAR = Config.CharMarLVUp * nLV;
+
+		// For Ability attr
+		foreach( KeyValuePair< int , int > pair in  AbilityPool)
+		{
+			if(  pair.Key == 0 )
+				continue;
+			// remove  then check and ADD
+			SKILL skl = ConstDataManager.Instance.GetRow< SKILL > ( pair.Key ); 
+			if( skl == null )
+				continue;
+
+			if( skl.n_BUFF == 0 )
+				continue;
+
+			Buff.DelBuff( skl.n_BUFF );
+
+			SetUpdate( cAttrData._BUFF );		// record to update buff
+
+
+			if( pair.Value > nLV )
+				continue;
+
+			Buff.AddBuff( skl.n_BUFF );
+		}
+
+
 	}
 
 	void UpdateSchoolAttr( int nIdx , int nSchool )
@@ -338,7 +454,8 @@ public class cUnitData{
 			return ;
 		}	
 		 
-		cAttrData attr =GetAttrData( nIdx ) ;
+		cAttrData attr = GetAttrData (nIdx);
+		attr.Reset();
 		//===========================================================================
 		SCHOOL sch = GameDataManager.Instance.GetConstSchoolData ( nSchool );
 		if (sch == null) {
@@ -364,7 +481,7 @@ public class cUnitData{
 	void UpdateBuffAttr( )
 	{
 		cAttrData attr =GetAttrData( cAttrData._BUFF ) ;
-
+	//	attr.ClearBase (); // update inside
 
 		// update add value
 		Buff.UpdateAttr ( ref attr );
@@ -372,26 +489,13 @@ public class cUnitData{
 
 		// fix error range
 
-//		if( fHpRate < 0.0f )
-//			fHpRate	=0.0f;
-//		if( fMpRate < 0.0f )
-//			fMpRate	=0.0f;
-//		if( fSpRate < 0.0f )
-//			fSpRate	=0.0f;
-//		if( fAtkRate < 0.0f )
-//			fAtkRate =0.0f;
-//		if( fDefRate < 0.0f )
-//			fDefRate =0.0f;
-//		if( fPowRate < 0.0f )
-//			fPowRate =0.0f;
-
 	}
 
 	void UpdateBuffConditionAttr( )
 	{
 		cAttrData attr =GetAttrData( cAttrData._CONDBUFF ) ;
-
-		Buff.UpdateCondAttr (ref attr );
+		//attr.Reset ();
+		Buff.UpdateCondAttr (ref attr ); // reset inside
 
 
 	}
@@ -413,7 +517,7 @@ public class cUnitData{
 	//fight end to clear data
 	public void FightEnd()
 	{
-		ClearState();
+		ClearState(); // clear fight state
 
 
 	}
@@ -444,7 +548,7 @@ public class cUnitData{
 	{
 		if ( (Config.GOD==true) && nhp < 0 ) {
 			Panel_unit p = Panel_StageUI.Instance.GetUnitByIdent( this.n_Ident );
-			if( p != null && p.eCampID == _SRW._CAMP._ENEMY )
+			if( p != null && p.eCampID == _CAMP._ENEMY )
 			{
 				nhp *= 10;
 			}

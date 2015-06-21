@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using MyClassLibrary;
-using _SRW;
+//using _SRW;
 
 // Tag state
 public enum _SKILLTAG
