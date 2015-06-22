@@ -42,6 +42,28 @@ public class MyTool {
 		return MyTool.GetPanel<Panel_CMDUnitUI> ( PanelManager.Instance.OpenUI (Panel_CMDUnitUI.Name) );
 	}
 
+	public static string GetCMDName( _CMD_ID ID )
+	{
+		return ID.ToString ();
+
+	}
+
+	public static string GetSkillName( int nID )
+	{
+		SKILL skl = ConstDataManager.Instance.GetRow< SKILL > ( nID );
+		if (skl == null)
+			return "null";
+		return skl.s_NAME;
+	}
+
+	public static string GetBuffName( int nID )
+	{
+		BUFF buff = ConstDataManager.Instance.GetRow< BUFF > ( nID );
+		if (buff == null)
+			return "null";
+		return buff.n_ID.ToString();
+	}
+
 	public static string GetUnitSchoolFullName( int nIdent , int nSchool )
 	{
 		cUnitData data = GameDataManager.Instance.GetUnitDateByIdent (nIdent);
@@ -74,6 +96,30 @@ public class MyTool {
 
 		}
 		return pool;
+	}
+
+	public static void DestoryGridItem( GameObject go )
+	{
+		if ( go == null)
+			return ;
+
+		UIGrid grid = go.GetComponent<UIGrid>(); 
+		if (grid == null) {
+			return ;
+		}
+		
+		List< Transform > lst = grid.GetChildList ();
+		//List< GameObject > CmdBtnList = MyTool.GetChildPool( NGuiGrids );
+		
+		if (lst != null) {
+			foreach (Transform t in lst) {
+				
+				///UIEventListener.Get(obj).onClick -= OnCMDButtonClick;;  // no need.. destory soon
+				NGUITools.Destroy (t.gameObject);
+			}
+		}
+
+		grid.repositionNow = true;		// need this for second pop to re pos
 	}
 
 	//

@@ -161,6 +161,8 @@ public class cUnitData{
 	// school
 	public Dictionary< int , int >		SchoolPool;			// all study school < school id , lv >
 	public Dictionary< int , int >		AbilityPool;		// all ability school < ability id , lv can use >
+
+	public List< int  >		SkillPool;						// all skill school < skill id  >
 	// Buff list
 
 	public Dictionary< int , int >		CDPool;				// all study school < cd type , round >
@@ -173,6 +175,8 @@ public class cUnitData{
 	{
 		SchoolPool  = new Dictionary< int , int > ();
 		AbilityPool = new Dictionary< int , int > ();
+		SkillPool 	= new List< int  > ();
+
 		Buff = new cBuffs( this ); 
 		CDPool = new Dictionary< int , int > ();
 		
@@ -214,20 +218,26 @@ public class cUnitData{
 		SetUpdate (1);
 
 		// ADD school's auto ability?
+		RemoveSkillBySchool ( id );
+
+		//
 		DataTable tbl = ConstDataManager.Instance.GetTable< SKILL > ();
 		if (tbl != null) {
 			foreach( SKILL skl in tbl )
 			{
-				// pass 
-				if( skl.n_BUFF == 0 )
-					continue;
-				if( skl.n_SCHOOL != id )
-					continue;
-
 				if( skl.n_LEVEL_LEARN > nLv && (!Config.GOD) )
 				{
 					continue;
 				}
+				if( skl.n_SCHOOL != id )
+					continue;
+
+				if( SkillPool.IndexOf( skl.n_ID  ) < 0 )
+					SkillPool.Add(  skl.n_ID );
+
+				// pass 
+				if( skl.n_BUFF == 0 )
+					continue;
 
 				// add buff.
 				Buff.AddBuff( skl.n_ID);
@@ -236,6 +246,25 @@ public class cUnitData{
 		}
 
 	}
+
+	public void RemoveSkillBySchool ( int  schid )
+	{
+		List< int > tmp = new List< int > ();
+		foreach (int skillid  in SkillPool) {
+			SKILL skl = ConstDataManager.Instance.GetRow< SKILL >( skillid );
+			if( skl != null && skl.n_SCHOOL == schid )
+			{
+				tmp.Add( skillid );
+			}
+		}
+		//
+		foreach (int id  in tmp) {
+			SkillPool.Remove( id );
+		}
+
+
+	}
+
 
 	public void SetAbility( int id , int nLv ) // this is record all ability. but not all active soon
 	{
@@ -282,6 +311,8 @@ public class cUnitData{
 			Debug.LogErrorFormat( "cUnitData{0} set wrong SetContData{1}" ,n_CharID ,cData.n_ID );
 		}
 		n_Rank = cData.n_RANK;
+		// set school;
+		SkillPool.Clear ();
 
 		cTextArray TA = new cTextArray (  );
 		TA.SetText (cData.s_SCHOOL);
@@ -538,6 +569,8 @@ public class cUnitData{
 
 	public void Relive()
 	{
+		UpdateAttr(); // update soon
+
 		n_HP = GetMaxHP();
 		n_MP = GetMaxMP();
 		n_SP = GetMaxSP();

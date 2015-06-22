@@ -146,7 +146,7 @@ public class Panel_Skill : MonoBehaviour {
 				continue;
 
 			Item_Skill item = go.GetComponent<Item_Skill> ();
-			item.SetItemData( skl.s_NAME , skl.n_RANGE , skl.n_MP );
+			item.SetItemData( MyTool.GetSkillName( skl.n_ID )  , skl.n_RANGE , skl.n_MP );
 			item.SetScrollView( ScrollView );
 
 		//	UIEventListener.Get(go).onClick += OnSkillClick; // for trig next line
@@ -173,21 +173,22 @@ public class Panel_Skill : MonoBehaviour {
 	{
 		sklPool.Clear ();
 
-		UIGrid grid = SkillGrid.GetComponent<UIGrid>(); 
-		if (grid == null) {
-			return ;
-		}
-
-		List< Transform > lst = grid.GetChildList ();
-		//List< GameObject > CmdBtnList = MyTool.GetChildPool( NGuiGrids );
-		
-		if (lst != null) {
-			foreach (Transform t in lst) {
-			
-				///UIEventListener.Get(obj).onClick -= OnCMDButtonClick;;  // no need.. destory soon
-				NGUITools.Destroy (t.gameObject);
-			}
-		}
+		MyTool.DestoryGridItem ( SkillGrid );
+//		UIGrid grid = SkillGrid.GetComponent<UIGrid>(); 
+//		if (grid == null) {
+//			return ;
+//		}
+//
+//		List< Transform > lst = grid.GetChildList ();
+//		//List< GameObject > CmdBtnList = MyTool.GetChildPool( NGuiGrids );
+//		
+//		if (lst != null) {
+//			foreach (Transform t in lst) {
+//			
+//				///UIEventListener.Get(obj).onClick -= OnCMDButtonClick;;  // no need.. destory soon
+//				NGUITools.Destroy (t.gameObject);
+//			}
+//		}
 	}
 
 	public static Panel_Skill OpenUI( int nIdent , _SKILL_TYPE eType  )

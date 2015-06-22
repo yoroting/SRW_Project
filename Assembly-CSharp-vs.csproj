@@ -315,6 +315,7 @@
      <Compile Include="Assets\Project\Script\Panel\Panel_Win\Panel_Win.cs" />
      <Compile Include="Assets\Project\Script\Panel_unit.cs" />
      <Compile Include="Assets\Project\Script\SRW_TextBox.cs" />
+     <Compile Include="Assets\Project\Script\Skill_Simple.cs" />
      <Compile Include="Assets\Project\Script\UnitCell.cs" />
      <Compile Include="Assets\Project\Script\pathfind\Node.cs" />
      <Compile Include="Assets\Project\Script\pathfind\NodeState.cs" />
