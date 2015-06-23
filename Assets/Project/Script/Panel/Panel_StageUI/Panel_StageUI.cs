@@ -261,7 +261,10 @@ public class Panel_StageUI : MonoBehaviour
 					v.x *= -1;
 					v.y *= -1;
 
-					TweenPosition tw = TweenPosition.Begin<TweenPosition>(TilePlaneObj , 0.2f );
+					//get time from speed 200pix /sec
+					Vector3 d = TilePlaneObj.transform.localPosition - v;
+					float time = d.magnitude  /1000 ;
+					TweenPosition tw = TweenPosition.Begin<TweenPosition>(TilePlaneObj , time );
 					if( tw ){
 						tw.SetStartToCurrentValue();
 						tw.to = v;
@@ -414,16 +417,56 @@ public class Panel_StageUI : MonoBehaviour
 		if (GameDataManager.Instance.nActiveCamp != _CAMP._PLAYER)
 			return;
 
+	
 		UnitCell unit = go.GetComponent<UnitCell>() ;
 		if( unit != null ){
+		
 			string str = string.Format( "CellOnClick( {0},{1}) " , unit.X() , unit.Y() );
 			string sKey =	unit.Loc.GetKey();
 			Debug.Log(str);
-			if( cCMD.Instance.eCMDSTATUS == _CMD_STATUS._WAIT_CMDID ) // is waiting cmd id. this is moving act 
+			bool bIsAtkCell = OverCellAtkPool.ContainsKey( sKey );
+			bool bIsOverCell = OverCellPool.ContainsKey( sKey );
+
+		
+
+			if( cCMD.Instance.eCMDSTATUS == _CMD_STATUS._WAIT_TARGET )
+			{
+				if( cCMD.Instance.eCMDTARGET == _CMD_TARGET._ALL || 
+				   cCMD.Instance.eCMDTARGET == _CMD_TARGET._POS   ){
+					
+					// make one map skill cmd
+					Panel_CMDUnitUI panel = Panel_CMDUnitUI.JustGetCMDUI();
+					panel.SetPos(  unit.X() , unit.Y() );
+					
+				}
+				else { 
+					// this is impossible
+					if( bIsOverCell == false    )
+					{
+						Panel_CMDUnitUI.RollBackCMDUIWaitTargetMode();
+						//Panel_CMDUnitUI.BackWaitCmd();		// back if the cmd is not exists	
+					}
+				}
+				return ;
+			}
+			else if( cCMD.Instance.eCMDTYPE == _CMD_TYPE._WAITATK && cCMD.Instance.eCMDID == _CMD_ID._NONE ) // special case for fast attack
+			{
+
+				if( bIsAtkCell ){
+					// pass
+				}
+				else// rollback
+				{
+					Panel_CMDUnitUI.CancelCmd();
+				}
+
+				return;
+			}
+			else if( cCMD.Instance.eCMDSTATUS == _CMD_STATUS._WAIT_CMDID ) // is waiting cmd id. this is moving act 
 			{
 				if( cCMD.Instance.eCMDTYPE == _CMD_TYPE._ALLY )
 				{
-					if( OverCellPool.ContainsKey( sKey ) == true || Config.GOD ) // god for cheat warp
+					if( bIsOverCell == true || Config.GOD ) // god for cheat warp
 					{	
 						ClearOverCellEffect( );
 						cCMD.Instance.eNEXTCMDTYPE = _CMD_TYPE._WAITATK;
@@ -450,24 +493,7 @@ public class Panel_StageUI : MonoBehaviour
 					Panel_CMDUnitUI.CloseCMDUI();
 				}
 			}
-			else if( cCMD.Instance.eCMDSTATUS == _CMD_STATUS._WAIT_TARGET )
-			{
-				if( cCMD.Instance.eCMDTARGET == _CMD_TARGET._ALL || 
-				   cCMD.Instance.eCMDTARGET == _CMD_TARGET._POS   ){
 
-					// make one map skill cmd
-
-				}
-				else { 
-					// this is impossible
-					if( OverCellAtkPool.ContainsKey( sKey ) == false    )
-					{
-						Panel_CMDUnitUI.RollBackCMDUIWaitTargetMode();
-						//Panel_CMDUnitUI.BackWaitCmd();		// back if the cmd is not exists	
-					}
-				}
-				return ;
-			}
 
 
 			//cCMD.Instance.eCMDTYPE = _CMD_TYPE._CELL;
@@ -605,21 +631,48 @@ public class Panel_StageUI : MonoBehaviour
 		string sKey = unit.Loc.GetKey ();
 		Debug.Log( "OnMobClick" + sKey + ";Ident"+unit.Ident() ); 
 
-		// open new cmd ui when this idn't a new cmd
-		if (cCMD.Instance.eCMDSTATUS == _CMD_STATUS._WAIT_TARGET ) {		
-			if ( OverCellAtkPool.ContainsKey (sKey) == true) {
-				// send atk cmd
-				Panel_CMDUnitUI panel = MyTool.GetPanel< Panel_CMDUnitUI >( PanelManager.Instance.JustGetUI( Panel_CMDUnitUI.Name ) ); 
-				panel.SetTarget( unit );
-			}
+		bool bInAtkCell = OverCellAtkPool.ContainsKey (sKey);
 
-			ClearOverCellEffect(  );
-			return;
+		ClearOverCellEffect(  ); // all solution will clear
+
+	
+
+		// open new cmd ui when this idn't a new cmd
+		if (bInAtkCell) {
+
+			if (cCMD.Instance.eCMDSTATUS == _CMD_STATUS._WAIT_TARGET) {		
+
+				// send atk cmd
+				Panel_CMDUnitUI panel = Panel_CMDUnitUI.JustGetCMDUI ();//   MyTool.GetPanel< Panel_CMDUnitUI >( PanelManager.Instance.JustGetUI( Panel_CMDUnitUI.Name ) ); 
+				if( cCMD.Instance.eCMDTARGET ==  _CMD_TARGET._UNIT || cCMD.Instance.eCMDTARGET ==  _CMD_TARGET._ALL )			{
+					panel.SetTarget (unit); 
+				}
+				else if( cCMD.Instance.eCMDTARGET ==  _CMD_TARGET._POS){
+					panel.SetPos( unit.Loc.X , unit.Loc.Y );
+				}
+				return;
+			} else if (cCMD.Instance.eCMDTYPE == _CMD_TYPE._WAITATK && cCMD.Instance.eCMDID == _CMD_ID._NONE) { 
+
+				// change cmd target to unit 
+				//cCMD.Instance.eCMDTARGET =  _CMD_TARGET._UNIT;
+				cCMD.Instance.eCMDID = _CMD_ID._ATK;			// smart set a atk cmd
+
+				// send atk cmd
+				Panel_CMDUnitUI panel = Panel_CMDUnitUI.JustGetCMDUI ();//   MyTool.GetPanel< Panel_CMDUnitUI >( PanelManager.Instance.JustGetUI( Panel_CMDUnitUI.Name ) ); 
+				panel.SetTarget (unit);
+
+				return; // fast normal attack
+			}
 		}
 
 
-		ClearOverCellEffect(  );
 
+		// can't attack . open a normal enemy cmd
+		if( cCMD.Instance.eCMDTYPE != _CMD_TYPE._SYS  )
+			Panel_CMDUnitUI.CancelCmd (); // if have cms\d . cancel it
+		//Panel_CMDUnitUI.CloseCMDUI ();
+
+		// open new enemy cmd ui
 		Panel_CMDUnitUI.OpenCMDUI ( _CMD_TYPE._ENEMY , unit );
 
 		CreateMoveOverEffect ( unit );
@@ -1341,7 +1394,9 @@ public class Panel_StageUI : MonoBehaviour
 			cCMD.Instance.eCMDTYPE = cCMD.Instance.eNEXTCMDTYPE;
 			cCMD.Instance.eNEXTCMDTYPE = _CMD_TYPE._SYS;
 
-			PanelManager.Instance.OpenUI( Panel_CMDUnitUI.Name ); // only open UI. don't change other param
+			Panel_CMDUnitUI.OpenCMDUI( cCMD.Instance.eCMDTYPE , null );
+			//GameObject go = PanelManager.Instance.OpenUI( Panel_CMDUnitUI.Name ); // only open UI. don't change other param
+
 			return  true;
 		}	
 		return false;
@@ -1407,8 +1462,13 @@ public class Panel_StageUI : MonoBehaviour
 
 		TweenPosition tw = TweenPosition.Begin<TweenPosition> (TilePlaneObj, during);
 		if (tw != null) {
-			tw.from = canv;
+			tw.SetStartToCurrentValue();
 			tw.to = -v;
+		}
+
+		Panel_unit unit = obj.GetComponent< Panel_unit > ();
+		if (unit != null) {
+			TraceUnit( unit );
 		}
 
 	}
@@ -1498,18 +1558,18 @@ public class Panel_StageUI : MonoBehaviour
 		{
 			unit.MoveTo( nX , nY ); 
 
-			// check if need trace unit 
-			Vector3 v = unit.transform.localPosition;
-			Vector3 canv = TilePlaneObj.transform.localPosition; // shift
-
-			Vector3 realpos = v + canv;
-			int hW = (Config.WIDTH )/2 - Config.TileW;
-			int hH = (Config.HEIGHT)/2 - Config.TileH;
-			if( (realpos.x < hW  && realpos.x > -hW ) && (realpos.y < hH && realpos.y > -hH ) )
-			{
-				// trace it
-				TraceUnit( unit );
-			}
+//			// check if need trace unit 
+//			Vector3 v = unit.transform.localPosition;
+//			Vector3 canv = TilePlaneObj.transform.localPosition; // shift
+//
+//			Vector3 realpos = v + canv;
+//			int hW = (Config.WIDTH )/2 - Config.TileW;
+//			int hH = (Config.HEIGHT)/2 - Config.TileH;
+//			if( (realpos.x < hW  && realpos.x > -hW ) && (realpos.y < hH && realpos.y > -hH ) )
+//			{
+//				// trace it
+//				TraceUnit( unit );
+//			}
 		}
 		//DelChar( _CAMP._ENEMY , nCharid );
 

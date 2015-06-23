@@ -352,7 +352,11 @@ public class Panel_unit : MonoBehaviour {
 
 		// move camera to unit
 		Panel_StageUI.Instance.MoveToGameObj (this.gameObject, false);
+		//check if need trace
+		// check if need trace unit 
 
+			// trace it
+		//Panel_StageUI.Instance.TraceUnit( this );
 	}
 
 

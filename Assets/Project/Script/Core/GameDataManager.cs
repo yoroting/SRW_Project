@@ -484,7 +484,7 @@ public class cCMD{
 		// wait sel a target to atk
 		idx = (int)_CMD_TYPE._WAITATK;
 		CmdlistArray [idx] = new List<_CMD_ID> ();
-		CmdlistArray [idx].Add ( _CMD_ID._ATK ); 
+//		CmdlistArray [idx].Add ( _CMD_ID._ATK ); 
 		CmdlistArray [idx].Add ( _CMD_ID._SKILL ); 
 		CmdlistArray [idx].Add ( _CMD_ID._WAIT ); 
 		CmdlistArray [idx].Add ( _CMD_ID._CANCEL ); 

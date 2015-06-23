@@ -20,12 +20,12 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
 	public GameObject NGuiGrids;
 
-	public GameObject InfoButton;
-	public GameObject MoveButton;
-	public GameObject AttackButton;
-	public GameObject SkillButton;
-	public GameObject SchoolButton;
-	public GameObject CancelButton;
+//	public GameObject InfoButton;
+//	public GameObject MoveButton;
+//	public GameObject AttackButton;
+//	public GameObject SkillButton;
+//	public GameObject SchoolButton;
+//	public GameObject CancelButton;
 
 
 //	bool bWaitMoveFinish ; 
@@ -109,7 +109,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 	void OnEnable() // before start
 	{
 		// create cmd by type
-		CreateCMDList ( cCMD.Instance.eCMDTYPE );
+	//	CreateCMDList ( cCMD.Instance.eCMDTYPE );
 
 	//	if (pUnit != null) {
 	//		pUnit.OnSelected( true );
@@ -181,6 +181,13 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
 		//NGuiGrids.SetActive (true);
 
+		if( _CMD_TYPE._WAITATK == CMD.eCMDTYPE )
+		{
+			// auto show atk cell
+			Panel_StageUI.Instance.ClearOverCellEffect ();
+			Panel_StageUI.Instance.CreateAttackOverEffect (pCmder);
+
+		}
 	}
 
 //	void NormalCloseCmdUI()
@@ -195,19 +202,20 @@ public class Panel_CMDUnitUI : MonoBehaviour
 //		Panel_StageUI.Instance.ClearOverCellEffect ();
 //	}
 
-	public void CancelCmd( )
+	static public void CancelCmd( )
 	{
+		Panel_CMDUnitUI plane = JustGetCMDUI ();
 		// if it is wait mode. restore it
-		if( CMD.eCMDTYPE == _CMD_TYPE._WAITATK ||
-		    CMD.eCMDTYPE == _CMD_TYPE._WAITMOVE //
+		if( cCMD.Instance.eCMDTYPE == _CMD_TYPE._WAITATK ||
+		   cCMD.Instance.eCMDTYPE == _CMD_TYPE._WAITMOVE //
 		   )
 		{
 			// restore cmd 
-			RestoreCMD( );
+			plane.RestoreCMD( );
 			return;
 		}
 	
-		EndCMDUI (); // really close
+		plane.EndCMDUI (); // really close
 
 	}
 
@@ -312,6 +320,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 	public void RestoreCMD( )
 	{
 		Panel_StageUI.Instance.ClearOverCellEffect ();
+	
 		if( pCmder )
 		{
 			//Panel_StageUI.Instance.SynGridToLocalPos( pCmder.gameObject , CMD.nOrgGridX , CMD.nOrgGridY );
@@ -324,8 +333,10 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		CMD.eCMDTARGET = _CMD_TARGET._ALL;
 
 		// reopen for build cmd list
-		PanelManager.Instance.CloseUI( Name );
-		PanelManager.Instance.OpenUI( Name );
+		OpenCMDUI ( CMD.eCMDTYPE , null );
+
+		//PanelManager.Instance.CloseUI( Name );
+		//PanelManager.Instance.OpenUI( Name );
 		//CreateCMDList ( cCMD.Instance.eCMDTYPE );
 	}
 	// pre
@@ -362,7 +373,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 	public void SetPos( int nGridX , int nGridY )
 	{
 		// trig attack event
-		
+		cCMD.Instance.eCMDTARGET =  _CMD_TARGET._POS;
 		// close cmd ui
 		//Clear ();
 		MakeCmd ();
@@ -378,6 +389,8 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		if( unit != null ){
 			CMD.nTarIdent = unit.Ident();
 		}
+
+		cCMD.Instance.eCMDTARGET =  _CMD_TARGET._UNIT;
 		// trig attack event
 		// check Need Make Cmd
 		MakeCmd ();
@@ -571,13 +584,27 @@ public class Panel_CMDUnitUI : MonoBehaviour
 	{
 		cCMD.Instance.eCMDTYPE = type; 
 		Panel_CMDUnitUI panel = MyTool.GetPanel<Panel_CMDUnitUI> ( PanelManager.Instance.OpenUI (Panel_CMDUnitUI.Name) );
-		if( panel != null )
+		if( panel == null )
 		{
-			panel.SetCmder( cmder );
+			return panel;
+		}
+
+		// if cmder is change
+		if (cmder != null) {
+			panel.SetCmder (cmder);
 		}
 		cCMD.Instance.eCMDSTATUS = _CMD_STATUS._WAIT_CMDID;
-		
+
+		panel.CreateCMDList (type);
+		//if (PanelManager.Instance.CheckUIIsOpening (Panel_CMDUnitUI.Name)) {
+		//}
+
 		return panel;
+	}
+
+	public static Panel_CMDUnitUI JustGetCMDUI(  )
+	{
+		return MyTool.GetPanel< Panel_CMDUnitUI >( PanelManager.Instance.JustGetUI( Panel_CMDUnitUI.Name ) ); 
 	}
 
 	// not reall close cmd ui . SOME param keep for ui re open or restore
@@ -586,7 +613,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		Panel_CMDUnitUI panel = MyTool.GetPanel<Panel_CMDUnitUI>( PanelManager.Instance.JustGetUI(Panel_CMDUnitUI.Name)) ;
 		if( panel != null )
 		{
-			panel.CancelCmd();
+			//panel.CancelCmd(); // cancel will restore some time. can't call it here
 		}
 		if (panel.pCmder != null) {
 			panel.pCmder.OnSelected ( false );
@@ -601,7 +628,11 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		cCMD.Instance.eCMDSTATUS = _CMD_STATUS._WAIT_CMDID;
 		cCMD.Instance.eCMDID 	   = _CMD_ID._NONE;
 		cCMD.Instance.eCMDTARGET = _CMD_TARGET._ALL;   // only unit
-		Panel_StageUI.Instance.ClearOverCellEffect ();
+		Panel_StageUI.Instance.ClearOverCellEffect (); // for atk cell
+
+		Panel_CMDUnitUI panel = JustGetCMDUI ();
+		Panel_StageUI.Instance.CreateMoveOverEffect ( panel.pCmder ); // recreate
+
 		PanelManager.Instance.OpenUI( Panel_CMDUnitUI.Name );
 	}
 

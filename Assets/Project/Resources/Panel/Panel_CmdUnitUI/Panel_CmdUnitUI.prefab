@@ -1558,12 +1558,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pCmder: {fileID: 0}
   NGuiGrids: {fileID: 172222}
-  InfoButton: {fileID: 151810}
-  MoveButton: {fileID: 194060}
-  AttackButton: {fileID: 114886}
-  SkillButton: {fileID: 191130}
-  SchoolButton: {fileID: 197712}
-  CancelButton: {fileID: 188490}
 --- !u!114 &11456314
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2177,7 +2171,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   arrangement: 1
   sorting: 0
-  pivot: 0
+  pivot: 4
   maxPerLine: 0
   cellWidth: 150
   cellHeight: 40

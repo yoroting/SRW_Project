@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -194,6 +194,9 @@ public class Panel_UnitInfo : MonoBehaviour {
 
 		foreach ( KeyValuePair< int , cSkillData > pair in pUnitData.SkillPool ) {
 
+			if(pair.Value.skill.n_SCHOOL == 0 )
+				continue;
+
 			GameObject go = ResourcesManager.CreatePrefabGameObj( SkillGrid , "Prefab/Skill_simple" ); 
 			if( go == null )
 				continue;
@@ -228,12 +231,14 @@ public class Panel_UnitInfo : MonoBehaviour {
 
 		foreach ( KeyValuePair< int , cBuffData > pair in pUnitData.Buffs.Pool ) {
 			
-			GameObject go = ResourcesManager.CreatePrefabGameObj( SkillGrid , "Prefab/Bufficon" ); 
+			GameObject go = ResourcesManager.CreatePrefabGameObj( BuffGrid , "Prefab/Bufficon" ); 
 			if( go == null )
 				continue;		
 			
-			
-			UIEventListener.Get(go).onClick += OnBuffClick; // 
+			BuffIcon icon = go.GetComponent< BuffIcon >();
+			if( icon != null )
+				icon.SetBuffData( pair.Value.nID , pair.Value.nNum  );
+		//	UIEventListener.Get(go).onClick += OnBuffClick; // 
 
 		}
 	}
@@ -246,9 +251,13 @@ public class Panel_UnitInfo : MonoBehaviour {
 		
 	}
 	void OnSkillClick( GameObject go )
-	{
-		
+	{		
+		Skill_Simple obj = go.GetComponent<Skill_Simple >();
+		if (obj != null) {
+			Panel_Tip.OpenUI( MyTool.GetSkillName( obj.nID ) ); 
+		}
 	}
+
 	void OnItemClick( GameObject go )
 	{
 		

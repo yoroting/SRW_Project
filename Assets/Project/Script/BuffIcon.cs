@@ -3,7 +3,7 @@ using System.Collections;
 
 public class BuffIcon : MonoBehaviour {
 
-	public GameObject IconObj;
+//	public GameObject IconObj;
 	
 	public GameObject NumObj;
 	
@@ -12,7 +12,7 @@ public class BuffIcon : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
-		UIEventListener.Get(IconObj).onClick += OnBuffClick; // for trig next line
+		UIEventListener.Get(this.gameObject).onClick += OnBuffClick; // for trig next line
 	}
 	
 	// Update is called once per frame
@@ -53,6 +53,7 @@ public class BuffIcon : MonoBehaviour {
 			string sTip = row.Field<string>( "s_TIP");
 
 			// set tip 
+			Panel_Tip.OpenUI( sTip );
 			
 		}
 	}
