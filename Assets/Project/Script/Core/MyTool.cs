@@ -58,10 +58,17 @@ public class MyTool {
 
 	public static string GetBuffName( int nID )
 	{
-		BUFF buff = ConstDataManager.Instance.GetRow< BUFF > ( nID );
-		if (buff == null)
-			return "null";
-		return buff.n_ID.ToString();
+		//BUFF buff = ConstDataManager.Instance.GetRow< BUFF > ( nID );
+		//if (buff == null)
+		//	return "null";
+		DataRow row = ConstDataManager.Instance.GetRow( (int)ConstDataTables.BUFF_TIP , nID );
+		if( row != null )
+		{				
+			string content = row.Field<string>( "s_TITLE");
+			return content;
+
+		}
+		return "null";
 	}
 
 	public static string GetUnitSchoolFullName( int nIdent , int nSchool )
@@ -147,6 +154,15 @@ public class MyTool {
 		if( lbl != null )
 		{
 			lbl.text =  fValue.ToString();
+		}
+	}
+
+	public static void SetBuffIcon( GameObject go ,int nID , int nNum )
+	{
+		BuffIcon icon = go.GetComponent<BuffIcon>();
+		if( icon != null ){
+			icon.SetBuffData( nID ,nNum );
+
 		}
 	}
 

@@ -251,17 +251,24 @@ public class Panel_StageUI : MonoBehaviour
 		// ensure canvrs in screen
 		if( TilePlaneObj != null )
 		{
-
 			if (TarceMoveingUnit != null ) {
-				// force to unit
-				Vector3 v = TarceMoveingUnit.transform.localPosition;
-				v.x *= -1;
-				v.y *= -1;
-				TilePlaneObj.transform.localPosition  = v ;
-				
 				if( TarceMoveingUnit.IsMoving()== false )
 				{
 					TarceMoveingUnit = null;
+				}else{
+					// force to unit
+					Vector3 v = TarceMoveingUnit.transform.localPosition;
+					v.x *= -1;
+					v.y *= -1;
+
+					TweenPosition tw = TweenPosition.Begin<TweenPosition>(TilePlaneObj , 0.2f );
+					if( tw ){
+						tw.SetStartToCurrentValue();
+						tw.to = v;
+					}
+
+					//TilePlaneObj.transform.localPosition  = v ;
+
 				}
 			}
 
@@ -1389,8 +1396,8 @@ public class Panel_StageUI : MonoBehaviour
 		if (force == false)
 		{
 			Vector3 realpos = v + canv;
-			int hW = (Config.WIDTH -100)/2;
-			int hH = (Config.HEIGHT-100)/2;
+			int hW = (Config.WIDTH )/2 - Config.TileW;
+			int hH = (Config.HEIGHT)/2 - Config.TileH;
 			if( (realpos.x < hW  && realpos.x > -hW ) && (realpos.y < hH && realpos.y > -hH ) )
 				return; // pass
 		}
@@ -1490,6 +1497,19 @@ public class Panel_StageUI : MonoBehaviour
 		if( unit != null )
 		{
 			unit.MoveTo( nX , nY ); 
+
+			// check if need trace unit 
+			Vector3 v = unit.transform.localPosition;
+			Vector3 canv = TilePlaneObj.transform.localPosition; // shift
+
+			Vector3 realpos = v + canv;
+			int hW = (Config.WIDTH )/2 - Config.TileW;
+			int hH = (Config.HEIGHT)/2 - Config.TileH;
+			if( (realpos.x < hW  && realpos.x > -hW ) && (realpos.y < hH && realpos.y > -hH ) )
+			{
+				// trace it
+				TraceUnit( unit );
+			}
 		}
 		//DelChar( _CAMP._ENEMY , nCharid );
 

@@ -171,14 +171,14 @@ public partial class GameDataManager
 	public int nBattleID{ get; set; } 
 
 	// Operation Token ID 
-	public int nOpCharIdent{ get; set; } 				//
-	public int nOpMobIdent{ get; set; } 				//
-	public int nOpFriendIdent{ get; set; } 				//
-
-	public int nOpCellX{ get; set; } 				//
-	public int nOpCellY{ get; set; } 				//
-
-	public int nInfoIdent{ get; set; }							//
+//	public int nOpCharIdent{ get; set; } 				//
+//	public int nOpMobIdent{ get; set; } 				//
+//	public int nOpFriendIdent{ get; set; } 				//
+//
+//	public int nOpCellX{ get; set; } 				//
+//	public int nOpCellY{ get; set; } 				//
+//
+//	public int nInfoIdent{ get; set; }							//
 //	public int nInfoCharID{ get; set; }							
 
 	//
@@ -400,6 +400,10 @@ public partial class GameDataManager
 
 
 
+
+	// Save to binary;
+
+	// load from binary;
 
 };
 

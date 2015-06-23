@@ -134,6 +134,8 @@ public class cFightAttr : cAttrData
 // current stage runtime data
 // All data store in this . buffcondition need this to check
 public class cUnitData{
+	public int nVersion=1;			// for save/load data
+
 	public int n_Ident;		// auto create by game system
 	public _CAMP eCampID;
 	public CHARS cCharData;
@@ -162,22 +164,24 @@ public class cUnitData{
 	public Dictionary< int , int >		SchoolPool;			// all study school < school id , lv >
 	public Dictionary< int , int >		AbilityPool;		// all ability school < ability id , lv can use >
 
-	public List< int  >		SkillPool;						// all skill school < skill id  >
+	// current skill data pool
+	public Dictionary< int , cSkillData >SkillPool;						// all skill from school < skill id  >
+
 	// Buff list
 
 	public Dictionary< int , int >		CDPool;				// all study school < cd type , round >
 	public cFightAttr					FightAttr;			// need update each calcul
 	//public cAttrData					BuffCondAttr;		// buff cond trig attr
 
-	public cBuffs						Buff;				// all buffs of unit
+	public cBuffs						Buffs;				// all buffs of unit
 
 	public cUnitData()
 	{
 		SchoolPool  = new Dictionary< int , int > ();
 		AbilityPool = new Dictionary< int , int > ();
-		SkillPool 	= new List< int  > ();
+		SkillPool 	= new Dictionary< int , cSkillData > ();
 
-		Buff = new cBuffs( this ); 
+		Buffs = new cBuffs( this ); 
 		CDPool = new Dictionary< int , int > ();
 		
 		Attr = new Dictionary< int , cAttrData > (); 
@@ -213,9 +217,10 @@ public class cUnitData{
 		else {
 			SchoolPool.Add(id , nLv );
 		}
+
 		// update both for save
-		SetUpdate (0);
-		SetUpdate (1);
+		SetUpdate ( cAttrData._INTSCH );
+		SetUpdate ( cAttrData._EXTSCH );
 
 		// ADD school's auto ability?
 		RemoveSkillBySchool ( id );
@@ -232,29 +237,84 @@ public class cUnitData{
 				if( skl.n_SCHOOL != id )
 					continue;
 
-				if( SkillPool.IndexOf( skl.n_ID  ) < 0 )
-					SkillPool.Add(  skl.n_ID );
+				if( SkillPool.ContainsKey( skl.n_ID ) == false )
+				{
 
-				// pass 
-				if( skl.n_BUFF == 0 )
-					continue;
+					cSkillData sklData = new cSkillData( skl );
 
-				// add buff.
-				Buff.AddBuff( skl.n_ID);
-				SetUpdate( cAttrData._BUFF );
+					SkillPool.Add(  skl.n_ID , sklData );
+
+				}					
+
+//				// pass 
+//				if( skl.n_BUFF == 0 )
+//					continue;
+//
+//				// add buff.
+//				Buffs.AddBuff( skl.n_ID);
+//				SetUpdate( cAttrData._BUFF );
 			}
 		}
 
 	}
 
+	public void ChangeSchool( int SchID )
+	{
+		int lv = 0;
+		if (SchoolPool.TryGetValue (SchID, out lv) == false ) {
+			return ;
+		}
+		SCHOOL school = ConstDataManager.Instance.GetRow<SCHOOL>( SchID );
+		if( school == null )
+			return;
+
+		int nIdx = cAttrData._INTSCH;
+		if ( school.n_TYPE==1 ){
+			nIdx = cAttrData._EXTSCH;
+		}
+
+		//remove skill of old sch
+		int nOldSchId = nActSch[ nIdx ];
+
+		// change
+		RemoveSkillBySchool( nOldSchId );
+
+		// set new school
+		SetSchool(SchID , lv );
+
+
+	}
+
+	
+	public void AddSkill( int nSkillID )
+	{
+		SKILL  skl = ConstDataManager.Instance.GetRow< SKILL>( nSkillID );
+		if( skl != null )
+		{
+			SkillPool.Add( nSkillID , new cSkillData(skl ) );
+		}
+	}
+
+	public void RemoveSkill( int nSkillID )
+	{
+		if( SkillPool.ContainsKey( nSkillID ) )
+		{
+			SkillPool.Remove( nSkillID );
+		}
+	}
+
 	public void RemoveSkillBySchool ( int  schid )
 	{
 		List< int > tmp = new List< int > ();
-		foreach (int skillid  in SkillPool) {
-			SKILL skl = ConstDataManager.Instance.GetRow< SKILL >( skillid );
+		foreach (KeyValuePair< int , cSkillData >  pair in SkillPool) {
+			SKILL skl = pair.Value.skill; //ConstDataManager.Instance.GetRow< SKILL >( pair.Key );
 			if( skl != null && skl.n_SCHOOL == schid )
 			{
-				tmp.Add( skillid );
+				// remove skill'd buff
+//				if( skl.n_BUFF > 0 ){
+//					Buffs.DelBuff( skl.n_BUFF );
+//				}
+				tmp.Add( pair.Key );
 			}
 		}
 		//
@@ -290,15 +350,16 @@ public class cUnitData{
 	public void RemoveAbility( int id  )
 	{
 		if (AbilityPool.ContainsKey (id)) {
-			SKILL skl = ConstDataManager.Instance.GetRow< SKILL> ( id );
-			if( skl != null ){
-				if( skl.n_BUFF > 0 ){
-					Buff.DelBuff( skl.n_BUFF );
-					SetUpdate( cAttrData._BUFF );
-				}
-			}
-
+//			SKILL skl = ConstDataManager.Instance.GetRow< SKILL> ( id );
+//			if( skl != null ){
+//				if( skl.n_BUFF > 0 ){
+//					Buffs.DelBuff( skl.n_BUFF );
+//					SetUpdate( cAttrData._BUFF );
+//				}
+//			}
 			AbilityPool.Remove( id );
+
+			RemoveSkill( id );
 		}
 	}
 
@@ -455,25 +516,37 @@ public class cUnitData{
 		{
 			if(  pair.Key == 0 )
 				continue;
+			// refresh  skill
+			RemoveSkill( pair.Key );
+
 			// remove  then check and ADD
-			SKILL skl = ConstDataManager.Instance.GetRow< SKILL > ( pair.Key ); 
-			if( skl == null )
-				continue;
-
-			if( skl.n_BUFF == 0 )
-				continue;
-
-			Buff.DelBuff( skl.n_BUFF );
-
-			SetUpdate( cAttrData._BUFF );		// record to update buff
-
-
+//			SKILL skl = ConstDataManager.Instance.GetRow< SKILL > ( pair.Key ); 
+//			if( skl == null )
+//				continue;
+//
+//			if( skl.n_BUFF == 0 )
+//				continue;
+//
+//			Buffs.DelBuff( skl.n_BUFF );
+//
+//			SetUpdate( cAttrData._BUFF );		// record to update buff
+//
+//
 			if( pair.Value > nLV )
 				continue;
 
-			Buff.AddBuff( skl.n_BUFF );
+
+			AddSkill( pair.Key );
+//
+//			Buffs.AddBuff( skl.n_BUFF );
 		}
 
+		// update passiv skill attr
+		foreach( KeyValuePair< int , cSkillData >  pair in SkillPool )
+		{
+		//	if( pair.Value. )
+
+		}
 
 	}
 
@@ -515,7 +588,7 @@ public class cUnitData{
 	//	attr.ClearBase (); // update inside
 
 		// update add value
-		Buff.UpdateAttr ( ref attr );
+		Buffs.UpdateAttr ( ref attr );
 
 
 		// fix error range
@@ -526,7 +599,7 @@ public class cUnitData{
 	{
 		cAttrData attr =GetAttrData( cAttrData._CONDBUFF ) ;
 		//attr.Reset ();
-		Buff.UpdateCondAttr (ref attr ); // reset inside
+		Buffs.UpdateCondAttr (ref attr ); // reset inside
 
 
 	}
@@ -815,7 +888,7 @@ public class cUnitData{
 		//cUnitData tar = GameDataManager.Instance.GetUnitDateByIdent( FightAttr.TarIdent ) ;
 		cAttrData attr = this.GetAttrData (cAttrData._CONDBUFF);
 
-		Buff.UpdateCondAttr (ref  attr );
+		Buffs.UpdateCondAttr (ref  attr );
 	}
 
 	public void DoSkillCastEffect( ref List< cHitResult > resPool )

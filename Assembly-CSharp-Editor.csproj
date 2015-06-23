@@ -202,16 +202,16 @@
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/Editor/UnityEditor.UI.dll</HintPath>
  </Reference>
  <Reference Include="Playcoo.Common">
- <HintPath>G:/Unity Projects/SRW_Project/Assets/Common/Plugins/Playcoo.Common.dll</HintPath>
+ <HintPath>D:/SRW/SRW_Project/Assets/Common/Plugins/Playcoo.Common.dll</HintPath>
  </Reference>
  <Reference Include="JsonFx.Json">
- <HintPath>G:/Unity Projects/SRW_Project/Assets/Common/Plugins/JsonFx/JsonFx.Json.dll</HintPath>
+ <HintPath>D:/SRW/SRW_Project/Assets/Common/Plugins/JsonFx/JsonFx.Json.dll</HintPath>
  </Reference>
  <Reference Include="ICSharpCode.SharpZipLib">
- <HintPath>G:/Unity Projects/SRW_Project/Assets/Common/Plugins/SharpZipLib/ICSharpCode.SharpZipLib.dll</HintPath>
+ <HintPath>D:/SRW/SRW_Project/Assets/Common/Plugins/SharpZipLib/ICSharpCode.SharpZipLib.dll</HintPath>
  </Reference>
  <Reference Include="JMOAssets">
- <HintPath>G:/Unity Projects/SRW_Project/Assets/JMO Assets/Editor/JMOAssets.dll</HintPath>
+ <HintPath>D:/SRW/SRW_Project/Assets/JMO Assets/Editor/JMOAssets.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.Graphs">
  <HintPath>C:/Program Files/Unity/Editor/Data/Managed/UnityEditor.Graphs.dll</HintPath>
@@ -246,10 +246,6 @@
  <Reference Include="UnityEditor.iOS.Extensions.Xcode">
  <HintPath>C:/Program Files/Unity/Editor/Data/PlaybackEngines/iossupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
  </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="Assembly-CSharp.csproj">
-      <Project>{4FC533D3-75E6-77E7-000E-B9C52AE5B531}</Project>      <Name>Assembly-CSharp</Name>    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

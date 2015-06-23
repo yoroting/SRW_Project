@@ -231,9 +231,9 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
 	public void CharInfoCmd( )
 	{
-		GameDataManager.Instance.nInfoIdent = pCmder.Ident ();
-
-		PanelManager.Instance.OpenUI ( Panel_UnitInfo.Name );
+		//GameDataManager.Instance.nInfoIdent = pCmder.Ident ();
+		//PanelManager.Instance.OpenUI ( Panel_UnitInfo.Name );
+		Panel_UnitInfo.OpenUI(  pCmder.Ident () );
 
 		//Clear ();
 		//NormalCloseCmdUI ();.

@@ -271,7 +271,7 @@ public partial class ActionManager
 							{
 								cUnitData pData = GameDataManager.Instance.GetUnitDateByIdent (res.Ident);
 								if (pData != null) {
-									pData.Buff.AddBuff( res.Value1 );
+									pData.Buffs.AddBuff( res.Value1 );
 								}
 							}
 							

@@ -233,8 +233,14 @@ public class Panel_unit : MonoBehaviour {
 	public void SetXY( int x , int y ) {
 		Loc.X = x;
 		Loc.Y = y;
-		if( GameScene.Instance != null )
+		if( GameScene.Instance != null ){
 			gameObject.transform.localPosition =  MyTool.SnyGridtoLocalPos( x , y , ref GameScene.Instance.Grids ) ; 
+		}
+		if( pUnitData != null ){
+			pUnitData.n_X = x;
+			pUnitData.n_Y = y;
+		}
+
 	}
 
 	public void CreateChar( int nCharID , int x , int y )
@@ -327,6 +333,11 @@ public class Panel_unit : MonoBehaviour {
 		// cal target location position
 
 		Loc = v; // record target pos as current pos
+
+		// update pos to unit data
+		pUnitData.n_X = Loc.X;
+		pUnitData.n_Y = Loc.Y;
+
 		// Tween move
 		TweenPosition tw = TweenPosition.Begin( this.gameObject , during , tar );
 		if( tw )
@@ -927,13 +938,13 @@ public class Panel_unit : MonoBehaviour {
 	//====== Fight 
 	public void AddBuff( int nBuffID )
 	{
-		pUnitData.Buff.AddBuff (nBuffID);
+		pUnitData.Buffs.AddBuff (nBuffID);
 
 
 	}
 	public void DelBuff( int nBuffID )
 	{
-		pUnitData.Buff.DelBuff(nBuffID);
+		pUnitData.Buffs.DelBuff(nBuffID);
 	}
 
 }

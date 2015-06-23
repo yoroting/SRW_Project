@@ -32,10 +32,21 @@ public class Panel_UnitInfo : MonoBehaviour {
 	public GameObject FateGrid;
 	public GameObject BuffGrid;
 
-
 	public GameObject CloseBtnObj;
 
 	private cUnitData pUnitData;
+
+	// open info by identify
+	static public int nCharIdent;
+	static public GameObject OpenUI( int nIdent )
+	{
+		nCharIdent = nIdent;
+		//GameDataManager.Instance.nInfoIdent = pCmder.Ident ();
+		
+		GameObject go = PanelManager.Instance.OpenUI ( Panel_UnitInfo.Name ); // set data in onenable
+
+		return go;
+	}
 
 	void Awake()
 	{
@@ -44,21 +55,21 @@ public class Panel_UnitInfo : MonoBehaviour {
 	}
 
 
+
 	void OnEnable()
 	{
-		cUnitData data = GameDataManager.Instance.GetUnitDateByIdent( GameDataManager.Instance.nInfoIdent );
-		if (data == null) {
+		pUnitData = GameDataManager.Instance.GetUnitDateByIdent( nCharIdent );
+		if (pUnitData == null) {
 			OnCloseClick( this.gameObject );
 			return ;
 		}
-		pUnitData = data;
 
-		int nCharId = data.n_CharID;
+		int nCharId = pUnitData.n_CharID;
 		//CHARS chars = data.cCharData;
 		// change face	
 		UITexture tex = FaceObj.GetComponent<UITexture>();
 		if (tex != null) {
-			string url = "Assets/Art/char/" + data.cCharData.s_FILENAME + "_L.png";
+			string url = "Assets/Art/char/" + pUnitData.cCharData.s_FILENAME + "_L.png";
 			//Texture2D tex = Resources.LoadAssetAtPath(url, typeof(Texture2D)) as Texture2D;
 			Texture t = Resources.LoadAssetAtPath (url, typeof(Texture)) as Texture;
 			tex.mainTexture = t;				
@@ -66,53 +77,65 @@ public class Panel_UnitInfo : MonoBehaviour {
 
 
 		// name 
-		MyTool.SetLabelText( NameObj , data.cCharData.s_NAME );
+		MyTool.SetLabelText( NameObj , pUnitData.cCharData.s_NAME );
+
+
+		ReloadData();
+	}
+
+	void ReloadData()
+	{
+		if( pUnitData == null )
+			return;
+
+		pUnitData.UpdateAttr();		// make sure data is newest
+
 		// lv
-		MyTool.SetLabelInt( LvObj , data.n_Lv );
+		MyTool.SetLabelInt( LvObj , pUnitData.n_Lv );
 		// exp 
-		MyTool.SetLabelInt( ExpObj , data.n_EXP);
+		MyTool.SetLabelInt( ExpObj , pUnitData.n_EXP);
 		// mar
-		MyTool.SetLabelFloat( MarObj , data.GetMar() );
+		MyTool.SetLabelFloat( MarObj , pUnitData.GetMar() );
 		// HP
-		int nMaxHp = data.GetMaxHP();
-		MyTool.SetLabelText( HpObj , string.Format( "{0}/{1}" , data.n_HP , nMaxHp ) );
+		int nMaxHp = pUnitData.GetMaxHP();
+		MyTool.SetLabelText( HpObj , string.Format( "{0}/{1}" , pUnitData.n_HP , nMaxHp ) );
 		// MP
-		int nMaxMp = data.GetMaxMP();
-		MyTool.SetLabelText( MpObj , string.Format( "{0}/{1}" , data.n_MP , nMaxMp ) );
+		int nMaxMp = pUnitData.GetMaxMP();
+		MyTool.SetLabelText( MpObj , string.Format( "{0}/{1}" , pUnitData.n_MP , nMaxMp ) );
 		// SP
-		int nMaxSp = data.GetMaxSP();
-		MyTool.SetLabelText( SpObj , string.Format( "{0}/{1}" , data.n_SP , nMaxSp ) );
+		int nMaxSp = pUnitData.GetMaxSP();
+		MyTool.SetLabelText( SpObj , string.Format( "{0}/{1}" , pUnitData.n_SP , nMaxSp ) );
 		// mov
-		MyTool.SetLabelInt( MovObj , data.GetMov() );
+		MyTool.SetLabelInt( MovObj , pUnitData.GetMov() );
 		// atk 
-		MyTool.SetLabelInt( AtkObj , data.GetAtk() );
+		MyTool.SetLabelInt( AtkObj , pUnitData.GetAtk() );
 		// def 
-		int nMaxDef = data.GetMaxDef();
-		MyTool.SetLabelText( DefObj , string.Format( "{0}/{1}" , data.n_DEF , nMaxDef ) );
-
+		int nMaxDef = pUnitData.GetMaxDef();
+		MyTool.SetLabelText( DefObj , string.Format( "{0}/{1}" , pUnitData.n_DEF , nMaxDef ) );
+		
 		// pow
-		MyTool.SetLabelInt( PowObj , data.GetPow() );
-
+		MyTool.SetLabelInt( PowObj , pUnitData.GetPow() );
+		
 		// school name
-
+		
 		//SCHOOL inSch = GameDataManager.Instance.GetConstSchoolData( data.nActSch[0] ); // int 
-		MyTool.SetLabelText( IntSchObj , MyTool.GetUnitSchoolFullName( GameDataManager.Instance.nInfoIdent , data.nActSch[0] )  );
+		MyTool.SetLabelText( IntSchObj , MyTool.GetUnitSchoolFullName( nCharIdent , pUnitData.nActSch[0] )  );
+		
+		SCHOOL exSch = GameDataManager.Instance.GetConstSchoolData( pUnitData.nActSch[1] ); // ext 
+		MyTool.SetLabelText( ExtSchObj , MyTool.GetUnitSchoolFullName( nCharIdent , pUnitData.nActSch[1] ) );
 
-		SCHOOL exSch = GameDataManager.Instance.GetConstSchoolData( data.nActSch[1] ); // ext 
-		MyTool.SetLabelText( ExtSchObj , MyTool.GetUnitSchoolFullName( GameDataManager.Instance.nInfoIdent , data.nActSch[1] ) );
 
 		// Set ability
 		UpdateAbility ();
 		// set skill
 		UpdateSkill ();
-
+		
 		// set item 
 		UpdateItem ();
 		// set fate
 		UpdateFate ();
 		// set buff
 		UpdateBuff ();
-
 	}
 
 	// Use this for initialization
@@ -169,21 +192,20 @@ public class Panel_UnitInfo : MonoBehaviour {
 		MyTool.DestoryGridItem ( SkillGrid );
 
 
-		foreach ( int skillid in pUnitData.SkillPool ) {
+		foreach ( KeyValuePair< int , cSkillData > pair in pUnitData.SkillPool ) {
 
 			GameObject go = ResourcesManager.CreatePrefabGameObj( SkillGrid , "Prefab/Skill_simple" ); 
 			if( go == null )
-				continue;		
-			
+				continue;
 			
 			UIEventListener.Get(go).onClick += OnSkillClick; // 
 			
 			
 			Skill_Simple obj = go.GetComponent<Skill_Simple >();
 			if( obj != null ){
-				obj.nID = skillid;
+				obj.nID = pair.Key;
 				obj.nType = 1; // 0 is ability
-				MyTool.SetLabelText( obj.lblName , MyTool.GetSkillName( skillid ) );
+				MyTool.SetLabelText( obj.lblName , MyTool.GetSkillName( pair.Key ) );
 			}
 			
 		}
@@ -202,7 +224,18 @@ public class Panel_UnitInfo : MonoBehaviour {
 	}
 	void UpdateBuff()
 	{
+		MyTool.DestoryGridItem ( BuffGrid );
 
+		foreach ( KeyValuePair< int , cBuffData > pair in pUnitData.Buffs.Pool ) {
+			
+			GameObject go = ResourcesManager.CreatePrefabGameObj( SkillGrid , "Prefab/Bufficon" ); 
+			if( go == null )
+				continue;		
+			
+			
+			UIEventListener.Get(go).onClick += OnBuffClick; // 
+
+		}
 	}
 
 

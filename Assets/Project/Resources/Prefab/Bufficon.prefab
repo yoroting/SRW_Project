@@ -12,6 +12,7 @@ GameObject:
   - 65: {fileID: 6568490}
   - 114: {fileID: 11495322}
   - 114: {fileID: 11425330}
+  - 114: {fileID: 11415888}
   m_Layer: 5
   m_Name: Bufficon
   m_TagString: Untagged
@@ -43,6 +44,20 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 64, y: 64, z: 0}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &11415888
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 163166}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f21adb229617a84c88c7afe4a7206d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IconObj: {fileID: 0}
+  NumObj: {fileID: 0}
+  nBiffID: 0
 --- !u!114 &11418644
 MonoBehaviour:
   m_ObjectHideFlags: 1
