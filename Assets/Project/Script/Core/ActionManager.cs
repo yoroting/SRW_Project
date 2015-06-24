@@ -220,7 +220,14 @@ public partial class ActionManager
 	{
 		uAction act = CreateAction (nAtkIdent, _ACTION._CASTING);
 		if( act != null )  {
+			act.HitResult.Add( new cHitResult( cHitResult._TYPE._CASTING, nAtkIdent, nSkillID ) );
 			act.nSkillID = nSkillID;
+			cUnitData caster = GameDataManager.Instance.GetUnitDateByIdent( nAtkIdent );
+			if( caster != null ){
+
+				caster.DoSkillCastEffect( ref act.HitResult  );
+			}
+
 		}
 		return  act;
 	}
@@ -231,7 +238,7 @@ public partial class ActionManager
 		if( act != null )  {
 			act.nSkillID = nSkillID;
 			act.nTarGridX = X;
-			act.nTarGridY = Y;
+			act.nTarGridY = Y;		
 		}
 		return  act;
 	}

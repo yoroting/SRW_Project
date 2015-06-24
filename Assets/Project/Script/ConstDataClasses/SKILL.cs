@@ -10,6 +10,7 @@ public class SKILL : ConstDataRow<SKILL>
 	public string s_NAME;
 	public int n_SCHOOL;
 	public int n_TYPE;
+	public int n_FINISH;
 	public int n_CD;
 	public int n_TARGET;
 	public int n_SP;

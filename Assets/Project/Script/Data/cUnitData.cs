@@ -950,7 +950,7 @@ public class cUnitData{
 	}
 
 	public void ClearState(  ){
-		States.Clear ();
+		GetStates().Clear ();
 	}
 		
 	//============================================================

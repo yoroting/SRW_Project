@@ -441,7 +441,7 @@ public class Panel_StageUI : MonoBehaviour
 				}
 				else { 
 					// this is impossible
-					if( bIsOverCell == false    )
+					if( bIsAtkCell == false    )
 					{
 						Panel_CMDUnitUI.RollBackCMDUIWaitTargetMode();
 						//Panel_CMDUnitUI.BackWaitCmd();		// back if the cmd is not exists	
@@ -1441,7 +1441,7 @@ public class Panel_StageUI : MonoBehaviour
 	}
 
 
-	public void MoveToGameObj( GameObject obj , bool force = false )
+	public void MoveToGameObj( GameObject obj , bool force = false , float time = 1.0f)
 	{
 		if (obj == null)
 			return;
@@ -1458,7 +1458,7 @@ public class Panel_StageUI : MonoBehaviour
 		}
 
 		//TilePlaneObj.transform.localPosition = -v;
-		float during = 1.0f;
+		float during = time;
 
 		TweenPosition tw = TweenPosition.Begin<TweenPosition> (TilePlaneObj, during);
 		if (tw != null) {

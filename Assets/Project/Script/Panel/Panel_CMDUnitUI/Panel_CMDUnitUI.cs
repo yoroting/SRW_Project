@@ -282,7 +282,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 	{
 
 		BattleManager.Instance.nDeferSkillID = 0; // counter normaly
-			
+		BattleManager.Instance.eDefCmdID	= _CMD_ID._COUNTER;	
 		EndCMDUI ();					
 	}
 	public void  RoundEndCmd(  )
@@ -338,6 +338,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		//PanelManager.Instance.CloseUI( Name );
 		//PanelManager.Instance.OpenUI( Name );
 		//CreateCMDList ( cCMD.Instance.eCMDTYPE );
+		Panel_StageUI.Instance.MoveToGameObj (pCmder.gameObject ,false , 0.2f );
 	}
 	// pre
 	public void SetCmder( Panel_unit unit )
@@ -416,8 +417,20 @@ public class Panel_CMDUnitUI : MonoBehaviour
 			if( CMD.eCMDTYPE == _CMD_TYPE._COUNTER )
 			{
 				// counter cast
+				if( skl.n_FINISH > 0 ){
+					 // set def skill to battle manager
+					BattleManager.Instance.nDeferSkillID = nSkillID;// let battle manager to cast it
+					BattleManager.Instance.eDefCmdID	= _CMD_ID._COUNTER; // start to counter
+					EndCMDUI();
+					return ; // this is finish task
+				}
+				else{
+					//cast directly don't make a battle cmd to destory original enemy atk cmd
+					ActionManager.Instance.CreateCastingAction( pCmder.Ident() , nSkillID );
+					ActionManager.Instance.CreateCastoutAction( pCmder.Ident() , -1 , -1 ,  nSkillID );
+					Panel_CMDUnitUI.CloseCMDUI(); // normal close
 
-
+				}
 			}
 			else{
 				// normal cast
