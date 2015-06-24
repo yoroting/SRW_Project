@@ -6,12 +6,18 @@ using MyClassLibrary;
 
 public class cBuffData
 {
-	public int nID { set; get; }
-	public int nTime { set; get; }		//還有幾回合 
-	public int nNum { set; get; }		//疊幾層了
+	public int nID ;
+	public int nTime ;			//還有幾回合 
+	public int nNum ;			//疊幾層了
+
+
+	public int nCastIdent ;		// record castident
+	public int nSkillID ;		// which skill cast this buff, for fast remove to ensure no bug
+
+
 	public BUFF tableData = null ;		// const data reference	
 
-	public cBuffData( BUFF buff  ){
+	public cBuffData( BUFF buff , int ident , int skillid ){
 		tableData = buff;
 		if (tableData == null)
 			return;
@@ -19,22 +25,28 @@ public class cBuffData
 		nID = buff.n_ID;
 		nTime = buff.n_DURATION;
 		nNum = 1;
-		
+
+		nCastIdent = ident;
+		nSkillID   = skillid;
+
 		// create eff pool
 		ConditionEffectPool = MyScript.Instance.CreateEffectPool ( buff.s_CONDITIONAL_BUFF );
 		Condition 			 = MyScript.Instance.CreateEffectCondition ( buff.s_BUFF_CONDITON );
 		EffectPool 		 = MyScript.Instance.CreateEffectPool ( buff.s_CONSTANT_BUFF );
 		
-		CancelCondition	 = MyScript.Instance.CreateEffectCondition ( buff.s_BUFF_CANCEL );
+//		CancelCondition	 = MyScript.Instance.CreateEffectCondition ( buff.s_BUFF_CANCEL );
 
 	}
+
+
 	// 
 //	public List< cBuffCondition > ConditionPool;
-	public List< cEffect > 	  EffectPool;
-	public cEffectCondition   Condition;
-	public List< cEffect > 	  ConditionEffectPool;//
+	public List< cEffect > 	  EffectPool;				// normal effect
+	public cEffectCondition   Condition;				// check condition
 
-	public cEffectCondition   CancelCondition;	// some condition to cancel buff
+	public List< cEffect > 	  ConditionEffectPool;		// condition effect
+
+//	public cEffectCondition   CancelCondition;			// some condition to cancel buff
 
 }
 
@@ -50,18 +62,20 @@ public class cBuffs
 	public Dictionary< int , cBuffData > Pool;
 
 	//
-	public cBuffData CreateData( BUFF buff )
+	public cBuffData CreateData( BUFF buff , int Ident , int skillid  )
 	{
-		cBuffData data = new cBuffData( buff );
-
+		cBuffData data = new cBuffData( buff , Ident , skillid  );
+	
 		return data;
 	}
 
 	//
-	public cBuffData AddBuff( int nBuffID ){
+	public cBuffData AddBuff( int nBuffID , int nCastIdent=0 , int nSkillID = 0 ){
 		BUFF buff = ConstDataManager.Instance.GetRow< BUFF > ( nBuffID );
 		if (buff == null)
 			return null;
+
+
 		// always re cal next update
 		Owner.SetUpdate ( cAttrData._BUFF );
 
@@ -87,7 +101,8 @@ public class cBuffs
 				// diff buff. check which id high lv
 				if( olddata.tableData.n_LV <= buff.n_LV )
 				{
-					data = CreateData(buff);
+					data = CreateData(buff, nCastIdent , nSkillID  );
+
 					Pool[ buff.n_STACK ] = data;		// replace
 				}
 				else{
@@ -97,13 +112,13 @@ public class cBuffs
 		}
 		else {
 			//add buff
-			data = CreateData(buff);
+			data = CreateData(buff, nCastIdent , nSkillID );
 			Pool.Add( buff.n_STACK ,  data );
 		}
 		return data;
 	}
 
-	public bool DelBuffStack( int nStack ){
+	public bool DelBuffByStack( int nStack ){
 
 		if (Pool.ContainsKey( nStack ) == true ){
 
@@ -115,6 +130,35 @@ public class cBuffs
 
 		return false;
 	}
+
+	public void DelBuffBySkillID( int skillid ){
+		List< int > lst = new List< int >();
+		foreach( KeyValuePair<int , cBuffData>  pair in Pool )
+		{
+			if( pair.Value.nSkillID == skillid ){
+				lst.Add( pair.Key );
+			}
+		}
+
+		foreach( int id in lst ){
+			Pool.Remove( id );
+		}
+	}
+
+	public void DelBuffByCastID( int castid ){
+		List< int > lst = new List< int >();
+		foreach( KeyValuePair<int , cBuffData>  pair in Pool )
+		{
+			if( pair.Value.nCastIdent == castid ){
+				lst.Add( pair.Key );
+			}
+		}
+		
+		foreach( int id in lst ){
+			Pool.Remove( id );
+		}
+	}
+
 
 	public bool DelBuff( int nBuffID ){
 		BUFF buff = ConstDataManager.Instance.GetRow< BUFF > ( nBuffID );
@@ -156,12 +200,50 @@ public class cBuffs
 	}
 
 
-	// Get Buff always Effect
+	// run 1 round .  buff time-1 with all >= 1 . remove buff if time become 0
+	public bool BuffRoundEnd()
+	{
+		List< int > lst = new List< int >();
+		foreach( KeyValuePair<int , cBuffData>  pair in Pool )
+		{
+			//if( pair.Value.nCastIdent == castid )
+			if( pair.Value.nTime > 0 )
+			{
+				if( --pair.Value.nTime == 0 ){
+					lst.Add( pair.Key );
+				}
+			}
+		}
 
 
-	//Get buff condition Eff
+		foreach( int id in lst ){
+			Pool.Remove( id );
+		}
 
-	//Get buff event Eff
+		return (lst.Count>0);
+	}
+
+	// remove all buff that time = -1 
+	public bool BuffFightEnd()
+	{
+		// del buff when fight end
+		List< int > lst = new List< int >();
+		foreach( KeyValuePair<int , cBuffData>  pair in Pool )
+		{
+			//if( pair.Value.nCastIdent == castid )
+			if( pair.Value.nTime < 0 )
+			{
+				lst.Add( pair.Key );
+			}
+		}
+		
+		
+		foreach( int id in lst ){
+			Pool.Remove( id );
+		}
+		
+		return (lst.Count>0);
+	}
 
 	public void UpdateAttr( ref cAttrData attr  )
 	{
@@ -204,10 +286,34 @@ public class cBuffs
 	}
 
 	// on hit event
-	public void OnHit( ref List< cHitResult > res )
+	public void OnHit(  ref List< cHitResult > resPool )
 	{
 		if (Pool.Count == 0)
 			return;
+		// normal hit
+		cUnitData unit_e = GameDataManager.Instance.GetUnitDateByIdent ( Owner.FightAttr.TarIdent );
+		foreach( KeyValuePair< int , cBuffData > pair in Pool )
+		{
+			// normal 
+			foreach( cEffect eft in pair.Value.EffectPool )
+			{
+				if( eft != null )
+				{
+					eft._OnHit( Owner , unit_e , ref resPool );
+				}
+			}
+			// condition
+			if( pair.Value.Condition.Check( Owner , unit_e ) )
+			{
+				foreach( cEffect eft in pair.Value.ConditionEffectPool )
+				{
+					if( eft != null )
+					{
+						eft._OnHit( Owner , unit_e , ref resPool );
+					}
+				}
+			}
+		}
 
 	}
 }

@@ -187,6 +187,7 @@ public partial class BattleManager
 			// open CMD UI for def player
 			if ( Defer.eCampID  == _CAMP._PLAYER) {
 				// set open CMD 
+				// need set a range
 				Panel_CMDUnitUI.OpenCMDUI( _CMD_TYPE._COUNTER , nDeferID  );
 				
 			}
@@ -198,8 +199,9 @@ public partial class BattleManager
 			
 			nPhase++;
 			break;
-		case 1:			// Casting
-			if( PanelManager.Instance.CheckUIIsOpening( Panel_CMDUnitUI.Name ) == false )
+		case 1:			// Casting 
+			// have set a cmd and ui is closed
+			if( PanelManager.Instance.CheckUIIsOpening( Panel_CMDUnitUI.Name ) == false && (cCMD.Instance.eCMDID!= _CMD_ID._NONE) )
 			{
 				//ShowBattleMsg( nAtkerID , "attack" );
 

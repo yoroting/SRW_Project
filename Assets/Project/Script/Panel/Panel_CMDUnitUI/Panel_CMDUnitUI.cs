@@ -411,33 +411,43 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
 			SKILL skl = ConstDataManager.Instance.GetRow<SKILL>( nSkillID ); 
 
-			switch( skl.n_TARGET )
+
+			// need take care counter
+			if( CMD.eCMDTYPE == _CMD_TYPE._COUNTER )
 			{
-			case 0:		// self cast
-				CMD.eCMDID 	   = _CMD_ID._ATK;			// enter atk mode
-				CMD.eCMDTARGET = _CMD_TARGET._POS;
-				CMD.nTarGridX = -1;
-				CMD.nTarGridY = -1;
+				// counter cast
 
-				MakeCmd();
 
-				Panel_StageUI.Instance.ClearOverCellEffect ();
-				CMD.Clear ();				// clear cmd status
-				break;
-			case 1:		// select a target enemy
-				// if skill need a target. go to target mode
-				CMD.eCMDSTATUS = _CMD_STATUS._WAIT_TARGET;
-				CMD.eCMDID 	   = _CMD_ID._ATK;			// enter atk mode
-				
-				Panel_StageUI.Instance.ClearOverCellEffect ();
-				Panel_StageUI.Instance.CreateAttackOverEffect (pCmder , skl.n_RANGE );
-				
-				CMD.eCMDTARGET = _CMD_TARGET._UNIT;
-
-				break;
 			}
+			else{
+				// normal cast
+				switch( skl.n_TARGET )
+				{
+				case 0:		// self cast
+					CMD.eCMDID 	   = _CMD_ID._ATK;			// enter atk mode
+					CMD.eCMDTARGET = _CMD_TARGET._POS;
+					CMD.nTarGridX = -1;
+					CMD.nTarGridY = -1;
 
+					MakeCmd();
 
+					Panel_StageUI.Instance.ClearOverCellEffect ();
+					CMD.Clear ();				// clear cmd status
+					break;
+				case 1:		// select a target enemy
+					// if skill need a target. go to target mode
+					CMD.eCMDSTATUS = _CMD_STATUS._WAIT_TARGET;
+					CMD.eCMDID 	   = _CMD_ID._ATK;			// enter atk mode
+					
+					Panel_StageUI.Instance.ClearOverCellEffect ();
+					Panel_StageUI.Instance.CreateAttackOverEffect (pCmder , skl.n_RANGE );
+					
+					CMD.eCMDTARGET = _CMD_TARGET._UNIT;
+
+					break;
+				}
+
+			}
 		}
 		//
 

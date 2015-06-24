@@ -222,7 +222,7 @@ public class cUnitData{
 		SetUpdate ( cAttrData._INTSCH );
 		SetUpdate ( cAttrData._EXTSCH );
 
-		// ADD school's auto ability?
+		// clean then re add skill 
 		RemoveSkillBySchool ( id );
 
 		//
@@ -237,22 +237,11 @@ public class cUnitData{
 				if( skl.n_SCHOOL != id )
 					continue;
 
+				//
 				if( SkillPool.ContainsKey( skl.n_ID ) == false )
 				{
-
-					cSkillData sklData = new cSkillData( skl );
-
-					SkillPool.Add(  skl.n_ID , sklData );
-
-				}					
-
-//				// pass 
-//				if( skl.n_BUFF == 0 )
-//					continue;
-//
-//				// add buff.
-//				Buffs.AddBuff( skl.n_ID);
-//				SetUpdate( cAttrData._BUFF );
+					AddSkill( skl.n_ID );
+				}
 			}
 		}
 
@@ -260,13 +249,15 @@ public class cUnitData{
 
 	public void ChangeSchool( int SchID )
 	{
-		int lv = 0;
-		if (SchoolPool.TryGetValue (SchID, out lv) == false ) {
-			return ;
-		}
 		SCHOOL school = ConstDataManager.Instance.GetRow<SCHOOL>( SchID );
 		if( school == null )
 			return;
+
+		int lv = 0;
+		if (SchoolPool.TryGetValue (SchID, out lv) == false ) {
+			Debug.LogErrorFormat( "Unit can't change school type{0} to sch{1} to , charid={2},identid={3}  " , school.n_TYPE ,SchID, n_CharID, n_Ident );
+			return ;
+		}
 
 		int nIdx = cAttrData._INTSCH;
 		if ( school.n_TYPE==1 ){
@@ -280,8 +271,13 @@ public class cUnitData{
 		RemoveSkillBySchool( nOldSchId );
 
 		// set new school
-		SetSchool(SchID , lv );
+		SetSchool(SchID , lv ); // for ability / Skill
 
+		//	
+		nActSch [nIdx] = SchID;
+
+		// update
+		SetUpdate( nIdx );
 
 	}
 
@@ -291,7 +287,15 @@ public class cUnitData{
 		SKILL  skl = ConstDataManager.Instance.GetRow< SKILL>( nSkillID );
 		if( skl != null )
 		{
-			SkillPool.Add( nSkillID , new cSkillData(skl ) );
+			if( skl.n_BUFF > 0 ){
+				Buffs.AddBuff( skl.n_BUFF , n_Ident , nSkillID );
+				SetUpdate( cAttrData._BUFF );
+			}
+
+			if( SkillPool.ContainsKey( nSkillID ) == false )
+			{
+				SkillPool.Add( nSkillID , new cSkillData(skl ) );
+			}
 		}
 	}
 
@@ -299,33 +303,36 @@ public class cUnitData{
 	{
 		if( SkillPool.ContainsKey( nSkillID ) )
 		{
+			Buffs.DelBuffBySkillID( nSkillID );
+
 			SkillPool.Remove( nSkillID );
 		}
 	}
 
 	public void RemoveSkillBySchool ( int  schid )
 	{
+		if( 0 == schid )
+			return;
+
 		List< int > tmp = new List< int > ();
 		foreach (KeyValuePair< int , cSkillData >  pair in SkillPool) {
 			SKILL skl = pair.Value.skill; //ConstDataManager.Instance.GetRow< SKILL >( pair.Key );
 			if( skl != null && skl.n_SCHOOL == schid )
 			{
 				// remove skill'd buff
-//				if( skl.n_BUFF > 0 ){
-//					Buffs.DelBuff( skl.n_BUFF );
-//				}
 				tmp.Add( pair.Key );
 			}
 		}
 		//
 		foreach (int id  in tmp) {
-			SkillPool.Remove( id );
+			RemoveSkill( id );
+			//SkillPool.Remove( id );
 		}
 
 
 	}
 
-
+	//紀錄一個角色的等級對應能力
 	public void SetAbility( int id , int nLv ) // this is record all ability. but not all active soon
 	{
 		if (nLv <= 0)
@@ -343,6 +350,7 @@ public class cUnitData{
 			AbilityPool.Add(id , nLv );
 		}
 		// update both for save
+		AddSkill( nLv );
 
 		SetUpdate ( cAttrData._CHARLV ); // update with char lv
 	}
@@ -423,8 +431,11 @@ public class cUnitData{
 		//Set Buff
 
 		// active school
-		AvtiveSchool (0, cData.n_INT_SCHOOL);
-		AvtiveSchool (1, cData.n_EXT_SCHOOL);
+		ChangeSchool( cData.n_INT_SCHOOL );
+		ChangeSchool( cData.n_EXT_SCHOOL );
+
+		//AvtiveSchool (0, cData.n_INT_SCHOOL);
+		//AvtiveSchool (1, cData.n_EXT_SCHOOL);
 
 
 		// fill base data;
@@ -436,22 +447,22 @@ public class cUnitData{
 		int nLv = 0;
 		if (SchoolPool.TryGetValue(School, out nLv ) == false) {
 			Debug.LogErrorFormat( "Unit can't get school{1} lv , charid={1},identid={2} " ,School , n_CharID, n_Ident );
-				return 0;
+			return 0;
 		}
 		return nLv;
 	}
 
-	public void AvtiveSchool( int index , int School )
-	{
-		if (SchoolPool.ContainsKey (School) == false) {
-			Debug.LogErrorFormat( "Unit can't active index{0} to sch{1} to , charid={2},identid={3}  " ,index,School, n_CharID, n_Ident );
-			return;
-		}
-		nActSch [index] = School;
-
-		SetUpdate (index);
-		//UpdateSchoolAttr (index , School ); 
-	}
+//	 void AvtiveSchool( int index , int School )
+//	{
+//		if (SchoolPool.ContainsKey (School) == false) {
+//			Debug.LogErrorFormat( "Unit can't active index{0} to sch{1} to , charid={2},identid={3}  " ,index,School, n_CharID, n_Ident );
+//			return;
+//		}
+//		nActSch [index] = School;
+//
+//		SetUpdate (index);
+//		//UpdateSchoolAttr (index , School ); 
+//	}
 
 	public void SetLevel( int lv )
 	{
