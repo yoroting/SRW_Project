@@ -20,7 +20,6 @@ public class Panel_Skill : MonoBehaviour {
 	public _SKILL_TYPE eSkillType;
 
 	public int 	nOpSkillID;			// current select skill ID
-
 	int nOpIdent;
 	int nOpCharID;
 
@@ -56,9 +55,11 @@ public class Panel_Skill : MonoBehaviour {
 		if (_lastPress > 0) {
 			if( Time.realtimeSinceStartup - _lastPress > _longClickDuration )
 			{
-				CastSkill();
-
-
+				//CastSkill();
+				if( SkillSprite.activeSelf == false  ){
+					SKILL skl = ConstDataManager.Instance.GetRow< SKILL>( nOpSkillID );
+					SetSkill( skl );
+				}
 			}
 		}
 	}
@@ -166,7 +167,7 @@ public class Panel_Skill : MonoBehaviour {
 		UIGrid grid = SkillGrid.GetComponent<UIGrid>(); 
 		grid.repositionNow = true;		// need this for second pop to re pos
 
-		CastNote.SetActive( false ); 
+		//CastNote.SetActive( false ); 
 	}
 
 	void ClearData()
@@ -215,7 +216,7 @@ public class Panel_Skill : MonoBehaviour {
 		MyTool.SetLabelText (SkillContent, skl.s_NAME);
 		nOpSkillID = skl.n_ID;
 
-		CastNote.SetActive (true);
+	//	CastNote.SetActive (true);
 	}
 
 	void CastSkill(  )
@@ -273,7 +274,9 @@ public class Panel_Skill : MonoBehaviour {
 				return ;
 			}
 			// show skill detail
-			SetSkill ( skl );
+			// SetSkill ( skl );
+
+			nOpSkillID = skl.n_ID;
 		}
 		else 
 		{ 
@@ -287,12 +290,15 @@ public class Panel_Skill : MonoBehaviour {
 //				}
 //				// show skill detail
 //				SetSkill ( skl );
+				SetSkill (null);
+				nOpSkillID = 0;
 			}
 			else{ // normal click . if cast note is not disappear
 				//if( CastNote.activeSelf ){
 				//	OnOkClick (go);
 				//}
 				//_lastPress = -1.0f;		// reset key
+				CastSkill();
 			}
 
 			_lastPress = -1.0f;		// reset key

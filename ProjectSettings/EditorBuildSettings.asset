@@ -15,7 +15,7 @@ EditorBuildSettings:
     path: Assets/Project/Scene/4Patch.unity
   - enabled: 1
     path: Assets/Project/Scene/5Main.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Project/Scene/FacialAnimation.unity
   - enabled: 0
     path: Assets/Project/Scene/ComicEditScene.unity

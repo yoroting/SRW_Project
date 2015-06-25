@@ -69,9 +69,9 @@ public class Panel_UnitInfo : MonoBehaviour {
 		// change face	
 		UITexture tex = FaceObj.GetComponent<UITexture>();
 		if (tex != null) {
-			string url = "Assets/Art/char/" + pUnitData.cCharData.s_FILENAME + "_L.png";
+			string url = "Art/char/" + pUnitData.cCharData.s_FILENAME + "_L";
 			//Texture2D tex = Resources.LoadAssetAtPath(url, typeof(Texture2D)) as Texture2D;
-			Texture t = Resources.LoadAssetAtPath (url, typeof(Texture)) as Texture;
+			Texture t = Resources.Load(url, typeof(Texture)) as Texture;
 			tex.mainTexture = t;				
 		}
 

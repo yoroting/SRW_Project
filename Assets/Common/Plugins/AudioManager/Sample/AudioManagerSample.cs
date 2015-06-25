@@ -20,7 +20,7 @@ public class AudioManagerSample : MonoBehaviour {
 	
 	private static AudioClip LoadClipFunc(string audioPath)
 	{
-		AudioClip clip = Resources.LoadAssetAtPath<AudioClip>(audioPath);
+		AudioClip clip = Resources.Load<AudioClip>(audioPath);
 		if(clip == null){
 			Debug.LogError("音效資源讀取失敗:" + audioPath);
 		}

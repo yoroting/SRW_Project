@@ -250,7 +250,17 @@ public class Panel_unit : MonoBehaviour {
 		pUnitData = GameDataManager.Instance.CreateChar( nCharID );
 		if( pUnitData == null )
 			return;
+		CHARS charData = GameDataManager.Instance.GetConstCharData (nCharID); //ConstDataManager.Instance.GetRow<CHARS>( nCharID );
+		if( charData == null)
+			return;
+		// change face
+		string url = "Art/char/" + charData.s_FILENAME +"_S";
+		UITexture face = FaceObj.GetComponent<UITexture>();
+		if( face != null )
+		{
+			face.mainTexture = Resources.Load <Texture>( url  ) ;
 
+		}
 
 	}
 

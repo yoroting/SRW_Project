@@ -1235,9 +1235,9 @@ public class Panel_StageUI : MonoBehaviour
 
 	GameObject AddUnit( _CAMP nCampID , int nCharID , int x , int y )
 	{
-		CHARS charData = GameDataManager.Instance.GetConstCharData (nCharID); //ConstDataManager.Instance.GetRow<CHARS>( nCharID );
-		if( charData == null)
-			return null;
+//		CHARS charData = GameDataManager.Instance.GetConstCharData (nCharID); //ConstDataManager.Instance.GetRow<CHARS>( nCharID );
+//		if( charData == null)
+//			return null;
 		// get data from Const data
 		if (TilePlaneObj == null) {
 			Debug.Log( "Stage Addunit to null TilePlane" );
@@ -1249,19 +1249,20 @@ public class Panel_StageUI : MonoBehaviour
 		
 		
 		// charge face text				
-		UITexture tex = obj.GetComponentInChildren<UITexture>();
-		
-		if( tex )
-		{
-			if(tex != null){
-				//	DynamicAssetBundleLoader.LoadTexture(tex,DynamicAssetBundleLoader.SSAssetType.Card, "CARD_" + card.PicName);
-				
-				string url = "Assets/Art/char/" + charData.s_FILENAME +"_S.png";
-				Texture t= Resources.LoadAssetAtPath( url , typeof(Texture) ) as Texture; ;
-				tex.mainTexture = t;
-				// tex.MakePixelPerfect(); don't make pixel it
-			}
-		}
+//		UITexture tex = obj.GetComponentInChildren<UITexture>();
+//		
+//		if( tex )
+//		{
+//			if(tex != null){
+//				//	DynamicAssetBundleLoader.LoadTexture(tex,DynamicAssetBundleLoader.SSAssetType.Card, "CARD_" + card.PicName);
+//				
+//				string url = "Art/char/" + charData.s_FILENAME +"_S";
+//				Texture t= Resources.Load <Texture>( url  ) ;
+//				tex.mainTexture = t;
+//				// tex.MakePixelPerfect(); don't make pixel it
+//			}
+//		}
+
 		// regedit to gamedata manager
 		Panel_unit unit = obj.GetComponent<Panel_unit>();
 		//UNIT_DATA unit = GameDataManager.Instance.CreateChar( nCharID );
