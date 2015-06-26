@@ -426,8 +426,8 @@ public class Panel_CMDUnitUI : MonoBehaviour
 				}
 				else{
 					//cast directly don't make a battle cmd to destory original enemy atk cmd
-					ActionManager.Instance.CreateCastingAction( pCmder.Ident() , nSkillID );
-					ActionManager.Instance.CreateCastoutAction( pCmder.Ident() , -1 , -1 ,  nSkillID );
+					ActionManager.Instance.CreateCastAction( pCmder.Ident() , nSkillID );
+					ActionManager.Instance.CreateHitAction( pCmder.Ident() , -1 , -1 ,  nSkillID );
 					Panel_CMDUnitUI.CloseCMDUI(); // normal close
 
 				}

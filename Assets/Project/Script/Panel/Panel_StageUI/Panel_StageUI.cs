@@ -152,23 +152,6 @@ public class Panel_StageUI : MonoBehaviour
 	
 	}
 
-	IEnumerator StageLoading(  )
-	{
-		// Custom Update Routine which repeats forever
-		do
-		{
-			// wait one frame and continue
-			yield return 1;
-			
-			if ( bIsLoading == false )
-			{
-				// end
-				PanelManager.Instance.CloseUI( "Panel_Loading");
-				yield break;
-			}			
-			
-		} while (true);
-	}
 
 
 	void OnEnable()
@@ -202,29 +185,99 @@ public class Panel_StageUI : MonoBehaviour
 
 		IsEventEnd = false;
 	}
+
+	IEnumerator StageLoading(  )
+	{
+		// Custom Update Routine which repeats forever
+		do
+		{
+			// wait one frame and continue
+			yield return 0;
+					
+			if ( bIsLoading == false )
+			{
+				Debug.Log( "LoadingCoroutine End"  + Time.time );
+				// end
+				PanelManager.Instance.CloseUI( "Panel_Loading");
+				yield break;
+			}		
+		} while (true);
+		
+//		bIsLoading = true;
+//		
+//		PanelManager.Instance.OpenUI( "Panel_Loading");
+//		yield return 0;
+//		
+//		// clear data
+//		Clear ();
+//		
+//		Debug.Log( "stageloding:clearall"  + Time.time );
+//		
+//		// load const data
+//		StageData = ConstDataManager.Instance.GetRow<STAGE_DATA> ( GameDataManager.Instance.nStageID );
+//		if( StageData == null ){
+//			Debug.LogFormat( "stageloding:StageData fail with ID {0} : Time{1} "  , GameDataManager.Instance.nStageID ,Time.time);
+//			yield break;
+//		}
+//		
+//		// load scene file
+//		if( LoadScene( StageData.n_SCENE_ID ) == false ){
+//			Debug.LogFormat( "stageloding:LoadScene fail with ID {0} : Time{1}"   , StageData.n_SCENE_ID,Time.time );
+//			yield break;
+//		}
+//		
+//		// EVENT 
+//		//GameDataManager.Instance.nRound = 0;		// many mob pop in talk ui. we need a 0 round to avoid issue
+//		
+//		//Record All Event to execute
+//		//EvtPool.Clear();
+//		char [] split = { ';' };
+//		string [] strEvent = StageData.s_EVENT.Split( split );
+//		for( int i = 0 ; i< strEvent.Length ; i++ )
+//		{
+//			int nEventID = int.Parse( strEvent[i] );
+//			STAGE_EVENT evt = ConstDataManager.Instance.GetRow<STAGE_EVENT> ( nEventID );
+//			if( evt != null ){
+//				EvtPool.Add( nEventID , evt );
+//			}
+//		}
+//		
+//		Debug.Log( "stageloding:create event Pool complete"  + Time.time );
+//		
+//		yield return new WaitForSeconds( 3.0f);
+//		bIsLoading = false;
+//		PanelManager.Instance.CloseUI( "Panel_Loading");
+	}
+
+
 	// Use this for initialization
 	void Start () {
+		Debug.Log( "stage srart loding"  + Time.time );
 
 		// loading panel
 		PanelManager.Instance.OpenUI( "Panel_Loading");
 		bIsLoading = true;
-		StartCoroutine("StageLoading", 0.5f);
+		StartCoroutine("StageLoading" );
 
 		// clear data
 		Clear ();
-
+		
+		Debug.Log( "stageloding:clearall"  + Time.time );		
 		// load const data
 		StageData = ConstDataManager.Instance.GetRow<STAGE_DATA> ( GameDataManager.Instance.nStageID );
-		if( StageData == null )
-			return ;
+		if( StageData == null ){
+			Debug.LogFormat( "stageloding:StageData fail with ID {0} : Time{1} "  , GameDataManager.Instance.nStageID ,Time.time);
+			return;
+		}
 		
 		// load scene file
-		if( LoadScene( StageData.n_SCENE_ID ) == false )
-			return ;
+		if( LoadScene( StageData.n_SCENE_ID ) == false ){
+			Debug.LogFormat( "stageloding:LoadScene fail with ID {0} : Time{1}"   , StageData.n_SCENE_ID,Time.time );
+			return;
+		}
 		
 		// EVENT 
 		//GameDataManager.Instance.nRound = 0;		// many mob pop in talk ui. we need a 0 round to avoid issue
-		//GameDataManager.Instance.nActiveCamp  = _CAMP._PLAYER;
 		
 		//Record All Event to execute
 		//EvtPool.Clear();
@@ -239,11 +292,42 @@ public class Panel_StageUI : MonoBehaviour
 			}
 		}
 		
+		Debug.Log( "stageloding:create event Pool complete"  + Time.time );
+
+//		// clear data
+//		Clear ();
+//
+//		// load const data
+//		StageData = ConstDataManager.Instance.GetRow<STAGE_DATA> ( GameDataManager.Instance.nStageID );
+//		if( StageData == null )
+//			return ;
+//		
+//		// load scene file
+//		if( LoadScene( StageData.n_SCENE_ID ) == false )
+//			return ;
+//		
+//		// EVENT 
+//		//GameDataManager.Instance.nRound = 0;		// many mob pop in talk ui. we need a 0 round to avoid issue
+//
+//		//Record All Event to execute
+//		//EvtPool.Clear();
+//		char [] split = { ';' };
+//		string [] strEvent = StageData.s_EVENT.Split( split );
+//		for( int i = 0 ; i< strEvent.Length ; i++ )
+//		{
+//			int nEventID = int.Parse( strEvent[i] );
+//			STAGE_EVENT evt = ConstDataManager.Instance.GetRow<STAGE_EVENT> ( nEventID );
+//			if( evt != null ){
+//				EvtPool.Add( nEventID , evt );
+//			}
+//		}
+		
 		
 		
 		//Dictionary< int , STAGE_EVENT > EvtPool;			// add event id 
-		bIsLoading = false;
-	
+		bIsLoading = false;	
+		Debug.Log( "stage srart loding complete"  + Time.time );
+
 	}
 
 	void FixPlanePosition()
@@ -300,7 +384,8 @@ public class Panel_StageUI : MonoBehaviour
 
 	// Update is called once per frame
 	void Update () {
-
+		if( bIsLoading )
+			return;
 
 		GameDataManager.Instance.Update();
 
@@ -694,12 +779,45 @@ public class Panel_StageUI : MonoBehaviour
 	bool LoadScene( int nScnid )
 	{
 		SCENE_NAME scn = ConstDataManager.Instance.GetRow<SCENE_NAME> ( nScnid );
-		if (scn == null)
+		if (scn == null){
+			Debug.LogFormat( "LoadScene fail with ID {0}" , nScnid );
 			return false;
-		string filename = "Assets/StreamingAssets/scn/"+scn.s_MODLE_ID+".scn";		
+		}
 
+		// string filename = "Assets/StreamingAssets/scn/"+scn.s_MODLE_ID+".scn"; // old moethod
 
-		if( Grids.Load( filename )==true )
+		string dataPathRelativeAssets = "scn/";
+		string rootPath = null;
+
+		#if UNITY_EDITOR                        
+		rootPath = Application.dataPath + "/StreamingAssets/" + dataPathRelativeAssets + scn.s_MODLE_ID + ".scn";
+		#elif UNITY_IPHONE
+		rootPath =  Application.dataPath + "/Raw/" + dataNames[i] + ".scn";
+		#elif UNITY_ANDROID
+		rootPath = Application.dataPath + "!/assets/" + dataPathRelativeAssets + dataNames[i] + ".scn";
+		#else
+		rootPath = Application.dataPath + "/StreamingAssets/" + dataPathRelativeAssets + dataNames[i] + ".scn";
+		#endif
+
+		// real to binary
+//		WWW www = new WWW(rootPath);
+//		if(endFunc != null){
+//			yield return www;
+//		}else{
+//			while(!www.isDone){
+//				
+//			}
+//		}
+//		string txt = Application.dataPath;
+//		string txt2 = Application.persistentDataPath;
+//		string utext = txt + "/" +txt2;
+//		Debug.Log( "unity data path :"+utext );
+
+		Debug.Log( "load scn file on:"+rootPath );
+
+		//if( Grids.Load( www.bytes )==true )
+		if( Grids.Load( rootPath )==true )
+		//if( Grids.Load( filename )==true )
 		{
 			// start to create sprite
 			for( int i = -Grids.hW ; i <= Grids.hW ; i++ ){

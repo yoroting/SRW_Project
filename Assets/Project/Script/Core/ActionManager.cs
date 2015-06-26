@@ -14,9 +14,11 @@ public enum _ACTION
 	_ATK,
 	_DEF,
 
-	_CAST,			// atk a pos or AOE
+	_CAST,		// cast a skill  
 
-	_CASTING,		// cast a skill  
+	_HIT,			// atk a pos or AOE
+
+
 
 	_HITED,
 	_ASSIST_ATK,
@@ -216,11 +218,11 @@ public partial class ActionManager
 		return  act;
 	}
 
-	public uAction CreateCastingAction( int nAtkIdent , int nSkillID )
+	public uAction CreateCastAction( int nAtkIdent , int nSkillID )
 	{
-		uAction act = CreateAction (nAtkIdent, _ACTION._CASTING);
+		uAction act = CreateAction (nAtkIdent, _ACTION._CAST);
 		if( act != null )  {
-			act.HitResult.Add( new cHitResult( cHitResult._TYPE._CASTING, nAtkIdent, nSkillID ) );
+			act.HitResult.Add( new cHitResult( cHitResult._TYPE._CAST, nAtkIdent, nSkillID ) );
 			act.nSkillID = nSkillID;
 			cUnitData caster = GameDataManager.Instance.GetUnitDateByIdent( nAtkIdent );
 			if( caster != null ){
@@ -232,9 +234,9 @@ public partial class ActionManager
 		return  act;
 	}
 
-	public uAction CreateCastoutAction( int nAtkIdent , int X , int Y , int nSkillID )
+	public uAction CreateHitAction( int nAtkIdent , int X , int Y , int nSkillID )
 	{
-		uAction act = CreateAction (nAtkIdent, _ACTION._CAST);
+		uAction act = CreateAction (nAtkIdent, _ACTION._HIT);
 		if( act != null )  {
 			act.nSkillID = nSkillID;
 			act.nTarGridX = X;

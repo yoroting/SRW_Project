@@ -488,7 +488,7 @@ public class Panel_unit : MonoBehaviour {
 				break;
 			}
 			break;
-		case _ACTION._CASTING:			// casting
+		case _ACTION._CAST:			// casting
 			switch( nSubActFlow )
 			{
 			case 0:
@@ -502,12 +502,12 @@ public class Panel_unit : MonoBehaviour {
 				break;
 			}
 			break;
-		case _ACTION._CAST:			// castout
+		case _ACTION._HIT:			// castout
 			switch( nSubActFlow )
 			{
 			case 0:
 				nSubActFlow++;
-				ActionCastout( CurAction.nSkillID ,CurAction.nTarGridX , CurAction.nTarGridY );
+				ActionHit( CurAction.nSkillID ,CurAction.nTarGridX , CurAction.nTarGridY );
 				//ActionMove( CurAction.nTarGridX , CurAction.nTarGridY  );
 				break;
 			case 1:
@@ -553,7 +553,7 @@ public class Panel_unit : MonoBehaviour {
 
 
 	}
-	public void ActionCastout( int nSkill , int GridX , int GridY )
+	public void ActionHit( int nSkill , int GridX , int GridY )
 	{
 		// add preform in the future
 

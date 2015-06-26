@@ -52,12 +52,12 @@ public class StoryUIPanel : MonoBehaviour {
 		UIEventListener.Get(SkipButton).onClick += OnSkipButtonClick;
 
 		//
-		GameEventManager.AddEventListener(  StoryStartStageEvent.Name , OnStoryStartStageEvent );
+	//	GameEventManager.AddEventListener(  StoryStartStageEvent.Name , OnStoryStartStageEvent );
 
 
 		PanelManager.Instance.OpenUI( "Panel_Loading");
 		bIsLoading = true;
-		StartCoroutine("StoryLoading", 0.5);
+		StartCoroutine("StoryLoading");
 	}
 
 	IEnumerator StoryLoading()
@@ -145,7 +145,7 @@ public class StoryUIPanel : MonoBehaviour {
 
 	void OnDestroy()
 	{
-		GameEventManager.RemoveEventListener(  StoryStartStageEvent.Name , OnStoryStartStageEvent );
+	//	GameEventManager.RemoveEventListener(  StoryStartStageEvent.Name , OnStoryStartStageEvent );
 	}
 
 	// Base Panel click
@@ -180,27 +180,27 @@ public class StoryUIPanel : MonoBehaviour {
 	}
 
 	// Game event 
-	public void OnStoryStartStageEvent(GameEvent evt)
-	{
-		Debug.Log ("OnStoryStartStageEvent");
-		// setup global stage =1;
-		//string str = evt.ToString ();
-		//int stageid = int.Parse (str);
-		StoryStartStageEvent Evt = evt as StoryStartStageEvent;
-		if (Evt == null)
-			return;
-
-		GameDataManager.Instance.nStageID = Evt.StageID;
-		GameObject obj = PanelManager.Instance.OpenUI( Panel_StageUI.Name );//"Panel_StageUI"
-		// 回到第0 關
-
-		//GameDataManager.Instance.nStageID = Config.StartStage;  //設定為 第一關
-		// open story panel 
-
-//		if (obj != null) {
-			PanelManager.Instance.CloseUI (Name);
-//		}
-	}
+//	public void OnStoryStartStageEvent(GameEvent evt)
+//	{
+//		Debug.Log ("OnStoryStartStageEvent");
+//		// setup global stage =1;
+//		//string str = evt.ToString ();
+//		//int stageid = int.Parse (str);
+//		StoryStartStageEvent Evt = evt as StoryStartStageEvent;
+//		if (Evt == null)
+//			return;
+//
+//		GameDataManager.Instance.nStageID = Evt.StageID;
+//		GameObject obj = PanelManager.Instance.OpenUI( Panel_StageUI.Name );//"Panel_StageUI"
+//		// 回到第0 關
+//
+//		//GameDataManager.Instance.nStageID = Config.StartStage;  //設定為 第一關
+//		// open story panel 
+//
+//	//		if (obj != null) {
+//			PanelManager.Instance.CloseUI (Name);
+//	//		}
+//	}
 
 
 
@@ -215,10 +215,16 @@ public class StoryUIPanel : MonoBehaviour {
 			m_bIsEnd = true;
 		}
 
+		Debug.LogFormat("StoryEnd go StartStage{0}" , m_StoryData.n_NEXT_STAGE );
+
+		
+		GameDataManager.Instance.nStageID =  m_StoryData.n_NEXT_STAGE;
+		PanelManager.Instance.OpenUI( Panel_StageUI.Name );//"Panel_StageUI"
+
 		// go to talk or stage
-		StoryStartStageEvent evt = new StoryStartStageEvent ();
-		evt.StageID = m_StoryData.n_NEXT_STAGE;
-		GameEventManager.DispatchEvent ( evt );
+//		StoryStartStageEvent evt = new StoryStartStageEvent ();
+//		evt.StageID = m_StoryData.n_NEXT_STAGE;
+//		GameEventManager.DispatchEvent ( evt );
 		// GameEventManager.DispatchEventByName( StoryStartStageEvent.Name  , evt );  
 
 

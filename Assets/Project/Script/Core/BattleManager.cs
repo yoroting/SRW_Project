@@ -29,9 +29,8 @@ public class cHitResult		//
 		_ADDBUFF	,
 		_DELBUFF	,
 
-		_CASTING	,
-		_CASTOUT	,
-		_HIT		,		// 
+		_CAST		,		// cast skill
+		_HIT		,		// skill hit enemy
 		_BEHIT		,		// 被
 		_HITBACK	,
 	};
@@ -236,7 +235,7 @@ public partial class BattleManager
 					
 					
 					// atk start cast action
-					uAction pCastingAction = ActionManager.Instance.CreateCastingAction( nAtkerID, nAtkerSkillID  );
+					uAction pCastingAction = ActionManager.Instance.CreateCastAction( nAtkerID, nAtkerSkillID  );
 					// skill attr
 					if( pCastingAction != null )
 					{
@@ -277,7 +276,7 @@ public partial class BattleManager
 
 			break;
 		case 2:			// def casting
-			uAction pCastingAction = ActionManager.Instance.CreateCastingAction( nDeferID , nDeferSkillID  );
+			uAction pCastingAction = ActionManager.Instance.CreateCastAction( nDeferID , nDeferSkillID  );
 			if( pCastingAction != null )
 			{
 //				Defer.DoSkillCastEffect( ref pCastingAction.HitResult  );
@@ -391,7 +390,7 @@ public partial class BattleManager
 		case 0:	// prepare for event check
 			Atker.SetFightAttr (nDeferID, nAtkerSkillID);
 			Atker.AddStates (_UNITSTATE._ATKER);
-			uAction pCastingAction = ActionManager.Instance.CreateCastingAction (nAtkerID, nAtkerSkillID);// Casting
+			uAction pCastingAction = ActionManager.Instance.CreateCastAction (nAtkerID, nAtkerSkillID);// Casting
 			// skill attr
 			if (pCastingAction != null) {
 	//			Atker.DoSkillCastEffect( ref pCastingAction.HitResult );
@@ -402,10 +401,10 @@ public partial class BattleManager
 			break;
 		case 1:			// Castout
 			// hit effect
-			uAction pAct = ActionManager.Instance.CreateCastoutAction ( nAtkerID, nTarGridX , nTarGridY , nAtkerSkillID );
+			uAction pAct = ActionManager.Instance.CreateHitAction ( nAtkerID, nTarGridX , nTarGridY , nAtkerSkillID );
 			if( pAct != null )
 			{
-				pAct.AddHitResult( CalCastResult( nAtkerID, nTarGridX , nTarGridY , nAtkerSkillID ) );
+				pAct.AddHitResult( CalSkillHitResult( nAtkerID, nTarGridX , nTarGridY , nAtkerSkillID ) );
 
 			}
 			nPhase++;
@@ -638,7 +637,7 @@ public partial class BattleManager
 	}
 
 	// cal result of castout hit
-	public List<cHitResult> CalCastResult( int nAtker, int  nGridX ,int  nGridY , int nSkillID  )
+	public List<cHitResult> CalSkillHitResult( int nAtker, int  nGridX ,int  nGridY , int nSkillID  )
 	{
 		cUnitData pAtker = GameDataManager.Instance.GetUnitDateByIdent( nAtker ); 	//Panel_StageUI.Instance.GetUnitByIdent( nAtker ); 
 		if ( (pAtker == null)  )

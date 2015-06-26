@@ -988,12 +988,27 @@ namespace MYGRIDS
             return true;
         }
 
+		public bool Load( byte[] bytes )
+		{
+		//	string str = System.Convert.ToString(bytes );
 
-        public bool Load(string sFileName)
-        {
-            FileStream fileStream = new FileStream(sFileName, FileMode.Open);
-            if (fileStream == null) return false;
-            BinaryReader bReader = new BinaryReader(fileStream);
+			BinaryReader bReader = new BinaryReader( new MemoryStream(bytes) );
+			if (bReader == null) return false;
+
+			return  Load( bReader );
+		}
+		public bool Load(string sFileName)
+		{
+			FileStream fileStream = new FileStream(sFileName, FileMode.Open);
+			if (fileStream == null) return false;
+			BinaryReader bReader = new BinaryReader(fileStream);
+			bool bResult = Load( bReader );
+			fileStream.Close();      
+			return bResult;
+		}
+
+		public bool Load(BinaryReader bReader)
+        {            
             if (bReader == null) return false;
 
             //=================load ====
@@ -1043,7 +1058,7 @@ namespace MYGRIDS
             }
             finally
             {
-                fileStream.Close();               
+                      
             }
 			// create path findere map
 
