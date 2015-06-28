@@ -83,6 +83,7 @@ public class Panel_StageUI : MonoBehaviour
 	// float fUIRatio;
 
 	void Awake( ){	
+		Debug.Log( "stage srart awaking"  + Time.time );
 		instance = this; 		// special singleton
 		//UIRoot mRoot = NGUITools.FindInParents<UIRoot>(gameObject);	
 		//fUIRatio = (float)mRoot.activeHeight / Screen.height;
@@ -150,6 +151,7 @@ public class Panel_StageUI : MonoBehaviour
 		// can't open panel in awake
 		// Don't open create panel in stage awake. i have develop mode that place stage in scene initial. the panelmanager don't initial here
 	
+		Debug.Log( "stage srart awake finish"  + Time.time );
 	}
 
 
@@ -786,28 +788,33 @@ public class Panel_StageUI : MonoBehaviour
 
 		// string filename = "Assets/StreamingAssets/scn/"+scn.s_MODLE_ID+".scn"; // old moethod
 
+		//
+
 		string dataPathRelativeAssets = "scn/";
 		string rootPath = null;
 
+		//注意檔名的大小寫。在android 下。 大小寫是不同檔案
 		#if UNITY_EDITOR                        
-		rootPath = Application.dataPath + "/StreamingAssets/" + dataPathRelativeAssets + scn.s_MODLE_ID + ".scn";
+		rootPath =  "file://" +  Application.dataPath + "/StreamingAssets/" + dataPathRelativeAssets + scn.s_MODLE_ID + ".scn";
 		#elif UNITY_IPHONE
-		rootPath =  Application.dataPath + "/Raw/" + dataNames[i] + ".scn";
+		rootPath =   "file://" + Application.dataPath + "/Raw/" + scn.s_MODLE_ID + ".scn";
 		#elif UNITY_ANDROID
-		rootPath = Application.dataPath + "!/assets/" + dataPathRelativeAssets + dataNames[i] + ".scn";
+		rootPath =  "jar:file://" + Application.dataPath + "!/assets/" + dataPathRelativeAssets + scn.s_MODLE_ID + ".scn";
 		#else
-		rootPath = Application.dataPath + "/StreamingAssets/" + dataPathRelativeAssets + dataNames[i] + ".scn";
+		rootPath = "file://" +  Application.dataPath + "/StreamingAssets/" + dataPathRelativeAssets + scn.s_MODLE_ID + ".scn";
 		#endif
 
 		// real to binary
-//		WWW www = new WWW(rootPath);
-//		if(endFunc != null){
-//			yield return www;
-//		}else{
-//			while(!www.isDone){
-//				
-//			}
-//		}
+		WWW www = new WWW(rootPath);
+		while(!www.isDone){
+				
+		}
+
+		if (www.bytes.Length == 0) {
+			Debug.Log ( "read 0 bytes scn with file:"+rootPath );
+		}
+	
+
 //		string txt = Application.dataPath;
 //		string txt2 = Application.persistentDataPath;
 //		string utext = txt + "/" +txt2;
@@ -815,30 +822,35 @@ public class Panel_StageUI : MonoBehaviour
 
 		Debug.Log( "load scn file on:"+rootPath );
 
-		//if( Grids.Load( www.bytes )==true )
-		if( Grids.Load( rootPath )==true )
+		if (Grids.Load (www.bytes) == true) 
+		//if( Grids.Load( rootPath )==true )
 		//if( Grids.Load( filename )==true )
 		{
 			// start to create sprite
-			for( int i = -Grids.hW ; i <= Grids.hW ; i++ ){
-				for( int j = -Grids.hH ; j <= Grids.hH ; j++ )
-				{			
-					_TILE t = Grids.GetValue( i , j  );
+			for (int i = -Grids.hW; i <= Grids.hW; i++) {
+				for (int j = -Grids.hH; j <= Grids.hH; j++) {			
+
+					//rids.SetValue(i, j, _TILE._GREEN ); // test code
+
+					_TILE t = Grids.GetValue (i, j);
 				
-					GameObject cell = GetTileCellPrefab( i , j , t ); 
-					if( cell == null )
-					{
+					GameObject cell = GetTileCellPrefab (i, j, t); 
+					if (cell == null) {
 						// debug message
-						string err = string.Format( "Error: Create Tile Failed in Scene({0}),X({1},Y({2},T({3} )" , scn.s_MODLE_ID , i , j ,t ); 
-						Debug.Log(err);
+						string err = string.Format ("Error: Create Tile Failed in Scene({0}),X({1},Y({2},T({3} )", scn.s_MODLE_ID, i, j, t); 
+						Debug.Log (err);
 
 					}
 				}
 			}
 			// reget the drag limit 
-			Resize();
+			Resize ();
+		} else {
+			Debug.LogError( "load scn Failed!"+scn.s_MODLE_ID );
+
 		}
 
+		Debug.Log ( "load scn finish!" );
 		// change bgm '
 		GameSystem.PlayBGM ( scn.n_BGM );
 
@@ -933,6 +945,8 @@ public class Panel_StageUI : MonoBehaviour
 
 	public void CreateMoveOverEffect( Panel_unit unit )
 	{
+		Debug.Log( "stage CreateMoveOverEffect srart"  + Time.time );
+
 		foreach( KeyValuePair< string , GameObject> pair in OverCellPool )
 		{
 			if( pair.Value != null )
@@ -956,6 +970,9 @@ public class Panel_StageUI : MonoBehaviour
 	//	List<iVec2> final = Panel_StageUI.Instance.Grids.FilterZocPool (unit.Loc, ref moveList, ref posList);
 	//	moveList = final;
 
+		float sumastarTime = 0.0f;
+		float sumCellTime = 0.0f;
+
 		// start create over eff
 		foreach( iVec2 v in moveList )
 		{
@@ -964,12 +981,17 @@ public class Panel_StageUI : MonoBehaviour
 				continue;
 			}
 			// check if this vec can reach
+			float ptime = Time.time;
 			List<iVec2> path = PathFinding( unit , unit.Loc , v , pdata.GetMov() );
+			sumastarTime += ( Time.time-ptime);
 			if( path.Count <= 0 )
 				continue;
 
 			// create move over cell
+			float ftime = Time.time;
 			GameObject over = ResourcesManager.CreatePrefabGameObj(TilePlaneObj, "Prefab/MoveOverEffect");
+			sumCellTime += ( Time.time-ftime);
+
 			if( over != null )
 			{
 				over.name = string.Format("Over({0},{1},{2})", v.X , v.Y , 0 );
@@ -980,6 +1002,8 @@ public class Panel_StageUI : MonoBehaviour
 				OverCellPool.Add( v.GetKey() , over );
 			}
 		}
+
+		Debug.Log( "stage CreateMoveOverEffect finish"  + Time.time );
 	}
 
 	public void CreateAttackOverEffect( Panel_unit unit , int nRange=1)

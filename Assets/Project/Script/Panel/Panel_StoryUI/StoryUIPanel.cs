@@ -216,7 +216,7 @@ public class StoryUIPanel : MonoBehaviour {
 		}
 
 		Debug.LogFormat("StoryEnd go StartStage{0}" , m_StoryData.n_NEXT_STAGE );
-
+		PanelManager.Instance.OpenUI( "Panel_Loading"); // start load ing here
 		
 		GameDataManager.Instance.nStageID =  m_StoryData.n_NEXT_STAGE;
 		PanelManager.Instance.OpenUI( Panel_StageUI.Name );//"Panel_StageUI"
