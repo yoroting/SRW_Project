@@ -149,7 +149,6 @@ public partial class ConstDataManager
 			rootPath = "file://" + Application.dataPath + "/StreamingAssets/" + dataPathRelativeAssets + dataNames[i] + ".pcz";
 			#endif
 
-			Debug.Log( "read constdata on path:" + rootPath );
 
 			WWW www = new WWW(rootPath);
 			if(endFunc != null){
