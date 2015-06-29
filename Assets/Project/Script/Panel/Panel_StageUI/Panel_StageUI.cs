@@ -39,6 +39,10 @@ public class Panel_StageUI : MonoBehaviour
 	public GameObject TilePlaneObj; // plane of all tiles sprite
 	public GameObject MaskPanelObj; // plane mask
 
+	public GameObject TileObj; 	// 
+	public GameObject MoveEftObj; 	// 
+	public GameObject AtkEftObj; 	// 
+
 
 	Panel_unit TarceMoveingUnit; //  Trace the moving unit
 
@@ -322,7 +326,11 @@ public class Panel_StageUI : MonoBehaviour
 //			}
 //		}
 		
-		
+		// create pool
+		MoveEftObj.CreatePool( 64 );
+		AtkEftObj.CreatePool( 64 );
+
+
 		
 		//Dictionary< int , STAGE_EVENT > EvtPool;			// add event id 
 		bIsLoading = false;	
@@ -778,6 +786,8 @@ public class Panel_StageUI : MonoBehaviour
 	}
 	bool LoadScene( int nScnid )
 	{
+		System.GC.Collect();			// Free memory resource here
+
 		SCENE_NAME scn = ConstDataManager.Instance.GetRow<SCENE_NAME> ( nScnid );
 		if (scn == null){
 			Debug.LogFormat( "LoadScene fail with ID {0}" , nScnid );
@@ -792,11 +802,11 @@ public class Panel_StageUI : MonoBehaviour
 		#if UNITY_EDITOR                        
 		rootPath = Application.dataPath + "/StreamingAssets/" + dataPathRelativeAssets + scn.s_MODLE_ID + ".scn";
 		#elif UNITY_IPHONE
-		rootPath =  Application.dataPath + "/Raw/" + dataNames[i] + ".scn";
+		rootPath =  Application.dataPath + "/Raw/" + scn.s_MODLE_ID + ".scn";
 		#elif UNITY_ANDROID
-		rootPath = Application.dataPath + "!/assets/" + dataPathRelativeAssets + dataNames[i] + ".scn";
+		rootPath = Application.dataPath + "!/assets/" + dataPathRelativeAssets + scn.s_MODLE_ID + ".scn";
 		#else
-		rootPath = Application.dataPath + "/StreamingAssets/" + dataPathRelativeAssets + dataNames[i] + ".scn";
+		rootPath = Application.dataPath + "/StreamingAssets/" + dataPathRelativeAssets + scn.s_MODLE_ID + ".scn";
 		#endif
 
 		// real to binary
@@ -914,19 +924,27 @@ public class Panel_StageUI : MonoBehaviour
 		{
 			if( pair.Value != null )
 			{
-				NGUITools.Destroy( pair.Value );
+
+
+				//NGUITools.Destroy( pair.Value );
+
+
 				//pair.Value = null;
 			}
 		}
+		MoveEftObj.RecycleAll();
+
 		OverCellPool.Clear ();
 		foreach( KeyValuePair< string , GameObject> pair in OverCellAtkPool )
 		{
 			if( pair.Value != null )
 			{
-				NGUITools.Destroy( pair.Value );
+//				NGUITools.Destroy( pair.Value );
 				//pair.Value = null;
 			}
 		}
+		AtkEftObj.RecycleAll();
+
 		OverCellAtkPool.Clear ();
 
 	}
@@ -937,10 +955,13 @@ public class Panel_StageUI : MonoBehaviour
 		{
 			if( pair.Value != null )
 			{
-				NGUITools.Destroy( pair.Value );
+				//NGUITools.Destroy( pair.Value );
 				//pair.Value = null;
 			}
 		}
+
+		MoveEftObj.RecycleAll();
+
 		OverCellPool.Clear ();
 		if (unit == null)
 			return;
@@ -969,15 +990,25 @@ public class Panel_StageUI : MonoBehaviour
 				continue;
 
 			// create move over cell
-			GameObject over = ResourcesManager.CreatePrefabGameObj(TilePlaneObj, "Prefab/MoveOverEffect");
+			//GameObject over = ResourcesManager.CreatePrefabGameObj(TilePlaneObj, "Prefab/MoveOverEffect");
+			GameObject over = MoveEftObj.Spawn(  TilePlaneObj.transform );
 			if( over != null )
 			{
 				over.name = string.Format("Over({0},{1},{2})", v.X , v.Y , 0 );
 				SynGridToLocalPos( over , v.X , v.Y) ;
-				
+
+				UIWidget widget = over.GetComponent<UIWidget> ();
+				if( widget != null )
+				{
+					//widget.height 	= 100;
+					//	widget.width 	= 100;
+				}
+
 				//UIEventListener.Get(over).onClick += OnOverClick;
 				
 				OverCellPool.Add( v.GetKey() , over );
+
+			//	over.transform.SetParent ( TilePlaneObj.transform );
 			}
 		}
 	}
@@ -1004,7 +1035,8 @@ public class Panel_StageUI : MonoBehaviour
 
 		foreach( iVec2 v in AtkList )
 		{
-			GameObject over = ResourcesManager.CreatePrefabGameObj(TilePlaneObj, "Prefab/AttackOverEffect");
+			//GameObject over = ResourcesManager.CreatePrefabGameObj(TilePlaneObj, "Prefab/AttackOverEffect");
+			GameObject over = AtkEftObj.Spawn( TilePlaneObj.transform );
 			if( over != null )
 			{
 				over.name = string.Format("Over({0},{1},{2})", v.X , v.Y , 0 );
@@ -1496,6 +1528,13 @@ public class Panel_StageUI : MonoBehaviour
 		}
 	}
 
+	public Vector3 GetGridSynLocalPos( GameObject obj , int nx , int ny )
+	{
+		Vector3 v = obj.transform.localPosition;
+		v.x = Grids.GetRealX ( nx );
+		v.y = Grids.GetRealY ( ny );
+		return v;
+	}
 	public void SynGridToLocalPos( GameObject obj , int nx , int ny )
 	{
 		Vector3 v = obj.transform.localPosition;
