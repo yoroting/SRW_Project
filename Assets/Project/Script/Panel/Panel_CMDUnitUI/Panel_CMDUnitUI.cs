@@ -20,6 +20,8 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
 	public GameObject NGuiGrids;
 
+	public GameObject CmdButton;
+
 //	public GameObject InfoButton;
 //	public GameObject MoveButton;
 //	public GameObject AttackButton;
@@ -55,6 +57,9 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
 		//
 		//GameEventManager.AddEventListener(  CmdCharMoveEvent.Name , OnCmdCharMoveEvent );
+
+		CmdButton.CreatePool ( 10 );
+		CmdButton.SetActive (false);
 
 		//==============================		
 		ClearCmdPool ();
@@ -143,8 +148,9 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		foreach ( Transform t in lst) {
 
 			///UIEventListener.Get(obj).onClick -= OnCMDButtonClick;;  // no need.. destory soon
-			NGUITools.Destroy( t.gameObject );
+		//	NGUITools.Destroy( t.gameObject );
 		}
+		CmdButton.RecycleAll ();
 
 	}
 
@@ -161,8 +167,9 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		CMD.eCMDTYPE = eType;
 
 		foreach( _CMD_ID id in cmdList )
-		{
-			GameObject obj = ResourcesManager.CreatePrefabGameObj( this.NGuiGrids , "Prefab/CMD_BTN" ); // create cmd and add to grid
+		{	
+			//GameObject obj = ResourcesManager.CreatePrefabGameObj( this.NGuiGrids , "Prefab/CMD_BTN" ); // create cmd and add to grid
+			GameObject obj = CmdButton.Spawn( NGuiGrids.transform );
 			if( obj != null )
 			{
 				obj.name = MyTool.GetCMDNameByID( id );
@@ -179,8 +186,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		UIGrid grid = NGuiGrids.GetComponent<UIGrid>(); 
 		grid.repositionNow = true;		// need this for second pop to re pos
 
-		//NGuiGrids.SetActive (true);
-
+	
 		if( _CMD_TYPE._WAITATK == CMD.eCMDTYPE )
 		{
 			// auto show atk cell

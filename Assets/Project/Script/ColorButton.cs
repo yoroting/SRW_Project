@@ -14,7 +14,11 @@ public class ColorButton : MonoBehaviour {
 	}
 	// Use this for initialization
 	void Start () {
-	
+		UIWidget wi = this.GetComponent<UIWidget >();
+		if( wi != null ){
+			wi.width = 150;  // size fix to correct wh
+			wi.height = 40;			
+		}
 	}
 	
 	// Update is called once per frame

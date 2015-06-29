@@ -231,6 +231,7 @@
      <Compile Include="Assets\Project\Script\BattleMsg.cs" />
      <Compile Include="Assets\Project\Script\BattleValue.cs" />
      <Compile Include="Assets\Project\Script\BuffIcon.cs" />
+     <Compile Include="Assets\Project\Script\CMD_BTN.cs" />
      <Compile Include="Assets\Project\Script\ColorButton.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\AI_COMBAT.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\AI_TACTIC.cs" />
@@ -387,13 +388,13 @@
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
  <Reference Include="Playcoo.Common">
- <HintPath>D:/SRW/SRW_Project/Assets/Common/Plugins/Playcoo.Common.dll</HintPath>
+ <HintPath>G:/Unity Projects/SRW_Project/Assets/Common/Plugins/Playcoo.Common.dll</HintPath>
  </Reference>
  <Reference Include="JsonFx.Json">
- <HintPath>D:/SRW/SRW_Project/Assets/Common/Plugins/JsonFx/JsonFx.Json.dll</HintPath>
+ <HintPath>G:/Unity Projects/SRW_Project/Assets/Common/Plugins/JsonFx/JsonFx.Json.dll</HintPath>
  </Reference>
  <Reference Include="ICSharpCode.SharpZipLib">
- <HintPath>D:/SRW/SRW_Project/Assets/Common/Plugins/SharpZipLib/ICSharpCode.SharpZipLib.dll</HintPath>
+ <HintPath>G:/Unity Projects/SRW_Project/Assets/Common/Plugins/SharpZipLib/ICSharpCode.SharpZipLib.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.iOS.Extensions.Xcode">
  <HintPath>C:/Program Files/Unity/Editor/Data/PlaybackEngines/iossupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>

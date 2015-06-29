@@ -800,23 +800,23 @@ public class Panel_StageUI : MonoBehaviour
 		string rootPath = null;
 
 		#if UNITY_EDITOR                        
-		rootPath = Application.dataPath + "/StreamingAssets/" + dataPathRelativeAssets + scn.s_MODLE_ID + ".scn";
+		rootPath = "file://" +Application.dataPath + "/StreamingAssets/" + dataPathRelativeAssets + scn.s_MODLE_ID + ".scn";
 		#elif UNITY_IPHONE
-		rootPath =  Application.dataPath + "/Raw/" + scn.s_MODLE_ID + ".scn";
+		rootPath =  "file://" +Application.dataPath + "/Raw/" + scn.s_MODLE_ID + ".scn";
 		#elif UNITY_ANDROID
-		rootPath = Application.dataPath + "!/assets/" + dataPathRelativeAssets + scn.s_MODLE_ID + ".scn";
+		rootPath = "jar:file://"+Application.dataPath + "!/assets/" + dataPathRelativeAssets + scn.s_MODLE_ID + ".scn";
 		#else
-		rootPath = Application.dataPath + "/StreamingAssets/" + dataPathRelativeAssets + scn.s_MODLE_ID + ".scn";
+		rootPath = "file://" +Application.dataPath + "/StreamingAssets/" + dataPathRelativeAssets + scn.s_MODLE_ID + ".scn";
 		#endif
 
 		// real to binary
-//		WWW www = new WWW(rootPath);
+		WWW www = new WWW(rootPath);
 //		if(endFunc != null){
 //			yield return www;
 //		}else{
-//			while(!www.isDone){
-//				
-//			}
+			while(!www.isDone){
+				
+			}
 //		}
 //		string txt = Application.dataPath;
 //		string txt2 = Application.persistentDataPath;
@@ -825,8 +825,8 @@ public class Panel_StageUI : MonoBehaviour
 
 		Debug.Log( "load scn file on:"+rootPath );
 
-		//if( Grids.Load( www.bytes )==true )
-		if( Grids.Load( rootPath )==true )
+		if( Grids.Load( www.bytes )==true )
+		//if( Grids.Load( rootPath )==true )
 		//if( Grids.Load( filename )==true )
 		{
 			// start to create sprite
@@ -966,6 +966,7 @@ public class Panel_StageUI : MonoBehaviour
 		if (unit == null)
 			return;
 
+		//return; // 
 		// find move
 		cUnitData pdata = GameDataManager.Instance.GetUnitDateByIdent ( unit.Ident() ); 
 
@@ -977,6 +978,8 @@ public class Panel_StageUI : MonoBehaviour
 	//	List<iVec2> final = Panel_StageUI.Instance.Grids.FilterZocPool (unit.Loc, ref moveList, ref posList);
 	//	moveList = final;
 
+
+
 		// start create over eff
 		foreach( iVec2 v in moveList )
 		{
@@ -985,6 +988,8 @@ public class Panel_StageUI : MonoBehaviour
 				continue;
 			}
 			// check if this vec can reach
+			System.DateTime  now =  System.DateTime.UtcNow; 
+
 			List<iVec2> path = PathFinding( unit , unit.Loc , v , pdata.GetMov() );
 			if( path.Count <= 0 )
 				continue;
@@ -992,6 +997,7 @@ public class Panel_StageUI : MonoBehaviour
 			// create move over cell
 			//GameObject over = ResourcesManager.CreatePrefabGameObj(TilePlaneObj, "Prefab/MoveOverEffect");
 			GameObject over = MoveEftObj.Spawn(  TilePlaneObj.transform );
+		
 			if( over != null )
 			{
 				over.name = string.Format("Over({0},{1},{2})", v.X , v.Y , 0 );
@@ -1914,9 +1920,6 @@ public class Panel_StageUI : MonoBehaviour
 		// try the short path
 
 
-
-
-
 		Grids.ClearIgnorePool();
 		Grids.AddIgnorePool (  unitList );  // all is block in first find
 		path = Grids.PathFinding( st , ed , nStep  );
@@ -1928,9 +1931,9 @@ public class Panel_StageUI : MonoBehaviour
 			path = Grids.PathFinding( st , ed , nStep  );
 		}
 
-		CreatePathOverEffect (path); // draw path
-
-
+		if (Config.GOD == true) {
+			CreatePathOverEffect (path); // draw path
+		}
 
 		return path;
 
