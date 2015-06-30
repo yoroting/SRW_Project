@@ -236,7 +236,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   textLabel: {fileID: 11417996}
   scrollBar: {fileID: 0}
-  style: 1
+  style: 0
   paragraphHistory: 50
 --- !u!114 &11482206
 MonoBehaviour:

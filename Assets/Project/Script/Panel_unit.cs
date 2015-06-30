@@ -85,6 +85,11 @@ public class Panel_unit : MonoBehaviour {
 
 	}
 
+	void OnEnable(){
+		transform.localRotation = new Quaternion(); 
+		transform.localScale = new Vector3( 1.0f, 1.0f ,1.0f);
+	}
+
 	// Awake
 	void Awake(){
 		bOnSelected = false;

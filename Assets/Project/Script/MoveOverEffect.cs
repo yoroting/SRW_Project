@@ -6,6 +6,8 @@ public class MoveOverEffect : MonoBehaviour {
 
 	void OnEnable()
 	{
+		transform.localRotation = new Quaternion(); 
+		transform.localScale = new Vector3( 1.0f, 1.0f ,1.0f);
 
 		TweenAlpha tw = TweenAlpha.Begin<TweenAlpha> (this.gameObject, 3.0f );
 		if (tw != null) {
@@ -23,11 +25,14 @@ public class MoveOverEffect : MonoBehaviour {
 	}
 	// Use this for initialization
 	void Start () {
-		UIWidget wi = this.GetComponent<UIWidget >();
-		if( wi != null ){
-			wi.width = 100;  // size fix to correct wh
-			wi.height = 100;			
-		}
+//		transform.localRotation = new Quaternion(0.0f, 0.0f ,1.0f,1.0f); 
+		
+//		transform.localScale = new Vector3( 1.0f, 1.0f ,1.0f);
+//		UIWidget wi = this.GetComponent<UIWidget >();
+//		if( wi != null ){
+//			wi.width = 100;  // size fix to correct wh
+//			wi.height = 100;			
+//		}
 	}
 
 	// Update is called once per frame

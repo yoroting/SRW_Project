@@ -249,6 +249,7 @@ Transform:
   - {fileID: 1485225723}
   - {fileID: 2085342508}
   - {fileID: 408131952}
+  - {fileID: 1250218847}
   m_Father: {fileID: 916965768}
   m_RootOrder: 0
 --- !u!114 &161096791
@@ -426,7 +427,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 104486, guid: d0695ab9ff1d783439770c721776c5ba, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d0695ab9ff1d783439770c721776c5ba, type: 2}
@@ -512,6 +513,56 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!1001 &479773132
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 161096790}
+    m_Modifications:
+    - target: {fileID: 454706, guid: 3e714196500a97946a2df8c8cb1fdf8e, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 318
+      objectReference: {fileID: 0}
+    - target: {fileID: 454706, guid: 3e714196500a97946a2df8c8cb1fdf8e, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: -223
+      objectReference: {fileID: 0}
+    - target: {fileID: 454706, guid: 3e714196500a97946a2df8c8cb1fdf8e, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 454706, guid: 3e714196500a97946a2df8c8cb1fdf8e, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 454706, guid: 3e714196500a97946a2df8c8cb1fdf8e, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 454706, guid: 3e714196500a97946a2df8c8cb1fdf8e, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 454706, guid: 3e714196500a97946a2df8c8cb1fdf8e, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 454706, guid: 3e714196500a97946a2df8c8cb1fdf8e, type: 2}
+      propertyPath: m_RootOrder
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 114904, guid: 3e714196500a97946a2df8c8cb1fdf8e, type: 2}
+      propertyPath: m_Name
+      value: Panel - MiniUnitInfo
+      objectReference: {fileID: 0}
+    - target: {fileID: 114904, guid: 3e714196500a97946a2df8c8cb1fdf8e, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 3e714196500a97946a2df8c8cb1fdf8e, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1001 &605359189
 Prefab:
   m_ObjectHideFlags: 0
@@ -1060,6 +1111,10 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 02778cc2b9a7a264da490f66d908c9a6, type: 2}
   m_IsPrefabParent: 0
+--- !u!4 &1250218847 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 454706, guid: 3e714196500a97946a2df8c8cb1fdf8e, type: 2}
+  m_PrefabInternal: {fileID: 479773132}
 --- !u!1001 &1294841465
 Prefab:
   m_ObjectHideFlags: 0
@@ -1260,6 +1315,10 @@ Prefab:
     - target: {fileID: 156318, guid: cfa057b5163a60741bb67ec2db63f91c, type: 2}
       propertyPath: m_Name
       value: Panel - StageUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 197630, guid: cfa057b5163a60741bb67ec2db63f91c, type: 2}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: cfa057b5163a60741bb67ec2db63f91c, type: 2}
@@ -1504,11 +1563,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 413934, guid: 97f80b513111b3442949b8d2885a19f8, type: 2}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 488728, guid: 97f80b513111b3442949b8d2885a19f8, type: 2}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 112908, guid: 97f80b513111b3442949b8d2885a19f8, type: 2}
       propertyPath: m_Layer

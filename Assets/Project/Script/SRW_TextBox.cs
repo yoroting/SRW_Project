@@ -145,6 +145,10 @@ public class SRW_TextBox : MonoBehaviour {
 			//m_sPopText = ""; // clear here for last line have some delay time to read			
 			UITextList list = _TextLineObj.GetComponent<UITextList> (); 
 			list.Add ( m_sPopText );
+			//list.Add ( m_sPopText ); // for test scroll value
+
+			list.scrollValue = 1.0f;		// go to end line
+
 			m_sPopText = "";
 		} 
 
@@ -316,10 +320,17 @@ public class SRW_TextBox : MonoBehaviour {
 		if (m_lstsContextWait == null || m_lstsContextWait.Count == 0 )
 			return;
 
+		if( m_sPopText.Length > 0 ){
+			m_nTextSpeed = Config.TextSpeed+1;
+			return;
+		}
 
 		m_sPopText = m_lstsContextWait[0];
 		m_lstsContextWait.RemoveAt( 0 );
 		m_nCurLineCount++;
+
+
+		// goto end line
 		return;
 
 		// ensure all text poped

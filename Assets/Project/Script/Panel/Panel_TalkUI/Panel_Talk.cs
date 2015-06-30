@@ -128,6 +128,16 @@ public class Panel_Talk : MonoBehaviour {
 		{
 			m_bClickScript = true; // go next script
 		}
+		else{
+			// don't change script. only text box go next line
+			foreach( KeyValuePair<int, SRW_TextBox> pair in m_idToObj  )
+			{
+				pair.Value.OnTextBoxClick( pair.Value.gameObject ) ;
+
+			}
+			//private Dictionary<int, SRW_TextBox> m_idToObj; // 管理 產生的 Prefab 物件
+
+		}
 	}
 	void OnSkipClick(GameObject go)
 	{

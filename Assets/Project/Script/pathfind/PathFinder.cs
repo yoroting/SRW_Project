@@ -17,6 +17,10 @@ namespace SimpleAStarExample
         private Node endNode;
         private SearchParameters searchParameters;
 
+		//path find cache
+		private List<Node> openlst ;
+		private List<Point> movelst ;
+
 		//===
 		public bool bIsDirty = true;		// check if need refresh
 		public  int nMaxStep;		// limit of path find
@@ -32,12 +36,20 @@ namespace SimpleAStarExample
             this.startNode.State = NodeState.Open;
             this.endNode = this.nodes[searchParameters.EndLocation.X, searchParameters.EndLocation.Y];
 
+			// path find cache
+			openlst = new List<Node>();
+			movelst = new List<Point>();
+
 			bIsDirty = true;
         }
 
 		public PathFinder( bool [,] map )
 		{
 			ApplyMap( map );
+
+			// path find cache
+			openlst = new List<Node>();
+			movelst = new List<Point>();
 
 			bIsDirty = true;
 		}
@@ -212,9 +224,10 @@ namespace SimpleAStarExample
 			bool bFind = false;
 			bool bStop = false;
 			int  nNewG = 0;
-			List<Node> openlst = new List<Node>();
+		//	List<Node> openlst = new List<Node>();
 		//	List<Node> closelst = new List<Node>();
 		//	List<Node> maxsteplst = new List<Node>();  // record  the max step node
+			openlst.Clear();
 
 			openlst.Add (currentNode); // push
 			while ( openlst.Count > 0 ) {
@@ -359,6 +372,69 @@ namespace SimpleAStarExample
 
 			return false;
 		}
+
+		/// <summary>
+		/// Find Direct
+		/// </summary>
+		/// <param name="searchParameters"></param>
+		public List<Point> MoveAble(Point Start , int nDist )
+		{
+			this.startNode = this.nodes[Start.X, Start.Y];
+			this.startNode.State = NodeState.Open;
+			this.startNode.IsWalkable = true;
+			
+
+			Node parentnode;
+			// open list
+			bool bFind = false;
+			bool bStop = false;
+			int  nNewG = 0;
+			openlst.Clear();
+			movelst.Clear();
+
+			//	List<Node> closelst = new List<Node>();
+			//	List<Node> maxsteplst = new List<Node>();  // record  the max step node
+			Node currentNode = startNode;
+			openlst.Add (currentNode); // push
+			while ( openlst.Count > 0 ) {
+				parentnode = openlst[ 0 ] ; // GET FIRST NODE for short len
+				
+				//openlst.RemoveAt[ openlst.Count-1 ]; // pop
+				openlst.Remove( parentnode );
+				parentnode.State = NodeState.Closed; // close this 
+				//		closelst.Add( parentnode );  // add x to closedset      //将x节点插入已经被估算的节点
+				
+				// if need check max step
+
+				if( parentnode.G >= nDist ){
+						//				maxsteplst.Add( parentnode );
+					continue;
+				}
+
+				
+				// find all next node L + G
+				List<Node> nextNodes = GetAdjacentWalkableNodes(parentnode); // close node won't return
+				foreach (Node nextNode in nextNodes)
+				{
+					//if( closelst.IndexOf(nextNode)>=0 )  		//if y in closedset           //若y已被估值，跳过
+					//	continue;
+//					if( nextNode.State == NodeState.Closed ){
+//						continue;
+//					}
+
+					openlst.Add( nextNode );
+					//nextNode.State = NodeState.Closed; // close this 
+
+					// add to next moveable list
+					if( nextNode.G <= nDist ){ // add if it can move
+						movelst.Add(  new Point( nextNode.Location.X , nextNode.Location.Y )  );
+					}
+				}
+			}
+			bIsDirty = true;
+			return movelst;
+		}
+
         /// <summary>
         /// Returns any nodes that are adjacent to <paramref name="fromNode"/> and may be considered to form the next step in the path
         /// </summary>

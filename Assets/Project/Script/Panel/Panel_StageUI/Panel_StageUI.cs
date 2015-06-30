@@ -12,6 +12,10 @@ public class Panel_StageUI : MonoBehaviour
 //public class Panel_StageUI : Singleton<Panel_StageUI>
 {
 	public const string Name = "Panel_StageUI";
+
+	const int st_CellObjPoolSize  = 100;		//
+
+
 	static Panel_StageUI instance;
 	public static Panel_StageUI Instance
 	{
@@ -39,7 +43,10 @@ public class Panel_StageUI : MonoBehaviour
 	public GameObject TilePlaneObj; // plane of all tiles sprite
 	public GameObject MaskPanelObj; // plane mask
 
-	public GameObject TileObj; 	// 
+
+	public GameObject UnitPanelObj; // unit plane
+
+	//public GameObject TileObj; 	//  no need this
 	public GameObject MoveEftObj; 	// 
 	public GameObject AtkEftObj; 	// 
 
@@ -50,7 +57,12 @@ public class Panel_StageUI : MonoBehaviour
 
 	STAGE_DATA	StageData;
 
+	// Four flaf
 	bool	bIsLoading	;
+
+	bool	bFirstUpdated	;
+	bool	bIsReady;
+
 	// drag canvas limit								
 	float fMinOffX ;
 	float fMaxOffX ;
@@ -85,9 +97,66 @@ public class Panel_StageUI : MonoBehaviour
 
 	// ScreenRatio
 	// float fUIRatio;
+	public void CreateAllDataPool()
+	{
+
+		StageData = new STAGE_DATA();
+		//event
+
+		EvtPool = new Dictionary< int , STAGE_EVENT >();			// add event id 
+
+		WaitPool = new List< STAGE_EVENT >();					// check ok. waitinf to execute event
+		//EvtCompletePool = new Dictionary< int , int >();
+		
+		// unit
+		IdentToUnit = new Dictionary< int , Panel_unit >();		//
+		
+		
+		OverCellPool 	= new Dictionary< string , GameObject >();			// Over tile effect pool ( in = cell key )
+		OverCellAtkPool = new Dictionary< string , GameObject >();					
+		OverCellPathPool= new Dictionary< string , GameObject >();			
+
+		UnitPanelObj.CreatePool( st_CellObjPoolSize / 2 );
+
+		MoveEftObj.CreatePool( st_CellObjPoolSize );
+		AtkEftObj.CreatePool( st_CellObjPoolSize );
+	
+	}
+
+	public void RegeditGameEvent()
+	{
+		// Stage Event
+		GameEventManager.AddEventListener(  StageBGMEvent.Name , OnStageBGMEvent );
+		
+		GameEventManager.AddEventListener(  StagePopUnitEvent.Name , OnStagePopUnitEvent );
+		GameEventManager.AddEventListener(  StagePopMobGroupEvent.Name , OnStagePopMobGroupEvent );
+		
+		//	GameEventManager.AddEventListener(  StageDelCharEvent.Name , OnStageDelCharEvent ); // different func form some little different process
+		//	GameEventManager.AddEventListener(  StageDelMobEvent.Name , OnStageDelMobEvent );
+		GameEventManager.AddEventListener(  StageDelUnitEvent.Name , OnStageDelUnitEvent );
+		
+		GameEventManager.AddEventListener(  StageDelUnitByIdentEvent.Name , OnStageDelUnitByIdentEvent );
+		
+		
+		// char event 
+		GameEventManager.AddEventListener(  StageCharMoveEvent.Name , OnStageCharMoveEvent );
+		GameEventManager.AddEventListener(  StageUnitActionFinishEvent.Name , OnStageUnitActionFinishEvent );
+		GameEventManager.AddEventListener(  StageWeakUpCampEvent.Name , OnStageWeakUpCampEvent );
+		
+		
+		// cmd event
+		GameEventManager.AddEventListener(  StageShowMoveRangeEvent.Name , OnStageShowMoveRangeEvent );
+		GameEventManager.AddEventListener(  StageShowAttackRangeEvent.Name , OnStageShowAttackRangeEvent );
+		GameEventManager.AddEventListener(  StageRestorePosEvent.Name , OnStageRestorePosEvent );
+		
+		
+		GameEventManager.AddEventListener(  StageBattleAttackEvent.Name , OnStageBattleAttackEvent );
+
+	}
 
 	void Awake( ){	
 		instance = this; 		// special singleton
+		bIsReady = false;
 		//UIRoot mRoot = NGUITools.FindInParents<UIRoot>(gameObject);	
 		//fUIRatio = (float)mRoot.activeHeight / Screen.height;
 
@@ -99,61 +168,21 @@ public class Panel_StageUI : MonoBehaviour
 		// grid
 		//Grids = new cMyGrids ();
 		GameScene.Instance.Initial ();							// it will avoid double initial inside.
-																//  if it active in scene initial,panel_stage.awake will before Panel_main.awake.
-
 
 		Grids = GameScene.Instance.Grids;						// smart pointer reference
 
-		StageData = new STAGE_DATA();
-		//event
-		EvtPool = new Dictionary< int , STAGE_EVENT >();			// add event id 
-		WaitPool = new List< STAGE_EVENT >();					// check ok. waitinf to execute event
-		//EvtCompletePool = new Dictionary< int , int >();
-
-		// unit
-		IdentToUnit = new Dictionary< int , Panel_unit >();		//
-
-
-		OverCellPool 	= new Dictionary< string , GameObject >();			// Over tile effect pool ( in = cell key )
-		OverCellAtkPool = new Dictionary< string , GameObject >();			
-
-		OverCellPathPool= new Dictionary< string , GameObject >();			
 
 	//	ActionPool = List< uAction >();				// record all action to do 
 		// Debug Code jump to stage
 	//	GameDataManager.Instance.nStageID = 1;
 
-		// Stage Event
-		GameEventManager.AddEventListener(  StageBGMEvent.Name , OnStageBGMEvent );
 
-		GameEventManager.AddEventListener(  StagePopUnitEvent.Name , OnStagePopUnitEvent );
-		GameEventManager.AddEventListener(  StagePopMobGroupEvent.Name , OnStagePopMobGroupEvent );
-
-	//	GameEventManager.AddEventListener(  StageDelCharEvent.Name , OnStageDelCharEvent ); // different func form some little different process
-	//	GameEventManager.AddEventListener(  StageDelMobEvent.Name , OnStageDelMobEvent );
-		GameEventManager.AddEventListener(  StageDelUnitEvent.Name , OnStageDelUnitEvent );
-
-		GameEventManager.AddEventListener(  StageDelUnitByIdentEvent.Name , OnStageDelUnitByIdentEvent );
-
-
-		// char event 
-		GameEventManager.AddEventListener(  StageCharMoveEvent.Name , OnStageCharMoveEvent );
-		GameEventManager.AddEventListener(  StageUnitActionFinishEvent.Name , OnStageUnitActionFinishEvent );
-		GameEventManager.AddEventListener(  StageWeakUpCampEvent.Name , OnStageWeakUpCampEvent );
-
-
-		// cmd event
-		GameEventManager.AddEventListener(  StageShowMoveRangeEvent.Name , OnStageShowMoveRangeEvent );
-		GameEventManager.AddEventListener(  StageShowAttackRangeEvent.Name , OnStageShowAttackRangeEvent );
-		GameEventManager.AddEventListener(  StageRestorePosEvent.Name , OnStageRestorePosEvent );
-
-
-		GameEventManager.AddEventListener(  StageBattleAttackEvent.Name , OnStageBattleAttackEvent );
 		// create singloten
 
 		// can't open panel in awake
 		// Don't open create panel in stage awake. i have develop mode that place stage in scene initial. the panelmanager don't initial here
 	
+
 	}
 
 
@@ -188,6 +217,11 @@ public class Panel_StageUI : MonoBehaviour
 		//EvtCompletePool.Clear ();
 
 		IsEventEnd = false;
+
+
+
+		bIsReady = false;
+
 	}
 
 	IEnumerator StageLoading(  )
@@ -198,7 +232,7 @@ public class Panel_StageUI : MonoBehaviour
 			// wait one frame and continue
 			yield return 0;
 					
-			if ( bIsLoading == false )
+			if ( bIsReady == true )
 			{
 				Debug.Log( "LoadingCoroutine End"  + Time.time );
 				// end
@@ -256,7 +290,15 @@ public class Panel_StageUI : MonoBehaviour
 
 	// Use this for initialization
 	void Start () {
-		Debug.Log( "stage srart loding"  + Time.time );
+
+		long tick = System.DateTime.Now.Ticks;
+
+		System.GC.Collect();			// Free memory resource here
+
+		// create pool
+		CreateAllDataPool();
+
+		Debug.Log( "stage srart loding"  );
 
 		// loading panel
 		PanelManager.Instance.OpenUI( "Panel_Loading");
@@ -266,17 +308,17 @@ public class Panel_StageUI : MonoBehaviour
 		// clear data
 		Clear ();
 		
-		Debug.Log( "stageloding:clearall"  + Time.time );		
+		Debug.Log( "stageloding:clearall"  );		
 		// load const data
 		StageData = ConstDataManager.Instance.GetRow<STAGE_DATA> ( GameDataManager.Instance.nStageID );
 		if( StageData == null ){
-			Debug.LogFormat( "stageloding:StageData fail with ID {0} : Time{1} "  , GameDataManager.Instance.nStageID ,Time.time);
+			Debug.LogFormat( "stageloding:StageData fail with ID {0}  "  , GameDataManager.Instance.nStageID );
 			return;
 		}
 		
 		// load scene file
 		if( LoadScene( StageData.n_SCENE_ID ) == false ){
-			Debug.LogFormat( "stageloding:LoadScene fail with ID {0} : Time{1}"   , StageData.n_SCENE_ID,Time.time );
+			Debug.LogFormat( "stageloding:LoadScene fail with ID {0} "   , StageData.n_SCENE_ID );
 			return;
 		}
 		
@@ -296,7 +338,7 @@ public class Panel_StageUI : MonoBehaviour
 			}
 		}
 		
-		Debug.Log( "stageloding:create event Pool complete"  + Time.time );
+		Debug.Log( "stageloding:create event Pool complete"   );
 
 //		// clear data
 //		Clear ();
@@ -326,15 +368,21 @@ public class Panel_StageUI : MonoBehaviour
 //			}
 //		}
 		
-		// create pool
-		MoveEftObj.CreatePool( 64 );
-		AtkEftObj.CreatePool( 64 );
 
+		// regedit game event
+		RegeditGameEvent();	
+		// create sub panel?
 
-		
+		Panel_CMDUnitUI.OpenCMDUI( _CMD_TYPE._SYS , 0 );
+		PanelManager.Instance.OpenUI( Panel_UnitInfo.Name );
+		PanelManager.Instance.OpenUI( Panel_MiniUnitInfo.Name );
+
 		//Dictionary< int , STAGE_EVENT > EvtPool;			// add event id 
 		bIsLoading = false;	
-		Debug.Log( "stage srart loding complete"  + Time.time );
+
+		long during = System.DateTime.Now.Ticks-tick;
+		Debug.Log( "stage srart loding complete. total ticket:"  + during );
+
 
 	}
 
@@ -390,11 +438,41 @@ public class Panel_StageUI : MonoBehaviour
 
 	}
 
+	void OnReady()
+	{
+		// close all other panel
+		UnitPanelObj.SetActive( false ); // unit plane
+		
+		//public GameObject TileObj; 	//  no need this
+		MoveEftObj.SetActive( false ); 	// 
+		AtkEftObj.SetActive( false ); 	// 
+
+		Panel_CMDUnitUI.CloseCMDUI();
+		PanelManager.Instance.CloseUI( Panel_UnitInfo.Name );
+		PanelManager.Instance.CloseUI( Panel_MiniUnitInfo.Name );
+
+		bIsReady = true;		// all ready .. close the loading ui
+	}
+
 	// Update is called once per frame
 	void Update () {
-		if( bIsLoading )
-			return;
 
+		// check if first run
+		if( bIsReady == false ){
+			if( bIsLoading ) {
+				return;
+			}
+			else {
+				// close pre open panel
+				OnReady();
+
+			}
+			// check ready complete
+			return;
+		}
+
+
+		// Real update
 		GameDataManager.Instance.Update();
 
 
@@ -786,7 +864,6 @@ public class Panel_StageUI : MonoBehaviour
 	}
 	bool LoadScene( int nScnid )
 	{
-		System.GC.Collect();			// Free memory resource here
 
 		SCENE_NAME scn = ConstDataManager.Instance.GetRow<SCENE_NAME> ( nScnid );
 		if (scn == null){
@@ -920,65 +997,47 @@ public class Panel_StageUI : MonoBehaviour
 	{
 		// clear eff
 		//OverCellPool
-		foreach( KeyValuePair< string , GameObject> pair in OverCellPool )
-		{
-			if( pair.Value != null )
-			{
 
-
-				//NGUITools.Destroy( pair.Value );
-
-
-				//pair.Value = null;
-			}
-		}
 		MoveEftObj.RecycleAll();
 
-		OverCellPool.Clear ();
-		foreach( KeyValuePair< string , GameObject> pair in OverCellAtkPool )
-		{
-			if( pair.Value != null )
-			{
-//				NGUITools.Destroy( pair.Value );
-				//pair.Value = null;
-			}
+		if( OverCellPool != null ){
+			OverCellPool.Clear ();
 		}
+		//
 		AtkEftObj.RecycleAll();
-
-		OverCellAtkPool.Clear ();
+		if( OverCellAtkPool != null ){
+			OverCellAtkPool.Clear ();
+		}
 
 	}
 
 	public void CreateMoveOverEffect( Panel_unit unit )
 	{
-		foreach( KeyValuePair< string , GameObject> pair in OverCellPool )
-		{
-			if( pair.Value != null )
-			{
-				//NGUITools.Destroy( pair.Value );
-				//pair.Value = null;
-			}
-		}
-
 		MoveEftObj.RecycleAll();
 
-		OverCellPool.Clear ();
+		if( OverCellPool != null ){
+			OverCellPool.Clear ();
+		}
 		if (unit == null)
 			return;
 
 		//return; // 
 		// find move
 		cUnitData pdata = GameDataManager.Instance.GetUnitDateByIdent ( unit.Ident() ); 
-
-		List<iVec2> moveList =  Grids.GetRangePool (unit.Loc, pdata.GetMov()  , 1);
-
 		// don't zoc 
-	//	List<iVec2> posList = GetUnitPosList ();
+//		List<iVec2> posList = GetUnitPosList ( );
+
+	//	List<iVec2> moveList =  Grids.GetRangePool (unit.Loc, pdata.GetMov()  , 1);
+		Grids.ClearIgnorePool();
+		Grids.AddIgnorePool( GetUnitPKPosPool(unit , true  ) );
+
+		List<iVec2> moveList =  Grids.MoveAbleCell (unit.Loc, pdata.GetMov() );
+
 		// try ZOC!!!
 	//	List<iVec2> final = Panel_StageUI.Instance.Grids.FilterZocPool (unit.Loc, ref moveList, ref posList);
 	//	moveList = final;
 
-
+		long  tick =  System.DateTime.Now.Ticks; 
 
 		// start create over eff
 		foreach( iVec2 v in moveList )
@@ -988,11 +1047,11 @@ public class Panel_StageUI : MonoBehaviour
 				continue;
 			}
 			// check if this vec can reach
-			System.DateTime  now =  System.DateTime.UtcNow; 
 
-			List<iVec2> path = PathFinding( unit , unit.Loc , v , pdata.GetMov() );
-			if( path.Count <= 0 )
-				continue;
+
+//			List<iVec2> path = PathFinding( unit , unit.Loc , v , pdata.GetMov() );
+//			if( path.Count <= 0 )
+//				continue;
 
 			// create move over cell
 			//GameObject over = ResourcesManager.CreatePrefabGameObj(TilePlaneObj, "Prefab/MoveOverEffect");
@@ -1002,14 +1061,6 @@ public class Panel_StageUI : MonoBehaviour
 			{
 				over.name = string.Format("Over({0},{1},{2})", v.X , v.Y , 0 );
 				SynGridToLocalPos( over , v.X , v.Y) ;
-
-				UIWidget widget = over.GetComponent<UIWidget> ();
-				if( widget != null )
-				{
-					//widget.height 	= 100;
-					//	widget.width 	= 100;
-				}
-
 				//UIEventListener.Get(over).onClick += OnOverClick;
 				
 				OverCellPool.Add( v.GetKey() , over );
@@ -1017,6 +1068,10 @@ public class Panel_StageUI : MonoBehaviour
 			//	over.transform.SetParent ( TilePlaneObj.transform );
 			}
 		}
+
+		long  during =  System.DateTime.Now.Ticks - tick ; 
+
+		Debug.Log( "create moveeffect cell with ticket:" + during );
 	}
 
 	public void CreateAttackOverEffect( Panel_unit unit , int nRange=1)
@@ -1399,7 +1454,9 @@ public class Panel_StageUI : MonoBehaviour
 			Debug.Log( "Stage Addunit to null TilePlane" );
 			return null;
 		}
-		GameObject obj = ResourcesManager.CreatePrefabGameObj( TilePlaneObj , "Prefab/Panel_Unit" );
+		//GameObject obj = ResourcesManager.CreatePrefabGameObj( TilePlaneObj , "Prefab/Panel_Unit" );
+
+		GameObject obj = UnitPanelObj.Spawn( TilePlaneObj.transform );
 		if( obj == null )return null;
 		obj.name = string.Format ("unit-{0}",nCharID );	
 		
@@ -1466,7 +1523,11 @@ public class Panel_StageUI : MonoBehaviour
 				camp.memLst.Remove ( nIdent );
 			}
 			//unit.pUnitData; 
-			NGUITools.Destroy( unit.gameObject );
+			//NGUITools.Destroy( unit.gameObject );
+			unit.Recycle( );
+			int nsize = UnitPanelObj.GetPooled().Count ;
+
+			//UnitPanelObj.Recycle( .Spawn( TilePlaneObj.transform );
 		}
 		IdentToUnit.Remove( nIdent );
 	}
@@ -1486,7 +1547,8 @@ public class Panel_StageUI : MonoBehaviour
 				{
 					if( nCharid == unit.CharID )
 					{
-						NGUITools.Destroy( unit.gameObject );
+						unit.Recycle();
+						//NGUITools.Destroy( unit.gameObject );
 
 						IdentToUnit.Remove( id );
 						pair.Value.memLst.Remove( id );
@@ -1517,7 +1579,8 @@ public class Panel_StageUI : MonoBehaviour
 						continue;
 					}
 					//unit.pUnitData; 
-					NGUITools.Destroy( unit.gameObject );
+					//NGUITools.Destroy( unit.gameObject );
+					unit.Recycle();
 				}
 				IdentToUnit.Remove( id );
 				remove.Add( id );
@@ -1909,6 +1972,20 @@ public class Panel_StageUI : MonoBehaviour
 
 		return lst;
 	}
+
+	public List< iVec2>  GetUnitPKPosPool( Panel_unit unit , bool bCanPK )
+	{
+
+		List< iVec2> lst = new List< iVec2> ();
+		foreach (KeyValuePair < int , Panel_unit > pair in IdentToUnit) {
+			if( unit.CanPK( pair.Value ) == bCanPK )
+			{
+				lst.Add( pair.Value.Loc );
+			}
+		}		
+		return lst;
+	}
+
 
 	public List< iVec2 > PathFinding( Panel_unit unit , iVec2 st , iVec2 ed , int nStep = 999)
 	{

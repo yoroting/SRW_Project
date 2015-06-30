@@ -10,6 +10,7 @@ GameObject:
   - 4: {fileID: 482454}
   - 114: {fileID: 11470334}
   - 114: {fileID: 11415894}
+  - 114: {fileID: 11468550}
   m_Layer: 5
   m_Name: AttackOverEffect
   m_TagString: Untagged
@@ -67,6 +68,17 @@ MonoBehaviour:
   callWhenFinished: 
   from: 1
   to: .200000003
+--- !u!114 &11468550
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100144}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f31ec07959e3cd4497b4c017b7e53df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &11470334
 MonoBehaviour:
   m_ObjectHideFlags: 1

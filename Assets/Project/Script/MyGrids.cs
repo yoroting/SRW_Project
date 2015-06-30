@@ -1062,8 +1062,10 @@ namespace MYGRIDS
             }
 			// create path findere map
 
-			//InitializePathFindMap (); // maybe move out later
-		
+			// create path finder struct during loading
+			//InitializePathFindMap (); 
+			GetPathFinder().ApplyMap( map ); // apply here for new nodes
+
             return true;
 
         }
@@ -1164,6 +1166,38 @@ namespace MYGRIDS
 			return  pool;
 		}
 
+		public List<iVec2> MoveAbleCell( iVec2 st , int nDist )
+		{
+			List<iVec2> pool = new List<iVec2> ();
+			
+			//InitializePathFindMap (); // maybe move out later
+			
+			var startLocation = new Point(st.X+hW, st.Y+hH);  // convert srw  to path find 
+			PathFinder pathFinder = GetPathFinder();			// new method to get path
+			
+			// check if need refresh
+			if( pathFinder.bIsDirty  == true )
+			{		
+				pathFinder.ApplyMap (map);			// need apply every time for new find
+				pathFinder.ApplyMaskPoint (IgnorePool);	// need apply every time. 			
+				pathFinder.bIsDirty = false;
+			}
+			
+			//pathFinder.nMaxStep = nDist;			// max dist
+			
+			List<Point> path = pathFinder.MoveAble(startLocation , nDist );
+			
+			
+			foreach( Point pt in path)
+			{
+				iVec2 pos = new iVec2( pt.X-hW , pt.Y -hH );
+				pool.Add( pos );
+			}
+			
+			return  pool;
+
+		}
+
 		private void InitializePathFindMap()
 		{
 			//  □ □ □ □ □ □ □
@@ -1196,6 +1230,7 @@ namespace MYGRIDS
 			} 
 			return true;
 		}
+
     }
 
 };
