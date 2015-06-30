@@ -79,6 +79,8 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		//	PanelManager.Instance.CloseUI( Name );
 			return ;
 		}
+		if (CMD == null)
+			return; // this is error
 
 		if ( CMD.eCMDTARGET == _CMD_TARGET._UNIT ) {  // sel target only
 			// check if move end.
@@ -147,7 +149,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
 		foreach ( Transform t in lst) {
 
-			///UIEventListener.Get(obj).onClick -= OnCMDButtonClick;;  // no need.. destory soon
+			UIEventListener.Get(t.gameObject).onClick -= OnCMDButtonClick;;  // need for objpool 
 		//	NGUITools.Destroy( t.gameObject );
 		}
 		CmdButton.RecycleAll ();
@@ -657,12 +659,19 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		cCMD.Instance.eCMDSTATUS = _CMD_STATUS._WAIT_CMDID;
 		cCMD.Instance.eCMDID 	   = _CMD_ID._NONE;
 		cCMD.Instance.eCMDTARGET = _CMD_TARGET._ALL;   // only unit
+		cCMD.Instance.nSkillID = 0;
 		Panel_StageUI.Instance.ClearOverCellEffect (); // for atk cell
 
-		Panel_CMDUnitUI panel = JustGetCMDUI ();
-		Panel_StageUI.Instance.CreateMoveOverEffect ( panel.pCmder ); // recreate
+		//Panel_CMDUnitUI panel = JustGetCMDUI ();
+		Panel_CMDUnitUI panel =	MyTool.CMDUI ();
 
-		PanelManager.Instance.OpenUI( Panel_CMDUnitUI.Name );
+		 //= PanelManager.Instance.OpenUI( Panel_CMDUnitUI.Name );
+		if (cCMD.Instance.eCMDTYPE == _CMD_TYPE._WAITATK) {
+			Panel_StageUI.Instance.CreateAttackOverEffect( panel.pCmder );
+		} else {
+			Panel_StageUI.Instance.CreateMoveOverEffect ( panel.pCmder ); // recreate
+		}
+
 	}
 
 	// really close Cmd UI . all param be clear

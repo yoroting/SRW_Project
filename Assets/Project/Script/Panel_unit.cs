@@ -50,7 +50,7 @@ public class Panel_unit : MonoBehaviour {
 //	public int  Identify;		avoid double 
 	bool bOnSelected;
 
-	int nActionTime=1;			//
+	//int nActionTime=1;			
 
 	public bool bIsDead = false;
 	public bool bIsAtking  = false;
@@ -68,7 +68,9 @@ public class Panel_unit : MonoBehaviour {
 	}
 	public bool CanDoCmd()
 	{
-		return nActionTime>0;
+		if( pUnitData!= null )
+			return pUnitData.nActionTime>0;
+		return false;
 	}
 
 	// ensure Loc exist
@@ -78,7 +80,7 @@ public class Panel_unit : MonoBehaviour {
 		TarPos  = new iVec2( 0 , 0 );
 
 		CharID = 0;
-		nActionTime = 1;
+	//	nActionTime = 1;
 		bOnSelected = true;
 		bIsDead = false;
 		TarIdent = 0;
@@ -93,7 +95,7 @@ public class Panel_unit : MonoBehaviour {
 	// Awake
 	void Awake(){
 		bOnSelected = false;
-		nActionTime = 1;				// default is 1
+	//	nActionTime = 1;				// default is 1
 
 		//ParticleSystemRenderer
 
@@ -140,12 +142,11 @@ public class Panel_unit : MonoBehaviour {
 		RunAction ();
 
 
-			if (nActionTime <= 0) {
-				nActionTime = 0;
-				MaskObj.SetActive (true);
-			} else {
-				MaskObj.SetActive (false);
-			}
+		if (CanDoCmd()) {
+			MaskObj.SetActive (false);
+		} else {
+			MaskObj.SetActive (true);
+		}
 
 		// If not null 
 		if( pUnitData != null )
@@ -191,6 +192,11 @@ public class Panel_unit : MonoBehaviour {
 	}
 
 	void OnDestory () {
+	//	GameDataManager.Instance.DelUnit( Ident() ); // no more destory
+	}
+
+	void OnDisable () 
+	{
 		GameDataManager.Instance.DelUnit( Ident() );
 	}
 
@@ -217,16 +223,7 @@ public class Panel_unit : MonoBehaviour {
 		// 查情報
 //	}
 
-	public void ActionFinished(  )
-	{
-		nActionTime--;
 
-	}
-
-	public void AddActionTime( int nTime )
-	{
-		nActionTime +=nTime ;		
-	}
 
 	// Cell utility Func 
 	public int X(){ return Loc.X; } 
@@ -444,7 +441,7 @@ public class Panel_unit : MonoBehaviour {
 				nSubActFlow++;
 				break;
 			case 1:
-				ActionFinished ();
+			//	ActionFinished ();
 				CurAction = null; // clear act
 				nSubActFlow++;
 				break;
@@ -471,7 +468,7 @@ public class Panel_unit : MonoBehaviour {
 				break;
 
 			case 3:
-				ActionFinished ();
+			//	ActionFinished ();
 				CurAction = null; // clear act
 				nSubActFlow++;
 				break;
@@ -581,6 +578,10 @@ public class Panel_unit : MonoBehaviour {
 		// select to wait
 		BattleManager.Instance.ShowBattleMsg (this, "waiting");
 	//	ActionFinished ();
+		if ( pUnitData!= null ) {
+			pUnitData.ActionFinished();
+		}
+
 	}
 
 	public void ActionCasting( int nSkillID )

@@ -70,6 +70,12 @@ namespace MYGRIDS
 
 
         // 棋盤格 的距離。 不是 sqrt 的平方根，而是一格一格逐步走的距離
+		static public int Dist(int x1, int y1 ,int x2, int y2 ){
+			int dist = Math.Abs(x1 - x2) + Math.Abs(y1 - y2);
+			return dist;
+		}
+
+
         public int Dist(int x, int y)
         {
             int dist = Math.Abs(x - X) + Math.Abs(y - Y);

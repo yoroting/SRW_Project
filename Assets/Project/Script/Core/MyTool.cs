@@ -285,7 +285,17 @@ public class MyTool {
 		
 	}
 
-
+	static public bool CanPK( _CAMP camp1 ,  _CAMP camp2 ) 	
+	{
+		if (camp1 != camp2) {
+			if( camp1 == _CAMP._ENEMY || camp2 == _CAMP._ENEMY )
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
 
 	// 动态的计算出现在manualHeight的高度。
 	static private void AdaptiveUI()

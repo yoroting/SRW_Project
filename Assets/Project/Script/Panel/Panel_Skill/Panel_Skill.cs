@@ -247,7 +247,16 @@ public class Panel_Skill : MonoBehaviour {
 		if (panel != null) {
 			panel.SetSkillID( 0  ); // 0 is cancel
 		}
-		PanelManager.Instance.CloseUI ( Name );
+
+		// need check original cmd bwfore skill cmd .. maybe is char cmd
+		Panel_CMDUnitUI.RollBackCMDUIWaitTargetMode();
+		//Panel_CMDUnitUI.OpenCMDUI ( _CMD_TYPE._WAITATK ,  nOpIdent   );
+
+		// rebuilf wait atk mode
+		//Panel_CMDUnitUI.CancelCmd ();
+
+
+		//PanelManager.Instance.CloseUI ( Name );
 
 	}
 

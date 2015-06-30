@@ -175,6 +175,16 @@ public class cUnitData{
 
 	public cBuffs						Buffs;				// all buffs of unit
 
+
+	public int nActionTime;			//				行動次數
+	public void ActionFinished(  ){
+		nActionTime--;		
+	}
+	
+	public void AddActionTime( int nTime ){
+		nActionTime +=nTime ;		
+	}
+
 	public cUnitData()
 	{
 		SchoolPool  = new Dictionary< int , int > ();
@@ -193,6 +203,7 @@ public class cUnitData{
 		Attr.Add ( cAttrData._FIGHT , FightAttr ); // special insert
 
 		n_Lv = 1; // base lv
+		nActionTime = 1;
 	}
 
 	// setup update flag
@@ -630,11 +641,15 @@ public class cUnitData{
 	}
 
 	//fight end to clear data
-	public void FightEnd()
+	public void FightEnd( bool bIsAtker = false )
 	{
+		if (bIsAtker) {
+			if( FightAttr.SkillID == 0 || (FightAttr.SkillData.skill.n_FINISH !=0) ){
+				this.ActionFinished();
+			}
+		}
+
 		ClearState(); // clear fight state
-
-
 	}
 
 
@@ -924,6 +939,7 @@ public class cUnitData{
 
 
 	}
+
 	// state battle flag
 
 	List< _UNITSTATE > States;

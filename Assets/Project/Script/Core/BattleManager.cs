@@ -289,9 +289,11 @@ public partial class BattleManager
 			nPhase++;
 			break;
 		case 3:			// atack assist pre show 
+			ShowAtkAssist( nAtkerID,nDeferID );
 			nPhase++;
 			break;
 		case 4:			// def assist pre show 
+			ShowDefAssist( nDeferID );
 			nPhase++;
 			break;
 		case 5:			// atk -> def 
@@ -335,7 +337,18 @@ public partial class BattleManager
 			
 			nPhase++;
 			break;
-		case 6:			//  def -> atk
+		case 6:
+			if (IsDefMode() == false ){
+				ShowAtkAssist( nDeferID , nAtkerID );
+			}
+			nPhase++;
+			break;
+		case 7:
+			ShowDefAssist( nAtkerID );
+			nPhase++;
+			break;
+
+		case 8:			//  def -> atk
 			if (IsDefMode() == false ) {
 
 				uAction pCountAct = ActionManager.Instance.CreateAttackAction (nDeferID,nAtkerID, nDeferSkillID );
@@ -353,14 +366,14 @@ public partial class BattleManager
 			}
 			nPhase++;
 			break;
-		case 7: 	// fight end . show exp
+		case 9: 	// fight end . show exp
 			
 			nPhase++;
 			break;
-		case 8:			// close all 
+		case 10:			// close all 
 			nPhase++;
 
-			Atker.FightEnd();
+			Atker.FightEnd( true );
 			if( Defer!= null  ){
 				Defer.FightEnd();
 			}
@@ -414,7 +427,7 @@ public partial class BattleManager
 			break;
 		case 3:			// close all 
 			nPhase++;
-			Atker.FightEnd();
+			Atker.FightEnd( true );
 
 
 			// cmd finish
@@ -607,12 +620,62 @@ public partial class BattleManager
 
 	public void ShowAtkAssist( int nAtkIdent ,  int nDefIdent )
 	{
-		
+		cUnitData pAtker = GameDataManager.Instance.GetUnitDateByIdent ( nAtkIdent );
+		if ( pAtker == null)
+			return;
+
+		cUnitData pDefer = GameDataManager.Instance.GetUnitDateByIdent ( nDefIdent );
+		if (pDefer == null)
+			return;
+
+		// check if near atker 
+		foreach( KeyValuePair< int , cUnitData> pair in GameDataManager.Instance.UnitPool )
+		{
+			if( pair.Key == nAtkIdent )
+				continue;
+			if( MyTool.CanPK( pAtker.eCampID , pair.Value.eCampID )== false )
+			{
+				  
+				if( iVec2.Dist(  pDefer.n_X , pDefer.n_Y , pair.Value.n_X , pair.Value.n_Y   ) >1 )
+				{
+					continue;
+				}
+
+				// addto cc pool?
+				ShowBattleMsg( pair.Key , "助攻");
+
+				// add to pool regedit to unit data?
+
+
+			}
+		}
+
 	}
 	
-	public void ShowDefAssist( int nAtkIdent ,  int nDefIdent )
+	public void ShowDefAssist( int nDefIdent )
 	{
+		cUnitData pDefer = GameDataManager.Instance.GetUnitDateByIdent ( nDefIdent );
+		if (pDefer == null)
+			return;
 		
+		foreach( KeyValuePair< int , cUnitData> pair in GameDataManager.Instance.UnitPool )
+		{
+			if( pair.Key == nDefIdent )
+				continue;
+
+			if( MyTool.CanPK( pDefer.eCampID , pair.Value.eCampID )== false )
+			{
+				
+				if( iVec2.Dist(  pDefer.n_X , pDefer.n_Y , pair.Value.n_X , pair.Value.n_Y   ) >1 )
+				{
+					continue;
+				}
+				
+				// addto cc pool?
+				ShowBattleMsg( pair.Key , "協防");
+				
+			}
+		}
 	}
 
 	// 防禦方選防守

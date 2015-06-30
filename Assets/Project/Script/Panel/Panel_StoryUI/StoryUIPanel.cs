@@ -55,9 +55,9 @@ public class StoryUIPanel : MonoBehaviour {
 	//	GameEventManager.AddEventListener(  StoryStartStageEvent.Name , OnStoryStartStageEvent );
 
 
-		PanelManager.Instance.OpenUI( "Panel_Loading");
-		bIsLoading = true;
-		StartCoroutine("StoryLoading");
+		//PanelManager.Instance.OpenUI( "Panel_Loading");
+		//bIsLoading = true;
+
 	}
 
 	IEnumerator StoryLoading()
@@ -81,7 +81,7 @@ public class StoryUIPanel : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		Debug.Log("StoryUIPanel:start");
-
+		StartCoroutine("StoryLoading");
 		// load const stage data
 		// 播放  mian BGM
 		m_StoryData =ConstDataManager.Instance.GetRow< STAGE_STORY> ( GameDataManager.Instance.nStoryID );
@@ -202,7 +202,17 @@ public class StoryUIPanel : MonoBehaviour {
 //	//		}
 //	}
 
+	IEnumerator EnterStage(  )
+	{
+		PanelManager.Instance.OpenUI( "Panel_Loading");
+		yield return false;
 
+		PanelManager.Instance.OpenUI( Panel_StageUI.Name );//"Panel_StageUI"
+		yield return false;
+
+		PanelManager.Instance.DestoryUI (Name );
+		yield return true;
+	}
 
 	// end to enter next stage
 	public void End()
@@ -217,9 +227,14 @@ public class StoryUIPanel : MonoBehaviour {
 
 		Debug.LogFormat("StoryEnd go StartStage{0}" , m_StoryData.n_NEXT_STAGE );
 
-		
+
+		// start loading ui
+		// need a cartan
+
+
 		GameDataManager.Instance.nStageID =  m_StoryData.n_NEXT_STAGE;
-		PanelManager.Instance.OpenUI( Panel_StageUI.Name );//"Panel_StageUI"
+
+		StartCoroutine ( "EnterStage" );
 
 		// go to talk or stage
 //		StoryStartStageEvent evt = new StoryStartStageEvent ();
@@ -228,7 +243,7 @@ public class StoryUIPanel : MonoBehaviour {
 		// GameEventManager.DispatchEventByName( StoryStartStageEvent.Name  , evt );  
 
 
-		PanelManager.Instance.DestoryUI (Name );
+		//PanelManager.Instance.DestoryUI (Name );
 	}
 
 	public GameObject AddChar( int nCharId , int nPosX , int PosY )

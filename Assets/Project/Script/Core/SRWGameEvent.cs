@@ -120,13 +120,13 @@ public class StageRestorePosEvent: GameEvent {
 	}
 }
 // unit action finished
-public class StageUnitActionFinishEvent: GameEvent {
-	public const string Name = "StageUnitActionFinishEvent";
-	public int nIdent = 0;
-	public StageUnitActionFinishEvent(){
-		name = Name;		// important.  must have this line as key
-	}
-}
+//public class StageUnitActionFinishEvent: GameEvent {
+//	public const string Name = "StageUnitActionFinishEvent";
+//	public int nIdent = 0;
+//	public StageUnitActionFinishEvent(){
+//		name = Name;		// important.  must have this line as key
+//	}
+//}
 
 // unit action finished
 public class StageWeakUpCampEvent: GameEvent {

@@ -140,7 +140,7 @@ public class Panel_StageUI : MonoBehaviour
 		
 		// char event 
 		GameEventManager.AddEventListener(  StageCharMoveEvent.Name , OnStageCharMoveEvent );
-		GameEventManager.AddEventListener(  StageUnitActionFinishEvent.Name , OnStageUnitActionFinishEvent );
+	//	GameEventManager.AddEventListener(  StageUnitActionFinishEvent.Name , OnStageUnitActionFinishEvent );
 		GameEventManager.AddEventListener(  StageWeakUpCampEvent.Name , OnStageWeakUpCampEvent );
 		
 		
@@ -559,7 +559,7 @@ public class Panel_StageUI : MonoBehaviour
 		
 		// char event 
 		GameEventManager.RemoveEventListener(  StageCharMoveEvent.Name , OnStageCharMoveEvent );
-		GameEventManager.RemoveEventListener(  StageUnitActionFinishEvent.Name , OnStageUnitActionFinishEvent );
+//		GameEventManager.RemoveEventListener(  StageUnitActionFinishEvent.Name , OnStageUnitActionFinishEvent );
 		GameEventManager.RemoveEventListener(  StageWeakUpCampEvent.Name , OnStageWeakUpCampEvent );
 		
 		
@@ -1811,17 +1811,18 @@ public class Panel_StageUI : MonoBehaviour
 		GameEventManager.DispatchEvent ( cmd );
 	}
 
-	public void OnStageUnitActionFinishEvent(GameEvent evt)
-	{
-		StageUnitActionFinishEvent Evt = evt as StageUnitActionFinishEvent;
-		if (Evt == null)
-			return;
-		int nIdent = Evt.nIdent;
-		Panel_unit unit = GetUnitByIdent ( nIdent); // IdentToUnit[ nIdent ];
-		if (unit != null) {
-			unit.ActionFinished();
-		}
-	}
+//	public void OnStageUnitActionFinishEvent(GameEvent evt)
+//	{
+//		StageUnitActionFinishEvent Evt = evt as StageUnitActionFinishEvent;
+//		if (Evt == null)
+//			return;
+//		int nIdent = Evt.nIdent;
+//		Panel_unit unit = GetUnitByIdent ( nIdent); // IdentToUnit[ nIdent ];
+//		if (unit != null) {
+//			unit.ActionFinished();
+//		}
+//	}
+
 	public void OnStageWeakUpCampEvent(GameEvent evt)
 	{
 		StageWeakUpCampEvent Evt = evt as StageWeakUpCampEvent;
@@ -1830,7 +1831,8 @@ public class Panel_StageUI : MonoBehaviour
 		List< Panel_unit > lst = GetUnitListByCamp ( Evt.nCamp );
 		foreach( Panel_unit unit in lst )
 		{
-			unit.AddActionTime( 1 ); // al add 1 time to action
+			unit.pUnitData.AddActionTime( 1 );
+			//unit.AddActionTime( 1 ); // al add 1 time to action
 		}
 	}
 
