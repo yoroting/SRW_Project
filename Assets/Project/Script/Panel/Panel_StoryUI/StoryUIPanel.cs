@@ -60,28 +60,28 @@ public class StoryUIPanel : MonoBehaviour {
 
 	}
 
-	IEnumerator StoryLoading()
-	{
-		// Custom Update Routine which repeats forever
-		do
-		{
-			// wait one frame and continue
-			yield return 1;
-			
-			if ( bIsLoading == false )
-			{
-				// end
-				PanelManager.Instance.CloseUI( "Panel_Loading");
-				yield break;
-			}			
-			
-		} while (true);
-	}
+//	IEnumerator StoryLoading()
+//	{
+//		// Custom Update Routine which repeats forever
+//		do
+//		{
+//			// wait one frame and continue
+//			yield return 1;
+//			
+//			if ( bIsLoading == false )
+//			{
+//				// end
+//				PanelManager.Instance.CloseUI( "Panel_Loading");
+//				yield break;
+//			}			
+//			
+//		} while (true);
+//	}
 
 	// Use this for initialization
 	void Start () {
 		Debug.Log("StoryUIPanel:start");
-		StartCoroutine("StoryLoading");
+		//StartCoroutine("StoryLoading");
 		// load const stage data
 		// 播放  mian BGM
 		m_StoryData =ConstDataManager.Instance.GetRow< STAGE_STORY> ( GameDataManager.Instance.nStoryID );
@@ -101,6 +101,9 @@ public class StoryUIPanel : MonoBehaviour {
 		}
 
 		bIsLoading = false;
+
+		// end
+		PanelManager.Instance.CloseUI( "Panel_Loading");
 	}
 	
 	public bool IsAllEnd ()
@@ -202,15 +205,17 @@ public class StoryUIPanel : MonoBehaviour {
 //	//		}
 //	}
 
-	IEnumerator EnterStage(  )
+	IEnumerator EnterStage( int nStageID )
 	{
+		GameDataManager.Instance.nStageID = nStageID;
+
 		PanelManager.Instance.OpenUI( "Panel_Loading");
 		yield return false;
 
 		PanelManager.Instance.OpenUI( Panel_StageUI.Name );//"Panel_StageUI"
 		yield return false;
 
-		PanelManager.Instance.DestoryUI (Name );
+		PanelManager.Instance.DestoryUI (Name ); // destory this ui will broken this Coroutine soon
 		yield return true;
 	}
 
@@ -232,9 +237,9 @@ public class StoryUIPanel : MonoBehaviour {
 		// need a cartan
 
 
-		GameDataManager.Instance.nStageID =  m_StoryData.n_NEXT_STAGE;
+		//GameDataManager.Instance.nStageID =  m_StoryData.n_NEXT_STAGE;
 
-		StartCoroutine ( "EnterStage" );
+		StartCoroutine ( EnterStage( m_StoryData.n_NEXT_STAGE ) );
 
 		// go to talk or stage
 //		StoryStartStageEvent evt = new StoryStartStageEvent ();

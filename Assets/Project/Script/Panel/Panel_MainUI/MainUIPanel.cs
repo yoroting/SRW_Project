@@ -73,19 +73,21 @@ public class MainUIPanel : BasicPanel {
 	}
 
 
-	IEnumerator EnterStory(  )
+	IEnumerator EnterStory( int nStoryID )
 	{
+		GameDataManager.Instance.nStoryID = nStoryID;
+	
 		PanelManager.Instance.OpenUI( "Panel_Loading");
 
+		yield return  new WaitForEndOfFrame();
+
 		PanelManager.Instance.OpenUI( StoryUIPanel.Name );
-		yield return 1;
+		yield return  new WaitForEndOfFrame();
 
-		//GameEventManager.DispatchEventByName( "startgame"  , GameDataManager.Instance.nStoryID );  
-		//GameObject obj = PanelManager.Instance.OpenUI( StoryUIPanel.Name );
-		//yield return 1;
 
-		PanelManager.Instance.CloseUI( Name );  // close main 
-		yield return 0;
+		PanelManager.Instance.CloseUI( Name );  			// close main 
+		yield break;
+
 	}
 
 	void OnStartButtonClick(GameObject go)
@@ -93,9 +95,11 @@ public class MainUIPanel : BasicPanel {
 		// When start button clicked do :
 		Debug.Log("Start click ");
 		// 回到第0 關
-		GameDataManager.Instance.nStoryID = Config.StartStory; //回到第一關
+	//	GameDataManager.Instance.nStoryID = Config.StartStory; //回到第一關
 
-		StartCoroutine ( "EnterStory" );
+	//	PanelManager.Instance.OpenUI( "Panel_Loading");
+
+		StartCoroutine ( EnterStory( Config.StartStory ) );
 
 		//StartCoroutine ( "EnterStory" );
 

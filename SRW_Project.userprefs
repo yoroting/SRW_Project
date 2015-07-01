@@ -1,33 +1,28 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Project\Script\Core\GameDataManager.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Project\Script\Core\BattleManager.cs">
     <Files>
-      <File FileName="Assets\Project\Script\Core\BattleManager.cs" Line="632" Column="35" />
-      <File FileName="Assets\Project\Script\Panel_unit.cs" Line="198" Column="20" />
-      <File FileName="Assets\Project\Script\Data\cUnitData.cs" Line="624" Column="1" />
-      <File FileName="Assets\Project\Script\Panel\Panel_StageUI\Panel_StageUI.cs" Line="462" Column="22" />
-      <File FileName="Assets\Project\Script\Panel\Panel_CMDUnitUI\Panel_CMDUnitUI.cs" Line="672" Column="1" />
-      <File FileName="Assets\Project\Script\MyGrids.cs" Line="51" Column="23" />
-      <File FileName="Assets\Project\Script\Core\Config.cs" Line="23" Column="2" />
-      <File FileName="Assets\Project\Script\Panel\Panel_Skill\Panel_Skill.cs" Line="252" Column="49" />
-      <File FileName="Assets\Project\Script\Panel\Panel_StoryUI\StoryUIPanel.cs" Line="226" Column="4" />
-      <File FileName="Assets\Project\Script\Core\MyTool.cs" Line="289" Column="3" />
-      <File FileName="Assets\Project\Script\Core\GameDataManager.cs" Line="357" Column="17" />
-      <File FileName="Assets\Project\Script\Data\cBuffData.cs" Line="271" Column="47" />
+      <File FileName="Assets\Project\Script\Core\BattleManager.cs" Line="814" Column="27" />
+      <File FileName="Assets\Project\Script\Panel\Panel_StageUI\Panel_StageUI.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Panel_unit.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Data\cUnitData.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Panel\Panel_CMDUnitUI\Panel_CMDUnitUI.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\MyGrids.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Core\Config.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Panel\Panel_Skill\Panel_Skill.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Panel\Panel_StoryUI\StoryUIPanel.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Core\MyTool.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Core\GameDataManager.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Data\cBuffData.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Panel\Panel_MainUI\MainUIPanel.cs" Line="1" Column="1" />
+      <File FileName="Assets\Common\Plugins\PanelManager\PanelManager.cs" Line="1" Column="1" />
+      <File FileName="Assets\Common\Plugins\PanelManager\PanelManager.RepeatCallFunc.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Panel\Panel_UnitInfo\Panel_UnitInfo.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
-      <Breakpoint file="G:\Unity Projects\SRW_Project\Assets\Project\Script\Panel\Panel_CMDUnitUI\Panel_CMDUnitUI.cs" line="663" />
-      <Breakpoint file="G:\Unity Projects\SRW_Project\Assets\Project\Script\Panel\Panel_CMDUnitUI\Panel_CMDUnitUI.cs" line="659" />
-      <Breakpoint file="G:\Unity Projects\SRW_Project\Assets\Project\Script\Panel\Panel_StoryUI\StoryUIPanel.cs" line="69" />
-      <Breakpoint file="G:\Unity Projects\SRW_Project\Assets\Project\Script\Panel\Panel_StoryUI\StoryUIPanel.cs" line="87" />
-      <Breakpoint file="G:\Unity Projects\SRW_Project\Assets\Project\Script\Panel\Panel_MainUI\MainUIPanel.cs" line="132" />
-      <Breakpoint file="G:\Unity Projects\SRW_Project\Assets\Project\Script\Panel\Panel_MainUI\MainUIPanel.cs" line="87" />
-      <Breakpoint file="G:\Unity Projects\SRW_Project\Assets\Project\Script\Panel\Panel_MainUI\MainUIPanel.cs" line="78" />
-      <Breakpoint file="G:\Unity Projects\SRW_Project\Assets\Project\Script\Panel\Panel_StoryUI\StoryUIPanel.cs" line="207" />
-      <Breakpoint file="G:\Unity Projects\SRW_Project\Assets\Project\Script\Panel\Panel_MainUI\MainUIPanel.cs" line="100" />
-      <Breakpoint file="G:\Unity Projects\SRW_Project\Assets\Project\Script\Panel\Panel_MainUI\MainUIPanel.cs" line="128" />
+      <Breakpoint file="D:\SRW\SRW_Project\Assets\Project\Script\Core\BattleManager.cs" line="707" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches>

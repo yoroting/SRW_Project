@@ -29,7 +29,7 @@ public class Config
 
 	public static float HIT	=100.0f;
 	public static float DefReduce	=50.0f;			// 純防禦的減傷
-
+	public static float AssistRate = 5.0f;
 
 	public static bool GOD = false;
 	public static bool MOBAI = true;				// all mob no atk 

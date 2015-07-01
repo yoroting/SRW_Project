@@ -124,10 +124,13 @@ public partial class BattleManager
 		
 		//===================================================
 		nPhase = 0; // 
-		AtkAffectPool = null;
-		DefAffectPool = null;
-		AtkCCPool = null;
-		DefCCPool = null;
+		if( AtkAffectPool != null )
+			AtkAffectPool.Clear();
+
+		if( DefAffectPool != null )
+			DefAffectPool.Clear();
+	//	AtkCCPool = null;
+	//	DefCCPool = null;
 
 	}
 
@@ -322,6 +325,7 @@ public partial class BattleManager
 						continue;
 
 					unit.SetFightAttr(  unit.n_Ident  , 0 );
+					ShowDefAssist( unit.n_Ident , false );
 
 					pAtkAction.AddHitResult(  CalAttackResult( nAtkerID , unit.n_Ident ) ) ;
 				}
@@ -344,7 +348,9 @@ public partial class BattleManager
 			nPhase++;
 			break;
 		case 7:
-			ShowDefAssist( nAtkerID );
+			if (IsDefMode() == false ){
+				ShowDefAssist( nAtkerID );
+			}
 			nPhase++;
 			break;
 
@@ -412,24 +418,46 @@ public partial class BattleManager
 			
 			nPhase++;
 			break;
-		case 1:			// Castout
+		case 1:			// hit
 			// hit effect
 			uAction pAct = ActionManager.Instance.CreateHitAction ( nAtkerID, nTarGridX , nTarGridY , nAtkerSkillID );
 			if( pAct != null )
 			{
-				pAct.AddHitResult( CalSkillHitResult( nAtkerID, nTarGridX , nTarGridY , nAtkerSkillID ) );
+				//必須先取得影響人數
+				int nTarX = this.nTarGridX;
+				int nTarY = this.nTarGridY;
+				
+				
+				// get affectpool
+				AtkAffectPool = GetAffectPool( Atker , nDeferID , Atker.FightAttr.SkillID , nTarX , nTarY );
+				foreach( cUnitData unit in AtkAffectPool )
+				{
+					//=====================
+					// checked if this cUnitData can Atk
+					if( CanPK( Atker.eCampID , unit.eCampID ) == false )
+						continue;
+					
+					unit.SetFightAttr(  unit.n_Ident  , 0 );
+					ShowDefAssist( unit.n_Ident , false );
+					
+					pAct.AddHitResult(  CalSkillHitResult( nAtkerID, nTarGridX , nTarGridY , nAtkerSkillID ) ) ;
+				}
+
+				//pAct.AddHitResult( CalSkillHitResult( nAtkerID, nTarGridX , nTarGridY , nAtkerSkillID ) );
 
 			}
 			nPhase++;
 			break;
-		case 2:			// hit
+		case 2:			
 			nPhase++;
 			break;
 		case 3:			// close all 
 			nPhase++;
 			Atker.FightEnd( true );
-
-
+			foreach( cUnitData unit in AtkAffectPool )
+			{
+				unit.FightEnd();				
+			}
 			// cmd finish
 			
 			// action finish in atk action
@@ -471,12 +499,12 @@ public partial class BattleManager
 //	SKILL	DeferSkill = null;
 	private int nPhase = 0; // 
 	// AOE
-	List< cUnitData > AtkAffectPool = null;
-	List< cUnitData > DefAffectPool = null;
+	List< cUnitData > AtkAffectPool = null; //攻方影響人數
+	List< cUnitData > DefAffectPool = null; //守方反擊影響人數
 
 	// CC link
-	List< cUnitData > AtkCCPool = null;
-	List< cUnitData > DefCCPool = null;
+//	List< cUnitData > AtkCCPool = null;
+//	List< cUnitData > DefCCPool = null;
 
 	//======================================================
 //	public void SetAtkSkill( int skillid )
@@ -628,12 +656,14 @@ public partial class BattleManager
 		if (pDefer == null)
 			return;
 
+		pAtker.FightAttr.fAtkAssist = 0.0f;
+
 		// check if near atker 
 		foreach( KeyValuePair< int , cUnitData> pair in GameDataManager.Instance.UnitPool )
 		{
 			if( pair.Key == nAtkIdent )
 				continue;
-			if( MyTool.CanPK( pAtker.eCampID , pair.Value.eCampID )== false )
+			if( CanPK( pAtker.eCampID , pair.Value.eCampID )== false )
 			{
 				  
 				if( iVec2.Dist(  pDefer.n_X , pDefer.n_Y , pair.Value.n_X , pair.Value.n_Y   ) >1 )
@@ -645,25 +675,27 @@ public partial class BattleManager
 				ShowBattleMsg( pair.Key , "助攻");
 
 				// add to pool regedit to unit data?
-
+				pAtker.FightAttr.fAtkAssist += Config.AssistRate;
 
 			}
 		}
 
 	}
 	
-	public void ShowDefAssist( int nDefIdent )
+	public void ShowDefAssist( int nDefIdent , bool bShow = true  )
 	{
 		cUnitData pDefer = GameDataManager.Instance.GetUnitDateByIdent ( nDefIdent );
 		if (pDefer == null)
 			return;
-		
+
+		pDefer.FightAttr.fDefAssist = 0.0f;
+
 		foreach( KeyValuePair< int , cUnitData> pair in GameDataManager.Instance.UnitPool )
 		{
 			if( pair.Key == nDefIdent )
 				continue;
 
-			if( MyTool.CanPK( pDefer.eCampID , pair.Value.eCampID )== false )
+			if( CanPK( pDefer.eCampID , pair.Value.eCampID )== false )
 			{
 				
 				if( iVec2.Dist(  pDefer.n_X , pDefer.n_Y , pair.Value.n_X , pair.Value.n_Y   ) >1 )
@@ -672,8 +704,11 @@ public partial class BattleManager
 				}
 				
 				// addto cc pool?
-				ShowBattleMsg( pair.Key , "協防");
-				
+				if( bShow == true ){
+					ShowBattleMsg( pair.Key , "協防");
+				}
+				//
+				pDefer.FightAttr.fDefAssist += Config.AssistRate;
 			}
 		}
 	}
@@ -735,8 +770,8 @@ public partial class BattleManager
 		resPool.Add ( new cHitResult( cHitResult._TYPE._HIT ,nAtker , nDefer  ) );
 
 		// buff effect
-		float AtkMarPlus = 0.0f;
-		float DefMarPlus = 0.0f;
+		float AtkMarPlus = pAtker.FightAttr.fAtkAssist;   // assist is base pils
+		float DefMarPlus = pDefer.FightAttr.fDefAssist;
 
 		int AtkPowPlus = 0;
 		int DefPowPlus = 0;
@@ -758,11 +793,7 @@ public partial class BattleManager
 		if ( AtkerSkill != null ) {
 			fAtkFactor = AtkerSkill.f_ATK;
 			fAtkPowFactor = AtkerSkill.f_POW;
-
-
 			// how to trig condition?
-
-
 		}
 //		if (DeferSkill != null) {
 //			fDedFactor 	  = DeferSkill.f_ATK;
@@ -773,14 +804,11 @@ public partial class BattleManager
 //		pAtker.UpdateBuffConditionEffect ( pDefer ); // update buff eff
 //		pDefer.UpdateBuffConditionEffect ( pAtker );
 
-		 
-
-
 		// dmg record
 		int nAtkHp = 0;
 		int nDefHp = 0;
 
-		float AtkMar =  pAtker.GetMar() + AtkMarPlus;
+		float AtkMar =  pAtker.GetMar() + AtkMarPlus ;
 		float DefMar =  pDefer.GetMar() + DefMarPlus ;
 
 		// 1 mar = 0.5% hit rate
@@ -800,8 +828,6 @@ public partial class BattleManager
 		}
 		else if( PowDmg < 0 ){
 			nAtkHp = PowDmg; // it is neg value already
-	
-
 		}
 
 
@@ -824,8 +850,9 @@ public partial class BattleManager
 //		cHitResult res = new cHitResult (nAtker, nDefer );
 //		res.AtkHp = nAtkHp;
 //		res.DefHp = nDefHp;
-		if( nAtkHp != 0 )
+		if( nAtkHp != 0 ){
 			resPool.Add ( new cHitResult( cHitResult._TYPE._HP ,nAtker , nAtkHp  ) );
+		}
 
 		// 
 		resPool.Add ( new cHitResult( cHitResult._TYPE._HP ,nDefer , nDefHp  ) );
@@ -842,15 +869,15 @@ public partial class BattleManager
 	//
 	public bool CanPK( _CAMP  camp1 , _CAMP  camp2 ) 	
 	{
-
-		if (camp1 != camp2 ) {
-			if( camp1 == _CAMP._ENEMY || camp2 == _CAMP._ENEMY )
-			{
-				return true;
-			}
-		}
-		
-		return false;
+		return MyTool.CanPK(camp1 , camp2   );
+//		if (camp1 != camp2 ) {
+//			if( camp1 == _CAMP._ENEMY || camp2 == _CAMP._ENEMY )
+//			{
+//				return true;
+//			}
+//		}
+//		
+//		return false;
 	}
 
 

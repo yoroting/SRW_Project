@@ -89,6 +89,7 @@ public class Panel_UnitInfo : MonoBehaviour {
 			return;
 
 		pUnitData.UpdateAttr();		// make sure data is newest
+		pUnitData.UpdateBuffConditionAttr(); // update condition attr
 
 		// lv
 		MyTool.SetLabelInt( LvObj , pUnitData.n_Lv );

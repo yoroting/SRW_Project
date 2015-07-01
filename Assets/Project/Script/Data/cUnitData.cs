@@ -100,6 +100,8 @@ public class cFightAttr : cAttrData
 	public cSkillData SkillData;
 
 	//extra attr
+	public float fAtkAssist;
+	public float fDefAssist;
 
 	// effect pool
 //	public List< cEffect > CastPool;
@@ -123,6 +125,8 @@ public class cFightAttr : cAttrData
 		SkillID = 0;
 		SkillData = null;
 
+		fAtkAssist = 0;
+		fDefAssist = 0;
 //		Skill = null;
 //		CastPool 	= null;
 //		CastEffPool = null;
@@ -517,7 +521,8 @@ public class cUnitData{
 			UpdateBuffAttr ();		// maybe Recursive here
 		}
 
-		UpdateBuffConditionAttr ();		// always check condition and update
+		// don't update each frame for performance . call condition update for each calcul
+	//	UpdateBuffConditionAttr ();		// always check condition and update
 
 	}
 
@@ -617,7 +622,7 @@ public class cUnitData{
 
 	}
 
-	void UpdateBuffConditionAttr( )
+	public void UpdateBuffConditionAttr( )
 	{
 		cAttrData attr =GetAttrData( cAttrData._CONDBUFF ) ;
 		//attr.Reset ();
@@ -640,17 +645,7 @@ public class cUnitData{
 		}
 	}
 
-	//fight end to clear data
-	public void FightEnd( bool bIsAtker = false )
-	{
-		if (bIsAtker) {
-			if( FightAttr.SkillID == 0 || (FightAttr.SkillData.skill.n_FINISH !=0) ){
-				this.ActionFinished();
-			}
-		}
 
-		ClearState(); // clear fight state
-	}
 
 
 	cAttrData GetAttrData( int idx )
@@ -889,6 +884,8 @@ public class cUnitData{
 
 		UpdateFightAttr();
 
+		// update condition buff
+
 //		FightAttr.Skill = skill;
 //
 //		if (FightAttr.Skill != null) {
@@ -903,10 +900,22 @@ public class cUnitData{
 //		}
 	}
 
-	public void SetFightEnd(  )
+	//fight end to clear data
+	public void FightEnd( bool bIsAtker = false )
 	{
-
+		if (bIsAtker) {
+			if( FightAttr.SkillID == 0 || (FightAttr.SkillData.skill.n_FINISH !=0) ){
+				this.ActionFinished();
+			}
+		}
+		
+		ClearState(); // clear fight state
+		
+		FightAttr.ClearBase (); // clear base attr only
+		
+		UpdateBuffConditionAttr();
 	}
+
 
 	// need to updte each frame for each 
 	public void UpdateBuffConditionEffect(  )
