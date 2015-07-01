@@ -1151,6 +1151,9 @@ public class Panel_StageUI : MonoBehaviour
 		if( PanelManager.Instance.CheckUIIsOpening( Panel_Round.Name ) == true )
 			return true;	
 
+		if( PanelManager.Instance.CheckUIIsOpening( Panel_Skill.Name ) == true )
+			return true;	
+
 		foreach( KeyValuePair< int , Panel_unit > pair in IdentToUnit )
 		{
 			if( pair.Value == null )

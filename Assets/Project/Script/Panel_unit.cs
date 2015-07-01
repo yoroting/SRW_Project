@@ -232,15 +232,17 @@ public class Panel_unit : MonoBehaviour {
 //	public void Y( int y ){ Loc.Y=y; } 
 	
 	public iVec2 GetXY() { return Loc; }
-	public void SetXY( int x , int y ) {
+	public void SetXY( int x , int y , bool bSyn=true ) {
 		Loc.X = x;
 		Loc.Y = y;
-		if( GameScene.Instance != null ){
-			gameObject.transform.localPosition =  MyTool.SnyGridtoLocalPos( x , y , ref GameScene.Instance.Grids ) ; 
-		}
+
 		if( pUnitData != null ){
 			pUnitData.n_X = x;
 			pUnitData.n_Y = y;
+		}
+		// syn  gameobj pos
+		if( bSyn== true && GameScene.Instance != null ){
+			gameObject.transform.localPosition =  MyTool.SnyGridtoLocalPos( x , y , ref GameScene.Instance.Grids ) ; 
 		}
 
 	}
@@ -248,10 +250,12 @@ public class Panel_unit : MonoBehaviour {
 	public void CreateChar( int nCharID , int x , int y )
 	{
 		CharID = nCharID;
-		SetXY( x , y );
+
 		pUnitData = GameDataManager.Instance.CreateChar( nCharID );
 		if( pUnitData == null )
 			return;
+
+		SetXY( x , y );
 		CHARS charData = GameDataManager.Instance.GetConstCharData (nCharID); //ConstDataManager.Instance.GetRow<CHARS>( nCharID );
 		if( charData == null)
 			return;
@@ -313,42 +317,42 @@ public class Panel_unit : MonoBehaviour {
 	}
 	public void MoveNextPoint( )
 	{
-		if( (PathList== null)   )
-			return ;
+		if ((PathList == null))
+			return;
 		if ((PathList.Count <= 0)) {
 			// move end
 			PathList = null;
 		
-			return ;
+			return;
 		}
 
 
-		iVec2 v = PathList[0];
-		PathList.RemoveAt( 0 );
+		iVec2 v = PathList [0];
+		PathList.RemoveAt (0);
 
 		// avoid the same point
-		if ( v.Collision(Loc) )
+		if (v.Collision (Loc))
 			return;
 		//TarPos = v;
 
 		Vector3 tar = this.gameObject.transform.localPosition;
-		tar.x =  GameScene.Instance.Grids.GetRealX( v.X );
-		tar.y =  GameScene.Instance.Grids.GetRealY( v.Y );
+		tar.x = GameScene.Instance.Grids.GetRealX (v.X);
+		tar.y = GameScene.Instance.Grids.GetRealY (v.Y);
 
 
-		int iDist = Loc.Dist( v );
-		float during = iDist* (0.2f);
+		int iDist = Loc.Dist (v);
+		float during = iDist * (0.2f);
 
 		if (Config.GOD == true) {
 			during = 0.2f; // always 0.2f
 		}
 		// cal target location position
 
-		Loc = v; // record target pos as current pos
-
+		SetXY (v.X, v.Y, false);// record target pos as current pos , don't syn go pos. tween move will do it
+//		Loc = v; 
 		// update pos to unit data
-		pUnitData.n_X = Loc.X;
-		pUnitData.n_Y = Loc.Y;
+//		pUnitData.n_X = Loc.X;
+//		pUnitData.n_Y = Loc.Y;
 
 		// Tween move
 		TweenPosition tw = TweenPosition.Begin( this.gameObject , during , tar );
