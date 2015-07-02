@@ -52,7 +52,7 @@ public class cAttrData
 
 
 	public float fDropRate;
-	public float fCostRate;
+	public float fMpCostRate;
 	public int n_MOV;
 
 	public void ClearBase(){
@@ -69,7 +69,7 @@ public class cAttrData
 		fDamageRate = 0.0f;
 
 		fDropRate = 0.0f;
-		fCostRate = 0.0f;
+		fMpCostRate = 0.0f;
 
 		fHpRate	=0.0f;
 		fMpRate	=0.0f;
@@ -717,10 +717,22 @@ public class cUnitData{
 
 	}
 
-	public void AddDef( int ndef )
+	public void AddMp( int mp , bool bShow= false )
 	{
-		
-		
+		n_MP += mp;
+		if( n_MP < 0  ) n_MP = 0;
+	}
+
+	public void AddSp( int sp , bool bShow= false )
+	{
+		n_SP += sp;
+		if( n_SP < 0 ) n_SP = 0;
+	}
+
+	public void AddDef( int def , bool bShow= false  )
+	{
+		n_DEF += def;
+		if( n_DEF < 0 ) n_DEF = 0;
 	}
 
 	// Get Data func
@@ -873,6 +885,80 @@ public class cUnitData{
 		return n;
 	}
 
+	public float GetAddDrop()
+	{
+		//		UpdateAttr(); // update first to get newest data
+		float f = 0;
+		foreach( KeyValuePair< int ,cAttrData > pair  in Attr ){
+			f +=pair.Value.fDropRate;
+		}
+		if (f < 0.0f )			f = 0.0f;
+		return f;
+	}
+
+	public float GetMulDamage()
+	{
+		// UpdateAttr(); // update first to get newest data
+		float f = 0;
+		foreach( KeyValuePair< int ,cAttrData > pair  in Attr ){
+			f +=pair.Value.fDamageRate;
+		}
+		 if (f < 0.0f )			f = 0.0f; 
+		return f;
+	}
+	public float GetMulBurst()
+	{
+		//		UpdateAttr(); // update first to get newest data
+		float f = 0;
+		foreach( KeyValuePair< int ,cAttrData > pair  in Attr ){
+			f +=pair.Value.fBurstRate;
+		}
+		if (f < 0.0f )			f = 0.0f;
+		return f;
+	}
+
+	public float GetMulAttack()
+	{
+		//		UpdateAttr(); // update first to get newest data
+		float f = 0;
+		foreach( KeyValuePair< int ,cAttrData > pair  in Attr ){
+			f +=pair.Value.fAtkRate;
+		}
+		if (f < 0.0f )			f = 0.0f;
+		return f;
+	}
+
+	public float GetMulDef()
+	{
+		//		UpdateAttr(); // update first to get newest data
+		float f = 0;
+		foreach( KeyValuePair< int ,cAttrData > pair  in Attr ){
+			f +=pair.Value.fDefRate;
+		}
+		if (f < 0.0f )			f = 0.0f;
+		return f;
+	}
+	public float GetMulPower()
+	{
+		//		UpdateAttr(); // update first to get newest data
+		float f = 0;
+		foreach( KeyValuePair< int ,cAttrData > pair  in Attr ){
+			f +=pair.Value.fPowRate;
+		}
+		if (f < 0.0f )			f = 0.0f;
+		return f;
+	}
+
+	public float GetMulMpCost()
+	{
+		//		UpdateAttr(); // update first to get newest data
+		float f = 0;
+		foreach( KeyValuePair< int ,cAttrData > pair  in Attr ){
+			f +=pair.Value.fMpCostRate;
+		}
+		if (f < 0.0f )			f = 0.0f;
+		return f;
+	}
 	// Fight Attr
 	public void SetFightAttr( int nTarId , int SkillID )
 	{

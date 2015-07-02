@@ -316,4 +316,40 @@ public class cBuffs
 		}
 
 	}
+
+	public bool CheckStatus( int nStatus ,ref int iValue , ref float fValue){
+
+
+		cUnitData unit_e = null ;
+		if( Owner.FightAttr.TarIdent > 0 ){
+			GameDataManager.Instance.GetUnitDateByIdent ( Owner.FightAttr.TarIdent );
+		}
+		foreach( KeyValuePair< int , cBuffData > pair in Pool )
+		{
+			// normal effect
+			foreach( cEffect eft in pair.Value.EffectPool )
+			{
+				if( eft != null && eft._IsStatus( ref iValue , ref fValue ) )
+				{
+					return true	;
+				}
+			}
+
+			// condition
+			//if( MyScript.Instance.CheckSkillCond( pair.Value.tableData.s_BUFF_CONDITON , this.Owner , unit_e ) == true )
+			if( pair.Value.Condition.Check( this.Owner , unit_e ) )
+			{
+				foreach( cEffect eft in pair.Value.ConditionEffectPool )
+				{
+					if( eft != null && eft._IsStatus( ref iValue , ref fValue ) )
+					{
+						return true	;
+					}
+				}
+			}
+		}
+
+		return false;
+	}
+
 }

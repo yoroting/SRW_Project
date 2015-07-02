@@ -605,17 +605,40 @@ public class MyScript {
 					
 				}
 				// Attr
-				else if( func.sFunc  == "ADD_MAR") 
-				{
-					float f = func.F(0);
-					pool.Add( new ADD_MAR( f ) );
+				else if( func.sFunc  == "ADD_MAR") {
+					pool.Add( new ADD_MAR( func.F(0) ) );
 				}
-				else if( func.sFunc  == "ADD_MAR_DIFF") 
-				{
-					float f = func.F(0);
-					pool.Add( new ADD_MAR_DIFF( f ) );
+				else if( func.sFunc  == "ADD_MAR_DIFF") {
+					pool.Add( new ADD_MAR_DIFF( func.F(0) ) );
 				}
-
+				else if( func.sFunc  == "MUL_DROP") {
+					pool.Add( new MUL_DROP( func.F(0) ) );
+				}
+				else if( func.sFunc  == "MUL_BRUST") {
+					pool.Add( new MUL_BRUST( func.F(0) ) );
+				}
+				else if( func.sFunc  == "MUL_DAMAGE") {
+					pool.Add( new MUL_DAMAGE( func.F(0) ) );
+				}
+				else if( func.sFunc  == "MUL_ATTACK") {
+					pool.Add( new MUL_ATTACK( func.F(0) ) );
+				}
+				else if( func.sFunc  == "MUL_DEF") {
+					pool.Add( new MUL_DEF( func.F(0) ) );
+				}
+				else if( func.sFunc  == "MUL_POWER"){
+					pool.Add( new MUL_POWER( func.F(0) ) );
+				}
+				else if( func.sFunc  == "MUL_MPCOST") {
+					pool.Add( new MUL_MPCOST( func.F(0) ) );
+				}
+				else if( func.sFunc  == "ADD_MOVE") 
+				{
+					pool.Add( new ADD_MOVE( func.I(0) ) );
+					//	CacheHitResultPool.Add( new cHitResult(cHitResult._TYPE._ADDBUFF , data_I.n_Ident , nBuffID )  );
+					
+				}
+			
 			}
 
 		}

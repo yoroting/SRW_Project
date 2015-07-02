@@ -1486,7 +1486,14 @@ public class Panel_StageUI : MonoBehaviour
 		{
 			iVec2 pos = FindEmptyPos( new iVec2(x , y));
 			// setup param
-			unit.CreateChar( nCharID , pos.X , pos.Y );
+			int posx = x;
+			int posy = y;
+			if( pos !=null ){
+				posx = pos.X;
+				posy = pos.Y;
+			}
+
+			unit.CreateChar( nCharID , posx , posy );
 			unit.SetCamp( nCampID );	
 
 			unit.SetLevel( StageData.n_MOB_LV );

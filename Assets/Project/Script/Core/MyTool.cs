@@ -37,6 +37,18 @@ public class MyTool {
 
 	}
 
+	public static float GetEffectValue( float fValue , float fRate , float fPlus )
+	{
+		if( fRate < 0.0f ) fRate = 0.0f;
+		return (fValue*fRate) + fPlus;
+	}
+
+	public static int GetEffectValue( int nValue , float fRate , int nPlus )
+	{
+		if( fRate < 0.0f ) fRate = 0.0f;
+		return (int )(nValue*fRate) + nPlus;
+	}
+
 	public static Panel_CMDUnitUI CMDUI()
 	{
 		return MyTool.GetPanel<Panel_CMDUnitUI> ( PanelManager.Instance.OpenUI (Panel_CMDUnitUI.Name) );

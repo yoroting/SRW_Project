@@ -30,7 +30,9 @@ public class cEffect
 	public virtual void _OnCasting( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list){ }		// hit a target
 	public virtual void _OnHit( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ }			// 
 	public virtual void _OnBeHit( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ }		// 
-	
+
+	// cost
+	public virtual bool _IsStatus( ref int iValue , ref float fValue ){ return false; }				
 }
 
 // Cast Effect
@@ -84,6 +86,89 @@ public class ADD_MAR_DIFF: cEffect
 		}
 	}
 }
+// ==== MUL_BRUST
+public class MUL_DROP: cEffect
+{
+	public MUL_DROP( float v ){ fValue = v;}
+	public float fValue ;	
+	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
+		attr.fDropRate += fValue;
+	}
+}
+
+public class MUL_BRUST: cEffect
+{
+	public MUL_BRUST( float v ){ fValue = v;}
+	public float fValue ;	
+	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
+		attr.fBurstRate += fValue;
+	}
+}
+
+public class MUL_DAMAGE: cEffect
+{
+	public MUL_DAMAGE( float v ){fValue = v;}
+	public float fValue ;	
+	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
+		attr.fDamageRate += fValue;
+	}
+}
+
+public class MUL_ATTACK: cEffect
+{
+	public MUL_ATTACK( float v ){fValue = v;}
+	public float fValue ;	
+	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
+		attr.fAtkRate += fValue;
+	}
+}
+
+public class MUL_DEF: cEffect
+{
+	public MUL_DEF( float v ){fValue = v;}
+	public float fValue ;	
+	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
+		attr.fDefRate += fValue;
+	}
+}
+
+public class MUL_POWER: cEffect
+{
+	public MUL_POWER( float v ){fValue = v;}
+	public float fValue ;	
+	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
+		attr.fPowRate += fValue;
+	}
+}
+
+public class ADD_MOVE: cEffect
+{
+	public ADD_MOVE( int n ){		nValue = n;	}
+	public int nValue ;
+	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
+		attr.n_MOV += nValue;
+	}
+}
+//==== cost ==
+public class MUL_MPCOST: cEffect
+{
+	public MUL_MPCOST( float v ){ fValue = v;}
+	public float fValue ;
+	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
+		attr.fMpCostRate += fValue;
+	}
+
+}
+public class RECOVER_SP: cEffect
+{
+	public RECOVER_SP( float v ){ fValue = v;}
+	public float fValue ;
+//	override public void _Mul_SpCost( ref float value ){ 
+//		value += F;
+//	}
+}
+
+
 
 // use to cache condition sctipr parser result
 public class  cEffectCondition

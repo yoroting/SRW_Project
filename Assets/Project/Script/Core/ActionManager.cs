@@ -226,6 +226,23 @@ public partial class ActionManager
 			act.nSkillID = nSkillID;
 			cUnitData caster = GameDataManager.Instance.GetUnitDateByIdent( nAtkIdent );
 			if( caster != null ){
+				// 有 cost
+				if( nSkillID > 0 )
+				{
+					if( caster.FightAttr.SkillData.skill.n_MP > 0 ){
+						float frate =  caster.GetMulPower();
+
+						int cost = MyTool.GetEffectValue( caster.FightAttr.SkillData.skill.n_MP , frate , 0 );	
+
+						caster.n_MP -= cost;  //
+
+
+					}
+					if( caster.FightAttr.SkillData.skill.n_SP > 0 ){
+						caster.n_SP -= caster.FightAttr.SkillData.skill.n_SP;  //
+						
+					}
+				}
 
 				caster.DoSkillCastEffect( ref act.HitResult  );
 			}
