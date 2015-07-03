@@ -256,7 +256,7 @@ public class Panel_unit : MonoBehaviour {
 			return;
 
 		SetXY( x , y );
-		CHARS charData = GameDataManager.Instance.GetConstCharData (nCharID); //ConstDataManager.Instance.GetRow<CHARS>( nCharID );
+		CHARS charData = ConstDataManager.Instance.GetRow<CHARS>( nCharID );
 		if( charData == null)
 			return;
 		// change face
@@ -522,6 +522,22 @@ public class Panel_unit : MonoBehaviour {
 				break;
 			}
 			break;
+		case _ACTION._DROP:			// Drop
+			switch( nSubActFlow )
+			{
+			case 0:
+				nSubActFlow++;
+				// show
+				ActionDrop( CurAction.nActVar1 , CurAction.nActVar2  ); // exp / money
+				//ActionHit( CurAction.nSkillID ,CurAction.nTarGridX , CurAction.nTarGridY );
+				//ActionMove( CurAction.nTarGridX , CurAction.nTarGridY  );
+				break;
+			case 1:
+				nSubActFlow++;
+				CurAction = null; // clear act
+				break;
+			}
+			break;
 		}
 	}
 
@@ -609,6 +625,18 @@ public class Panel_unit : MonoBehaviour {
 
 	}
 
+	public void ActionDrop( int nExp , int nMoney )
+	{
+		string sMsg = string.Format( "Exp + {0} , \n Money + {1}" , nExp , nMoney );
+
+		BattleManager.Instance.ShowBattleMsg( null , sMsg );  // show 
+
+		pUnitData.AddExp( nExp );
+
+		GameDataManager.Instance.nMoney += nMoney;
+
+
+	}
 
 	//==============Tween CAll back
 	public void OnTwAtkHit( )

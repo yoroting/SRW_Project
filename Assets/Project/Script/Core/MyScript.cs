@@ -344,6 +344,20 @@ public class MyScript {
 				GameEventManager.DispatchEvent ( evt );
 
 			}
+			else if( func.sFunc == "POPGROUP" )
+			{
+				StagePopGroupEvent evt = new StagePopGroupEvent ();
+				//evt.eCamp 	= (_CAMP)func.I( 0 );
+				evt.nLeaderCharID = func.I( 0 );
+				evt.nCharID = func.I( 1 );
+				evt.stX		= func.I( 2 );
+				evt.stY		= func.I( 3 );
+				evt.edX		= func.I( 4 );
+				evt.edY		= func.I( 5 );
+				evt.nPopType = func.I( 6 ); // pop num
+				GameEventManager.DispatchEvent ( evt );
+				
+			}
 			else if( func.sFunc == "TALK"  ) // open talkui
 			{
 				#if UNITY_EDITOR

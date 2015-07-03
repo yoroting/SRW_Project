@@ -119,12 +119,12 @@ public partial class GameDataManager
 		UnitPool = new Dictionary< int , cUnitData >();
 		CampPool = new Dictionary< _CAMP , cCamp >();
 		EvtDonePool = new Dictionary< int , int > ();			// record event complete round 
-		ConCharPool = new Dictionary< int , CHARS >();
-
-		ConCharPool   = new Dictionary< int , CHARS >() ;
-		ConSchoolPool = new Dictionary< int , SCHOOL >() ;
-		ConSkillPool  = new Dictionary< int , SKILL >() ;
-
+//		ConCharPool = new Dictionary< int , CHARS >();
+//		ConCharPool   = new Dictionary< int , CHARS >() ;
+//		ConSchoolPool = new Dictionary< int , SCHOOL >() ;
+//		ConSkillPool  = new Dictionary< int , SKILL >() ;
+		GroupPool = new Dictionary< int , int >();			//  <leader char id , leader char ident>
+		SkillDataCachePool = new Dictionary< int , cSkillData >();			
 	}
 
 	private static GameDataManager instance;
@@ -149,10 +149,13 @@ public partial class GameDataManager
 
 	public void ResetStage()
 	{
+		nMoney = 0;
 		nRound = 0;
 		nActiveCamp = _CAMP._PLAYER;
 	//	UnitPool.Clear ();
 		CampPool.Clear ();
+		EvtDonePool.Clear();
+		GroupPool.Clear();
 	}
 
 	// need this to update all data's attr
@@ -182,6 +185,7 @@ public partial class GameDataManager
 //	public int nInfoCharID{ get; set; }							
 
 	//
+	public int nMoney{ get; set; } 
 	public int nRound{ get; set; } 
 //	public _ROUND_STATUS nRoundStatus{ get; set; }    // 0- start ,1- running, 2- end
 
@@ -267,61 +271,65 @@ public partial class GameDataManager
 
 		return bRoundChange;	 
 	}
-	// Constdata
-	Dictionary< int , CHARS > ConCharPool;
-	Dictionary< int , SCHOOL > ConSchoolPool;
-	Dictionary< int , SKILL > ConSkillPool;
 	//Dictionary< int , Abil > ConAbilityPool;
-	public CHARS GetConstCharData( int nCharId )
+//	public CHARS GetConstCharData( int nCharId )
+//	{
+//		CHARS p = null;
+//
+//		p = ConstDataManager.Instance.GetRow<CHARS> (nCharId);
+//		if (p == null) {
+//			Debug.LogErrorFormat( "can't get char constdata {0}" , nCharId );
+//			p = new CHARS(); // fill empty value
+//		}
+//
+//		return p;
+//	}
+//
+//	public SCHOOL GetConstSchoolData( int nSchoolId )
+//	{
+//		SCHOOL p = null;
+//		p = ConstDataManager.Instance.GetRow<SCHOOL> (nSchoolId);
+//		if (p == null) {
+//			Debug.LogErrorFormat( "can't get school constdata {0}" , nSchoolId );
+//			p = new SCHOOL(); // fill empty value
+//		}
+//
+//		return p;		
+//	}
+//
+
+//	public SKILL GetConstSkillData( int nSkillId )
+//	{
+//		SKILL p = null;
+//
+//		p = ConstDataManager.Instance.GetRow<SKILL> (nSkillId);
+//		if (p == null) {
+//			Debug.LogErrorFormat( "can't get SKILL constdata {0}" , nSkillId );
+//			p = new SKILL(); // fill empty value
+//		}
+//		return p;		
+//	}
+
+	Dictionary< int , cSkillData > SkillDataCachePool;
+	// cache to get skill data
+	public cSkillData GetSkillData( int nSkillId )
 	{
-		CHARS p = null;
-		if (ConCharPool.TryGetValue (nCharId, out p)) {
-			return p;
+		cSkillData skilldata = null;
+		if( SkillDataCachePool.TryGetValue(nSkillId , out skilldata )== true ){
+			return skilldata;
 		}
-		p = ConstDataManager.Instance.GetRow<CHARS> (nCharId);
-		if (p == null) {
-			Debug.LogErrorFormat( "can't get char constdata {0}" , nCharId );
-			p = new CHARS(); // fill empty value
-		}
-		ConCharPool.Add (nCharId, p);
 
-		return p;
+		SKILL p = ConstDataManager.Instance.GetRow<SKILL> (nSkillId);
+		if (p == null ) {
+			if( nSkillId!=0 ){
+				Debug.LogErrorFormat( "can't get SKILL constdata {0}" , nSkillId );
+			}
+		}
+
+		skilldata = new cSkillData( p );
+		SkillDataCachePool.Add( nSkillId , skilldata );
+		return skilldata;		
 	}
-
-	public SCHOOL GetConstSchoolData( int nSchoolId )
-	{
-		SCHOOL p = null;
-		if (ConSchoolPool.TryGetValue (nSchoolId, out p)) {
-			return p;
-		}
-		p = ConstDataManager.Instance.GetRow<SCHOOL> (nSchoolId);
-		if (p == null) {
-			Debug.LogErrorFormat( "can't get school constdata {0}" , nSchoolId );
-			p = new SCHOOL(); // fill empty value
-		}
-		ConSchoolPool.Add (nSchoolId, p);
-		
-		return p;		
-	}
-
-
-	public SKILL GetConstSkillData( int nSkillId )
-	{
-		SKILL p = null;
-		if (ConSkillPool.TryGetValue (nSkillId, out p)) {
-			return p;
-		}
-		p = ConstDataManager.Instance.GetRow<SKILL> (nSkillId);
-		if (p == null) {
-			Debug.LogErrorFormat( "can't get SKILL constdata {0}" , nSkillId );
-			p = new SKILL(); // fill empty value
-		}
-		ConSkillPool.Add (nSkillId, p);
-		
-		return p;
-		
-	}
-
 	// 目前的紀錄狀態
 	//public PLAYER_DATA			cPlayerData;
 	public cSaveData		curSaveData;
@@ -330,19 +338,18 @@ public partial class GameDataManager
 
 	// don't public this
 	int nSerialNO;		// object serial NO
-
-	public Dictionary< int , cUnitData > UnitPool;			// add event id 
-
- 	int GenerSerialNO( ){ return ++nSerialNO ; }
+	int GenerSerialNO( ){ return ++nSerialNO ; }
 	int GenerMobSerialNO( ){ return (++nSerialNO)*(-1) ; }
 
+	// public  unit data
+	public Dictionary< int , cUnitData > UnitPool;			// add event id 
 
 	public cUnitData CreateChar( int nCharID )
 	{
 		cUnitData unit = new cUnitData();
 		unit.n_Ident = GenerSerialNO( );
 		unit.n_CharID = nCharID;
-		unit.SetContData( GetConstCharData ( nCharID ) );
+		unit.SetContData(  ConstDataManager.Instance.GetRow< CHARS >( nCharID ) );
 
 		UnitPool.Add( unit.n_Ident , unit );
 		return unit;
@@ -358,7 +365,7 @@ public partial class GameDataManager
 		}
 		else
 		{
-			Debug.LogErrorFormat( "gamedata manager.GetUnitDateByIdent woth no key {0}" ,  nIdent  );
+			Debug.LogErrorFormat( "gamedata manager.GetUnitDateByIdent with no key {0}" ,  nIdent  );
 			return null;
 		}
 
@@ -366,13 +373,16 @@ public partial class GameDataManager
 
 	public cUnitData GetUnitDateByCharID( int nCharID )
 	{
+		if( nCharID == 0 )			return null;
+
 		foreach (KeyValuePair< int ,cUnitData > pair in UnitPool) {
 			if( pair.Value != null && pair.Value.n_CharID == nCharID )
 			{
 				return pair.Value;
 			}
 		}
-
+		// event check will keep get unit by char
+		//Debug.LogFormat( "gamedata manager.GetUnitDateByCharID with no char {0}" ,  nCharID  );
 		return null;
 	}
 
@@ -399,6 +409,8 @@ public partial class GameDataManager
 	public Dictionary< int , int > EvtDonePool;			// record event complete round 
 
 
+	// public  Group
+	public Dictionary< int , int > GroupPool;			//  <leader char id , leader char ident>
 
 
 	// Save to binary;

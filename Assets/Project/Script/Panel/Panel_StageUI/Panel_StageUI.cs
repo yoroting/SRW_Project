@@ -123,13 +123,14 @@ public class Panel_StageUI : MonoBehaviour
 	
 	}
 
-	public void RegeditGameEvent()
+	public void RegeditGameEvent( bool bTrue )
 	{
+		if( bTrue ){
 		// Stage Event
 		GameEventManager.AddEventListener(  StageBGMEvent.Name , OnStageBGMEvent );
 		
 		GameEventManager.AddEventListener(  StagePopUnitEvent.Name , OnStagePopUnitEvent );
-		GameEventManager.AddEventListener(  StagePopMobGroupEvent.Name , OnStagePopMobGroupEvent );
+		GameEventManager.AddEventListener(  StagePopGroupEvent.Name , OnStagePopGroupEvent );
 		
 		//	GameEventManager.AddEventListener(  StageDelCharEvent.Name , OnStageDelCharEvent ); // different func form some little different process
 		//	GameEventManager.AddEventListener(  StageDelMobEvent.Name , OnStageDelMobEvent );
@@ -151,6 +152,37 @@ public class Panel_StageUI : MonoBehaviour
 		
 		
 		GameEventManager.AddEventListener(  StageBattleAttackEvent.Name , OnStageBattleAttackEvent );
+		}
+		else 
+		{
+
+			// need remove. or it will send to a destory obj
+			GameEventManager.RemoveEventListener(  StageBGMEvent.Name , OnStageBGMEvent );
+			
+			GameEventManager.RemoveEventListener(  StagePopUnitEvent.Name , OnStagePopUnitEvent );
+			GameEventManager.RemoveEventListener(  StagePopGroupEvent.Name , OnStagePopGroupEvent );
+			
+			//	GameEventManager.AddEventListener(  StageDelCharEvent.Name , OnStageDelCharEvent ); // different func form some little different process
+			//	GameEventManager.AddEventListener(  StageDelMobEvent.Name , OnStageDelMobEvent );
+			GameEventManager.RemoveEventListener(  StageDelUnitEvent.Name , OnStageDelUnitEvent );
+			
+			GameEventManager.RemoveEventListener(  StageDelUnitByIdentEvent.Name , OnStageDelUnitByIdentEvent );
+			
+			
+			// char event 
+			GameEventManager.RemoveEventListener(  StageCharMoveEvent.Name , OnStageCharMoveEvent );
+			//		GameEventManager.RemoveEventListener(  StageUnitActionFinishEvent.Name , OnStageUnitActionFinishEvent );
+			GameEventManager.RemoveEventListener(  StageWeakUpCampEvent.Name , OnStageWeakUpCampEvent );
+			
+			
+			// cmd event
+			GameEventManager.RemoveEventListener(  StageShowMoveRangeEvent.Name , OnStageShowMoveRangeEvent );
+			GameEventManager.RemoveEventListener(  StageShowAttackRangeEvent.Name , OnStageShowAttackRangeEvent );
+			GameEventManager.RemoveEventListener(  StageRestorePosEvent.Name , OnStageRestorePosEvent );
+			
+			
+			GameEventManager.RemoveEventListener(  StageBattleAttackEvent.Name , OnStageBattleAttackEvent );
+		}
 
 	}
 
@@ -224,68 +256,24 @@ public class Panel_StageUI : MonoBehaviour
 
 	}
 
-	IEnumerator StageLoading(  )
-	{
-		// Custom Update Routine which repeats forever
-		do
-		{
-			// wait one frame and continue
-			yield return 0;
-					
-			if ( bIsReady == true )
-			{
-				Debug.Log( "LoadingCoroutine End"  + Time.time );
-				// end
-				PanelManager.Instance.CloseUI( "Panel_Loading");
-				yield break;
-			}		
-		} while (true);
-		
-//		bIsLoading = true;
-//		
-//		PanelManager.Instance.OpenUI( "Panel_Loading");
-//		yield return 0;
-//		
-//		// clear data
-//		Clear ();
-//		
-//		Debug.Log( "stageloding:clearall"  + Time.time );
-//		
-//		// load const data
-//		StageData = ConstDataManager.Instance.GetRow<STAGE_DATA> ( GameDataManager.Instance.nStageID );
-//		if( StageData == null ){
-//			Debug.LogFormat( "stageloding:StageData fail with ID {0} : Time{1} "  , GameDataManager.Instance.nStageID ,Time.time);
-//			yield break;
-//		}
-//		
-//		// load scene file
-//		if( LoadScene( StageData.n_SCENE_ID ) == false ){
-//			Debug.LogFormat( "stageloding:LoadScene fail with ID {0} : Time{1}"   , StageData.n_SCENE_ID,Time.time );
-//			yield break;
-//		}
-//		
-//		// EVENT 
-//		//GameDataManager.Instance.nRound = 0;		// many mob pop in talk ui. we need a 0 round to avoid issue
-//		
-//		//Record All Event to execute
-//		//EvtPool.Clear();
-//		char [] split = { ';' };
-//		string [] strEvent = StageData.s_EVENT.Split( split );
-//		for( int i = 0 ; i< strEvent.Length ; i++ )
+//	IEnumerator StageLoading(  )
+//	{
+//		// Custom Update Routine which repeats forever
+//		do
 //		{
-//			int nEventID = int.Parse( strEvent[i] );
-//			STAGE_EVENT evt = ConstDataManager.Instance.GetRow<STAGE_EVENT> ( nEventID );
-//			if( evt != null ){
-//				EvtPool.Add( nEventID , evt );
-//			}
-//		}
-//		
-//		Debug.Log( "stageloding:create event Pool complete"  + Time.time );
-//		
-//		yield return new WaitForSeconds( 3.0f);
-//		bIsLoading = false;
-//		PanelManager.Instance.CloseUI( "Panel_Loading");
-	}
+//			// wait one frame and continue
+//			yield return 0;
+//					
+//			if ( bIsReady == true )
+//			{
+//				Debug.Log( "LoadingCoroutine End"  + Time.time );
+//				// end
+//				PanelManager.Instance.CloseUI( "Panel_Loading");
+//				yield break;
+//			}		
+//		} while (true);
+//
+//	}
 
 
 	// Use this for initialization
@@ -301,9 +289,9 @@ public class Panel_StageUI : MonoBehaviour
 		Debug.Log( "stage srart loding"  );
 
 		// loading panel
-		PanelManager.Instance.OpenUI( "Panel_Loading");
+	//	PanelManager.Instance.OpenUI( "Panel_Loading");
 		bIsLoading = true;
-		StartCoroutine("StageLoading" );
+	//	StartCoroutine("StageLoading" );
 
 		// clear data
 		Clear ();
@@ -370,7 +358,7 @@ public class Panel_StageUI : MonoBehaviour
 		
 
 		// regedit game event
-		RegeditGameEvent();	
+		RegeditGameEvent( true );	
 		// create sub panel?
 
 		Panel_CMDUnitUI.OpenCMDUI( _CMD_TYPE._SYS , 0 );
@@ -450,6 +438,9 @@ public class Panel_StageUI : MonoBehaviour
 		Panel_CMDUnitUI.CloseCMDUI();
 		PanelManager.Instance.CloseUI( Panel_UnitInfo.Name );
 		PanelManager.Instance.CloseUI( Panel_MiniUnitInfo.Name );
+
+		// close loadint UI
+		PanelManager.Instance.CloseUI( "Panel_Loading");
 
 		bIsReady = true;		// all ready .. close the loading ui
 	}
@@ -544,32 +535,7 @@ public class Panel_StageUI : MonoBehaviour
 		// free singl
 		instance = null;
 
-		// need remove. or it will send to a destory obj
-		GameEventManager.RemoveEventListener(  StageBGMEvent.Name , OnStageBGMEvent );
-		
-		GameEventManager.RemoveEventListener(  StagePopUnitEvent.Name , OnStagePopUnitEvent );
-		GameEventManager.RemoveEventListener(  StagePopMobGroupEvent.Name , OnStagePopMobGroupEvent );
-		
-		//	GameEventManager.AddEventListener(  StageDelCharEvent.Name , OnStageDelCharEvent ); // different func form some little different process
-		//	GameEventManager.AddEventListener(  StageDelMobEvent.Name , OnStageDelMobEvent );
-		GameEventManager.RemoveEventListener(  StageDelUnitEvent.Name , OnStageDelUnitEvent );
-		
-		GameEventManager.RemoveEventListener(  StageDelUnitByIdentEvent.Name , OnStageDelUnitByIdentEvent );
-		
-		
-		// char event 
-		GameEventManager.RemoveEventListener(  StageCharMoveEvent.Name , OnStageCharMoveEvent );
-//		GameEventManager.RemoveEventListener(  StageUnitActionFinishEvent.Name , OnStageUnitActionFinishEvent );
-		GameEventManager.RemoveEventListener(  StageWeakUpCampEvent.Name , OnStageWeakUpCampEvent );
-		
-		
-		// cmd event
-		GameEventManager.RemoveEventListener(  StageShowMoveRangeEvent.Name , OnStageShowMoveRangeEvent );
-		GameEventManager.RemoveEventListener(  StageShowAttackRangeEvent.Name , OnStageShowAttackRangeEvent );
-		GameEventManager.RemoveEventListener(  StageRestorePosEvent.Name , OnStageRestorePosEvent );
-		
-		
-		GameEventManager.RemoveEventListener(  StageBattleAttackEvent.Name , OnStageBattleAttackEvent );
+		RegeditGameEvent( false );
 		// create singloten
 
 
@@ -1447,7 +1413,7 @@ public class Panel_StageUI : MonoBehaviour
 
 	// Widget func	 
 
-	GameObject AddUnit( _CAMP nCampID , int nCharID , int x , int y )
+	GameObject AddUnit( _CAMP nCampID , int nCharID , int x , int y  , int nLeaderIdent = 0 )
 	{
 //		CHARS charData = GameDataManager.Instance.GetConstCharData (nCharID); //ConstDataManager.Instance.GetRow<CHARS>( nCharID );
 //		if( charData == null)
@@ -1484,8 +1450,8 @@ public class Panel_StageUI : MonoBehaviour
 		//UNIT_DATA unit = GameDataManager.Instance.CreateChar( nCharID );
 		if( unit != null )
 		{
+			// fix to a valid pos
 			iVec2 pos = FindEmptyPos( new iVec2(x , y));
-			// setup param
 			int posx = x;
 			int posy = y;
 			if( pos !=null ){
@@ -1493,14 +1459,19 @@ public class Panel_StageUI : MonoBehaviour
 				posy = pos.Y;
 			}
 
+			// setup param
 			unit.CreateChar( nCharID , posx , posy );
 			unit.SetCamp( nCampID );	
 
 			unit.SetLevel( StageData.n_MOB_LV );
-			// fix to a valid pos
+
 
 			IdentToUnit.Add( unit.Ident() , unit  ) ;// stage gameobj
 
+			// set game data
+			unit.pUnitData.n_LeaderIdent = nLeaderIdent;
+			unit.pUnitData.n_X			 = x;
+			unit.pUnitData.n_Y			 = y;
 		}
 		
 		// position // set in create
@@ -1747,13 +1718,41 @@ public class Panel_StageUI : MonoBehaviour
 	}
 
 
-	public void OnStagePopMobGroupEvent(GameEvent evt)
+	public void OnStagePopGroupEvent(GameEvent evt)
 	{
-		Debug.Log ("OnStagePopMobGroupEvent");
-		StagePopMobGroupEvent Evt = evt as StagePopMobGroupEvent;
+		Debug.Log ("OnStagePopGroupEvent");
+		StagePopGroupEvent Evt = evt as StagePopGroupEvent;
 		if (Evt == null)
 			return;
+		// get leader ident
+		int nLeaderCharid = Evt.nLeaderCharID;
+		cUnitData pLeader = GameDataManager.Instance.GetUnitDateByCharID( nLeaderCharid );
+		if( pLeader == null ){
+			Debug.Log (string.Format ("OnStagePopGroupEvent Fail with no leader id:{0}) ", nLeaderCharid   )  );			
+			return;
+		}
 
+		int nLeaderIdent =pLeader.n_Ident;
+
+		//int nGroupID = 
+		if( Evt.nPopType == 0 ){
+			int sx = Evt.stX < Evt.edX ? Evt.stX :Evt.edX ;
+			int sy = Evt.stY < Evt.edY ? Evt.stY :Evt.edY ;
+			int ex = Evt.stX > Evt.edX ? Evt.stX :Evt.edX ; 
+			int ey = Evt.stY > Evt.edY ? Evt.stY :Evt.edY ;
+
+			for( int i = sx ; i <= ex ; i++  ){
+				for( int j = sy ; j <= ey ; j++  ){
+					GameObject obj = AddUnit ( pLeader.eCampID, Evt.nCharID , i , j , nLeaderIdent  );
+					if (obj != null) {	
+
+					} else {
+						Debug.Log (string.Format ("OnStagePopGroupEvent Fail with charid({0}) index({1},{2})", Evt.nCharID  , i , j )  );			
+					}
+
+				}
+			}
+		}
 	}
 
 	public void OnStageDelUnitByIdentEvent(GameEvent evt)

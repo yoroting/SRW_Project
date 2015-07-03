@@ -1,34 +1,29 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Project\Script\Data\cEffect.cs">
+  <MonoDevelop.Ide.Workspace />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Project\Script\Core\GameDataManager.cs">
     <Files>
-      <File FileName="Assets\Project\Script\Panel\Panel_StageUI\Panel_StageUI.cs" Line="1509" Column="25" />
-      <File FileName="SRW_Project.sln" Line="1" Column="1" />
-      <File FileName="Assets\Project\Script\Core\BattleManager.cs" Line="413" Column="17" />
-      <File FileName="Assets\Project\Script\Panel_unit.cs" Line="658" Column="16" />
-      <File FileName="Assets\Project\Script\Data\cUnitData.cs" Line="735" Column="29" />
-      <File FileName="Assets\Project\Script\Panel\Panel_CMDUnitUI\Panel_CMDUnitUI.cs" Line="1" Column="1" />
-      <File FileName="Assets\Project\Script\MyGrids.cs" Line="1" Column="1" />
-      <File FileName="Assets\Project\Script\Core\Config.cs" Line="1" Column="1" />
-      <File FileName="Assets\Project\Script\Panel\Panel_Skill\Panel_Skill.cs" Line="1" Column="1" />
-      <File FileName="Assets\Project\Script\Panel\Panel_StoryUI\StoryUIPanel.cs" Line="1" Column="1" />
-      <File FileName="Assets\Project\Script\Core\MyTool.cs" Line="40" Column="36" />
-      <File FileName="Assets\Project\Script\Core\GameDataManager.cs" Line="1" Column="1" />
-      <File FileName="Assets\Project\Script\Data\cBuffData.cs" Line="139" Column="22" />
-      <File FileName="Assets\Project\Script\Panel\Panel_MainUI\MainUIPanel.cs" Line="1" Column="1" />
-      <File FileName="Assets\Common\Plugins\PanelManager\PanelManager.cs" Line="1" Column="1" />
-      <File FileName="Assets\Common\Plugins\PanelManager\PanelManager.RepeatCallFunc.cs" Line="1" Column="1" />
-      <File FileName="Assets\Project\Script\Panel\Panel_UnitInfo\Panel_UnitInfo.cs" Line="1" Column="1" />
-      <File FileName="Assets\Project\Script\UnitCell.cs" Line="1" Column="1" />
-      <File FileName="Assets\Project\Script\Core\ActionManager.cs" Line="232" Column="54" />
-      <File FileName="Assets\Project\Script\Data\cEffect.cs" Line="144" Column="31" />
-      <File FileName="Assets\Project\Script\Core\MyScript.cs" Line="635" Column="34" />
+      <File FileName="Assets\Project\Script\Panel\Panel_StageUI\Panel_StageUI.cs" Line="1741" Column="46" />
+      <File FileName="Assets\Project\Script\Core\MyScript.cs" Line="233" Column="1" />
+      <File FileName="Assets\Project\Script\Core\SRWGameEvent.cs" Line="64" Column="2" />
+      <File FileName="Assets\Project\Script\Data\cUnitData.cs" Line="326" Column="4" />
+      <File FileName="Assets\Project\Script\Core\Config.cs" Line="16" Column="35" />
+      <File FileName="Assets\Project\Script\Core\BattleManager.cs" Line="942" Column="35" />
+      <File FileName="Assets\Project\Script\Core\ActionManager.cs" Line="247" Column="27" />
+      <File FileName="Assets\Project\Script\Panel_unit.cs" Line="583" Column="49" />
+      <File FileName="Assets\Project\Script\BattleMsg.cs" Line="21" Column="3" />
+      <File FileName="Assets\Project\Script\Core\GameDataManager.cs" Line="323" Column="17" />
+      <File FileName="Assets\Project\Script\Data\cBuffData.cs" Line="268" Column="23" />
+      <File FileName="Assets\Project\Script\Data\cSkillData.cs" Line="23" Column="3" />
+      <File FileName="Assets\Project\Script\Core\MyTool.cs" Line="92" Column="66" />
+      <File FileName="Assets\Project\Script\Panel\Panel_UnitInfo\Panel_UnitInfo.cs" Line="120" Column="17" />
+      <File FileName="Assets\Project\Script\Panel\Panel_Skill\Panel_Skill.cs" Line="226" Column="1" />
+      <File FileName="Assets\Project\Script\Panel\Panel_CMDUnitUI\Panel_CMDUnitUI.cs" Line="438" Column="40" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="D:\SRW\SRW_Project\Assets\Project\Script\Core\GameDataManager.cs" line="317" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches>
-    <Watch file="Assets\Project\Script\Panel\Panel_StageUI\Panel_StageUI.cs" line="1313" offsetX="605" offsetY="22304" expression="TilePlaneObj" liveUpdate="False" />
-  </MonoDevelop.Ide.DebuggingService.PinnedWatches>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
 </Properties>

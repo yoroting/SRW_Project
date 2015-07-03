@@ -363,7 +363,21 @@ public partial class BattleManager
 
 					pCountAct.AddHitResult( CalAttackResult( nDeferID , nAtkerID , true ) );		
 				}
-				
+
+				DefAffectPool = GetAffectPool( Defer , nAtkerID , Defer.FightAttr.SkillID , 0 , 0 );
+				foreach( cUnitData unit in DefAffectPool )
+				{
+					//=====================
+					// checked if this cUnitData can Atk
+					if( CanPK( Defer.eCampID , unit.eCampID ) == false )
+						continue;
+					
+					unit.SetFightAttr(  unit.n_Ident  , 0 );
+					ShowDefAssist( unit.n_Ident , false );
+					
+					pCountAct.AddHitResult(  CalAttackResult( nDeferID , unit.n_Ident ) ) ;
+				}
+
 				//				Panel_unit unitDef = Panel_StageUI.Instance.GetUnitByIdent( nDeferID );
 				//				if( unitDef != null )
 				//				{
@@ -378,7 +392,31 @@ public partial class BattleManager
 			break;
 		case 10:			// close all 
 			nPhase++;
+			// add Exp / Money  action
+			if ( Atker.eCampID  == _CAMP._PLAYER) {
+				int nExp=0;
+				int nMoney=0;
+				CalDropResult( Atker , Defer , ref nExp , ref nMoney );
+				foreach( cUnitData unit in AtkAffectPool ){
+					CalDropResult( Atker , unit , ref nExp ,ref nMoney );
+				}
 
+				ActionManager.Instance.CreateDropAction( Atker.n_Ident , nExp , nMoney );
+
+			}
+
+			if ( Defer.eCampID  == _CAMP._PLAYER) {
+				int nExp=0;
+				int nMoney=0;
+				CalDropResult( Defer, Atker , ref nExp ,ref  nMoney );
+				foreach( cUnitData unit in DefAffectPool ){
+					CalDropResult( Defer , unit , ref nExp ,ref nMoney );
+				}
+				ActionManager.Instance.CreateDropAction( Defer.n_Ident , nExp , nMoney );
+
+			}
+
+			// Fight Finish
 			Atker.FightEnd( true );
 			if( Defer!= null  ){
 				Defer.FightEnd();
@@ -565,6 +603,20 @@ public partial class BattleManager
 //		bPause = false;
 //	}
 
+//	public void ShowSysMsg( string msg )
+//	{
+//		GameObject go = ResourcesManager.CreatePrefabGameObj ( Panel_StageUI.Instance.MaskPanelObj , "prefab/BattleMsg" );
+//		if (go != null) {
+//			go.transform.position = v;
+//			UILabel lbl = go.GetComponentInChildren<UILabel>();
+//			if( lbl != null )
+//			{
+//				lbl.text = msg;
+//			}
+//		}
+//	}
+	
+
 	public void ShowBattleMsg( int nIdent , string msg )
 	{
 		Panel_unit unit = Panel_StageUI.Instance.GetUnitByIdent( nIdent ); 
@@ -726,12 +778,38 @@ public partial class BattleManager
 
 	public List< cUnitData > GetAffectPool( cUnitData Atker , int nDefer , int SkillID , int nTarX , int nTarY )
 	{
+		// don't push defer to affect pool
 		List< cUnitData > pool = new List< cUnitData > ();
 		// check  if have affect
 
 
 
 		return pool;
+	}
+
+	public void CalDropResult( cUnitData Atker , cUnitData Defer , ref int nExp , ref int nMoney )
+	{
+		if( Atker == null ) return ;
+		int exp 	= 1; // base exp
+		int money 	= 0;
+		if( Defer != null ){
+			int nDiffLv = Defer.n_Lv-Atker.n_Lv;
+			if( nDiffLv > 3  ){
+				exp +=3;
+			}
+			else if( nDiffLv > -3  ){
+				exp +=1;
+			}
+			//
+			// kill
+			if( Defer.IsStates( _UNITSTATE._DEAD ) ){
+
+				exp = (exp*4)+20;
+				money  = 1000;
+			}
+		}
+		nExp 	+= exp ; 
+		nMoney 	+= money;
 	}
 
 	// cal result of castout hit
@@ -852,10 +930,17 @@ public partial class BattleManager
 //		res.DefHp = nDefHp;
 		if( nAtkHp != 0 ){
 			resPool.Add ( new cHitResult( cHitResult._TYPE._HP ,nAtker , nAtkHp  ) );
+			if( nAtkHp < 0 && (pAtker.n_HP < Math.Abs(nAtkHp) ) ){
+				pAtker.AddStates( _UNITSTATE._DEAD );
+			}
 		}
 
 		// 
 		resPool.Add ( new cHitResult( cHitResult._TYPE._HP ,nDefer , nDefHp  ) );
+
+		if( nDefHp < 0 && (pDefer.n_HP < Math.Abs(nDefHp) ) ){
+			pDefer.AddStates( _UNITSTATE._DEAD );  // dead
+		}
 
 		// Skill Hit spec Effect
 //		MyScript.Instance.RunSkillEffect ( pAtker , pDefer, pAtker.FightAttr.Skill.s_HIT_EFFECT , ref resPool ); // bad frame work

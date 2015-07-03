@@ -24,6 +24,9 @@ public enum _ACTION
 	_ASSIST_ATK,
 	_ASSIST_DEF,
 
+	_DROP,		// Get Grop
+	_LVUP,		// level up action
+
 	// MOB use cmd
 	_CMD_ATK,
 	_CMD_CAST,
@@ -229,17 +232,19 @@ public partial class ActionManager
 				// 有 cost
 				if( nSkillID > 0 )
 				{
-					if( caster.FightAttr.SkillData.skill.n_MP > 0 ){
-						float frate =  caster.GetMulPower();
+					SKILL skill = ConstDataManager.Instance.GetRow<SKILL>(nSkillID); 
+					// don't use fightattr . counter will  cast without fightattr
+					if( skill.n_MP > 0 ){
+						float frate =  caster.GetMulMpCost ();
 
-						int cost = MyTool.GetEffectValue( caster.FightAttr.SkillData.skill.n_MP , frate , 0 );	
+						int cost = MyTool.GetEffectValue( skill.n_MP , frate , 0 );	
 
 						caster.n_MP -= cost;  //
 
 
 					}
-					if( caster.FightAttr.SkillData.skill.n_SP > 0 ){
-						caster.n_SP -= caster.FightAttr.SkillData.skill.n_SP;  //
+					if( skill.n_SP > 0 ){
+						caster.n_SP -= skill.n_SP;  //
 						
 					}
 				}
@@ -262,8 +267,24 @@ public partial class ActionManager
 		return  act;
 	}
 
+	public uAction CreateDropAction( int nAtkIdent , int nExp , int nMoney  )
+	{
+		uAction act = CreateAction (nAtkIdent, _ACTION._DROP);
+		if( act != null )  {
+			act.nActVar1 = nExp;
+			act.nActVar2 = nMoney;
+		}
+		return  act;
+	}
 
-
+	public uAction CreateLevleUpAction( int nAtkIdent , int nUpLv )
+	{
+		uAction act = CreateAction (nAtkIdent, _ACTION._LVUP);
+		if( act != null )  {
+			act.nActVar1 = nUpLv;
+		}
+		return  act;
+	}
 
 
 	public void ExecActionHitResult(  uAction action )
@@ -321,7 +342,7 @@ public partial class ActionManager
 						{
 							// it should have fx
 							
-						}break;		
+						}break;							
 						}
 					}
 					

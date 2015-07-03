@@ -50,16 +50,23 @@ public class StageDelUnitEvent: GameEvent {
 
 
 
-public class StagePopMobGroupEvent: GameEvent {
-	public const string Name = "StagePopMobGroupEvent";
+public class StagePopGroupEvent: GameEvent {
+	public const string Name = "StagePopGroupEvent";
+	public _CAMP eCamp=  _CAMP._ENEMY ;
+//	public int nGroupID = 0; 
+	public int nLeaderCharID; 
+	public int nCharID ; 
+
+	public int stX	   ; 
+	public int stY	   ;
+	public int edX	   ; 
+	public int edY	   ; 
+
+	public int nPopType ;  //分布方式 aggign a AOE type 
+//	public int nValue1 ; 
+//	public int nValue2 ; 
 	
-	public int nGroupID = 0; 
-	public int nX	   ; 
-	public int nY	   ; 
-	public int nValue1 ; 
-	public int nValue2 ; 
-	
-	public StagePopMobGroupEvent(){
+	public StagePopGroupEvent(){
 		name = Name;		// important.  must have this line as key
 	}
 }

@@ -89,7 +89,7 @@ public class MyTool {
 		if (data == null)
 			return "Error-No Unit";
 
-		SCHOOL sch = GameDataManager.Instance.GetConstSchoolData ( nSchool );
+		SCHOOL sch = ConstDataManager.Instance.GetRow<SCHOOL>(nSchool);   //GameDataManager.Instance.GetConstSchoolData ( nSchool );
 		if (sch == null)
 			return "Error-No Skill";
 
@@ -239,6 +239,10 @@ public class MyTool {
 			return cd.n_TIME;
 		}
 		return 0;
+	}
+
+	public static cSkillData GetSkillData( int nSkillID ){
+		return GameDataManager.Instance.GetSkillData( nSkillID );
 	}
 
 	public static void DoSkillEffect( cUnitData atker , List< cEffect > effPool , cEffectCondition EffCond, List< cEffect > CondEffPool , ref List<cHitResult>  pool  )

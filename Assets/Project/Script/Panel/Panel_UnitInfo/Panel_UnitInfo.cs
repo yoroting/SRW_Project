@@ -122,7 +122,7 @@ public class Panel_UnitInfo : MonoBehaviour {
 		//SCHOOL inSch = GameDataManager.Instance.GetConstSchoolData( data.nActSch[0] ); // int 
 		MyTool.SetLabelText( IntSchObj , MyTool.GetUnitSchoolFullName( nCharIdent , pUnitData.nActSch[0] )  );
 		
-		SCHOOL exSch = GameDataManager.Instance.GetConstSchoolData( pUnitData.nActSch[1] ); // ext 
+		SCHOOL exSch = ConstDataManager.Instance.GetRow<SCHOOL>( pUnitData.nActSch[1] );//   GameDataManager.Instance.GetConstSchoolData( pUnitData.nActSch[1] ); // ext 
 		MyTool.SetLabelText( ExtSchObj , MyTool.GetUnitSchoolFullName( nCharIdent , pUnitData.nActSch[1] ) );
 
 

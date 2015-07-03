@@ -161,6 +161,10 @@ public class cUnitData{
 	bool [] bUpdateFlag;
 
 
+	public int n_LeaderIdent;	// follow leader
+	public int n_BornX;			// born Pox
+	public int n_BornY;
+
 	// calcul attr
 	Dictionary< int , cAttrData > Attr; 		// 0-內功 , 1-外功  , 2-等級 , 3- buff 
 
@@ -309,7 +313,7 @@ public class cUnitData{
 
 			if( SkillPool.ContainsKey( nSkillID ) == false )
 			{
-				SkillPool.Add( nSkillID , new cSkillData(skl ) );
+				SkillPool.Add( nSkillID , GameDataManager.Instance.GetSkillData(nSkillID)  );
 			}
 		}
 	}
@@ -486,14 +490,31 @@ public class cUnitData{
 		}
 		if (n_Lv == lv)
 			return;
-
+		int nOldLv = n_Lv;
 		n_Lv = lv;
 		SetUpdate (2);
+		// 檢查習得能力
+		for( int i = nOldLv+1 ; i <=n_Lv ; i++ )
+		{
+			 // show learn ability
+
+		}
 	}
 
 	public void AddExp( int nExp )
 	{
+		n_EXP  += nExp;
+		// check level up
+		if( n_EXP > 100 )
+		{
 
+			int nUp = n_EXP / 100;
+			n_EXP   = n_EXP -(nUp*100);
+
+			ActionManager.Instance.CreateLevleUpAction( n_Ident , nUp );
+
+			SetLevel( nUp + n_Lv );
+		}
 	}
 
 	public void UpdateAttr( )
@@ -588,7 +609,7 @@ public class cUnitData{
 		cAttrData attr = GetAttrData (nIdx);
 		attr.Reset();
 		//===========================================================================
-		SCHOOL sch = GameDataManager.Instance.GetConstSchoolData ( nSchool );
+		SCHOOL sch = ConstDataManager.Instance.GetRow<SCHOOL>( nSchool ); //GameDataManager.Instance.GetConstSchoolData ( nSchool );
 		if (sch == null) {
 			Debug.LogErrorFormat( "UpdateSchoolAttr err! Unit{0} can't get School{1} , " , n_CharID ,nSchool );
 			return;
@@ -599,11 +620,22 @@ public class cUnitData{
 
 		attr.f_MAR 	 = rank * ( sch.f_MAR+ (sch.f_MAR_LVUP * nLv) );
 
-		attr.n_HP 	 = rank * ( sch.n_HP+ (sch.n_HP_LVUP * nLv) );
-		attr.n_MP 	 = rank * ( sch.n_MP+ (sch.n_MP_LVUP * nLv) );
-		attr.n_ATK 	 = rank * ( sch.n_ATK+ (sch.n_ATK_LVUP * nLv) );
-		attr.n_DEF 	 = rank * ( sch.n_DEF+ (sch.n_DEF_LVUP * nLv) );
-		attr.n_POW 	 = rank * ( sch.n_POW+ (sch.n_POW_LVUP * nLv) );
+		float fGrow = Mathf.Pow( 1.2f , nLv );
+
+		attr.n_HP    = rank * ( sch.n_HP + (int)(sch.n_HP_LVUP * fGrow ) );
+		attr.n_MP 	 = rank * ( sch.n_MP + (int)(sch.n_MP_LVUP * fGrow ) );
+		attr.n_ATK 	 = rank * ( sch.n_ATK+ (int)(sch.n_ATK_LVUP * fGrow ) );
+		attr.n_DEF 	 = rank * ( sch.n_DEF+ (int)(sch.n_DEF_LVUP * fGrow ) );
+		attr.n_POW 	 = rank * ( sch.n_POW+ (int)(sch.n_POW_LVUP * fGrow ) );
+
+
+//		attr.n_HP 	 = rank * ( sch.n_HP + (sch.n_HP_LVUP * nLv) );
+//		attr.n_MP 	 = rank * ( sch.n_MP + (sch.n_MP_LVUP * nLv) );
+//		attr.n_ATK 	 = rank * ( sch.n_ATK+ (sch.n_ATK_LVUP * nLv) );
+//		attr.n_DEF 	 = rank * ( sch.n_DEF+ (sch.n_DEF_LVUP * nLv) );
+//		attr.n_POW 	 = rank * ( sch.n_POW+ (sch.n_POW_LVUP * nLv) );
+
+		Mathf.Pow( 1.2f , 1 );//
 
 		attr.n_SP = 0;
 		attr.n_MOV = sch.n_MOV;
@@ -966,7 +998,7 @@ public class cUnitData{
 		FightAttr.TarIdent = nTarId;
 		FightAttr.SkillID = SkillID;
 		//SKILL skill = ConstDataManager.Instance.GetRow< SKILL> ( SkillID ); 
-		FightAttr.SkillData = new cSkillData ( ConstDataManager.Instance.GetRow< SKILL> ( SkillID ) );
+		FightAttr.SkillData = GameDataManager.Instance.GetSkillData(SkillID) ;   //new cSkillData ( ConstDataManager.Instance.GetRow< SKILL> ( SkillID ) );
 
 		UpdateFightAttr();
 
@@ -997,7 +1029,8 @@ public class cUnitData{
 		
 		ClearState(); // clear fight state
 		
-		FightAttr.ClearBase (); // clear base attr only
+		//FightAttr.ClearBase (); // clear base attr only
+		FightAttr.Reset();
 		
 		UpdateBuffConditionAttr();
 	}
@@ -1071,15 +1104,15 @@ public class cUnitData{
 }
 
 //
-public class cMobGroup
-{
-	public int nGroupID{ set; get; }
-	public cMobGroup()
-	{
-		memList = new List< int >{};
-
-	}
-
-
-	public List< int > memList ;
-}
+//public class cMobGroup
+//{
+//	public int nGroupID{ set; get; }
+//	public cMobGroup()
+//	{
+//		memList = new List< int >{};
+//
+//	}
+//
+//
+//	public List< int > memList ;
+//}
