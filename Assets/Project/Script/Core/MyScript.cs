@@ -409,13 +409,8 @@ public class MyScript {
 				GameEventManager.DispatchEvent ( new StageBGMEvent()  );				
 			}
 
-			else if( func.sFunc  == "POPGROUP")  //  pop a group of mob
-			{
-				
-			}
 			else if( func.sFunc  == "ATTACK")  //  pop a group of mob
 			{
-
 				StageBattleAttackEvent evt = new StageBattleAttackEvent();
 				evt.nAtkCharID = func.I(0);
 				evt.nDefCharID = func.I(1);
@@ -432,10 +427,12 @@ public class MyScript {
 			else if( func.sFunc  == "WIN") 
 			{
 				PanelManager.Instance.OpenUI(  Panel_Win.Name );
+				//Panel_StageUI.Instance.bIsStageEnd = true;
 			}
 			else if( func.sFunc  == "LOST") 
 			{
 				PanelManager.Instance.OpenUI(  Panel_Lost.Name );
+				//Panel_StageUI.Instance.bIsStageEnd = true;
 			}
 
 			else 

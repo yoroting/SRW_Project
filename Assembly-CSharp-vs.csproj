@@ -236,32 +236,23 @@
      <Compile Include="Assets\Project\Script\ColorButton.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\AI_COMBAT.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\AI_TACTIC.cs" />
+     <Compile Include="Assets\Project\Script\ConstDataClasses\AOE.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\BEHAVIOR.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\BGM.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\BUFF.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\BUFF_BAK.cs" />
-     <Compile Include="Assets\Project\Script\ConstDataClasses\BUFF_TIP.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\CD_TIMER.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\CHARS.cs" />
-     <Compile Include="Assets\Project\Script\ConstDataClasses\CHARS_TIP.cs" />
-     <Compile Include="Assets\Project\Script\ConstDataClasses\CLINE.cs" />
-     <Compile Include="Assets\Project\Script\ConstDataClasses\DIRTYMARK.cs" />
-     <Compile Include="Assets\Project\Script\ConstDataClasses\FACTION.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\FX.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\ITEM_MISC.cs" />
-     <Compile Include="Assets\Project\Script\ConstDataClasses\ITEM_MISC_TIP.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\MARKER.cs" />
-     <Compile Include="Assets\Project\Script\ConstDataClasses\MESSAGE.cs" />
-     <Compile Include="Assets\Project\Script\ConstDataClasses\MESSAGE_BATTLE.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\MOBS.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\Missile.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\SCENE_NAME.cs" />
-     <Compile Include="Assets\Project\Script\ConstDataClasses\SCENE_NAME_TIP.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\SCENE_TILE.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\SCHOOL.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\SKILL.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\SKILL_Back.cs" />
-     <Compile Include="Assets\Project\Script\ConstDataClasses\SKILL_TEXT.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\STACK.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\STAGE_DATA.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\STAGE_EVENT.cs" />
@@ -269,13 +260,7 @@
      <Compile Include="Assets\Project\Script\ConstDataClasses\STAGE_TALK.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\STAGE_TRIGGER.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\STANDARD_BUFF.cs" />
-     <Compile Include="Assets\Project\Script\ConstDataClasses\STANDARD_MOB.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\STORE_NORMAL.cs" />
-     <Compile Include="Assets\Project\Script\ConstDataClasses\STORE_NORMAL_TIP.cs" />
-     <Compile Include="Assets\Project\Script\ConstDataClasses\STORY_TEXT.cs" />
-     <Compile Include="Assets\Project\Script\ConstDataClasses\TALK_TEXT.cs" />
-     <Compile Include="Assets\Project\Script\ConstDataClasses\TIP_MESSAGE.cs" />
-     <Compile Include="Assets\Project\Script\ConstDataClasses\UI_MESSAGE.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\VARIABLE.cs" />
      <Compile Include="Assets\Project\Script\Core\ActionManager.cs" />
      <Compile Include="Assets\Project\Script\Core\BattleManager.cs" />
@@ -308,6 +293,7 @@
      <Compile Include="Assets\Project\Script\Panel\Panel_CMDUI\Panel_CmdUI.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_CMDUnitUI\Panel_CMDUnitUI.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_ChangeSchool\Panel_ChangeSchool.cs" />
+     <Compile Include="Assets\Project\Script\Panel\Panel_CheckBox\Panel_CheckBox.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_FileList\Panel_FileList.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_Lost\Panel_Lost.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_MainUI\MainUIPanel.cs" />
@@ -390,13 +376,13 @@
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
  <Reference Include="Playcoo.Common">
- <HintPath>D:/SRW/SRW_Project/Assets/Common/Plugins/Playcoo.Common.dll</HintPath>
+ <HintPath>G:/Unity Projects/SRW_Project/Assets/Common/Plugins/Playcoo.Common.dll</HintPath>
  </Reference>
  <Reference Include="JsonFx.Json">
- <HintPath>D:/SRW/SRW_Project/Assets/Common/Plugins/JsonFx/JsonFx.Json.dll</HintPath>
+ <HintPath>G:/Unity Projects/SRW_Project/Assets/Common/Plugins/JsonFx/JsonFx.Json.dll</HintPath>
  </Reference>
  <Reference Include="ICSharpCode.SharpZipLib">
- <HintPath>D:/SRW/SRW_Project/Assets/Common/Plugins/SharpZipLib/ICSharpCode.SharpZipLib.dll</HintPath>
+ <HintPath>G:/Unity Projects/SRW_Project/Assets/Common/Plugins/SharpZipLib/ICSharpCode.SharpZipLib.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.iOS.Extensions.Xcode">
  <HintPath>C:/Program Files/Unity/Editor/Data/PlaybackEngines/iossupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>

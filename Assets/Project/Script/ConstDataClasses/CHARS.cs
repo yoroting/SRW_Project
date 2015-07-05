@@ -16,6 +16,7 @@ public class CHARS : ConstDataRow<CHARS>
 	public int n_HP;
 	public int n_ITEM1;
 	public int n_ITEM2;
+	public int n_DEAD_LINES;
 	public string s_BUFF;
 	public string s_SCHOOL;
 	public string s_ABILITY;

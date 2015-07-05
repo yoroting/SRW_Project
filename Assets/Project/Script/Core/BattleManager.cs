@@ -124,11 +124,18 @@ public partial class BattleManager
 		
 		//===================================================
 		nPhase = 0; // 
-		if( AtkAffectPool != null )
-			AtkAffectPool.Clear();
+		if (AtkAffectPool == null) {
+			AtkAffectPool = new List< cUnitData >();
+		} else {
+			AtkAffectPool.Clear ();
+		}
 
-		if( DefAffectPool != null )
-			DefAffectPool.Clear();
+		if (DefAffectPool == null) {
+			DefAffectPool = new List< cUnitData >();
+		} else {
+			DefAffectPool.Clear ();
+		}
+
 	//	AtkCCPool = null;
 	//	DefCCPool = null;
 
@@ -305,29 +312,34 @@ public partial class BattleManager
 			{
 
 				pAtkAction.AddHitResult(  CalAttackResult( nAtkerID , nDeferID ) ) ;
-
+				if( nAtkerSkillID > 0 ){
+					pAtkAction.AddHitResult( CalSkillHitResult(  Atker , Defer  , nAtkerSkillID ) );
+				}
 				int nTarX = this.nTarGridX;
 				int nTarY = this.nTarGridY;
 				if( Defer != null ){
 					nTarX = Defer.n_X;
 					nTarY = Defer.n_Y;
-
 				}
 
-
 				// get affectpool
-				AtkAffectPool = GetAffectPool( Atker , nDeferID , Atker.FightAttr.SkillID , nTarX , nTarY );
+				GetAffectPool( Atker , nDeferID , Atker.FightAttr.SkillID , nTarX , nTarY , ref AtkAffectPool);
 				foreach( cUnitData unit in AtkAffectPool )
 				{
 					//=====================
 					// checked if this cUnitData can Atk
-					if( CanPK( Atker.eCampID , unit.eCampID ) == false )
-						continue;
-
-					unit.SetFightAttr(  unit.n_Ident  , 0 );
+					// already check in get affect pool
+					//if( CanPK( Atker.eCampID , unit.eCampID ) == false )
+					//	continue;
+					if( Atker != unit ){
+						unit.SetFightAttr( Atker.n_Ident , 0 );
+					}
 					ShowDefAssist( unit.n_Ident , false );
 
 					pAtkAction.AddHitResult(  CalAttackResult( nAtkerID , unit.n_Ident ) ) ;
+					if( nAtkerSkillID > 0 ){
+						pAtkAction.AddHitResult( CalSkillHitResult(  Atker , unit  , nAtkerSkillID ) );
+					}
 				}
 			}
 			//should cal atk hit result for performance
@@ -361,21 +373,32 @@ public partial class BattleManager
 
 				if (pCountAct != null) {
 
-					pCountAct.AddHitResult( CalAttackResult( nDeferID , nAtkerID , true ) );		
+					pCountAct.AddHitResult( CalAttackResult( nDeferID , nAtkerID , true ) );
+					if( nDeferSkillID > 0 ){
+						pCountAct.AddHitResult( CalSkillHitResult( Defer,  Atker , nDeferSkillID ) );
+					}
+
 				}
 
-				DefAffectPool = GetAffectPool( Defer , nAtkerID , Defer.FightAttr.SkillID , 0 , 0 );
+				GetAffectPool( Defer , nAtkerID , Defer.FightAttr.SkillID , 0 , 0 , ref DefAffectPool );
 				foreach( cUnitData unit in DefAffectPool )
 				{
 					//=====================
 					// checked if this cUnitData can Atk
-					if( CanPK( Defer.eCampID , unit.eCampID ) == false )
-						continue;
-					
-					unit.SetFightAttr(  unit.n_Ident  , 0 );
+					//if( CanPK( Defer.eCampID , unit.eCampID ) == false )
+					//	continue;
+					if( unit !=Defer){
+						unit.SetFightAttr( Defer.n_Ident  , 0 );
+					}
+
 					ShowDefAssist( unit.n_Ident , false );
 					
 					pCountAct.AddHitResult(  CalAttackResult( nDeferID , unit.n_Ident ) ) ;
+
+					if( nDeferSkillID > 0 ){
+						pCountAct.AddHitResult( CalSkillHitResult( Defer,  Atker , nDeferSkillID ) );
+					}
+
 				}
 
 				//				Panel_unit unitDef = Panel_StageUI.Instance.GetUnitByIdent( nDeferID );
@@ -394,6 +417,10 @@ public partial class BattleManager
 			nPhase++;
 			// add Exp / Money  action
 			if ( Atker.eCampID  == _CAMP._PLAYER) {
+				if( Atker == null ){
+					Debug.Log( "atker is dead");
+				}
+
 				int nExp=0;
 				int nMoney=0;
 				CalDropResult( Atker , Defer , ref nExp , ref nMoney );
@@ -408,6 +435,11 @@ public partial class BattleManager
 			if ( Defer.eCampID  == _CAMP._PLAYER) {
 				int nExp=0;
 				int nMoney=0;
+				if( Defer == null ){
+					Debug.Log( "def is dead");
+				}
+
+
 				CalDropResult( Defer, Atker , ref nExp ,ref  nMoney );
 				foreach( cUnitData unit in DefAffectPool ){
 					CalDropResult( Defer , unit , ref nExp ,ref nMoney );
@@ -464,21 +496,26 @@ public partial class BattleManager
 				//必須先取得影響人數
 				int nTarX = this.nTarGridX;
 				int nTarY = this.nTarGridY;
+			
 				
 				
 				// get affectpool
-				AtkAffectPool = GetAffectPool( Atker , nDeferID , Atker.FightAttr.SkillID , nTarX , nTarY );
+				bool bIsDamage = Atker.FightAttr.SkillData.IsTag(_SKILLTAG._DAMAGE );
+				GetAffectPool( Atker , nDeferID , Atker.FightAttr.SkillID , nTarX , nTarY , ref AtkAffectPool);
 				foreach( cUnitData unit in AtkAffectPool )
 				{
+					if( unit == Atker )
+						continue;
 					//=====================
 					// checked if this cUnitData can Atk
-					if( CanPK( Atker.eCampID , unit.eCampID ) == false )
-						continue;
-					
-					unit.SetFightAttr(  unit.n_Ident  , 0 );
-					ShowDefAssist( unit.n_Ident , false );
-					
-					pAct.AddHitResult(  CalSkillHitResult( nAtkerID, nTarGridX , nTarGridY , nAtkerSkillID ) ) ;
+					//if( CanPK( Atker.eCampID , unit.eCampID ) == false )
+					//	continue;
+					if( bIsDamage ){
+						unit.SetFightAttr(  unit.n_Ident  , 0 );
+						ShowDefAssist( unit.n_Ident , false );
+						pAct.AddHitResult( CalAttackResult( nAtkerID , unit.n_Ident  ) );
+					}
+					pAct.AddHitResult(  CalSkillHitResult( Atker, unit , nAtkerSkillID ) ) ;
 				}
 
 				//pAct.AddHitResult( CalSkillHitResult( nAtkerID, nTarGridX , nTarGridY , nAtkerSkillID ) );
@@ -491,11 +528,12 @@ public partial class BattleManager
 			break;
 		case 3:			// close all 
 			nPhase++;
-			Atker.FightEnd( true );
+
 			foreach( cUnitData unit in AtkAffectPool )
 			{
 				unit.FightEnd();				
 			}
+			Atker.FightEnd( true );
 			// cmd finish
 			
 			// action finish in atk action
@@ -629,12 +667,14 @@ public partial class BattleManager
 		Vector3 v = new Vector3 (0, 0, 0);
 		if (unit != null) {
 			// show in screen center
-			v = unit.transform.position;
+			//v = unit.transform.position;
+			v = unit.transform.parent.localPosition+unit.transform.localPosition;
 		}
 
 		GameObject go = ResourcesManager.CreatePrefabGameObj ( Panel_StageUI.Instance.MaskPanelObj , "prefab/BattleMsg" );
 		if (go != null) {
-			go.transform.position = v;
+			//go.transform.position = v;
+			go.transform.localPosition = v;
 			UILabel lbl = go.GetComponentInChildren<UILabel>();
 			if( lbl != null )
 			{
@@ -670,16 +710,32 @@ public partial class BattleManager
 		Vector3 v = new Vector3 (0, 0, 0);
 		if ( obj != null) {
 			// show in screen center
-
-			v = obj.transform.position ;
+//			Vector3 vp = obj.transform.parent.localPosition;
+//			v = obj.transform.localPosition;
+			v = obj.transform.parent.localPosition+obj.transform.localPosition;
+			//v = obj.transform.position ;
 		}
-		
+		//Panel_StageUI.Instance.TilePlaneObj.transform.localPosition;
+
+
 		GameObject go = ResourcesManager.CreatePrefabGameObj ( Panel_StageUI.Instance.MaskPanelObj , "Prefab/BattleValue" );
 		//string path = "Prefab/BattleValue";
 		//GameObject go = ResourcesManager.CreatePrefabGameObj ( obj , path );
 		//GameObject go = GameSystem.PlayFX ( unit.gameObject , fx  );
 		if (go != null) {
-			go.transform.position = v;
+			//go.transform.position = v;
+			go.transform.localPosition = v;
+			//Tween Y 將造成 成像上的偏移錯誤。徹底解決前～不開放
+			// tween Y here for correct pos value
+//			TweenY twnY = TweenY.Begin<TweenY>( go , 0.5f ); 
+//			if( twnY != null ){
+//				twnY.SetStartToCurrentValue();
+//				twnY.to = v.y +300;
+//				twnY.Play();
+//
+//			}
+
+
 			UILabel lbl = go.GetComponent< UILabel >();
 			if( lbl )
 			{
@@ -776,15 +832,59 @@ public partial class BattleManager
 		return ( eDefCmdID == _CMD_ID._DEF );
 	}
 
-	public List< cUnitData > GetAffectPool( cUnitData Atker , int nDefer , int SkillID , int nTarX , int nTarY )
+	public void GetAffectPool( cUnitData Atker , int nDefer , int SkillID , int nTarX , int nTarY , ref List< cUnitData> pool )
 	{
 		// don't push defer to affect pool
-		List< cUnitData > pool = new List< cUnitData > ();
+
+		SKILL skl = ConstDataManager.Instance.GetRow< SKILL > ( SkillID );
+		if (skl == null) {
+			return;
+		}
+		if (skl.n_AREA == 0)
+			return;
+
+		List < iVec2 > lst = MyTool.GetAOEPool ( nTarX ,nTarY,skl.n_AREA ,Atker.n_X , Atker.n_Y  );
+
+		if( pool == null ){
+			pool = new List< cUnitData > ();
+		}
+
+		//		0→對自己施展
+		//		1→需要敵方目標
+		//		2→需要友方目標
+		//		3→MAP敵方
+		//		4→MAP我方
+		//      5-MAP-all 
+		bool bCanPK = false;
+		bool bAll = false;
+		if ((skl.n_TARGET == 1) || (skl.n_TARGET == 3)) {
+			bCanPK = true;
+		} else if( skl.n_TARGET == 5 ){
+			bAll = true;
+		}
+
+
 		// check  if have affect
+		foreach (iVec2 v in lst) {
+			cUnitData pUnit = GameDataManager.Instance.GetUnitDateByPos( v.X , v.Y );
+			if( pUnit != null ){
+				// defer don't add . he have a spec process
+				if( pUnit.n_Ident == nDefer )  
+					continue;
+
+				 
+				if( bAll == true ){ // all is no need check
+					pool.Add( pUnit );
+					continue;
+				}
 
 
+				if(  CanPK( Atker.eCampID , pUnit.eCampID ) == bCanPK ){
+					pool.Add( pUnit );
+				}
+			}
+		}
 
-		return pool;
 	}
 
 	public void CalDropResult( cUnitData Atker , cUnitData Defer , ref int nExp , ref int nMoney )
@@ -813,25 +913,25 @@ public partial class BattleManager
 	}
 
 	// cal result of castout hit
-	public List<cHitResult> CalSkillHitResult( int nAtker, int  nGridX ,int  nGridY , int nSkillID  )
+	public List<cHitResult> CalSkillHitResult( cUnitData pAtker , cUnitData pDefer , int nSkillID  )
 	{
-		cUnitData pAtker = GameDataManager.Instance.GetUnitDateByIdent( nAtker ); 	//Panel_StageUI.Instance.GetUnitByIdent( nAtker ); 
-		if ( (pAtker == null)  )
+		//cUnitData pAtker = GameDataManager.Instance.GetUnitDateByIdent( nAtker ); 	//Panel_StageUI.Instance.GetUnitByIdent( nAtker ); 
+		if ( (pAtker == null) || (pDefer == null) )
 			return null;
 		List<cHitResult> resPool = new List<cHitResult> ();
-		resPool.Add ( new cHitResult( cHitResult._TYPE._HIT ,nAtker   ) );
+		//resPool.Add ( new cHitResult( cHitResult._TYPE._HIT ,pAtker   ) ); // not a really hit
 		SKILL Skill = pAtker.FightAttr.SkillData.skill;
 
-		if (Skill.n_TARGET == 0 ) { // self cast a buff
+	//	if (Skill.n_TARGET == 0 ) { // self cast a buff
 			// hit result
 
 //		MyTool.DoSkillEffect( pAtker , pAtker.FightAttr.HitPool , Skill.s_CAST_TRIG ,  pAtker.FightAttr.HitEffPool , ref resPool  );
-		pAtker.DoSkillHitEffect ( ref resPool );
+		pAtker.DoSkillHitEffect (pDefer , ref resPool );
 
 		//	MyScript.Instance.RunSkillEffect ( pAtker , null , pAtker.FightAttr.Skill.s_HIT_EFFECT , ref resPool ); // bad frame work
 
 
-		}
+		//}
 		return resPool;
 	}
 
@@ -944,7 +1044,7 @@ public partial class BattleManager
 
 		// Skill Hit spec Effect
 //		MyScript.Instance.RunSkillEffect ( pAtker , pDefer, pAtker.FightAttr.Skill.s_HIT_EFFECT , ref resPool ); // bad frame work
-		pAtker.DoSkillHitEffect ( ref resPool );
+	//	pAtker.DoSkillHitEffect ( pDefer , ref resPool );
 	//	MyTool.DoSkillEffect ( pAtker , pAtker.FightAttr.HitPool , pAtker.FightAttr.Skill.s_HIT_TRIG ,  pAtker.FightAttr.HitEffPool , ref resPool  );
 
 		return resPool;

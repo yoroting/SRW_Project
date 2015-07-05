@@ -49,7 +49,7 @@ public class Panel_StageUI : MonoBehaviour
 	//public GameObject TileObj; 	//  no need this
 	public GameObject MoveEftObj; 	// 
 	public GameObject AtkEftObj; 	// 
-
+	public GameObject AoeEftObj; 	// 
 
 	Panel_unit TarceMoveingUnit; //  Trace the moving unit
 
@@ -60,7 +60,7 @@ public class Panel_StageUI : MonoBehaviour
 	// Four flaf
 	bool	bIsLoading	;
 
-	bool	bFirstUpdated	;
+	public bool	bIsStageEnd;								// this stage is end
 	bool	bIsReady;
 
 	// drag canvas limit								
@@ -86,6 +86,7 @@ public class Panel_StageUI : MonoBehaviour
 	Dictionary< string , GameObject >  OverCellAtkPool;			// Over tile effect pool( attack ) ( in = cell key )
 
 	Dictionary< string , GameObject > OverCellPathPool;
+	Dictionary< string , GameObject > OverCellAOEPool;
 	//List< GameObject >				OverCellPool;			 
 
 	//Dictionary< int , GameObject > EnemyPool;			// EnemyPool this should be group pool
@@ -114,12 +115,17 @@ public class Panel_StageUI : MonoBehaviour
 		
 		OverCellPool 	= new Dictionary< string , GameObject >();			// Over tile effect pool ( in = cell key )
 		OverCellAtkPool = new Dictionary< string , GameObject >();					
-		OverCellPathPool= new Dictionary< string , GameObject >();			
+		OverCellPathPool= new Dictionary< string , GameObject >();
 
+		OverCellAOEPool= new Dictionary< string , GameObject >();
+
+
+		//List < iVec2 >
 		UnitPanelObj.CreatePool( st_CellObjPoolSize / 2 );
 
 		MoveEftObj.CreatePool( st_CellObjPoolSize );
 		AtkEftObj.CreatePool( st_CellObjPoolSize );
+		AoeEftObj.CreatePool( st_CellObjPoolSize /4 );
 	
 	}
 
@@ -189,6 +195,7 @@ public class Panel_StageUI : MonoBehaviour
 	void Awake( ){	
 		instance = this; 		// special singleton
 		bIsReady = false;
+		bIsStageEnd = false;
 		//UIRoot mRoot = NGUITools.FindInParents<UIRoot>(gameObject);	
 		//fUIRatio = (float)mRoot.activeHeight / Screen.height;
 
@@ -249,9 +256,7 @@ public class Panel_StageUI : MonoBehaviour
 		//EvtCompletePool.Clear ();
 
 		IsEventEnd = false;
-
-
-
+		bIsStageEnd = false;
 		bIsReady = false;
 
 	}
@@ -434,6 +439,7 @@ public class Panel_StageUI : MonoBehaviour
 		//public GameObject TileObj; 	//  no need this
 		MoveEftObj.SetActive( false ); 	// 
 		AtkEftObj.SetActive( false ); 	// 
+		AoeEftObj.SetActive (false);
 
 		Panel_CMDUnitUI.CloseCMDUI();
 		PanelManager.Instance.CloseUI( Panel_UnitInfo.Name );
@@ -461,15 +467,13 @@ public class Panel_StageUI : MonoBehaviour
 			// check ready complete
 			return;
 		}
+		FixPlanePosition ();
 
+		if (bIsStageEnd == true)
+			return;
 
 		// Real update
 		GameDataManager.Instance.Update();
-
-
-		FixPlanePosition ();
-
-	
 
 		// block other event
 		if( IsAnyActionRunning() == true ) // wait all tween / fx / textbox / battle msg finish / unit move
@@ -485,7 +489,7 @@ public class Panel_StageUI : MonoBehaviour
 			return ;
 
 		//==================	
-		if( RunEvent( ) == true )// this will throw many unit action
+		if( RunEvent( ) == true )// this will throw many unit action and interrupt battle.
 			return ;
 
 		// if one event need to run battle. it should pause ein event
@@ -508,6 +512,7 @@ public class Panel_StageUI : MonoBehaviour
 		if (CheckUnitDead () == true) // check here for event_manager  can detect hp ==0 first , some event may relive the deading unit
 			return;
 
+		// check drop event
 
 		//===================		// this will throw unit action or trig Event
 		if ( RunCampAI( GameDataManager.Instance.nActiveCamp ) == false )
@@ -570,15 +575,21 @@ public class Panel_StageUI : MonoBehaviour
 			{
 				if( cCMD.Instance.eCMDTARGET == _CMD_TARGET._ALL || 
 				   cCMD.Instance.eCMDTARGET == _CMD_TARGET._POS   ){
-					
+
+					if( bIsAtkCell == false )
+					{
+						Panel_CMDUnitUI.RollBackCMDUIWaitTargetMode();
+					}
+					else{
 					// make one map skill cmd
-					Panel_CMDUnitUI panel = Panel_CMDUnitUI.JustGetCMDUI();
-					panel.SetPos(  unit.X() , unit.Y() );
+						Panel_CMDUnitUI panel = Panel_CMDUnitUI.JustGetCMDUI();
+						panel.SetPos(  unit.X() , unit.Y() );
+					}
 					
 				}
 				else { 
 					// this is impossible
-					if( bIsAtkCell == false    )
+					if( bIsAtkCell == false )
 					{
 						Panel_CMDUnitUI.RollBackCMDUIWaitTargetMode();
 						//Panel_CMDUnitUI.BackWaitCmd();		// back if the cmd is not exists	
@@ -893,7 +904,8 @@ public class Panel_StageUI : MonoBehaviour
 		}
 
 		// change bgm '
-		GameSystem.PlayBGM ( scn.n_BGM );
+		// all stage have start event for speicial bgm
+		//GameSystem.PlayBGM ( scn.n_BGM );
 
 
 		return true;
@@ -975,6 +987,12 @@ public class Panel_StageUI : MonoBehaviour
 			OverCellAtkPool.Clear ();
 		}
 
+
+		AoeEftObj.RecycleAll ();
+		if (OverCellAOEPool != null) {
+			OverCellAOEPool.Clear();
+		}
+
 	}
 
 	public void CreateMoveOverEffect( Panel_unit unit )
@@ -1025,12 +1043,12 @@ public class Panel_StageUI : MonoBehaviour
 		
 			if( over != null )
 			{
-				over.name = string.Format("Over({0},{1},{2})", v.X , v.Y , 0 );
+				over.name = string.Format("Move Over({0},{1},{2})", v.X , v.Y , 0 );
 				SynGridToLocalPos( over , v.X , v.Y) ;
 				//UIEventListener.Get(over).onClick += OnOverClick;
 				
 				OverCellPool.Add( v.GetKey() , over );
-
+				over.SetActive( true );
 			//	over.transform.SetParent ( TilePlaneObj.transform );
 			}
 		}
@@ -1066,9 +1084,10 @@ public class Panel_StageUI : MonoBehaviour
 			GameObject over = AtkEftObj.Spawn( TilePlaneObj.transform );
 			if( over != null )
 			{
-				over.name = string.Format("Over({0},{1},{2})", v.X , v.Y , 0 );
+				over.name = string.Format("ATK Over({0},{1},{2})", v.X , v.Y , 0 );
 				SynGridToLocalPos( over , v.X , v.Y) ;
 				OverCellAtkPool.Add( v.GetKey() , over );
+				over.SetActive( true );
 			}
 		}
 
@@ -1094,15 +1113,63 @@ public class Panel_StageUI : MonoBehaviour
 			GameObject over = ResourcesManager.CreatePrefabGameObj(TilePlaneObj, "Prefab/PathOverEffect");
 			if( over != null )
 			{
-				over.name = string.Format("Over({0},{1},{2})", v.X , v.Y , 0 );
+				over.name = string.Format("PATHOVER({0},{1},{2})", v.X , v.Y , 0 );
 				SynGridToLocalPos( over , v.X , v.Y) ;
 				
 				//UIEventListener.Get(over).onClick += OnOverClick;
 				
 				OverCellPathPool.Add( v.GetKey() , over );
+				over.SetActive( true );
 			}
 		}
 
+	}
+
+	public void CreateAOEOverEffect( int nX , int nY , int nAOE )
+	{
+		AoeEftObj.RecycleAll();
+
+		if( OverCellAOEPool != null ){
+			OverCellAOEPool.Clear ();
+		}
+
+		Panel_unit unit = MyTool.CMDUI().pCmder;
+		int nOrgX = unit.X ();
+		int nOrgY = unit.Y ();
+
+		List<iVec2> aoeList = MyTool.GetAOEPool (nX, nY, nAOE ,nOrgX, nOrgY );
+		// 將來要處理 旋轉!
+	
+		// get rotation
+
+
+
+
+
+		// start create over eff
+		foreach( iVec2 v in aoeList )
+		{	
+			// create move over cell
+			//GameObject over = ResourcesManager.CreatePrefabGameObj(TilePlaneObj, "Prefab/MoveOverEffect");
+			GameObject over = AoeEftObj.Spawn(  TilePlaneObj.transform );
+			
+			if( over != null )
+			{
+				over.name = string.Format("AOE OVER({0},{1},{2})", v.X , v.Y , 0 );
+				SynGridToLocalPos( over , v.X , v.Y) ;
+				//UIEventListener.Get(over).onClick += OnOverClick;
+				
+				OverCellAOEPool.Add( v.GetKey() , over );
+
+				over.SetActive( true );
+				//	over.transform.SetParent ( TilePlaneObj.transform );
+			}
+		}
+		//Debug.Log( "create Aoeeffect cell with ticket:" + during );
+		Panel_CheckBox panel = MyTool.GetPanel<Panel_CheckBox>( PanelManager.Instance.OpenUI ( Panel_CheckBox.Name ) );
+		if (panel) {
+			panel.SetAoeCheck();
+		}
 	}
 	// Check any action is running
 
@@ -1732,7 +1799,8 @@ public class Panel_StageUI : MonoBehaviour
 			return;
 		}
 
-		int nLeaderIdent =pLeader.n_Ident;
+		int nLeaderIdent = GameDataManager.Instance.CreateGroupWithLeaderChar ( nLeaderCharid ); // create group . maybe 0 if leader don't exists
+		//int nLeaderIdent =pLeader.n_Ident;
 
 		//int nGroupID = 
 		if( Evt.nPopType == 0 ){
@@ -2024,6 +2092,57 @@ public class Panel_StageUI : MonoBehaviour
 		}
 
 		return path;
-
 	}
+
+	// tool func to get aoe affect pool
+	public List < iVec2 > GetAOEPool( int nX , int nY , int nAoe )
+	{
+		iVec2 st = new iVec2 ( nX , nY );
+		Dictionary< string , iVec2 > tmp = new Dictionary< string , iVec2 >();
+		tmp.Add ( st.GetKey() , st );
+		//			pool.Add ( st );
+		
+		AOE aoe = ConstDataManager.Instance.GetRow<AOE> ( nAoe ) ;
+		if (aoe != null) {
+			// add extra first
+			cTextArray TA = new cTextArray();
+			TA.SetText ( aoe.s_EXTRA );
+			for( int i = 0 ; i < TA.GetMaxCol(); i++ )
+			{
+				CTextLine line  = TA.GetTextLine( i );
+				for( int j = 0 ; j < line.GetRowNum() ; j++ )
+				{
+					string s = line.m_kTextPool[ j ];
+					
+					string [] arg = s.Split( ",".ToCharArray() );
+					if( arg.Length < 2 )
+						continue;
+					if( arg[0] != null && arg[1] != null )
+					{
+						int x = int.Parse( arg[0] );
+						int y = int.Parse( arg[1] );
+						iVec2 v = st.MoveXY( x , y );
+
+						if( Grids.Contain( v ) == false )
+							continue;
+
+						string key = v.GetKey();
+						if( tmp.ContainsKey( key ) == false ){
+							tmp.Add( key , v );
+						}
+					}
+				}
+			}
+			// get range pool	
+			List<iVec2> r = Grids.GetRangePool( st , aoe.n_MAX , aoe.n_MIN );
+			
+			
+			
+		}
+		
+		List < iVec2 > pool = new List < iVec2 > ();
+		return pool;
+	}
+
+
 }

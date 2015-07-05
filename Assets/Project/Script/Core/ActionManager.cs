@@ -298,17 +298,16 @@ public partial class ActionManager
 					// show effect
 					Panel_unit pUnit = Panel_StageUI.Instance.GetUnitByIdent (res.Ident);
 					if (pUnit) {
-
 						switch( res.eHitType )
 						{
 						case cHitResult._TYPE._HP:{
 							pUnit.ShowValueEffect( res.Value1 , 0 ); // HP
 							if( res.Value1 != 0 ) // maybe change data in  battle manage
 							{
-								cUnitData pData = GameDataManager.Instance.GetUnitDateByIdent (res.Ident);
-								if (pData != null) {
-									pData.AddHp (res.Value1  );
-								}
+//								cUnitData pData = GameDataManager.Instance.GetUnitDateByIdent (res.Ident);
+//								if (pData != null) {
+								pUnit.pUnitData.AddHp (res.Value1  );
+//								}
 							}
 							
 						}break;

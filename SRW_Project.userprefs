@@ -1,28 +1,30 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Project\Script\Core\GameDataManager.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Project\Script\Panel\Panel_CMDUnitUI\Panel_CMDUnitUI.cs">
     <Files>
-      <File FileName="Assets\Project\Script\Panel\Panel_StageUI\Panel_StageUI.cs" Line="1741" Column="46" />
-      <File FileName="Assets\Project\Script\Core\MyScript.cs" Line="233" Column="1" />
-      <File FileName="Assets\Project\Script\Core\SRWGameEvent.cs" Line="64" Column="2" />
-      <File FileName="Assets\Project\Script\Data\cUnitData.cs" Line="326" Column="4" />
-      <File FileName="Assets\Project\Script\Core\Config.cs" Line="16" Column="35" />
-      <File FileName="Assets\Project\Script\Core\BattleManager.cs" Line="942" Column="35" />
-      <File FileName="Assets\Project\Script\Core\ActionManager.cs" Line="247" Column="27" />
-      <File FileName="Assets\Project\Script\Panel_unit.cs" Line="583" Column="49" />
-      <File FileName="Assets\Project\Script\BattleMsg.cs" Line="21" Column="3" />
-      <File FileName="Assets\Project\Script\Core\GameDataManager.cs" Line="323" Column="17" />
-      <File FileName="Assets\Project\Script\Data\cBuffData.cs" Line="268" Column="23" />
-      <File FileName="Assets\Project\Script\Data\cSkillData.cs" Line="23" Column="3" />
-      <File FileName="Assets\Project\Script\Core\MyTool.cs" Line="92" Column="66" />
-      <File FileName="Assets\Project\Script\Panel\Panel_UnitInfo\Panel_UnitInfo.cs" Line="120" Column="17" />
-      <File FileName="Assets\Project\Script\Panel\Panel_Skill\Panel_Skill.cs" Line="226" Column="1" />
-      <File FileName="Assets\Project\Script\Panel\Panel_CMDUnitUI\Panel_CMDUnitUI.cs" Line="438" Column="40" />
+      <File FileName="Assets\Project\Script\Panel\Panel_StageUI\Panel_StageUI.cs" Line="577" Column="57" />
+      <File FileName="Assets\Project\Script\Core\BattleManager.cs" Line="235" Column="24" />
+      <File FileName="Assets\Project\Script\Core\Config.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Panel\Panel_Skill\Panel_Skill.cs" Line="264" Column="41" />
+      <File FileName="Assets\Project\Script\Core\MyScript.cs" Line="1" Column="1" />
+      <File FileName="Assets\Common\Plugins\PanelManager\PanelManager.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Core\GameSystem.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Core\MyTool.cs" Line="333" Column="4" />
+      <File FileName="Assets\Project\Script\Core\GameDataManager.cs" Line="531" Column="44" />
+      <File FileName="Assets\Project\Script\MyGrids.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Core\ActionManager.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Panel_unit.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Panel\Panel_CMDUnitUI\Panel_CMDUnitUI.cs" Line="798" Column="44" />
+      <File FileName="Assets\Project\Script\Data\cUnitData.cs" Line="1078" Column="22" />
+      <File FileName="Assets\Project\Script\Panel\Panel_CheckBox\Panel_CheckBox.cs" Line="42" Column="6" />
+      <File FileName="Assets\Project\Script\Data\cSkillData.cs" Line="14" Column="31" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
-      <Breakpoint file="D:\SRW\SRW_Project\Assets\Project\Script\Core\GameDataManager.cs" line="317" />
+      <Breakpoint file="G:\Unity Projects\SRW_Project\Assets\Project\Script\Core\MyTool.cs" line="149" />
+      <Breakpoint file="G:\Unity Projects\SRW_Project\Assets\Project\Script\Core\MyTool.cs" line="146" />
+      <Breakpoint file="G:\Unity Projects\SRW_Project\Assets\Project\Script\Panel\Panel_Skill\Panel_Skill.cs" line="300" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />

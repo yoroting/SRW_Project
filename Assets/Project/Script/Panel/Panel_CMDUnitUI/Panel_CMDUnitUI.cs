@@ -166,6 +166,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		if (NGuiGrids == null)
 			return;
 		// record cmd type
+		CMD.eLASTCMDTYPE = CMD.eCMDTYPE;
 		CMD.eCMDTYPE = eType;
 
 		foreach( _CMD_ID id in cmdList )
@@ -381,9 +382,23 @@ public class Panel_CMDUnitUI : MonoBehaviour
 	//post
 	public void SetPos( int nGridX , int nGridY )
 	{
+		CMD.nTarGridX = nGridX;
+		CMD.nTarGridY = nGridY;
+
 		// trig attack event
+		if( CMD.nAOEID > 0 ){
+			CMD.eCMDAOETARGET =  _CMD_TARGET._POS;
+			//int x = nGridX;
+			//int y = nGridY;
+			
+			Panel_StageUI.Instance.ClearOverCellEffect ();
+			Panel_StageUI.Instance.CreateAOEOverEffect( nGridX , nGridY , CMD.nAOEID);
+			
+			return;	// block cmd
+		}
+
 		cCMD.Instance.eCMDTARGET =  _CMD_TARGET._POS;
-		// close cmd ui
+
 		//Clear ();
 		MakeCmd ();
 		// check Need Make Cmd
@@ -399,7 +414,24 @@ public class Panel_CMDUnitUI : MonoBehaviour
 			CMD.nTarIdent = unit.Ident();
 		}
 
+		if( CMD.nAOEID > 0 ){
+			CMD.eCMDAOETARGET =  _CMD_TARGET._UNIT;
+
+			int x = pCmder.X();
+			int y = pCmder.Y();
+			if( unit != null ){
+				x = unit.X();
+				y = unit.Y();
+			}
+			Panel_StageUI.Instance.ClearOverCellEffect ();
+			Panel_StageUI.Instance.CreateAOEOverEffect( x , y , CMD.nAOEID );
+			
+			return;
+			// block cmd
+		}
+
 		cCMD.Instance.eCMDTARGET =  _CMD_TARGET._UNIT;
+
 		// trig attack event
 		// check Need Make Cmd
 		MakeCmd ();
@@ -408,18 +440,58 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		PanelManager.Instance.CloseUI( Name );
 	}
 
+	public void AOE_OK(){
+
+		cCMD.Instance.eCMDTARGET =  CMD.eCMDAOETARGET;
+		MakeCmd ();
+		// close cmd ui
+		//Clear ();
+		PanelManager.Instance.CloseUI( Name );
+	}
+
+	public void AOE_Cancel(){
+
+		// clear AOE
+		Panel_StageUI.Instance.ClearOverCellEffect ();
+		if (CMD.eCMDTARGET == _CMD_TARGET._SELF) {
+			Panel_Skill.OpenUI (pCmder.Ident (), _SKILL_TYPE._LAST);
+		} else {
+			int nRange = 1;
+			if (CMD.nSkillID > 0) {
+				SKILL skl = ConstDataManager.Instance.GetRow<SKILL> (CMD.nSkillID);
+				nRange = skl.n_RANGE;
+			}
+			Panel_StageUI.Instance.CreateAttackOverEffect (pCmder, nRange);
+
+		}
+		if (CMD.eCMDTYPE == _CMD_TYPE._WAITATK) {
+//			int nRange = 1;
+//			if (CMD.nSkillID > 0) {
+//				SKILL skl = ConstDataManager.Instance.GetRow<SKILL> (CMD.nSkillID);
+//				nRange = skl.n_RANGE;
+//			}
+//			Panel_StageUI.Instance.CreateAttackOverEffect (pCmder, nRange);
+		} else {
+			//CancelCmd();
+			// open skill ui
+
+			//PanelManager.Instance.OpenUI( Panel_Skill.Name );
+
+		}
+	}
+
 	public void SetSkillID( int nSkillID )
 	{
 		if (0 == nSkillID) {
 			// cancel skill ui
 			CMD.nSkillID = 0;
+			CMD.nAOEID = 0;
 		}
 		else {
 			// set a skill
-			CMD.nSkillID = nSkillID;
-
 			SKILL skl = ConstDataManager.Instance.GetRow<SKILL>( nSkillID ); 
-
+			CMD.nSkillID = nSkillID;
+			CMD.nAOEID = skl.n_AREA;
 
 			// need take care counter
 			if( CMD.eCMDTYPE == _CMD_TYPE._COUNTER )
@@ -446,17 +518,17 @@ public class Panel_CMDUnitUI : MonoBehaviour
 				{
 				case 0:		// self cast
 					CMD.eCMDID 	   = _CMD_ID._ATK;			// enter atk mode
-					CMD.eCMDTARGET = _CMD_TARGET._POS;
-					CMD.nTarGridX = -1;
-					CMD.nTarGridY = -1;
+					CMD.eCMDTARGET = _CMD_TARGET._SELF;
+					CMD.nTarGridX = pCmder.X() ;
+					CMD.nTarGridY = pCmder.Y();
 
 					MakeCmd();
-
 					Panel_StageUI.Instance.ClearOverCellEffect ();
 					CMD.Clear ();				// clear cmd status
 					break;
 				case 1:		// select a target enemy
-					// if skill need a target. go to target mode
+				case 2:		// select a target ally
+				{	// if skill need a target. go to target mode
 					CMD.eCMDSTATUS = _CMD_STATUS._WAIT_TARGET;
 					CMD.eCMDID 	   = _CMD_ID._ATK;			// enter atk mode
 					
@@ -465,10 +537,55 @@ public class Panel_CMDUnitUI : MonoBehaviour
 					
 					CMD.eCMDTARGET = _CMD_TARGET._UNIT;
 
-					break;
-				}
+					// show AOE
+					//if( CMD.nAOEID > 0 ){
+					//	Panel_StageUI.Instance.CreateAOEOverEffect( pCmder.X() , pCmder.Y() , CMD.nAOEID );
+					//}
 
-			}
+
+				}break;
+				case 3:
+				case 4:
+				{  // Map AOE
+					CMD.eCMDSTATUS = _CMD_STATUS._WAIT_TARGET;
+					CMD.eCMDID 	   = _CMD_ID._ATK;			// enter atk mode
+					
+					Panel_StageUI.Instance.ClearOverCellEffect ();
+					Panel_StageUI.Instance.CreateAttackOverEffect (pCmder , skl.n_RANGE );
+					
+					CMD.eCMDTARGET = _CMD_TARGET._POS;
+
+				}
+				break;
+
+				// always Self AOE 
+				case 6:
+				case 7:
+				{
+					// show AOE direct
+					CMD.eCMDSTATUS = _CMD_STATUS._WAIT_TARGET;
+					CMD.eCMDID 	   = _CMD_ID._ATK;			// enter atk mode
+					//CMD.eCMDAOETARGET = _CMD_TARGET._AOE;
+					CMD.eCMDTARGET = _CMD_TARGET._SELF;		// this is a mark  flag
+					CMD.nTarGridX = pCmder.X() ;
+					CMD.nTarGridY = pCmder.Y();
+					if(CMD.nAOEID==0)
+						CMD.nAOEID = 1;  // avoid error aoe block cmd
+					//if( CMD.nAOEID > 0 )
+					//{
+					CMD.eCMDAOETARGET = _CMD_TARGET._POS;
+					Panel_StageUI.Instance.CreateAOEOverEffect( pCmder.X() , pCmder.Y() , CMD.nAOEID );
+					//}
+
+					//MakeCmd();
+					//Panel_StageUI.Instance.ClearOverCellEffect ();
+					//CMD.Clear ();				// clear cmd status
+					break;
+
+				}
+				break;
+				}
+			}//else{
 		}
 		//
 
@@ -506,6 +623,17 @@ public class Panel_CMDUnitUI : MonoBehaviour
 					}break;
 				}
 			}break;
+
+		case _CMD_TARGET._SELF:
+		{
+			switch( CMD.eCMDID )
+			{
+			case _CMD_ID._ATK:{ // attack cmd
+				BattleManager.Instance.PlayCast( CMD.nCmderIdent , CMD.nTarGridX , CMD.nTarGridY ,CMD.nSkillID );
+				
+			}break;
+			}
+		}break;
 		}
 		// Set pos
 
@@ -656,14 +784,29 @@ public class Panel_CMDUnitUI : MonoBehaviour
 	
 	public static void RollBackCMDUIWaitTargetMode()
 	{
+		// always clear all effect
+		Panel_StageUI.Instance.ClearOverCellEffect (); // for atk cell
+
+		if (cCMD.Instance.nSkillID > 0) {
+			Panel_Skill.OpenUI( Panel_CMDUnitUI.JustGetCMDUI().pCmder.Ident() , _SKILL_TYPE._LAST );
+			cCMD.Instance.nSkillID =0;
+			return ;
+		}
+
+
 		cCMD.Instance.eCMDSTATUS = _CMD_STATUS._WAIT_CMDID;
 		cCMD.Instance.eCMDID 	   = _CMD_ID._NONE;
 		cCMD.Instance.eCMDTARGET = _CMD_TARGET._ALL;   // only unit
-		cCMD.Instance.nSkillID = 0;
-		Panel_StageUI.Instance.ClearOverCellEffect (); // for atk cell
+		//cCMD.Instance.nSkillID = 0;
+	
 
 		//Panel_CMDUnitUI panel = JustGetCMDUI ();
-		Panel_CMDUnitUI panel =	MyTool.CMDUI ();
+		//panel.gameObject.SetActive (true);
+		//Panel_CMDUnitUI panel =	MyTool.CMDUI ();
+		// need reopen ui only . don't change any param
+		GameObject obj = PanelManager.Instance.OpenUI ( Name );    // need areopen here 
+		Panel_CMDUnitUI panel = obj.GetComponent<Panel_CMDUnitUI>();
+
 
 		 //= PanelManager.Instance.OpenUI( Panel_CMDUnitUI.Name );
 		if (cCMD.Instance.eCMDTYPE == _CMD_TYPE._WAITATK) {

@@ -6,7 +6,7 @@ using MyClassLibrary;
 //using Playcoo.Common;
 
 public class MainUIPanel : BasicPanel {
-	public const string Name = "MainUIPanel";
+	public const string Name = "Panel_MainUI";
 
 	public GameObject StartButton;
 	public GameObject LoadButton;

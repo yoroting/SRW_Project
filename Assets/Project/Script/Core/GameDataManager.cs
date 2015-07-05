@@ -17,7 +17,8 @@ using MYGRIDS;
 
 	public enum _SKILL_TYPE
 	{
-		_ABILITY = 0,
+		_LAST = 0,
+		_ABILITY ,
 		_SKILL 	 ,
 	}
 
@@ -47,6 +48,7 @@ using MYGRIDS;
 		_ALL = 0,
 		_POS ,
 		_UNIT,
+		_SELF,
 	}
 
 	public enum _CMD_ID  // list of cmd btn id
@@ -385,7 +387,18 @@ public partial class GameDataManager
 		//Debug.LogFormat( "gamedata manager.GetUnitDateByCharID with no char {0}" ,  nCharID  );
 		return null;
 	}
-
+	public cUnitData GetUnitDateByPos( int nX , int nY )
+	{
+		foreach (KeyValuePair< int ,cUnitData > pair in UnitPool) {
+			if( pair.Value != null )
+			{
+				if( (pair.Value.n_X == nX) && (pair.Value.n_Y == nY) ){
+					return pair.Value;
+				}
+			}
+		}
+		return null;
+	}
 //	public cUnitData CreateMob( int nCharID )
 //	{
 //		cUnitData unit = new cUnitData();
@@ -411,7 +424,25 @@ public partial class GameDataManager
 
 	// public  Group
 	public Dictionary< int , int > GroupPool;			//  <leader char id , leader char ident>
-
+	public int GetGroupIDbyLeaderChar( int nCharID  ){
+		int nIdent = 0;
+		if (GroupPool.TryGetValue (nCharID, out nIdent) == false ) {
+			return 0;
+		}
+		return nIdent;
+	}
+	public int CreateGroupWithLeaderChar( int nCharID  ){
+		cUnitData unit = GetUnitDateByCharID ( nCharID );
+		if (unit == null) {
+			return 0;
+		}
+		if (GroupPool.ContainsKey (nCharID) == false) {
+			GroupPool.Add( nCharID , unit.n_Ident );
+		} else {
+			GroupPool[nCharID ] =  unit.n_Ident;
+		}
+		return unit.n_Ident;
+	}
 
 	// Save to binary;
 
@@ -497,6 +528,7 @@ public class cCMD{
 		idx = (int)_CMD_TYPE._WAITATK;
 		CmdlistArray [idx] = new List<_CMD_ID> ();
 //		CmdlistArray [idx].Add ( _CMD_ID._ATK ); 
+		CmdlistArray [idx].Add ( _CMD_ID._ABILITY ); 
 		CmdlistArray [idx].Add ( _CMD_ID._SKILL ); 
 		CmdlistArray [idx].Add ( _CMD_ID._WAIT ); 
 		CmdlistArray [idx].Add ( _CMD_ID._CANCEL ); 
@@ -541,7 +573,8 @@ public class cCMD{
 	public _CMD_TARGET 	eCMDTARGET;		// cmd status
 	public _CMD_ID 		eCMDID;			// current cmd ID
 
-	public _CMD_ID 		eLastCMDID;		// Last cmd ID
+//	public _CMD_ID 		eLastCMDID;		// Last cmd ID
+	public _CMD_TYPE	eLASTCMDTYPE;		// LAST Cmd type
 
 	public _CMD_TYPE	eNEXTCMDTYPE;		// NEXT Cmd type
 	public int nTarIdent;
@@ -553,9 +586,14 @@ public class cCMD{
 	public int nTarGridY;
 	
 	public int nSkillID;
-	public int nAvilityID;
+	public int nAbilityID;
+
+	public int nAOEID;				// if have aoe
 	public int nItemID;
-	
+
+	public _CMD_TARGET 	eCMDAOETARGET;		// record Aoe target type
+
+
 	public void Clear()
 	{
 		nCmderIdent = 0;
@@ -564,8 +602,9 @@ public class cCMD{
 		eCMDTARGET  = _CMD_TARGET._ALL;
 
 		eCMDID 	  = _CMD_ID._NONE;
-		eLastCMDID = _CMD_ID._NONE;
+	//	eLastCMDID = _CMD_ID._NONE;
 
+		eLASTCMDTYPE = _CMD_TYPE._SYS;;		// LAST Cmd type
 		eNEXTCMDTYPE = _CMD_TYPE._SYS;
 
 		nTarIdent = 0;		
@@ -576,10 +615,11 @@ public class cCMD{
 		nTarGridY = 0;
 		
 		nSkillID = 0;
-		nAvilityID = 0;
+		nAbilityID = 0;
 		nItemID = 0;
 		
-		
+		nAOEID = 0;
+		eCMDAOETARGET = _CMD_TARGET._ALL;
 	}
 
 	public List<_CMD_ID> GetCmdList( _CMD_TYPE eType)

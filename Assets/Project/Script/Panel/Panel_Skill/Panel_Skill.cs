@@ -68,6 +68,10 @@ public class Panel_Skill : MonoBehaviour {
 
 	public void SetData( cUnitData data , _SKILL_TYPE eType )
 	{
+		if ( eType != _SKILL_TYPE._SKILL && eType != _SKILL_TYPE._ABILITY ) {
+			return ; // don't change data
+		}
+
 		ClearData ();
 		eSkillType = eType;
 		//
@@ -82,58 +86,89 @@ public class Panel_Skill : MonoBehaviour {
 
 		List< SKILL > sklLst = new List< SKILL > ();
 
-
-
 		if (eType == _SKILL_TYPE._SKILL) {
 
-			int ISch = pData.nActSch [0];
-			int ESch = pData.nActSch [1];
-			int ELv = pData.GetSchoolLv (ESch);
 
-			foreach( SKILL skl in pTable )
-			{
+			foreach(  KeyValuePair< int , cSkillData > pair in pData.SkillPool ){
+				SKILL skl = pair.Value.skill;
 				if( skl.n_SCHOOL == 0 )	// == 0 is ability
-					continue;
-
+					continue;				
 				if( skl.n_PASSIVE == 1 )
-					continue;
-
-				// cheat code for god
-				if( Config.GOD ){
-					sklLst.Add( skl );
-					continue;
-				}
-
-				// normal 
-				if( skl.n_SCHOOL != ESch )
-					continue;
-				if( skl.n_LEVEL_LEARN > ELv )
 					continue;
 
 				sklLst.Add( skl );
 			}
+
+//			int ISch = pData.nActSch [0];
+//			int ESch = pData.nActSch [1];
+//			int ELv = pData.GetSchoolLv (ESch);
+//
+//			foreach( SKILL skl in pTable )
+//			{
+//				if( skl.n_SCHOOL == 0 )	// == 0 is ability
+//					continue;
+//
+//				if( skl.n_PASSIVE == 1 )
+//					continue;
+//
+//				// normal 
+//				if( skl.n_SCHOOL != ESch )
+//					continue;
+//
+//				// cheat code for god
+//				if( Config.GOD ){
+//					sklLst.Add( skl );
+//					continue;
+//				}
+//
+//				if( skl.n_LEVEL_LEARN > ELv )
+//					continue;
+//
+//				sklLst.Add( skl );
+//			}
 		}
 		else if (eType == _SKILL_TYPE._ABILITY ) 		
 		{
 			int CLv = pData.n_Lv;
-			foreach( SKILL skl in pTable )
+
+			foreach( KeyValuePair< int , int > pair in pData.AbilityPool )
 			{
+				SKILL skl = ConstDataManager.Instance.GetRow< SKILL >( pair.Key ) ;
 				if( skl.n_SCHOOL > 0 ) // > 0 is school
 					continue;
 				if( skl.n_PASSIVE == 1 )
 					continue;
-
 				if( Config.GOD ){
 					sklLst.Add( skl );
 					continue;
 				}
-				// check char have this ability
-
-				if( skl.n_LEVEL_LEARN > CLv )
+				if( CLv < pair.Value )
 					continue;
-				
 				sklLst.Add( skl );
 			}
+
+//			foreach( SKILL skl in pTable )
+//			{
+//				if( skl.n_SCHOOL > 0 ) // > 0 is school
+//					continue;
+//				if( skl.n_PASSIVE == 1 )
+//					continue;
+//
+//				if( Config.GOD ){
+//					sklLst.Add( skl );
+//					continue;
+//				}
+//				// check char have this ability
+//
+//				if( pData.AbilityPool.ContainsKey( skl.n_ID  ) == false ){
+//					continue;
+//				}
+//
+//				if( skl.n_LEVEL_LEARN > CLv )
+//					continue;
+//				
+//				sklLst.Add( skl );
+//			}
 		}
 
 
@@ -226,7 +261,7 @@ public class Panel_Skill : MonoBehaviour {
 			panel.SetSkillID( nOpSkillID );
 		}
 		
-		PanelManager.Instance.DestoryUI ( Name );
+		PanelManager.Instance.CloseUI( Name );
 	}
 
 	void OnOkClick(GameObject go)

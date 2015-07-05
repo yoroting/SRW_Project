@@ -29,12 +29,15 @@ public class cAttrData
 
 	//========================
 
-	public float f_MAR;
+	public int n_ReCharID;		// 進階版的頭像與對話
 
 	public int n_HP;
 	public int n_MP;
 	public int n_SP;
 	public int n_DEF;
+
+
+	public float f_MAR;
 	public int n_ATK;
 	public int n_POW;
 
@@ -55,8 +58,11 @@ public class cAttrData
 	public float fMpCostRate;
 	public int n_MOV;
 
+
+
 	public void ClearBase(){
 		f_MAR = 0.0f;
+		n_ReCharID = 0;
 		n_HP = 0;
 		n_MP = 0;
 		n_SP = 0;
@@ -369,7 +375,7 @@ public class cUnitData{
 			AbilityPool.Add(id , nLv );
 		}
 		// update both for save
-		AddSkill( nLv );
+		AddSkill( id );
 
 		SetUpdate ( cAttrData._CHARLV ); // update with char lv
 	}
@@ -705,13 +711,14 @@ public class cUnitData{
 
 	public void AddHp( int nhp )
 	{
-		if ( (Config.GOD==true) && nhp < 0 ) {
-			Panel_unit p = Panel_StageUI.Instance.GetUnitByIdent( this.n_Ident );
-			if( p != null && p.eCampID == _CAMP._ENEMY )
-			{
-				nhp *= 10;
-			}
-		}
+		// this cheat always hard to balance battle value. mark it
+//		if ( (Config.GOD==true) && nhp < 0 ) {
+//			Panel_unit p = Panel_StageUI.Instance.GetUnitByIdent( this.n_Ident );
+//			if( p != null && p.eCampID == _CAMP._ENEMY )
+//			{
+//				nhp *= 10;
+//			}
+//		}
 
 		if( nhp > 0 )
 		{
@@ -1049,16 +1056,16 @@ public class cUnitData{
 	{
 		if (FightAttr.SkillData == null)
 			return;
-
-		MyTool.DoSkillEffect ( this , FightAttr.SkillData.CastPool , FightAttr.SkillData.CastCond ,  FightAttr.SkillData.CastCondEffectPool , ref resPool  );
+		cUnitData Defer = GameDataManager.Instance.GetUnitDateByIdent ( FightAttr.TarIdent );
+		MyTool.DoSkillEffect ( this , Defer ,  FightAttr.SkillData.CastPool , FightAttr.SkillData.CastCond ,  FightAttr.SkillData.CastCondEffectPool , ref resPool  );
 
 	}
-	public void DoSkillHitEffect( ref List< cHitResult > resPool )
+	public void DoSkillHitEffect( cUnitData Defer , ref List< cHitResult > resPool )
 	{
 		if (FightAttr.SkillData == null)
 			return;
 		
-		MyTool.DoSkillEffect ( this , FightAttr.SkillData.HitPool , FightAttr.SkillData.HitCond ,  FightAttr.SkillData.CastCondEffectPool , ref resPool  );
+		MyTool.DoSkillEffect ( this , Defer , FightAttr.SkillData.HitPool , FightAttr.SkillData.HitCond ,  FightAttr.SkillData.CastCondEffectPool , ref resPool  );
 
 //		if (FightAttr.Skill == null)
 //			return;

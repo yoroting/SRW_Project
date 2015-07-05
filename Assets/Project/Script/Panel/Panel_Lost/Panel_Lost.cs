@@ -6,7 +6,12 @@ public class Panel_Lost : MonoBehaviour {
 	public const string Name = "Panel_Lost";
 	
 	public GameObject SpritObj;
-	
+
+	void OnEnable()
+	{
+		Panel_StageUI.Instance.bIsStageEnd = true;
+	}
+
 	// Use this for initialization
 	void Start () {
 		UIEventListener.Get(SpritObj).onClick += OnCloseBtnClick; // for trig next lineev
@@ -20,6 +25,9 @@ public class Panel_Lost : MonoBehaviour {
 		
 	}
 	
+	void OnDisable () {
+	//	UIEventListener.Get(SpritObj).onClick -= OnCloseBtnClick; // for trig next lineev
+	}
 	
 	void OnCloseBtnClick(GameObject go)
 	{	

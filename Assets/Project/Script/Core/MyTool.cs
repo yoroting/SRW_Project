@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Enum = System.Enum;
 using MYGRIDS;
+using MyClassLibrary;
 //using _SRW;
 
 // 
@@ -51,7 +52,8 @@ public class MyTool {
 
 	public static Panel_CMDUnitUI CMDUI()
 	{
-		return MyTool.GetPanel<Panel_CMDUnitUI> ( PanelManager.Instance.OpenUI (Panel_CMDUnitUI.Name) );
+		return Panel_CMDUnitUI.JustGetCMDUI ();
+		//return MyTool.GetPanel<Panel_CMDUnitUI> ( PanelManager.Instance.OpenUI (Panel_CMDUnitUI.Name) );
 	}
 
 	public static string GetCMDName( _CMD_ID ID )
@@ -98,6 +100,80 @@ public class MyTool {
 			return sch.s_NAME + "(" +nLv.ToString() + ")";
 		}
 		return "Error- No Leran School" + nSchool.ToString();
+	}
+
+	static bool CheckInPosPool( List < iVec2 > lst , iVec2 v )
+	{
+		if (lst == null || v == null)
+			return false;
+		foreach (iVec2 v2 in lst) {
+			if( v2.Collision( v ) ){
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+	// tool func to get aoe affect pool
+	static public List < iVec2 > GetAOEPool( int nX , int nY , int nAoe , int nCastX , int nCastY )
+	{
+		List < iVec2 > pool = null;
+		iVec2 st 	= new iVec2 ( nX , nY );
+		List< iVec2 > tmp = new List< iVec2 >();
+	//	tmp.Add (  st );
+
+	//	int nRotate = GetGridDir(nX ,nY ,nCastX ,nCastY ); // normal
+		_DIR dir = iVec2.GetDir ( nCastX , nCastY ,nX , nY );
+		//			pool.Add ( st );
+		
+		AOE aoe = ConstDataManager.Instance.GetRow<AOE> ( nAoe ) ;
+		if (aoe != null) {
+			// add extra first
+			cTextArray TA = new cTextArray();
+			TA.SetText ( aoe.s_EXTRA );
+			for( int i = 0 ; i < TA.GetMaxCol(); i++ )
+			{
+				CTextLine line  = TA.GetTextLine( i );
+				for( int j = 0 ; j < line.GetRowNum() ; j++ )
+				{
+					string s = line.m_kTextPool[ j ];
+					
+					string [] arg = s.Split( ",".ToCharArray() );
+					if( arg.Length < 2 )
+						continue;
+
+					if( arg[0] != null && arg[1] != null )
+					{
+						int x = int.Parse( arg[0] );
+						int y = int.Parse( arg[1] );
+						iVec2 t = new iVec2( x , y );
+						t.Rotate( dir );
+						iVec2 v = st + t; 
+
+						if( GameScene.Instance.Grids.Contain( v ) == false )
+							continue;
+						tmp.Add(  v );
+					}
+				}
+			}
+			// get range pool	
+			pool = GameScene.Instance.Grids.GetRangePool( st , aoe.n_MAX , aoe.n_MIN );
+		}
+
+		// merge two pool
+		if (pool == null) {
+			pool = new List< iVec2 >();
+		}
+
+		foreach( iVec2 v2 in tmp ){
+			if( CheckInPosPool( pool , v2 ) == false ){ // final check
+				pool.Add(  v2 );
+			}
+		}
+
+		//List < iVec2 > pool = new List < iVec2 > ();
+		return pool;
 	}
 	//
 	public static List <GameObject > GetChildPool( GameObject obj)
@@ -245,12 +321,12 @@ public class MyTool {
 		return GameDataManager.Instance.GetSkillData( nSkillID );
 	}
 
-	public static void DoSkillEffect( cUnitData atker , List< cEffect > effPool , cEffectCondition EffCond, List< cEffect > CondEffPool , ref List<cHitResult>  pool  )
+	public static void DoSkillEffect( cUnitData atker , cUnitData defer , List< cEffect > effPool , cEffectCondition EffCond, List< cEffect > CondEffPool , ref List<cHitResult>  pool  )
 	{
 		if (atker == null || effPool == null )
 			return;
 
-		cUnitData defer = GameDataManager.Instance.GetUnitDateByIdent ( atker.FightAttr.TarIdent );
+		//cUnitData defer = GameDataManager.Instance.GetUnitDateByIdent ( atker.FightAttr.TarIdent );
 
 		// normal eff
 		foreach( cEffect eft  in effPool )

@@ -10,19 +10,17 @@
 
 	SCHOOL=11, 
 	SKILL=12,
-	BEHAVIOR=13,
-	Missile=14,
 
 	AI_TACTIC = 16,
 	AI_COMBAT = 17,
 	MOBS	 = 18,
-	CLINE = 20,
+
 	BGM = 27,
 	FX = 28,
 
 	SCENE_TILE = 32,
 	MARKER = 33,
-	FACTION = 37,
+	AOE = 37,
 
 	BUFF = 51,
 

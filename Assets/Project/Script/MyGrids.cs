@@ -47,6 +47,16 @@ namespace MYGRIDS
 		_BRIDGE_H	=21,
 
 	};
+
+	public enum _DIR
+	{
+		_NULL 	= 0,
+		_UP	  	= 1,
+		_RIGHT  = 2,
+		_DOWN  	= 3,
+		_LEFT  	= 4,
+	};
+
     // int 的 2維向量。將來可能會使用到
     public class iVec2
     {
@@ -90,7 +100,70 @@ namespace MYGRIDS
 
         }
 
+		static public _DIR GetDir( int stx , int sty , int edx , int edy )
+		{
+			int nDiffX = edx - stx;
+			int nDiffY = edy - sty;
+			// 只處理4正維方向。斜角 不處理
+			if (nDiffX == 0) {
+				if (nDiffY > 0) {
+					return _DIR._UP;// up
+				} else if (nDiffY < 0) {
+					return _DIR._DOWN;// down
+				}
+			} else if (nDiffY == 0) {
+				if (nDiffX > 0) {
+					return _DIR._RIGHT; // right
+				} else if (nDiffX < 0) {
+					return _DIR._LEFT; // left  
+				}
+			} else if (nDiffX > 0 && nDiffY > 0) {
+				return _DIR._UP;// up
+			} else if (nDiffX < 0 && nDiffY < 0) {
+				return _DIR._DOWN;// down;
+			} else if (nDiffX > 0 && nDiffY < 0) {
+				return _DIR._RIGHT; // right
+			} else if (nDiffX < 0 && nDiffY > 0) {
+				return _DIR._LEFT; // left  
+			}
+			return _DIR._NULL;
 
+		}
+		public _DIR GetDir( int x , int y )
+		{
+			return GetDir ( X , Y , x , y );
+		}
+
+		public void Rotate( _DIR dir )
+		{
+
+			switch( dir ){
+			case _DIR._UP: // up
+				// no change
+				//return new iVec2( X , Y );
+				break;
+			case _DIR._DOWN:// down
+				X *= -1;
+				Y *= -1;
+				//return new iVec2( X * -1 , Y *-1 );
+				break;
+			case _DIR._RIGHT:{// right
+				int nTmpX = X;
+				int nTmpY = Y;
+				X = nTmpY*1;
+				Y = nTmpX*-1;
+				//return new iVec2( Y * 1 , X *-1 );
+			}break;
+			case _DIR._LEFT:{ // left  
+				int nTmpX = X;
+				int nTmpY = Y;
+				//return new iVec2( Y * -1 , X *1 );
+				X = nTmpY*-1;
+				Y = nTmpX*1;
+			}break;
+			}		
+
+		}
         // 比對 座標。看是否同一點
         public bool Collision(iVec2 v2)
         {         
@@ -774,21 +847,21 @@ namespace MYGRIDS
 		}
 
         // Math utility func 
-        public List<iVec2> GetRangePool( iVec2 v , int dist , int min=0 ) { 
+        public List<iVec2> GetRangePool( iVec2 v , int max , int min=0 ) { 
 
             // 取得指定座標 對應距離內的 pool
             List<iVec2> lst = new List<iVec2>();
 
             // 正向
-			for (int i = 0; i <= dist; i++) // 0 不用計算
+			for (int i = 0; i <= max; i++) // 0 不用計算
             {
                 int x1 = v.X + i;           // 正
                 if (x1 <= hW)
                 {
-                    for (int j = 0; j <= dist; j++) // 0 不用計算
+					for (int j = 0; j <= max; j++) // 0 不用計算
                     {
 						int tmp = i + j;
-						if ( tmp > dist || tmp < min )
+						if ( tmp > max || tmp < min )
                             continue;
 
 
@@ -817,10 +890,10 @@ namespace MYGRIDS
                 int x2 = v.X - i;           // 反
                 if (x2 >= -hW)
                 {
-					for (int j = 0; j <= dist; j++) // 0 不用計算
+					for (int j = 0; j <= max; j++) // 0 不用計算
                     {                        
 						int tmp = i + j;
-						if ( tmp > dist || tmp < min )
+						if ( tmp > max || tmp < min )
                             continue ;          // over dist 
 
                         int y1 = v.Y + j;           // 正
@@ -933,6 +1006,7 @@ namespace MYGRIDS
             return lst;
         }
 
+	
 		// Check if pos in grid
 		public bool Contain( iVec2 v )
 		{

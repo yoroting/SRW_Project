@@ -538,6 +538,26 @@ public class Panel_unit : MonoBehaviour {
 				break;
 			}
 			break;
+		case _ACTION._LVUP:			// Drop
+			switch( nSubActFlow )
+			{
+			case 0:
+				nSubActFlow++;
+				// show
+				ActionLvUp( CurAction.nActVar1 , CurAction.nActVar2  ); // exp / money
+				//ActionHit( CurAction.nSkillID ,CurAction.nTarGridX , CurAction.nTarGridY );
+				//ActionMove( CurAction.nTarGridX , CurAction.nTarGridY  );
+				break;
+			case 1:
+				nSubActFlow++;
+				CurAction = null; // clear act
+				break;
+			}
+			break;
+		default:
+			CurAction = null; // set null to avoid char block in infinite action
+			break;
+
 		}
 	}
 
@@ -637,6 +657,18 @@ public class Panel_unit : MonoBehaviour {
 
 
 	}
+
+	public void ActionLvUp( int nLvUP , int nExp )
+	{
+		string sMsg = string.Format( "Lv + {0} " , nLvUP  );
+		
+		BattleManager.Instance.ShowBattleMsg( null , sMsg );  // show 
+		//pUnitData.AddExp( nExp );
+
+		// show new ability
+
+	}
+
 
 	//==============Tween CAll back
 	public void OnTwAtkHit( )
@@ -828,14 +860,16 @@ public class Panel_unit : MonoBehaviour {
 	{
 		if (unit == null)
 			return false;
-		if (unit.eCampID != this.eCampID) {
-			if( unit.eCampID == _CAMP._ENEMY || eCampID == _CAMP._ENEMY )
-			{
-				return true;
-			}
-		}
 
-		return false;
+		return MyTool.CanPK ( this.eCampID , unit.eCampID );
+//		if (unit.eCampID != this.eCampID) {
+//			if( unit.eCampID == _CAMP._ENEMY || eCampID == _CAMP._ENEMY )
+//			{
+//				return true;
+//			}
+//		}
+//
+//		return false;
 	}
 
 
