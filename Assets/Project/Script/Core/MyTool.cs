@@ -175,6 +175,38 @@ public class MyTool {
 		//List < iVec2 > pool = new List < iVec2 > ();
 		return pool;
 	}
+
+	public static bool IsDamageSkill( int nSkillID )
+	{
+		if (nSkillID == 0) {
+			return true;
+		}
+		cSkillData skldata = GameDataManager.Instance.GetSkillData (nSkillID);
+		if( skldata != null  ){
+			return skldata.IsTag( _SKILLTAG._DAMAGE );
+		}
+		return false;
+	}
+
+	public static _PK_MODE GetSkillPKmode( int nSkillID )
+	{
+		return GetSkillPKmode ( ConstDataManager.Instance.GetRow< SKILL > ( nSkillID ) );
+	}
+
+	public static _PK_MODE GetSkillPKmode( SKILL skl )
+	{
+		if (skl == null )
+			return _PK_MODE._ENEMY;
+
+		if ( skl.n_TARGET == 5 || skl.n_TARGET == 8 ) {// 5→MAPALL , 8→自我AOEALL
+			return _PK_MODE._ALL;
+		}
+		else if (skl.n_TARGET == 2 || skl.n_TARGET == 4 || skl.n_TARGET ==6 ) {			//2→需要友方目標 , 4→MAP我方 , 6→自我AOE我方
+			return _PK_MODE._PLAYER;
+		}
+
+		return _PK_MODE._ENEMY;
+	}
 	//
 	public static List <GameObject > GetChildPool( GameObject obj)
 	{

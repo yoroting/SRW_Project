@@ -78,6 +78,10 @@ public partial class BattleManager
 		hadInit = true;
 
 		Clear ();
+		// drop exp	
+
+		nDropMoney = 0;
+		nDropExpPool = new Dictionary< int , int >();
 
 	//	bIsBattle = false;
 		//this.GetAudioClipFunc = getAudioClipFunc;
@@ -136,6 +140,7 @@ public partial class BattleManager
 			DefAffectPool.Clear ();
 		}
 
+	
 	//	AtkCCPool = null;
 	//	DefCCPool = null;
 
@@ -182,6 +187,7 @@ public partial class BattleManager
 		return ;
 	}
 
+	//必定造成傷害與 反擊/攻守/協防的攻擊流程
 	public void RunAttack()
 	{
 
@@ -368,6 +374,18 @@ public partial class BattleManager
 
 		case 8:			//  def -> atk
 			if (IsDefMode() == false ) {
+				// check range
+				int nRange =1; // default range
+				SKILL defskill = ConstDataManager.Instance.GetRow<SKILL>( nDeferSkillID );
+				if(  defskill != null ){
+					nRange = defskill.n_RANGE;
+				}
+				if( iVec2.Dist(Atker.n_X,Atker.n_Y,Defer.n_X,Defer.n_Y )> nRange ){
+					nPhase++;		//距離太近不可反擊
+					break;
+				}
+
+				//
 
 				uAction pCountAct = ActionManager.Instance.CreateAttackAction (nDeferID,nAtkerID, nDeferSkillID );
 
@@ -427,8 +445,9 @@ public partial class BattleManager
 				foreach( cUnitData unit in AtkAffectPool ){
 					CalDropResult( Atker , unit , ref nExp ,ref nMoney );
 				}
-
-				ActionManager.Instance.CreateDropAction( Atker.n_Ident , nExp , nMoney );
+				nDropMoney += nMoney;
+				nDropExpPool.Add( Atker.n_Ident , nExp );
+				//ActionManager.Instance.CreateDropAction( Atker.n_Ident , nExp , nMoney );
 
 			}
 
@@ -444,7 +463,9 @@ public partial class BattleManager
 				foreach( cUnitData unit in DefAffectPool ){
 					CalDropResult( Defer , unit , ref nExp ,ref nMoney );
 				}
-				ActionManager.Instance.CreateDropAction( Defer.n_Ident , nExp , nMoney );
+				nDropMoney += nMoney;
+				nDropExpPool.Add( Defer.n_Ident , nExp );
+				//ActionManager.Instance.CreateDropAction( Defer.n_Ident , nExp , nMoney );
 
 			}
 
@@ -470,9 +491,11 @@ public partial class BattleManager
 			break;
 		}
 	}
+	//地圖攻擊/ 指向Buff /自我施法
 	public void RunCast()
 	{
 		cUnitData Atker = GameDataManager.Instance.GetUnitDateByIdent ( nAtkerID );
+		cUnitData Defer = GameDataManager.Instance.GetUnitDateByIdent ( nDeferID );
 		//Panel_unit uDefer = Panel_StageUI.Instance.GetUnitByIdent( nDeferID ); 
 		
 		switch (nPhase) {
@@ -498,20 +521,33 @@ public partial class BattleManager
 				int nTarY = this.nTarGridY;
 			
 				
-				
+
 				// get affectpool
-				bool bIsDamage = Atker.FightAttr.SkillData.IsTag(_SKILLTAG._DAMAGE );
+				bool bIsDamage =  MyTool.IsDamageSkill( nAtkerSkillID );
+				//IsDamageSkill
+				if( Defer != null )
+				{
+					if( bIsDamage ){
+						Defer.SetFightAttr(  nAtkerID  , 0 );
+						ShowDefAssist( Defer.n_Ident , false );
+						pAct.AddHitResult( CalAttackResult( nAtkerID , Defer.n_Ident  ) );
+
+					}
+					pAct.AddHitResult(  CalSkillHitResult( Atker, Defer , nAtkerSkillID ) ) ;
+				}
+
+				// Affect pool
 				GetAffectPool( Atker , nDeferID , Atker.FightAttr.SkillID , nTarX , nTarY , ref AtkAffectPool);
 				foreach( cUnitData unit in AtkAffectPool )
 				{
-					if( unit == Atker )
+					if( unit == Defer  )
 						continue;
 					//=====================
 					// checked if this cUnitData can Atk
 					//if( CanPK( Atker.eCampID , unit.eCampID ) == false )
 					//	continue;
 					if( bIsDamage ){
-						unit.SetFightAttr(  unit.n_Ident  , 0 );
+						unit.SetFightAttr(  nAtkerID  , 0 );
 						ShowDefAssist( unit.n_Ident , false );
 						pAct.AddHitResult( CalAttackResult( nAtkerID , unit.n_Ident  ) );
 					}
@@ -528,12 +564,19 @@ public partial class BattleManager
 			break;
 		case 3:			// close all 
 			nPhase++;
+			// cal cul drop
+
+
+			if( Defer != null ){
+				Defer.FightEnd();
+			}
 
 			foreach( cUnitData unit in AtkAffectPool )
 			{
 				unit.FightEnd();				
 			}
 			Atker.FightEnd( true );
+
 			// cmd finish
 			
 			// action finish in atk action
@@ -546,6 +589,25 @@ public partial class BattleManager
 
 	}
 
+
+	//drop after dead event complete
+	public void ProcessDrop()
+	{
+		if ( nDropMoney == 0 && nDropExpPool.Count == 0)
+			return;
+
+		foreach( KeyValuePair<int , int> pair in nDropExpPool )
+		{
+			ActionManager.Instance.CreateDropAction( pair.Key , pair.Value , nDropMoney );
+			nDropMoney = 0;
+		}
+	//	if (nDropMoney > 0) {
+	//		ActionManager.Instance.CreateDropAction( 0 , 0 , nDropMoney );
+	//	}
+		nDropMoney = 0;
+		nDropExpPool.Clear ();
+
+	}
 
 	//===================================================
 	public _BATTLE eBattleType { get; set; } 
@@ -569,6 +631,10 @@ public partial class BattleManager
 	public int nTarGridY{ get; set; } 				//
 
 	public int nBattleID{ get; set; } 
+
+
+	public int nDropMoney{ get; set; } 		// drop money
+	public Dictionary< int , int > nDropExpPool;
 
 	//===================================================
 //	SKILL	AtkerSkill = null;
@@ -621,9 +687,10 @@ public partial class BattleManager
 
 		eBattleType = _BATTLE._ATTACK;
 	}
-	public void PlayCast (int nAtkIdent, int nGridX , int nGridY , int nSkillID)
+	public void PlayCast (int nAtkIdent, int nTarIdent , int nGridX , int nGridY , int nSkillID)
 	{
 		nAtkerID = nAtkIdent;
+		nDeferID = nTarIdent;
 		nTarGridX = nGridX;
 		nTarGridY = nGridY;
 

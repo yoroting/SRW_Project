@@ -122,7 +122,7 @@ public partial class ActionManager
 				switch ( act.eAct  )
 				{
 					// AI_CMD
-					case _ACTION._CMD_ATK:
+					case _ACTION._CMD_ATK: // mob atk
 					{
 					 // wait battle action complete
 						if( BattleManager.Instance.IsBattlePhase() == false )
@@ -135,13 +135,13 @@ public partial class ActionManager
 						}
 					}
 					break;
-					case _ACTION._CMD_CAST:
+					case _ACTION._CMD_CAST: // mob cast
 					{
 					if( BattleManager.Instance.IsBattlePhase() == false )
 					{
 						BattleManager.Instance.Clear();
 						// setup act mode
-						BattleManager.Instance.PlayCast(act.nActIdent ,act.nTarGridX ,act.nTarGridY , act.nSkillID );
+						BattleManager.Instance.PlayCast(act.nActIdent , act.nTarIdent , act.nTarGridX ,act.nTarGridY , act.nSkillID );
 						
 						ActionPool.RemoveAt( 0 ); // remove when setup success
 					}
@@ -152,8 +152,12 @@ public partial class ActionManager
 					{	
 						// Normal atk action
 						Panel_unit unit = Panel_StageUI.Instance.GetUnitByIdent( act.nActIdent );
-						if( unit.SetAction( act ) )
+						if( (unit!= null) && unit.SetAction( act ) )
 						{
+							ActionPool.RemoveAt( 0 ); // remove when setup success
+							return true;
+						}
+						else {
 							ActionPool.RemoveAt( 0 ); // remove when setup success
 							return true;
 						}

@@ -513,6 +513,7 @@ public class Panel_StageUI : MonoBehaviour
 			return;
 
 		// check drop event
+		BattleManager.Instance.ProcessDrop ();
 
 		//===================		// this will throw unit action or trig Event
 		if ( RunCampAI( GameDataManager.Instance.nActiveCamp ) == false )
@@ -702,10 +703,9 @@ public class Panel_StageUI : MonoBehaviour
 
 		if (GameDataManager.Instance.nActiveCamp != _CAMP._PLAYER)
 			return;
+	
 		// avoid any ui opening
 		// clear over effect
-
-
 
 		Panel_unit unit = go.GetComponent<Panel_unit>() ;
 		if( unit == null )
@@ -731,13 +731,21 @@ public class Panel_StageUI : MonoBehaviour
 			//GameObject obj = PanelManager.Instance.OpenUI (Panel_CMDUnitUI.Name);
 			string sKey = unit.Loc.GetKey ();
 			Debug.Log( "OnCharClick" + sKey + ";Ident"+unit.Ident() ); 
-			if ( OverCellAtkPool.ContainsKey (sKey) == true) {
+
+			// check target is vaild
+			bool bInAtkCell = OverCellAtkPool.ContainsKey (sKey);
+			
+			if( bInAtkCell && (_PK_MODE._ENEMY ==  MyTool.GetSkillPKmode (cCMD.Instance.nSkillID) ) ){
+				return ;
+			}
+
+			if ( bInAtkCell == true) {
 				Panel_CMDUnitUI panel = MyTool.GetPanel<Panel_CMDUnitUI> ( PanelManager.Instance.OpenUI (Panel_CMDUnitUI.Name) );
 				if (panel != null) {
 					panel.SetTarget( unit );
 				}
+				ClearOverCellEffect ();
 			}
-			ClearOverCellEffect ();
 
 		}
 
@@ -771,6 +779,7 @@ public class Panel_StageUI : MonoBehaviour
 
 		if (GameDataManager.Instance.nActiveCamp != _CAMP._PLAYER)
 			return;
+
 		// avoid any ui opening
 		// clear over effect
 		Panel_unit unit = go.GetComponent<Panel_unit>() ;
@@ -781,12 +790,19 @@ public class Panel_StageUI : MonoBehaviour
 
 		bool bInAtkCell = OverCellAtkPool.ContainsKey (sKey);
 
+		if( bInAtkCell && (_PK_MODE._PLAYER ==  MyTool.GetSkillPKmode (cCMD.Instance.nSkillID) ) ){
+			return ;
+		}
+
 		ClearOverCellEffect(  ); // all solution will clear
 
 	
 
 		// open new cmd ui when this idn't a new cmd
 		if (bInAtkCell) {
+
+
+
 
 			if (cCMD.Instance.eCMDSTATUS == _CMD_STATUS._WAIT_TARGET) {		
 

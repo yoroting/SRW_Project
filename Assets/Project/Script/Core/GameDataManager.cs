@@ -22,6 +22,13 @@ using MYGRIDS;
 		_SKILL 	 ,
 	}
 
+	public enum _PK_MODE
+	{
+		_PLAYER 	=0,
+		_ENEMY	  ,
+		_ALL	  ,
+	}
+
 	public enum _CMD_TYPE // what kind of cmd list
 	{
 		_SYS = 0,
@@ -329,6 +336,11 @@ public partial class GameDataManager
 		}
 
 		skilldata = new cSkillData( p );
+		if (nSkillId == 0) {
+			 // spec setup
+			skilldata.AddTag( _SKILLTAG._DAMAGE );
+		}
+
 		SkillDataCachePool.Add( nSkillId , skilldata );
 		return skilldata;		
 	}

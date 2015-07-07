@@ -607,7 +607,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 				switch( CMD.eCMDID )
 				{
 					case _CMD_ID._ATK:{ // attack cmd
-						BattleManager.Instance.PlayCast( CMD.nCmderIdent , CMD.nTarGridX , CMD.nTarGridY ,CMD.nSkillID );
+						BattleManager.Instance.PlayCast( CMD.nCmderIdent , 0 ,  CMD.nTarGridX , CMD.nTarGridY ,CMD.nSkillID );
 				
 					}break;
 				}
@@ -618,8 +618,13 @@ public class Panel_CMDUnitUI : MonoBehaviour
 				switch( CMD.eCMDID )
 				{
 					case _CMD_ID._ATK:{ // attack cmd
-						BattleManager.Instance.PlayAttack( CMD.nCmderIdent , CMD.nTarIdent ,CMD.nSkillID );
-					
+						if( MyTool.IsDamageSkill( CMD.nSkillID )== true  ){
+							BattleManager.Instance.PlayAttack( CMD.nCmderIdent , CMD.nTarIdent ,CMD.nSkillID );
+						}
+						else {
+					BattleManager.Instance.PlayCast( CMD.nCmderIdent , CMD.nTarIdent , CMD.nTarGridX , CMD.nTarGridY ,CMD.nSkillID );	
+
+						}
 					}break;
 				}
 			}break;
@@ -629,7 +634,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 			switch( CMD.eCMDID )
 			{
 			case _CMD_ID._ATK:{ // attack cmd
-				BattleManager.Instance.PlayCast( CMD.nCmderIdent , CMD.nTarGridX , CMD.nTarGridY ,CMD.nSkillID );
+				BattleManager.Instance.PlayCast( CMD.nCmderIdent , CMD.nCmderIdent , CMD.nTarGridX , CMD.nTarGridY ,CMD.nSkillID );
 				
 			}break;
 			}
