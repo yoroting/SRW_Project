@@ -58,6 +58,7 @@ public class Panel_unit : MonoBehaviour {
 	public bool bIsShaking = false;
 	public bool bIsMoving 	= false;
 	public bool bIsBorning = false;
+	public bool bIsDeading = false;
 
 	public int  Ident() 
 	{
@@ -200,7 +201,7 @@ public class Panel_unit : MonoBehaviour {
 		GameDataManager.Instance.DelUnit( Ident() );
 	}
 
-	public bool IsIdle		()
+	public bool IsIdle()
 	{
 		if( IsMoving() )
 		{
@@ -214,6 +215,7 @@ public class Panel_unit : MonoBehaviour {
 		{
 			return false;
 		}
+
 		return true; 
 	}
 
@@ -299,7 +301,7 @@ public class Panel_unit : MonoBehaviour {
 //		if( nTweenMoveCount != 0 )
 //			return true;
 
-		if( bIsAtking || bIsShaking || bIsCasting || bIsMoving || bIsBorning )
+		if( bIsAtking || bIsShaking || bIsCasting || bIsMoving || bIsBorning || bIsDeading)
 			return true;
 
 		return false;
@@ -761,7 +763,7 @@ public class Panel_unit : MonoBehaviour {
 		//
 		BGObj.SetActive (false);
 		bIsDead = true; // set dead
-
+		bIsDeading = true;
 		// shake
 		TweenShake tws = TweenShake.Begin(gameObject, 1.0f , 15 );
 		if( tws )
@@ -786,6 +788,7 @@ public class Panel_unit : MonoBehaviour {
 
 	public void OnDead()
 	{	
+		bIsDeading = false;
 		// remove char
 		StageDelUnitByIdentEvent evt = new StageDelUnitByIdentEvent ();
 		//evt.eCamp  = eCampID; // no need
@@ -1022,15 +1025,15 @@ public class Panel_unit : MonoBehaviour {
 
 
 	//====== Fight 
-	public void AddBuff( int nBuffID )
-	{
-		pUnitData.Buffs.AddBuff (nBuffID);
+//	public void AddBuff( int nBuffID )
+//	{
+//		pUnitData.Buffs.AddBuff (nBuffID);
+//
+//	}
 
-
-	}
-	public void DelBuff( int nBuffID )
-	{
-		pUnitData.Buffs.DelBuff(nBuffID);
-	}
+//	public void DelBuff( int nBuffID )
+//	{
+//		pUnitData.Buffs.DelBuff(nBuffID);
+//	}
 
 }

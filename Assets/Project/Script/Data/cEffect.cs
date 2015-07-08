@@ -42,7 +42,9 @@ public class ADDBUFF_I: cEffect
 	public int nBuffID ;
 	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){
 		if (Atker != null) {
-			list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF ,Atker.n_Ident , nBuffID ) );
+			// ( int nBuffID , int nCastIdent , int nSkillID  , int nTargetId )
+			//pData.Buffs.AddBuff( res.Value1 , res.Value2, res.SkillID, res.Value3 );
+			list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF , Atker.n_Ident , nBuffID, Atker.n_Ident, 0,Defer.n_Ident  ) );
 		}
 	}
 }
@@ -51,10 +53,10 @@ public class ADDBUFF_E: cEffect
 	public ADDBUFF_E( int buffid ){		eType = _EFF.ADDBUFF_E; nBuffID = buffid;	}
 	public int nBuffID ;
 	
-	
 	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 
 		if (Defer != null) {
-			list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF ,Defer.n_Ident , nBuffID ) );
+		//	list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF ,Defer.n_Ident , nBuffID ) );
+			list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF , Defer.n_Ident , nBuffID, Atker.n_Ident, 0,Defer.n_Ident  ) );
 		}
 	}
 }
@@ -86,6 +88,23 @@ public class ADD_MAR_DIFF: cEffect
 		}
 	}
 }
+
+public class ADD_ATTACK_DIFF: cEffect
+{
+	public ADD_ATTACK_DIFF( float f ){	fValue = f;	}
+	
+	public float fValue ;	
+
+	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
+		if ((Atker != null) && ( Defer != null)) {
+			float fDelt = Defer.GetBaseAttack() - Atker.GetBaseAttack();
+			fDelt *=fValue;
+			// this is final
+			attr.n_ATK += (int)fDelt;
+		}
+	}
+}
+
 // ==== MUL_BRUST
 public class MUL_DROP: cEffect
 {

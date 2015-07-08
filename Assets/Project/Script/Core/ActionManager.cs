@@ -310,7 +310,7 @@ public partial class ActionManager
 							{
 //								cUnitData pData = GameDataManager.Instance.GetUnitDateByIdent (res.Ident);
 //								if (pData != null) {
-								pUnit.pUnitData.AddHp (res.Value1  );
+								pUnit.pUnitData.AddHp (res.Value1   );
 //								}
 							}
 							
@@ -321,14 +321,20 @@ public partial class ActionManager
 							{
 								cUnitData pData = GameDataManager.Instance.GetUnitDateByIdent (res.Ident);
 								if (pData != null) {
-									pData.Buffs.AddBuff( res.Value1 );
+									pData.Buffs.AddBuff( res.Value1 , res.Value2, res.SkillID, res.Value3 );
 								}
 							}
 							
 						}break;
 						case cHitResult._TYPE._DELBUFF: // remove buff
 						{
-							
+							if( res.Value1 != 0 ) // maybe change data in  battle manage
+							{
+								cUnitData pData = GameDataManager.Instance.GetUnitDateByIdent (res.Ident);
+								if (pData != null) {
+									pData.Buffs.DelBuff( res.Value1 );
+								}
+							}
 							
 						}break;
 						case cHitResult._TYPE._HITBACK: // HitBack
@@ -338,7 +344,7 @@ public partial class ActionManager
 						}break;
 						case cHitResult._TYPE._HIT: // Hit
 						{
-							
+							// Add FX effect 
 							
 						}break;		
 						case cHitResult._TYPE._BEHIT: // Hit
@@ -348,12 +354,9 @@ public partial class ActionManager
 						}break;							
 						}
 					}
-					
-					
 				}
 			}
 		}
-
 	}
 
 

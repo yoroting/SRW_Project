@@ -622,6 +622,9 @@ public class MyScript {
 				else if( func.sFunc  == "ADD_MAR_DIFF") {
 					pool.Add( new ADD_MAR_DIFF( func.F(0) ) );
 				}
+				else if( func.sFunc  == "ADD_ATTACK_DIFF") {
+					pool.Add( new ADD_ATTACK_DIFF( func.F(0) ) );
+				}
 				else if( func.sFunc  == "MUL_DROP") {
 					pool.Add( new MUL_DROP( func.F(0) ) );
 				}

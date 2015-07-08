@@ -12,12 +12,13 @@ public class cBuffData
 
 
 	public int nCastIdent ;		// record castident
+	public int nTargetIdent ;		// record targetident
 	public int nSkillID ;		// which skill cast this buff, for fast remove to ensure no bug
 
 
 	public BUFF tableData = null ;		// const data reference	
 
-	public cBuffData( BUFF buff , int ident , int skillid ){
+	public cBuffData( BUFF buff , int ident , int skillid , int tarident ){
 		tableData = buff;
 		if (tableData == null)
 			return;
@@ -28,6 +29,7 @@ public class cBuffData
 
 		nCastIdent = ident;
 		nSkillID   = skillid;
+		nTargetIdent = tarident;
 
 		// create eff pool
 		ConditionEffectPool = MyScript.Instance.CreateEffectPool ( buff.s_CONDITIONAL_BUFF );
@@ -62,15 +64,15 @@ public class cBuffs
 	public Dictionary< int , cBuffData > Pool;
 
 	//
-	public cBuffData CreateData( BUFF buff , int Ident , int skillid  )
+	public cBuffData CreateData( BUFF buff , int Ident , int skillid , int targetident  )
 	{
-		cBuffData data = new cBuffData( buff , Ident , skillid  );
+		cBuffData data = new cBuffData( buff , Ident , skillid , targetident );
 	
 		return data;
 	}
 
 	//
-	public cBuffData AddBuff( int nBuffID , int nCastIdent=0 , int nSkillID = 0 ){
+	public cBuffData AddBuff( int nBuffID , int nCastIdent , int nSkillID  , int nTargetId ){
 		BUFF buff = ConstDataManager.Instance.GetRow< BUFF > ( nBuffID );
 		if (buff == null)
 			return null;
@@ -101,7 +103,7 @@ public class cBuffs
 				// diff buff. check which id high lv
 				if( olddata.tableData.n_LV <= buff.n_LV )
 				{
-					data = CreateData(buff, nCastIdent , nSkillID  );
+					data = CreateData(buff, nCastIdent , nSkillID,nTargetId  );
 
 					Pool[ buff.n_STACK ] = data;		// replace
 				}
@@ -112,7 +114,7 @@ public class cBuffs
 		}
 		else {
 			//add buff
-			data = CreateData(buff, nCastIdent , nSkillID );
+			data = CreateData(buff, nCastIdent , nSkillID ,nTargetId  );
 			Pool.Add( buff.n_STACK ,  data );
 		}
 		return data;
@@ -253,11 +255,19 @@ public class cBuffs
 		cUnitData unit_e = GameDataManager.Instance.GetUnitDateByIdent ( Owner.FightAttr.TarIdent );
 		foreach( KeyValuePair< int , cBuffData > pair in Pool )
 		{
+			cUnitData unit = null ;
+			if( pair.Value.nTargetIdent > 0 ){
+				unit = GameDataManager.Instance.GetUnitDateByIdent ( pair.Value.nTargetIdent );
+			}
+			else {
+				unit = unit_e;
+			}
+
 			foreach( cEffect eft in pair.Value.EffectPool )
 			{
 				if( eft != null )
 				{
-					eft._Attr( Owner , unit_e ,  ref attr );
+					eft._Attr( Owner , unit ,  ref attr );
 				}
 			}
 		}
@@ -271,14 +281,21 @@ public class cBuffs
 		cUnitData unit_e = GameDataManager.Instance.GetUnitDateByIdent ( Owner.FightAttr.TarIdent );
 		foreach( KeyValuePair< int , cBuffData > pair in Pool )
 		{
+			cUnitData unit = null ;
+			if( pair.Value.nTargetIdent > 0 ){
+				unit = GameDataManager.Instance.GetUnitDateByIdent ( pair.Value.nTargetIdent );
+			}
+			else {
+				unit = unit_e;
+			}
 			//if( MyScript.Instance.CheckSkillCond( pair.Value.tableData.s_BUFF_CONDITON , this.Owner , unit_e ) == true )
-			if( pair.Value.Condition.Check( this.Owner , unit_e ) )
+			if( pair.Value.Condition.Check( this.Owner , unit ) )
 			{
 				foreach( cEffect eft in pair.Value.ConditionEffectPool )
 				{
 					if( eft != null )
 					{
-						eft._Attr( Owner , unit_e , ref attr );
+						eft._Attr( Owner , unit , ref attr );
 					}
 				}
 			}
@@ -286,12 +303,11 @@ public class cBuffs
 	}
 
 	// on hit event
-	public void OnHit(  ref List< cHitResult > resPool )
+	public void OnHit(  cUnitData unit_e , ref List< cHitResult > resPool )
 	{
 		if (Pool.Count == 0)
 			return;
 		// normal hit
-		cUnitData unit_e = GameDataManager.Instance.GetUnitDateByIdent ( Owner.FightAttr.TarIdent );
 		foreach( KeyValuePair< int , cBuffData > pair in Pool )
 		{
 			// normal 

@@ -1,35 +1,22 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Project\Script\Core\BattleManager.cs">
+  <MonoDevelop.Ide.Workspace />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Project\Script\Core\MyScript.cs">
     <Files>
-      <File FileName="Assets\Project\Script\Core\BattleManager.cs" Line="91" Column="3" />
-      <File FileName="Assets\Project\Script\Panel\Panel_StageUI\Panel_StageUI.cs" Line="519" Column="1" />
-      <File FileName="Assets\Project\Script\Core\Config.cs" Line="1" Column="1" />
-      <File FileName="Assets\Project\Script\Panel\Panel_Skill\Panel_Skill.cs" Line="14" Column="33" />
-      <File FileName="Assets\Project\Script\Core\MyScript.cs" Line="1" Column="1" />
-      <File FileName="Assets\Common\Plugins\PanelManager\PanelManager.cs" Line="1" Column="1" />
-      <File FileName="Assets\Project\Script\Core\GameSystem.cs" Line="1" Column="1" />
-      <File FileName="Assets\Project\Script\Core\MyTool.cs" Line="129" Column="3" />
-      <File FileName="Assets\Project\Script\Core\GameDataManager.cs" Line="25" Column="22" />
-      <File FileName="Assets\Project\Script\MyGrids.cs" Line="90" Column="10" />
-      <File FileName="Assets\Project\Script\Core\ActionManager.cs" Line="168" Column="5" />
-      <File FileName="Assets\Project\Script\Panel_unit.cs" Line="1" Column="1" />
-      <File FileName="Assets\Project\Script\Panel\Panel_CMDUnitUI\Panel_CMDUnitUI.cs" Line="618" Column="1" />
-      <File FileName="Assets\Project\Script\Data\cUnitData.cs" Line="1" Column="1" />
-      <File FileName="Assets\Project\Script\Panel\Panel_CheckBox\Panel_CheckBox.cs" Line="1" Column="1" />
-      <File FileName="Assets\Project\Script\Data\cSkillData.cs" Line="1" Column="1" />
-      <File FileName="Assets\Project\Script\MyClassLibrary.cs" Line="12" Column="26" />
+      <File FileName="Assets\Project\Script\Core\BattleManager.cs" Line="419" Column="41" />
+      <File FileName="Assets\Project\Script\Core\GameDataManager.cs" Line="30" Column="3" />
+      <File FileName="Assets\Project\Script\Panel_unit.cs" Line="1036" Column="38" />
+      <File FileName="Assets\Project\Script\Data\cBuffData.cs" Line="97" Column="5" />
+      <File FileName="Assets\Project\Script\Data\cEffect.cs" Line="95" Column="2" />
+      <File FileName="Assets\Project\Script\Data\cUnitData.cs" Line="316" Column="55" />
+      <File FileName="Assets\Project\Script\Core\ActionManager.cs" Line="251" Column="32" />
+      <File FileName="Assets\Project\Script\Core\MyScript.cs" Line="624" Column="6" />
+      <File FileName="Assets\Project\Script\Data\cSkillData.cs" Line="44" Column="5" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
-      <Breakpoint file="G:\Unity Projects\SRW_Project\Assets\Project\Script\Panel\Panel_Skill\Panel_Skill.cs" line="300" />
-      <Breakpoint file="G:\Unity Projects\SRW_Project\Assets\Project\Script\Panel\Panel_CMDUnitUI\Panel_CMDUnitUI.cs" line="634" />
-      <Breakpoint file="G:\Unity Projects\SRW_Project\Assets\Project\Script\Panel\Panel_CMDUnitUI\Panel_CMDUnitUI.cs" line="605" />
-      <Breakpoint file="G:\Unity Projects\SRW_Project\Assets\Project\Script\Core\ActionManager.cs" line="161" />
-      <Breakpoint file="G:\Unity Projects\SRW_Project\Assets\Project\Script\Core\BattleManager.cs" line="601" />
-      <Breakpoint file="G:\Unity Projects\SRW_Project\Assets\Project\Script\Core\BattleManager.cs" line="599" />
-      <Breakpoint file="G:\Unity Projects\SRW_Project\Assets\Project\Script\Core\BattleManager.cs" line="467" />
+      <Breakpoint file="D:\SRW\SRW_Project\Assets\Project\Script\Data\cEffect.cs" line="98" />
+      <Breakpoint file="D:\SRW\SRW_Project\Assets\Project\Script\Data\cBuffData.cs" line="76" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />

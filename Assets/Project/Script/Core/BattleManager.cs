@@ -140,7 +140,7 @@ public partial class BattleManager
 			DefAffectPool.Clear ();
 		}
 
-	
+		bCanCounter = false;
 	//	AtkCCPool = null;
 	//	DefCCPool = null;
 
@@ -317,10 +317,13 @@ public partial class BattleManager
 			if( pAtkAction != null )
 			{
 
-				pAtkAction.AddHitResult(  CalAttackResult( nAtkerID , nDeferID ) ) ;
+				pAtkAction.AddHitResult(  CalAttackResult( nAtkerID , nDeferID , IsDefMode() ) ) ;
 				if( nAtkerSkillID > 0 ){
 					pAtkAction.AddHitResult( CalSkillHitResult(  Atker , Defer  , nAtkerSkillID ) );
 				}
+				Atker.Buffs.OnHit( Defer , ref pAtkAction.HitResult );
+
+
 				int nTarX = this.nTarGridX;
 				int nTarY = this.nTarGridY;
 				if( Defer != null ){
@@ -346,56 +349,55 @@ public partial class BattleManager
 					if( nAtkerSkillID > 0 ){
 						pAtkAction.AddHitResult( CalSkillHitResult(  Atker , unit  , nAtkerSkillID ) );
 					}
+					Atker.Buffs.OnHit( unit , ref pAtkAction.HitResult );
 				}
 			}
 			//should cal atk hit result for performance
-			
-			
 			//			Panel_unit unitAtk = Panel_StageUI.Instance.GetUnitByIdent( nAtkerID );
 			//			if( unitAtk != null )
 			//			{
 			//				unitAtk.ActionAttack( nDeferID );
 			//			}
-			
-			nPhase++;
-			break;
-		case 6:
-			if (IsDefMode() == false ){
-				ShowAtkAssist( nDeferID , nAtkerID );
-			}
-			nPhase++;
-			break;
-		case 7:
-			if (IsDefMode() == false ){
-				ShowDefAssist( nAtkerID );
-			}
-			nPhase++;
-			break;
 
-		case 8:			//  def -> atk
-			if (IsDefMode() == false ) {
+			// check if can counter at this time
+			if (IsDefMode() == false ){	
 				// check range
 				int nRange =1; // default range
 				SKILL defskill = ConstDataManager.Instance.GetRow<SKILL>( nDeferSkillID );
 				if(  defskill != null ){
 					nRange = defskill.n_RANGE;
 				}
-				if( iVec2.Dist(Atker.n_X,Atker.n_Y,Defer.n_X,Defer.n_Y )> nRange ){
-					nPhase++;		//距離太近不可反擊
-					break;
+				if( iVec2.Dist(Atker.n_X,Atker.n_Y,Defer.n_X,Defer.n_Y ) <= nRange ){
+					bCanCounter = true;
 				}
+			}
 
-				//
+			nPhase++;
+			break;
+		case 6:
+			if (bCanCounter){
+				ShowAtkAssist( nDeferID , nAtkerID );
+			}
+			nPhase++;
+			break;
+		case 7:
+			if (bCanCounter ){
+				ShowDefAssist( nAtkerID );
+			}
+			nPhase++;
+			break;
+
+		case 8:			//  def -> atk
+			if ( bCanCounter ) {
 
 				uAction pCountAct = ActionManager.Instance.CreateAttackAction (nDeferID,nAtkerID, nDeferSkillID );
 
 				if (pCountAct != null) {
-
-					pCountAct.AddHitResult( CalAttackResult( nDeferID , nAtkerID , true ) );
+					pCountAct.AddHitResult( CalAttackResult( nDeferID , nAtkerID , false ) ); // must not def at this time
 					if( nDeferSkillID > 0 ){
 						pCountAct.AddHitResult( CalSkillHitResult( Defer,  Atker , nDeferSkillID ) );
 					}
-
+					Defer.Buffs.OnHit( Atker , ref pCountAct.HitResult );
 				}
 
 				GetAffectPool( Defer , nAtkerID , Defer.FightAttr.SkillID , 0 , 0 , ref DefAffectPool );
@@ -414,9 +416,9 @@ public partial class BattleManager
 					pCountAct.AddHitResult(  CalAttackResult( nDeferID , unit.n_Ident ) ) ;
 
 					if( nDeferSkillID > 0 ){
-						pCountAct.AddHitResult( CalSkillHitResult( Defer,  Atker , nDeferSkillID ) );
+						pCountAct.AddHitResult( CalSkillHitResult( Defer,  unit , nDeferSkillID ) );
 					}
-
+					Defer.Buffs.OnHit( unit , ref pCountAct.HitResult );
 				}
 
 				//				Panel_unit unitDef = Panel_StageUI.Instance.GetUnitByIdent( nDeferID );
@@ -530,10 +532,11 @@ public partial class BattleManager
 					if( bIsDamage ){
 						Defer.SetFightAttr(  nAtkerID  , 0 );
 						ShowDefAssist( Defer.n_Ident , false );
-						pAct.AddHitResult( CalAttackResult( nAtkerID , Defer.n_Ident  ) );
+						pAct.AddHitResult( CalAttackResult( nAtkerID , Defer.n_Ident , true ) ); // always def at this time
 
 					}
 					pAct.AddHitResult(  CalSkillHitResult( Atker, Defer , nAtkerSkillID ) ) ;
+					Atker.Buffs.OnHit( Defer , ref pAct.HitResult );
 				}
 
 				// Affect pool
@@ -549,9 +552,10 @@ public partial class BattleManager
 					if( bIsDamage ){
 						unit.SetFightAttr(  nAtkerID  , 0 );
 						ShowDefAssist( unit.n_Ident , false );
-						pAct.AddHitResult( CalAttackResult( nAtkerID , unit.n_Ident  ) );
+						pAct.AddHitResult( CalAttackResult( nAtkerID , unit.n_Ident , true ) );
 					}
 					pAct.AddHitResult(  CalSkillHitResult( Atker, unit , nAtkerSkillID ) ) ;
+					Atker.Buffs.OnHit( unit , ref pAct.HitResult );
 				}
 
 				//pAct.AddHitResult( CalSkillHitResult( nAtkerID, nTarGridX , nTarGridY , nAtkerSkillID ) );
@@ -632,6 +636,7 @@ public partial class BattleManager
 
 	public int nBattleID{ get; set; } 
 
+	public bool bCanCounter{ get; set; }     // def have counter action
 
 	public int nDropMoney{ get; set; } 		// drop money
 	public Dictionary< int , int > nDropExpPool;
@@ -888,12 +893,12 @@ public partial class BattleManager
 		}
 	}
 
-	// 防禦方選防守
+	// 防禦方選反擊
 	public bool IsCounterMode()
 	{
 		return ( eDefCmdID == _CMD_ID._COUNTER );
 	}
-
+	// 防禦方選防守
 	public bool IsDefMode()
 	{
 		return ( eDefCmdID == _CMD_ID._DEF );
@@ -1002,7 +1007,7 @@ public partial class BattleManager
 		return resPool;
 	}
 
-	public List<cHitResult> CalAttackResult( int nAtker , int nDefer , bool bCounter= false )
+	public List<cHitResult> CalAttackResult( int nAtker , int nDefer , bool bDefMode = false )
 	{
 		cUnitData pAtker = GameDataManager.Instance.GetUnitDateByIdent( nAtker ); 	//Panel_StageUI.Instance.GetUnitByIdent( nAtker ); 
 		cUnitData pDefer = GameDataManager.Instance.GetUnitDateByIdent( nDefer );	//Panel_StageUI.Instance.GetUnitByIdent( nDefer ); 
@@ -1085,7 +1090,7 @@ public partial class BattleManager
 
 
 		fAtkDmg = (fAtkDmg<0)? 0: fAtkDmg;
-		if( IsDefMode() )
+		if( bDefMode )
 		{
 			fAtkDmg = (fAtkDmg*Config.DefReduce /100.0f);
 		}

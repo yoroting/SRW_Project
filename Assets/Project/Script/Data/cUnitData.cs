@@ -313,7 +313,7 @@ public class cUnitData{
 		if( skl != null )
 		{
 			if( skl.n_BUFF > 0 ){
-				Buffs.AddBuff( skl.n_BUFF , n_Ident , nSkillID );
+				Buffs.AddBuff( skl.n_BUFF , n_Ident , nSkillID , 0 );
 				SetUpdate( cAttrData._BUFF );
 			}
 
@@ -843,6 +843,17 @@ public class cUnitData{
 		}
 		if (f < 0.0f )			f = 0.0f;
 		return f;
+	}
+
+	public int GetBaseAttack()
+	{
+		int  n = 0;
+		for (int i = cAttrData._INTSCH; i <=  cAttrData._CHARLV; i++) {
+			cAttrData att = GetAttrData( i );
+			n += att.n_ATK;
+		}
+		if ( n < 0 )			n = 0;
+		return n;
 	}
 
 	public float GetMar()
