@@ -9,9 +9,12 @@ public enum _UNITSTATE
 {
 	_NULL =0,
 	_ATKER    ,
+	_DAMAGE   ,		//執行過傷害技能
 //	_DEFER    ,		// not atker is defer
 	_DEFMODE  ,
 	_DEAD	 ,
+	_DODGE	 ,
+	_KILL		,  //本次戰鬥有殺人
 }
 
 
@@ -935,7 +938,7 @@ public class cUnitData{
 		return n;
 	}
 
-	public float GetAddDrop()
+	public float GetMulDrop()
 	{
 		//		UpdateAttr(); // update first to get newest data
 		float f = 0;
@@ -1044,7 +1047,11 @@ public class cUnitData{
 				this.ActionFinished();
 			}
 		}
-		
+
+		if (Buffs.BuffFightEnd ( )) {
+			SetUpdate( cAttrData._BUFF );
+		}
+
 		ClearState(); // clear fight state
 		
 		//FightAttr.ClearBase (); // clear base attr only

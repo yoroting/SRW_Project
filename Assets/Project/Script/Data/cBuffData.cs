@@ -32,6 +32,8 @@ public class cBuffData
 		nTargetIdent = tarident;
 
 		// create eff pool
+		CancelCondition  = MyScript.Instance.CreateEffectCondition ( buff.s_BUFF_CANCEL );
+
 		ConditionEffectPool = MyScript.Instance.CreateEffectPool ( buff.s_CONDITIONAL_BUFF );
 		Condition 			 = MyScript.Instance.CreateEffectCondition ( buff.s_BUFF_CONDITON );
 		EffectPool 		 = MyScript.Instance.CreateEffectPool ( buff.s_CONSTANT_BUFF );
@@ -43,6 +45,8 @@ public class cBuffData
 
 	// 
 //	public List< cBuffCondition > ConditionPool;
+	public cEffectCondition   CancelCondition;			// check buff cancel condition
+
 	public List< cEffect > 	  EffectPool;				// normal effect
 	public cEffectCondition   Condition;				// check condition
 
@@ -58,10 +62,12 @@ public class cBuffs
 	cUnitData Owner;		// owner
 	public cBuffs( cUnitData unit ){
 		Pool = new Dictionary< int , cBuffData > ();
+		RemoveList = new List< int >();
 		Owner = unit;
 	}
 
 	public Dictionary< int , cBuffData > Pool;
+	public List< int > RemoveList ;
 
 	//
 	public cBuffData CreateData( BUFF buff , int Ident , int skillid , int targetident  )
@@ -134,31 +140,32 @@ public class cBuffs
 	}
 
 	public void DelBuffBySkillID( int skillid ){
-		List< int > lst = new List< int >();
 		foreach( KeyValuePair<int , cBuffData>  pair in Pool )
 		{
 			if( pair.Value.nSkillID == skillid ){
-				lst.Add( pair.Key );
+				RemoveList.Add( pair.Key );
 			}
 		}
 
-		foreach( int id in lst ){
+		foreach( int id in RemoveList ){
 			Pool.Remove( id );
 		}
+		RemoveList.Clear ();
 	}
 
 	public void DelBuffByCastID( int castid ){
-		List< int > lst = new List< int >();
+
 		foreach( KeyValuePair<int , cBuffData>  pair in Pool )
 		{
 			if( pair.Value.nCastIdent == castid ){
-				lst.Add( pair.Key );
+				RemoveList.Add( pair.Key );
 			}
 		}
 		
-		foreach( int id in lst ){
+		foreach( int id in RemoveList ){
 			Pool.Remove( id );
 		}
+		RemoveList.Clear ();
 	}
 
 
@@ -205,46 +212,69 @@ public class cBuffs
 	// run 1 round .  buff time-1 with all >= 1 . remove buff if time become 0
 	public bool BuffRoundEnd()
 	{
-		List< int > lst = new List< int >();
+
 		foreach( KeyValuePair<int , cBuffData>  pair in Pool )
 		{
 			//if( pair.Value.nCastIdent == castid )
 			if( pair.Value.nTime > 0 )
 			{
 				if( --pair.Value.nTime == 0 ){
-					lst.Add( pair.Key );
+					RemoveList.Add( pair.Key );
 				}
 			}
 		}
 
 
-		foreach( int id in lst ){
+		foreach( int id in RemoveList ){
 			Pool.Remove( id );
 		}
-
-		return (lst.Count>0);
+		bool bUpdate = RemoveList.Count > 0;
+		RemoveList.Clear ();
+		return bUpdate;
 	}
 
 	// remove all buff that time = -1 
-	public bool BuffFightEnd()
+	public bool BuffFightEnd(  )
 	{
 		// del buff when fight end
 		List< int > lst = new List< int >();
+		cUnitData unit_e = GameDataManager.Instance.GetUnitDateByIdent ( Owner.FightAttr.TarIdent );
 		foreach( KeyValuePair<int , cBuffData>  pair in Pool )
 		{
 			//if( pair.Value.nCastIdent == castid )
-			if( pair.Value.nTime < 0 )
+			if( pair.Value.nTime == 0 )
 			{
-				lst.Add( pair.Key );
+				cUnitData unit = null ;
+				if( pair.Value.nTargetIdent > 0 ){
+					unit = GameDataManager.Instance.GetUnitDateByIdent ( pair.Value.nTargetIdent );
+				}
+				else {
+					unit = unit_e;
+				}
+				// check buff end
+				if( pair.Value.CancelCondition.Check( this.Owner , unit ) )
+				{				
+					RemoveList.Add( pair.Key );
+				}
 			}
-		}
+			else if( pair.Value.nTime == -1 ){ // 本次戰鬥有造成傷害
+				if( Owner.IsStates( _UNITSTATE._DAMAGE ) ){
+					RemoveList.Add( pair.Key );
+				}
+			}
+			else if( pair.Value.nTime == -2 ){ //本次戰鬥為防守方
+				if( Owner.IsStates( _UNITSTATE._ATKER ) == false ){
+					RemoveList.Add( pair.Key );
+				}
+			}
+		}		
 		
-		
-		foreach( int id in lst ){
+		foreach( int id in RemoveList ){
 			Pool.Remove( id );
 		}
-		
-		return (lst.Count>0);
+		bool bUpdate = RemoveList.Count > 0;
+		RemoveList.Clear ();
+		return bUpdate;
 	}
 
 	public void UpdateAttr( ref cAttrData attr  )

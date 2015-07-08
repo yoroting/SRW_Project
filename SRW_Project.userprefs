@@ -1,22 +1,24 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Project\Script\Core\MyScript.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Project\Script\Core\BattleManager.cs">
     <Files>
-      <File FileName="Assets\Project\Script\Core\BattleManager.cs" Line="419" Column="41" />
-      <File FileName="Assets\Project\Script\Core\GameDataManager.cs" Line="30" Column="3" />
-      <File FileName="Assets\Project\Script\Panel_unit.cs" Line="1036" Column="38" />
-      <File FileName="Assets\Project\Script\Data\cBuffData.cs" Line="97" Column="5" />
-      <File FileName="Assets\Project\Script\Data\cEffect.cs" Line="95" Column="2" />
-      <File FileName="Assets\Project\Script\Data\cUnitData.cs" Line="316" Column="55" />
-      <File FileName="Assets\Project\Script\Core\ActionManager.cs" Line="251" Column="32" />
-      <File FileName="Assets\Project\Script\Core\MyScript.cs" Line="624" Column="6" />
-      <File FileName="Assets\Project\Script\Data\cSkillData.cs" Line="44" Column="5" />
+      <File FileName="Assets\Project\Script\Core\BattleManager.cs" Line="586" Column="8" />
+      <File FileName="Assets\Project\Script\Core\GameDataManager.cs" Line="131" Column="30" />
+      <File FileName="Assets\Project\Script\Panel_unit.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Data\cBuffData.cs" Line="243" Column="4" />
+      <File FileName="Assets\Project\Script\Data\cEffect.cs" Line="313" Column="48" />
+      <File FileName="Assets\Project\Script\Data\cUnitData.cs" Line="944" Column="15" />
+      <File FileName="Assets\Project\Script\Core\ActionManager.cs" Line="20" Column="1" />
+      <File FileName="Assets\Project\Script\Core\MyScript.cs" Line="653" Column="6" />
+      <File FileName="Assets\Project\Script\Data\cSkillData.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Core\MyTool.cs" Line="361" Column="37" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
       <Breakpoint file="D:\SRW\SRW_Project\Assets\Project\Script\Data\cEffect.cs" line="98" />
       <Breakpoint file="D:\SRW\SRW_Project\Assets\Project\Script\Data\cBuffData.cs" line="76" />
+      <Breakpoint file="G:\Unity Projects\SRW_Project\Assets\Project\Script\Core\ActionManager.cs" line="232" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />

@@ -294,7 +294,32 @@ public class  cEffectCondition
 				
 				return false;
 			}
-			
+
+			// Fight stat check
+			else if( func.sFunc == "FST_ATKER"  )
+			{				
+				return data_I.IsStates( _UNITSTATE._ATKER );
+			}
+			else if( func.sFunc == "FST_DEFER"  )
+			{				
+				return data_I.IsStates( _UNITSTATE._ATKER )==false;
+			}
+			else if( func.sFunc == "FST_DAMAGE"  )
+			{
+				return data_I.IsStates( _UNITSTATE._DAMAGE );
+			}
+			else if( func.sFunc == "FST_KILL"  )
+			{
+				return data_I.IsStates( _UNITSTATE._KILL );
+			}
+			else if( func.sFunc == "FST_DEAD"  )
+			{
+				return data_I.IsStates( _UNITSTATE._DEAD );
+			}
+			else if( func.sFunc == "FST_DODGE"  )
+			{
+				return data_I.IsStates( _UNITSTATE._DODGE );
+			}
 			else{
 				Debug.LogError( string.Format( "Error-Can't find script cond func '{0}'" , func.sFunc ) );
 			}

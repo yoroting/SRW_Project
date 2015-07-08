@@ -447,6 +447,13 @@ public partial class BattleManager
 				foreach( cUnitData unit in AtkAffectPool ){
 					CalDropResult( Atker , unit , ref nExp ,ref nMoney );
 				}
+				// drop rate on final value
+				float fmuldrop = 1.0f + Atker.GetMulDrop();
+				nMoney = (int)(nMoney*fmuldrop);
+				if( nMoney < 0) nMoney = 0;
+				nExp = (int)(nExp*fmuldrop);
+				if( nExp < 0) nExp = 0;
+
 				nDropMoney += nMoney;
 				nDropExpPool.Add( Atker.n_Ident , nExp );
 				//ActionManager.Instance.CreateDropAction( Atker.n_Ident , nExp , nMoney );
@@ -465,6 +472,12 @@ public partial class BattleManager
 				foreach( cUnitData unit in DefAffectPool ){
 					CalDropResult( Defer , unit , ref nExp ,ref nMoney );
 				}
+				float fmuldrop = 1.0f + Defer.GetMulDrop();
+				nMoney = (int)(nMoney*fmuldrop);
+				if( nMoney < 0) nMoney = 0;
+				nExp = (int)(nExp*fmuldrop);
+				if( nExp < 0) nExp = 0;
+
 				nDropMoney += nMoney;
 				nDropExpPool.Add( Defer.n_Ident , nExp );
 				//ActionManager.Instance.CreateDropAction( Defer.n_Ident , nExp , nMoney );
@@ -559,7 +572,30 @@ public partial class BattleManager
 				}
 
 				//pAct.AddHitResult( CalSkillHitResult( nAtkerID, nTarGridX , nTarGridY , nAtkerSkillID ) );
-
+				if ( Atker.eCampID  == _CAMP._PLAYER) {
+					if( Atker == null ){
+						Debug.Log( "atker is dead");
+					}
+					
+					if( bIsDamage ){
+						int nExp=0;
+						int nMoney=0;
+						CalDropResult( Atker , Defer , ref nExp , ref nMoney );
+						foreach( cUnitData unit in AtkAffectPool ){
+							CalDropResult( Atker , unit , ref nExp ,ref nMoney );
+						}
+						// drop rate on final value
+						float fmuldrop = 1.0f + Atker.GetMulDrop();
+						nMoney = (int)(nMoney*fmuldrop);
+						if( nMoney < 0) nMoney = 0;
+						nExp = (int)(nExp*fmuldrop);
+						if( nExp < 0) nExp = 0;
+						
+						nDropMoney += nMoney;
+						nDropExpPool.Add( Atker.n_Ident , nExp );
+						//ActionManager.Instance.CreateDropAction( Atker.n_Ident , nExp , nMoney );
+					}
+				}
 			}
 			nPhase++;
 			break;
@@ -569,6 +605,9 @@ public partial class BattleManager
 		case 3:			// close all 
 			nPhase++;
 			// cal cul drop
+
+
+
 
 
 			if( Defer != null ){
@@ -1014,6 +1053,10 @@ public partial class BattleManager
 		if ( (pAtker == null) || (pDefer == null) )
 			return null;
 
+		pAtker.AddStates (_UNITSTATE._DAMAGE);
+		if (bDefMode == true) {
+			pDefer.AddStates( _UNITSTATE._DEFMODE );
+		}
 		// create result pool
 
 		List<cHitResult> resPool = new List<cHitResult> ();
@@ -1103,6 +1146,7 @@ public partial class BattleManager
 		if( nAtkHp != 0 ){
 			resPool.Add ( new cHitResult( cHitResult._TYPE._HP ,nAtker , nAtkHp  ) );
 			if( nAtkHp < 0 && (pAtker.n_HP < Math.Abs(nAtkHp) ) ){
+				pDefer.AddStates( _UNITSTATE._KILL );
 				pAtker.AddStates( _UNITSTATE._DEAD );
 			}
 		}
@@ -1111,6 +1155,7 @@ public partial class BattleManager
 		resPool.Add ( new cHitResult( cHitResult._TYPE._HP ,nDefer , nDefHp  ) );
 
 		if( nDefHp < 0 && (pDefer.n_HP < Math.Abs(nDefHp) ) ){
+			pAtker.AddStates( _UNITSTATE._KILL );
 			pDefer.AddStates( _UNITSTATE._DEAD );  // dead
 		}
 
