@@ -7,11 +7,12 @@ using MyClassLibrary;
 // Tag state
 public enum _SKILLTAG
 {
-	_DAMAGE 	= 1,
-	_AOE		= 2,
+	_DAMAGE 	= 1,	// 造成傷害
+	_FLY		= 2,	// 飛行道具
 	_BANATK 	= 3,	//攻擊 禁用
 	_BANDEF 	= 4,	//防禦 禁用
-	_NOMOVE 		= 5, 	// can't move atk
+	_NOMOVE 	= 5, 	//不可移動後攻擊
+	
 };
 // use for cache skill table data
 public class cSkillData

@@ -86,6 +86,22 @@ using MYGRIDS;
 		_LOST,
 	}
 
+
+	public enum _SEARCH_AI  // 搜索AI
+	{
+		_HOLD 	= 0,		//原地不動 	
+		_ACTIVE	= 1,		//主動出擊
+		_PASSIVE= 2,		//被動出擊
+		_FOLLOW = 3,		//跟隨
+		_POSITION = 4,		//前往目的地
+	}
+
+	public enum _COMBO_AI  // 戰鬥AI
+	{
+		_NORMAL	= 0,		//正常攻擊
+		_DEFENCE= 1,		//總是防守
+		_AOE	= 2,		//地圖攻擊優先		
+	}
 //	public enum _ROUND_STATUS
 //	{
 //		_START =0,

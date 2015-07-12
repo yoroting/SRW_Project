@@ -256,6 +256,7 @@
      <Compile Include="Assets\Project\Script\ConstDataClasses\Missile.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\SCENE_NAME.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\SCENE_NAME_TIP.cs" />
+     <Compile Include="Assets\Project\Script\ConstDataClasses\SCENE_THING.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\SCENE_TILE.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\SCHOOL.cs" />
      <Compile Include="Assets\Project\Script\ConstDataClasses\SKILL.cs" />

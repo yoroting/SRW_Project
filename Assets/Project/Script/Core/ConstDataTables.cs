@@ -20,6 +20,7 @@
 
 	SCENE_TILE = 32,
 	MARKER = 33,
+	SCENE_THING = 34,
 	AOE = 37,
 
 	BUFF = 51,
