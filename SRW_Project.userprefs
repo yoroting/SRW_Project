@@ -1,14 +1,16 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Project\Script\Core\Config.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Project\Script\MyGrids.cs">
     <Files>
-      <File FileName="Assets\Project\Script\Panel_unit.cs" Line="680" Column="3" />
-      <File FileName="Assets\Project\Script\Panel\Panel_StageUI\Panel_StageUI.cs" Line="1224" Column="32" />
+      <File FileName="Assets\Project\Script\Core\GameSystem.cs" Line="80" Column="1" />
+      <File FileName="Assets\Project\Script\Panel_unit.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Panel\Panel_StageUI\Panel_StageUI.cs" Line="1" Column="1" />
       <File FileName="Assets\Project\Script\Core\BattleManager.cs" Line="1" Column="1" />
       <File FileName="Assets\Project\Script\BattleValue.cs" Line="1" Column="1" />
       <File FileName="Assets\Project\Script\Core\MyTool.cs" Line="1" Column="1" />
-      <File FileName="Assets\Project\Script\Core\ActionManager.cs" Line="159" Column="39" />
-      <File FileName="Assets\Project\Script\Core\Config.cs" Line="22" Column="42" />
+      <File FileName="Assets\Project\Script\Core\ActionManager.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Core\Config.cs" Line="14" Column="24" />
+      <File FileName="Assets\Project\Script\MyGrids.cs" Line="927" Column="10" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

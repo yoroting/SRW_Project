@@ -10,14 +10,14 @@ namespace MYGRIDS
     // tile type 的列舉
    public enum _TILE{
         _NULL       = 0,   // 無效
-        _GREEN      = 1,    // 綠地
-        _LAND       = 2,    // 平原
-        _RIVER      = 3,    // 河流
-        _LAKE       = 4,    // 湖
-        _SNOW       = 5,    // 雪
-        _SAND       = 6,    // 沙地
-		_DIRT       = 7,    // 泥版
-		_ROAD		= 8,	// 道路	
+		_GREEN      = 1,    // 綠地( 平原/石路/河流 ) 
+		_LAND       = 2,    // 平原( 石路 )
+		_RIVER      = 3,    // 河流( 平原/湖 ) 
+		_LAKE       = 4,    // 湖  ( 河流 )
+		_SNOW       = 5,    // 雪  ( 河流 )
+		_SAND       = 6,    // 沙地 ( 平原 )
+		_DIRT       = 7,    // 泥版 ( 平原/道路 )
+		_ROAD		= 8,	// 石路	
 
 	};
 
