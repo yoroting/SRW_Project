@@ -22,11 +22,12 @@ public class cSaveData{
 	 {
 		sFileName = "savedata" + nIdx.ToString() +".dat";
 
-		CharPool = new Dictionary< int ,cUnitSaveData > ();
+		CharPool = new Dictionary< int ,cUnitBaseData > ();
+		ItemPool = new List<int> ();
 	 }
 
-	Dictionary< int ,cUnitSaveData > CharPool;
-
+	Dictionary< int ,cUnitBaseData > CharPool;
+	List<int>					ItemPool;
 	
 	public bool Load()
 	{
@@ -71,6 +72,4 @@ public class cSaveData{
 }
 
 
-public class cUnitSaveData{
-	public int n_ID;
-}
+

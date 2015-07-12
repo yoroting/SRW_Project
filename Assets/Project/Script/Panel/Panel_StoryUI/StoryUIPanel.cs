@@ -58,6 +58,8 @@ public class StoryUIPanel : MonoBehaviour {
 		//PanelManager.Instance.OpenUI( "Panel_Loading");
 		//bIsLoading = true;
 
+
+
 	}
 
 //	IEnumerator StoryLoading()
@@ -276,7 +278,7 @@ public class StoryUIPanel : MonoBehaviour {
 						//Texture t= Resources.Load( url , typeof(Texture) ) as Texture; ;
 						tex.mainTexture = Resources.Load( url , typeof(Texture) ) as Texture; ;
 						//tex.mainTexture = Resources.Load( texpath) as Texture; 
-						tex.MakePixelPerfect();
+						//tex.MakePixelPerfect();
 					}
 				}
 			}		
@@ -370,10 +372,15 @@ public class StoryUIPanel : MonoBehaviour {
 		{	
 
 			string content = row.Field<string>( "s_CONTENT");
+			// replace   heroine name
+			string sText = content.Replace ( "$P" , Config.PlayerName ); // replace player name
+
 			SRW_TextBox pBox = PanelStoryText.GetComponent<SRW_TextBox>();
 			if( pBox )
 			{
-				pBox.AddText( content );
+				pBox.ClearText();
+
+				pBox.AddText( sText );
 
 			}
 

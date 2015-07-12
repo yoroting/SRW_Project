@@ -29,12 +29,32 @@ public class Panel_Mainten : MonoBehaviour {
 		}
 	}
 
+	IEnumerator EnterStory( int nStoryID )
+	{
+		GameDataManager.Instance.nStoryID = nStoryID;
+		
+		PanelManager.Instance.OpenUI( "Panel_Loading");
+		
+		yield return  new WaitForEndOfFrame();
+		
+		PanelManager.Instance.OpenUI( StoryUIPanel.Name );
+		yield return  new WaitForEndOfFrame();
+		
+		
+		PanelManager.Instance.CloseUI( Name );  			// close main 
+		yield break;
+		
+	}
+
 
 	void OnNextStageClick( GameObject go )
 	{
+		GameDataManager.Instance.nStoryID += 1;
 		//GameDataManager.Instance.nStageID += 1;
-		PanelManager.Instance.OpenUI ( StoryUIPanel.Name );
-		PanelManager.Instance.CloseUI ( Name );			// close this ui
+//		PanelManager.Instance.OpenUI ( StoryUIPanel.Name );
+//		PanelManager.Instance.CloseUI ( Name );			// close this ui
+
+		StartCoroutine ( EnterStory( GameDataManager.Instance.nStoryID ) );
 
 	}
 }

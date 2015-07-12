@@ -84,6 +84,17 @@ public class MyTool {
 		}
 		return "null";
 	}
+	public static string GetItemName( int nID )
+	{
+		//BUFF buff = ConstDataManager.Instance.GetRow< BUFF > ( nID );
+		//if (buff == null)
+		//	return "null";
+		ITEM_MISC item = ConstDataManager.Instance.GetRow< ITEM_MISC > ( nID );
+		if (item == null)
+			return "null";
+		return item.s_NAME;
+	}
+
 
 	public static string GetUnitSchoolFullName( int nIdent , int nSchool )
 	{
@@ -326,18 +337,26 @@ public class MyTool {
 
 	public static List<T> CutList<T>( List<T> lst , int Len )
 	{
-		List<T> cut = new List<T> ();
-		int c = 0;
-		foreach( T t in lst)
-		{
-			//iVec2 pos = new iVec2( pt.X-hW , pt.Y -hH );
-			cut.Add( t );
-			if( ++c >= Len  )
-			{
-				break;
-			}
+		int c = lst.Count - Len;
+		if (c > 0) {
+			lst.RemoveRange (Len, c);
 		}
-		return cut;
+		return lst;
+//
+//		lst.RemoveRange(
+//
+//		List<T> cut = new List<T> ();
+//		int c = 0;
+//		foreach( T t in lst)
+//		{
+//			//iVec2 pos = new iVec2( pt.X-hW , pt.Y -hH );
+//			cut.Add( t );
+//			if( ++c >= Len  )
+//			{
+//				break;
+//			}
+//		}
+//		return cut;
 	}
 	//取得指定CDTYPE 有多少回合
 	public static int GetRoundByCD( int nCD )
@@ -353,61 +372,87 @@ public class MyTool {
 		return GameDataManager.Instance.GetSkillData( nSkillID );
 	}
 
-	public static void DoSkillEffect( cUnitData atker , cUnitData defer , List< cEffect > effPool , cEffectCondition EffCond, List< cEffect > CondEffPool , ref List<cHitResult>  pool  )
-	{
-		if (atker == null || effPool == null )
-			return;
-
-		//cUnitData defer = GameDataManager.Instance.GetUnitDateByIdent ( atker.FightAttr.TarIdent );
-
-		// normal eff
-		foreach( cEffect eft  in effPool )
-		{
-			eft._Do( atker , defer , ref  pool );
-		}
-		if ( EffCond == null || CondEffPool == null)
-			return;
-
-		//cond eff
-		//if (MyScript.Instance.CheckSkillCond (strCond, atker, defer) == true)
-		if( EffCond.Check( atker , defer  ) == true )
-		{
-
-			foreach( cEffect eft  in CondEffPool )
-			{
-				eft._Do( atker , defer , ref pool );
-			}
-		}
-
-	}
-	public static void AttrSkillEffect( cUnitData atker , List< cEffect > effPool , cEffectCondition EffCond, List< cEffect > CondEffPool )
-	{
-		if (atker == null || effPool == null )
-			return;
-		cAttrData attr = atker.FightAttr;
-
-		cUnitData defer = GameDataManager.Instance.GetUnitDateByIdent ( atker.FightAttr.TarIdent );
-		
-		// normal eff
-		foreach( cEffect eft  in effPool )
-		{
-			eft._Attr(atker , defer , ref attr  )  ;
-		}
-		if ( EffCond == null || CondEffPool == null)
-			return;
-		
-		//cond eff
-		//if (MyScript.Instance.CheckSkillCond (strCond, atker, defer) == true)
-		if( EffCond.Check( atker , defer  ) == true )
-		{
-			
-			foreach( cEffect eft  in CondEffPool )
-			{
-				eft._Attr(atker , defer ,ref attr  )  ;
-			}
-		}
-		
-	}
+//	public static void DoSkillEffect( cUnitData atker , cUnitData defer , List< cEffect > effPool , cEffectCondition EffCond, List< cEffect > CondEffPool , ref List<cHitResult>  pool  )
+//	{
+//		if (atker == null || effPool == null )
+//			return;
+//
+//		//cUnitData defer = GameDataManager.Instance.GetUnitDateByIdent ( atker.FightAttr.TarIdent );
+//
+//		// normal eff
+//		foreach( cEffect eft  in effPool )
+//		{
+//			eft._Do( atker , defer , ref  pool );
+//		}
+//		if ( EffCond == null || CondEffPool == null)
+//			return;
+//
+//		//cond eff
+//		//if (MyScript.Instance.CheckSkillCond (strCond, atker, defer) == true)
+//		if( EffCond.Check( atker , defer , atker.FightAttr.SkillID , 0  ) == true )
+//		{
+//
+//			foreach( cEffect eft  in CondEffPool )
+//			{
+//				eft._Do( atker , defer , ref pool );
+//			}
+//		}
+//	}
+//
+//	public static void HitSkillEffect( cUnitData atker , cUnitData defer , List< cEffect > effPool , cEffectCondition EffCond, List< cEffect > CondEffPool , ref List<cHitResult>  pool  )
+//	{
+//		if (atker == null || effPool == null )
+//			return;
+//		
+//		//cUnitData defer = GameDataManager.Instance.GetUnitDateByIdent ( atker.FightAttr.TarIdent );
+//		
+//		// normal eff
+//		foreach( cEffect eft  in effPool )
+//		{
+//			eft._Do( atker , defer , ref  pool );
+//		}
+//		if ( EffCond == null || CondEffPool == null)
+//			return;
+//		
+//		//cond eff
+//		//if (MyScript.Instance.CheckSkillCond (strCond, atker, defer) == true)
+//		if( EffCond.Check( atker , defer , atker.FightAttr.SkillID , 0  ) == true )
+//		{
+//			
+//			foreach( cEffect eft  in CondEffPool )
+//			{
+//				eft._Do( atker , defer , ref pool );
+//			}
+//		}
+//	}
+//	public static void AttrSkillEffect( cUnitData atker , List< cEffect > effPool , cEffectCondition EffCond, List< cEffect > CondEffPool )
+//	{
+//		if (atker == null || effPool == null )
+//			return;
+//		cAttrData attr = atker.FightAttr;
+//
+//		cUnitData defer = GameDataManager.Instance.GetUnitDateByIdent ( atker.FightAttr.TarIdent );
+//		
+//		// normal eff
+//		foreach( cEffect eft  in effPool )
+//		{
+//			eft._Attr(atker , defer , ref attr  )  ;
+//		}
+//		if ( EffCond == null || CondEffPool == null)
+//			return;
+//		
+//		//cond eff
+//		//if (MyScript.Instance.CheckSkillCond (strCond, atker, defer) == true)
+//		if( EffCond.Check( atker , defer , atker.FightAttr.SkillID, 0 ) == true )
+//		{
+//			
+//			foreach( cEffect eft  in CondEffPool )
+//			{
+//				eft._Attr(atker , defer ,ref attr  )  ;
+//			}
+//		}
+//		
+//	}
 
 	static public bool CanPK( _CAMP camp1 ,  _CAMP camp2 ) 	
 	{
@@ -419,6 +464,30 @@ public class MyTool {
 		}
 		
 		return false;
+	}
+
+	static public void SetAlpha( GameObject go  ,  float f ) 	
+	{
+		if (go == null)
+			return;
+
+		UIWidget [] mWidgets = go.GetComponentsInChildren<UIWidget>();
+		
+		for (int i = 0, imax = mWidgets.Length; i < imax; ++i)
+		{
+			UIWidget w = mWidgets[i];
+			Color c = w.color;
+			c.a = f;
+			w.color = c;
+		}
+	}
+	static public int ClampInt( int v  , int min  ,  int max ) 	
+	{
+		if (v < min)
+			v = min;
+		else if( v > max )
+			v = max;
+		return v;
 	}
 
 	// 动态的计算出现在manualHeight的高度。

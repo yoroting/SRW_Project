@@ -20,7 +20,7 @@ GameObject:
   m_IsActive: 0
 --- !u!1 &103058
 GameObject:
-  m_ObjectHideFlags: 1
+  m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 4
@@ -88,7 +88,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &118038
 GameObject:
   m_ObjectHideFlags: 0
@@ -140,7 +140,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &124680
 GameObject:
   m_ObjectHideFlags: 1
@@ -319,7 +319,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &156424
 GameObject:
   m_ObjectHideFlags: 1
@@ -504,7 +504,7 @@ Transform:
   m_Children:
   - {fileID: 430606}
   m_Father: {fileID: 460126}
-  m_RootOrder: 1
+  m_RootOrder: 0
 --- !u!4 &424652
 Transform:
   m_ObjectHideFlags: 1
@@ -630,7 +630,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 460126}
+  m_Father: {fileID: 447770}
   m_RootOrder: 0
 --- !u!4 &447716
 Transform:
@@ -643,7 +643,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 447770}
-  m_RootOrder: 2
+  m_RootOrder: 3
 --- !u!4 &447770
 Transform:
   m_ObjectHideFlags: 1
@@ -654,6 +654,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 445522}
   - {fileID: 497798}
   - {fileID: 468410}
   - {fileID: 447716}
@@ -675,7 +676,7 @@ Transform:
   m_Children:
   - {fileID: 416910}
   m_Father: {fileID: 447770}
-  m_RootOrder: 3
+  m_RootOrder: 4
 --- !u!4 &456812
 Transform:
   m_ObjectHideFlags: 1
@@ -698,10 +699,9 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 445522}
   - {fileID: 420198}
   m_Father: {fileID: 447770}
-  m_RootOrder: 5
+  m_RootOrder: 6
 --- !u!4 &464062
 Transform:
   m_ObjectHideFlags: 1
@@ -725,7 +725,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 447770}
-  m_RootOrder: 1
+  m_RootOrder: 2
 --- !u!4 &476470
 Transform:
   m_ObjectHideFlags: 1
@@ -765,7 +765,7 @@ Transform:
   m_Children:
   - {fileID: 476470}
   m_Father: {fileID: 447770}
-  m_RootOrder: 6
+  m_RootOrder: 7
 --- !u!4 &484090
 Transform:
   m_ObjectHideFlags: 1
@@ -818,7 +818,7 @@ Transform:
   - {fileID: 491700}
   - {fileID: 443164}
   m_Father: {fileID: 447770}
-  m_RootOrder: 4
+  m_RootOrder: 5
 --- !u!4 &497798
 Transform:
   m_ObjectHideFlags: 1
@@ -830,7 +830,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 447770}
-  m_RootOrder: 0
+  m_RootOrder: 1
 --- !u!54 &5400898
 Rigidbody:
   m_ObjectHideFlags: 1
@@ -965,6 +965,7 @@ MonoBehaviour:
   MoveEftObj: {fileID: 118038}
   AtkEftObj: {fileID: 100070}
   AoeEftObj: {fileID: 124640}
+  ValueEftObj: {fileID: 103058}
   bIsStageEnd: 0
 --- !u!114 &11402340
 MonoBehaviour:
@@ -1002,7 +1003,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3001
+  startingRenderQueue: 3003
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 0
@@ -1319,7 +1320,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 103058}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9e2747e3775af504da1a4d5a46c5a1ce, type: 3}
   m_Name: 
@@ -1479,7 +1480,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3004
+  startingRenderQueue: 3003
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 0
@@ -2009,6 +2010,7 @@ MonoBehaviour:
   bIsShaking: 0
   bIsMoving: 0
   bIsBorning: 0
+  bIsDeading: 0
 --- !u!114 &11463910
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2409,13 +2411,13 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 70
-  mHeight: 32
+  mWidth: 108
+  mHeight: 48
   mDepth: 0
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 2.1875
+  aspectRatio: 2.25
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   mFont: {fileID: 0}

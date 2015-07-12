@@ -252,9 +252,9 @@ public partial class GameDataManager
 	public bool NextCamp()
 	{
 		// weakup current camp first for remove unit mask
-		StageWeakUpCampEvent cmd = new StageWeakUpCampEvent ();
-		cmd.nCamp = nActiveCamp;
-		GameEventManager.DispatchEvent ( cmd );
+//		StageWeakUpCampEvent cmd = new StageWeakUpCampEvent ();
+//		cmd.nCamp = nActiveCamp;
+//		GameEventManager.DispatchEvent ( cmd );
 
 		// 
 		bool bRoundChange = false;
@@ -273,6 +273,11 @@ public partial class GameDataManager
 
 			bRoundChange =  true;
 		}
+
+		//weak up current for correct re def
+		StageWeakUpCampEvent cmd = new StageWeakUpCampEvent ();
+		cmd.nCamp = nActiveCamp;
+		GameEventManager.DispatchEvent ( cmd );
 
 		// open . round change panel ui
 		PanelManager.Instance.OpenUI( Panel_Round.Name );
@@ -363,7 +368,13 @@ public partial class GameDataManager
 		cUnitData unit = new cUnitData();
 		unit.n_Ident = GenerSerialNO( );
 		unit.n_CharID = nCharID;
-		unit.SetContData(  ConstDataManager.Instance.GetRow< CHARS >( nCharID ) );
+
+		CHARS cdata = ConstDataManager.Instance.GetRow< CHARS > (nCharID);
+		if (cdata == null) {
+			Debug.LogErrorFormat( "CreateChar with null data {0}" , nCharID );
+
+		}
+		unit.SetContData( cdata  );
 
 		UnitPool.Add( unit.n_Ident , unit );
 		return unit;
@@ -517,6 +528,7 @@ public class cCMD{
 		CmdlistArray [idx].Add ( _CMD_ID._ABILITY ); 
 	//	CmdlistArray [idx].Add ( _CMD_ID._DEF ); 
 		CmdlistArray [idx].Add ( _CMD_ID._SCHOOL ); 
+		CmdlistArray [idx].Add ( _CMD_ID._WAIT ); 
 		CmdlistArray [idx].Add ( _CMD_ID._CANCEL ); 
 
 		CmdlistArray [idx].Add ( _CMD_ID._SUICIDE );
@@ -531,7 +543,7 @@ public class cCMD{
 		CmdlistArray [idx].Add ( _CMD_ID._CHEAT );
 
 
-		//
+		// 
 		idx = (int)_CMD_TYPE._MENU;
 		CmdlistArray [idx] = new List<_CMD_ID> ();
 		CmdlistArray [idx].Add ( _CMD_ID._CANCEL ); 
@@ -540,7 +552,9 @@ public class cCMD{
 		idx = (int)_CMD_TYPE._WAITATK;
 		CmdlistArray [idx] = new List<_CMD_ID> ();
 //		CmdlistArray [idx].Add ( _CMD_ID._ATK ); 
-		CmdlistArray [idx].Add ( _CMD_ID._ABILITY ); 
+		if (Config.GOD == true) {
+			CmdlistArray [idx].Add ( _CMD_ID._ABILITY );  // god for debug
+		}
 		CmdlistArray [idx].Add ( _CMD_ID._SKILL ); 
 		CmdlistArray [idx].Add ( _CMD_ID._WAIT ); 
 		CmdlistArray [idx].Add ( _CMD_ID._CANCEL ); 

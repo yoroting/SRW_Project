@@ -17,6 +17,9 @@ public class CHARS : ConstDataRow<CHARS>
 	public int n_ITEM1;
 	public int n_ITEM2;
 	public int n_DEAD_LINES;
+	public float f_DROP_EXP;
+	public float f_DROP_MONEY;
+	public int n_ITEM_DROP;
 	public string s_BUFF;
 	public string s_SCHOOL;
 	public string s_ABILITY;

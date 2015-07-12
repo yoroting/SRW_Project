@@ -142,11 +142,15 @@ public class Panel_unit : MonoBehaviour {
 
 		RunAction ();
 
-
-		if (CanDoCmd()) {
-			MaskObj.SetActive (false);
+		// process mask
+		if (this.eCampID == GameDataManager.Instance.nActiveCamp) {
+			if (CanDoCmd ()) {
+				MaskObj.SetActive (false);
+			} else {
+				MaskObj.SetActive (true);
+			}
 		} else {
-			MaskObj.SetActive (true);
+			MaskObj.SetActive (false);
 		}
 
 		// If not null 
@@ -301,7 +305,9 @@ public class Panel_unit : MonoBehaviour {
 //		if( nTweenMoveCount != 0 )
 //			return true;
 
-		if( bIsAtking || bIsShaking || bIsCasting || bIsMoving || bIsBorning || bIsDeading)
+		if( bIsAtking || bIsShaking || bIsCasting || bIsBorning || bIsDeading)
+			return true;
+		if (IsMoving ())
 			return true;
 
 		return false;
@@ -320,12 +326,12 @@ public class Panel_unit : MonoBehaviour {
 	public void MoveNextPoint( )
 	{
 		if ((PathList == null))
-			return;
+			return ;
 		if ((PathList.Count <= 0)) {
 			// move end
 			PathList = null;
 		
-			return;
+			return  ;
 		}
 
 
@@ -333,8 +339,10 @@ public class Panel_unit : MonoBehaviour {
 		PathList.RemoveAt (0);
 
 		// avoid the same point
-		if (v.Collision (Loc))
+		if (v.Collision (Loc)) {
+			 MoveNextPoint(); // add this to avoid very ciritial bug. some time ismoving check will fail in this.
 			return;
+		}
 		//TarPos = v;
 
 		Vector3 tar = this.gameObject.transform.localPosition;
@@ -358,7 +366,7 @@ public class Panel_unit : MonoBehaviour {
 
 		// Tween move
 		TweenPosition tw = TweenPosition.Begin( this.gameObject , during , tar );
-		if( tw )
+		if( tw!= null )
 		{
 			nTweenMoveCount++;	
 
@@ -370,11 +378,8 @@ public class Panel_unit : MonoBehaviour {
 
 		// move camera to unit
 		Panel_StageUI.Instance.MoveToGameObj (this.gameObject, false);
-		//check if need trace
-		// check if need trace unit 
 
-			// trace it
-		//Panel_StageUI.Instance.TraceUnit( this );
+		//return bIsMoving;
 	}
 
 
@@ -491,6 +496,11 @@ public class Panel_unit : MonoBehaviour {
 				ActionMove( CurAction.nTarGridX , CurAction.nTarGridY  );
 				break;
 			case 1:
+				if( IsAnimate() == false ){ // wait movint finish
+					nSubActFlow++;
+				}
+				break;
+			case 2:
 				nSubActFlow++;
 				CurAction = null; // clear act
 				break;
@@ -556,6 +566,23 @@ public class Panel_unit : MonoBehaviour {
 				break;
 			}
 			break;
+		case _ACTION._WEAKUP:
+			switch( nSubActFlow )
+			{
+			case 0:
+				nSubActFlow++;
+				ActionWeakup(   ); // exp / money
+				//ActionHit( CurAction.nSkillID ,CurAction.nTarGridX , CurAction.nTarGridY );
+				//ActionMove( CurAction.nTarGridX , CurAction.nTarGridY  );
+				break;
+			case 1:
+				nSubActFlow++;
+				CurAction = null; // clear act
+				break;
+			}
+			break;
+
+
 		default:
 			CurAction = null; // set null to avoid char block in infinite action
 			break;
@@ -621,8 +648,13 @@ public class Panel_unit : MonoBehaviour {
 		BattleManager.Instance.ShowBattleMsg (this, "waiting");
 	//	ActionFinished ();
 		if ( pUnitData!= null ) {
-			pUnitData.ActionFinished();
+			pUnitData.Waiting();
 		}
+
+	}
+
+	public void ActionWeakup( )
+	{
 
 	}
 
@@ -690,29 +722,33 @@ public class Panel_unit : MonoBehaviour {
 
 		//List< cHitResult>  resPool = BattleManager.Instance.CalAttackResult( Ident() , TarIdent );
 
-		//===========================================================
-		ActionManager.Instance.ExecActionHitResult ( CurAction );			// this is very import . all preform and data modify here!!
-		//===========================================================
+
 //		bIsAtking = false;
 //		TarIdent = 0;
 		TweenPosition tw = TweenPosition.Begin< TweenPosition >( this.gameObject , 0.3f ); // always move back to start pos
-		if( tw != null )
-		{
+		if (tw != null) {
 			//tw.from = vOrg;
-			tw.SetStartToCurrentValue();
-			Debug.LogFormat("ActionHit from {0} , {1} ,loc Pos {2} , {3}  ", tw.from.x, tw.from.y , transform.localPosition.x ,  transform.localPosition.y );
-			tw.to	= vTar;
-			Debug.LogFormat("ActionHit to {0} , {1} ,loc  {2} , {3}  ", tw.to.x, tw.to.y , Loc.X , Loc.Y );
+			tw.SetStartToCurrentValue ();
+			Debug.LogFormat ("ActionHit from {0} , {1} ,loc Pos {2} , {3}  ", tw.from.x, tw.from.y, transform.localPosition.x, transform.localPosition.y);
+			tw.to = vTar;
+			Debug.LogFormat ("ActionHit to {0} , {1} ,loc  {2} , {3}  ", tw.to.x, tw.to.y, Loc.X, Loc.Y);
 			//tw.onFinished.Clear();
-			MyTool.TweenSetOneShotOnFinish( tw , OnTwAtkEnd ); // for once only
+			MyTool.TweenSetOneShotOnFinish (tw, OnTwAtkEnd); // for once only
 			//tw.SetOnFinished(  OnTwAtkEnd ) ;
 			//tw.Play();
-		}
+		} else {
+			//===========================================================
+			ActionManager.Instance.ExecActionHitResult ( CurAction );			// this is very import . all preform and data modify here!!
+			//===========================================================
 
+		}
 	}
 	public void OnTwAtkEnd( )
 	{
 		// move to loc pos
+		//===========================================================
+		ActionManager.Instance.ExecActionHitResult ( CurAction );			// this is very import . all preform and data modify here!!
+		//===========================================================
 
 		transform.localPosition =  MyTool.SnyGridtoLocalPos(Loc.X , Loc.Y , ref GameScene.Instance.Grids );
 
@@ -876,23 +912,27 @@ public class Panel_unit : MonoBehaviour {
 	}
 
 
-	public List< Panel_unit  > GetPKUnitPool( bool bCanPK )
+//	public List< Panel_unit  > GetPKUnitPool( bool bCanPK )
+//	{
+//		List< Panel_unit  > pool = new List< Panel_unit  >();
+//
+//
+//		return pool;
+//	}
+//
+//	public List<iVec2 > GetPKPosPool( bool bCanPK )
+//	{
+//		List< iVec2  > pool = new List< iVec2  >();
+//		List< Panel_unit  > unitpool = GetPKUnitPool (bCanPK);
+//
+//		
+//		return pool;
+//	}
+
+	public int Dist( Panel_unit  unit ) 	
 	{
-		List< Panel_unit  > pool = new List< Panel_unit  >();
-
-
-		return pool;
+		return this.Loc.Dist (unit.Loc);
 	}
-
-	public List<iVec2 > GetPKPosPool( bool bCanPK )
-	{
-		List< iVec2  > pool = new List< iVec2  >();
-		List< Panel_unit  > unitpool = GetPKUnitPool (bCanPK);
-
-		
-		return pool;
-	}
-
 	// enemy use
 	public void RunAI( )
 	{
@@ -920,61 +960,101 @@ public class Panel_unit : MonoBehaviour {
 			//	GameScene.Instance.Grids.ClearIgnorePool();
 
 				//GameScene.Instance.Grids.AddIgnorePool(  GetPKPosPool(  true )  ); // need check camp
-
-				// 目標 周圍 不可以站人
-				//GameScene.Instance.Grids.AddIgnorePool( pair.Key.Loc.AdjacentList()  );
-		//		foreach( iVec2 p in pair.Key.Loc.AdjacentList() )
-		//		{
-		//			if( Panel_StageUI.Instance.CheckIsEmptyPos( p ) == false  ){
-		//				GameScene.Instance.Grids.AddIgnorePos( p );
-		//			}
-		//		}
+				List< iVec2 > nearList = pair.Key.Loc.AdjacentList(); // the 4 pos can't stand ally
+				Dictionary< iVec2 , int > distpool = new Dictionary< iVec2 , int >();
+				foreach( iVec2 v in nearList ){
+					if( Panel_StageUI.Instance.CheckIsEmptyPos( v ) == true ){// 目標 周圍 不可以站人
+						distpool.Add(v , v.Dist( Loc ) );
+					}
+				}
+				// start try each vaild pos
+				nDist = pair.Value;
 				iVec2 last = null;
+
+				var itemsdist = from pair2 in distpool orderby pair2.Value ascending select pair2;
+				foreach (KeyValuePair<iVec2 , int> pair2 in itemsdist)
+				{
+					nDist = pair.Value; // try other
+					last = null;
+
+					List< iVec2> path = Panel_StageUI.Instance.PathFinding( this  , this.Loc , pair2.Key , 999  ); // get a vaild path to run
+					
+					// limit out side
+					path = MyTool.CutList<iVec2>( path ,nMove  );
+					
+					// avoid stand on invalid pos
+					while( path.Count > 0 )
+					{
+						last = path[path.Count-1];
+						if ( Panel_StageUI.Instance.CheckIsEmptyPos( last ) == false ) 
+						{
+							path.RemoveAt( path.Count-1 ); // then go again
+							
+						}
+						else
+						{
+							// success
+							pathfind = path; 
+							// check if last pos is attack able pos
+							ActionManager.Instance.CreateMoveAction( Ident() , last.X , last.Y );	
+
+							
+							if (Config.GOD == true) {
+								Panel_StageUI.Instance.CreatePathOverEffect (pathfind); // draw path
+							}
+
+
+							break;
+						}
+					}
+					if( last != null ){
+						nDist = last.Dist ( pair.Key.Loc);  // final dist
+						break;
+					}
+					else {
+						nDist = -1 ; // can't find
+					}
+
+
+
+
+				}
+
+
+
+			//	iVec2 last = null;
 				// start pathfind
-				List< iVec2> path = Panel_StageUI.Instance.PathFinding( this  , this.Loc , pair.Key.Loc , 999  ); // get a vaild path to run
-
-
-				// limit out side
-				path = MyTool.CutList<iVec2>( path ,nMove  );
-
-//				List<iVec2> cutpath = new List<iVec2> ();
-//				int c = 0;
-//				foreach( iVec2 v in path)
+//				List< iVec2> path = Panel_StageUI.Instance.PathFinding( this  , this.Loc , pair.Key.Loc , 999  ); // get a vaild path to run
+//
+//				// limit out side
+//				path = MyTool.CutList<iVec2>( path ,nMove  );
+//
+//				// avoid stand on invalid pos
+//				while( path.Count > 0 )
 //				{
-//					//iVec2 pos = new iVec2( pt.X-hW , pt.Y -hH );
-//					cutpath.Add( v );
-//					if( ++c >= nMove  )
+//					last = path[path.Count-1];
+//					if ( Panel_StageUI.Instance.CheckIsEmptyPos( last ) == false ) 
 //					{
+//						path.RemoveAt( path.Count-1 ); // then go again
+//
+//					}
+//					else
+//					{
+//						// success
+//						pathfind = path; 
+//						// check if last pos is attack able pos
+//						ActionManager.Instance.CreateMoveAction( Ident() , last.X , last.Y );	
 //						break;
 //					}
 //				}
-//				path = cutpath;
+//				if( last != null ){
+//					nDist = last.Dist ( pair.Key.Loc);  // final dist
+//				}
+//				else {
+//					nDist = -1 ; // can't find
+//				}
 
 
-				// avoid stand on invalid pos
-				while( path.Count > 0 )
-				{
-					last = path[path.Count-1];
-					if ( Panel_StageUI.Instance.CheckIsEmptyPos( last ) == false ) 
-					{
-						path.RemoveAt( path.Count-1 ); // then go again
-
-					}
-					else
-					{
-						// success
-						pathfind = path; 
-						// check if last pos is attack able pos
-						ActionManager.Instance.CreateMoveAction( Ident() , last.X , last.Y );	
-						break;
-					}
-				}
-				if( last != null ){
-					nDist = last.Dist ( pair.Key.Loc);  // final dist
-				}
-				else {
-					nDist = -1 ; // can't find
-				}
 			}
 //			int nDist = Loc.Dist (pair.Key.Loc);
 //			if (nDist > 4 ) {
@@ -987,10 +1067,7 @@ public class Panel_unit : MonoBehaviour {
 			// send attack
 
 			if ( nDist >=0 && nDist<= 1) {
-				Panel_StageUI.Instance.MoveToGameObj(pair.Key.gameObject);  // move to def 
-
 				ActionManager.Instance.CreateAttackCMD( Ident (), pair.Key.Ident (), 0); // create Attack CMD . need battle manage to run
-				//ActionManager.Instance.CreateAttackAction (Ident (), pair.Key.Ident (), 0);
 			}
 			else{
 				//  can't attavk . waiting only 
@@ -1010,7 +1087,7 @@ public class Panel_unit : MonoBehaviour {
 	int	   nTweenMoveCount	= 0;		// check move is done
 	public  void OnTweenNotifyMoveEnd(  )
 	{
-		bIsMoving = false;
+		bIsMoving = false; 
 		nTweenMoveCount--;
 		if (nTweenMoveCount < 0)
 			nTweenMoveCount = 0;

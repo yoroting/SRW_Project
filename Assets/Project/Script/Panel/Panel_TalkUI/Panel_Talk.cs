@@ -16,6 +16,8 @@ public class Panel_Talk : MonoBehaviour {
 	//public GameObject StartButton;
 	private Dictionary<int, SRW_TextBox> m_idToObj; // 管理 產生的 Prefab 物件 
 
+	private int nLastPopType;			// for auto pop box
+
 	STAGE_TALK m_cStageTalk;				// talk data class
 
 
@@ -175,7 +177,7 @@ public class Panel_Talk : MonoBehaviour {
 					boxobj.ChangeLayout( nType );
 				}
 				m_idToObj.Add( nType , boxobj );
-
+				nLastPopType = nType;
 				return boxobj ;
 			}
 
@@ -213,9 +215,11 @@ public class Panel_Talk : MonoBehaviour {
 			nType = 1;
 		}
 		else{ // auto destory 0 . and create
-			CloseBox( 0 , 0 );
-			nType = 0;
+
+			nType = (nLastPopType==0)?1:0; 
+			CloseBox( nType , 0 );
 		}
+		nLastPopType = nType;
 		// create plane
 		GameObject obj = ResourcesManager.CreatePrefabGameObj (this.gameObject, "Prefab/SRW_TEXTBOX");
 		if( obj )
@@ -473,6 +477,19 @@ public class Panel_Talk : MonoBehaviour {
 
 	public void CharEnd( int nCharID  )
 	{
+		 // 0 = close all
+		if (nCharID == 0) {
+			foreach( KeyValuePair < int ,SRW_TextBox > pair in m_idToObj )
+			{
+				if( pair.Value != null )
+				{
+					NGUITools.Destroy( pair.Value.gameObject );
+				}
+			}
+			m_idToObj.Clear();
+			return;
+		}
+
 		foreach( KeyValuePair < int ,SRW_TextBox > pair in m_idToObj )
 		{
 			if( pair.Value != null )

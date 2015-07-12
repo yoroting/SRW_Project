@@ -26,6 +26,8 @@ public enum _ACTION
 
 	_DROP,		// Get Grop
 	_LVUP,		// level up action
+	_WEAKUP,	// round end . weak up	
+	_ITEM,		// Get Item
 
 	// MOB use cmd
 	_CMD_ATK,
@@ -225,6 +227,15 @@ public partial class ActionManager
 		return  act;
 	}
 
+	public uAction CreateWeakUpAction( int nAtkIdent  )
+	{
+		uAction act = CreateAction (nAtkIdent, _ACTION._WEAKUP);
+		if( act != null )  {
+
+		}
+		return  act;
+	}
+
 	public uAction CreateCastAction( int nAtkIdent , int nSkillID )
 	{
 		uAction act = CreateAction (nAtkIdent, _ACTION._CAST);
@@ -253,7 +264,7 @@ public partial class ActionManager
 					}
 				}
 
-				caster.DoSkillCastEffect( ref act.HitResult  );
+				caster.DoCastEffect( ref act.HitResult  );
 			}
 
 		}

@@ -220,6 +220,34 @@ public class Panel_UnitInfo : MonoBehaviour {
 	}
 	void UpdateItem()
 	{
+		MyTool.DestoryGridItem ( ItemGrid );
+		foreach (int itemid in pUnitData.Items) {
+			if( itemid <= 0 )
+				continue;
+
+			GameObject go = ResourcesManager.CreatePrefabGameObj( ItemGrid , "Prefab/Skill_simple" ); 
+			if( go == null )
+				continue;
+			
+			UIEventListener.Get(go).onClick += OnItemClick; // 
+			
+			
+			Skill_Simple obj = go.GetComponent<Skill_Simple >();
+			if( obj != null ){
+				obj.nID = itemid;
+				obj.nType = 2; // 2 is item
+				MyTool.SetLabelText( obj.lblName , MyTool.GetItemName( itemid ) );
+			}
+	
+
+			//ITEM_MISC item = ConstDataManager.
+
+
+		}
+//		int item0 = pUnitData.Items[ (int)_ITEMSLOT._SLOT0  ]; 
+//		int item1 = pUnitData.Items[ (int)_ITEMSLOT._SLOT1  ]; 
+
+
 
 	}
 	void UpdateFate()

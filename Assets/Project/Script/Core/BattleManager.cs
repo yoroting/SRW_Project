@@ -82,7 +82,7 @@ public partial class BattleManager
 
 		nDropMoney = 0;
 		nDropExpPool = new Dictionary< int , int >();
-
+		nDropItemPool = new List<int>();
 	//	bIsBattle = false;
 		//this.GetAudioClipFunc = getAudioClipFunc;
 	//	UnitPool = new Dictionary< int , UNIT_DATA >();
@@ -318,10 +318,7 @@ public partial class BattleManager
 			{
 
 				pAtkAction.AddHitResult(  CalAttackResult( nAtkerID , nDeferID , IsDefMode() ) ) ;
-				if( nAtkerSkillID > 0 ){
-					pAtkAction.AddHitResult( CalSkillHitResult(  Atker , Defer  , nAtkerSkillID ) );
-				}
-				Atker.Buffs.OnHit( Defer , ref pAtkAction.HitResult );
+				pAtkAction.AddHitResult( CalSkillHitResult(  Atker , Defer  , nAtkerSkillID ) );
 
 
 				int nTarX = this.nTarGridX;
@@ -346,10 +343,10 @@ public partial class BattleManager
 					ShowDefAssist( unit.n_Ident , false );
 
 					pAtkAction.AddHitResult(  CalAttackResult( nAtkerID , unit.n_Ident ) ) ;
-					if( nAtkerSkillID > 0 ){
-						pAtkAction.AddHitResult( CalSkillHitResult(  Atker , unit  , nAtkerSkillID ) );
-					}
-					Atker.Buffs.OnHit( unit , ref pAtkAction.HitResult );
+					//if( nAtkerSkillID > 0 ){
+					pAtkAction.AddHitResult( CalSkillHitResult(  Atker , unit  , nAtkerSkillID ) );
+					//}
+					//Atker.Buffs.OnHit( unit , ref pAtkAction.HitResult );
 				}
 			}
 			//should cal atk hit result for performance
@@ -367,8 +364,11 @@ public partial class BattleManager
 				if(  defskill != null ){
 					nRange = defskill.n_RANGE;
 				}
-				if( iVec2.Dist(Atker.n_X,Atker.n_Y,Defer.n_X,Defer.n_Y ) <= nRange ){
-					bCanCounter = true;
+				if( Defer.IsStates( _UNITSTATE._DEAD ) == false )
+				{
+					if( iVec2.Dist(Atker.n_X,Atker.n_Y,Defer.n_X,Defer.n_Y ) <= nRange ){
+						bCanCounter = true;
+					}
 				}
 			}
 
@@ -394,10 +394,8 @@ public partial class BattleManager
 
 				if (pCountAct != null) {
 					pCountAct.AddHitResult( CalAttackResult( nDeferID , nAtkerID , false ) ); // must not def at this time
-					if( nDeferSkillID > 0 ){
-						pCountAct.AddHitResult( CalSkillHitResult( Defer,  Atker , nDeferSkillID ) );
-					}
-					Defer.Buffs.OnHit( Atker , ref pCountAct.HitResult );
+					pCountAct.AddHitResult( CalSkillHitResult( Defer,  Atker , nDeferSkillID ) );
+//					Defer.Buffs.OnHit( Atker , ref pCountAct.HitResult );
 				}
 
 				GetAffectPool( Defer , nAtkerID , Defer.FightAttr.SkillID , 0 , 0 , ref DefAffectPool );
@@ -415,10 +413,10 @@ public partial class BattleManager
 					
 					pCountAct.AddHitResult(  CalAttackResult( nDeferID , unit.n_Ident ) ) ;
 
-					if( nDeferSkillID > 0 ){
-						pCountAct.AddHitResult( CalSkillHitResult( Defer,  unit , nDeferSkillID ) );
-					}
-					Defer.Buffs.OnHit( unit , ref pCountAct.HitResult );
+					//if( nDeferSkillID > 0 ){
+					pCountAct.AddHitResult( CalSkillHitResult( Defer,  unit , nDeferSkillID ) );
+					//}
+					//Defer.Buffs.OnHit( unit , ref pCountAct.HitResult );
 				}
 
 				//				Panel_unit unitDef = Panel_StageUI.Instance.GetUnitByIdent( nDeferID );
@@ -443,6 +441,7 @@ public partial class BattleManager
 
 				int nExp=0;
 				int nMoney=0;
+
 				CalDropResult( Atker , Defer , ref nExp , ref nMoney );
 				foreach( cUnitData unit in AtkAffectPool ){
 					CalDropResult( Atker , unit , ref nExp ,ref nMoney );
@@ -549,7 +548,7 @@ public partial class BattleManager
 
 					}
 					pAct.AddHitResult(  CalSkillHitResult( Atker, Defer , nAtkerSkillID ) ) ;
-					Atker.Buffs.OnHit( Defer , ref pAct.HitResult );
+					//Atker.Buffs.OnHit( Defer , ref pAct.HitResult );
 				}
 
 				// Affect pool
@@ -568,7 +567,7 @@ public partial class BattleManager
 						pAct.AddHitResult( CalAttackResult( nAtkerID , unit.n_Ident , true ) );
 					}
 					pAct.AddHitResult(  CalSkillHitResult( Atker, unit , nAtkerSkillID ) ) ;
-					Atker.Buffs.OnHit( unit , ref pAct.HitResult );
+					//Atker.Buffs.OnHit( unit , ref pAct.HitResult );
 				}
 
 				//pAct.AddHitResult( CalSkillHitResult( nAtkerID, nTarGridX , nTarGridY , nAtkerSkillID ) );
@@ -634,10 +633,19 @@ public partial class BattleManager
 
 
 	//drop after dead event complete
-	public void ProcessDrop()
+	public bool ProcessDrop()
 	{
-		if ( nDropMoney == 0 && nDropExpPool.Count == 0)
-			return;
+		if (nDropMoney == 0 && nDropExpPool.Count == 0) {
+			// drop item
+			if( nDropItemPool.Count > 0 )
+			{
+				int itemid = nDropItemPool[0];
+				string str = "獲得 " + MyTool.GetItemName( itemid );
+				nDropItemPool.RemoveAt(0);
+				ShowBattleMsg( 0 , str );
+				return true ;
+			}
+		}
 
 		foreach( KeyValuePair<int , int> pair in nDropExpPool )
 		{
@@ -648,8 +656,11 @@ public partial class BattleManager
 	//		ActionManager.Instance.CreateDropAction( 0 , 0 , nDropMoney );
 	//	}
 		nDropMoney = 0;
-		nDropExpPool.Clear ();
-
+		if( nDropExpPool.Count > 0  ){
+			nDropExpPool.Clear ();
+			return true;
+		}
+		return false;
 	}
 
 	//===================================================
@@ -679,7 +690,7 @@ public partial class BattleManager
 
 	public int nDropMoney{ get; set; } 		// drop money
 	public Dictionary< int , int > nDropExpPool;
-
+	public List<int>			nDropItemPool;
 	//===================================================
 //	SKILL	AtkerSkill = null;
 //	SKILL	DeferSkill = null;
@@ -829,7 +840,9 @@ public partial class BattleManager
 		//Panel_StageUI.Instance.TilePlaneObj.transform.localPosition;
 
 
-		GameObject go = ResourcesManager.CreatePrefabGameObj ( Panel_StageUI.Instance.MaskPanelObj , "Prefab/BattleValue" );
+		//GameObject go = ResourcesManager.CreatePrefabGameObj ( Panel_StageUI.Instance.MaskPanelObj , "Prefab/BattleValue" );
+		GameObject go = Panel_StageUI.Instance.SpwanBattleValueObj ();
+
 		//string path = "Prefab/BattleValue";
 		//GameObject go = ResourcesManager.CreatePrefabGameObj ( obj , path );
 		//GameObject go = GameSystem.PlayFX ( unit.gameObject , fx  );
@@ -1017,10 +1030,19 @@ public partial class BattleManager
 
 				exp = (exp*4)+20;
 				money  = 1000;
+
+				// check drop item
+				if( Defer.cCharData.n_ITEM_DROP  > 0 ){
+					nDropItemPool.Add( Defer.cCharData.n_ITEM_DROP );
+				}
+
 			}
 		}
 		nExp 	+= exp ; 
 		nMoney 	+= money;
+
+
+
 	}
 
 	// cal result of castout hit
@@ -1031,14 +1053,17 @@ public partial class BattleManager
 			return null;
 		List<cHitResult> resPool = new List<cHitResult> ();
 		//resPool.Add ( new cHitResult( cHitResult._TYPE._HIT ,pAtker   ) ); // not a really hit
-		SKILL Skill = pAtker.FightAttr.SkillData.skill;
+	//	SKILL Skill = pAtker.FightAttr.SkillData.skill;
 
 	//	if (Skill.n_TARGET == 0 ) { // self cast a buff
 			// hit result
 
 //		MyTool.DoSkillEffect( pAtker , pAtker.FightAttr.HitPool , Skill.s_CAST_TRIG ,  pAtker.FightAttr.HitEffPool , ref resPool  );
-		pAtker.DoSkillHitEffect (pDefer , ref resPool );
+		pAtker.DoHitEffect(pDefer , ref resPool );
+		if (pDefer != null) {
+			pDefer.DoBeHitEffect( pAtker , ref resPool );
 
+		}
 		//	MyScript.Instance.RunSkillEffect ( pAtker , null , pAtker.FightAttr.Skill.s_HIT_EFFECT , ref resPool ); // bad frame work
 
 
@@ -1079,6 +1104,10 @@ public partial class BattleManager
 		float fAtkFactor = 1.0f;
 		float fDedFactor = 1.0f;
 
+		//float fAtkBurst  = 1.0f + pAtker.GetMulBurst ();
+		//float fDefDamage = 1.0f + pDefer.GetMulDamage ();
+
+
 		SKILL AtkerSkill = pAtker.FightAttr.SkillData.skill;
 		SKILL DeferSkill = pDefer.FightAttr.SkillData.skill;
 
@@ -1113,14 +1142,14 @@ public partial class BattleManager
 		float AtkPow =  fAtkPowFactor*(pAtker.GetPow() + AtkPowPlus);
 		float DefPow =  fDefPowFactor*(pDefer.GetPow() + DefPowPlus);
 
-		int PowDmg = (int)(HitRate*(AtkPow-DefPow)); // 
+		int PowDmg = (int)(HitRate*(AtkPow-DefPow) ); // 
 
 		if( PowDmg > 0 ){
-			nDefHp -= PowDmg;
+			nDefHp -= (int)(PowDmg * pAtker.GetMulBurst() * pDefer.GetMulDamage() );
 	
 		}
 		else if( PowDmg < 0 ){
-			nAtkHp = PowDmg; // it is neg value already
+			nAtkHp += (int)(PowDmg * pDefer.GetMulBurst() * pAtker.GetMulDamage() ); // it is neg value already
 		}
 
 
@@ -1130,13 +1159,14 @@ public partial class BattleManager
 
 		float fAtkDmg 	= (HitRate*Atk) - DefAC  ; 
 
-
-
 		fAtkDmg = (fAtkDmg<0)? 0: fAtkDmg;
 		if( bDefMode )
 		{
 			fAtkDmg = (fAtkDmg*Config.DefReduce /100.0f);
 		}
+
+		// 加成
+		fAtkDmg = fAtkDmg * pAtker.GetMulBurst () * pDefer.GetMulDamage ();
 
 		nDefHp -= (int)(fAtkDmg);
 
@@ -1145,7 +1175,7 @@ public partial class BattleManager
 //		res.DefHp = nDefHp;
 		if( nAtkHp != 0 ){
 			resPool.Add ( new cHitResult( cHitResult._TYPE._HP ,nAtker , nAtkHp  ) );
-			if( nAtkHp < 0 && (pAtker.n_HP < Math.Abs(nAtkHp) ) ){
+			if( nAtkHp < 0 && ( (pAtker.n_HP+pAtker.n_DEF) < Math.Abs(nAtkHp) ) ){
 				pDefer.AddStates( _UNITSTATE._KILL );
 				pAtker.AddStates( _UNITSTATE._DEAD );
 			}
@@ -1154,7 +1184,7 @@ public partial class BattleManager
 		// 
 		resPool.Add ( new cHitResult( cHitResult._TYPE._HP ,nDefer , nDefHp  ) );
 
-		if( nDefHp < 0 && (pDefer.n_HP < Math.Abs(nDefHp) ) ){
+		if( nDefHp < 0 && ( (pDefer.n_HP+pDefer.n_DEF) < Math.Abs(nDefHp) ) ){
 			pAtker.AddStates( _UNITSTATE._KILL );
 			pDefer.AddStates( _UNITSTATE._DEAD );  // dead
 		}

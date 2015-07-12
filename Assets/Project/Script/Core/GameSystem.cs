@@ -109,6 +109,13 @@ public class GameSystem : MonoBehaviour {
 			MyTool.fScnRatio = (float)mRoot.activeHeight / Screen.height;
 		}
 
+
+
+#if DEBUG && UNITY_EDITOR
+		//GameDataManager.Instance.nStoryID = 2;
+#endif
+
+
 	}
 	
 	void Start()

@@ -37,7 +37,15 @@ public class cBuffData
 		ConditionEffectPool = MyScript.Instance.CreateEffectPool ( buff.s_CONDITIONAL_BUFF );
 		Condition 			 = MyScript.Instance.CreateEffectCondition ( buff.s_BUFF_CONDITON );
 		EffectPool 		 = MyScript.Instance.CreateEffectPool ( buff.s_CONSTANT_BUFF );
-		
+
+		foreach (cEffect eft in ConditionEffectPool) {
+			eft.SetBaseParam( skillid ,  nID);
+		}
+
+		foreach (cEffect eft in EffectPool) {
+			eft.SetBaseParam( skillid ,  nID);
+		}
+
 //		CancelCondition	 = MyScript.Instance.CreateEffectCondition ( buff.s_BUFF_CANCEL );
 
 	}
@@ -169,7 +177,7 @@ public class cBuffs
 	}
 
 
-	public bool DelBuff( int nBuffID ){
+	public bool DelBuff( int nBuffID , bool DelAll = false ){
 		BUFF buff = ConstDataManager.Instance.GetRow< BUFF > ( nBuffID );
 		if (buff == null)
 			return false;
@@ -178,7 +186,10 @@ public class cBuffs
 
 			if( data.nID ==  nBuffID ){
 				Owner.SetUpdate ( cAttrData._BUFF );
-				Pool.Remove( buff.n_STACK );
+				if( (DelAll==true) ||  --data.nNum <= 0 )
+				{
+					Pool.Remove( buff.n_STACK );
+				}
 				return true;
 			}
 		}
@@ -252,7 +263,7 @@ public class cBuffs
 					unit = unit_e;
 				}
 				// check buff end
-				if( pair.Value.CancelCondition.Check( this.Owner , unit ) )
+				if( pair.Value.CancelCondition.Check( this.Owner , unit , pair.Value.nSkillID , pair.Value.nID ) )
 				{				
 					RemoveList.Add( pair.Key );
 				}
@@ -319,7 +330,7 @@ public class cBuffs
 				unit = unit_e;
 			}
 			//if( MyScript.Instance.CheckSkillCond( pair.Value.tableData.s_BUFF_CONDITON , this.Owner , unit_e ) == true )
-			if( pair.Value.Condition.Check( this.Owner , unit ) )
+			if( pair.Value.Condition.Check( this.Owner , unit , pair.Value.nSkillID , pair.Value.nID ) )
 			{
 				foreach( cEffect eft in pair.Value.ConditionEffectPool )
 				{
@@ -332,7 +343,80 @@ public class cBuffs
 		}
 	}
 
+	public void OnDo(  cUnitData unit_e , ref List< cHitResult > resPool )
+	{
+		if (Pool.Count == 0)
+			return;
+		foreach( KeyValuePair< int , cBuffData > pair in Pool )
+		{
+			// normal 
+			foreach( cEffect eft in pair.Value.EffectPool )
+			{
+				if( eft != null )
+				{
+					eft._Do( Owner , unit_e , ref resPool );
+				}
+			}
+			cUnitData unit = null ;
+			if( pair.Value.nTargetIdent > 0 ){
+				unit = GameDataManager.Instance.GetUnitDateByIdent ( pair.Value.nTargetIdent );
+			}
+			else {
+				unit = unit_e;
+			}
+
+			// condition
+			if( pair.Value.Condition.Check( Owner , unit , pair.Value.nSkillID , pair.Value.nID ) )
+			{
+				foreach( cEffect eft in pair.Value.ConditionEffectPool )
+				{
+					if( eft != null )
+					{
+						eft._Do( Owner , unit , ref resPool );
+					}
+				}
+			}
+		}
+	}
 	// on hit event
+
+	public void OnCast(  cUnitData unit_e , ref List< cHitResult > resPool )
+	{
+		if (Pool.Count == 0)
+			return;
+		// normal hit
+		foreach( KeyValuePair< int , cBuffData > pair in Pool )
+		{
+			// normal 
+			foreach( cEffect eft in pair.Value.EffectPool )
+			{
+				if( eft != null )
+				{
+					eft._Hit( Owner , unit_e , ref resPool );
+				}
+			}
+			// condition
+			cUnitData unit = null ;
+			if( pair.Value.nTargetIdent > 0 ){
+				unit = GameDataManager.Instance.GetUnitDateByIdent ( pair.Value.nTargetIdent );
+			}
+			else {
+				unit = unit_e;
+			}
+
+			if( pair.Value.Condition.Check( Owner , unit , pair.Value.nSkillID , pair.Value.nID ) )
+			{
+				foreach( cEffect eft in pair.Value.ConditionEffectPool )
+				{
+					if( eft != null )
+					{
+						eft._Hit( Owner , unit , ref resPool );
+					}
+				}
+			}
+		}
+	}
+
 	public void OnHit(  cUnitData unit_e , ref List< cHitResult > resPool )
 	{
 		if (Pool.Count == 0)
@@ -345,22 +429,69 @@ public class cBuffs
 			{
 				if( eft != null )
 				{
-					eft._OnHit( Owner , unit_e , ref resPool );
+					eft._Hit( Owner , unit_e , ref resPool );
 				}
 			}
+
 			// condition
-			if( pair.Value.Condition.Check( Owner , unit_e ) )
+			cUnitData unit = null ;
+			if( pair.Value.nTargetIdent > 0 ){
+				unit = GameDataManager.Instance.GetUnitDateByIdent ( pair.Value.nTargetIdent );
+			}
+			else {
+				unit = unit_e;
+			}
+
+			if( pair.Value.Condition.Check( Owner , unit , pair.Value.nSkillID , pair.Value.nID ) )
 			{
 				foreach( cEffect eft in pair.Value.ConditionEffectPool )
 				{
 					if( eft != null )
 					{
-						eft._OnHit( Owner , unit_e , ref resPool );
+						eft._Hit( Owner , unit , ref resPool );
 					}
 				}
 			}
 		}
+	}
 
+	public void OnBeHit(  cUnitData unit_e , ref List< cHitResult > resPool )
+	{
+		if (Pool.Count == 0)
+			return;
+		// normal hit
+		foreach( KeyValuePair< int , cBuffData > pair in Pool )
+		{
+			// normal 
+			foreach( cEffect eft in pair.Value.EffectPool )
+			{
+				if( eft != null )
+				{
+					eft._BeHit( Owner , unit_e , ref resPool );
+				}
+			}
+
+			// condition
+			cUnitData unit = null ;
+			if( pair.Value.nTargetIdent > 0 ){
+				unit = GameDataManager.Instance.GetUnitDateByIdent ( pair.Value.nTargetIdent );
+			}
+			else {
+				unit = unit_e;
+			}
+
+			if( pair.Value.Condition.Check( Owner , unit , pair.Value.nSkillID , pair.Value.nID ) )
+			{
+				foreach( cEffect eft in pair.Value.ConditionEffectPool )
+				{
+					if( eft != null )
+					{
+						eft._BeHit( Owner , unit , ref resPool );
+					}
+				}
+			}
+		}
+		
 	}
 
 	public bool CheckStatus( int nStatus ,ref int iValue , ref float fValue){
@@ -382,8 +513,17 @@ public class cBuffs
 			}
 
 			// condition
+			// condition
+			cUnitData unit = null ;
+			if( pair.Value.nTargetIdent > 0 ){
+				unit = GameDataManager.Instance.GetUnitDateByIdent ( pair.Value.nTargetIdent );
+			}
+			else {
+				unit = unit_e;
+			}
+
 			//if( MyScript.Instance.CheckSkillCond( pair.Value.tableData.s_BUFF_CONDITON , this.Owner , unit_e ) == true )
-			if( pair.Value.Condition.Check( this.Owner , unit_e ) )
+			if( pair.Value.Condition.Check( this.Owner , unit , pair.Value.nSkillID , pair.Value.nID ) )
 			{
 				foreach( cEffect eft in pair.Value.ConditionEffectPool )
 				{

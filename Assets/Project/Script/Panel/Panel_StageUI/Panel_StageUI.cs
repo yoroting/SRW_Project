@@ -50,6 +50,7 @@ public class Panel_StageUI : MonoBehaviour
 	public GameObject MoveEftObj; 	// 
 	public GameObject AtkEftObj; 	// 
 	public GameObject AoeEftObj; 	// 
+	public GameObject ValueEftObj; 	// 
 
 	Panel_unit TarceMoveingUnit; //  Trace the moving unit
 
@@ -126,7 +127,8 @@ public class Panel_StageUI : MonoBehaviour
 		MoveEftObj.CreatePool( st_CellObjPoolSize );
 		AtkEftObj.CreatePool( st_CellObjPoolSize );
 		AoeEftObj.CreatePool( st_CellObjPoolSize /4 );
-	
+
+		ValueEftObj.CreatePool( st_CellObjPoolSize / 10  );
 	}
 
 	public void RegeditGameEvent( bool bTrue )
@@ -144,7 +146,8 @@ public class Panel_StageUI : MonoBehaviour
 		
 		GameEventManager.AddEventListener(  StageDelUnitByIdentEvent.Name , OnStageDelUnitByIdentEvent );
 		
-		
+		GameEventManager.AddEventListener(  StageMoveToUnitEvent.Name , OnStageMoveToUnitEvent );
+
 		// char event 
 		GameEventManager.AddEventListener(  StageCharMoveEvent.Name , OnStageCharMoveEvent );
 	//	GameEventManager.AddEventListener(  StageUnitActionFinishEvent.Name , OnStageUnitActionFinishEvent );
@@ -174,7 +177,7 @@ public class Panel_StageUI : MonoBehaviour
 			
 			GameEventManager.RemoveEventListener(  StageDelUnitByIdentEvent.Name , OnStageDelUnitByIdentEvent );
 			
-			
+			GameEventManager.RemoveEventListener(  StageMoveToUnitEvent.Name , OnStageMoveToUnitEvent );
 			// char event 
 			GameEventManager.RemoveEventListener(  StageCharMoveEvent.Name , OnStageCharMoveEvent );
 			//		GameEventManager.RemoveEventListener(  StageUnitActionFinishEvent.Name , OnStageUnitActionFinishEvent );
@@ -441,6 +444,11 @@ public class Panel_StageUI : MonoBehaviour
 		AtkEftObj.SetActive( false ); 	// 
 		AoeEftObj.SetActive (false);
 
+		ValueEftObj.SetActive (false);
+//		if (BattleValue.nValueCount != 0) {
+//		}
+
+
 		Panel_CMDUnitUI.CloseCMDUI();
 		PanelManager.Instance.CloseUI( Panel_UnitInfo.Name );
 		PanelManager.Instance.CloseUI( Panel_MiniUnitInfo.Name );
@@ -513,7 +521,8 @@ public class Panel_StageUI : MonoBehaviour
 			return;
 
 		// check drop event
-		BattleManager.Instance.ProcessDrop ();
+		if (BattleManager.Instance.ProcessDrop () == true)
+			return;
 
 		//===================		// this will throw unit action or trig Event
 		if ( RunCampAI( GameDataManager.Instance.nActiveCamp ) == false )
@@ -522,7 +531,8 @@ public class Panel_StageUI : MonoBehaviour
 			GameDataManager.Instance.NextCamp();
 		}
 
-		//===================
+
+		//===================onchar
 
 		// startup panel when opening event done.
 		if( GameDataManager.Instance.nRound == 0 )
@@ -719,10 +729,18 @@ public class Panel_StageUI : MonoBehaviour
 			CreateMoveOverEffect (unit);
 			return;
 		}
+
 		else if (cCMD.Instance.eCMDSTATUS == _CMD_STATUS._WAIT_CMDID ){
-			Panel_CMDUnitUI.CloseCMDUI();
-			Panel_CMDUnitUI panel = Panel_CMDUnitUI.OpenCMDUI( _CMD_TYPE._ALLY , unit );			
-			CreateMoveOverEffect (unit);
+			if( cCMD.Instance.eCMDTYPE == _CMD_TYPE._WAITATK )
+			{
+				Panel_CMDUnitUI.CancelCmd (); // if have cms\d . cancel it
+			}
+			else{
+				Panel_CMDUnitUI.CloseCMDUI();
+				Panel_CMDUnitUI panel = Panel_CMDUnitUI.OpenCMDUI( _CMD_TYPE._ALLY , unit );			
+				CreateMoveOverEffect (unit);
+			}
+			return ;
 		}
 		else if (cCMD.Instance.eCMDSTATUS == _CMD_STATUS._WAIT_TARGET ){
 		//	Panel_CMDUnitUI panel = MyTool.GetPanel< Panel_CMDUnitUI >( PanelManager.Instance.JustGetUI( Panel_CMDUnitUI.Name ) ); 
@@ -746,7 +764,7 @@ public class Panel_StageUI : MonoBehaviour
 				}
 				ClearOverCellEffect ();
 			}
-
+			return ;
 		}
 
 
@@ -987,6 +1005,15 @@ public class Panel_StageUI : MonoBehaviour
 		return null;
 	}
 
+	public GameObject SpwanBattleValueObj( )
+	{
+		GameObject go = ValueEftObj.Spawn( MaskPanelObj.transform );
+		go.SetActive (true);
+		return go;
+	}
+
+
+
 	public void ClearOverCellEffect(  )
 	{
 		// clear eff
@@ -1191,8 +1218,16 @@ public class Panel_StageUI : MonoBehaviour
 
 	bool IsAnyActionRunning()
 	{
-		if (BattleMsg.nMsgCount > 0)
+		if(BattleMsg.nMsgCount > 0)
 			return true;
+
+		// this is very slow for play
+//		if(ValueEftObj.CountSpawned () > 0)
+//			return true; 
+
+		//IsAnyActionRunning
+	//	if( BattleValue.nValueCount > 0  ) // bug here!!
+	//		return true;
 
 //		if( PanelManager.Instance.CheckUIIsOpening( Panel_Talk.Name) == true )
 //			return true;
@@ -1553,8 +1588,8 @@ public class Panel_StageUI : MonoBehaviour
 
 			// set game data
 			unit.pUnitData.n_LeaderIdent = nLeaderIdent;
-			unit.pUnitData.n_X			 = x;
-			unit.pUnitData.n_Y			 = y;
+		//	unit.pUnitData.n_X			 = x;
+		//	unit.pUnitData.n_Y			 = y;
 		}
 		
 		// position // set in create
@@ -1924,7 +1959,8 @@ public class Panel_StageUI : MonoBehaviour
 		List< Panel_unit > lst = GetUnitListByCamp ( Evt.nCamp );
 		foreach( Panel_unit unit in lst )
 		{
-			unit.pUnitData.AddActionTime( 1 );
+			//unit.pUnitData.AddActionTime( 1 );
+			unit.pUnitData.WeakUp();
 			//unit.AddActionTime( 1 ); // al add 1 time to action
 		}
 	}
@@ -1992,7 +2028,7 @@ public class Panel_StageUI : MonoBehaviour
 			{
 				iVec2 last = path[path.Count -2 ];
 				ActionManager.Instance.CreateMoveAction( pAtkUnit.Ident() , last.X , last.Y );	
-				TraceUnit( pAtkUnit );
+				MoveToGameObj( pAtkUnit.gameObject , false );
 			}
 
 			// send move act
@@ -2004,9 +2040,36 @@ public class Panel_StageUI : MonoBehaviour
 		}
 
 		// send attack
-		Panel_StageUI.Instance.MoveToGameObj(pDefUnit.gameObject , false );  // move to def 
+		//Panel_StageUI.Instance.MoveToGameObj(pDefUnit.gameObject , false );  // move to def 
 		ActionManager.Instance.CreateAttackAction( pAtkUnit.Ident() , pDefUnit.Ident(), Evt.nAtkSkillID );
 		
+	}
+
+	public void OnStageMoveToUnitEvent(GameEvent evt)
+	{
+		//Debug.Log ("OnStagePopCharEvent");
+		StageMoveToUnitEvent Evt = evt as StageMoveToUnitEvent;
+		if (Evt == null)
+			return;
+		Panel_unit pAtkUnit = GetUnitByCharID (Evt.nAtkCharID);
+		Panel_unit pDefUnit = GetUnitByCharID (Evt.nDefCharID);
+		if (pAtkUnit == null || pDefUnit == null)
+			return;
+		int nDist = pAtkUnit.Loc.Dist (pDefUnit.Loc);
+		if (nDist > 1) {
+			
+			List< iVec2> path = GameScene.Instance.Grids.PathFinding( pAtkUnit.Loc , pDefUnit.Loc , 0  ); // no any block
+			//PathFinding
+			
+			if( path.Count > 2 )
+			{
+				iVec2 last = path[path.Count -2 ];
+				ActionManager.Instance.CreateMoveAction( pAtkUnit.Ident() , last.X , last.Y );	
+				MoveToGameObj( pAtkUnit.gameObject , false );
+			}
+			// move only
+			
+		}
 	}
 
 
@@ -2058,7 +2121,7 @@ public class Panel_StageUI : MonoBehaviour
 
 	}
 	// 
-	public List< iVec2> GetUnitPosList( )
+	public List< iVec2> GetAllUnitPosList( )
 	{
 		List< iVec2> lst = new List< iVec2> ();
 		foreach (KeyValuePair < int , Panel_unit > p in IdentToUnit) {
@@ -2068,7 +2131,7 @@ public class Panel_StageUI : MonoBehaviour
 		return lst;
 	}
 
-	public List< iVec2>  GetUnitPKPosPool( Panel_unit unit , bool bCanPK )
+	public List< iVec2>  GetUnitPKPosPool( Panel_unit unit , bool bCanPK  )
 	{
 
 		List< iVec2> lst = new List< iVec2> ();
@@ -2081,27 +2144,51 @@ public class Panel_StageUI : MonoBehaviour
 		return lst;
 	}
 
+//	public List< iVec2>  GetTarPosPKPosPool( Panel_unit unit , bool bCanPK  , int nTarX , int nTarY , int nDist = 0 )
+//	{
+//		List< iVec2> lst = new List< iVec2> ();
+//		foreach (KeyValuePair < int , Panel_unit > pair in IdentToUnit) {
+//			if( unit.CanPK( pair.Value ) == bCanPK )
+//			{
+//				lst.Add( pair.Value.Loc );
+//			}
+//		}		
+//		return lst;
+//
+//	}
 
 	public List< iVec2 > PathFinding( Panel_unit unit , iVec2 st , iVec2 ed , int nStep = 999)
 	{
 		// nStep = 999; // debug
 
 		List< iVec2 > path = null;
-		List< iVec2 > unitList =  GetUnitPosList();
+		//List< iVec2 > unitList =  GetUnitPosList();
 
 		// try the short path
-
+		//this.GetUnitPKPosPool (unit, true);
 
 		Grids.ClearIgnorePool();
-		Grids.AddIgnorePool (  unitList );  // all is block in first find
+		Grids.AddIgnorePool (  GetUnitPKPosPool( unit , true  ) );  // all is block in first find
+
+//		List< iVec2 > nearList = Grids.GetRangePool( ed , 1  ); // the 4 pos can't stand ally
+//		foreach( iVec2 pos in nearList ){
+//			if( CheckIsEmptyPos( pos ) == false ){
+//				Grids.AddIgnorePos( pos );
+//			}
+//		}
+
+		// avoid the end node have ally
+		//List< iVec2 > nearList =  GetUnitPKPosPool( unit , );
+
+
 		path = Grids.PathFinding( st , ed , nStep  );
 
-		if (path == null) {
-			Grids.ClearIgnorePool();
-			//Grids.AddIgnorePool ( GetUnitPosList() );  // only enemy is block in second find
-			Grids.AddIgnorePool( unit.GetPKPosPool( true ) ); //
-			path = Grids.PathFinding( st , ed , nStep  );
-		}
+//		if (path == null) {
+//			Grids.ClearIgnorePool();
+//			//Grids.AddIgnorePool ( GetUnitPosList() );  // only enemy is block in second find
+//			Grids.AddIgnorePool(  GetUnitPKPosPool( unit , true  ) ); //
+//			path = Grids.PathFinding( st , ed , nStep  );
+//		}
 
 		if (Config.GOD == true) {
 			CreatePathOverEffect (path); // draw path

@@ -134,6 +134,15 @@ public class StageRestorePosEvent: GameEvent {
 //		name = Name;		// important.  must have this line as key
 //	}
 //}
+public class StageMoveToUnitEvent: GameEvent {
+	public const string Name = "StageMoveToUnitEvent";
+	public int nAtkCharID = 0;
+	public int nDefCharID = 0;
+	
+	public StageMoveToUnitEvent(){
+		name = Name;		// important.  must have this line as key
+	}
+}
 
 // unit action finished
 public class StageWeakUpCampEvent: GameEvent {
@@ -202,4 +211,6 @@ public class StageBattleAttackEvent: GameEvent {
 		name = Name;		// important.  must have this line as key
 	}
 }
+
+
 

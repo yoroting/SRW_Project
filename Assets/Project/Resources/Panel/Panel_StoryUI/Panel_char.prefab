@@ -112,7 +112,7 @@ MonoBehaviour:
     height: 1
   mTexture: {fileID: 2800000, guid: 73793778b076d2248be3a1f2241efefd, type: 3}
   mMat: {fileID: 0}
-  mShader: {fileID: 4800000, guid: e75727d9555d9d14ca51d91908c681bc, type: 3}
+  mShader: {fileID: 4800000, guid: 11c2f14e1d5c8a5419cfbbf252527f0c, type: 3}
   mBorder: {x: 0, y: 0, z: 0, w: 0}
   mFixedAspect: 0
 --- !u!114 &11479754

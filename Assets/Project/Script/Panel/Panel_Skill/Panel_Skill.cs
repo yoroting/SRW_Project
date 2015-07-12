@@ -134,6 +134,8 @@ public class Panel_Skill : MonoBehaviour {
 			foreach( KeyValuePair< int , int > pair in pData.AbilityPool )
 			{
 				SKILL skl = ConstDataManager.Instance.GetRow< SKILL >( pair.Key ) ;
+				if( skl == null )
+					continue;
 				if( skl.n_SCHOOL > 0 ) // > 0 is school
 					continue;
 				if( skl.n_PASSIVE == 1 )

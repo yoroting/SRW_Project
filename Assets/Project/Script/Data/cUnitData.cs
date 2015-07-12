@@ -17,6 +17,12 @@ public enum _UNITSTATE
 	_KILL		,  //本次戰鬥有殺人
 }
 
+public enum _ITEMSLOT
+{
+	_SLOT0 = 0,
+	_SLOT1 ,
+	_SLOTMAX ,
+}
 
 // base attr
 public class cAttrData
@@ -25,7 +31,8 @@ public class cAttrData
 	public static int _INTSCH = 0;
 	public static int _EXTSCH = _INTSCH+1;
 	public static int _CHARLV = _EXTSCH+1;
-	public static int _BUFF   = _CHARLV+1;
+	public static int _ITEM   = _CHARLV+1;
+	public static int _BUFF   = _ITEM+1;
 	public static int _CONDBUFF   = _BUFF+1;
 	public static int _FIGHT   = _CONDBUFF+1;
 	public static int _MAX 	  = _FIGHT+1; // not use
@@ -144,18 +151,25 @@ public class cFightAttr : cAttrData
 	}
 };
 
+public class cUnitBaseData{
+	public int n_ID;
+}
+
 // current stage runtime data
 // All data store in this . buffcondition need this to check
 public class cUnitData{
 	public int nVersion=1;			// for save/load data
 
-	public int n_Ident;		// auto create by game system
-	public _CAMP eCampID;
+
 	public CHARS cCharData;
-	public int n_CharID;
 	public int n_Rank;		// max school lv
 
-	// save data
+	// save data will move to base data 
+	public int n_Ident;		// auto create by game system
+	public _CAMP eCampID;
+	public int n_CharID;
+	public int n_UpgradeFromCharID;			// 進階前的腳色ID
+
 	public int n_Lv;
 	public int n_EXP;
 	public int n_X;
@@ -167,8 +181,6 @@ public class cUnitData{
 	public int n_DEF;
 
 	public int [] nActSch;		// current use 
-	bool [] bUpdateFlag;
-
 
 	public int n_LeaderIdent;	// follow leader
 	public int n_BornX;			// born Pox
@@ -191,9 +203,14 @@ public class cUnitData{
 	//public cAttrData					BuffCondAttr;		// buff cond trig attr
 
 	public cBuffs						Buffs;				// all buffs of unit
-
+	public int []						Items;			// all buffs of unit
 
 	public int nActionTime;			//				行動次數
+
+
+	// no need save
+	bool [] bUpdateFlag;
+
 	public void ActionFinished(  ){
 		nActionTime--;		
 	}
@@ -213,7 +230,12 @@ public class cUnitData{
 		
 		Attr = new Dictionary< int , cAttrData > (); 
 		nActSch = new int []{0,0};
-		bUpdateFlag = new bool[]{ true,true,true,true } ;
+		bUpdateFlag = new bool[ cAttrData._MAX ] ;
+		for (int i=0; i <bUpdateFlag.Length; i++) {
+			bUpdateFlag[i] = true ;
+		}
+
+		Items = new int [ (int)_ITEMSLOT._SLOTMAX ];			// all buffs of unit
 
 		// special insert
 		FightAttr =   new cFightAttr ();
@@ -371,14 +393,13 @@ public class cUnitData{
 			if( nLv < lv ) // replace if more less lv
 			{
 				AbilityPool[ id ] = nLv;
-			}
-			
+			}			
 		}
 		else {
 			AbilityPool.Add(id , nLv );
 		}
 		// update both for save
-		AddSkill( id );
+//		AddSkill( id );
 
 		SetUpdate ( cAttrData._CHARLV ); // update with char lv
 	}
@@ -395,68 +416,82 @@ public class cUnitData{
 //			}
 			AbilityPool.Remove( id );
 
-			RemoveSkill( id );
+//			RemoveSkill( id );
 		}
 	}
 
+	public void LoadFromSaveData()
+	{
+
+	}
 
 	public void SetContData( CHARS cData )
 	{
 		//n_CharID = cData.n_ID;	
 		cCharData = cData;
 		if (n_CharID != cData.n_ID) {
-			Debug.LogErrorFormat( "cUnitData{0} set wrong SetContData{1}" ,n_CharID ,cData.n_ID );
+			Debug.LogErrorFormat ("cUnitData{0} set wrong SetContData{1}", n_CharID, cData.n_ID);
 		}
 		n_Rank = cData.n_RANK;
 		// set school;
 		SkillPool.Clear ();
 
-		cTextArray TA = new cTextArray (  );
+		cTextArray TA = new cTextArray ();
 		TA.SetText (cData.s_SCHOOL);
-		for( int i = 0 ; i < TA.GetMaxCol(); i++ )
-		{
-			CTextLine line  = TA.GetTextLine( i );
-			for( int j = 0 ; j < line.GetRowNum() ; j++ )
-			{
-				string s = line.m_kTextPool[ j ];
+		for (int i = 0; i < TA.GetMaxCol(); i++) {
+			CTextLine line = TA.GetTextLine (i);
+			for (int j = 0; j < line.GetRowNum(); j++) {
+				string s = line.m_kTextPool [j];
 
-				string [] arg = s.Split( ",".ToCharArray() );
-				if( arg[0] != null )
-				{
-					int school= int.Parse( arg[0] );
+				string [] arg = s.Split (",".ToCharArray ());
+				if (arg [0] != null) {
+					int school = int.Parse (arg [0]);
 					int lv = 1;
-					if( arg[1] != null )
-					{
-						lv = int.Parse( arg[1] );
+					if (arg [1] != null) {
+						lv = int.Parse (arg [1]);
 					}
-					SetSchool( school , lv  );
+					SetSchool (school, lv);
 				}
 			}
 		}
 		// set Ability
 		TA.SetText (cData.s_ABILITY);
-		for( int i = 0 ; i < TA.GetMaxCol(); i++ )
-		{
-			CTextLine line  = TA.GetTextLine( i );
-			for( int j = 0 ; j < line.GetRowNum() ; j++ )
-			{
-				string s = line.m_kTextPool[ j ];
+		for (int i = 0; i < TA.GetMaxCol(); i++) {
+			CTextLine line = TA.GetTextLine (i);
+			for (int j = 0; j < line.GetRowNum(); j++) {
+				string s = line.m_kTextPool [j];
 				
-				string [] arg = s.Split( ",".ToCharArray() );
-				if( arg[0] != null )
-				{
-					int ability= int.Parse( arg[0] );
+				string [] arg = s.Split (",".ToCharArray ());
+				if (arg [0] != null) {
+					int ability = int.Parse (arg [0]);
 					int lv = 1;
-					if( arg[1] != null )
-					{
-						lv = int.Parse( arg[1] );
+					if (arg [1] != null) {
+						lv = int.Parse (arg [1]);
 					}
-					SetAbility( ability , lv  );
+					SetAbility (ability, lv);
 					//SetSchool( school , lv  );
 				}
 			}
 		}
-		//Set Buff
+		//Set born Buff
+		if (cData.s_BUFF != "0" && cData.s_BUFF.ToUpper() != "NULL") {
+			string [] strBorn = cData.s_BUFF.Split(";".ToCharArray());
+			for( int i= 0 ; i <strBorn.Length; i++  )
+			{
+				int nBuffID = 0;
+				if( int.TryParse( strBorn[i] , out nBuffID ) ){
+					Buffs.AddBuff( nBuffID , n_Ident , 0 , 0 );
+				}
+			}
+		}
+
+		// set up item
+		if (cData.n_ITEM1 > 0) {
+			EquipItem( _ITEMSLOT._SLOT0 , cData.n_ITEM1 ) ;
+		} 
+		if (cData.n_ITEM2 > 0) {
+			EquipItem( _ITEMSLOT._SLOT1 , cData.n_ITEM2 ) ;
+		} 
 
 		// active school
 		ChangeSchool( cData.n_INT_SCHOOL );
@@ -510,6 +545,43 @@ public class cUnitData{
 		}
 	}
 
+	public bool CheckItemCanEquip( int nItemID )
+	{
+		ITEM_MISC newitem = ConstDataManager.Instance.GetRow< ITEM_MISC > ( nItemID );
+		if (newitem == null) {
+			return false;
+		}
+		// check gender
+
+		//check lv
+
+
+		return true;
+	}
+
+	public int EquipItem( _ITEMSLOT slot, int nItemID )
+	{
+		if (slot >= _ITEMSLOT._SLOTMAX)
+			return 0; 
+		int nOldItemID = Items [(int)slot];
+		ITEM_MISC olditem = ConstDataManager.Instance.GetRow< ITEM_MISC > ( nOldItemID );
+		if ( olditem != null) {
+			Buffs.DelBuff( olditem.n_ID_BUFF );
+		}
+
+
+		// replace 
+		Items [(int)slot] = nItemID;
+		ITEM_MISC newitem = ConstDataManager.Instance.GetRow< ITEM_MISC > ( nItemID );
+		if ( newitem != null) {
+			Buffs.AddBuff( newitem.n_ID_BUFF , this.n_Ident , 0 , 0 );
+		}
+
+		SetUpdate( cAttrData._BUFF );
+
+		return nOldItemID;
+	}
+
 	public void AddExp( int nExp )
 	{
 		n_EXP  += nExp;
@@ -544,8 +616,14 @@ public class cUnitData{
 		if (bUpdateFlag [ cAttrData._CHARLV ] == true) {
 			bUpdateFlag [ cAttrData._CHARLV ] = false;
 			UpdateLevelAttr (n_Lv);
-
 		}
+
+		// no more need this
+//		if (bUpdateFlag [ cAttrData._ITEM ] == true) {
+//			bUpdateFlag [ cAttrData._ITEM ] = false;
+//			UpdateItemAttr();
+//		}
+
 		if (bUpdateFlag [ cAttrData._BUFF ] == true) {
 			bUpdateFlag [ cAttrData._BUFF ] = false;
 			UpdateBuffAttr ();		// maybe Recursive here
@@ -574,28 +652,13 @@ public class cUnitData{
 			if(  pair.Key == 0 )
 				continue;
 			// refresh  skill
-			RemoveSkill( pair.Key );
+//			RemoveSkill( pair.Key );
 
-			// remove  then check and ADD
-//			SKILL skl = ConstDataManager.Instance.GetRow< SKILL > ( pair.Key ); 
-//			if( skl == null )
-//				continue;
-//
-//			if( skl.n_BUFF == 0 )
-//				continue;
-//
-//			Buffs.DelBuff( skl.n_BUFF );
-//
-//			SetUpdate( cAttrData._BUFF );		// record to update buff
-//
-//
 			if( pair.Value > nLV )
 				continue;
 
 
-			AddSkill( pair.Key );
-//
-//			Buffs.AddBuff( skl.n_BUFF );
+//			AddSkill( pair.Key );
 		}
 
 		// update passiv skill attr
@@ -650,6 +713,10 @@ public class cUnitData{
 		attr.n_MOV = sch.n_MOV;
 	}
 
+	void UpdateItemAttr( )
+	{
+		cAttrData attr =GetAttrData( cAttrData._ITEM ) ;
+	}
 	void UpdateBuffAttr( )
 	{
 		cAttrData attr =GetAttrData( cAttrData._BUFF ) ;
@@ -672,19 +739,20 @@ public class cUnitData{
 
 	}
 
-	// this should work only each casting phase
-	void UpdateFightAttr( )
-	{
-		if (FightAttr == null )
-			return;
-
-		FightAttr.ClearBase (); // clear base attr only
-
-
-		if (FightAttr.SkillData != null) {
-			MyTool.AttrSkillEffect( this , FightAttr.SkillData.CastPool , FightAttr.SkillData.CastCond , FightAttr.SkillData.CastCondEffectPool );
-		}
-	}
+//	// this should work only each casting phase
+//	void UpdateFightAttr( )
+//	{
+//		if (FightAttr == null )
+//			return;
+//
+//		FightAttr.ClearBase (); // clear base attr only
+//
+//		// cast attr will add in  cast pahse
+//
+////		if (FightAttr.SkillData != null) {
+////			MyTool.AttrSkillEffect( this , FightAttr.SkillData.CastPool , FightAttr.SkillData.CastCond , FightAttr.SkillData.CastCondEffectPool );
+////		}
+//	}
 
 
 
@@ -761,20 +829,19 @@ public class cUnitData{
 
 	public void AddMp( int mp , bool bShow= false )
 	{
-		n_MP += mp;
-		if( n_MP < 0  ) n_MP = 0;
+
+		n_SP =  MyTool.ClampInt(n_MP+mp , 0 , GetMaxMP () ); 
 	}
 
 	public void AddSp( int sp , bool bShow= false )
 	{
-		n_SP += sp;
-		if( n_SP < 0 ) n_SP = 0;
+
+		n_SP =  MyTool.ClampInt(n_SP+sp , 0 , GetMaxSP () ); 
 	}
 
 	public void AddDef( int def , bool bShow= false  )
 	{
-		n_DEF += def;
-		if( n_DEF < 0 ) n_DEF = 0;
+		n_DEF =  MyTool.ClampInt(n_DEF+def , 0 , GetMaxDef () );  //   NGUIMath.ClampIndex (n_DEF, GetMaxDef ());	
 	}
 
 	// Get Data func
@@ -941,7 +1008,7 @@ public class cUnitData{
 	public float GetMulDrop()
 	{
 		//		UpdateAttr(); // update first to get newest data
-		float f = 0;
+		float f = 1.0f;
 		foreach( KeyValuePair< int ,cAttrData > pair  in Attr ){
 			f +=pair.Value.fDropRate;
 		}
@@ -952,7 +1019,7 @@ public class cUnitData{
 	public float GetMulDamage()
 	{
 		// UpdateAttr(); // update first to get newest data
-		float f = 0;
+		float f = 1.0f;
 		foreach( KeyValuePair< int ,cAttrData > pair  in Attr ){
 			f +=pair.Value.fDamageRate;
 		}
@@ -962,7 +1029,7 @@ public class cUnitData{
 	public float GetMulBurst()
 	{
 		//		UpdateAttr(); // update first to get newest data
-		float f = 0;
+		float f = 1.0f;
 		foreach( KeyValuePair< int ,cAttrData > pair  in Attr ){
 			f +=pair.Value.fBurstRate;
 		}
@@ -973,7 +1040,7 @@ public class cUnitData{
 	public float GetMulAttack()
 	{
 		//		UpdateAttr(); // update first to get newest data
-		float f = 0;
+		float f = 1.0f;
 		foreach( KeyValuePair< int ,cAttrData > pair  in Attr ){
 			f +=pair.Value.fAtkRate;
 		}
@@ -984,7 +1051,7 @@ public class cUnitData{
 	public float GetMulDef()
 	{
 		//		UpdateAttr(); // update first to get newest data
-		float f = 0;
+		float f = 1.0f;
 		foreach( KeyValuePair< int ,cAttrData > pair  in Attr ){
 			f +=pair.Value.fDefRate;
 		}
@@ -994,7 +1061,7 @@ public class cUnitData{
 	public float GetMulPower()
 	{
 		//		UpdateAttr(); // update first to get newest data
-		float f = 0;
+		float f = 1.0f;
 		foreach( KeyValuePair< int ,cAttrData > pair  in Attr ){
 			f +=pair.Value.fPowRate;
 		}
@@ -1005,7 +1072,7 @@ public class cUnitData{
 	public float GetMulMpCost()
 	{
 		//		UpdateAttr(); // update first to get newest data
-		float f = 0;
+		float f = 1.0f;
 		foreach( KeyValuePair< int ,cAttrData > pair  in Attr ){
 			f +=pair.Value.fMpCostRate;
 		}
@@ -1019,9 +1086,11 @@ public class cUnitData{
 		FightAttr.TarIdent = nTarId;
 		FightAttr.SkillID = SkillID;
 		//SKILL skill = ConstDataManager.Instance.GetRow< SKILL> ( SkillID ); 
+		FightAttr.ClearBase ();			// important
+
 		FightAttr.SkillData = GameDataManager.Instance.GetSkillData(SkillID) ;   //new cSkillData ( ConstDataManager.Instance.GetRow< SKILL> ( SkillID ) );
 
-		UpdateFightAttr();
+		//UpdateFightAttr();
 
 		// update condition buff
 
@@ -1055,7 +1124,7 @@ public class cUnitData{
 		ClearState(); // clear fight state
 		
 		//FightAttr.ClearBase (); // clear base attr only
-		FightAttr.Reset();
+		FightAttr.Reset();			// clear all fight attr
 		
 		UpdateBuffConditionAttr();
 	}
@@ -1070,27 +1139,88 @@ public class cUnitData{
 		Buffs.UpdateCondAttr (ref  attr );
 	}
 
-	public void DoSkillCastEffect( ref List< cHitResult > resPool )
+	public void DoCastEffect( ref List< cHitResult > resPool )
 	{
-		if (FightAttr.SkillData == null)
-			return;
-		cUnitData Defer = GameDataManager.Instance.GetUnitDateByIdent ( FightAttr.TarIdent );
-		MyTool.DoSkillEffect ( this , Defer ,  FightAttr.SkillData.CastPool , FightAttr.SkillData.CastCond ,  FightAttr.SkillData.CastCondEffectPool , ref resPool  );
+		cUnitData Defer = GameDataManager.Instance.GetUnitDateByIdent (FightAttr.TarIdent);
+		if (FightAttr.SkillData != null) {
+			FightAttr.SkillData.DoCastEffect (this, Defer, ref resPool);  
+		}
 
+		Buffs.OnCast (Defer, ref resPool);
+		//MyTool.DoSkillEffect ( this , Defer ,  FightAttr.SkillData.CastPool , FightAttr.SkillData.CastCond ,  FightAttr.SkillData.CastCondEffectPool , ref resPool  );
 	}
-	public void DoSkillHitEffect( cUnitData Defer , ref List< cHitResult > resPool )
+
+
+	public void DoHitEffect( cUnitData tarunit , ref List< cHitResult > resPool )
 	{
-		if (FightAttr.SkillData == null)
-			return;
-		
-		MyTool.DoSkillEffect ( this , Defer , FightAttr.SkillData.HitPool , FightAttr.SkillData.HitCond ,  FightAttr.SkillData.CastCondEffectPool , ref resPool  );
+		if (FightAttr.SkillData != null) {
+			FightAttr.SkillData.DoHitEffect (this, tarunit, ref resPool);  
+		}
+
+		Buffs.OnHit (tarunit, ref resPool);
+//		MyTool.DoSkillEffect ( this , tarunit , FightAttr.SkillData.HitPool , FightAttr.SkillData.HitCond ,  FightAttr.SkillData.CastCondEffectPool , ref resPool  );
 
 //		if (FightAttr.Skill == null)
 //			return;
 //		
 //		MyTool.DoSkillEffect ( this , FightAttr.HitPool , FightAttr.Skill.s_HIT_TRIG ,  FightAttr.HitEffPool , ref resPool  );
 
+	}
 
+	public void DoBeHitEffect( cUnitData tarunit , ref List< cHitResult > resPool )
+	{
+		if (FightAttr.SkillData != null) {
+			FightAttr.SkillData.DoHitEffect (this, tarunit, ref resPool);  
+		}
+		
+		Buffs.OnBeHit (tarunit, ref resPool);
+		//		MyTool.DoSkillEffect ( this , tarunit , FightAttr.SkillData.HitPool , FightAttr.SkillData.HitCond ,  FightAttr.SkillData.CastCondEffectPool , ref resPool  );
+		
+		//		if (FightAttr.Skill == null)
+		//			return;
+		//		
+		//		MyTool.DoSkillEffect ( this , FightAttr.HitPool , FightAttr.Skill.s_HIT_TRIG ,  FightAttr.HitEffPool , ref resPool  );
+		
+	}
+
+	public void Waiting( )
+	{
+		ActionFinished ();
+		//AddActionTime (1);
+		
+		// restore full def
+		AddDef ( GetMaxDef()/2 , true );
+		
+//		uAction act =  ActionManager.Instance.CreateWeakUpAction ( this.n_Ident );
+//		if (act != null) {
+//			
+//			
+//			if( Buffs.BuffRoundEnd( ) ){
+//				SetUpdate( cAttrData._BUFF );
+//				
+//			}
+//		}
+		//Buffs.OnDo ( ref resPool );
+	}
+
+
+	// pass 1 round
+	public void WeakUp( )
+	{
+		//AddActionTime (1);
+		nActionTime = 1;   // setup to default 
+
+		// restore def
+		AddDef ( GetMaxDef() / 2 , true );
+
+		uAction act =  ActionManager.Instance.CreateWeakUpAction ( this.n_Ident );
+		if (act != null) {
+
+			if( Buffs.BuffRoundEnd( ) ){
+				SetUpdate( cAttrData._BUFF );
+			}
+		}
+		//Buffs.OnDo ( ref resPool );
 	}
 
 	// state battle flag

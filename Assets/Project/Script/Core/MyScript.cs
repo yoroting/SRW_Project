@@ -417,6 +417,14 @@ public class MyScript {
 				evt.nAtkSkillID = func.I(2);
 				GameEventManager.DispatchEvent ( evt  );
 			}
+			else if( func.sFunc  == "MOVETOUNIT")  //  pop a group of mob
+			{
+				StageMoveToUnitEvent evt = new StageMoveToUnitEvent();
+				evt.nAtkCharID = func.I(0);
+				evt.nDefCharID = func.I(1);
+				//evt.nAtkSkillID = func.I(2);
+				GameEventManager.DispatchEvent ( evt  );
+			}
 			else if( func.sFunc  == "DELUNIT") 
 			{			
 				StageDelUnitEvent evt = new StageDelUnitEvent ();
@@ -624,6 +632,24 @@ public class MyScript {
 				}
 				else if( func.sFunc  == "ADD_ATTACK_DIFF") {
 					pool.Add( new ADD_ATTACK_DIFF( func.F(0) ) );
+				}
+				else if( func.sFunc  == "ADD_ATTACK") {
+					pool.Add( new ADD_ATTACK( func.I(0) ) );
+				}
+				else if( func.sFunc  == "ADD_DEF") {
+					pool.Add( new ADD_DEF( func.I(0) ) );
+				}
+				else if( func.sFunc  == "ADD_POWER") {
+					pool.Add( new ADD_POWER( func.I(0) ) );
+				}
+				else if( func.sFunc  == "ADD_HP") {
+					pool.Add( new ADD_HP( func.I(0) ) );
+				}
+				else if( func.sFunc  == "ADD_MP") {
+					pool.Add( new ADD_MP( func.I(0) ) );
+				}
+				else if( func.sFunc  == "ADD_SP") {
+					pool.Add( new ADD_SP( func.I(0) ) );
 				}
 				else if( func.sFunc  == "MUL_DROP") {
 					pool.Add( new MUL_DROP( func.F(0) ) );

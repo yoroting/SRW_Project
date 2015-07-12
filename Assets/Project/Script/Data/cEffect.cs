@@ -6,30 +6,42 @@ using MyClassLibrary;
 
 public class cEffect
 {
-	public enum _EFF
-	{
-		_NULL = 0,		// No eff
-		ADDBUFF_I,
-		ADDBUFF_E,
-		ADD_MAR,
-		
-		ADD_MAR_DIFF,	//如果有敵對目標，提升自身
-		
-	};
-	
-	public _EFF eType;
+//	public enum _EFF
+//	{
+//		_NULL = 0,		// No eff
+//		ADDBUFF_I,
+//		ADDBUFF_E,
+//		ADD_MAR,
+//		
+//		ADD_MAR_DIFF,	//如果有敵對目標，提升自身
+//		
+//	};
+//	
+//	public _EFF eType;
 	//	public cTextFunc func;		// func Data
 	
 	//string strFunc;		// origin al string
 	//public int nID { set; get; }
-	
+	public int nSkillID =0;
+	public int nBuffID =0;
+
+//	cEffect( int skilid , int buffid ){
+//		nSkillID = skilid;	nBuffID = buffid;
+//	}
+	public void SetBaseParam( int sillid , int buffid ){
+		nSkillID = sillid; nBuffID = buffid;
+	}
+
+
 	public virtual void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr ){ }
 	
-	
-	public virtual void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ }				//
-	public virtual void _OnCasting( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list){ }		// hit a target
-	public virtual void _OnHit( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ }			// 
-	public virtual void _OnBeHit( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ }		// 
+																											// SKill
+	public virtual void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ }				//  casr/ hit event will run this
+
+
+	public virtual void _Cast( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list){ }		// hit a target
+	public virtual void _Hit( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ }			// BUFF 專用.命中後　額外效果
+	public virtual void _BeHit( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ }			// BUFF 專用.受擊後　額外效果 
 
 	// cost
 	public virtual bool _IsStatus( ref int iValue , ref float fValue ){ return false; }				
@@ -38,25 +50,25 @@ public class cEffect
 // Cast Effect
 public class ADDBUFF_I: cEffect
 {
-	public ADDBUFF_I( int buffid ){		eType = _EFF.ADDBUFF_I; nBuffID = buffid;	}
-	public int nBuffID ;
+	public ADDBUFF_I( int buffid ){		nTarBuffID = buffid;	}
+	public int nTarBuffID ;
 	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){
 		if (Atker != null) {
 			// ( int nBuffID , int nCastIdent , int nSkillID  , int nTargetId )
 			//pData.Buffs.AddBuff( res.Value1 , res.Value2, res.SkillID, res.Value3 );
-			list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF , Atker.n_Ident , nBuffID, Atker.n_Ident, 0,Defer.n_Ident  ) );
+			list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF , Atker.n_Ident , nTarBuffID , Atker.n_Ident, nSkillID ,Defer.n_Ident  ) );
 		}
 	}
 }
 public class ADDBUFF_E: cEffect
 {
-	public ADDBUFF_E( int buffid ){		eType = _EFF.ADDBUFF_E; nBuffID = buffid;	}
-	public int nBuffID ;
+	public ADDBUFF_E( int buffid ){		nTarBuffID = buffid;;	}
+	public int nTarBuffID ;
 	
 	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 
 		if (Defer != null) {
 		//	list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF ,Defer.n_Ident , nBuffID ) );
-			list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF , Defer.n_Ident , nBuffID, Atker.n_Ident, 0,Defer.n_Ident  ) );
+			list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF , Defer.n_Ident , nTarBuffID, Atker.n_Ident, nSkillID ,Defer.n_Ident  ) );
 		}
 	}
 }
@@ -66,7 +78,7 @@ public class ADDBUFF_E: cEffect
 // Attr
 public class ADD_MAR: cEffect
 {
-	public ADD_MAR( float f ){		eType = _EFF.ADD_MAR; fValue = f;	}
+	public ADD_MAR( float f ){		fValue = f;	}
 	
 	public float fValue ;	
 	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
@@ -76,7 +88,7 @@ public class ADD_MAR: cEffect
 
 public class ADD_MAR_DIFF: cEffect
 {
-	public ADD_MAR_DIFF( float f ){		eType = _EFF.ADD_MAR_DIFF; fValue = f;	}
+	public ADD_MAR_DIFF( float f ){	 fValue = f;	}
 	
 	public float fValue ;	
 	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
@@ -101,6 +113,81 @@ public class ADD_ATTACK_DIFF: cEffect
 			fDelt *=fValue;
 			// this is final
 			attr.n_ATK += (int)fDelt;
+		}
+	}
+}
+
+public class ADD_ATTACK: cEffect
+{
+	public ADD_ATTACK( int i ){	iValue = i;	}
+	
+	public int iValue ;	
+	
+	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
+		if ((Atker != null)) {
+			attr.n_ATK += iValue;
+		}
+	}
+}
+
+public class ADD_DEF: cEffect
+{
+	public ADD_DEF( int i ){	iValue = i;	}
+	
+	public int iValue ;	
+	
+	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
+		if ((Atker != null)) {
+			attr.n_DEF += iValue;
+		}
+	}
+}
+
+public class ADD_POWER: cEffect
+{
+	public ADD_POWER( int i ){	iValue = i;	}
+	
+	public int iValue ;	
+	
+	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
+		if ((Atker != null)) {
+			attr.n_POW += iValue;
+		}
+	}
+}
+public class ADD_HP: cEffect
+{
+	public ADD_HP( int i ){	iValue = i;	}
+	
+	public int iValue ;	
+	
+	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
+		if ((Atker != null)) {
+			attr.n_HP += iValue;
+		}
+	}
+}
+public class ADD_MP: cEffect
+{
+	public ADD_MP( int i ){	iValue = i;	}
+	
+	public int iValue ;	
+	
+	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
+		if ((Atker != null)) {
+			attr.n_MP += iValue;
+		}
+	}
+}
+public class ADD_SP: cEffect
+{
+	public ADD_SP( int i ){	iValue = i;	}
+	
+	public int iValue ;	
+	
+	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
+		if ((Atker != null)) {
+			attr.n_SP += iValue;
 		}
 	}
 }
@@ -213,7 +300,7 @@ public class  cEffectCondition
 		CondLst.Add (line.GetFuncList ());
 	}
 	
-	private bool CheckCond( cUnitData data_I , cUnitData data_E , List<cTextFunc> funcList  )
+	private bool CheckCond( cUnitData data_I , cUnitData data_E , List<cTextFunc> funcList, int nSkillID, int  nBuffID   )
 	{
 		if (funcList == null)
 			return false;
@@ -328,14 +415,14 @@ public class  cEffectCondition
 	}
 	
 	
-	public bool Check( cUnitData data_I , cUnitData data_E ){
+	public bool Check( cUnitData data_I , cUnitData data_E , int nSkillID  , int nBuffID  ){
 		
 		if (CondLst == null)
 			return false;
 		
 		foreach( List<cTextFunc> funcList in CondLst )
 		{
-			if(CheckCond( data_I ,data_E ,funcList  ) == true ){
+			if(CheckCond( data_I ,data_E ,funcList ,nSkillID,nBuffID ) == true ){
 				return true;			// any one passed. all passed
 			}
 		}
