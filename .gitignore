@@ -218,7 +218,6 @@ pip-log.txt
 # =============== #
 # Unity generated #
 # =============== #
-*.meta
 [Tt]emp/
 [Oo]bj/
 [Bb]uild
