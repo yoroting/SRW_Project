@@ -108,6 +108,15 @@ public class Panel_Talk : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+
+		// pause when unit is animate
+		if( Panel_StageUI.Instance.IsAnyActionRunning() == true ) // wait all tween / fx / textbox / battle msg finish / unit move
+				return;							// don't check event run finish here.
+
+		//if (ActionManager.Instance.Run () == true)
+		//		return;
+
+
 		if (IsAllEnd () == false)
 			return;
 		// prcess script

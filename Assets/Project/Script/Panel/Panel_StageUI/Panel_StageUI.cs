@@ -1216,7 +1216,7 @@ public class Panel_StageUI : MonoBehaviour
 	}
 	// Check any action is running
 
-	bool IsAnyActionRunning()
+	public bool IsAnyActionRunning()
 	{
 		if(BattleMsg.nMsgCount > 0)
 			return true;
@@ -2008,6 +2008,13 @@ public class Panel_StageUI : MonoBehaviour
 		StageBattleAttackEvent Evt = evt as StageBattleAttackEvent;
 		if (Evt == null)
 			return;
+
+		// auto close all say window
+		TalkSayEndEvent sayevt = new TalkSayEndEvent();
+		sayevt.nChar = 0;		
+		GameEventManager.DispatchEvent ( sayevt  );
+		// attack 
+
 		Panel_unit pAtkUnit = GetUnitByCharID ( Evt.nAtkCharID );
 		Panel_unit pDefUnit = GetUnitByCharID ( Evt.nDefCharID );
 		if (pAtkUnit == null || pDefUnit == null)
@@ -2051,6 +2058,15 @@ public class Panel_StageUI : MonoBehaviour
 		StageMoveToUnitEvent Evt = evt as StageMoveToUnitEvent;
 		if (Evt == null)
 			return;
+
+
+		// auto close all say window
+		TalkSayEndEvent sayevt = new TalkSayEndEvent();
+		sayevt.nChar = 0;		
+		GameEventManager.DispatchEvent ( sayevt  );
+
+
+		// force close 
 		Panel_unit pAtkUnit = GetUnitByCharID (Evt.nAtkCharID);
 		Panel_unit pDefUnit = GetUnitByCharID (Evt.nDefCharID);
 		if (pAtkUnit == null || pDefUnit == null)
