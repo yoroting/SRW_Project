@@ -127,6 +127,22 @@ public partial class ConstDataManager
 ////				classlist.Add(classname);
 //	}
 
+    /// <summary>
+    /// 讀取 StreamingAssets 中的 pcz 檔, 不使用IEnumerator
+    /// </summary>
+    /// <param name="dataPathRelativeAssets">檔案相對於 Assets 的路徑 ex: "_Project/StreamingAssets/pcz/"</param>
+    /// <param name="dataNames">Data names.</param>
+    public void NormalReadDataStreaming(string dataPathRelativeAssets, string[] dataNames)
+    {
+        for (int i = 0; i < dataNames.Length; i++)
+        {
+            string rootPath = null;
+
+            rootPath = "file://" + Application.dataPath + "/StreamingAssets/" + dataPathRelativeAssets + dataNames[i] + ".pcz";
+            WWW www = new WWW(rootPath);
+            ReadData(www.bytes);
+        }
+    }
 
 	/// <summary>
 	/// 讀取 StreamingAssets 中的 pcz 檔
