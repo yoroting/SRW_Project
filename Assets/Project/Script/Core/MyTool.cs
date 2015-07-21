@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Enum = System.Enum;
 using MYGRIDS;
 using MyClassLibrary;
+using System.Linq;
 //using _SRW;
 
 // 
@@ -235,6 +236,15 @@ public class MyTool {
 		}
 		return pool;
 	}
+
+    public static void DestoryImmediateAllChildren(GameObject root)
+    {
+        var tempList = root.transform.Cast<Transform>().ToList();
+        foreach (var child in tempList)
+        {
+            NGUITools.DestroyImmediate(child.gameObject);
+        }
+    }
 
 	public static void DestoryGridItem( GameObject go )
 	{

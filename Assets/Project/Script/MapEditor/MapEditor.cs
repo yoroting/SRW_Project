@@ -49,6 +49,7 @@ public class MapEditor : MonoBehaviour
 
     public bool LoadScene(int nScnid)
     {
+        ClearScene();
         ConstDataManager.Instance.NormalReadDataStreaming("pcz/", Config.COMMON_DATA_NAMES);
 
         string dataPathRelativeAssets = "scn/";
@@ -104,6 +105,11 @@ public class MapEditor : MonoBehaviour
 
 
         return true;
+    }
+
+    public void ClearScene()
+    {
+        MyTool.DestoryImmediateAllChildren(TilePlaneObj);
     }
 
     GameObject GetTileCellPrefab(int x, int y, _TILE t)
