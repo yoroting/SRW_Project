@@ -8,54 +8,56 @@ using SimpleAStarExample;
 namespace MYGRIDS
 {
     // tile type 的列舉
-   public enum _TILE{
-        _NULL       = 0,   // 無效
-		_GREEN      = 1,    // 綠地( 平原/石路/河流 ) 
-		_LAND       = 2,    // 平原( 石路 )
-		_RIVER      = 3,    // 河流( 平原/湖 ) 
-		_LAKE       = 4,    // 湖  ( 河流 )
-		_SNOW       = 5,    // 雪  ( 河流 )
-		_SAND       = 6,    // 沙地 ( 平原 )
-		_DIRT       = 7,    // 泥版 ( 平原/道路 )
-		_ROAD		= 8,	// 石路	
+    public enum _TILE
+    {
+        _NULL = 0,   // 無效
+        _GREEN = 1,    // 綠地( 平原/石路/河流 ) 
+        _LAND = 2,    // 平原( 石路 )
+        _RIVER = 3,    // 河流( 平原/湖 ) 
+        _LAKE = 4,    // 湖  ( 河流 )
+        _SNOW = 5,    // 雪  ( 河流 )
+        _SAND = 6,    // 沙地 ( 平原 )
+        _DIRT = 7,    // 泥版 ( 平原/道路 )
+        _ROAD = 8,	// 石路	
 
-	};
+    };
 
-	public enum _THING{
-		_NULL       = 0,   // 無效
-		_TREE		= 1,
-		_BIGTREE	=2,
-		_STONE		=3,
-		_HILL		=4,
-		_SNOWHILL   =5,
-		_MOUNT		=6,
-		_SNOWMOUNT	=7,
-		_FIREMOUNT	=8,
+    public enum _THING
+    {
+        _NULL = 0,   // 無效
+        _TREE = 1,
+        _BIGTREE = 2,
+        _STONE = 3,
+        _HILL = 4,
+        _SNOWHILL = 5,
+        _MOUNT = 6,
+        _SNOWMOUNT = 7,
+        _FIREMOUNT = 8,
 
-		_WALLLT		=9,
-		_WALLRT		=10,
-		_WALLLD		=11,
-		_WALLRD		=12,
-		_WALLV		=13,
-		_WALLH		=14,
-		_HOUSE		=15,
-		_VILLAGE	=16,
-		_CASTLLE	=17,
-		_DOOR_V		=18,
-		_DOOR_H		=19,
-		_BRIDGE_V	=20,
-		_BRIDGE_H	=21,
+        _WALLLT = 9,
+        _WALLRT = 10,
+        _WALLLD = 11,
+        _WALLRD = 12,
+        _WALLV = 13,
+        _WALLH = 14,
+        _HOUSE = 15,
+        _VILLAGE = 16,
+        _CASTLLE = 17,
+        _DOOR_V = 18,
+        _DOOR_H = 19,
+        _BRIDGE_V = 20,
+        _BRIDGE_H = 21,
 
-	};
+    };
 
-	public enum _DIR
-	{
-		_NULL 	= 0,
-		_UP	  	= 1,
-		_RIGHT  = 2,
-		_DOWN  	= 3,
-		_LEFT  	= 4,
-	};
+    public enum _DIR
+    {
+        _NULL = 0,
+        _UP = 1,
+        _RIGHT = 2,
+        _DOWN = 3,
+        _LEFT = 4,
+    };
 
     // int 的 2維向量。將來可能會使用到
     public class iVec2
@@ -65,7 +67,7 @@ namespace MYGRIDS
 
         public iVec2() { }
         public iVec2(int x, int y) { X = x; Y = y; }
-        public iVec2( iVec2 v ) { X = v.X; Y = v.Y; }
+        public iVec2(iVec2 v) { X = v.X; Y = v.Y; }
 
 
         // get cell key string 
@@ -73,17 +75,18 @@ namespace MYGRIDS
         {
             return String.Format("({0},{1})", X, Y);
         }
-        public static string GetKey( int nX , int nY )
+        public static string GetKey(int nX, int nY)
         {
-            return String.Format("({0},{1})", nX, nY );
-        }    
+            return String.Format("({0},{1})", nX, nY);
+        }
 
 
         // 棋盤格 的距離。 不是 sqrt 的平方根，而是一格一格逐步走的距離
-		static public int Dist(int x1, int y1 ,int x2, int y2 ){
-			int dist = Math.Abs(x1 - x2) + Math.Abs(y1 - y2);
-			return dist;
-		}
+        static public int Dist(int x1, int y1, int x2, int y2)
+        {
+            int dist = Math.Abs(x1 - x2) + Math.Abs(y1 - y2);
+            return dist;
+        }
 
 
         public int Dist(int x, int y)
@@ -93,87 +96,107 @@ namespace MYGRIDS
 
         }
 
-        public int Dist( iVec2 vec2 )
+        public int Dist(iVec2 vec2)
         {
             int dist = Math.Abs(vec2.X - X) + Math.Abs(vec2.Y - Y);
             return dist;
 
         }
 
-		static public _DIR GetDir( int stx , int sty , int edx , int edy )
-		{
-			int nDiffX = edx - stx;
-			int nDiffY = edy - sty;
-			// 只處理4正維方向。斜角 不處理
-			if (nDiffX == 0) {
-				if (nDiffY > 0) {
-					return _DIR._UP;// up
-				} else if (nDiffY < 0) {
-					return _DIR._DOWN;// down
-				}
-			} else if (nDiffY == 0) {
-				if (nDiffX > 0) {
-					return _DIR._RIGHT; // right
-				} else if (nDiffX < 0) {
-					return _DIR._LEFT; // left  
-				}
-			} else if (nDiffX > 0 && nDiffY > 0) {
-				return _DIR._UP;// up
-			} else if (nDiffX < 0 && nDiffY < 0) {
-				return _DIR._DOWN;// down;
-			} else if (nDiffX > 0 && nDiffY < 0) {
-				return _DIR._RIGHT; // right
-			} else if (nDiffX < 0 && nDiffY > 0) {
-				return _DIR._LEFT; // left  
-			}
-			return _DIR._NULL;
+        static public _DIR GetDir(int stx, int sty, int edx, int edy)
+        {
+            int nDiffX = edx - stx;
+            int nDiffY = edy - sty;
+            // 只處理4正維方向。斜角 不處理
+            if (nDiffX == 0)
+            {
+                if (nDiffY > 0)
+                {
+                    return _DIR._UP;// up
+                }
+                else if (nDiffY < 0)
+                {
+                    return _DIR._DOWN;// down
+                }
+            }
+            else if (nDiffY == 0)
+            {
+                if (nDiffX > 0)
+                {
+                    return _DIR._RIGHT; // right
+                }
+                else if (nDiffX < 0)
+                {
+                    return _DIR._LEFT; // left  
+                }
+            }
+            else if (nDiffX > 0 && nDiffY > 0)
+            {
+                return _DIR._UP;// up
+            }
+            else if (nDiffX < 0 && nDiffY < 0)
+            {
+                return _DIR._DOWN;// down;
+            }
+            else if (nDiffX > 0 && nDiffY < 0)
+            {
+                return _DIR._RIGHT; // right
+            }
+            else if (nDiffX < 0 && nDiffY > 0)
+            {
+                return _DIR._LEFT; // left  
+            }
+            return _DIR._NULL;
 
-		}
-		public _DIR GetDir( int x , int y )
-		{
-			return GetDir ( X , Y , x , y );
-		}
+        }
+        public _DIR GetDir(int x, int y)
+        {
+            return GetDir(X, Y, x, y);
+        }
 
-		public void Rotate( _DIR dir )
-		{
+        public void Rotate(_DIR dir)
+        {
 
-			switch( dir ){
-			case _DIR._UP: // up
-				// no change
-				//return new iVec2( X , Y );
-				break;
-			case _DIR._DOWN:// down
-				X *= -1;
-				Y *= -1;
-				//return new iVec2( X * -1 , Y *-1 );
-				break;
-			case _DIR._RIGHT:{// right
-				int nTmpX = X;
-				int nTmpY = Y;
-				X = nTmpY*1;
-				Y = nTmpX*-1;
-				//return new iVec2( Y * 1 , X *-1 );
-			}break;
-			case _DIR._LEFT:{ // left  
-				int nTmpX = X;
-				int nTmpY = Y;
-				//return new iVec2( Y * -1 , X *1 );
-				X = nTmpY*-1;
-				Y = nTmpX*1;
-			}break;
-			}		
+            switch (dir)
+            {
+                case _DIR._UP: // up
+                    // no change
+                    //return new iVec2( X , Y );
+                    break;
+                case _DIR._DOWN:// down
+                    X *= -1;
+                    Y *= -1;
+                    //return new iVec2( X * -1 , Y *-1 );
+                    break;
+                case _DIR._RIGHT:
+                    {// right
+                        int nTmpX = X;
+                        int nTmpY = Y;
+                        X = nTmpY * 1;
+                        Y = nTmpX * -1;
+                        //return new iVec2( Y * 1 , X *-1 );
+                    } break;
+                case _DIR._LEFT:
+                    { // left  
+                        int nTmpX = X;
+                        int nTmpY = Y;
+                        //return new iVec2( Y * -1 , X *1 );
+                        X = nTmpY * -1;
+                        Y = nTmpX * 1;
+                    } break;
+            }
 
-		}
+        }
         // 比對 座標。看是否同一點
         public bool Collision(iVec2 v2)
-        {         
-            return ( X==v2.X && Y==v2.Y);
+        {
+            return (X == v2.X && Y == v2.Y);
         }
 
 
         public double GetAngleFromTwoPoint(iVec2 p1, iVec2 p2)
         {
-            return AngleBetween( (this-p1) , (this-p2) );
+            return AngleBetween((this - p1), (this - p2));
         }
 
         public static double AngleBetween(iVec2 vector1, iVec2 vector2)
@@ -183,52 +206,52 @@ namespace MYGRIDS
 
             return Math.Atan2(sin, cos) * (180 / Math.PI);
         }
-      
+
 
         // v = 目的座標，　 E 的敵方座標
-        public bool ZocCheck(iVec2 C, iVec2 E )
+        public bool ZocCheck(iVec2 C, iVec2 E)
         {
-			// it wont zoc if the same point
-			if( Collision( C ) || Collision( E ) || C.Collision(E))
-				return false;
+            // it wont zoc if the same point
+            if (Collision(C) || Collision(E) || C.Collision(E))
+                return false;
             //距離短的的絕不會是 ZOC
-			int distc = Dist (C);
-			int diste = Dist (E);
-			if ( distc <= diste )
+            int distc = Dist(C);
+            int diste = Dist(E);
+            if (distc <= diste)
                 return false;
             // 座標在相對45度以上 不會是ZOC
             double ang1 = GetAngleFromTwoPoint(C, E); ;
-            if ( Math.Abs( ang1 ) > 26 ) // 45 is too large ...
+            if (Math.Abs(ang1) > 26) // 45 is too large ...
                 return false;
 
             // 由目標點夾角判斷。這邊不知道對不對
-//            double ang = C.GetAngleFromTwoPoint(this, E); // Math.Atan2(sin, cos) * (180 / Math.PI);
-//            //
-  //          ang = Math.Abs( ang );      // 
-//            if (ang > 180)
-//            {
-//                ang = 360 - ang;
-//            }
+            //            double ang = C.GetAngleFromTwoPoint(this, E); // Math.Atan2(sin, cos) * (180 / Math.PI);
+            //            //
+            //          ang = Math.Abs( ang );      // 
+            //            if (ang > 180)
+            //            {
+            //                ang = 360 - ang;
+            //            }
 
 
-//            return ang < 40;
+            //            return ang < 40;
             return true;
 
         }
 
-		public List< iVec2 > AdjacentList()
-		{
-			List< iVec2 > lst = new List< iVec2 > ();
-			lst.Add (new iVec2 (X-1, Y));
-			lst.Add (new iVec2 (X, Y-1));
-			lst.Add (new iVec2 (X+1, Y));
-			lst.Add (new iVec2 (X, Y+1));
-			return lst;
-		}
-        // 移動座標
-        public iVec2 MoveX ( int nX )
+        public List<iVec2> AdjacentList()
         {
-            iVec2 v = new iVec2( this );
+            List<iVec2> lst = new List<iVec2>();
+            lst.Add(new iVec2(X - 1, Y));
+            lst.Add(new iVec2(X, Y - 1));
+            lst.Add(new iVec2(X + 1, Y));
+            lst.Add(new iVec2(X, Y + 1));
+            return lst;
+        }
+        // 移動座標
+        public iVec2 MoveX(int nX)
+        {
+            iVec2 v = new iVec2(this);
             v.X += nX;
             return v;
         }
@@ -238,7 +261,7 @@ namespace MYGRIDS
             v.Y += nY;
             return v;
         }
-        public iVec2 MoveXY(int nX , int nY)
+        public iVec2 MoveXY(int nX, int nY)
         {
             iVec2 v = new iVec2(this);
             v.X += nX;
@@ -267,8 +290,8 @@ namespace MYGRIDS
         public static iVec2 operator *(iVec2 v1, float f)
         {
             iVec2 v3 = new iVec2();
-            v3.X = (int)(v1.X *f);
-            v3.Y = (int)(v1.Y *f) ;
+            v3.X = (int)(v1.X * f);
+            v3.Y = (int)(v1.Y * f);
             return v3;
         }
 
@@ -286,8 +309,8 @@ namespace MYGRIDS
     }
 
     //定義一個矩行。最小 size = 1 ,1 。永不為零。永不反相
-	public class iRect
-    {   
+    public class iRect
+    {
         int nStX;
         int nStY;
 
@@ -295,22 +318,23 @@ namespace MYGRIDS
         int nEdX;
         int nEdY;
 
-        public iRect( int stX , int stY )
+        public iRect(int stX, int stY)
         {
             nStX = stX;
-            nStY = stY;    
-            
-            SetSize( 1 , 1);
+            nStY = stY;
+
+            SetSize(1, 1);
         }
 
-        public iRect(int stX, int stY  , int edX , int edY )
+        public iRect(int stX, int stY, int edX, int edY)
         {
             nStX = stX;
-            nStY = stY;    
+            nStY = stY;
             nEdX = edX;
             nEdY = edY;
-            if (nEdX <= nStX) {
-                nEdX = nStX + 1; 
+            if (nEdX <= nStX)
+            {
+                nEdX = nStX + 1;
             }
             if (nEdY <= nStY)
             {
@@ -320,7 +344,7 @@ namespace MYGRIDS
 
 
 
-        public void SetSize( int W  , int H )
+        public void SetSize(int W, int H)
         {
             if (W < 1) W = 1;
             if (H < 1) H = 1;
@@ -330,7 +354,7 @@ namespace MYGRIDS
 
         public bool CheckCol(int x, int y)
         {
-            if ((x >= nStX) && (x < nEdX) && (y >= nStY) && (y < nEdY) ) 
+            if ((x >= nStX) && (x < nEdX) && (y >= nStY) && (y < nEdY))
             {
                 return true;
             }
@@ -338,7 +362,7 @@ namespace MYGRIDS
         }
 
         //取得矩行內的全部位置點
-        public List<iVec2 > GetList()
+        public List<iVec2> GetList()
         {
             List<iVec2> lst = new List<iVec2>();
             int w = nEdX - nStX;
@@ -347,8 +371,8 @@ namespace MYGRIDS
             {
                 for (int j = 0; j < h; j++)
                 {
-                    lst.Add( new iVec2( nStX+i , nStY+j )  );
-                }            
+                    lst.Add(new iVec2(nStX + i, nStY + j));
+                }
             }
             return lst;
         }
@@ -357,15 +381,15 @@ namespace MYGRIDS
     }
 
     // 各 Cell 的最小單位
-	// 坐標系 必須有 0,0 存在才能對稱又吻合數學計算
-	//  (-1,1) , (0,1) , (1,1) 
-	//  (-1,0) , (0,0) , (1,0)
-	//  (-1,-1), (0,-1), (1,-1)
-	//
+    // 坐標系 必須有 0,0 存在才能對稱又吻合數學計算
+    //  (-1,1) , (0,1) , (1,1) 
+    //  (-1,0) , (0,0) , (1,0)
+    //  (-1,-1), (0,-1), (1,-1)
+    //
 
-	public class cMyCell
+    public class cMyCell
     {
-        public static int nVersion = 1 ; // cell version
+        public static int nVersion = 1; // cell version
 
         public int Value { set; get; }
 
@@ -377,17 +401,17 @@ namespace MYGRIDS
         public cMyCell()
         {
             Loc = new iVec2();
-            Value = 0;        
+            Value = 0;
         }
 
         public cMyCell(int x, int y)
         {
-            Loc = new iVec2( x , y );
+            Loc = new iVec2(x, y);
             Value = 0;
         }
 
-        public cMyCell( int x , int y , int value )
-        { 
+        public cMyCell(int x, int y, int value)
+        {
             Loc = new iVec2(x, y);
             Value = value;
         }
@@ -396,22 +420,22 @@ namespace MYGRIDS
         public string GetKey()
         {
             return Loc.GetKey();
-        }       
+        }
 
-        public int Dist(int nX , int nY )
+        public int Dist(int nX, int nY)
         {
 
             return Loc.Dist(nX, nY);
         }
 
-        public int Dist( ref cMyCell cell )
+        public int Dist(ref cMyCell cell)
         {
 
             return Loc.Dist(cell.Loc);
         }
 
         // File IO
-        public bool Write(ref BinaryWriter bWriter )
+        public bool Write(ref BinaryWriter bWriter)
         {
 
             bWriter.Write(Loc.X);
@@ -422,7 +446,7 @@ namespace MYGRIDS
             return true;
         }
 
-        public bool Read(ref BinaryReader bReader, int nVer )
+        public bool Read(ref BinaryReader bReader, int nVer)
         {
             // ver is bindata version
 
@@ -435,7 +459,7 @@ namespace MYGRIDS
     }
 
     // 一層 layer。要注意 layer 從0 開始
-	public class cMyLayer
+    public class cMyLayer
     {
         int nVersion;
 
@@ -446,10 +470,10 @@ namespace MYGRIDS
 
         public bool bEnable { set; get; }
 
-        public cMyLayer( int w , int h , int z)
+        public cMyLayer(int w, int h, int z)
         {
             //defaut value
-            nVersion = 1; ; 
+            nVersion = 1; ;
 
             W = w;
             if (W < 0) { W = 1; }
@@ -459,34 +483,19 @@ namespace MYGRIDS
 
             Z = z;
 
-            
-            // create array
-           //cMyCell [][] c = new cMyCell[W][];
+            Tiles = new Byte[W][]; // [x][y]
+            for (int i = 0; i < W; i++)
+            {
+                Tiles[i] = new Byte[H];
 
-           //for (int i = 0; i < W; i++  )
-           //{
-           //     c[ i ] = new cMyCell[H];
-           //     for (int j = 0; j < H; j++)
-           //     {
-           //         c[i][j] = new cMyCell(i, j);
-           //     }
-           //}
-           //Cells = c;
-           // tile
-           Tiles  = new Byte[W][]; // [x][y]
-           for (int i = 0; i < W; i++)
-           {
-               Tiles[i] = new Byte[H];
-           
-           }
-      
+            }
 
-           bEnable = true; // complete
+            bEnable = true; // complete
         }
 
-        public _TILE GetValue( int x , int y ) 
+        public _TILE GetValue(int x, int y)
         {
-            if( x < 0 || x >= W || y < 0 || y >= H )
+            if (x < 0 || x >= W || y < 0 || y >= H)
                 return _TILE._NULL;
 
             _TILE type = (_TILE)Tiles[x][y];
@@ -499,7 +508,7 @@ namespace MYGRIDS
             if (x < 0 || x >= W || y < 0 || y >= H)
                 return false;
 
-            Tiles[x][y] = (byte)v ;
+            Tiles[x][y] = (byte)v;
             return true;
         }
 
@@ -510,7 +519,7 @@ namespace MYGRIDS
         //    if (y < 0 || y >= H) return null;
 
         //    return Cells[x][y];
-        
+
         //}
 
         //public int GetCellValue(int x, int y)
@@ -535,7 +544,7 @@ namespace MYGRIDS
 
 
         // File IO
-        public bool Write( ref BinaryWriter bWriter )
+        public bool Write(ref BinaryWriter bWriter)
         {
             bWriter.Write(nVersion);
             bWriter.Write(W);
@@ -543,16 +552,17 @@ namespace MYGRIDS
 
             for (int i = 0; i < W; i++)
             {
-                bWriter.Write( Tiles[i] , 0, H );
+                bWriter.Write(Tiles[i], 0, H);
             }
 
             return true;
         }
 
-        public bool Read(ref BinaryReader bReader )
+        public bool Read(ref BinaryReader bReader)
         {
             int ver = bReader.ReadInt32();
-            if (ver != nVersion){
+            if (ver != nVersion)
+            {
                 // version different 
             }
 
@@ -565,8 +575,8 @@ namespace MYGRIDS
             for (int i = 0; i < W; i++)
             {
                 //Byte [] h = new Byte[H];
-               Tiles[i] = bReader.ReadBytes(H); 
-            
+                Tiles[i] = bReader.ReadBytes(H);
+
             }
 
 
@@ -575,25 +585,24 @@ namespace MYGRIDS
 
 
         // 全部cell 的實體
-   //     public cMyCell[][] Cells { set; get; }  // [x][y]
+        //     public cMyCell[][] Cells { set; get; }  // [x][y]
         public Byte[][] Tiles { set; get; }  // [x][y]
 
-      }
+    }
 
-    
+
 
     //  整體的操作容器 。座標是以(0,0) 為座標系的( （- HW ～ HW ）
-	public class cMyGrids 
+    public class cMyGrids
     {
         int nVersion { set; get; }
 
         // singleton
         private static cMyGrids instance;
-
         public static cMyGrids Instance
         {
-            get 
-           {
+            get
+            {
                 if (instance == null)
                 {
                     instance = new cMyGrids();
@@ -602,62 +611,18 @@ namespace MYGRIDS
             }
         }
 
-        //  W / H 
-        public int MaxW
-        {
-            set;
-            get;
-            //set
-            //{
-            //    if (value < 1) MaxW = 1;
-            //    else MaxW = value;
+        public int MaxW;
+        public int MaxH;
+        /// <summary>
+        /// 半寬
+        /// </summary>
+        public int hW;
+        /// <summary>
+        /// 半高
+        /// </summary>
+        public int hH;
 
-            //}
-
-            //get { return MaxW; }
-
-        }
-
-        public int MaxH
-        {
-            set;
-            get;
-            //set
-            //{
-            //    if (value < 1) MaxH = 1; 
-            //    else MaxH = value;
-            //}
-
-            //get { return MaxH; }
-        }
-
-
-        // 半寬
-        public int hW
-        {
-            set;
-            get;
-        }
-        // 半高
-        public int hH
-        {
-            set;
-            get;
-        }
-
-
-        public int LayerNum
-        {
-            set;
-            get;
-            //set
-            //{
-            //    if (value < 1) LayerNum = 1;
-            //    else LayerNum = value;
-            //}
-
-            //get { return LayerNum; }
-        }
+        public int LayerNum;
 
         // Grid total W/H
         public int TotalW { set; get; }
@@ -669,13 +634,10 @@ namespace MYGRIDS
 
         public int hPW { set; get; }   // cell 的中心 pixel 
         public int hPH { set; get; }
-    
 
         //成像上的偏移
         public int SX { set; get; }
         public int SY { set; get; }
-
-
 
         public cMyGrids()
         {
@@ -686,14 +648,10 @@ namespace MYGRIDS
             PW = 100;
             PH = 100;
 
-
             // default is min limit
             CreateLayer(1, 1); //預設一層
             //
             ThingPool = new Dictionary<string, cMyCell>();     // 地上物
-
-			// path find
-		//	IgnorePool = new  List<Point>();     				  // ignore for pathfind
         }
 
 
@@ -703,18 +661,12 @@ namespace MYGRIDS
         {
             hW = nhalfW;
             hH = nhalfH;
-            MaxW = (2*hW) + 1 ;  // add 0 x-axie
-            MaxH = (2*hH) + 1 ;  // add 0 y-axie
-            
+            MaxW = (2 * hW) + 1;  // add 0 x-axie
+            MaxH = (2 * hH) + 1;  // add 0 y-axie
 
+            Layer = new cMyLayer(MaxW, MaxH, 0);
 
- //           Layer = new cMyLayer( );
-//            for (int i = 0; i < nNum; i++  )
-//           {
-               Layer = new cMyLayer(MaxW, MaxH , 0 );
- //          }
-
-            SetPixelWH( PW, PH );
+            SetPixelWH(PW, PH);
         }
 
         public void SetPixelWH(int npW, int npH)
@@ -729,25 +681,26 @@ namespace MYGRIDS
             TotalH = MaxH * PH;
 
             // 計算偏移( 描點在 地圖中央)
-          //  SX = -(TotalW / 2);
-          //  SY = -(TotalH / 2);
+            //  SX = -(TotalW / 2);
+            //  SY = -(TotalH / 2);
 
         }
 
 
-        public void AddThing(int nX, int nY , int nValue )        {
-            cMyCell cell = new cMyCell(nX, nY, nValue );
+        public void AddThing(int nX, int nY, int nValue)
+        {
+            cMyCell cell = new cMyCell(nX, nY, nValue);
 
-            ThingPool.Add( cell.GetKey() , cell);
+            ThingPool.Add(cell.GetKey(), cell);
 
         }
 
         public void RemoveTHing(int nX, int nY)
-        {            
-            ThingPool.Remove( iVec2.GetKey(nX, nY ) );
+        {
+            ThingPool.Remove(iVec2.GetKey(nX, nY));
         }
 
-        public void ReplaceTHing(int nX, int nY  ,int nValue )
+        public void ReplaceTHing(int nX, int nY, int nValue)
         {
             string skey = iVec2.GetKey(nX, nY);
             if (ThingPool.ContainsKey(skey))
@@ -756,34 +709,32 @@ namespace MYGRIDS
                 cell.Value = nValue;
                 ThingPool[skey] = cell;
             }
-           
+
         }
 
         // 取得 當前座標的 tile
         public _TILE GetValue(int x, int y)
         {
-            return Layer.GetValue( x +hW , y + hH );
+            return Layer.GetValue(x + hW, y + hH);
         }
-        public _TILE GetValue( iVec2 v)
+        public _TILE GetValue(iVec2 v)
         {
             return Layer.GetValue(v.X + hW, v.Y + hH);
         }
 
         // edit 使用
-        public bool SetValue( int x, int y , _TILE value )
+        public bool SetValue(int x, int y, _TILE value)
         {
-            return Layer.SetValue(x + hW, y + hH, value );
+            return Layer.SetValue(x + hW, y + hH, value);
         }
-        public bool SetValue( iVec2 v , _TILE value )
+        public bool SetValue(iVec2 v, _TILE value)
         {
-            return Layer.SetValue(v.X + hW, v.Y + hH, value );
+            return Layer.SetValue(v.X + hW, v.Y + hH, value);
         }
 
         // 座標轉換
-
-
-        public float GetRealX( int nX )
-        {   
+        public float GetRealX(int nX)
+        {
             float fX = nX * PW;
             return fX;
 
@@ -794,23 +745,23 @@ namespace MYGRIDS
             float fY = nY * PH;
             return fY;
         }
-        public void GetRealXY( ref float fX , ref float fY , iVec2 v )
+        public void GetRealXY(ref float fX, ref float fY, iVec2 v)
         {
-            fX = GetRealX( v.X );
-            fY = GetRealY( v.Y );
+            fX = GetRealX(v.X);
+            fY = GetRealY(v.Y);
         }
 
-		public int GetGridX( float fRealX )
-		{
-			int X = ((int)fRealX / PW);
-			return X;
-		}
+        public int GetGridX(float fRealX)
+        {
+            int X = ((int)fRealX / PW);
+            return X;
+        }
 
-		public int GetGridY( float fRealY )
-		{
-			int Y = ((int)fRealY / PH);
-			return Y;
-		}
+        public int GetGridY(float fRealY)
+        {
+            int Y = ((int)fRealY / PH);
+            return Y;
+        }
         //螢幕顯示的座標
         public float GetScnX(int nX)
         {
@@ -821,57 +772,60 @@ namespace MYGRIDS
         {
             return GetRealY(nY) - SY;
         }
-		// Get Path list
-		public List<iVec2> GetPathList( iVec2 st , iVec2 ed )
-		{
-			List<iVec2> lst = new List<iVec2>();
+        // Get Path list
+        public List<iVec2> GetPathList(iVec2 st, iVec2 ed)
+        {
+            List<iVec2> lst = new List<iVec2>();
 
-			int Diffx = ed.X- st.X;
-			int Diffy = ed.Y- st.Y;
-			iVec2 p1 = new iVec2();
-			if( Diffy == 0 )
-			{
-				p1.X = ed.X;
-				p1.Y = st.Y;
-			}
-			else{
-				p1.X = st.X;
-				p1.Y = ed.Y;
-			}
-			lst.Add( p1 );
+            int Diffx = ed.X - st.X;
+            int Diffy = ed.Y - st.Y;
+            iVec2 p1 = new iVec2();
+            if (Diffy == 0)
+            {
+                p1.X = ed.X;
+                p1.Y = st.Y;
+            }
+            else
+            {
+                p1.X = st.X;
+                p1.Y = ed.Y;
+            }
+            lst.Add(p1);
 
 
-			lst.Add( ed );
+            lst.Add(ed);
 
-			return lst;
-		}
+            return lst;
+        }
 
         // Math utility func 
-        public List<iVec2> GetRangePool( iVec2 v , int max , int min=0 ) { 
+        public List<iVec2> GetRangePool(iVec2 v, int max, int min = 0)
+        {
 
             // 取得指定座標 對應距離內的 pool
             List<iVec2> lst = new List<iVec2>();
 
             // 正向
-			for (int i = 0; i <= max; i++) // 0 不用計算
+            for (int i = 0; i <= max; i++) // 0 不用計算
             {
                 int x1 = v.X + i;           // 正
                 if (x1 <= hW)
                 {
-					for (int j = 0; j <= max; j++) // 0 不用計算
+                    for (int j = 0; j <= max; j++) // 0 不用計算
                     {
-						int tmp = i + j;
-						if ( tmp > max || tmp < min )
+                        int tmp = i + j;
+                        if (tmp > max || tmp < min)
                             continue;
 
 
                         int y1 = v.Y + j;           // 正
-                        if (y1 <= hH) {
+                        if (y1 <= hH)
+                        {
                             lst.Add(new iVec2(x1, y1));
 
                         }
 
-                        if( j == 0 )                 // avoid 0 duplic
+                        if (j == 0)                 // avoid 0 duplic
                             continue;
 
                         int y2 = v.Y - j;           // 反 
@@ -883,18 +837,18 @@ namespace MYGRIDS
                     }
                 }
 
-                if( i == 0)                      // avoid 0 duplic
+                if (i == 0)                      // avoid 0 duplic
                     continue;
 
 
                 int x2 = v.X - i;           // 反
                 if (x2 >= -hW)
                 {
-					for (int j = 0; j <= max; j++) // 0 不用計算
-                    {                        
-						int tmp = i + j;
-						if ( tmp > max || tmp < min )
-                            continue ;          // over dist 
+                    for (int j = 0; j <= max; j++) // 0 不用計算
+                    {
+                        int tmp = i + j;
+                        if (tmp > max || tmp < min)
+                            continue;          // over dist 
 
                         int y1 = v.Y + j;           // 正
                         if (y1 <= hH)
@@ -903,7 +857,7 @@ namespace MYGRIDS
 
                         }
 
-                        if( j == 0 )                 // avoid 0 duplic
+                        if (j == 0)                 // avoid 0 duplic
                             continue;
 
                         int y2 = v.Y - j;           // 反 
@@ -912,7 +866,7 @@ namespace MYGRIDS
                             lst.Add(new iVec2(x2, y2));
                         }
 
-                    }                    
+                    }
                 }
             }
             // 
@@ -929,34 +883,36 @@ namespace MYGRIDS
 
             foreach (iVec2 v in pool)
             {
-                _TILE value = Layer.GetValue(  v.X  , v.Y ) ;
-				if ( IsWalkAbleTile(value) ) // 只有合法的才保留　
+                _TILE value = Layer.GetValue(v.X, v.Y);
+                if (IsWalkAbleTile(value)) // 只有合法的才保留　
                 {
-                    lst.Add( v );
+                    lst.Add(v);
                 }
             }
             return lst;
         }
 
         // remove ignore point
-        public List<iVec2> FilterPool(ref List<iVec2> pool, ref List<iVec2> ignore )
+        public List<iVec2> FilterPool(ref List<iVec2> pool, ref List<iVec2> ignore)
         {
             List<iVec2> lst = new List<iVec2>();
-            foreach (iVec2 v in pool )
+            foreach (iVec2 v in pool)
             {
                 bool bCol = false;
                 foreach (iVec2 v2 in ignore)
-                {                     
-                    if( v.Collision(v2 ) ){
+                {
+                    if (v.Collision(v2))
+                    {
                         bCol = true;
                         break;
                     }
-                
+
                 }
-				//
-                if (bCol != true ){
-					lst.Add( v ); //     
-				}                
+                //
+                if (bCol != true)
+                {
+                    lst.Add(v); //     
+                }
             }
 
             return lst;
@@ -979,15 +935,15 @@ namespace MYGRIDS
 
 
         // remove Zoc Block
-        public List<iVec2> FilterZocPool( iVec2 self , ref List<iVec2> pool, ref List<iVec2> enemy )
+        public List<iVec2> FilterZocPool(iVec2 self, ref List<iVec2> pool, ref List<iVec2> enemy)
         {
             List<iVec2> lst = new List<iVec2>();
             foreach (iVec2 v in pool)
             {
                 bool bCol = false;
-                foreach (iVec2 v2 in enemy )
+                foreach (iVec2 v2 in enemy)
                 {
-					if (self.ZocCheck( v, v2 ))
+                    if (self.ZocCheck(v, v2))
                     {
                         bCol = true;
                         break;
@@ -995,10 +951,11 @@ namespace MYGRIDS
 
                 }
 
-                if (bCol){
-					continue;
+                if (bCol)
+                {
+                    continue;
                     //continue;　// 重複的過濾掉
-				}
+                }
 
                 lst.Add(v); // 
             }
@@ -1006,21 +963,21 @@ namespace MYGRIDS
             return lst;
         }
 
-	
-		// Check if pos in grid
-		public bool Contain( iVec2 v )
-		{
-			if( v.X < -hW || v.X > hW )
-			{
-				return false;
-			}
-			if( v.Y < -hH || v.Y > hH )
-			{
-				return false;
-			}
 
-			return true;
-		}
+        // Check if pos in grid
+        public bool Contain(iVec2 v)
+        {
+            if (v.X < -hW || v.X > hW)
+            {
+                return false;
+            }
+            if (v.Y < -hH || v.Y > hH)
+            {
+                return false;
+            }
+
+            return true;
+        }
 
         // File I / O
         public bool Save(string sFileName)
@@ -1030,65 +987,66 @@ namespace MYGRIDS
 
 
             try
-            {                
+            {
                 // read from file or write to file
-                bWriter.Write( nVersion );
-                bWriter.Write( MaxW );
-                bWriter.Write( MaxH );
-                bWriter.Write( LayerNum );
+                bWriter.Write(nVersion);
+                bWriter.Write(MaxW);
+                bWriter.Write(MaxH);
+                bWriter.Write(LayerNum);
                 if (Layer != null)
                 {
-                    bWriter.Write( true );
-                    Layer.Write( ref bWriter );
-                
+                    bWriter.Write(true);
+                    Layer.Write(ref bWriter);
+
                 }
 
                 // 地上物
-                bWriter.Write( cMyCell.nVersion ); // record cell ver
-                bWriter.Write( ThingPool.Count);
-                foreach ( KeyValuePair< string ,  cMyCell>  pair in ThingPool )
+                bWriter.Write(cMyCell.nVersion); // record cell ver
+                bWriter.Write(ThingPool.Count);
+                foreach (KeyValuePair<string, cMyCell> pair in ThingPool)
                 {
                     if (pair.Value != null)
                     {
                         bWriter.Write(true);
                         pair.Value.Write(ref bWriter);
                     }
-                    else {
+                    else
+                    {
                         bWriter.Write(false);
                     }
-                    
+
                 }
 
 
             }
             finally
             {
-                fileStream.Close();               
+                fileStream.Close();
             }
             return true;
         }
 
-		public bool Load( byte[] bytes )
-		{
-		//	string str = System.Convert.ToString(bytes );
+        public bool Load(byte[] bytes)
+        {
+            //	string str = System.Convert.ToString(bytes );
 
-			BinaryReader bReader = new BinaryReader( new MemoryStream(bytes) );
-			if (bReader == null) return false;
+            BinaryReader bReader = new BinaryReader(new MemoryStream(bytes));
+            if (bReader == null) return false;
 
-			return  Load( bReader );
-		}
-		public bool Load(string sFileName)
-		{
-			FileStream fileStream = new FileStream(sFileName, FileMode.Open);
-			if (fileStream == null) return false;
-			BinaryReader bReader = new BinaryReader(fileStream);
-			bool bResult = Load( bReader );
-			fileStream.Close();      
-			return bResult;
-		}
+            return Load(bReader);
+        }
+        public bool Load(string sFileName)
+        {
+            FileStream fileStream = new FileStream(sFileName, FileMode.Open);
+            if (fileStream == null) return false;
+            BinaryReader bReader = new BinaryReader(fileStream);
+            bool bResult = Load(bReader);
+            fileStream.Close();
+            return bResult;
+        }
 
-		public bool Load(BinaryReader bReader)
-        {            
+        public bool Load(BinaryReader bReader)
+        {
             if (bReader == null) return false;
 
             //=================load ====
@@ -1096,16 +1054,17 @@ namespace MYGRIDS
             {
                 // read from file or write to file
                 int ver = bReader.ReadInt32();
-                if (ver != nVersion) { 
+                if (ver != nVersion)
+                {
                     // version different 
-                
+
                 }
 
                 // grid param
                 MaxW = bReader.ReadInt32();
-				hW   = MaxW / 2 ; 
+                hW = MaxW / 2;
                 MaxH = bReader.ReadInt32();
-				hH   = MaxH / 2 ; 
+                hH = MaxH / 2;
 
                 LayerNum = bReader.ReadInt32();
 
@@ -1113,7 +1072,7 @@ namespace MYGRIDS
                 bool bLayer = bReader.ReadBoolean();
                 if (bLayer)
                 {
-                    Layer.Read( ref bReader );                
+                    Layer.Read(ref bReader);
                 }
 
                 // Build thing
@@ -1129,22 +1088,22 @@ namespace MYGRIDS
 
                     cMyCell cell = new cMyCell();
                     cell.Read(ref bReader, nCellVer);
-                  //  LstThing.Add(cell);
+                    //  LstThing.Add(cell);
 
-                    ThingPool.Add( cell.GetKey(), cell ); 
+                    ThingPool.Add(cell.GetKey(), cell);
                 }
 
 
             }
             finally
             {
-                      
-            }
-			// create path findere map
 
-			// create path finder struct during loading
-			//InitializePathFindMap (); 
-			GetPathFinder().ApplyMap( map ); // apply here for new nodes
+            }
+            // create path findere map
+
+            // create path finder struct during loading
+            //InitializePathFindMap (); 
+            GetPathFinder().ApplyMap(map); // apply here for new nodes
 
             return true;
 
@@ -1154,162 +1113,165 @@ namespace MYGRIDS
         cMyLayer Layer;                                   //不公開。以免被誤操作。 （兩造 座標系不同）
         public Dictionary<string, cMyCell> ThingPool;     // 地上物 集合
 
-		//=============================================================
-		// Widget for pathfinding
-		//=============================================================
-		private bool[,] map;							  // path find 	
-	//	private bool[,] mask;							  // ignore path find 	
-		//public List<Point> DynMask;     				  // ignore for pathfind
-		//private SearchParameters searchParameters;
-	
-		private PathFinder pathfinder;
+        //=============================================================
+        // Widget for pathfinding
+        //=============================================================
+        private bool[,] map;							  // path find 	
+        //	private bool[,] mask;							  // ignore path find 	
+        //public List<Point> DynMask;     				  // ignore for pathfind
+        //private SearchParameters searchParameters;
 
-		List<Point> IgnorePool;     				  // ignore for pathfind
+        private PathFinder pathfinder;
 
-		public PathFinder GetPathFinder()
-		{
-			if( pathfinder  == null )
-			{
-				InitializePathFindMap();
-				pathfinder = new PathFinder( map );
-			}
-			return pathfinder;
-		}
+        List<Point> IgnorePool;     				  // ignore for pathfind
 
-		public void ClearIgnorePool()
-		{
-			if( IgnorePool != null )
-				IgnorePool.Clear ();
+        public PathFinder GetPathFinder()
+        {
+            if (pathfinder == null)
+            {
+                InitializePathFindMap();
+                pathfinder = new PathFinder(map);
+            }
+            return pathfinder;
+        }
 
-			GetPathFinder().bIsDirty = true;
-		}
+        public void ClearIgnorePool()
+        {
+            if (IgnorePool != null)
+                IgnorePool.Clear();
 
-		public void  AddIgnorePool( List<iVec2> ivecPool )
-		{
-			if (ivecPool == null) {
-				//GetPathFinder ().SetIgnorePool ( IgnorePool ); // clear all mask
-				return ;
-			}
-			if(IgnorePool == null  )
-				IgnorePool = new List<Point>();
+            GetPathFinder().bIsDirty = true;
+        }
 
-			foreach( iVec2 v in ivecPool )
-			{
-			//	mask[ v.X+hW , v.Y+hH ] = false;
-				IgnorePool.Add( new Point( v.X+hW , v.Y+hH ) );
-			}
-			//GetPathFinder ().SetIgnorePool ( IgnorePool );
-			GetPathFinder().bIsDirty = true;
-		}
+        public void AddIgnorePool(List<iVec2> ivecPool)
+        {
+            if (ivecPool == null)
+            {
+                //GetPathFinder ().SetIgnorePool ( IgnorePool ); // clear all mask
+                return;
+            }
+            if (IgnorePool == null)
+                IgnorePool = new List<Point>();
 
-		public void  AddIgnorePos( iVec2 v )
-		{
-			if(IgnorePool == null  )
-				IgnorePool = new List<Point>();
+            foreach (iVec2 v in ivecPool)
+            {
+                //	mask[ v.X+hW , v.Y+hH ] = false;
+                IgnorePool.Add(new Point(v.X + hW, v.Y + hH));
+            }
+            //GetPathFinder ().SetIgnorePool ( IgnorePool );
+            GetPathFinder().bIsDirty = true;
+        }
 
-			IgnorePool.Add (new Point( v.X+hW , v.Y+hH ));
+        public void AddIgnorePos(iVec2 v)
+        {
+            if (IgnorePool == null)
+                IgnorePool = new List<Point>();
 
-			GetPathFinder().bIsDirty = true;
-		}
+            IgnorePool.Add(new Point(v.X + hW, v.Y + hH));
 
-		// path find func . take care to use it
-		public List<iVec2> PathFinding( iVec2 st , iVec2 ed , int nDist )
-		{
-			List<iVec2> pool = new List<iVec2> ();
+            GetPathFinder().bIsDirty = true;
+        }
 
-			//InitializePathFindMap (); // maybe move out later
+        // path find func . take care to use it
+        public List<iVec2> PathFinding(iVec2 st, iVec2 ed, int nDist)
+        {
+            List<iVec2> pool = new List<iVec2>();
 
-			var startLocation = new Point(st.X+hW, st.Y+hH);  // convert srw  to path find 
-			var endLocation = new Point(ed.X+hW, ed.Y+hH);
+            //InitializePathFindMap (); // maybe move out later
 
-			PathFinder pathFinder = GetPathFinder();			// new method to get path
+            var startLocation = new Point(st.X + hW, st.Y + hH);  // convert srw  to path find 
+            var endLocation = new Point(ed.X + hW, ed.Y + hH);
 
-			// check if need refresh
-			if( pathFinder.bIsDirty  == true )
-			{		
-				pathFinder.ApplyMap (map);			// need apply every time for new find
-				pathFinder.ApplyMaskPoint (IgnorePool);	// need apply every time. 			
-				pathFinder.bIsDirty = false;
-			}
-		
-			pathFinder.nMaxStep = nDist;			// max dist
+            PathFinder pathFinder = GetPathFinder();			// new method to get path
 
-			List<Point> path = pathFinder.FindPath(startLocation , endLocation);
+            // check if need refresh
+            if (pathFinder.bIsDirty == true)
+            {
+                pathFinder.ApplyMap(map);			// need apply every time for new find
+                pathFinder.ApplyMaskPoint(IgnorePool);	// need apply every time. 			
+                pathFinder.bIsDirty = false;
+            }
 
-		
-			foreach( Point pt in path)
-			{
-				iVec2 pos = new iVec2( pt.X-hW , pt.Y -hH );
-				pool.Add( pos );
-			}
+            pathFinder.nMaxStep = nDist;			// max dist
 
-			return  pool;
-		}
+            List<Point> path = pathFinder.FindPath(startLocation, endLocation);
 
-		public List<iVec2> MoveAbleCell( iVec2 st , int nDist )
-		{
-			List<iVec2> pool = new List<iVec2> ();
-			
-			//InitializePathFindMap (); // maybe move out later
-			
-			var startLocation = new Point(st.X+hW, st.Y+hH);  // convert srw  to path find 
-			PathFinder pathFinder = GetPathFinder();			// new method to get path
-			
-			// check if need refresh
-			if( pathFinder.bIsDirty  == true )
-			{		
-				pathFinder.ApplyMap (map);			// need apply every time for new find
-				pathFinder.ApplyMaskPoint (IgnorePool);	// need apply every time. 			
-				pathFinder.bIsDirty = false;
-			}
-			
-			//pathFinder.nMaxStep = nDist;			// max dist
-			
-			List<Point> path = pathFinder.MoveAble(startLocation , nDist );
-			
-			
-			foreach( Point pt in path)
-			{
-				iVec2 pos = new iVec2( pt.X-hW , pt.Y -hH );
-				pool.Add( pos );
-			}
-			
-			return  pool;
 
-		}
+            foreach (Point pt in path)
+            {
+                iVec2 pos = new iVec2(pt.X - hW, pt.Y - hH);
+                pool.Add(pos);
+            }
 
-		private void InitializePathFindMap()
-		{
-			//  □ □ □ □ □ □ □
-			//  □ □ □ □ □ □ □
-			//  □ S □ □ □ F □
-			//  □ □ □ □ □ □ □
-			//  □ □ □ □ □ □ □
-			
-			this.map = new bool[ MaxW , MaxH ];
-			for (int y = 0; y < MaxH; y++) {
-				for (int x = 0; x < MaxW; x++){
-					map [x, y] = IsWalkAbleTile( Layer.GetValue( x , y ) );
-				}
-			}
-//			this.mask = new bool[ MaxW , MaxH ];
-//			for (int y = 0; y < MaxH ; y++)
-//				for (int x = 0; x < MaxW ; x++)
-//					mask[x, y] = true;
+            return pool;
+        }
 
-		}
+        public List<iVec2> MoveAbleCell(iVec2 st, int nDist)
+        {
+            List<iVec2> pool = new List<iVec2>();
 
-		public static bool IsWalkAbleTile( _TILE t )	
-		{
-			if ( t == _TILE._NULL ||
-			     t == _TILE._RIVER||    // 河流
-			     t == _TILE._LAKE // 湖
-			    ) 
-			{
-				return false;
-			} 
-			return true;
-		}
+            //InitializePathFindMap (); // maybe move out later
+
+            var startLocation = new Point(st.X + hW, st.Y + hH);  // convert srw  to path find 
+            PathFinder pathFinder = GetPathFinder();			// new method to get path
+
+            // check if need refresh
+            if (pathFinder.bIsDirty == true)
+            {
+                pathFinder.ApplyMap(map);			// need apply every time for new find
+                pathFinder.ApplyMaskPoint(IgnorePool);	// need apply every time. 			
+                pathFinder.bIsDirty = false;
+            }
+
+            //pathFinder.nMaxStep = nDist;			// max dist
+
+            List<Point> path = pathFinder.MoveAble(startLocation, nDist);
+
+
+            foreach (Point pt in path)
+            {
+                iVec2 pos = new iVec2(pt.X - hW, pt.Y - hH);
+                pool.Add(pos);
+            }
+
+            return pool;
+
+        }
+
+        private void InitializePathFindMap()
+        {
+            //  □ □ □ □ □ □ □
+            //  □ □ □ □ □ □ □
+            //  □ S □ □ □ F □
+            //  □ □ □ □ □ □ □
+            //  □ □ □ □ □ □ □
+
+            this.map = new bool[MaxW, MaxH];
+            for (int y = 0; y < MaxH; y++)
+            {
+                for (int x = 0; x < MaxW; x++)
+                {
+                    map[x, y] = IsWalkAbleTile(Layer.GetValue(x, y));
+                }
+            }
+            //			this.mask = new bool[ MaxW , MaxH ];
+            //			for (int y = 0; y < MaxH ; y++)
+            //				for (int x = 0; x < MaxW ; x++)
+            //					mask[x, y] = true;
+
+        }
+
+        public static bool IsWalkAbleTile(_TILE t)
+        {
+            if (t == _TILE._NULL ||
+                 t == _TILE._RIVER ||    // 河流
+                 t == _TILE._LAKE // 湖
+                )
+            {
+                return false;
+            }
+            return true;
+        }
 
     }
 

@@ -6,8 +6,6 @@ using System.Linq;
 using MYGRIDS;
 using MyClassLibrary;			// for parser string
 
-
-
 public class Panel_StageUI : MonoBehaviour 
 //public class Panel_StageUI : Singleton<Panel_StageUI>
 {
@@ -96,8 +94,248 @@ public class Panel_StageUI : MonoBehaviour
 	Dictionary< int , Panel_unit > IdentToUnit;			// allyPool
 	//Dictionary< int , UNIT_DATA > UnitDataPool;			// ConstData pool
 
+    void Awake()
+    {
+        instance = this; 		// special singleton
+        bIsReady = false;
+        bIsStageEnd = false;
+        //UIRoot mRoot = NGUITools.FindInParents<UIRoot>(gameObject);	
+        //fUIRatio = (float)mRoot.activeHeight / Screen.height;
 
-	// ScreenRatio
+        //float ratio = (float)mRoot.activeHeight / Screen.height;
+
+        // UI Event
+        // UIEventListener.Get(BackGroundObj).onClick += OnBackGroundClick;
+
+        // grid
+        //Grids = new cMyGrids ();
+        GameScene.Instance.Initial();							// it will avoid double initial inside.
+
+        Grids = GameScene.Instance.Grids;						// smart pointer reference
+
+        //	ActionPool = List< uAction >();				// record all action to do 
+        // Debug Code jump to stage
+        //	GameDataManager.Instance.nStageID = 1;
+
+
+        // create singloten
+
+        // can't open panel in awake
+        // Don't open create panel in stage awake. i have develop mode that place stage in scene initial. the panelmanager don't initial here
+
+
+    }
+
+    // Use this for initialization
+    void Start()
+    {
+
+        long tick = System.DateTime.Now.Ticks;
+
+        System.GC.Collect();			// Free memory resource here
+
+        // create pool
+        CreateAllDataPool();
+
+        Debug.Log("stage srart loding");
+
+        // loading panel
+        //	PanelManager.Instance.OpenUI( "Panel_Loading");
+        bIsLoading = true;
+        //	StartCoroutine("StageLoading" );
+
+        // clear data
+        Clear();
+
+        Debug.Log("stageloding:clearall");
+        // load const data
+        StageData = ConstDataManager.Instance.GetRow<STAGE_DATA>(GameDataManager.Instance.nStageID);
+        if (StageData == null)
+        {
+            Debug.LogFormat("stageloding:StageData fail with ID {0}  ", GameDataManager.Instance.nStageID);
+            return;
+        }
+
+        // load scene file
+        if (LoadScene(StageData.n_SCENE_ID) == false)
+        {
+            Debug.LogFormat("stageloding:LoadScene fail with ID {0} ", StageData.n_SCENE_ID);
+            return;
+        }
+
+        // EVENT 
+        //GameDataManager.Instance.nRound = 0;		// many mob pop in talk ui. we need a 0 round to avoid issue
+
+        //Record All Event to execute
+        //EvtPool.Clear();
+        char[] split = { ';' };
+        string[] strEvent = StageData.s_EVENT.Split(split);
+        for (int i = 0; i < strEvent.Length; i++)
+        {
+            int nEventID = int.Parse(strEvent[i]);
+            STAGE_EVENT evt = ConstDataManager.Instance.GetRow<STAGE_EVENT>(nEventID);
+            if (evt != null)
+            {
+                EvtPool.Add(nEventID, evt);
+            }
+        }
+
+        Debug.Log("stageloding:create event Pool complete");
+
+        //		// clear data
+        //		Clear ();
+        //
+        //		// load const data
+        //		StageData = ConstDataManager.Instance.GetRow<STAGE_DATA> ( GameDataManager.Instance.nStageID );
+        //		if( StageData == null )
+        //			return ;
+        //		
+        //		// load scene file
+        //		if( LoadScene( StageData.n_SCENE_ID ) == false )
+        //			return ;
+        //		
+        //		// EVENT 
+        //		//GameDataManager.Instance.nRound = 0;		// many mob pop in talk ui. we need a 0 round to avoid issue
+        //
+        //		//Record All Event to execute
+        //		//EvtPool.Clear();
+        //		char [] split = { ';' };
+        //		string [] strEvent = StageData.s_EVENT.Split( split );
+        //		for( int i = 0 ; i< strEvent.Length ; i++ )
+        //		{
+        //			int nEventID = int.Parse( strEvent[i] );
+        //			STAGE_EVENT evt = ConstDataManager.Instance.GetRow<STAGE_EVENT> ( nEventID );
+        //			if( evt != null ){
+        //				EvtPool.Add( nEventID , evt );
+        //			}
+        //		}
+
+
+        // regedit game event
+        RegeditGameEvent(true);
+        // create sub panel?
+
+        Panel_CMDUnitUI.OpenCMDUI(_CMD_TYPE._SYS, 0);
+        PanelManager.Instance.OpenUI(Panel_UnitInfo.Name);
+        PanelManager.Instance.OpenUI(Panel_MiniUnitInfo.Name);
+
+        //Dictionary< int , STAGE_EVENT > EvtPool;			// add event id 
+        bIsLoading = false;
+
+        long during = System.DateTime.Now.Ticks - tick;
+        Debug.Log("stage srart loding complete. total ticket:" + during);
+    }
+
+    void OnEnable()
+    {
+        // start the loading panel
+    }
+
+
+    // Update is called once per frame
+    void Update()
+    {
+
+        // check if first run
+        if (bIsReady == false)
+        {
+            if (bIsLoading)
+            {
+                return;
+            }
+            else
+            {
+                // close pre open panel
+                OnReady();
+
+            }
+            // check ready complete
+            return;
+        }
+        FixPlanePosition();
+
+        if (bIsStageEnd == true)
+            return;
+
+        // Real update
+        GameDataManager.Instance.Update();
+
+        // block other event
+        if (IsAnyActionRunning() == true) // wait all tween / fx / textbox / battle msg finish / unit move
+            return;							// don't check event run finish here.
+
+        //=== Unit Action ====
+        // Atk / mov / other action need to preform first
+        if (ActionManager.Instance.Run() == true)
+            return;
+
+        // avoid event close soon when call talkui already
+        if (PanelManager.Instance.CheckUIIsOpening(Panel_Talk.Name) == true)
+            return;
+
+        //==================	
+        if (RunEvent() == true)// this will throw many unit action and interrupt battle.
+            return;
+
+        // if one event need to run battle. it should pause ein event
+        if (BattleManager.Instance.IsBattlePhase())
+        {// this will throw many unit action
+            BattleManager.Instance.Run();
+            return;
+        }
+
+        //	if( GetEventToRun() == true )
+        //		return;
+
+        //	if( IsRunningEvent() == true  )
+        //		return true; // block other action  
+
+
+        // check if need pop cmd UI auto
+        if (CheckPopNextCMD() == true)
+            return;
+
+        if (CheckUnitDead() == true) // check here for event_manager  can detect hp ==0 first , some event may relive the deading unit
+            return;
+
+        // check drop event
+        if (BattleManager.Instance.ProcessDrop() == true)
+            return;
+
+        //===================		// this will throw unit action or trig Event
+        if (RunCampAI(GameDataManager.Instance.nActiveCamp) == false)
+        {
+            // no ai to run. go to next faction
+            GameDataManager.Instance.NextCamp();
+        }
+
+
+        //===================onchar
+
+        // startup panel when opening event done.
+        if (GameDataManager.Instance.nRound == 0)
+        {
+            GameDataManager.Instance.nRound = 1;			  // Go to round 1 	
+            PanelManager.Instance.OpenUI(Panel_Round.Name);
+            //StageWeakUpCampEvent cmd = new StageWeakUpCampEvent ();
+            //cmd.nCamp = GameDataManager.Instance.nActiveCamp;
+            //GameEventManager.DispatchEvent ( cmd );
+        }
+
+    }
+
+    void OnDestroy()
+    {
+        // free singl
+        instance = null;
+
+        RegeditGameEvent(false);
+        // create singloten
+
+
+    }
+    
+    // ScreenRatio
 	// float fUIRatio;
 	public void CreateAllDataPool()
 	{
@@ -195,46 +433,6 @@ public class Panel_StageUI : MonoBehaviour
 
 	}
 
-	void Awake( ){	
-		instance = this; 		// special singleton
-		bIsReady = false;
-		bIsStageEnd = false;
-		//UIRoot mRoot = NGUITools.FindInParents<UIRoot>(gameObject);	
-		//fUIRatio = (float)mRoot.activeHeight / Screen.height;
-
-		//float ratio = (float)mRoot.activeHeight / Screen.height;
-
-		// UI Event
-		// UIEventListener.Get(BackGroundObj).onClick += OnBackGroundClick;
-	
-		// grid
-		//Grids = new cMyGrids ();
-		GameScene.Instance.Initial ();							// it will avoid double initial inside.
-
-		Grids = GameScene.Instance.Grids;						// smart pointer reference
-
-
-	//	ActionPool = List< uAction >();				// record all action to do 
-		// Debug Code jump to stage
-	//	GameDataManager.Instance.nStageID = 1;
-
-
-		// create singloten
-
-		// can't open panel in awake
-		// Don't open create panel in stage awake. i have develop mode that place stage in scene initial. the panelmanager don't initial here
-	
-
-	}
-
-
-
-	void OnEnable()
-	{
-		// start the loading panel
-
-	}
-
 	void Clear()
 	{
 		//
@@ -282,105 +480,6 @@ public class Panel_StageUI : MonoBehaviour
 //		} while (true);
 //
 //	}
-
-
-	// Use this for initialization
-	void Start () {
-
-		long tick = System.DateTime.Now.Ticks;
-
-		System.GC.Collect();			// Free memory resource here
-
-		// create pool
-		CreateAllDataPool();
-
-		Debug.Log( "stage srart loding"  );
-
-		// loading panel
-	//	PanelManager.Instance.OpenUI( "Panel_Loading");
-		bIsLoading = true;
-	//	StartCoroutine("StageLoading" );
-
-		// clear data
-		Clear ();
-		
-		Debug.Log( "stageloding:clearall"  );		
-		// load const data
-		StageData = ConstDataManager.Instance.GetRow<STAGE_DATA> ( GameDataManager.Instance.nStageID );
-		if( StageData == null ){
-			Debug.LogFormat( "stageloding:StageData fail with ID {0}  "  , GameDataManager.Instance.nStageID );
-			return;
-		}
-		
-		// load scene file
-		if( LoadScene( StageData.n_SCENE_ID ) == false ){
-			Debug.LogFormat( "stageloding:LoadScene fail with ID {0} "   , StageData.n_SCENE_ID );
-			return;
-		}
-		
-		// EVENT 
-		//GameDataManager.Instance.nRound = 0;		// many mob pop in talk ui. we need a 0 round to avoid issue
-		
-		//Record All Event to execute
-		//EvtPool.Clear();
-		char [] split = { ';' };
-		string [] strEvent = StageData.s_EVENT.Split( split );
-		for( int i = 0 ; i< strEvent.Length ; i++ )
-		{
-			int nEventID = int.Parse( strEvent[i] );
-			STAGE_EVENT evt = ConstDataManager.Instance.GetRow<STAGE_EVENT> ( nEventID );
-			if( evt != null ){
-				EvtPool.Add( nEventID , evt );
-			}
-		}
-		
-		Debug.Log( "stageloding:create event Pool complete"   );
-
-//		// clear data
-//		Clear ();
-//
-//		// load const data
-//		StageData = ConstDataManager.Instance.GetRow<STAGE_DATA> ( GameDataManager.Instance.nStageID );
-//		if( StageData == null )
-//			return ;
-//		
-//		// load scene file
-//		if( LoadScene( StageData.n_SCENE_ID ) == false )
-//			return ;
-//		
-//		// EVENT 
-//		//GameDataManager.Instance.nRound = 0;		// many mob pop in talk ui. we need a 0 round to avoid issue
-//
-//		//Record All Event to execute
-//		//EvtPool.Clear();
-//		char [] split = { ';' };
-//		string [] strEvent = StageData.s_EVENT.Split( split );
-//		for( int i = 0 ; i< strEvent.Length ; i++ )
-//		{
-//			int nEventID = int.Parse( strEvent[i] );
-//			STAGE_EVENT evt = ConstDataManager.Instance.GetRow<STAGE_EVENT> ( nEventID );
-//			if( evt != null ){
-//				EvtPool.Add( nEventID , evt );
-//			}
-//		}
-		
-
-		// regedit game event
-		RegeditGameEvent( true );	
-		// create sub panel?
-
-		Panel_CMDUnitUI.OpenCMDUI( _CMD_TYPE._SYS , 0 );
-		PanelManager.Instance.OpenUI( Panel_UnitInfo.Name );
-		PanelManager.Instance.OpenUI( Panel_MiniUnitInfo.Name );
-
-		//Dictionary< int , STAGE_EVENT > EvtPool;			// add event id 
-		bIsLoading = false;	
-
-		long during = System.DateTime.Now.Ticks-tick;
-		Debug.Log( "stage srart loding complete. total ticket:"  + during );
-
-
-	}
 
 	void FixPlanePosition()
 	{
@@ -458,106 +557,6 @@ public class Panel_StageUI : MonoBehaviour
 
 		bIsReady = true;		// all ready .. close the loading ui
 	}
-
-	// Update is called once per frame
-	void Update () {
-
-		// check if first run
-		if( bIsReady == false ){
-			if( bIsLoading ) {
-				return;
-			}
-			else {
-				// close pre open panel
-				OnReady();
-
-			}
-			// check ready complete
-			return;
-		}
-		FixPlanePosition ();
-
-		if (bIsStageEnd == true)
-			return;
-
-		// Real update
-		GameDataManager.Instance.Update();
-
-		// block other event
-		if( IsAnyActionRunning() == true ) // wait all tween / fx / textbox / battle msg finish / unit move
-			return;							// don't check event run finish here.
-
-		//=== Unit Action ====
-		// Atk / mov / other action need to preform first
-		if (ActionManager.Instance.Run () == true)
-			return;
-
-		// avoid event close soon when call talkui already
-		if( PanelManager.Instance.CheckUIIsOpening( Panel_Talk.Name) == true )
-			return ;
-
-		//==================	
-		if( RunEvent( ) == true )// this will throw many unit action and interrupt battle.
-			return ;
-
-		// if one event need to run battle. it should pause ein event
-		if (BattleManager.Instance.IsBattlePhase ()) {// this will throw many unit action
-			BattleManager.Instance.Run();
-			return;
-		}
-
-	//	if( GetEventToRun() == true )
-	//		return;
-
-	//	if( IsRunningEvent() == true  )
-	//		return true; // block other action  
-
-
-		// check if need pop cmd UI auto
-		if ( CheckPopNextCMD () == true)
-			return;
-
-		if (CheckUnitDead () == true) // check here for event_manager  can detect hp ==0 first , some event may relive the deading unit
-			return;
-
-		// check drop event
-		if (BattleManager.Instance.ProcessDrop () == true)
-			return;
-
-		//===================		// this will throw unit action or trig Event
-		if ( RunCampAI( GameDataManager.Instance.nActiveCamp ) == false )
-		{
-			// no ai to run. go to next faction
-			GameDataManager.Instance.NextCamp();
-		}
-
-
-		//===================onchar
-
-		// startup panel when opening event done.
-		if( GameDataManager.Instance.nRound == 0 )
-		{
-			GameDataManager.Instance.nRound  =1;			  // Go to round 1 	
-			PanelManager.Instance.OpenUI( Panel_Round.Name ); 
-			//StageWeakUpCampEvent cmd = new StageWeakUpCampEvent ();
-			//cmd.nCamp = GameDataManager.Instance.nActiveCamp;
-			//GameEventManager.DispatchEvent ( cmd );
-		}
-
-	}
-
-	void OnDestroy()
-	{
-		// free singl
-		instance = null;
-
-		RegeditGameEvent( false );
-		// create singloten
-
-
-	}
-
-
 
 	void OnCellClick(GameObject go)
 	{
@@ -786,7 +785,6 @@ public class Panel_StageUI : MonoBehaviour
 		//unit.Identify;
 	}
 
-
 	void OnMobClick(GameObject go)
 	{
 		if( IsAnyActionRunning() == true )
@@ -875,7 +873,6 @@ public class Panel_StageUI : MonoBehaviour
 	}
 	bool LoadScene( int nScnid )
 	{
-
 		SCENE_NAME scn = ConstDataManager.Instance.GetRow<SCENE_NAME> ( nScnid );
 		if (scn == null){
 			Debug.LogFormat( "LoadScene fail with ID {0}" , nScnid );
@@ -1330,8 +1327,6 @@ public class Panel_StageUI : MonoBehaviour
 		return false;
 	}
 
-
-
 	// Check event
 	bool CheckEventCanRun( STAGE_EVENT evt )
 	{
@@ -1525,9 +1520,6 @@ public class Panel_StageUI : MonoBehaviour
 
 		return true ;
 	}
-
-
-
 
 	// Widget func	 
 

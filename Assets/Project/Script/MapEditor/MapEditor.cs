@@ -5,73 +5,68 @@ using MYGRIDS;
 [ExecuteInEditMode]
 public class MapEditor : MonoBehaviour
 {
+    public static MapEditor Instance;
+
+    private static MapEditor _instance;
     public cMyGrids Grids = new cMyGrids();				// main grids . only one    // Use this for initialization
     public GameObject TilePlaneObj; // plane of all tiles sprite
+    public string MapName;
     float fMinOffX;
     float fMaxOffX;
     float fMinOffY;
     float fMaxOffY;
+
     /// <summary>
-    /// 是否已經初始化
+    /// Const Data資料
     /// </summary>
-    private bool _init = false;
-
-    void Start()
-    {
-    }
-
+    private static ConstDataManager _constData;
     void OnEnable()
     {
-        if (!_init)
-        {
-            Init();
-            _init = true;
-        }
-        //// load scene file
-        //if (LoadScene(1) == false)
-        //{
-        //    Debug.LogFormat("stageloding:LoadScene fail with ID {0} ", 1);
-        //    return;
-        //}
+        Instance = this;
+
+        Init();
+    }
+
+    void OnDisable()
+    {
+        Instance = null;
     }
 
     // Update is called once per frame
     void Update()
     {
-        int i = 0;
-        i++;
     }
 
     private void Init()
     {
-        ConstDataManager.Instance.NormalReadDataStreaming("pcz/", Config.COMMON_DATA_NAMES);
+        if (_constData == null)
+        {
+            ConstDataManager.Instance.NormalReadDataStreaming("pcz/", Config.COMMON_DATA_NAMES);
+            _constData = ConstDataManager.Instance;
+        }
     }
 
-    public bool LoadScene(int nScnid)
+    public bool LoadScene(int sceneID)
     {
+        Init();
+
         ClearScene();
-        ConstDataManager.Instance.NormalReadDataStreaming("pcz/", Config.COMMON_DATA_NAMES);
 
-        string dataPathRelativeAssets = "scn/";
-        string rootPath = null;
+        SCENE_NAME scn = _constData.GetRow<SCENE_NAME>(sceneID);
+        if (scn == null)
+        {
+            Debug.LogFormat("LoadScene fail with ID {0}", sceneID);
+            return false;
+        }
 
-        rootPath = "file://" + Application.dataPath + "/StreamingAssets/" + dataPathRelativeAssets + "SRW000" + ".scn";
-
-        // real to binary
+        string rootPath = "file://" + Application.dataPath + "/StreamingAssets/scn/" + scn.s_MODLE_ID + ".scn";
         WWW www = new WWW(rootPath);
-        //		if(endFunc != null){
-        //			yield return www;
-        //		}else{
         while (!www.isDone)
         {
-
+            //Debug.Log("Load scene file fail.(paht=" + rootPath);
+            //return false ;
         }
-        //		}
-        //		string txt = Application.dataPath;
-        //		string txt2 = Application.persistentDataPath;
-        //		string utext = txt + "/" +txt2;
-        //		Debug.Log( "unity data path :"+utext );
-
+        MapName = scn.s_MODLE_ID;
         Debug.Log("load scn file on:" + rootPath);
 
         if (Grids.Load(www.bytes) == true)
@@ -98,11 +93,6 @@ public class MapEditor : MonoBehaviour
             // reget the drag limit 
             Resize();
         }
-
-        // change bgm '
-        // all stage have start event for speicial bgm
-        //GameSystem.PlayBGM ( scn.n_BGM );
-
 
         return true;
     }
