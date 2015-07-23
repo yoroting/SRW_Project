@@ -317,6 +317,7 @@
      <Compile Include="Assets\Project\Script\Panel\Panel_Skill\Panel_Skill.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_StageInfo\Panel_StageInfo.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_StageUI\Panel_StageUI.cs" />
+     <Compile Include="Assets\Project\Script\Panel\Panel_StoryUI\Panel_char.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_StoryUI\StoryUIPanel.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_TalkUI\Panel_Talk.cs" />
      <Compile Include="Assets\Project\Script\Panel\Panel_Tip\Panel_Tip.cs" />

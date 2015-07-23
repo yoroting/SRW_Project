@@ -10,9 +10,14 @@ public class Config
 		"TEXTDATA",
 	};
 
+	public static int BigMapTileW = 64;
+	public static int BigMapTileH = 64;
+
+	// stage
 	public static int TileW = 100;
 	public static int TileH = 100;
 	public static int TileMAX = 40;
+
 	public static int StartStory = 1;
 
 	public static int TextSpeed = 0;			// 0 is very fast
@@ -30,9 +35,11 @@ public class Config
 	public static float HIT	=100.0f;
 	public static float DefReduce	=50.0f;			// 純防禦的減傷
 	public static float AssistRate = 8.0f;
+	public static int   MaxCharges = 5;				//
 
 	public static bool GOD = true;
 	public static bool MOBAI = true;				// all mob no atk 
+	public static bool DRAWGRID = false;
 
 	public static int  WIDTH = 960;
 	public static int  HEIGHT = 640;

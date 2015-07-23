@@ -66,7 +66,15 @@ public class uAction
 		}
 	}
 
+	public void AddHitResult( cHitResult hit )
+	{
+		if( HitResult == null )
+			HitResult = new List<cHitResult>();
 
+		if (hit != null) {
+			HitResult.Add( hit );
+		}
+	}
 };
 
 
@@ -149,6 +157,7 @@ public partial class ActionManager
 					}
 					}
 					break;
+
 					// normal action
 					default:
 					{	
@@ -319,12 +328,27 @@ public partial class ActionManager
 							pUnit.ShowValueEffect( res.Value1 , 0 ); // HP
 							if( res.Value1 != 0 ) // maybe change data in  battle manage
 							{
-//								cUnitData pData = GameDataManager.Instance.GetUnitDateByIdent (res.Ident);
-//								if (pData != null) {
 								pUnit.pUnitData.AddHp (res.Value1   );
-//								}
 							}
 							
+						}break;
+						case cHitResult._TYPE._MP:
+						{
+							if( res.Value1 != 0 ) {// maybe change data in  battle manage
+								pUnit.pUnitData.AddMp (res.Value1   );
+							}
+						}break;
+						case cHitResult._TYPE._SP:
+						{
+							if( res.Value1 != 0 ) {// maybe change data in  battle manage
+								pUnit.pUnitData.AddSp (res.Value1   );
+							}
+						}break;
+						case cHitResult._TYPE._CHARGES:
+						{
+							if( res.Value1 != 0 ) {// maybe change data in  battle manage
+								pUnit.pUnitData.AddCharges (res.Value1   );
+							}
 						}break;
 						case cHitResult._TYPE._ADDBUFF: // add buff
 						{

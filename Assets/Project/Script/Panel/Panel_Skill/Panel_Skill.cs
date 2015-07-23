@@ -66,7 +66,7 @@ public class Panel_Skill : MonoBehaviour {
 	// 
 
 
-	public void SetData( cUnitData data , _SKILL_TYPE eType )
+	public void SetData( cUnitData data , _SKILL_TYPE eType , cUnitData target , _CMD_TYPE cmdType  )
 	{
 		if ( eType != _SKILL_TYPE._SKILL && eType != _SKILL_TYPE._ABILITY ) {
 			return ; // don't change data
@@ -99,33 +99,6 @@ public class Panel_Skill : MonoBehaviour {
 				sklLst.Add( skl );
 			}
 
-//			int ISch = pData.nActSch [0];
-//			int ESch = pData.nActSch [1];
-//			int ELv = pData.GetSchoolLv (ESch);
-//
-//			foreach( SKILL skl in pTable )
-//			{
-//				if( skl.n_SCHOOL == 0 )	// == 0 is ability
-//					continue;
-//
-//				if( skl.n_PASSIVE == 1 )
-//					continue;
-//
-//				// normal 
-//				if( skl.n_SCHOOL != ESch )
-//					continue;
-//
-//				// cheat code for god
-//				if( Config.GOD ){
-//					sklLst.Add( skl );
-//					continue;
-//				}
-//
-//				if( skl.n_LEVEL_LEARN > ELv )
-//					continue;
-//
-//				sklLst.Add( skl );
-//			}
 		}
 		else if (eType == _SKILL_TYPE._ABILITY ) 		
 		{
@@ -148,29 +121,6 @@ public class Panel_Skill : MonoBehaviour {
 					continue;
 				sklLst.Add( skl );
 			}
-
-//			foreach( SKILL skl in pTable )
-//			{
-//				if( skl.n_SCHOOL > 0 ) // > 0 is school
-//					continue;
-//				if( skl.n_PASSIVE == 1 )
-//					continue;
-//
-//				if( Config.GOD ){
-//					sklLst.Add( skl );
-//					continue;
-//				}
-//				// check char have this ability
-//
-//				if( pData.AbilityPool.ContainsKey( skl.n_ID  ) == false ){
-//					continue;
-//				}
-//
-//				if( skl.n_LEVEL_LEARN > CLv )
-//					continue;
-//				
-//				sklLst.Add( skl );
-//			}
 		}
 
 
@@ -187,6 +137,7 @@ public class Panel_Skill : MonoBehaviour {
 			item.SetItemData( MyTool.GetSkillName( skl.n_ID )  , skl.n_RANGE , skl.n_MP );
 			item.SetScrollView( ScrollView );
 
+			item.SetEnable(  pData.CheckSkillCanUse( skl ) && CheckSkillCanUse( skl , target , cmdType ) );
 		//	UIEventListener.Get(go).onClick += OnSkillClick; // for trig next line
 			UIEventListener.Get(go).onPress += OnSkillPress; // 
 
@@ -212,24 +163,10 @@ public class Panel_Skill : MonoBehaviour {
 		sklPool.Clear ();
 
 		MyTool.DestoryGridItem ( SkillGrid );
-//		UIGrid grid = SkillGrid.GetComponent<UIGrid>(); 
-//		if (grid == null) {
-//			return ;
-//		}
-//
-//		List< Transform > lst = grid.GetChildList ();
-//		//List< GameObject > CmdBtnList = MyTool.GetChildPool( NGuiGrids );
-//		
-//		if (lst != null) {
-//			foreach (Transform t in lst) {
-//			
-//				///UIEventListener.Get(obj).onClick -= OnCMDButtonClick;;  // no need.. destory soon
-//				NGUITools.Destroy (t.gameObject);
-//			}
-//		}
+
 	}
 
-	public static Panel_Skill OpenUI( int nIdent , _SKILL_TYPE eType  )
+	public static Panel_Skill OpenUI( int nIdent , _SKILL_TYPE eType , int nTarIdent , _CMD_TYPE cmdType  )
 	{
 		cUnitData data = GameDataManager.Instance.GetUnitDateByIdent ( nIdent );
 		if (data == null)
@@ -238,8 +175,10 @@ public class Panel_Skill : MonoBehaviour {
 		if (go == null) 
 			return null;
 
+		cUnitData TarUnit = GameDataManager.Instance.GetUnitDateByIdent ( nTarIdent );
+
 		Panel_Skill pUI = MyTool.GetPanel<Panel_Skill>( go );
-		pUI.SetData( data , eType );
+		pUI.SetData( data , eType  ,TarUnit , cmdType );
 		return pUI;
 	}
 
@@ -258,6 +197,24 @@ public class Panel_Skill : MonoBehaviour {
 
 	void CastSkill(  )
 	{
+		// check the skill is enable first
+		bool bCanCast = true;
+		foreach (KeyValuePair<GameObject  , SKILL> pair in sklPool) {
+			if( pair.Value.n_ID == nOpSkillID )
+			{
+				Item_Skill item = pair.Key.GetComponent<Item_Skill>();
+				if( item != null ){
+					bCanCast = item.bEnable;
+				}
+
+				break;
+			}
+		}
+		if (bCanCast == false)
+			return;
+
+
+
 		Panel_CMDUnitUI panel = MyTool.GetPanel<Panel_CMDUnitUI> ( PanelManager.Instance.OpenUI (Panel_CMDUnitUI.Name) );
 		if (panel != null) {
 			panel.SetSkillID( nOpSkillID );
@@ -351,6 +308,26 @@ public class Panel_Skill : MonoBehaviour {
 		} 
 	}
 
-
+	public bool CheckSkillCanUse( SKILL skl , cUnitData tarunit , _CMD_TYPE cmdType )
+	{
+		//cCMD.Instance.
+		int nDist = 0;
+		if (tarunit != null) {
+			nDist =  MYGRIDS.iVec2.Dist( tarunit.n_X , tarunit.n_Y , pData.n_X , pData.n_Y );
+		}
+		int nRange = skl.n_RANGE > 0 ? skl.n_RANGE : 1 ;
+		if (nDist > nRange) {
+			return false;
+		}
+		//====反擊時不能使用 點地 技能===============
+		if (cmdType == _CMD_TYPE._COUNTER) {
+			if( skl.n_TARGET >= 3 ){
+				 // AOE skill can't use
+				return false;
+			}
+		}
+		// check condition
+		return true;
+	}
 
 }

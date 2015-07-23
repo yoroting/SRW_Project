@@ -21,6 +21,8 @@ public class StoryUIPanel : MonoBehaviour {
 	public GameObject BackGroundTex;            // 大地圖背景貼圖
 	public GameObject PanelStoryText;           // 故事文字匡
 	public GameObject SkipButton;           	// 跳過
+	public GameObject GridObj;           		// grid obj
+
 
 	bool 	bIsLoading;							// load story ui
 	private int nTweenObjCount;
@@ -58,8 +60,30 @@ public class StoryUIPanel : MonoBehaviour {
 		//PanelManager.Instance.OpenUI( "Panel_Loading");
 		//bIsLoading = true;
 
-
-
+		if (GridObj != null) {
+			if( Config.DRAWGRID == true )
+			{
+#if DEBUG && UNITY_EDITOR
+				for( int i = -10 ; i < 10 ; i++ ){
+					for( int j = -10 ; j < 10 ; j++ ){
+						string skey = string.Format( "{0},{1}" , i , j );
+						Vector3 pos = new Vector3( i * 64 , j *64 , 0.0f ) ;
+						GameObject obj  = GridObj.Spawn( BackGroundTex.transform , pos );
+						if( obj != null ){
+							obj.SetActive( true );
+							UILabel lbl = obj.GetComponentInChildren< UILabel >(); 
+							if( lbl != null ){
+								lbl.text = skey;
+							}
+							obj.transform.localRotation = new Quaternion(); 
+							obj.transform.localScale = new Vector3( 1.0f, 1.0f ,1.0f);
+						}
+					}
+				}
+#endif //
+			}
+			GridObj.SetActive( false );
+		}
 	}
 
 //	IEnumerator StoryLoading()
@@ -253,7 +277,7 @@ public class StoryUIPanel : MonoBehaviour {
 		//PanelManager.Instance.DestoryUI (Name );
 	}
 
-	public GameObject AddChar( int nCharId , int nPosX , int PosY )
+	public GameObject AddChar( int nCharId , float fPosX , float fPosY )
 	{
 		// check or add
 		GameObject obj = null ;
@@ -301,21 +325,22 @@ public class StoryUIPanel : MonoBehaviour {
 		// pos
 		if( obj != null )
 		{
-			Vector3 v = new Vector3( nPosX , PosY ,0 );
+			Vector3 v = new Vector3( fPosX , fPosY ,0.0f );
 			obj.transform.localPosition = v;
 			return obj;
 		}
 		return null;
 	}
 
-	public void MoveChar( int nCharId , int nPosX , int nPosY )
+	public void MoveChar( int nCharId , float fPosX , float fPosY )
 	{
 		GameObject obj = m_idToCharObj[nCharId];
 		if( obj == null )
 			return;
-		TweenPosition t = TweenPosition.Begin ( obj , 3.0f , new Vector3( nPosX , nPosY , obj.transform.localPosition.z) ); //直接移動
+		TweenPosition t = TweenPosition.Begin ( obj , 3.0f , new Vector3( fPosX , fPosY , obj.transform.localPosition.z) ); //直接移動
 		if( t != null )
 		{
+		   t.SetStartToCurrentValue();
 		   t.SetOnFinished( OnTweenNotifyEnd);
 		   nTweenObjCount++;
 		}
@@ -360,6 +385,34 @@ public class StoryUIPanel : MonoBehaviour {
 		m_idToCharObj.Clear();
 	}
 
+	public void GrayChar(  int nCharId  )
+	{
+		if (nCharId == 0) {
+			foreach( KeyValuePair<int , GameObject > pair  in m_idToCharObj )
+			{
+				Panel_char p = pair.Value.GetComponent< Panel_char > ();
+				if( p != null )
+				{
+					p.StartGray();
+
+				}
+			}
+			// gray all
+			return ;
+		}
+
+
+		GameObject obj = m_idToCharObj[nCharId];
+		if( obj == null )
+			return;
+
+		Panel_char p2 = obj.GetComponent< Panel_char > ();
+		if( p2 != null )
+		{
+			p2.StartGray();			
+		}
+
+	}
 
 
 	public void AddStoryText( int StoryID )
@@ -410,96 +463,40 @@ public class StoryUIPanel : MonoBehaviour {
 
 	// this should be menthod  of text panel
 	// Sys func to parser one line script
-
 	void ParserScript( CTextLine line )
 	{
-		for( int i = 0 ; i < line.GetRowNum() ; i++ )
+		List<cTextFunc> funcList =line.GetFuncList();
+		foreach( cTextFunc func in funcList )
 		{
-			string s = line.GetString( i ).ToUpper();
-			if( s == "ADDCHAR" )
+			if( func.sFunc == "ADDCHAR" )
 			{
-				string sp = line.GetString( ++i );	if( sp == null ) return; //  null = error
-				List<string> lst = cTextArray.GetParamLst( sp );
-
-				// default value			
-				int[] array1 = new int[5];
-				int j = 0 ; 
-
-				foreach( string s2 in lst )
-				{
-					array1[j++] = int.Parse( s2.Trim( ) );
-
-				}
-
-				AddChar( array1[0] , array1[1] , array1[2] );
-
+				AddChar( func.I(0) , func.F(1)*Config.BigMapTileW , func.F(2)*Config.BigMapTileH );
 			}
-			else if( s == "MOVECHAR" )
+			else if( func.sFunc == "MOVECHAR" )
 			{
-				string sp = line.GetString( ++i );	if( sp == null ) return; //  null = error
-				List<string> lst = cTextArray.GetParamLst( sp );
-				
-				// default value			
-				int[] array1 = new int[5];
-				int j = 0 ; 
-				
-				foreach( string s2 in lst )
-				{
-					array1[j++] = int.Parse( s2.Trim( ) );
-					
-				}
-				
-				MoveChar( array1[0] , array1[1] , array1[2] );
+				MoveChar( func.I(0) , func.F(1)*Config.BigMapTileW , func.F(2)*Config.BigMapTileH );
 			}
-			else if( s == "DELCHAR" )
+			else if( func.sFunc == "DELCHAR" )			
 			{
-				string sp = line.GetString( ++i );	if( sp == null ) return; //  null = error
-				List<string> lst = cTextArray.GetParamLst( sp );
-				
-				// default value			
-				int[] array1 = new int[5];
-				int j = 0 ; 
-				
-				foreach( string s2 in lst )
-				{
-					array1[j++] = int.Parse( s2.Trim( ) );
-					
-				}
-				
-				DelChar( array1[0] , array1[1] );
+				DelChar(  func.I(0)  , func.I(1) );
 			}
-			else if( s == "DELALL" )
+			else if( func.sFunc == "DELALL" )			
 			{
-				string sp = line.GetString( ++i );	if( sp == null ) return; //  null = error
-				int nType = 0;
-				nType = int.Parse( sp.Trim() );
-				//if( lst.Count > 0 )
-				//	nID = int.Parse( lst[0] );
-				
-				DelAll( nType  );
-				//DelChar( nCharid , nType );
+				DelAll(  func.I(0)   );
 			}
-			else if( s == "TEXT" )
+			else if( func.sFunc == "GRAYALL" )			
 			{
-				string sp= line.GetString( ++i );	if( sp == null ) return; //  null = error 
-				//List<string> lst = cTextArray.GetParamLst( sp );
-				
-				// only 1 par default value
-				int nID = 0;
-				nID = int.Parse( sp.Trim() );
-				//if( lst.Count > 0 )
-				//	nID = int.Parse( lst[0] );
-			
-				AddStoryText( nID  );
+				GrayChar( 0 );
 			}
-			else if( s == "BGM" )
+			else if( func.sFunc == "TEXT" )
 			{
-				string sp1 = line.GetString( ++i );	if( sp1 == null ) return; //  null = error
-				int nBgm = int.Parse( sp1 );
-				GameSystem.PlayBGM( nBgm ) ;
-				
+				AddStoryText(  func.I(0)  );
 			}
-			else if( s == "END" )
+			else if( func.sFunc == "BGM" )			
+			{
+				GameSystem.PlayBGM(  func.I(0)  ) ;				
+			}
+			else if( func.sFunc == "END" )			
 			{
 				// no need param
 				End();
@@ -507,6 +504,107 @@ public class StoryUIPanel : MonoBehaviour {
 			}
 		}
 	}
+
+//	void ParserScript( CTextLine line )
+//	{
+//		List<cTextFunc> funcList =line.GetFuncList();
+//		foreach( cTextFunc func in funcList )
+//		//for( int i = 0 ; i < line.GetRowNum() ; i++ )
+//		{
+//			//string s = line.GetString( i ).ToUpper();
+//			if( func.sFunc == "ADDCHAR" )
+//			//if( s == "ADDCHAR" )
+//			{
+//			//	string sp = line.GetString( ++i );	if( sp == null ) return; //  null = error
+//			//	List<string> lst = cTextArray.GetParamLst( sp );
+//
+//				// default value			
+//			//	int[] array1 = new int[5];
+//			//	int j = 0 ; 
+//
+//			//	foreach( string s2 in lst )
+//			//	{
+//			//		array1[j++] = int.Parse( s2.Trim( ) );
+//
+//			//	}
+//
+//			//	AddChar( array1[0] , array1[1] , array1[2] );
+//				AddChar( func.I[0] , func.F[1] , func.F[2] );
+//
+//			}
+//			else if( s == "MOVECHAR" )
+//			{
+//				string sp = line.GetString( ++i );	if( sp == null ) return; //  null = error
+//				List<string> lst = cTextArray.GetParamLst( sp );
+//				
+//				// default value			
+//				int[] array1 = new int[5];
+//				int j = 0 ; 
+//				
+//				foreach( string s2 in lst )
+//				{
+//					array1[j++] = int.Parse( s2.Trim( ) );
+//					
+//				}
+//				
+//				MoveChar( array1[0] , array1[1] , array1[2] );
+//			}
+//			else if( s == "DELCHAR" )
+//			{
+//				string sp = line.GetString( ++i );	if( sp == null ) return; //  null = error
+//				List<string> lst = cTextArray.GetParamLst( sp );
+//				
+//				// default value			
+//				int[] array1 = new int[5];
+//				int j = 0 ; 
+//				
+//				foreach( string s2 in lst )
+//				{
+//					array1[j++] = int.Parse( s2.Trim( ) );
+//					
+//				}
+//				
+//				DelChar( array1[0] , array1[1] );
+//			}
+//			else if( s == "DELALL" )
+//			{
+//				string sp = line.GetString( ++i );	if( sp == null ) return; //  null = error
+//				int nType = 0;
+//				nType = int.Parse( sp.Trim() );
+//				//if( lst.Count > 0 )
+//				//	nID = int.Parse( lst[0] );
+//				
+//				DelAll( nType  );
+//				//DelChar( nCharid , nType );
+//			}
+//			else if( s == "TEXT" )
+//			{
+//				string sp= line.GetString( ++i );	if( sp == null ) return; //  null = error 
+//				//List<string> lst = cTextArray.GetParamLst( sp );
+//				
+//				// only 1 par default value
+//				int nID = 0;
+//				nID = int.Parse( sp.Trim() );
+//				//if( lst.Count > 0 )
+//				//	nID = int.Parse( lst[0] );
+//			
+//				AddStoryText( nID  );
+//			}
+//			else if( s == "BGM" )
+//			{
+//				string sp1 = line.GetString( ++i );	if( sp1 == null ) return; //  null = error
+//				int nBgm = int.Parse( sp1 );
+//				GameSystem.PlayBGM( nBgm ) ;
+//				
+//			}
+//			else if( s == "END" )
+//			{
+//				// no need param
+//				End();
+//				return;
+//			}
+//		}
+//	}
 
 
 }

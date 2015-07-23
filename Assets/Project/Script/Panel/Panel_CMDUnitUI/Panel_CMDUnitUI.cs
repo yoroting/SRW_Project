@@ -18,6 +18,8 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
 	public Panel_unit pCmder; 						// setup it
 
+	public int 	nAtkerId; 					// counter attacker
+
 	public GameObject NGuiGrids;
 
 	public GameObject CmdButton;
@@ -275,14 +277,14 @@ public class Panel_CMDUnitUI : MonoBehaviour
 	public void AbilityCmd( )
 	{
 		if (pCmder != null) {
-			Panel_Skill.OpenUI (pCmder.Ident () , _SKILL_TYPE._ABILITY );
+			Panel_Skill.OpenUI (pCmder.Ident () , _SKILL_TYPE._ABILITY , nAtkerId , cCMD.Instance.eCMDTYPE );
 		}
 	}
 
 	public void SkillCmd( )
 	{
 		if (pCmder != null) {
-			Panel_Skill.OpenUI (pCmder.Ident () , _SKILL_TYPE._SKILL );
+			Panel_Skill.OpenUI (pCmder.Ident () , _SKILL_TYPE._SKILL ,nAtkerId , cCMD.Instance.eCMDTYPE  );
 		}
 	}
 	
@@ -379,6 +381,13 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		CMD.eCMDID 	   = _CMD_ID._NONE;	
 
 	}
+
+	// 攻擊來源
+	public void SetAttacker( int  atkerid )
+	{
+		nAtkerId = atkerid;
+	}
+
 	//post
 	public void SetPos( int nGridX , int nGridY )
 	{
@@ -454,7 +463,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		// clear AOE
 		Panel_StageUI.Instance.ClearOverCellEffect ();
 		if (CMD.eCMDTARGET == _CMD_TARGET._SELF) {
-			Panel_Skill.OpenUI (pCmder.Ident (), _SKILL_TYPE._LAST);
+			Panel_Skill.OpenUI (pCmder.Ident (), _SKILL_TYPE._LAST ,0 , cCMD.Instance.eCMDTYPE );
 		} else {
 			int nRange = 1;
 			if (CMD.nSkillID > 0) {
@@ -739,12 +748,12 @@ public class Panel_CMDUnitUI : MonoBehaviour
 	}
 
 	// cmd STATIC FUNC 
-	public static Panel_CMDUnitUI OpenCMDUI( _CMD_TYPE type , int nIdent )
+	public static Panel_CMDUnitUI OpenCMDUI( _CMD_TYPE type , int nIdent , int TarIdent=0 )
 	{	
-		return OpenCMDUI (type, Panel_StageUI.Instance.GetUnitByIdent (nIdent));
+		return OpenCMDUI (type, Panel_StageUI.Instance.GetUnitByIdent (nIdent) , TarIdent );
 
 	}
-	public static Panel_CMDUnitUI OpenCMDUI( _CMD_TYPE type , Panel_unit cmder )
+	public static Panel_CMDUnitUI OpenCMDUI( _CMD_TYPE type , Panel_unit cmder ,int TarIdent=0 )
 	{
 		cCMD.Instance.eCMDTYPE = type; 
 		Panel_CMDUnitUI panel = MyTool.GetPanel<Panel_CMDUnitUI> ( PanelManager.Instance.OpenUI (Panel_CMDUnitUI.Name) );
@@ -757,6 +766,9 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		if (cmder != null) {
 			panel.SetCmder (cmder);
 		}
+
+		panel.SetAttacker (TarIdent);
+
 		cCMD.Instance.eCMDSTATUS = _CMD_STATUS._WAIT_CMDID;
 
 		panel.CreateCMDList (type);
@@ -793,7 +805,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		Panel_StageUI.Instance.ClearOverCellEffect (); // for atk cell
 
 		if (cCMD.Instance.nSkillID > 0) {
-			Panel_Skill.OpenUI( Panel_CMDUnitUI.JustGetCMDUI().pCmder.Ident() , _SKILL_TYPE._LAST );
+			Panel_Skill.OpenUI( Panel_CMDUnitUI.JustGetCMDUI().pCmder.Ident() , _SKILL_TYPE._LAST  , 0 , cCMD.Instance.eCMDTYPE );
 			cCMD.Instance.nSkillID =0;
 			return ;
 		}

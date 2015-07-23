@@ -672,5 +672,7 @@ public class cCMD{
 		}
 		return CmdlistArray [itype];
 	}
+
+
 }
 

@@ -419,6 +419,7 @@ public class MyScript {
 			}
 			else if( func.sFunc  == "MOVETOUNIT")  //  pop a group of mob
 			{
+				// 
 				StageMoveToUnitEvent evt = new StageMoveToUnitEvent();
 				evt.nAtkCharID = func.I(0);
 				evt.nDefCharID = func.I(1);

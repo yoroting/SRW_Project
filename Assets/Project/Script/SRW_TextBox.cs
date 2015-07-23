@@ -79,20 +79,17 @@ public class SRW_TextBox : MonoBehaviour {
 		//SetClickMode ();
 	}
 
-	// Use this for initialization
-	void Start () {
-		// first time to run
-	
-		// avoid blocked
-		GameObject obj = this.gameObject as GameObject;
-		if (obj.GetComponent<TweenWidth> () != null) {
-			nTweenObjCount --;
-		}
+	 // dis face & size
+	void OnEnable()
+	{
+		UI2DSprite ui2d = GetComponent<UI2DSprite>();
+		if (ui2d != null) {
 
-		UI2DSprite ui2d = obj.GetComponent<UI2DSprite>();
-		if(ui2d != null )
-		{
-
+			GameObject obj = this.gameObject as GameObject;
+			if (obj.GetComponent<TweenWidth> () != null) {
+				nTweenObjCount --;
+			}
+				
 			TweenWidth t = TweenWidth.Begin<TweenWidth>( this.gameObject , 0.5f );
 			if( t != null )
 			{
@@ -100,8 +97,38 @@ public class SRW_TextBox : MonoBehaviour {
 				t.to =  ui2d.width;
 				t.SetOnFinished( OnTweenNotifyEnd );
 				nTweenObjCount++;
-			}
+			}		
+			ui2d.width = 0; // ensure uio start from 0
 		}
+		if( _FaceTexObj != null  )
+		{
+			NGUITools.SetActive( _FaceTexObj , false );
+		}
+	}
+
+	// Use this for initialization
+	void Start () {
+		// first time to run
+	
+		// avoid blocked
+//		GameObject obj = this.gameObject as GameObject;
+//		if (obj.GetComponent<TweenWidth> () != null) {
+//			nTweenObjCount --;
+//		}
+//
+//		UI2DSprite ui2d = obj.GetComponent<UI2DSprite>();
+//		if(ui2d != null )
+//		{
+//
+//			TweenWidth t = TweenWidth.Begin<TweenWidth>( this.gameObject , 0.5f );
+//			if( t != null )
+//			{
+//				t.from = 0;
+//				t.to =  ui2d.width;
+//				t.SetOnFinished( OnTweenNotifyEnd );
+//				nTweenObjCount++;
+//			}
+//		}
 		// test code 
 
 		//UITextList list = _TextLineObj.GetComponent<UITextList> (); 

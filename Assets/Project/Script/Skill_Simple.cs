@@ -18,4 +18,9 @@ public class Skill_Simple : MonoBehaviour {
 	void Update () {
 	
 	}
+
+	void SetCanUse( bool bUse )
+	{
+
+	}
 }

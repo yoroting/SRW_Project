@@ -185,6 +185,7 @@ public class cUnitData{
 	public int n_LeaderIdent;	// follow leader
 	public int n_BornX;			// born Pox
 	public int n_BornY;
+			
 
 	// calcul attr
 	Dictionary< int , cAttrData > Attr; 		// 0-內功 , 1-外功  , 2-等級 , 3- buff 
@@ -198,15 +199,15 @@ public class cUnitData{
 
 	// Buff list
 
-	public Dictionary< int , int >		CDPool;				// all study school < cd type , round >
+//	public Dictionary< int , int >		CDPool;				// all study school < cd type , round > //
 	public cFightAttr					FightAttr;			// need update each calcul
 	//public cAttrData					BuffCondAttr;		// buff cond trig attr
 
 	public cBuffs						Buffs;				// all buffs of unit
-	public int []						Items;			// all buffs of unit
+	public int []						Items;				// 裝備道具
 
 	public int nActionTime;			//				行動次數
-
+	public int n_Charges;			//充能
 
 	// no need save
 	bool [] bUpdateFlag;
@@ -219,6 +220,12 @@ public class cUnitData{
 		nActionTime +=nTime ;		
 	}
 
+	public void AddCharges( int nChi )
+	{
+		n_Charges =	MyTool.ClampInt ( n_Charges+nChi  , 0 , Config.MaxCharges ); 
+
+	}
+
 	public cUnitData()
 	{
 		SchoolPool  = new Dictionary< int , int > ();
@@ -226,7 +233,7 @@ public class cUnitData{
 		SkillPool 	= new Dictionary< int , cSkillData > ();
 
 		Buffs = new cBuffs( this ); 
-		CDPool = new Dictionary< int , int > ();
+//		CDPool = new Dictionary< int , int > ();
 		
 		Attr = new Dictionary< int , cAttrData > (); 
 		nActSch = new int []{0,0};
@@ -243,6 +250,7 @@ public class cUnitData{
 
 		n_Lv = 1; // base lv
 		nActionTime = 1;
+		n_Charges = 0;
 	}
 
 	// setup update flag
@@ -1255,7 +1263,21 @@ public class cUnitData{
 	//============================================================
 	//
 
+	
+	public bool CheckSkillCanUse( SKILL skill )
+	{
+		if (skill == null)
+			return false;
 
+		if ( skill.n_MP > 0 && (skill.n_MP > this.n_MP) )
+			return false;
+		if ( skill.n_SP > 0 && (skill.n_SP > this.n_SP) )
+			return false;
+		if ( skill.n_CP > 0 && (skill.n_CP > this.n_Charges) )
+			return false;
+
+		return true;
+	}
 }
 
 //

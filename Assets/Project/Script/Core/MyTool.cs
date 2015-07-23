@@ -288,6 +288,15 @@ public class MyTool {
 		}
 	}
 
+	public static void SetLabelColor( GameObject go , Color color )
+	{
+		UILabel lbl = go.GetComponent< UILabel >();
+		if( lbl != null )
+		{
+			lbl.color = color;
+		}
+	}
+
 	public static void SetBuffIcon( GameObject go ,int nID , int nNum )
 	{
 		BuffIcon icon = go.GetComponent<BuffIcon>();
