@@ -73,7 +73,29 @@ public class ADDBUFF_E: cEffect
 	}
 }
 
-
+public class ADDCP_I: cEffect
+{
+	public ADDCP_I(  int cp ){		nValue = cp;	}
+	public int nValue ;
+	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){
+		if (Atker != null) {
+			list.Add( new cHitResult( cHitResult._TYPE._CP , Atker.n_Ident , nValue ) );
+			//list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF , Atker.n_Ident , nTarBuffID , Atker.n_Ident, nSkillID ,Defer.n_Ident  ) );
+		}
+	}
+}
+public class ADDCP_E: cEffect
+{
+	public ADDCP_E( int cp ){		nValue = cp;	}
+	public int nValue ;
+	
+	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 
+		if (Defer != null) {
+			//	list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF ,Defer.n_Ident , nBuffID ) );
+			list.Add( new cHitResult( cHitResult._TYPE._CP , Defer.n_Ident , nValue ) );
+		}
+	}
+}
 
 // Attr
 public class ADD_MAR: cEffect

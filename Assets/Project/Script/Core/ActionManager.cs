@@ -344,7 +344,7 @@ public partial class ActionManager
 								pUnit.pUnitData.AddSp (res.Value1   );
 							}
 						}break;
-						case cHitResult._TYPE._CHARGES:
+						case cHitResult._TYPE._CP:
 						{
 							if( res.Value1 != 0 ) {// maybe change data in  battle manage
 								pUnit.pUnitData.AddCharges (res.Value1   );

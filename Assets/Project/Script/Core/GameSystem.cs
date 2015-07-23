@@ -113,7 +113,7 @@ public class GameSystem : MonoBehaviour {
 
 #if DEBUG && UNITY_EDITOR
 	
-		//GameDataManager.Instance.nStageID = 2;
+		GameDataManager.Instance.nStageID = 2;
 #endif
 
 

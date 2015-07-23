@@ -25,7 +25,7 @@ public class cHitResult		//
 		_MP	 		,		// 增減 MP
 		_DEF		,		// 增減 DEF
 		_SP			,		// 增減 SP
-		_CHARGES	,		// 充能
+		_CP	,		// 充能
 
 
 		_ADDBUFF	,
@@ -352,7 +352,7 @@ public partial class BattleManager
 				}
 
 				// 攻擊者充能
-				pAtkAction.AddHitResult( new cHitResult( cHitResult._TYPE._CHARGES , nAtkerID , 1 ) );
+				pAtkAction.AddHitResult( new cHitResult( cHitResult._TYPE._CP , nAtkerID , 1 ) );
 			}
 			//should cal atk hit result for performance
 			//			Panel_unit unitAtk = Panel_StageUI.Instance.GetUnitByIdent( nAtkerID );
@@ -428,7 +428,7 @@ public partial class BattleManager
 				}
 
 				// 反擊者充能 
-				pCountAct.AddHitResult( new cHitResult( cHitResult._TYPE._CHARGES , nDeferID , 1 ) );
+				pCountAct.AddHitResult( new cHitResult( cHitResult._TYPE._CP , nDeferID , 1 ) );
 				//				Panel_unit unitDef = Panel_StageUI.Instance.GetUnitByIdent( nDeferID );
 				//				if( unitDef != null )
 				//				{
@@ -1200,7 +1200,7 @@ public partial class BattleManager
 		}
 
 		// 受擊者充能
-		resPool.Add( new cHitResult( cHitResult._TYPE._CHARGES , nDefer , 1 ) );
+		resPool.Add( new cHitResult( cHitResult._TYPE._CP , nDefer , 1 ) );
 		// Skill Hit spec Effect
 //		MyScript.Instance.RunSkillEffect ( pAtker , pDefer, pAtker.FightAttr.Skill.s_HIT_EFFECT , ref resPool ); // bad frame work
 	//	pAtker.DoSkillHitEffect ( pDefer , ref resPool );

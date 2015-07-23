@@ -624,6 +624,12 @@ public class MyScript {
 				//	CacheHitResultPool.Add( new cHitResult(cHitResult._TYPE._ADDBUFF , data_I.n_Ident , nBuffID )  );
 					
 				}
+				else if( func.sFunc  == "ADDCP_I") {
+					pool.Add( new ADDCP_I( func.I(0) ) );
+				}
+				else if( func.sFunc  == "ADDCP_E") {
+					pool.Add( new ADDCP_E( func.I(0) ) );
+				}
 				// Attr
 				else if( func.sFunc  == "ADD_MAR") {
 					pool.Add( new ADD_MAR( func.F(0) ) );

@@ -1822,6 +1822,11 @@ public class Panel_StageUI : MonoBehaviour
 		StagePopUnitEvent Evt = evt as StagePopUnitEvent;
 		if (Evt == null)
 			return;
+		// auto close all say window
+		TalkSayEndEvent sayevt = new TalkSayEndEvent();
+		sayevt.nChar = 0;		
+		GameEventManager.DispatchEvent ( sayevt  );
+
 		int nPopNum = 1;
 		if (Evt.nValue1 > 1)
 			nPopNum = Evt.nValue1;
@@ -1842,6 +1847,12 @@ public class Panel_StageUI : MonoBehaviour
 		StagePopGroupEvent Evt = evt as StagePopGroupEvent;
 		if (Evt == null)
 			return;
+
+		// auto close all say window
+		TalkSayEndEvent sayevt = new TalkSayEndEvent();
+		sayevt.nChar = 0;		
+		GameEventManager.DispatchEvent ( sayevt  );
+
 		// get leader ident
 		int nLeaderCharid = Evt.nLeaderCharID;
 		cUnitData pLeader = GameDataManager.Instance.GetUnitDateByCharID( nLeaderCharid );
@@ -1907,6 +1918,11 @@ public class Panel_StageUI : MonoBehaviour
 //		if( IdentToUnit.ContainsKey(nIdent) == false )  {
 //			Debug.Log( "ERR: can't find unit to move" );
 //		}
+		// auto close all say window
+		TalkSayEndEvent sayevt = new TalkSayEndEvent();
+		sayevt.nChar = 0;		
+		GameEventManager.DispatchEvent ( sayevt  );
+
 
 		Panel_unit unit = GetUnitByIdent ( nIdent); // IdentToUnit[ nIdent ];
 		if( unit != null )
