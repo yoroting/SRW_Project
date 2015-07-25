@@ -1,0 +1,37 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Project\Script\Core\GameSystem.cs">
+    <Files>
+      <File FileName="Assets\Project\Script\Core\MyScript.cs" Line="316" Column="22" />
+      <File FileName="Assets\Project\Script\Data\cUnitData.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Panel\Panel_StoryUI\StoryUIPanel.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Panel\Panel_StageUI\Panel_StageUI.cs" Line="1789" Column="46" />
+      <File FileName="Assets\Project\Script\Core\Config.cs" Line="34" Column="2" />
+      <File FileName="Assets\Project\Script\Core\ConstDataTables.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Core\GameSystem.cs" Line="102" Column="30" />
+      <File FileName="Assets\Project\Script\Core\BattleManager.cs" Line="1208" Column="1" />
+      <File FileName="Assets\Project\Script\BattleValue.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Core\MyTool.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Core\ActionManager.cs" Line="337" Column="53" />
+      <File FileName="Assets\Project\Script\MyGrids.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Core\GameDataManager.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Data\cSkillData.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Data\cSaveData.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Data\cEffect.cs" Line="95" Column="50" />
+      <File FileName="Assets\Project\Script\Panel\Panel_TalkUI\Panel_Talk.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Core\GameScene.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Panel_unit.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Item_Skill.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Panel\Panel_CMDUnitUI\Panel_CMDUnitUI.cs" Line="1" Column="1" />
+      <File FileName="Assets\Project\Script\Panel\Panel_Skill\Panel_Skill.cs" Line="251" Column="3" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore>
+      <Breakpoint file="G:\Unity Projects\SRW_Project\Assets\Project\Script\Panel_unit.cs" line="939" />
+      <Breakpoint file="G:\Unity Projects\SRW_Project\Assets\Project\Script\Panel\Panel_StoryUI\StoryUIPanel.cs" line="409" />
+      <Breakpoint file="G:\Unity Projects\SRW_Project\Assets\Project\Script\Panel\Panel_StoryUI\StoryUIPanel.cs" line="259" />
+    </BreakpointStore>
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
