@@ -141,6 +141,9 @@ public partial class ConstDataManager
             rootPath = "file://" + Application.dataPath + "/StreamingAssets/" + dataPathRelativeAssets + dataNames[i] + ".pcz";
             WWW www = new WWW(rootPath);
             ReadData(www.bytes);
+            while (!www.isDone)
+            {
+            }
         }
     }
 

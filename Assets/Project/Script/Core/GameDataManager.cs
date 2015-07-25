@@ -497,7 +497,7 @@ public class cCMD{
 
 	public List<_CMD_ID>[] CmdlistArray ;
 
-	public cMyGrids	Grids;				// main grids . only one
+	public MyGrids Grids;				// main grids . only one
 	
 	
 	//	private Dictionary<int, AudioChannelBase> channels = new Dictionary<int, AudioChannelBase>();

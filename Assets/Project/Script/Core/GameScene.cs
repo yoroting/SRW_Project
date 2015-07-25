@@ -10,7 +10,7 @@ public partial class GameScene
 	private bool hadInit = false;
 	public bool HadInit{ get{ return hadInit; } }
 	
-	public cMyGrids	Grids;				// main grids . only one
+	public MyGrids Grids;				// main grids . only one
 	
 	
 	//	private Dictionary<int, AudioChannelBase> channels = new Dictionary<int, AudioChannelBase>();
@@ -22,7 +22,7 @@ public partial class GameScene
 		//this.GetAudioClipFunc = getAudioClipFunc;
 		//UnitPool = new Dictionary< int , UNIT_DATA >();
 		//CampPool = new Dictionary< _CAMP , cCamp >();
-		Grids = new cMyGrids();
+		Grids = new MyGrids();
 	}
 	
 	private static GameScene instance;

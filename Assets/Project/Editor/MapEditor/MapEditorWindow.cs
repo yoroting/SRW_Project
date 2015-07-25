@@ -6,7 +6,6 @@ using System;
 public class MapEditorWindow : EditorWindow
 {
     private MapEditor _mapEdtor;
-    private string _mapName;
     private string _sceneTextFieldString = "1";
     private string _tileValueText = "1";
 
@@ -58,7 +57,8 @@ public class MapEditorWindow : EditorWindow
         }
         if (GUILayout.Button("Save Scene", GUILayout.Height(16)))
         {
-            
+            string mapPath = Application.dataPath + "/StreamingAssets/scn/" + _mapEdtor.MapName + ".scn";
+            _mapEdtor.SaveGrid(mapPath);
         }
         GUILayout.EndHorizontal();
 
@@ -69,25 +69,6 @@ public class MapEditorWindow : EditorWindow
 
     private void OnChangeTileClick()
     {
-        foreach (GameObject item in Selection.gameObjects)
-        {
-            UnitCell cell = item.GetComponent<UnitCell>();
-            if (cell == null)
-                continue;
-
-            int tileValue = Convert.ToInt32(_tileValueText);
-            _mapEdtor.Grids.SetValue(cell.X(), cell.Y(), (MYGRIDS._TILE)tileValue);
-
-            UISprite sprite = cell.GetComponent<UISprite>();
-            if (sprite != null)
-            {
-                SCENE_TILE tile = ConstDataManager.Instance.GetRow<SCENE_TILE>(tileValue);
-                if (tile == null)
-                    continue;
-
-                sprite.spriteName = tile.s_FILE_NAME;
-            }
-                
-        }
+        _mapEdtor.ChangeTileValue(Convert.ToInt32(_tileValueText));
     }
 }

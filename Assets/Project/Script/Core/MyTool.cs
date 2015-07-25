@@ -30,7 +30,7 @@ public class MyTool {
 		return  UICamera.currentCamera.WorldToScreenPoint( obj.transform.position );
 	}
 
-	public static Vector3 SnyGridtoLocalPos( int x , int y ,  ref cMyGrids grids  )
+	public static Vector3 SnyGridtoLocalPos( int x , int y ,  ref MyGrids grids  )
 	{
 		Vector3 v = new Vector3();
 		v.x = grids.GetRealX( x );

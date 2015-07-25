@@ -593,19 +593,19 @@ namespace MYGRIDS
 
 
     //  整體的操作容器 。座標是以(0,0) 為座標系的( （- HW ～ HW ）
-    public class cMyGrids
+    public class MyGrids
     {
-        int nVersion { set; get; }
+        public const int Version = 1;
 
         // singleton
-        private static cMyGrids instance;
-        public static cMyGrids Instance
+        private static MyGrids instance;
+        public static MyGrids Instance
         {
             get
             {
                 if (instance == null)
                 {
-                    instance = new cMyGrids();
+                    instance = new MyGrids();
                 }
                 return instance;
             }
@@ -639,10 +639,8 @@ namespace MYGRIDS
         public int SX { set; get; }
         public int SY { set; get; }
 
-        public cMyGrids()
+        public MyGrids()
         {
-            nVersion = 1; // first ver
-
             // default value
             LayerNum = 1; // have 1 layer
             PW = 100;
@@ -979,65 +977,70 @@ namespace MYGRIDS
             return true;
         }
 
-        // File I / O
-        public bool Save(string sFileName)
+        /// <summary>
+        /// 存檔
+        /// </summary>
+        /// <param name="fileName">檔案名稱</param>
+        /// <returns></returns>
+        public bool Save(string fileName)
         {
-            FileStream fileStream = new FileStream(sFileName, FileMode.OpenOrCreate);
-            BinaryWriter bWriter = new BinaryWriter(fileStream);
-
-
-            try
+            using (FileStream fileStream = new FileStream(fileName, FileMode.OpenOrCreate))
             {
-                // read from file or write to file
-                bWriter.Write(nVersion);
-                bWriter.Write(MaxW);
-                bWriter.Write(MaxH);
-                bWriter.Write(LayerNum);
-                if (Layer != null)
+                BinaryWriter writer = new BinaryWriter(fileStream);
+
+                try
                 {
-                    bWriter.Write(true);
-                    Layer.Write(ref bWriter);
+                    writer.Write(Version);
 
+                    if (Version >= 1)
+                    {
+                        writer.Write(MaxW);
+                        writer.Write(MaxH);
+                        writer.Write(LayerNum);
+                        if (Layer != null)
+                        {
+                            writer.Write(true);
+                            Layer.Write(ref writer);
+                        }
+                        else
+                            writer.Write(false);
+
+                        // 地上物
+                        writer.Write(cMyCell.nVersion); // record cell ver
+                        writer.Write(ThingPool.Count);
+                        foreach (KeyValuePair<string, cMyCell> pair in ThingPool)
+                        {
+                            if (pair.Value != null)
+                            {
+                                writer.Write(true);
+                                pair.Value.Write(ref writer);
+                            }
+                            else
+                            {
+                                writer.Write(false);
+                            }
+                        }
+                    }
                 }
-
-                // 地上物
-                bWriter.Write(cMyCell.nVersion); // record cell ver
-                bWriter.Write(ThingPool.Count);
-                foreach (KeyValuePair<string, cMyCell> pair in ThingPool)
+                catch
                 {
-                    if (pair.Value != null)
-                    {
-                        bWriter.Write(true);
-                        pair.Value.Write(ref bWriter);
-                    }
-                    else
-                    {
-                        bWriter.Write(false);
-                    }
-
+                    throw;
                 }
-
-
-            }
-            finally
-            {
-                fileStream.Close();
             }
             return true;
         }
 
         public bool Load(byte[] bytes)
         {
-            //	string str = System.Convert.ToString(bytes );
+            BinaryReader reader = new BinaryReader(new MemoryStream(bytes));
+            if (reader == null) return false;
 
-            BinaryReader bReader = new BinaryReader(new MemoryStream(bytes));
-            if (bReader == null) return false;
-
-            return Load(bReader);
+            return Load(reader);
         }
-        public bool Load(string sFileName)
+
+        public bool Load(string fileName)
         {
-            FileStream fileStream = new FileStream(sFileName, FileMode.Open);
+            FileStream fileStream = new FileStream(fileName, FileMode.Open);
             if (fileStream == null) return false;
             BinaryReader bReader = new BinaryReader(fileStream);
             bool bResult = Load(bReader);
@@ -1045,55 +1048,51 @@ namespace MYGRIDS
             return bResult;
         }
 
-        public bool Load(BinaryReader bReader)
+        public bool Load(BinaryReader reader)
         {
-            if (bReader == null) return false;
+            if (reader == null) return false;
 
             //=================load ====
             try
             {
                 // read from file or write to file
-                int ver = bReader.ReadInt32();
-                if (ver != nVersion)
+                int version = reader.ReadInt32();
+
+                if (version >= 1)
                 {
-                    // version different 
+                    // grid param
+                    MaxW = reader.ReadInt32();
+                    hW = MaxW / 2;
+                    MaxH = reader.ReadInt32();
+                    hH = MaxH / 2;
 
+                    LayerNum = reader.ReadInt32();
+
+                    // layer
+                    bool bLayer = reader.ReadBoolean();
+                    if (bLayer)
+                    {
+                        Layer.Read(ref reader);
+                    }
+
+                    // Build thing
+                    ThingPool.Clear();
+                    int nCellVer = reader.ReadInt32();
+                    int nNum = reader.ReadInt32();
+                    for (int i = 0; i < nNum; i++)
+                    {
+                        bool bExist = reader.ReadBoolean();
+
+                        if (bExist == false)
+                            continue;
+
+                        cMyCell cell = new cMyCell();
+                        cell.Read(ref reader, nCellVer);
+                        //  LstThing.Add(cell);
+
+                        ThingPool.Add(cell.GetKey(), cell);
+                    }
                 }
-
-                // grid param
-                MaxW = bReader.ReadInt32();
-                hW = MaxW / 2;
-                MaxH = bReader.ReadInt32();
-                hH = MaxH / 2;
-
-                LayerNum = bReader.ReadInt32();
-
-                // layer
-                bool bLayer = bReader.ReadBoolean();
-                if (bLayer)
-                {
-                    Layer.Read(ref bReader);
-                }
-
-                // Build thing
-                ThingPool.Clear();
-                int nCellVer = bReader.ReadInt32();
-                int nNum = bReader.ReadInt32();
-                for (int i = 0; i < nNum; i++)
-                {
-                    bool bExist = bReader.ReadBoolean();
-
-                    if (bExist == false)
-                        continue;
-
-                    cMyCell cell = new cMyCell();
-                    cell.Read(ref bReader, nCellVer);
-                    //  LstThing.Add(cell);
-
-                    ThingPool.Add(cell.GetKey(), cell);
-                }
-
-
             }
             finally
             {

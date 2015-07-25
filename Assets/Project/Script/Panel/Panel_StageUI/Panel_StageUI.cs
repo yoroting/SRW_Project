@@ -52,7 +52,7 @@ public class Panel_StageUI : MonoBehaviour
 
 	Panel_unit TarceMoveingUnit; //  Trace the moving unit
 
-	public cMyGrids	Grids;				// main grids . only one
+	public MyGrids	Grids;				// main grids . only one
 
 	STAGE_DATA	StageData;
 
@@ -1066,7 +1066,7 @@ public class Panel_StageUI : MonoBehaviour
 		// start create over eff
 		foreach( iVec2 v in moveList )
 		{
-			if ( cMyGrids.IsWalkAbleTile( Grids.GetValue( v ) ) == false  )
+			if ( MyGrids.IsWalkAbleTile( Grids.GetValue( v ) ) == false  )
 			{
 				continue;
 			}
@@ -2087,7 +2087,7 @@ public class Panel_StageUI : MonoBehaviour
 			return false;
 
 		// check tile
-		if( cMyGrids.IsWalkAbleTile( Grids.GetValue( pos ) ) == false )
+		if( MyGrids.IsWalkAbleTile( Grids.GetValue( pos ) ) == false )
 			return false;
 
 		// check thiing

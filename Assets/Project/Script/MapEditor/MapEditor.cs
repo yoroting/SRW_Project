@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using MYGRIDS;
+using UnityEditor;
 
 [ExecuteInEditMode]
 public class MapEditor : MonoBehaviour
@@ -8,7 +9,7 @@ public class MapEditor : MonoBehaviour
     public static MapEditor Instance;
 
     private static MapEditor _instance;
-    public cMyGrids Grids = new cMyGrids();				// main grids . only one    // Use this for initialization
+    public MyGrids Grids = new MyGrids();				// main grids . only one    // Use this for initialization
     public GameObject TilePlaneObj; // plane of all tiles sprite
     public string MapName;
     float fMinOffX;
@@ -35,6 +36,7 @@ public class MapEditor : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
     }
 
     private void Init()
@@ -174,6 +176,34 @@ public class MapEditor : MonoBehaviour
         obj.transform.localPosition = v;
     }
 
+    public void ChangeTileValue(int tileValue)
+    {
+        foreach (GameObject item in Selection.gameObjects)
+        {
+            UnitCell cell = item.GetComponent<UnitCell>();
+            if (cell == null)
+                continue;
+
+            Grids.SetValue(cell.X(), cell.Y(), (MYGRIDS._TILE)tileValue);
+
+            UISprite sprite = cell.GetComponent<UISprite>();
+            if (sprite != null)
+            {
+                SCENE_TILE tile = _constData.GetRow<SCENE_TILE>(tileValue);
+                if (tile == null)
+                    continue;
+
+                sprite.spriteName = tile.s_FILE_NAME;
+                NGUITools.SetDirty(sprite.gameObject);
+            }
+        }
+    }
+
+    public void SaveGrid(string path)
+    {
+        Grids.Save(path);
+    }
+
     void OnCellClick(GameObject go)
     {
     }
@@ -185,4 +215,5 @@ public class MapEditor : MonoBehaviour
 
         Debug.LogFormat("Loc={0}, {1}", Loc.X, Loc.Y);
     }
+
 }
