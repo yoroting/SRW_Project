@@ -309,6 +309,25 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		EndCMDUI (); // really close
 	}
 
+	public void SaveCmd( ) // only in count mode
+	{
+
+		// save to 1
+		cSaveData.Save (1);
+
+		EndCMDUI (); // really close
+	}
+
+	public void LoadCmd( ) // only in count mode
+	{
+		// load
+		cSaveData.Load (1);
+
+
+		EndCMDUI (); // really close
+	}
+
+
 	public void  RunSuicide(  )
 	{
 		PanelManager.Instance.CloseUI( Name );
@@ -325,6 +344,16 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		// send clear over
 		Panel_StageUI.Instance.ClearOverCellEffect ();
 	}
+
+	public void  StageCheatCmd(  )
+	{
+		GameDataManager.Instance.nMoney += 99999999;
+
+	}
+
+
+
+	//==================================
 	// untility func
 	public void RestoreCMD( )
 	{
@@ -662,7 +691,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		} else if (name == _CMD_ID._ATK.ToString ()) {
 			AttackCmd ();
 		} else if (name == _CMD_ID._ABILITY.ToString ()) {
-			AbilityCmd();
+			AbilityCmd ();
 		} else if (name == _CMD_ID._SKILL.ToString ()) {
 			SkillCmd ();
 		} else if (name == _CMD_ID._WAIT.ToString ()) {
@@ -675,19 +704,22 @@ public class Panel_CMDUnitUI : MonoBehaviour
 			DefCmd ();
 		} else if (name == _CMD_ID._COUNTER.ToString ()) {
 			CounterCmd ();
+		} else if (name == _CMD_ID._SAVE.ToString ()) {
+			SaveCmd ();
+		} else if (name == _CMD_ID._LOAD.ToString ()) {
+			LoadCmd ();
 		}
-
 // cheat code
 		else if (name == _CMD_ID._SUICIDE.ToString ()) {
-			RunSuicide(  );
-		}
-		else if (name == _CMD_ID._WIN.ToString ()) {
-			PanelManager.Instance.OpenUI( Panel_Win.Name );
+			RunSuicide ();
+		} else if (name == _CMD_ID._WIN.ToString ()) {
+			PanelManager.Instance.OpenUI (Panel_Win.Name);
 			//RunSuicide(  );
-		}
-		else if (name == _CMD_ID._LOST.ToString ()) {
+		} else if (name == _CMD_ID._LOST.ToString ()) {
 			//RunSuicide(  );
-			PanelManager.Instance.OpenUI( Panel_Lost.Name );
+			PanelManager.Instance.OpenUI (Panel_Lost.Name);
+		} else if (name == _CMD_ID._SYSCHEAT.ToString ()) {
+			StageCheatCmd ();
 		}
 //
 
@@ -756,6 +788,10 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		// if cmder is change
 		if (cmder != null) {
 			panel.SetCmder (cmder);
+
+			Panel_StageUI.Instance.MoveToGameObj( cmder.gameObject );
+			//Panel_StageUI.Instance.TraceUnit( cmder );
+
 		}
 		cCMD.Instance.eCMDSTATUS = _CMD_STATUS._WAIT_CMDID;
 

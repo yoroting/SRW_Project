@@ -1785,12 +1785,12 @@ public class Panel_StageUI : MonoBehaviour
 		//TilePlaneObj.transform.localPosition = -v;
 		float dist = Vector3.Magnitude( realpos );
 
-		float during = dist/1000.0f; // 這是最小值
+		float during = dist/500.0f; // 這是最小值
 							//距離過大要算最大值
-		if (force == false) {
-			if (during < time) 
-				during = time;
-		}
+	//	if (force == true) {
+			if (during > time) 
+				during = time;		// 不管多遠都不要超過1 秒
+	//	}
 
 		TweenPosition tw = TweenPosition.Begin<TweenPosition> (TilePlaneObj, during);
 		if (tw != null) {
