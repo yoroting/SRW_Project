@@ -30,12 +30,15 @@ public class MapEditorWindow : EditorWindow
 
     void OnGUI()
     {
-		if (GameObject.Find ("MapEditor") == null)
-			return;
 
-        if (_mapEdtor == null) {
-			_mapEdtor = GameObject.Find ("MapEditor").GetComponent<MapEditor> ();
-		}
+        if (_mapEdtor == null)
+        {
+            if (GameObject.Find("MapEditor") == null)
+                return;
+
+            _mapEdtor = GameObject.Find("MapEditor").GetComponent<MapEditor>();
+        }
+
 
         #region 地圖名
         GUILayout.BeginHorizontal();

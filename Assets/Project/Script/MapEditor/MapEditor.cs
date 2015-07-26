@@ -189,9 +189,10 @@ public class MapEditor : MonoBehaviour
             {
                 SCENE_TILE tile = _constData.GetRow<SCENE_TILE>(tileValue);
                 if (tile == null)
-                    continue;
+                    sprite.spriteName = "";
+                else
+                    sprite.spriteName = tile.s_FILE_NAME;
 
-                sprite.spriteName = tile.s_FILE_NAME;
                 NGUITools.SetDirty(sprite.gameObject);
             }
         }
