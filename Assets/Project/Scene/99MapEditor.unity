@@ -125,11 +125,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 530271084}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b43d1f58a97e76e4582978f95afff752, type: 3}
+  m_Script: {fileID: 11500000, guid: 50c7320609f6bec46a2c3b0065276831, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TilePlaneObj: {fileID: 605974202}
-  MapName: 
 --- !u!114 &530271087
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -242,7 +240,7 @@ Transform:
   m_GameObject: {fileID: 1803472272}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: .00300300308, y: .00300300308, z: .00300300308}
+  m_LocalScale: {x: .00285306713, y: .00285306713, z: .00285306713}
   m_Children:
   - {fileID: 1959298952}
   m_Father: {fileID: 0}
