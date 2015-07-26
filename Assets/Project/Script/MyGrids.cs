@@ -4,13 +4,18 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using SimpleAStarExample;
+using System.ComponentModel;
 
 namespace MYGRIDS
 {
     // tile type 的列舉
     public enum _TILE
     {
-        _NULL = 0,   // 無效
+        /// <summary>
+        /// 無效
+        /// </summary>
+        [Description("test")]
+        _NULL = 0,
         _GREEN = 1,    // 綠地( 平原/石路/河流 ) 
         _LAND = 2,    // 平原( 石路 )
         _RIVER = 3,    // 河流( 平原/湖 ) 
@@ -693,7 +698,7 @@ namespace MYGRIDS
 
         }
 
-        public void RemoveTHing(int nX, int nY)
+        public void RemoveThing(int nX, int nY)
         {
             ThingPool.Remove(iVec2.GetKey(nX, nY));
         }
