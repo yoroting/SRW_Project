@@ -11,6 +11,7 @@ public class MapEditor : MonoBehaviour
     private static MapEditor _instance;
     public MyGrids Grids = new MyGrids();				// main grids . only one    // Use this for initialization
     public GameObject TilePlaneObj; // plane of all tiles sprite
+    [HideInInspector]
     public string MapName;
     float fMinOffX;
     float fMaxOffX;
@@ -65,15 +66,12 @@ public class MapEditor : MonoBehaviour
         WWW www = new WWW(rootPath);
         while (!www.isDone)
         {
-            //Debug.Log("Load scene file fail.(paht=" + rootPath);
-            //return false ;
         }
+
         MapName = scn.s_MODLE_ID;
         Debug.Log("load scn file on:" + rootPath);
 
         if (Grids.Load(www.bytes) == true)
-        //if( Grids.Load( rootPath )==true )
-        //if( Grids.Load( filename )==true )
         {
             // start to create sprite
             for (int i = -Grids.hW; i <= Grids.hW; i++)
