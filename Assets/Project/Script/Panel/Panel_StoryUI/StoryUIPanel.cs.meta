@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 22577cd150748b24289fcf601f0a33e7
+timeCreated: 1437909902
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - BackGroundTex: {fileID: 166370, guid: d8ae4f9a2399a454abe3655a10920221, type: 2}
+  - PanelStoryText: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -77,7 +77,10 @@ public class Panel_StageUI : MonoBehaviour
 	private cTextArray 				m_cScript;			// 劇本 腳本集合
 	private int						m_nFlowIdx;			// 腳本演到哪段
 	bool							IsEventEnd;			// 
-	bool							IsPreBattleEvent;	// is prebattle event
+//	bool							IsPreBattleEvent;	// is prebattle event
+
+	bool 							bIsMoveToObj;		// is move camera to obj
+
 //	bool							CheckEventPause;	// 	event check pause
 
 	// Select effect
@@ -358,7 +361,7 @@ public class Panel_StageUI : MonoBehaviour
 
 		OverCellAOEPool= new Dictionary< string , GameObject >();
 
-
+	
 		//List < iVec2 >
 		UnitPanelObj.CreatePool( st_CellObjPoolSize / 2 );
 
@@ -430,7 +433,6 @@ public class Panel_StageUI : MonoBehaviour
 			
 			GameEventManager.RemoveEventListener(  StageBattleAttackEvent.Name , OnStageBattleAttackEvent );
 		}
-
 	}
 
 	void Clear()
@@ -460,6 +462,7 @@ public class Panel_StageUI : MonoBehaviour
 		bIsStageEnd = false;
 		bIsReady = false;
 
+		bIsMoveToObj = false;
 	}
 
 //	IEnumerator StageLoading(  )
@@ -1218,6 +1221,8 @@ public class Panel_StageUI : MonoBehaviour
 		if(BattleMsg.nMsgCount > 0)
 			return true;
 
+		if (bIsMoveToObj)
+			return true;
 		// this is very slow for play
 //		if(ValueEftObj.CountSpawned () > 0)
 //			return true; 
@@ -1329,21 +1334,23 @@ public class Panel_StageUI : MonoBehaviour
 
 	// Check event
 	bool CheckEventCanRun( STAGE_EVENT evt )
-	{
-		cTextArray sCond = new cTextArray( );
-		sCond.SetText( evt.s_CONDITION );
-		// check all line . if one line success . this event check return true
+	{	
+		return MyScript.Instance.CheckEventCanRun (evt);
 
-		int nCol = sCond.GetMaxCol();
-		for( int i= 0 ; i <nCol ; i++ )
-		{
-			//if( CheckEventCondition( sCond.GetTextLine( i ) ) )
-			if( MyScript.Instance.CheckEventCondition( sCond.GetTextLine( i ) ) )
-			{
-				return true;
-			}
-		}
-		return false;
+//		cTextArray sCond = new cTextArray( );
+//		sCond.SetText( evt.s_CONDITION );
+//		// check all line . if one line success . this event check return true
+//
+//		int nCol = sCond.GetMaxCol();
+//		for( int i= 0 ; i <nCol ; i++ )
+//		{
+//			//if( CheckEventCondition( sCond.GetTextLine( i ) ) )
+//			if( MyScript.Instance.CheckEventCondition( sCond.GetTextLine( i ) ) )
+//			{
+//				return true;
+//			}
+//		}
+//		return false;
 	}
 
 
@@ -1765,10 +1772,10 @@ public class Panel_StageUI : MonoBehaviour
 			return;
 		Vector3 v = obj.transform.localPosition;
 		Vector3 canv = TilePlaneObj.transform.localPosition; // shift
-
+		Vector3 realpos = v + canv;
 		if (force == false)
 		{
-			Vector3 realpos = v + canv;
+
 			int hW = (Config.WIDTH )/2 - Config.TileW;
 			int hH = (Config.HEIGHT)/2 - Config.TileH;
 			if( (realpos.x < hW  && realpos.x > -hW ) && (realpos.y < hH && realpos.y > -hH ) )
@@ -1776,12 +1783,22 @@ public class Panel_StageUI : MonoBehaviour
 		}
 
 		//TilePlaneObj.transform.localPosition = -v;
-		float during = time;
+		float dist = Vector3.Magnitude( realpos );
+
+		float during = dist/1000.0f; // 這是最小值
+							//距離過大要算最大值
+		if (force == false) {
+			if (during < time) 
+				during = time;
+		}
 
 		TweenPosition tw = TweenPosition.Begin<TweenPosition> (TilePlaneObj, during);
 		if (tw != null) {
 			tw.SetStartToCurrentValue();
 			tw.to = -v;
+			bIsMoveToObj = true;
+			MyTool.TweenSetOneShotOnFinish( tw , MoveToGameObjEnd ); 
+
 		}
 
 		Panel_unit unit = obj.GetComponent< Panel_unit > ();
@@ -1789,6 +1806,11 @@ public class Panel_StageUI : MonoBehaviour
 			TraceUnit( unit );
 		}
 
+	}
+
+	public void MoveToGameObjEnd()
+	{
+		bIsMoveToObj = false;
 	}
 
 	// Game event func
@@ -2028,6 +2050,7 @@ public class Panel_StageUI : MonoBehaviour
 				iVec2 last = path[path.Count -2 ];
 				ActionManager.Instance.CreateMoveAction( pAtkUnit.Ident() , last.X , last.Y );	
 				MoveToGameObj( pAtkUnit.gameObject , false );
+				TraceUnit( pAtkUnit );
 			}
 
 			// send move act
@@ -2074,6 +2097,7 @@ public class Panel_StageUI : MonoBehaviour
 				iVec2 last = path[path.Count -2 ];
 				ActionManager.Instance.CreateMoveAction( pAtkUnit.Ident() , last.X , last.Y );	
 				MoveToGameObj( pAtkUnit.gameObject , false );
+				TraceUnit( pAtkUnit );
 			}
 			// move only
 			

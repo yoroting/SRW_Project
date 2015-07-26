@@ -151,9 +151,6 @@ public class cFightAttr : cAttrData
 	}
 };
 
-public class cUnitBaseData{
-	public int n_ID;
-}
 
 // current stage runtime data
 // All data store in this . buffcondition need this to check

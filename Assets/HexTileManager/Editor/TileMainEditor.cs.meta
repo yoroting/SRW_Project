@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: df82f75feb1342c44a1f00c7626ec7c5
+timeCreated: 1437916923
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - checktexture2d: {fileID: 2800000, guid: 73793778b076d2248be3a1f2241efefd, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

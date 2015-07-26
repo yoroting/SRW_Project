@@ -22,7 +22,7 @@ public class MyScript {
 		}
 	}
 
-	List<cHitResult> CacheHitResultPool;
+	//List<cHitResult> CacheHitResultPool;
 
 
 	public bool CheckEventCondition( CTextLine line  )
@@ -99,8 +99,12 @@ public class MyScript {
 	}
 
 	// Check event
-	bool CheckEventCanRun( STAGE_EVENT evt )
+	public bool CheckEventCanRun( STAGE_EVENT evt )
 	{
+		// don't check during cmding
+		if (cCMD.Instance.eCMDSTATUS != _CMD_STATUS._NONE)
+			return false;
+
 		cTextArray sCond = new cTextArray( );
 		sCond.SetText( evt.s_CONDITION );
 		// check all line . if one line success . this event check return true
@@ -126,6 +130,8 @@ public class MyScript {
 	
 	bool ConditionAllDead( int nCampID )
 	{
+		if (BattleManager.Instance.IsBattlePhase ())
+			return false;// don't check in battle
 		// assign id
 		cCamp unit = GameDataManager.Instance.GetCamp( (_CAMP)nCampID );
 		if( unit != null )
@@ -137,6 +143,9 @@ public class MyScript {
 	
 	bool ConditionUnitDead( int nCampID ,int nCharID )
 	{
+		if (BattleManager.Instance.IsBattlePhase ())
+			return false;// don't check in battle
+
 		// assign id
 		cCamp camp = GameDataManager.Instance.GetCamp( (_CAMP)nCampID );
 		if( camp != null )
@@ -211,9 +220,7 @@ public class MyScript {
 	}
 	bool ConditionDist( int nChar1 , int nChar2 , int nDist )
 	{
-		// don't check suring cmd
-		if (cCMD.Instance.eCMDSTATUS != _CMD_STATUS._NONE)
-			return false;
+	
 
 		//check range
 		Panel_unit unit1 = Panel_StageUI.Instance.GetUnitByCharID (nChar1);
@@ -230,6 +237,9 @@ public class MyScript {
 
 	bool ConditionHp( int nChar1 , string op , float fValue )
 	{
+		if (BattleManager.Instance.IsBattlePhase ())
+			return false;// don't check in battle
+
 		cUnitData unit = GameDataManager.Instance.GetUnitDateByCharID ( nChar1 );
 		if (unit != null) {
 			float fPer = (float)unit.n_HP / (float)unit.GetMaxHP();
