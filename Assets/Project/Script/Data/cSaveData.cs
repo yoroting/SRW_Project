@@ -8,9 +8,55 @@ using JsonFx.Json;
 using System.ComponentModel;
 
 [Serializable][JsonName("unit")]
-public class cUnitBaseData{
-	public int n_ID;
-	[JsonName("char")] [DefaultValue(1)] public int n_CharID;
+public class cUnitSaveData{
+	[JsonName("id")] [DefaultValue(0)]public int n_Ident;
+	[JsonName("cid")] [DefaultValue(0)] public int n_CharID;
+
+	[JsonName("camp")] [DefaultValue(_CAMP._PLAYER )] public _CAMP eCampID;
+	[JsonName("lv")][DefaultValue(0)] 	public int n_Lv;
+	[JsonName("exp")][DefaultValue(0)] 	public int n_EXP;
+	[JsonName("x")][DefaultValue(0)]   	public int n_X;
+	[JsonName("y")][DefaultValue(0)]	public int n_Y;
+	
+	[JsonName("hp")][DefaultValue(0)]	public int n_HP;
+	[JsonName("mp")][DefaultValue(0)]	public int n_MP;
+	[JsonName("sp")][DefaultValue(0)]	public int n_SP;
+	[JsonName("def")][DefaultValue(0)]	public int n_DEF;
+
+	[JsonName("action")][DefaultValue(0)]	public int nActionTime;
+	[JsonName("leader")][DefaultValue(0)] public int n_LeaderIdent;	// follow leader
+	[JsonName("bornx")][DefaultValue(0)]	public int n_BornX;			// born Pox
+	[JsonName("borny")][DefaultValue(0)]	public int n_BornY;
+	//====data pool
+	[JsonName("actsch")]				public int [] nActSch;		// current use 
+	[JsonName("items")]					public int [] Items;		// current items 
+	// buff pool
+
+
+	public cUnitSaveData(){}
+
+	public void SetData( cUnitData data ){
+		n_Ident 	= data.n_Ident;
+		n_CharID = data.n_CharID;
+		eCampID = data.eCampID;
+		n_Lv = data.n_Lv;
+		n_EXP = data.n_EXP;
+		n_X = data.n_X;
+		n_Y = data.n_Y;
+		n_HP = data.n_HP;
+		n_MP = data.n_MP;
+		n_SP = data.n_SP;
+		n_DEF = data.n_DEF;
+		n_LeaderIdent = data.n_LeaderIdent;
+		n_BornX = data.n_BornX;
+		n_BornY = data.n_BornY;
+
+		nActSch = data.nActSch;
+		Items = data.Items;
+
+		nActionTime = data.nActionTime;
+	}
+
 }
 // 不斷調整後，SAVEDATA 變成了一個工具用物件
 
@@ -21,11 +67,12 @@ public class cSaveData{
 	[JsonName("story")] [DefaultValue(0)] public int n_StoryID;
 	[JsonName("stage")] [DefaultValue(0)] public int n_StageID;
 
-	[JsonName("act")] [DefaultValue( _CAMP._PLAYER )] public _CAMP e_Camp ;
+	[JsonName("active")] [DefaultValue( _CAMP._PLAYER )] public _CAMP e_Camp ;
 	[JsonName("round")] [DefaultValue(0)] public int n_Round;
-	[JsonName("mon")] [DefaultValue(0)]public int n_Money;
-   
+	[JsonName("money")] [DefaultValue(0)] public int n_Money;
+	[JsonName("stars")] [DefaultValue(0)] public int n_Stars;			//熟練度
 
+	[JsonName("phase")] [DefaultValue(_SAVE_PHASE._MAINTEN)] public _SAVE_PHASE ePhase;			//  0 - 整備 , 1-戰場上
 //	 string sFileName;
 
 //	 public cSaveData( int nIdx )
@@ -36,11 +83,22 @@ public class cSaveData{
 //		ItemPool = new List<int> ();
 //	 }
 
-	[JsonName("cpool")] public Dictionary< int ,cUnitBaseData > CharPool;
-	[JsonName("ipool")]public List<int>					ItemPool;
+
+	[JsonName("cpool")] public List< cUnitSaveData > 			CharPool;
+	[JsonName("ipool")] public List<int>						ItemPool;
+	[JsonName("importpool")] public List<int>					ImportEventPool;   // 已完成的重要事件列表
+
+	// stage special info
+	[JsonName("evtdonepool")] public Dictionary<string,int>		EvtDonePool;   // 已完成的事件列表
+
+//	[JsonName("evtcheckpool")] public List<int>					EvtCheckPool;   // event can run
+//	[JsonName("evtwaitpool")] public List<int>					EvtWaitingPool;   // 已完成的重要事件列表
+
+	[JsonName("grouppool")] public Dictionary< string , int >		GroupPool;   //  group event pool
+
 
 	// write data to save
-	public void SetData( int nIdx )
+	public void SetData( int nIdx , _SAVE_PHASE phase )
 	{
 		n_IDX = nIdx;
 
@@ -50,17 +108,101 @@ public class cSaveData{
 		n_Round = GameDataManager.Instance.nRound;
 		e_Camp = GameDataManager.Instance.nActiveCamp;
 		n_Money = GameDataManager.Instance.nMoney;
-		// item list
+		n_Stars = GameDataManager.Instance.nStars;
+
+		ItemPool = GameDataManager.Instance.ItemPool;			// item list
+		ImportEventPool = GameDataManager.Instance.ImportEventPool;
+
+		ePhase = phase;
+
+		// save during mainta
+		if (ePhase == _SAVE_PHASE._MAINTEN ) {
+
+		}
+		// save during stage
+		else if (ePhase == _SAVE_PHASE._STAGE ) {
+			// event done pool
+		//	EvtDonePool = GameDataManager.Instance.EvtDonePool;
+			EvtDonePool = MyTool.ConvetToStringInt( GameDataManager.Instance.EvtDonePool );
+//			EvtDonePool = new Dictionary<string,int>();
+//			foreach( KeyValuePair< int , int > pair in GameDataManager.Instance.EvtDonePool)
+//			{
+//				EvtDonePool.Add( pair.Key.ToString() , pair.Value );
+//			}
+			//EvtCheckPool = Panel_StageUI.Instance.evt
+			// group pool
+			GroupPool   = MyTool.ConvetToStringInt( GameDataManager.Instance.GroupPool );
+			// unit pool
+			CharPool = GameDataManager.Instance.ExportSavePool();
+		}
 	}
 
 	//將遊戲還原到 紀錄的狀態
-	public void RestoreData( )
+	public void RestoreData( _SAVE_PHASE phase )
 	{
+		// clear data
+
+		GameDataManager.Instance.SaveData = this;
+
+		// reset data
 		GameDataManager.Instance.nStoryID = n_StoryID;
 		GameDataManager.Instance.nStageID = n_StageID;
 		GameDataManager.Instance.nRound   = n_Round;
 		GameDataManager.Instance.nActiveCamp = e_Camp ;
 		GameDataManager.Instance.nMoney = n_Money;
+		GameDataManager.Instance.nStars = n_Stars;
+
+		GameDataManager.Instance.ItemPool = ItemPool ;			// item list
+		GameDataManager.Instance.ImportEventPool = ImportEventPool;
+
+		// 由phase 決定目前該切到哪個場僅. this should need a 
+
+
+
+
+
+		// restore mainta
+		if (phase == _SAVE_PHASE._MAINTEN) {
+
+
+
+
+
+		}
+		// restore to stage
+		else if (phase == _SAVE_PHASE._STAGE) {
+			if( this.ePhase ==  _SAVE_PHASE._MAINTEN )
+			{
+
+
+			}
+			else if( this.ePhase ==  _SAVE_PHASE._STAGE )
+			{
+				Panel_StageUI.Instance.RestoreBySaveData();
+
+			//GameDataManager.Instance.ResetStage();
+			// event done pool
+		//	GameDataManager.Instance.EvtDonePool = EvtDonePool ;
+//				GameDataManager.Instance.EvtDonePool.Clear();
+//				GameDataManager.Instance.EvtDonePool = MyTool.ConvetToIntInt( EvtDonePool );
+//			foreach( KeyValuePair< string , int > pair in EvtDonePool )
+//			{
+//				int nEvtId = 0;
+//				if( int.TryParse( pair.Key , out nEvtId) ){
+//					GameDataManager.Instance.EvtDonePool.Add(  nEvtId , pair.Value );
+//				}
+//			}
+
+
+			// group pool
+		//	GameDataManager.Instance.GroupPool = GroupPool ;
+//				GameDataManager.Instance.GroupPool   = MyTool.ConvetToIntInt( GroupPool );
+			// unit pool
+//				GameDataManager.Instance.ImportSavePool( CharPool );
+			}
+		}
+
+
 	}
 
 	static public string GetKey( int Idx )
@@ -68,7 +210,7 @@ public class cSaveData{
 		return "save" + Idx.ToString() ;
 	}
 
-	static public bool Load( int Idx )
+	static public bool Load( int Idx , _SAVE_PHASE phase )
 	{
 		string sKeyName = GetKey( Idx );
 		string sJson = PlayerPrefs.GetString ( sKeyName , "" );
@@ -81,16 +223,16 @@ public class cSaveData{
 		
 		JsonReader reader = new JsonReader(sJson, readerSettings);
 		
-		cSaveData save = (cSaveData)reader.Deserialize();
-		save.RestoreData ();
+		cSaveData save = (cSaveData)reader.Deserialize ( typeof(cSaveData) );
+		save.RestoreData ( phase );
 		//parameters = (Dictionary<string, object>)reader.Deserialize();
 		return true;
 	}
 
-	static public bool Save( int nID  )
+	static public bool Save( int nID ,  _SAVE_PHASE phase  )
 	{
 		cSaveData save = new cSaveData ();
-		save.SetData ( nID );
+		save.SetData ( nID , phase );
 
 		string sKeyName = GetKey( nID );
 		// ---- SERIALIZATION ----

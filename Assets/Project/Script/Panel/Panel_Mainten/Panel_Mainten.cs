@@ -19,7 +19,7 @@ public class Panel_Mainten : MonoBehaviour {
 	public void OnPopReady()
 	{
 		// on ready
-
+		GameDataManager.Instance.ePhase = _SAVE_PHASE._MAINTEN;		// save to mainta phase
 		// close stage UI!!
 		if (PanelManager.Instance.CheckUIIsOpening (Panel_StageUI.Name)) {
 

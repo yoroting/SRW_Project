@@ -382,6 +382,28 @@ public class MyTool {
 		return GameDataManager.Instance.GetSkillData( nSkillID );
 	}
 
+	public static Dictionary< string , int > ConvetToStringInt( Dictionary< int , int > org )
+	{
+		Dictionary<string,int>  tar = new Dictionary<string,int>();
+		foreach( KeyValuePair< int , int > pair in org ){
+			tar.Add( pair.Key.ToString() , pair.Value );
+		}
+		return tar;
+	}
+
+	public static Dictionary< int , int > ConvetToIntInt( Dictionary< string , int > org )
+	{
+		Dictionary<int,int>  tar = new Dictionary<int,int>();
+		foreach( KeyValuePair< string , int > pair in org ){
+			int id = 0;
+			if( int.TryParse( pair.Key , out id ) == true ){
+				tar.Add( id , pair.Value );
+			}
+		}
+		return tar;
+	}
+
+
 //	public static void DoSkillEffect( cUnitData atker , cUnitData defer , List< cEffect > effPool , cEffectCondition EffCond, List< cEffect > CondEffPool , ref List<cHitResult>  pool  )
 //	{
 //		if (atker == null || effPool == null )

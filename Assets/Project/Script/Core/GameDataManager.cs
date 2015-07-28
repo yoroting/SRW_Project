@@ -109,7 +109,12 @@ using MYGRIDS;
 //		_END     ,
 //
 //	}
-
+	public enum _SAVE_PHASE  // 紀錄階段
+	{
+		_MAINTEN	= 0,		// in mainta
+		_STAGE		= 1,		// in stage
+		
+	}
 //}//_SRW_CMD
 
 
@@ -148,8 +153,13 @@ public partial class GameDataManager
 //		ConCharPool   = new Dictionary< int , CHARS >() ;
 //		ConSchoolPool = new Dictionary< int , SCHOOL >() ;
 //		ConSkillPool  = new Dictionary< int , SKILL >() ;
+		ImportEventPool = new List<int>();   // 已完成的重要事件列表
+
+		ItemPool  = new List<int>();//
+
 		GroupPool = new Dictionary< int , int >();			//  <leader char id , leader char ident>
-		SkillDataCachePool = new Dictionary< int , cSkillData >();			
+		SkillDataCachePool = new Dictionary< int , cSkillData >();		
+
 	}
 
 	private static GameDataManager instance;
@@ -177,10 +187,13 @@ public partial class GameDataManager
 		nMoney = 0;
 		nRound = 0;
 		nActiveCamp = _CAMP._PLAYER;
-	//	UnitPool.Clear ();
+		UnitPool.Clear ();
 		CampPool.Clear ();
 		EvtDonePool.Clear();
 		GroupPool.Clear();
+
+		// special reset
+		nSerialNO = 0;
 	}
 
 	// need this to update all data's attr
@@ -212,7 +225,10 @@ public partial class GameDataManager
 	//
 	public int nMoney{ get; set; } 
 	public int nRound{ get; set; } 
+	public int nStars{ get; set; } 
 //	public _ROUND_STATUS nRoundStatus{ get; set; }    // 0- start ,1- running, 2- end
+
+	public _SAVE_PHASE ePhase{ get; set; } 		// 目前進度狀態
 
 	// Camp
 	public _CAMP nActiveCamp{ get; set; }  // 
@@ -367,14 +383,36 @@ public partial class GameDataManager
 	}
 	// 目前的紀錄狀態
 	//public PLAYER_DATA			cPlayerData;
-	public cSaveData		curSaveData;
+	public cSaveData				SaveData;		
+	public List<int>	ImportEventPool;   // 已完成的重要事件列表
+//	public List<int> 	GetImportEvent(){  
+//		if (ImportEventPool == null)
+//			ImportEventPool = new List<int> ();
+//		return ImportEventPool;
+//	}					
 
+
+	public List<int>			ItemPool;  //
+	public void AddItemtoBag( int nItemID )
+	{
+		if (ItemPool == null) {
+			ItemPool = new List<int> ();
+		}
+		ItemPool.Add (nItemID);
+	}
+	public void RemoveItemfromBag( int nItemID )
+	{
+		if (ItemPool == null) {
+			ItemPool = new List<int> ();
+		}
+		ItemPool.Remove(nItemID);
+	}
 
 
 	// don't public this
 	int nSerialNO;		// object serial NO
 	int GenerSerialNO( ){ return ++nSerialNO ; }
-	int GenerMobSerialNO( ){ return (++nSerialNO)*(-1) ; }
+//	int GenerMobSerialNO( ){ return (++nSerialNO)*(-1) ; }
 
 	// public  unit data
 	public Dictionary< int , cUnitData > UnitPool;			// add event id 
@@ -392,6 +430,48 @@ public partial class GameDataManager
 		}
 		unit.SetContData( cdata  );
 
+		UnitPool.Add( unit.n_Ident , unit );
+		return unit;
+	}
+
+	public cUnitData CreateCharbySaveData( cUnitSaveData save )
+	{
+		cUnitData unit = new cUnitData();
+		unit.n_Ident = save.n_Ident;  //GenerSerialNO( );
+		unit.n_CharID = save.n_CharID;
+
+		if (unit.n_Ident > nSerialNO) {
+			nSerialNO = unit.n_Ident;  // update serial NO if need 
+		}
+
+		
+		CHARS cdata = ConstDataManager.Instance.GetRow< CHARS > (unit.n_CharID);
+		if (cdata == null) {
+			Debug.LogErrorFormat( "CreateCharbysave data with null data {0}" , unit.n_CharID );
+			
+		}
+		unit.SetContData( cdata  );
+
+		// 調整
+		unit.eCampID = save.eCampID;
+		unit.n_Lv	 = save.n_Lv;
+		unit.n_EXP   = save.n_EXP;
+		unit.n_HP  	 = save.n_HP;
+		unit.n_MP	 = save.n_MP;
+		unit.n_SP	 = save.n_SP;
+		unit.n_DEF   = save.n_DEF;
+		unit.nActionTime = save.nActionTime;
+
+		unit.n_X	 = save.n_X;
+		unit.n_Y	 = save.n_Y;
+
+		unit.n_BornX = save.n_BornX;
+		unit.n_BornY = save.n_BornY;
+		unit.n_LeaderIdent	= save.n_LeaderIdent;
+
+		unit.nActSch = save.nActSch;
+		unit.Items 	 = save.Items;
+		//
 		UnitPool.Add( unit.n_Ident , unit );
 		return unit;
 	}
@@ -484,9 +564,39 @@ public partial class GameDataManager
 	}
 
 	// Save to binary;
+	public List< cUnitSaveData > ExportSavePool()
+	{
+		List< cUnitSaveData > pool = new List< cUnitSaveData > ();
+		foreach (KeyValuePair< int ,cUnitData > pair in UnitPool) {
+			if( pair.Value != null )
+			{
+				cUnitSaveData savedata = new cUnitSaveData();
+				savedata.SetData( pair.Value );
+				pool.Add( savedata );
+
+			}
+		}
+
+
+		return pool;
+	}
 
 	// load from binary;
+	public void ImportSavePool( List< cUnitSaveData > pool)
+	{
+		// clear unit data
+		//Panel_StageUI.Instance.in
+		UnitPool.Clear ();
 
+		foreach( cUnitSaveData save in pool ) {
+			// add to char 
+			cUnitData data = CreateCharbySaveData( save );
+			if( data != null ){
+				Panel_StageUI.Instance.CreateUnitByUnitData( data ) ;
+			//CreateCharbySaveData( save )	
+			}
+		}
+	}
 };
 
 

@@ -161,7 +161,7 @@ public class cUnitData{
 	public CHARS cCharData;
 	public int n_Rank;		// max school lv
 
-	// save data will move to base data 
+// save data start
 	public int n_Ident;		// auto create by game system
 	public _CAMP eCampID;
 	public int n_CharID;
@@ -182,6 +182,12 @@ public class cUnitData{
 	public int n_LeaderIdent;	// follow leader
 	public int n_BornX;			// born Pox
 	public int n_BornY;
+	public cBuffs						Buffs;				// all buffs of unit
+	public int []						Items;			// all buffs of unit
+	
+	public int nActionTime;			//				行動次數
+
+// save end
 
 	// calcul attr
 	Dictionary< int , cAttrData > Attr; 		// 0-內功 , 1-外功  , 2-等級 , 3- buff 
@@ -195,14 +201,11 @@ public class cUnitData{
 
 	// Buff list
 
-	public Dictionary< int , int >		CDPool;				// all study school < cd type , round >
+//	public Dictionary< int , int >		CDPool;				// all study school < cd type , round >
 	public cFightAttr					FightAttr;			// need update each calcul
 	//public cAttrData					BuffCondAttr;		// buff cond trig attr
 
-	public cBuffs						Buffs;				// all buffs of unit
-	public int []						Items;			// all buffs of unit
 
-	public int nActionTime;			//				行動次數
 
 
 	// no need save
@@ -223,7 +226,7 @@ public class cUnitData{
 		SkillPool 	= new Dictionary< int , cSkillData > ();
 
 		Buffs = new cBuffs( this ); 
-		CDPool = new Dictionary< int , int > ();
+	//	CDPool = new Dictionary< int , int > ();
 		
 		Attr = new Dictionary< int , cAttrData > (); 
 		nActSch = new int []{0,0};

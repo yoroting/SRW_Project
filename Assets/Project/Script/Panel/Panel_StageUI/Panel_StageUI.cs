@@ -435,14 +435,15 @@ public class Panel_StageUI : MonoBehaviour
 		}
 	}
 
-	void Clear()
+	void Clear()  // public for gamedatamanage to load 
 	{
 		//
 		ClearOverCellEffect ();
 
 		// clear unit 
 		foreach (KeyValuePair<int , Panel_unit  > pair in IdentToUnit) {
-			NGUITools.Destroy( pair.Value.gameObject );
+			//NGUITools.Destroy( pair.Value.gameObject );
+			pair.Value.Recycle();
 		}
 		IdentToUnit.Clear ();
 
@@ -557,6 +558,8 @@ public class Panel_StageUI : MonoBehaviour
 
 		// close loadint UI
 		PanelManager.Instance.CloseUI( "Panel_Loading");
+
+		GameDataManager.Instance.ePhase = _SAVE_PHASE._STAGE;		// save to stage phase
 
 		bIsReady = true;		// all ready .. close the loading ui
 	}
@@ -1529,8 +1532,13 @@ public class Panel_StageUI : MonoBehaviour
 	}
 
 	// Widget func	 
+	public GameObject CreateUnitByUnitData( cUnitData data )
+	{
+		return null;
+	}
 
-	GameObject AddUnit( _CAMP nCampID , int nCharID , int x , int y  , int nLeaderIdent = 0 )
+
+	GameObject AddUnit( _CAMP nCampID , int nCharID , int x , int y  , int nLeaderIdent = 0 , cUnitData data = null)
 	{
 //		CHARS charData = GameDataManager.Instance.GetConstCharData (nCharID); //ConstDataManager.Instance.GetRow<CHARS>( nCharID );
 //		if( charData == null)
@@ -1577,12 +1585,25 @@ public class Panel_StageUI : MonoBehaviour
 			}
 
 			// setup param
-			unit.CreateChar( nCharID , posx , posy );
-			unit.SetCamp( nCampID );	
+			unit.CreateChar( nCharID , posx , posy , data );
 
-			unit.SetLevel( StageData.n_MOB_LV );
+			// set up unit default value
 
+			if( data == null ){
+				//campid = data.eCampID;
+				//lv = data.n_Lv;
+				unit.SetCamp( nCampID );	
+				unit.SetLevel( StageData.n_MOB_LV );
+				unit.SetLeader( nLeaderIdent );
+			}
+			else {
+				// setup in create char
+				//unit.SetCamp( campid );	
+				//unit.SetLevel( lv );
+				//unit.SetLeader( nLeaderIdent );
+			}
 
+			//add to stage obj
 			IdentToUnit.Add( unit.Ident() , unit  ) ;// stage gameobj
 
 			// set game data
@@ -1623,7 +1644,7 @@ public class Panel_StageUI : MonoBehaviour
 			//unit.pUnitData; 
 			//NGUITools.Destroy( unit.gameObject );
 			unit.Recycle( );
-			int nsize = UnitPanelObj.GetPooled().Count ;
+			//int nsize = UnitPanelObj.GetPooled().Count ;
 
 			//UnitPanelObj.Recycle( .Spawn( TilePlaneObj.transform );
 		}
@@ -2280,4 +2301,97 @@ public class Panel_StageUI : MonoBehaviour
 	}
 
 
+
+	// restore from save data
+	public bool RestoreBySaveData( )
+	{
+		cSaveData save = GameDataManager.Instance.SaveData;
+		if (save == null)
+			return false;
+		System.GC.Collect();			// Free memory resource here
+
+		// clear data
+		Clear();						// 
+		Debug.Log("stagerestore :clearall");
+
+		if (save.ePhase == _SAVE_PHASE._MAINTEN) {
+			// restore to mainten ui
+
+
+
+			return true;
+		}
+
+		// re build done event 
+		GameDataManager.Instance.EvtDonePool = MyTool.ConvetToIntInt( save.EvtDonePool );
+
+
+		// check if in the same stage
+		if (StageData != null && StageData.n_ID != save.n_StageID ) {
+			// re load scene
+			GameDataManager.Instance.nStageID = save.n_StageID ;
+			// load const data
+			StageData = ConstDataManager.Instance.GetRow<STAGE_DATA>(GameDataManager.Instance.nStageID);
+			if (StageData == null)
+			{
+				Debug.LogFormat("stagerestore:StageData fail with ID {0}  ", GameDataManager.Instance.nStageID);
+				return false;
+			}
+			
+			// load scene file
+			if (LoadScene(StageData.n_SCENE_ID) == false)
+			{
+				Debug.LogFormat("stagerestore:LoadScene fail with ID {0} ", StageData.n_SCENE_ID);
+				return false;
+			}
+		}
+
+		// re build evt pool
+		char[] split = { ';' };
+		string[] strEvent = StageData.s_EVENT.Split(split);
+		for (int i = 0; i < strEvent.Length; i++)
+		{
+			int nEventID = int.Parse(strEvent[i]);
+			//GameDataManager.Instance.EvtDonePool.ContainsKey( nEventID )
+
+			STAGE_EVENT evt = ConstDataManager.Instance.GetRow<STAGE_EVENT>(nEventID);
+			if (evt != null)
+			{
+				// check if not loop event
+				if( (evt.n_TYPE&1) != 1 ){
+					if( GameDataManager.Instance.EvtDonePool.ContainsKey( nEventID ) == true )
+					{
+						continue;
+					}
+				}
+				// push to check
+				EvtPool.Add(nEventID, evt);
+			}
+		}
+		
+		Debug.Log("stagerestore:create event Pool complete");
+
+
+
+		// group pool
+		//	GameDataManager.Instance.GroupPool = GroupPool ;
+		GameDataManager.Instance.GroupPool   = MyTool.ConvetToIntInt( save.GroupPool );
+		// unit pool
+		foreach( cUnitSaveData s in save.CharPool )
+		{
+			cUnitData unit = GameDataManager.Instance.CreateCharbySaveData( s );
+
+			GameObject obj = AddUnit( s.eCampID , s.n_CharID , s.n_X , s.n_Y , s.n_LeaderIdent , unit ) ;
+			if (obj != null) {		
+			} else {
+				Debug.Log (string.Format ("RestoreBySaveData PopUnit Fail with charid({0}) )", s.n_CharID  )  );			
+			}
+
+
+		}
+
+		//GameDataManager.Instance.ImportSavePool( save.CharPool );
+
+		return true;
+	}
 }

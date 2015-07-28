@@ -75,7 +75,7 @@ public class cBuffs
 	}
 
 	public Dictionary< int , cBuffData > Pool;
-	public List< int > RemoveList ;
+	List< int > RemoveList ;
 
 	//
 	public cBuffData CreateData( BUFF buff , int Ident , int skillid , int targetident  )

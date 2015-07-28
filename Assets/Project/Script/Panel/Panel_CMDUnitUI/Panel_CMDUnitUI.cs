@@ -313,7 +313,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 	{
 
 		// save to 1
-		cSaveData.Save (1);
+		cSaveData.Save (1 , _SAVE_PHASE._STAGE );
 
 		EndCMDUI (); // really close
 	}
@@ -321,7 +321,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 	public void LoadCmd( ) // only in count mode
 	{
 		// load
-		cSaveData.Load (1);
+		cSaveData.Load (1 , _SAVE_PHASE._STAGE );
 
 
 		EndCMDUI (); // really close

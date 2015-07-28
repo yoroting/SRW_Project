@@ -253,11 +253,16 @@ public class Panel_unit : MonoBehaviour {
 
 	}
 
-	public void CreateChar( int nCharID , int x , int y )
+	public void CreateChar( int nCharID , int x , int y , cUnitData data = null )
 	{
 		CharID = nCharID;
 
-		pUnitData = GameDataManager.Instance.CreateChar( nCharID );
+		pUnitData = data;
+
+		if (pUnitData == null) {
+			pUnitData = GameDataManager.Instance.CreateChar (nCharID);
+		}
+		// return if unit data keep null
 		if( pUnitData == null )
 			return;
 
@@ -274,6 +279,11 @@ public class Panel_unit : MonoBehaviour {
 
 		}
 
+		// have assign data
+		if (data != null) {
+			SetCamp( data.eCampID );
+			//SetLevel( data.n_Lv );
+		}
 	}
 
 	public void MoveTo( int x , int y )
@@ -889,9 +899,16 @@ public class Panel_unit : MonoBehaviour {
 		if (nLV > Config.MaxCharLevel)
 			nLV = Config.MaxCharLevel;
 
-		cUnitData data = GameDataManager.Instance.GetUnitDateByIdent ( Ident() );
-		if (data != null) {
-			data.SetLevel ( nLV );
+		//cUnitData data = GameDataManager.Instance.GetUnitDateByIdent ( Ident() );
+		if (pUnitData != null) {
+			pUnitData.SetLevel ( nLV );
+		}
+	}
+
+	public void SetLeader( int nLeader )
+	{
+		if (pUnitData != null) {
+			pUnitData.n_LeaderIdent =  nLeader;
 		}
 	}
 
