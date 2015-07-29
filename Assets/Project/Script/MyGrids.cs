@@ -698,12 +698,21 @@ namespace MYGRIDS
 
         }
 
+        public cMyCell GetThing(int x, int y)
+        {
+            string key = iVec2.GetKey(x, y);
+            if (ThingPool.ContainsKey(key))
+                return ThingPool[key];
+
+            return null;
+        }
+
         public void RemoveThing(int nX, int nY)
         {
             ThingPool.Remove(iVec2.GetKey(nX, nY));
         }
 
-        public void ReplaceTHing(int nX, int nY, int nValue)
+        public void ReplaceThing(int nX, int nY, int nValue)
         {
             string skey = iVec2.GetKey(nX, nY);
             if (ThingPool.ContainsKey(skey))
@@ -1115,7 +1124,7 @@ namespace MYGRIDS
 
         // Layer 的實體
         cMyLayer Layer;                                   //不公開。以免被誤操作。 （兩造 座標系不同）
-        public Dictionary<string, cMyCell> ThingPool;     // 地上物 集合
+        public Dictionary<string, cMyCell> ThingPool = new Dictionary<string,cMyCell>();     // 地上物 集合
 
         //=============================================================
         // Widget for pathfinding

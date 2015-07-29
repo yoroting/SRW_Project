@@ -17,9 +17,17 @@ public class MapEditorWindow : EditorWindow
     /// </summary>
     private string _sceneTextFieldString = "1";
     /// <summary>
-    /// 選擇的Tile
+    /// Layer字串
+    /// </summary>
+    private string _tileLayer = "1";
+    /// <summary>
+    /// 選擇要種的Tile
     /// </summary>
     private MYGRIDS._TILE _tile = MYGRIDS._TILE._GREEN;
+    /// <summary>
+    /// 選擇要種的Thing
+    /// </summary>
+    private MYGRIDS._THING _thing = MYGRIDS._THING._NULL;
 
     [MenuItem("Custom/Map Editor Window")]
     static void Init()
@@ -59,6 +67,19 @@ public class MapEditorWindow : EditorWindow
         GUILayout.EndHorizontal(); 
         #endregion
 
+        //GUILayout.Space(16);
+
+        //#region 改變Tile Layer
+        //GUILayout.BeginHorizontal();
+        //GUILayout.Label("Layer", GUILayout.Height(16));
+        //_tileLayer = GUILayout.TextArea(_tileLayer, GUILayout.Height(16));       
+        //if (GUILayout.Button("Change Layer", GUILayout.Height(16)))
+        //{
+        //    //_mapEdtor.ChangeTileValue((int)_tile);
+        //}
+        //GUILayout.EndHorizontal();
+        //#endregion
+
         GUILayout.Space(16);
 
         #region 設定Tile
@@ -67,6 +88,18 @@ public class MapEditorWindow : EditorWindow
         if (GUILayout.Button("Change Tile Value", GUILayout.Height(16)))
         {
             _mapEdtor.ChangeTileValue((int)_tile);
+        }
+        GUILayout.EndHorizontal();
+        #endregion
+
+        GUILayout.Space(16);
+
+        #region 改變地上物
+        GUILayout.BeginHorizontal();
+        _thing = (MYGRIDS._THING)EditorGUILayout.EnumPopup("Thing", _thing, GUILayout.Height(16));
+        if (GUILayout.Button("Change Thing Value", GUILayout.Height(16)))
+        {
+            _mapEdtor.AddThing((int)_thing);
         }
         GUILayout.EndHorizontal();
         #endregion
