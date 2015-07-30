@@ -111,8 +111,9 @@ using MYGRIDS;
 //	}
 	public enum _SAVE_PHASE  // 紀錄階段
 	{
-		_MAINTEN	= 0,		// in mainta
-		_STAGE		= 1,		// in stage
+		_STARTUP		= 0,		// in startup
+		_STAGE			= 1,		// in stage
+		_MAINTEN		= 2,		// in mainta
 		
 	}
 //}//_SRW_CMD
@@ -146,6 +147,7 @@ public partial class GameDataManager
 	public void Initial( int fileindex =0 ){
 		hadInit = true;
 		//this.GetAudioClipFunc = getAudioClipFunc;
+		StoragePool = new Dictionary< int , cUnitData > ();		
 		UnitPool = new Dictionary< int , cUnitData >();
 		CampPool = new Dictionary< _CAMP , cCamp >();
 		EvtDonePool = new Dictionary< int , int > ();			// record event complete round 
@@ -195,6 +197,22 @@ public partial class GameDataManager
 		// special reset
 		nSerialNO = 0;
 	}
+
+	public void EndStage()
+	{
+		// 把 unit pool 資料回存到 storage
+		foreach( KeyValuePair< int , cUnitData > pair in UnitPool )
+		{
+			if( pair.Value.eCampID != _CAMP._PLAYER )
+				continue;
+			// 存到 storage pool 
+			AddUnitToStorage( pair.Value ) ;
+		}
+
+		UnitPool.Clear ();
+	}
+
+
 
 	// need this to update all data's attr
 	public void Update()
@@ -408,6 +426,8 @@ public partial class GameDataManager
 		ItemPool.Remove(nItemID);
 	}
 
+	// 昌庫腳色
+	public Dictionary< int , cUnitData > StoragePool;		//以 unit data 結構存才能顯示 詳細資訊		
 
 	// don't public this
 	int nSerialNO;		// object serial NO
@@ -471,6 +491,10 @@ public partial class GameDataManager
 
 		unit.nActSch = save.nActSch;
 		unit.Items 	 = save.Items;
+		// school
+		unit.SchoolPool = MyTool.ConvetToIntInt ( save.School );
+		// buff
+		unit.Buffs.ImportSavePool ( save.Buffs );
 		//
 		UnitPool.Add( unit.n_Ident , unit );
 		return unit;
@@ -529,7 +553,8 @@ public partial class GameDataManager
 
 	public void DelUnit( int nIdent )
 	{
-		UnitPool.Remove( nIdent );
+		if( UnitPool.ContainsKey( nIdent)  )
+			UnitPool.Remove( nIdent );
 
 	}
 	public void DelUnit( cUnitData unit )
@@ -537,6 +562,49 @@ public partial class GameDataManager
 		if( unit != null )
 			UnitPool.Remove( unit.n_Ident );
 	}
+
+	public void AddUnitToStorage( cUnitData data )
+	{
+		if (data == null || (data.eCampID != _CAMP._PLAYER ) )
+			return ;
+			 
+		// 把 unit pool 資料回存到 storage
+		if( StoragePool.ContainsKey( data.n_CharID ) == true )
+		{
+			StoragePool.Remove( data.n_CharID );
+		}
+		data.Relive ();
+		StoragePool.Add( data.n_CharID , data );
+	}
+
+
+
+	public void BackUnitToStorage( int nIdent )
+	{
+		cUnitData data = null;
+		if (UnitPool.TryGetValue(nIdent, out data )) {
+			AddUnitToStorage( data );
+			UnitPool.Remove( nIdent );
+		}
+	}
+
+	public cUnitData GetStorageUnit( int nCharID )
+	{
+		if (StoragePool.ContainsKey (nCharID) == true) {
+			return StoragePool[ nCharID ];
+		}
+		return null;
+	}
+
+	public bool RemoveStorageUnit( int nCharID )
+	{
+		if (StoragePool.ContainsKey (nCharID) == true) {
+			StoragePool.Remove( nCharID );
+			return true;
+		}
+		return false;
+	}
+
 	// Event Status
 	public Dictionary< int , int > EvtDonePool;			// record event complete round 
 

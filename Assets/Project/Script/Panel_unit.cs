@@ -202,7 +202,13 @@ public class Panel_unit : MonoBehaviour {
 
 	void OnDisable () 
 	{
-		GameDataManager.Instance.DelUnit( Ident() );
+		// don't del unit during stage
+		if (eCampID == _CAMP._PLAYER) {
+			GameDataManager.Instance.BackUnitToStorage( Ident() );
+		}
+		else {
+			GameDataManager.Instance.DelUnit( Ident() );
+		}
 	}
 
 	public bool IsIdle()

@@ -1584,6 +1584,11 @@ public class Panel_StageUI : MonoBehaviour
 				posy = pos.Y;
 			}
 
+			// load data . if char exist in storage pool
+			if( (data==null) && (nCampID==_CAMP._PLAYER) ){
+				data = GameDataManager.Instance.GetStorageUnit( nCharID );
+			}
+
 			// setup param
 			unit.CreateChar( nCharID , posx , posy , data );
 
@@ -1606,8 +1611,11 @@ public class Panel_StageUI : MonoBehaviour
 			//add to stage obj
 			IdentToUnit.Add( unit.Ident() , unit  ) ;// stage gameobj
 
+			//ensure data in storage is remove
+			GameDataManager.Instance.RemoveStorageUnit( nCharID );
+
 			// set game data
-			unit.pUnitData.n_LeaderIdent = nLeaderIdent;
+		//	unit.pUnitData.n_LeaderIdent = nLeaderIdent;
 		//	unit.pUnitData.n_X			 = x;
 		//	unit.pUnitData.n_Y			 = y;
 		}
@@ -1769,11 +1777,7 @@ public class Panel_StageUI : MonoBehaviour
 
 				}
 			}
-
 		}
-		
-
-
 
 		return false;
 	}

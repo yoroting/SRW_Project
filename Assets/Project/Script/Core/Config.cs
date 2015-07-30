@@ -9,17 +9,22 @@ public class Config
 		"CONSTDATA",
 		"TEXTDATA",
 	};
+	public static int BigMapTileW = 64;
+	public static int BigMapTileH = 64;
+
 
 	public static int TileW = 100;
 	public static int TileH = 100;
 	public static int TileMAX = 40;
 	public static int StartStory = 1;
 
+
 	public static int TextSpeed = 0;			// 0 is very fast
 	// Cache value
 	public static float fScnRatio = 1.0f;		// screen (active/ real ) ratio. for cal mouse in local pos
 
-	public static string PlayerName = "主人公";
+	public static string PlayerFirst = "主";
+	public static string PlayerName = "人公";
 
 	public static int	MaxCharLevel = 20;
 	public static float CharMarLVUp = 1.0f;
@@ -33,6 +38,8 @@ public class Config
 
 	public static bool GOD = true;
 	public static bool MOBAI = true;				// all mob no atk 
+	public static bool DRAWGRID = false;
+
 
 	public static int  WIDTH = 960;
 	public static int  HEIGHT = 640;

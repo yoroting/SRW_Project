@@ -1318,9 +1318,13 @@ Prefab:
       propertyPath: m_Name
       value: Panel - Mainten
       objectReference: {fileID: 0}
-    - target: {fileID: 137088, guid: f1502a47899df9244aa78161e70c0ac0, type: 2}
-      propertyPath: m_Layer
-      value: 5
+    - target: {fileID: 437468, guid: f1502a47899df9244aa78161e70c0ac0, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 108296, guid: f1502a47899df9244aa78161e70c0ac0, type: 2}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f1502a47899df9244aa78161e70c0ac0, type: 2}

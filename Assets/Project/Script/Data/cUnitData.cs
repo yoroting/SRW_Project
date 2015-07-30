@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using MyClassLibrary;
 //using _SRW;
 
-
+// 戰鬥零時摻數
 public enum _UNITSTATE
 {
 	_NULL =0,
@@ -600,6 +600,10 @@ public class cUnitData{
 
 	public void UpdateAttr( )
 	{
+		// don't update when dead. change method to flag better
+//		if (n_HP <= 0)
+//			return;
+
 		// update all attr
 		if (bUpdateFlag [  cAttrData._INTSCH  ] == true) {
 			bUpdateFlag [ cAttrData._INTSCH ] = false;		//馬上設定可以避免 後面的 update 引起遞迴

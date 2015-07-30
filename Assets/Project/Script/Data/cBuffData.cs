@@ -538,4 +538,30 @@ public class cBuffs
 		return false;
 	}
 
+
+	public List< cBuffSaveData > ExportSavePool(){
+		List< cBuffSaveData > pool = new List< cBuffSaveData > ();
+		foreach( KeyValuePair< int , cBuffData > pair in Pool  )
+		{
+			//// ignore  
+			//if( pair.Value.nTime == 0 )
+			//	continue;
+			//
+			pool.Add( new cBuffSaveData( pair.Value )  );
+
+		}
+		return pool;
+	}
+
+	public void ImportSavePool( List< cBuffSaveData > pool )
+	{
+		foreach( cBuffSaveData data in pool  )
+		{
+			cBuffData buff = AddBuff( data.nID , data.nCastIdent , data.nSkillID  , data.nTargetIdent );
+			if( buff != null ){
+				buff.nNum = data.nNum;
+				buff.nTime = data.nTime;
+			}
+		}
+	}
 }

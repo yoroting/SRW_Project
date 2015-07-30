@@ -7,6 +7,29 @@ using System.IO;
 using JsonFx.Json;
 using System.ComponentModel;
 
+[Serializable][JsonName("buff")]
+public class cBuffSaveData{
+
+	[JsonName("id")] [DefaultValue(0)]public int nID ;
+	[JsonName("time")] [DefaultValue(0)]public int nTime ;			//還有幾回合 
+	[JsonName("num")] [DefaultValue(0)]public int nNum ;			//疊幾層了	
+	
+	[JsonName("cast")] [DefaultValue(0)]public int nCastIdent ;		// record castident
+	[JsonName("target")] [DefaultValue(0)]public int nTargetIdent ;		// record targetident
+	[JsonName("skillid")] [DefaultValue(0)]public int nSkillID ;		// which skill cast this buff, for fast remove to ensure no bug
+	public cBuffSaveData(){}
+
+	public cBuffSaveData( cBuffData buff ){
+		nID 	= buff.nID;
+		nTime 	= buff.nTime;
+		nNum 	= buff.nNum;
+		nCastIdent   = buff.nCastIdent;
+		nTargetIdent = buff.nTargetIdent;
+		nSkillID = buff.nSkillID;
+	}
+
+}
+
 [Serializable][JsonName("unit")]
 public class cUnitSaveData{
 	[JsonName("id")] [DefaultValue(0)]public int n_Ident;
@@ -31,6 +54,8 @@ public class cUnitSaveData{
 	[JsonName("actsch")]				public int [] nActSch;		// current use 
 	[JsonName("items")]					public int [] Items;		// current items 
 	// buff pool
+	[JsonName("school")]				public Dictionary< string , int > School;		// current school 
+	[JsonName("buffs")]					public List< cBuffSaveData> Buffs;		// current buffs
 
 
 	public cUnitSaveData(){}
@@ -55,6 +80,9 @@ public class cUnitSaveData{
 		Items = data.Items;
 
 		nActionTime = data.nActionTime;
+
+		School = MyTool.ConvetToStringInt ( data.SchoolPool );  // unit school pool
+		Buffs = data.Buffs.ExportSavePool ();					// unit buff pool
 	}
 
 }

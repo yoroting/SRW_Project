@@ -3,12 +3,19 @@ using System.Collections;
 
 public class Panel_Mainten : MonoBehaviour {
 	public const string Name = "Panel_Mainten";
+	public GameObject btnUnit;
+	public GameObject btnSave;
+	public GameObject btnLoad;
 	public GameObject btnNextStage;
 
 
 	// Use this for initialization
 	void Start () {
 		UIEventListener.Get(btnNextStage).onClick += OnNextStageClick; // for trig next lineev
+		UIEventListener.Get(btnUnit).onClick += OnUnitClick; // for trig next lineev
+		UIEventListener.Get(btnSave).onClick += OnSaveClick; // for trig next lineev
+		UIEventListener.Get(btnLoad).onClick += OnLoadClick; // for trig next lineev
+
 	}
 	
 	// Update is called once per frame
@@ -56,5 +63,17 @@ public class Panel_Mainten : MonoBehaviour {
 
 		StartCoroutine ( EnterStory( GameDataManager.Instance.nStoryID ) );
 
+	}
+	void OnUnitClick( GameObject go )
+	{
+
+	}
+	void OnSaveClick( GameObject go )
+	{
+		cSaveData.Save ( 1 , _SAVE_PHASE._MAINTEN );
+	}
+	void OnLoadClick( GameObject go )
+	{
+		cSaveData.Load ( 1 , _SAVE_PHASE._MAINTEN );
 	}
 }
