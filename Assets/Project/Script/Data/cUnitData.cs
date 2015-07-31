@@ -776,6 +776,11 @@ public class cUnitData{
 
 	public void Relive()
 	{
+		if( Buffs.BuffRelive() )
+		{
+			SetUpdate( cAttrData._BUFF );
+		}
+
 		UpdateAttr(); // update soon
 
 		n_HP = GetMaxHP();

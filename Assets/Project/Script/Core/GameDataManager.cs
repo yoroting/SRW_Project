@@ -454,6 +454,17 @@ public partial class GameDataManager
 		return unit;
 	}
 
+	public bool AddCharToPool( cUnitData unit  )
+	{
+		// check game data to insert
+		if( UnitPool.ContainsKey( unit.n_Ident ) == true ){
+			UnitPool.Remove( unit.n_Ident );
+		}
+		UnitPool.Add( unit.n_Ident , unit );
+
+		return true;
+	}
+
 	public cUnitData CreateCharbySaveData( cUnitSaveData save )
 	{
 		cUnitData unit = new cUnitData();
@@ -495,8 +506,7 @@ public partial class GameDataManager
 		unit.SchoolPool = MyTool.ConvetToIntInt ( save.School );
 		// buff
 		unit.Buffs.ImportSavePool ( save.Buffs );
-		//
-		UnitPool.Add( unit.n_Ident , unit );
+	
 		return unit;
 	}
 
@@ -632,6 +642,22 @@ public partial class GameDataManager
 	}
 
 	// Save to binary;
+	public List< cUnitSaveData > ExportStoragePool()
+	{
+		List< cUnitSaveData > pool = new List< cUnitSaveData > ();
+		foreach (KeyValuePair< int ,cUnitData > pair in  StoragePool ) {
+			if( pair.Value != null )
+			{
+				cUnitSaveData savedata = new cUnitSaveData();
+				savedata.SetData( pair.Value );
+				pool.Add( savedata );
+				
+			}
+		}		
+		
+		return pool;
+	}
+
 	public List< cUnitSaveData > ExportSavePool()
 	{
 		List< cUnitSaveData > pool = new List< cUnitSaveData > ();
@@ -650,6 +676,23 @@ public partial class GameDataManager
 	}
 
 	// load from binary;
+	public void ImportStoragePool( List< cUnitSaveData > pool)
+	{
+		// clear unit data
+		//Panel_StageUI.Instance.in
+		StoragePool.Clear ();
+		
+		foreach( cUnitSaveData save in pool ) {
+			// add to char 
+			cUnitData data = CreateCharbySaveData( save );
+			if( data != null ){
+				StoragePool.Add( save.n_CharID , data );
+				//Panel_StageUI.Instance.CreateUnitByUnitData( data ) ;
+				//CreateCharbySaveData( save )	
+			}
+		}
+	}
+
 	public void ImportSavePool( List< cUnitSaveData > pool)
 	{
 		// clear unit data
@@ -660,8 +703,10 @@ public partial class GameDataManager
 			// add to char 
 			cUnitData data = CreateCharbySaveData( save );
 			if( data != null ){
+				UnitPool.Add( data.n_Ident , data ); // add to unit pool first
+
 				Panel_StageUI.Instance.CreateUnitByUnitData( data ) ;
-			//CreateCharbySaveData( save )	
+				//CreateCharbySaveData( save )	
 			}
 		}
 	}

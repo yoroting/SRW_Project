@@ -268,6 +268,10 @@ public class Panel_unit : MonoBehaviour {
 		if (pUnitData == null) {
 			pUnitData = GameDataManager.Instance.CreateChar (nCharID);
 		}
+		else{
+			// check game data to insert
+			GameDataManager.Instance.AddCharToPool( pUnitData );
+		}
 		// return if unit data keep null
 		if( pUnitData == null )
 			return;

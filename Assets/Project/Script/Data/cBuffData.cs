@@ -288,6 +288,29 @@ public class cBuffs
 		return bUpdate;
 	}
 
+	// clear when relive / stage end
+	public bool BuffRelive()
+	{
+		// del buff when fight end
+		List< int > lst = new List< int >();
+		foreach( KeyValuePair<int , cBuffData>  pair in Pool )
+		{
+			//if( pair.Value.nCastIdent == castid )
+			if( pair.Value.nTime != 0 )
+			{
+				RemoveList.Add( pair.Key );
+			}
+		}		
+		
+		foreach( int id in RemoveList ){
+			Pool.Remove( id );
+		}
+		bool bUpdate = RemoveList.Count > 0;
+		RemoveList.Clear ();
+		return bUpdate;
+		return true;
+	}
+
 	public void UpdateAttr( ref cAttrData attr  )
 	{
 		attr.Reset ();
@@ -555,6 +578,7 @@ public class cBuffs
 
 	public void ImportSavePool( List< cBuffSaveData > pool )
 	{
+		Pool.Clear();
 		foreach( cBuffSaveData data in pool  )
 		{
 			cBuffData buff = AddBuff( data.nID , data.nCastIdent , data.nSkillID  , data.nTargetIdent );

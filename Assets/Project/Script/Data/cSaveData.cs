@@ -100,7 +100,7 @@ public class cSaveData{
 	[JsonName("money")] [DefaultValue(0)] public int n_Money;
 	[JsonName("stars")] [DefaultValue(0)] public int n_Stars;			//熟練度
 
-	[JsonName("phase")] [DefaultValue(_SAVE_PHASE._MAINTEN)] public _SAVE_PHASE ePhase;			//  0 - 整備 , 1-戰場上
+	[JsonName("phase")] [DefaultValue(_SAVE_PHASE._MAINTEN)] public _SAVE_PHASE ePhase;			//  0 - 整備 , 1-戰場上 , 2- sys
 //	 string sFileName;
 
 //	 public cSaveData( int nIdx )
@@ -111,7 +111,7 @@ public class cSaveData{
 //		ItemPool = new List<int> ();
 //	 }
 
-
+	[JsonName("spool")] public List< cUnitSaveData > 			StoragePool;		// 倉庫腳色
 	[JsonName("cpool")] public List< cUnitSaveData > 			CharPool;
 	[JsonName("ipool")] public List<int>						ItemPool;
 	[JsonName("importpool")] public List<int>					ImportEventPool;   // 已完成的重要事件列表
@@ -140,6 +140,7 @@ public class cSaveData{
 
 		ItemPool = GameDataManager.Instance.ItemPool;			// item list
 		ImportEventPool = GameDataManager.Instance.ImportEventPool;
+		StoragePool = GameDataManager.Instance.ExportStoragePool();
 
 		ePhase = phase;
 
@@ -171,6 +172,9 @@ public class cSaveData{
 		// clear data
 
 		GameDataManager.Instance.SaveData = this;
+		GameDataManager.Instance.StoragePool.Clear();
+		GameDataManager.Instance.UnitPool.Clear();
+
 
 		// reset data
 		GameDataManager.Instance.nStoryID = n_StoryID;
@@ -182,17 +186,11 @@ public class cSaveData{
 
 		GameDataManager.Instance.ItemPool = ItemPool ;			// item list
 		GameDataManager.Instance.ImportEventPool = ImportEventPool;
-
+		GameDataManager.Instance.ImportStoragePool( StoragePool );
 		// 由phase 決定目前該切到哪個場僅. this should need a 
-
-
-
-
 
 		// restore mainta
 		if (phase == _SAVE_PHASE._MAINTEN) {
-
-
 
 
 
