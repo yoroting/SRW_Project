@@ -112,7 +112,8 @@ public class MainUIPanel : BasicPanel {
 		// When load button clicked do :
 		Debug.Log("Load");
 
-		cSaveData.Load (1, _SAVE_PHASE._STARTUP , this.gameObject );
+		Panel_SaveLoad.OpenLoadMode ( _SAVE_PHASE._STARTUP );
+		//cSaveData.Load (1, _SAVE_PHASE._STARTUP );
 	}
 
 	void OnGalleryButtonClick(GameObject go)
@@ -136,26 +137,29 @@ public class MainUIPanel : BasicPanel {
 		PanelManager.Instance.OpenUI( "Panel_Loading");
 		
 		yield return  new WaitForEndOfFrame();
-		
+
 		if (save.ePhase == _SAVE_PHASE._MAINTEN) {
-			PanelManager.Instance.OpenUI ( Panel_Mainten.Name );			
+			Panel_Mainten panel  = MyTool.GetPanel<Panel_Mainten>( PanelManager.Instance.OpenUI ( Panel_Mainten.Name ) );
+			yield return  new WaitForEndOfFrame();
+
+			panel.RestoreBySaveData( save );
+
+
 		} else if (save.ePhase == _SAVE_PHASE._STAGE) {
 
 			PanelManager.Instance.OpenUI( Panel_StageUI.Name );  // don't run start() during open
 //			Panel_StageUI.Instance.bIsRestoreData = true;
-		}
-		
-		yield return  new WaitForEndOfFrame();
-		
-		if (save.ePhase == _SAVE_PHASE._STAGE) {// need wait a frame to load
-				Panel_StageUI.Instance.RestoreBySaveData ( save );
-				//yield return  new WaitForEndOfFrame ();
-		}
-		
-	
-		PanelManager.Instance.CloseUI( Name );  			// close main 
+			yield return  new WaitForEndOfFrame();
 
+			Panel_StageUI.Instance.RestoreBySaveData ( save );
+		}
+		yield return  new WaitForEndOfFrame();
+
+		PanelManager.Instance.CloseUI( Name );
 		cSaveData.SetLoading (false);
+
+		PanelManager.Instance.CloseUI( "Panel_Loading");
+
 		yield break;
 		
 	}

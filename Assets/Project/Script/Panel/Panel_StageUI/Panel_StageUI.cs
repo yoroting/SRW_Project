@@ -172,48 +172,24 @@ public class Panel_StageUI : MonoBehaviour
 
         //Record All Event to execute
         //EvtPool.Clear();
-        char[] split = { ';' };
-        string[] strEvent = StageData.s_EVENT.Split(split);
-        for (int i = 0; i < strEvent.Length; i++)
-        {
-            int nEventID = int.Parse(strEvent[i]);
-            STAGE_EVENT evt = ConstDataManager.Instance.GetRow<STAGE_EVENT>(nEventID);
-            if (evt != null)
-            {
-                EvtPool.Add(nEventID, evt);
-            }
-        }
-
-        Debug.Log("stageloding:create event Pool complete");
-
-        //		// clear data
-        //		Clear ();
-        //
-        //		// load const data
-        //		StageData = ConstDataManager.Instance.GetRow<STAGE_DATA> ( GameDataManager.Instance.nStageID );
-        //		if( StageData == null )
-        //			return ;
-        //		
-        //		// load scene file
-        //		if( LoadScene( StageData.n_SCENE_ID ) == false )
-        //			return ;
-        //		
-        //		// EVENT 
-        //		//GameDataManager.Instance.nRound = 0;		// many mob pop in talk ui. we need a 0 round to avoid issue
-        //
-        //		//Record All Event to execute
-        //		//EvtPool.Clear();
-        //		char [] split = { ';' };
-        //		string [] strEvent = StageData.s_EVENT.Split( split );
-        //		for( int i = 0 ; i< strEvent.Length ; i++ )
-        //		{
-        //			int nEventID = int.Parse( strEvent[i] );
-        //			STAGE_EVENT evt = ConstDataManager.Instance.GetRow<STAGE_EVENT> ( nEventID );
-        //			if( evt != null ){
-        //				EvtPool.Add( nEventID , evt );
-        //			}
-        //		}
-
+		char[] split = { ';' };
+		string[] strEvent = StageData.s_EVENT.Split(split);
+		for (int i = 0; i < strEvent.Length; i++)
+		{
+			int nEventID = int.Parse(strEvent[i]);
+			STAGE_EVENT evt = ConstDataManager.Instance.GetRow<STAGE_EVENT>(nEventID);
+			if (evt != null)
+			{
+				EvtPool.Add(nEventID, evt);
+			}
+		}
+		
+		Debug.Log("stageloding:create event Pool complete");
+		
+		
+		GameDataManager.Instance.nPlayerBGM = StageData.n_PLAYER_BGM ;   //我方
+		GameDataManager.Instance.nEnemyBGM  = StageData.n_ENEMY_BGM;	 // 敵方
+		GameDataManager.Instance.nFriendBGM = StageData.n_FRIEND_BGM;	// 友方
 
         // regedit game event
         RegeditGameEvent(true);
@@ -236,6 +212,7 @@ public class Panel_StageUI : MonoBehaviour
         long during = System.DateTime.Now.Ticks - tick;
         Debug.Log("stage srart loding complete. total ticket:" + during);
     }
+
 
     void OnEnable()
     {
@@ -371,7 +348,7 @@ public class Panel_StageUI : MonoBehaviour
 
 	
 		//List < iVec2 >
-		UnitPanelObj.CreatePool( st_CellObjPoolSize / 2 );
+		UnitPanelObj.CreatePool( 1);//st_CellObjPoolSize / 2 
 
 		MoveEftObj.CreatePool( st_CellObjPoolSize );
 		AtkEftObj.CreatePool( st_CellObjPoolSize );
@@ -715,8 +692,7 @@ public class Panel_StageUI : MonoBehaviour
 		}
 	}
 
-	// if any char be click
-	void OnCharClick(GameObject go)
+	void OnUnitClick(GameObject go)
 	{
 		if( IsAnyActionRunning() == true )
 			return;
@@ -724,13 +700,36 @@ public class Panel_StageUI : MonoBehaviour
 		if( IsRunningEvent() == true  )
 			return; // block other action  
 
+		Panel_unit unit = go.GetComponent<Panel_unit>() ;
+		if( unit == null )
+			return ;
+		if (unit.eCampID == _CAMP._PLAYER) {
+			OnCharClick( unit );
+		}
+		else if(unit.eCampID == _CAMP._ENEMY) {
+			OnMobClick( unit );
+		}
+		else if(unit.eCampID == _CAMP._FRIEND) {
+			
+		}
+	}
+
+	// if any char be click
+	void OnCharClick(Panel_unit unit)
+	{
+//		if( IsAnyActionRunning() == true )
+//			return;
+//		
+//		if( IsRunningEvent() == true  )
+//			return; // block other action  
+
 		if (GameDataManager.Instance.nActiveCamp != _CAMP._PLAYER)
 			return;
 	
 		// avoid any ui opening
 		// clear over effect
 
-		Panel_unit unit = go.GetComponent<Panel_unit>() ;
+		//Panel_unit unit = go.GetComponent<Panel_unit>() ;
 		if( unit == null )
 			return ;
 
@@ -799,20 +798,20 @@ public class Panel_StageUI : MonoBehaviour
 		//unit.Identify;
 	}
 
-	void OnMobClick(GameObject go)
+	void OnMobClick(Panel_unit unit)
 	{
-		if( IsAnyActionRunning() == true )
-			return;
-		
-		if( IsRunningEvent() == true  )
-			return; // block other action  
+//		if( IsAnyActionRunning() == true )
+//			return;
+//		
+//		if( IsRunningEvent() == true  )
+//			return; // block other action  
 
 		if (GameDataManager.Instance.nActiveCamp != _CAMP._PLAYER)
 			return;
 
 		// avoid any ui opening
 		// clear over effect
-		Panel_unit unit = go.GetComponent<Panel_unit>() ;
+		//Panel_unit unit = go.GetComponent<Panel_unit>() ;
 		if( unit == null )
 			return ;
 		string sKey = unit.Loc.GetKey ();
@@ -1646,12 +1645,14 @@ public class Panel_StageUI : MonoBehaviour
 		
 		// position // set in create
 		//obj.transform.localPosition =  MyTool.SnyGridtoLocalPos( x , y , ref Grids ) ; 
-		
-		if (nCampID == _CAMP._PLAYER) {		
-			UIEventListener.Get (obj).onClick += OnCharClick;
-		} else if (nCampID == _CAMP._ENEMY) {
-			UIEventListener.Get (obj).onClick += OnMobClick;
-		}
+
+		UIEventListener.Get (obj).onClick = null;
+		UIEventListener.Get (obj).onClick += OnUnitClick;
+//		if (nCampID == _CAMP._PLAYER) {		
+//			UIEventListener.Get (obj).onClick += OnCharClick;
+//		} else if (nCampID == _CAMP._ENEMY) {
+//			UIEventListener.Get (obj).onClick += OnMobClick;
+//		}
 		
 		// if obj out of screen. move to it auto
 		MoveToGameObj ( obj , false );
@@ -1870,18 +1871,17 @@ public class Panel_StageUI : MonoBehaviour
 			//SCENE_NAME scn = ConstDataManager.Instance.GetRow<SCENE_NAME> ( StageData.n_SCENE_ID );
 			//if (scn == null)
 			//	return ;
-
 			if( GameDataManager.Instance.nActiveCamp == _CAMP._ENEMY )
 			{
-				GameSystem.PlayBGM( StageData.n_ENEMY_BGM );
+				GameSystem.PlayBGM( GameDataManager.Instance.nEnemyBGM  );
 			}
 			else if( GameDataManager.Instance.nActiveCamp == _CAMP._FRIEND )
 			{
-				GameSystem.PlayBGM( StageData.n_FRIEND_BGM );
+				GameSystem.PlayBGM( GameDataManager.Instance.nFriendBGM );
 			}
 			else if( GameDataManager.Instance.nActiveCamp == _CAMP._PLAYER )
 			{
-				GameSystem.PlayBGM( StageData.n_PLAYER_BGM);
+				GameSystem.PlayBGM( GameDataManager.Instance.nPlayerBGM  );
 			}
 
 		}
@@ -2364,7 +2364,13 @@ public class Panel_StageUI : MonoBehaviour
 		yield return  new WaitForEndOfFrame ();
 		
 		if (save.ePhase == _SAVE_PHASE._MAINTEN) {
-			PanelManager.Instance.OpenUI (Panel_Mainten.Name);			
+
+			Panel_Mainten panel  = MyTool.GetPanel<Panel_Mainten>( PanelManager.Instance.OpenUI ( Panel_Mainten.Name ) );
+			yield return  new WaitForEndOfFrame();
+			
+			panel.RestoreBySaveData( save );
+
+		
 		} else if (save.ePhase == _SAVE_PHASE._STAGE) {
 			
 			//PanelManager.Instance.OpenUI( Panel_StageUI.Name );  // don't run start() during open
@@ -2374,14 +2380,16 @@ public class Panel_StageUI : MonoBehaviour
 			Panel_StageUI.Instance.RestoreBySaveData ( save) ;
 
 		}		
-
-		// close ui  if need
-		if (save.ePhase == _SAVE_PHASE._MAINTEN){
-			PanelManager.Instance.CloseUI (Name);  			// close stage when mainten
-		}
+		yield return  new WaitForEndOfFrame();
 
 		cSaveData.SetLoading (false);
 
+		if (save.ePhase != _SAVE_PHASE._STAGE) {
+			PanelManager.Instance.DestoryUI( Name );
+			//PanelManager.Instance.CloseUI (Name);  			// close stage when mainten
+		}
+
+		PanelManager.Instance.CloseUI ("Panel_Loading");
 		yield break;
 		
 	}
@@ -2442,8 +2450,6 @@ public class Panel_StageUI : MonoBehaviour
 		for (int i = 0; i < strEvent.Length; i++)
 		{
 			int nEventID = int.Parse(strEvent[i]);
-			//GameDataManager.Instance.EvtDonePool.ContainsKey( nEventID )
-
 			STAGE_EVENT evt = ConstDataManager.Instance.GetRow<STAGE_EVENT>(nEventID);
 			if (evt != null)
 			{
@@ -2454,12 +2460,15 @@ public class Panel_StageUI : MonoBehaviour
 						continue;
 					}
 				}
-				// push to check
+
 				EvtPool.Add(nEventID, evt);
 			}
 		}
 		
-		Debug.Log("stagerestore:create event Pool complete");
+		Debug.Log("stageloding:create event Pool complete");
+		GameDataManager.Instance.nPlayerBGM = StageData.n_PLAYER_BGM;
+		GameDataManager.Instance.nEnemyBGM = StageData.n_ENEMY_BGM;
+		GameDataManager.Instance.nFriendBGM = StageData.n_FRIEND_BGM;
 
 
 
@@ -2479,6 +2488,17 @@ public class Panel_StageUI : MonoBehaviour
 
 
 		}
+
+		// reset bgm
+
+		if( save.nPlayerBGM > 0 )
+			GameDataManager.Instance.nPlayerBGM = save.nPlayerBGM ;   //我方
+		if( save.nEnemyBGM > 0 )
+			GameDataManager.Instance.nEnemyBGM  = save.nEnemyBGM;	 // 敵方
+		if( save.nFriendBGM > 0 )
+			GameDataManager.Instance.nFriendBGM = save.nFriendBGM;	// 友方
+
+		GameDataManager.Instance.ePhase = _SAVE_PHASE._STAGE;		// save to stage phase
 
 		// stage bgm
 		PlayStageBGM ();

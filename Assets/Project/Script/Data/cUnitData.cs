@@ -597,6 +597,13 @@ public class cUnitData{
 			SetLevel( nUp + n_Lv );
 		}
 	}
+	public void UpdateAllAttr( )
+	{
+		for (int i=0; i <bUpdateFlag.Length; i++) {
+			bUpdateFlag[i] = true ;
+		}
+		UpdateAttr ();
+	}
 
 	public void UpdateAttr( )
 	{
@@ -776,11 +783,11 @@ public class cUnitData{
 
 	public void Relive()
 	{
-		if( Buffs.BuffRelive() )
-		{
-			SetUpdate( cAttrData._BUFF );
-		}
+		Buffs.BuffRelive ();
 
+		for (int i=0; i <bUpdateFlag.Length; i++) {
+			bUpdateFlag[i] = true ;
+		}
 		UpdateAttr(); // update soon
 
 		n_HP = GetMaxHP();

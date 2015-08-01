@@ -311,9 +311,9 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
 	public void SaveCmd( ) // only in count mode
 	{
-
 		// save to 1
-		cSaveData.Save (1 , _SAVE_PHASE._STAGE );
+		//cSaveData.Save (1 , _SAVE_PHASE._STAGE );
+		Panel_SaveLoad.OpenSaveMode ( _SAVE_PHASE._STAGE );
 
 		EndCMDUI (); // really close
 	}
@@ -322,7 +322,9 @@ public class Panel_CMDUnitUI : MonoBehaviour
 	{
 		// always load from stage
 		// cSaveData.Load (1 , _SAVE_PHASE._STAGE , Panel_StageUI.Instance.gameObject  );
-		cSaveData.Load (1, _SAVE_PHASE._STAGE, null);
+		// cSaveData.Load (1, _SAVE_PHASE._STAGE);
+	//	Panel_SaveLoad.  .OpenLoadMode ( );
+		Panel_SaveLoad.OpenLoadMode ( _SAVE_PHASE._STAGE );
 
 		EndCMDUI (); // really close
 	}

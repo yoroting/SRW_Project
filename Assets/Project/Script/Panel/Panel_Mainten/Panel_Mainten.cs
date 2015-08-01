@@ -10,6 +10,11 @@ public class Panel_Mainten : MonoBehaviour {
 
 
 	// Use this for initialization
+	void OnEnable()
+	{
+		GameSystem.PlayBGM ( 7 );
+	}
+
 	void Start () {
 		UIEventListener.Get(btnNextStage).onClick += OnNextStageClick; // for trig next lineev
 		UIEventListener.Get(btnUnit).onClick += OnUnitClick; // for trig next lineev
@@ -31,11 +36,15 @@ public class Panel_Mainten : MonoBehaviour {
 		if (PanelManager.Instance.CheckUIIsOpening (Panel_StageUI.Name)) {
 
 
-
-			 PanelManager.Instance.DestoryUI( Panel_StageUI.Name ); // don't destory .. this is singoleten obj.. may be need to free singolten 
+			// free here waill cause some  StartCoroutine of stageUI break 
+			if( cSaveData.IsLoading()== false ){
+				 PanelManager.Instance.DestoryUI( Panel_StageUI.Name ); // don't destory .. this is singoleten obj.. may be need to free singolten 
 			//PanelManager.Instance.CloseUI( Panel_StageUI.Name );
 			// need to free all stage resource
 
+			// close loading
+				PanelManager.Instance.CloseUI( "Panel_Loading");
+			}
 
 		}
 	}
@@ -56,7 +65,7 @@ public class Panel_Mainten : MonoBehaviour {
 		yield return  new WaitForEndOfFrame();
 		
 		
-		PanelManager.Instance.CloseUI( Name );  			// close main 
+		PanelManager.Instance.DestoryUI( Name );  			// close main 
 		yield break;
 		
 	}
@@ -78,11 +87,13 @@ public class Panel_Mainten : MonoBehaviour {
 	}
 	void OnSaveClick( GameObject go )
 	{
-		cSaveData.Save ( 1 , _SAVE_PHASE._MAINTEN );
+		Panel_SaveLoad.OpenSaveMode ( _SAVE_PHASE._MAINTEN );
+	//	cSaveData.Save ( 1 , _SAVE_PHASE._MAINTEN );
 	}
 	void OnLoadClick( GameObject go )
 	{
-		cSaveData.Load ( 1 , _SAVE_PHASE._MAINTEN , this.gameObject );
+		Panel_SaveLoad.OpenLoadMode ( _SAVE_PHASE._MAINTEN );
+	//	cSaveData.Load ( 1 , _SAVE_PHASE._MAINTEN );
 		//StartCoroutine ( SaveLoading( save) 
 
 	}
@@ -108,10 +119,16 @@ public class Panel_Mainten : MonoBehaviour {
 			yield return  new WaitForEndOfFrame();
 			Panel_StageUI.Instance.RestoreBySaveData ( save );
 			yield return  new WaitForEndOfFrame ();
-			PanelManager.Instance.CloseUI (Name);  			// close main 
 		}		
+		// close loadint UI
+		PanelManager.Instance.CloseUI( "Panel_Loading");
 
 		cSaveData.SetLoading (false);
+
+		if (save.ePhase != _SAVE_PHASE._MAINTEN) {
+			PanelManager.Instance.DestoryUI (Name);  			// close main 
+		}
+
 		yield break;
 		
 	}
@@ -136,7 +153,9 @@ public class Panel_Mainten : MonoBehaviour {
 		if (save.ePhase == _SAVE_PHASE._STAGE) {
 			// restore to mainten ui
 
-		}
+		}	
+	
+		GameDataManager.Instance.ePhase = _SAVE_PHASE._MAINTEN;		// save to stage phase
 
 		return true;
 	}

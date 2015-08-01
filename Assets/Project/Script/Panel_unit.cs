@@ -91,6 +91,13 @@ public class Panel_unit : MonoBehaviour {
 	void OnEnable(){
 		transform.localRotation = new Quaternion(); 
 		transform.localScale = new Vector3( 1.0f, 1.0f ,1.0f);
+
+		bOnSelected = false;
+		bIsDead = false;
+		TarIdent = 0;
+
+
+		//UIEventListener.Get ( this.gameObject ).onClick
 	}
 
 	// Awake

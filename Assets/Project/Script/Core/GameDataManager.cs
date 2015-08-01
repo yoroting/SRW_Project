@@ -229,7 +229,11 @@ public partial class GameDataManager
 	public int nTalkID{ get; set; } 
 	public int nBattleID{ get; set; } 
 
-	// Operation Token ID 
+	//陣營切換的背景音樂，隨關卡進展會改變
+	public int nPlayerBGM{ get; set; }   //我方
+	public int nEnemyBGM{ get; set; } 	 // 敵方
+	public int nFriendBGM{ get; set; } 	// 友方
+
 //	public int nOpCharIdent{ get; set; } 				//
 //	public int nOpMobIdent{ get; set; } 				//
 //	public int nOpFriendIdent{ get; set; } 				//
@@ -401,7 +405,7 @@ public partial class GameDataManager
 	}
 	// 目前的紀錄狀態
 	//public PLAYER_DATA			cPlayerData;
-	public cSaveData				SaveData;		
+//	public cSaveData				SaveData;		
 	public List<int>	ImportEventPool;   // 已完成的重要事件列表
 //	public List<int> 	GetImportEvent(){  
 //		if (ImportEventPool == null)
@@ -508,7 +512,9 @@ public partial class GameDataManager
 		unit.SchoolPool = MyTool.ConvetToIntInt ( save.School );
 		// buff
 		unit.Buffs.ImportSavePool ( save.Buffs );
-	
+
+		unit.UpdateAllAttr ();
+
 		return unit;
 	}
 

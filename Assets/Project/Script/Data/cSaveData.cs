@@ -102,7 +102,7 @@ public class cSaveData{
 	[JsonName("money")] [DefaultValue(0)] public int n_Money;
 	[JsonName("stars")] [DefaultValue(0)] public int n_Stars;			//熟練度
 
-	[JsonName("phase")] [DefaultValue(_SAVE_PHASE._MAINTEN)] public _SAVE_PHASE ePhase;			//  0 - 整備 , 1-戰場上 , 2- sys
+	[JsonName("phase")] [DefaultValue(_SAVE_PHASE._MAINTEN)] public _SAVE_PHASE ePhase = _SAVE_PHASE._MAINTEN;			//  0 - 整備 , 1-戰場上 , 2- sys
 //	 string sFileName;
 
 //	 public cSaveData( int nIdx )
@@ -112,6 +112,10 @@ public class cSaveData{
 //		CharPool = new Dictionary< int ,cUnitBaseData > ();
 //		ItemPool = new List<int> ();
 //	 }
+	[JsonName("pbgm")] [DefaultValue(0)] public int nPlayerBGM;
+	[JsonName("ebgm")] [DefaultValue(0)] public int nEnemyBGM;
+	[JsonName("fbgm")] [DefaultValue(0)] public int nFriendBGM;
+
 
 	[JsonName("spool")] public List< cUnitSaveData > 			StoragePool;		// 倉庫腳色
 	[JsonName("cpool")] public List< cUnitSaveData > 			CharPool;
@@ -145,6 +149,11 @@ public class cSaveData{
 		n_Money = GameDataManager.Instance.nMoney;
 		n_Stars = GameDataManager.Instance.nStars;
 
+		nPlayerBGM = GameDataManager.Instance.nPlayerBGM;   //我方
+		nEnemyBGM  = GameDataManager.Instance.nEnemyBGM;	 // 敵方
+		nFriendBGM = GameDataManager.Instance.nFriendBGM;	// 友方
+
+
 		ItemPool = GameDataManager.Instance.ItemPool;			// item list
 		ImportEventPool = GameDataManager.Instance.ImportEventPool;
 		StoragePool = GameDataManager.Instance.ExportStoragePool();
@@ -174,11 +183,11 @@ public class cSaveData{
 	}
 
 	//將遊戲還原到 紀錄的狀態
-	public void RestoreData( _SAVE_PHASE phase , GameObject go )
+	public void RestoreData( _SAVE_PHASE phase )
 	{
 		// clear data
 
-		GameDataManager.Instance.SaveData = this; // for startcoror
+//		GameDataManager.Instance.SaveData = this; // for startcoror
 
 
 		GameDataManager.Instance.StoragePool.Clear();
@@ -193,6 +202,15 @@ public class cSaveData{
 		GameDataManager.Instance.nMoney = n_Money;
 		GameDataManager.Instance.nStars = n_Stars;
 
+		// need set after stage load
+//		if( nPlayerBGM > 0 )
+//			GameDataManager.Instance.nPlayerBGM = nPlayerBGM ;   //我方
+//		if( nEnemyBGM > 0 )
+//			GameDataManager.Instance.nEnemyBGM  = nEnemyBGM;	 // 敵方
+//		if( nFriendBGM > 0 )
+//			GameDataManager.Instance.nFriendBGM = nFriendBGM;	// 友方
+
+
 		GameDataManager.Instance.ItemPool = ItemPool ;			// item list
 		GameDataManager.Instance.ImportEventPool = ImportEventPool;
 		GameDataManager.Instance.ImportStoragePool( StoragePool );
@@ -203,7 +221,7 @@ public class cSaveData{
 		//StartCoroutine(  cSaveData.SaveLoading( this  ) ); // need a mono behacior
 
 		if (phase == _SAVE_PHASE._MAINTEN) {
-			Panel_Mainten panel = MyTool.GetPanel< Panel_Mainten >( go );
+			Panel_Mainten panel = MyTool.GetPanel< Panel_Mainten >( PanelManager.Instance.JustGetUI( Panel_Mainten.Name )  );
 			if( panel != null ){
 				panel.LoadSaveGame( this );
 			}
@@ -229,7 +247,7 @@ public class cSaveData{
 		}
 		else if(phase == _SAVE_PHASE._STARTUP )
 		{
-			MainUIPanel panel = MyTool.GetPanel< MainUIPanel >( go );
+			MainUIPanel panel = MyTool.GetPanel< MainUIPanel >( PanelManager.Instance.JustGetUI( MainUIPanel.Name ) );
 			if( panel != null ){
 				panel.LoadSaveGame( this );
 			}
@@ -242,7 +260,7 @@ public class cSaveData{
 		return "save" + Idx.ToString() ;
 	}
 
-	static public bool Load( int Idx , _SAVE_PHASE phase , GameObject go  )
+	static public bool Load( int Idx , _SAVE_PHASE phase )
 	{
 		if (IsLoading ())
 			return false;
@@ -260,7 +278,7 @@ public class cSaveData{
 		JsonReader reader = new JsonReader(sJson, readerSettings);
 		
 		cSaveData save = (cSaveData)reader.Deserialize ( typeof(cSaveData) );
-		save.RestoreData ( phase , go );
+		save.RestoreData ( phase );
 		//parameters = (Dictionary<string, object>)reader.Deserialize();
 		return true;
 	}
@@ -284,4 +302,25 @@ public class cSaveData{
 		PlayerPrefs.Save ();
 		return true;
 	}
+
+
+	static public string LoadSimpleInfo( int Idx )
+	{
+		string sKeyName = GetKey( Idx );
+		string sJson = PlayerPrefs.GetString ( sKeyName , "" );
+		if (string.IsNullOrEmpty (sJson))
+			return "NoData";
+		// ---- DESERIALIZATION ----
+		
+		JsonReaderSettings readerSettings = new JsonReaderSettings();
+		readerSettings.TypeHintName = "__type";
+		
+		JsonReader reader = new JsonReader(sJson, readerSettings);
+		
+		cSaveData save = (cSaveData)reader.Deserialize ( typeof(cSaveData) );
+		string sInfo = string.Format ( "Stage {0} " , save.n_StageID );
+		return sInfo;
+
+	}
+
 }

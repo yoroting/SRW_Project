@@ -382,6 +382,14 @@ public class MyScript {
 				// change bgm 
 				GameSystem.PlayBGM ( nID );
 			}
+			else if( func.sFunc == "E_BGM"  )
+			{
+				int nID = func.I( 0 );
+				// change bgm 
+				if( nID> 0 ){
+					GameDataManager.Instance.nEnemyBGM = nID;
+				}
+			}
 			else if( func.sFunc == "SAY" )
 			{
 				TalkSayEvent evt = new TalkSayEvent();
