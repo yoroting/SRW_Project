@@ -480,7 +480,12 @@ public class Panel_Talk : MonoBehaviour {
 			return;
 		obj.ClearText(); // clear text first
 		string s = GameSystem.GetTalkText ( nSayTextID );
-		string sText = s.Replace ( "$P" , Config.PlayerName ); // replace player name		
+		string sText = "";
+		if (string.IsNullOrEmpty (s)) {
+			sText = string.Format("CharSay null text in textid{0} ", nSayTextID);
+		} else {
+			sText = s.Replace ( "$P" , Config.PlayerName ); // replace player name		
+		}
 		obj.AddText(sText);
 	}
 

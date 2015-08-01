@@ -1,11 +1,13 @@
 using UnityEngine;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
 using JsonFx.Json;
 using System.ComponentModel;
+
 
 [Serializable][JsonName("buff")]
 public class cBuffSaveData{
@@ -124,6 +126,11 @@ public class cSaveData{
 
 	[JsonName("grouppool")] public Dictionary< string , int >		GroupPool;   //  group event pool
 
+			
+	static bool 	bIsLoading;													// don't public to avoid recprd this
+	public static bool		IsLoading(){ return bIsLoading;	 }
+	public static void		SetLoading( bool b){  bIsLoading = b; }
+
 
 	// write data to save
 	public void SetData( int nIdx , _SAVE_PHASE phase )
@@ -167,11 +174,13 @@ public class cSaveData{
 	}
 
 	//將遊戲還原到 紀錄的狀態
-	public void RestoreData( _SAVE_PHASE phase )
+	public void RestoreData( _SAVE_PHASE phase , GameObject go )
 	{
 		// clear data
 
-		GameDataManager.Instance.SaveData = this;
+		GameDataManager.Instance.SaveData = this; // for startcoror
+
+
 		GameDataManager.Instance.StoragePool.Clear();
 		GameDataManager.Instance.UnitPool.Clear();
 
@@ -190,44 +199,41 @@ public class cSaveData{
 		// 由phase 決定目前該切到哪個場僅. this should need a 
 
 		// restore mainta
+
+		//StartCoroutine(  cSaveData.SaveLoading( this  ) ); // need a mono behacior
+
 		if (phase == _SAVE_PHASE._MAINTEN) {
-
-
-
+			Panel_Mainten panel = MyTool.GetPanel< Panel_Mainten >( go );
+			if( panel != null ){
+				panel.LoadSaveGame( this );
+			}
 		}
 		// restore to stage
 		else if (phase == _SAVE_PHASE._STAGE) {
-			if( this.ePhase ==  _SAVE_PHASE._MAINTEN )
-			{
-
-
-			}
-			else if( this.ePhase ==  _SAVE_PHASE._STAGE )
-			{
-				Panel_StageUI.Instance.RestoreBySaveData();
-
-			//GameDataManager.Instance.ResetStage();
-			// event done pool
-		//	GameDataManager.Instance.EvtDonePool = EvtDonePool ;
-//				GameDataManager.Instance.EvtDonePool.Clear();
-//				GameDataManager.Instance.EvtDonePool = MyTool.ConvetToIntInt( EvtDonePool );
-//			foreach( KeyValuePair< string , int > pair in EvtDonePool )
+			if( Panel_StageUI.Instance )
+				Panel_StageUI.Instance.LoadSaveGame( this );
+//			if( this.ePhase ==  _SAVE_PHASE._MAINTEN )
 //			{
-//				int nEvtId = 0;
-//				if( int.TryParse( pair.Key , out nEvtId) ){
-//					GameDataManager.Instance.EvtDonePool.Add(  nEvtId , pair.Value );
-//				}
+//				// free stage 
+//
+//				// open main tenUI
+//
 //			}
-
-
-			// group pool
-		//	GameDataManager.Instance.GroupPool = GroupPool ;
-//				GameDataManager.Instance.GroupPool   = MyTool.ConvetToIntInt( GroupPool );
-			// unit pool
-//				GameDataManager.Instance.ImportSavePool( CharPool );
+//			else if( this.ePhase ==  _SAVE_PHASE._STAGE )
+//			{
+//
+//				 // need coror
+//				Panel_StageUI.Instance.RestoreBySaveData();
+//
+//			}
+		}
+		else if(phase == _SAVE_PHASE._STARTUP )
+		{
+			MainUIPanel panel = MyTool.GetPanel< MainUIPanel >( go );
+			if( panel != null ){
+				panel.LoadSaveGame( this );
 			}
 		}
-
 
 	}
 
@@ -236,8 +242,12 @@ public class cSaveData{
 		return "save" + Idx.ToString() ;
 	}
 
-	static public bool Load( int Idx , _SAVE_PHASE phase )
+	static public bool Load( int Idx , _SAVE_PHASE phase , GameObject go  )
 	{
+		if (IsLoading ())
+			return false;
+		SetLoading (true);
+
 		string sKeyName = GetKey( Idx );
 		string sJson = PlayerPrefs.GetString ( sKeyName , "" );
 		if (string.IsNullOrEmpty (sJson))
@@ -250,7 +260,7 @@ public class cSaveData{
 		JsonReader reader = new JsonReader(sJson, readerSettings);
 		
 		cSaveData save = (cSaveData)reader.Deserialize ( typeof(cSaveData) );
-		save.RestoreData ( phase );
+		save.RestoreData ( phase , go );
 		//parameters = (Dictionary<string, object>)reader.Deserialize();
 		return true;
 	}

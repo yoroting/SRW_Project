@@ -111,6 +111,8 @@ public class MainUIPanel : BasicPanel {
 	{
 		// When load button clicked do :
 		Debug.Log("Load");
+
+		cSaveData.Load (1, _SAVE_PHASE._STARTUP , this.gameObject );
 	}
 
 	void OnGalleryButtonClick(GameObject go)
@@ -125,51 +127,58 @@ public class MainUIPanel : BasicPanel {
 		Debug.Log("SetUp");
 	}
 
-	// Game event 
-	// this func never use
-//	public void OnStartGameEvent(GameEvent evt)
-//	{
-//		Debug.Log("Startevent");
-//		// setup global stage =1;
-//
-//		// 回到第0 關
-//		GameDataManager.Instance.nStoryID = Config.StartStory;  //設定為 第一關
-//		// open story panel 
-//
-//
-//		GameObject obj = PanelManager.Instance.OpenUI( StoryUIPanel.Name );
-//		if (obj != null) {
-//			PanelManager.Instance.CloseUI( "Panel_MainUI" ); 
-//		}
-//
-////			string s1 = "linetext( 1 );LineText(\t2)\nPopChar(3 ,4);PopChar( 4 , 5 ,6)。\nSysText(  \"test\" )。";
-//		
-////			char[] colChars = { ' ', '(', ')',';', ',', '\t' };
-////			char[] rowChars = { '\n' };	
-////			cTextArray txt = new cTextArray(rowChars , colChars );
-////			txt.SetText( s1 ); // 將猜解各字串
-////		string prePath = "Panel/Panel_char";
-////		GameObject preObj = Resources.Load( prePath ) as GameObject;
-////		if( preObj != null )
-////		{
-////			GameObject char1obj  = NGUITools.AddChild( obj , preObj );
-////			if( char1obj != null )
-////			{
-////				Vector3 v = new Vector3( -150 , 50 ,0 );
-////				char1obj.transform.localPosition = v;
-////			}
-//			
-//			
-//			
-////			GameObject char2obj  = NGUITools.AddChild( obj , preObj );
-////			if( char2obj != null )
-////			{
-////				Vector3 v = new Vector3( 50 , +150 ,0 );
-////				char2obj.transform.localPosition = v;				
-////			}
-////		}
-//
-//
-//	}
 
+	public IEnumerator SaveLoading( cSaveData save )
+	{
+		//GameDataManager.Instance.nStoryID = nStoryID;
+		//GameDataManager.Instance.nStageID = save.n_StageID;
+		
+		PanelManager.Instance.OpenUI( "Panel_Loading");
+		
+		yield return  new WaitForEndOfFrame();
+		
+		if (save.ePhase == _SAVE_PHASE._MAINTEN) {
+			PanelManager.Instance.OpenUI ( Panel_Mainten.Name );			
+		} else if (save.ePhase == _SAVE_PHASE._STAGE) {
+
+			PanelManager.Instance.OpenUI( Panel_StageUI.Name );  // don't run start() during open
+//			Panel_StageUI.Instance.bIsRestoreData = true;
+		}
+		
+		yield return  new WaitForEndOfFrame();
+		
+		if (save.ePhase == _SAVE_PHASE._STAGE) {// need wait a frame to load
+				Panel_StageUI.Instance.RestoreBySaveData ( save );
+				//yield return  new WaitForEndOfFrame ();
+		}
+		
+	
+		PanelManager.Instance.CloseUI( Name );  			// close main 
+
+		cSaveData.SetLoading (false);
+		yield break;
+		
+	}
+
+	public void LoadSaveGame( cSaveData save )
+	{
+		if (save  == null)
+			return;
+		StartCoroutine (  SaveLoading( save  ) );
+
+//		if (save.ePhase == _SAVE_PHASE._MAINTEN) {
+//			
+//			PanelManager.Instance.OpenUI ( Panel_Mainten.Name );
+//
+//		} else if (save.ePhase == _SAVE_PHASE._STAGE) {
+//			
+//			StartCoroutine ( LoadStage( cSaveData save) );
+//			//Panel_StageUI.Instance.RestoreBySaveData ();
+//
+//		}
+
+
+//		PanelManager.Instance.CloseUI( Name );  			// close main 
+
+	}
 }

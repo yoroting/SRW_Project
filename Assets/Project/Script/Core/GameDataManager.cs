@@ -431,7 +431,7 @@ public partial class GameDataManager
 
 	// don't public this
 	int nSerialNO;		// object serial NO
-	int GenerSerialNO( ){ return ++nSerialNO ; }
+	public int GenerSerialNO( ){ return ++nSerialNO ; }
 //	int GenerMobSerialNO( ){ return (++nSerialNO)*(-1) ; }
 
 	// public  unit data
@@ -458,7 +458,9 @@ public partial class GameDataManager
 	{
 		// check game data to insert
 		if( UnitPool.ContainsKey( unit.n_Ident ) == true ){
-			UnitPool.Remove( unit.n_Ident );
+			//cUnitData org = UnitPool[ unit.n_Ident ];
+			//UnitPool.Remove( unit.n_Ident );
+			Debug.LogErrorFormat( "Err Add double unit ident{0},charid{1} to gamedata manager " , unit.n_Ident , unit.n_CharID );
 		}
 		UnitPool.Add( unit.n_Ident , unit );
 

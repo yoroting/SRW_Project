@@ -320,9 +320,9 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
 	public void LoadCmd( ) // only in count mode
 	{
-		// load
-		cSaveData.Load (1 , _SAVE_PHASE._STAGE );
-
+		// always load from stage
+		// cSaveData.Load (1 , _SAVE_PHASE._STAGE , Panel_StageUI.Instance.gameObject  );
+		cSaveData.Load (1, _SAVE_PHASE._STAGE, null);
 
 		EndCMDUI (); // really close
 	}

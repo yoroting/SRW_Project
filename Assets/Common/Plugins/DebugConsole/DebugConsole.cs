@@ -72,7 +72,8 @@ public class DebugConsole : MonoBehaviour
 
 	void Update()
 	{
-		fpsDetector.EnterFrame();
+		if( fpsDetector != null )
+			fpsDetector.EnterFrame();
 
 #if UNITY_EDITOR
 		//if (Input.GetKeyDown(KeyCode.Alpha1))

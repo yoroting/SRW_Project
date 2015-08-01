@@ -30,10 +30,18 @@ public class Panel_Mainten : MonoBehaviour {
 		// close stage UI!!
 		if (PanelManager.Instance.CheckUIIsOpening (Panel_StageUI.Name)) {
 
+
+
 			 PanelManager.Instance.DestoryUI( Panel_StageUI.Name ); // don't destory .. this is singoleten obj.. may be need to free singolten 
 			//PanelManager.Instance.CloseUI( Panel_StageUI.Name );
 			// need to free all stage resource
+
+
 		}
+	}
+	public void ChooseNextStage()
+	{
+		GameDataManager.Instance.nStoryID += 1;
 	}
 
 	IEnumerator EnterStory( int nStoryID )
@@ -56,11 +64,11 @@ public class Panel_Mainten : MonoBehaviour {
 
 	void OnNextStageClick( GameObject go )
 	{
-		GameDataManager.Instance.nStoryID += 1;
+	//	GameDataManager.Instance.nStoryID += 1;
 		//GameDataManager.Instance.nStageID += 1;
 //		PanelManager.Instance.OpenUI ( StoryUIPanel.Name );
 //		PanelManager.Instance.CloseUI ( Name );			// close this ui
-
+		ChooseNextStage();
 		StartCoroutine ( EnterStory( GameDataManager.Instance.nStoryID ) );
 
 	}
@@ -74,6 +82,62 @@ public class Panel_Mainten : MonoBehaviour {
 	}
 	void OnLoadClick( GameObject go )
 	{
-		cSaveData.Load ( 1 , _SAVE_PHASE._MAINTEN );
+		cSaveData.Load ( 1 , _SAVE_PHASE._MAINTEN , this.gameObject );
+		//StartCoroutine ( SaveLoading( save) 
+
+	}
+
+	//===========================================================
+	IEnumerator SaveLoading( cSaveData save )
+	{
+		//GameDataManager.Instance.nStoryID = nStoryID;
+		//GameDataManager.Instance.nStageID = save.n_StageID;
+		
+		PanelManager.Instance.OpenUI( "Panel_Loading");
+		
+		yield return  new WaitForEndOfFrame();
+		
+		if (save.ePhase == _SAVE_PHASE._MAINTEN) {
+			//PanelManager.Instance.OpenUI ( Panel_Mainten.Name );
+			RestoreBySaveData( save );
+
+		} else if (save.ePhase == _SAVE_PHASE._STAGE) {
+			
+			PanelManager.Instance.OpenUI( Panel_StageUI.Name );  // don't run start() during open
+//			Panel_StageUI.Instance.bIsRestoreData = true;
+			yield return  new WaitForEndOfFrame();
+			Panel_StageUI.Instance.RestoreBySaveData ( save );
+			yield return  new WaitForEndOfFrame ();
+			PanelManager.Instance.CloseUI (Name);  			// close main 
+		}		
+
+		cSaveData.SetLoading (false);
+		yield break;
+		
+	}
+
+	public void LoadSaveGame( cSaveData save )
+	{
+		if (save  == null)
+			return;
+		StartCoroutine ( SaveLoading( save) );		
+
+	}
+
+	public bool RestoreBySaveData( cSaveData save  )
+	{
+	//	cSaveData save = GameDataManager.Instance.SaveData;
+		if (save == null)
+			return false;
+		
+		
+		System.GC.Collect ();			// Free memory resource here
+
+		if (save.ePhase == _SAVE_PHASE._STAGE) {
+			// restore to mainten ui
+
+		}
+
+		return true;
 	}
 }

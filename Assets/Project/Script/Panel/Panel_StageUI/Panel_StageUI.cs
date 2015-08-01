@@ -56,11 +56,12 @@ public class Panel_StageUI : MonoBehaviour
 
 	STAGE_DATA	StageData;
 
-	// Four flaf
+	// For flag
 	bool	bIsLoading	;
-
-	public bool	bIsStageEnd;								// this stage is end
 	bool	bIsReady;
+	public bool	bIsStageEnd;								// this stage is end
+	bool 							bIsMoveToObj;		// is move camera to obj
+//	public bool	bIsRestoreData;								// this stage is need restore data
 
 	// drag canvas limit								
 	float fMinOffX ;
@@ -79,7 +80,7 @@ public class Panel_StageUI : MonoBehaviour
 	bool							IsEventEnd;			// 
 //	bool							IsPreBattleEvent;	// is prebattle event
 
-	bool 							bIsMoveToObj;		// is move camera to obj
+
 
 //	bool							CheckEventPause;	// 	event check pause
 
@@ -223,6 +224,13 @@ public class Panel_StageUI : MonoBehaviour
         PanelManager.Instance.OpenUI(Panel_MiniUnitInfo.Name);
 
         //Dictionary< int , STAGE_EVENT > EvtPool;			// add event id 
+
+//		if (bIsRestoreData == true) {
+//			RestoreBySaveData();
+//		}
+
+
+
         bIsLoading = false;
 
         long during = System.DateTime.Now.Ticks - tick;
@@ -917,15 +925,23 @@ public class Panel_StageUI : MonoBehaviour
 		Debug.Log( "load scn file on:"+rootPath );
 
 		if( Grids.Load( www.bytes )==true )
-		//if( Grids.Load( rootPath )==true )
-		//if( Grids.Load( filename )==true )
 		{
+			//clear all exists tile obj
+			List< GameObject> goList = MyTool.GetChildPool( TilePlaneObj );
+			foreach( GameObject go in goList )
+			{
+				NGUITools.Destroy( go );
+			}
+
+
 			// start to create sprite
 			for( int i = -Grids.hW ; i <= Grids.hW ; i++ ){
 				for( int j = -Grids.hH ; j <= Grids.hH ; j++ )
 				{			
 					_TILE t = Grids.GetValue( i , j  );
-				
+					if( t== _TILE._NULL )	
+						continue;
+
 					GameObject cell = GetTileCellPrefab( i , j , t ); 
 					if( cell == null )
 					{
@@ -1587,6 +1603,9 @@ public class Panel_StageUI : MonoBehaviour
 			// load data . if char exist in storage pool
 			if( (data==null) && (nCampID==_CAMP._PLAYER) ){
 				data = GameDataManager.Instance.GetStorageUnit( nCharID );
+				if( data != null ){
+					data.n_Ident = GameDataManager.Instance.GenerSerialNO();
+				}
 			}
 
 			// setup param
@@ -1609,6 +1628,11 @@ public class Panel_StageUI : MonoBehaviour
 			}
 
 			//add to stage obj
+			if( IdentToUnit.ContainsKey( unit.Ident() )  ){
+				Debug.LogErrorFormat( " Err Add soublie ident{0}, charid{1} of panel_unit to stage " , unit.Ident(), unit.CharID );
+
+			}
+
 			IdentToUnit.Add( unit.Ident() , unit  ) ;// stage gameobj
 
 			//ensure data in storage is remove
@@ -1838,6 +1862,31 @@ public class Panel_StageUI : MonoBehaviour
 		bIsMoveToObj = false;
 	}
 
+	public void PlayStageBGM()
+	{
+		if( StageData != null )
+		{
+
+			//SCENE_NAME scn = ConstDataManager.Instance.GetRow<SCENE_NAME> ( StageData.n_SCENE_ID );
+			//if (scn == null)
+			//	return ;
+
+			if( GameDataManager.Instance.nActiveCamp == _CAMP._ENEMY )
+			{
+				GameSystem.PlayBGM( StageData.n_ENEMY_BGM );
+			}
+			else if( GameDataManager.Instance.nActiveCamp == _CAMP._FRIEND )
+			{
+				GameSystem.PlayBGM( StageData.n_FRIEND_BGM );
+			}
+			else if( GameDataManager.Instance.nActiveCamp == _CAMP._PLAYER )
+			{
+				GameSystem.PlayBGM( StageData.n_PLAYER_BGM);
+			}
+
+		}
+	}
+
 	// Game event func
 	public void OnStageBGMEvent(GameEvent evt)
 	{
@@ -1845,14 +1894,8 @@ public class Panel_StageUI : MonoBehaviour
 		StageBGMEvent Evt = evt as StageBGMEvent;
 		if (Evt == null)
 			return;
-		if( StageData != null )
-		{
-			SCENE_NAME scn = ConstDataManager.Instance.GetRow<SCENE_NAME> ( StageData.n_SCENE_ID );
-			if (scn == null)
-				return ;
+		PlayStageBGM ();
 
-			GameSystem.PlayBGM( scn.n_BGM );
-		}
 	}
 
 	public void OnStagePopUnitEvent(GameEvent evt)
@@ -1995,6 +2038,10 @@ public class Panel_StageUI : MonoBehaviour
 		StageWeakUpCampEvent Evt = evt as StageWeakUpCampEvent;
 		if (Evt == null)
 			return;
+
+		// change bgm
+		PlayStageBGM ();
+
 		List< Panel_unit > lst = GetUnitListByCamp ( Evt.nCamp );
 		foreach( Panel_unit unit in lst )
 		{
@@ -2307,11 +2354,53 @@ public class Panel_StageUI : MonoBehaviour
 
 
 	// restore from save data
-	public bool RestoreBySaveData( )
+	public IEnumerator SaveLoading( cSaveData save )
 	{
-		cSaveData save = GameDataManager.Instance.SaveData;
+		//GameDataManager.Instance.nStoryID = nStoryID;
+		//GameDataManager.Instance.nStageID = save.n_StageID;
+		
+		PanelManager.Instance.OpenUI ("Panel_Loading");
+		
+		yield return  new WaitForEndOfFrame ();
+		
+		if (save.ePhase == _SAVE_PHASE._MAINTEN) {
+			PanelManager.Instance.OpenUI (Panel_Mainten.Name);			
+		} else if (save.ePhase == _SAVE_PHASE._STAGE) {
+			
+			//PanelManager.Instance.OpenUI( Panel_StageUI.Name );  // don't run start() during open
+
+			//check need clear stage
+	//		Panel_StageUI.Instance.bIsRestoreData = true;
+			Panel_StageUI.Instance.RestoreBySaveData ( save) ;
+
+		}		
+
+		// close ui  if need
+		if (save.ePhase == _SAVE_PHASE._MAINTEN){
+			PanelManager.Instance.CloseUI (Name);  			// close stage when mainten
+		}
+
+		cSaveData.SetLoading (false);
+
+		yield break;
+		
+	}
+
+	public void LoadSaveGame( cSaveData save )
+	{
+		if (save  == null)
+			return;
+		StartCoroutine (  SaveLoading( save  ) );
+
+	}
+
+	public bool RestoreBySaveData( cSaveData save )
+	{
+	//	cSaveData save = GameDataManager.Instance.SaveData;
 		if (save == null)
 			return false;
+
+
 		System.GC.Collect();			// Free memory resource here
 
 		// clear data
@@ -2320,9 +2409,6 @@ public class Panel_StageUI : MonoBehaviour
 
 		if (save.ePhase == _SAVE_PHASE._MAINTEN) {
 			// restore to mainten ui
-
-
-
 			return true;
 		}
 
@@ -2394,8 +2480,11 @@ public class Panel_StageUI : MonoBehaviour
 
 		}
 
+		// stage bgm
+		PlayStageBGM ();
 		//GameDataManager.Instance.ImportSavePool( save.CharPool );
-
+//		bIsRestoreData = false;
 		return true;
 	}
+
 }

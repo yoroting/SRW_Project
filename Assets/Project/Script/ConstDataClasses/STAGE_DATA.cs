@@ -11,7 +11,9 @@ public class STAGE_DATA : ConstDataRow<STAGE_DATA>
 	public int n_MOB_LV;
 	public string s_MISSION;
 	public string s_EVENT;
-	public string s_MUSIC_FILE;
+	public int n_ENEMY_BGM;
+	public int n_PLAYER_BGM;
+	public int n_FRIEND_BGM;
 	public string s_HK_VER;
 	public string s_TC_VER;
 	public string s_JP_VER;
