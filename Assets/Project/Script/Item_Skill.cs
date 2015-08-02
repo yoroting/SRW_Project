@@ -6,6 +6,8 @@ public class Item_Skill : MonoBehaviour {
 	public GameObject RangeObj;
 	public GameObject CostObj;
 
+	public bool bEnable = true;
+
 	// Use this for initialization
 	void Start () {
 	
@@ -32,6 +34,18 @@ public class Item_Skill : MonoBehaviour {
 		}
 
 
+	}
+	public void SetEnable( bool enable )
+	{
+		bEnable = enable;
+		Color c = new Color (1.0f, 1.0f, 1.0f);
+		if (bEnable == false) {
+			c.g = 0.0f; c.b = 0.0f; 
+		}
+		
+		if (NameObj != null) {
+			MyTool.SetLabelColor ( CostObj , c );
+		}
 	}
 }
 

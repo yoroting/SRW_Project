@@ -66,7 +66,7 @@ public class Panel_Skill : MonoBehaviour {
 	// 
 
 
-	public void SetData( cUnitData data , _SKILL_TYPE eType )
+	public void SetData( cUnitData data , _SKILL_TYPE eType  , cUnitData target , _CMD_TYPE cmdType )
 	{
 		if ( eType != _SKILL_TYPE._SKILL && eType != _SKILL_TYPE._ABILITY ) {
 			return ; // don't change data
@@ -187,6 +187,7 @@ public class Panel_Skill : MonoBehaviour {
 			item.SetItemData( MyTool.GetSkillName( skl.n_ID )  , skl.n_RANGE , skl.n_MP );
 			item.SetScrollView( ScrollView );
 
+			item.SetEnable(  pData.CheckSkillCanUse( skl ) && CheckSkillCanUse( skl , target , cmdType ) );
 		//	UIEventListener.Get(go).onClick += OnSkillClick; // for trig next line
 			UIEventListener.Get(go).onPress += OnSkillPress; // 
 
@@ -229,17 +230,17 @@ public class Panel_Skill : MonoBehaviour {
 //		}
 	}
 
-	public static Panel_Skill OpenUI( int nIdent , _SKILL_TYPE eType  )
+	public static Panel_Skill OpenUI( int nIdent , _SKILL_TYPE eType , int nTarIdent , _CMD_TYPE cmdType  )
 	{
 		cUnitData data = GameDataManager.Instance.GetUnitDateByIdent ( nIdent );
 		if (data == null)
 			return null;
 		GameObject go = PanelManager.Instance.OpenUI (Name );
 		if (go == null) 
-			return null;
+			return null;	
 
 		Panel_Skill pUI = MyTool.GetPanel<Panel_Skill>( go );
-		pUI.SetData( data , eType );
+		pUI.SetData( data , eType  ,GameDataManager.Instance.GetUnitDateByIdent ( nTarIdent ) , cmdType  );
 		return pUI;
 	}
 
@@ -352,5 +353,25 @@ public class Panel_Skill : MonoBehaviour {
 	}
 
 
-
+	public bool CheckSkillCanUse( SKILL skl , cUnitData tarunit , _CMD_TYPE cmdType )
+	{
+		//cCMD.Instance.
+		int nDist = 0;
+		if (tarunit != null) {
+			nDist =  MYGRIDS.iVec2.Dist( tarunit.n_X , tarunit.n_Y , pData.n_X , pData.n_Y );
+		}
+		int nRange = skl.n_RANGE > 0 ? skl.n_RANGE : 1 ;
+		if (nDist > nRange) {
+			return false;
+		}
+		//====反擊時不能使用 點地 技能===============
+		if (cmdType == _CMD_TYPE._COUNTER) {
+			if( skl.n_TARGET >= 3 ){
+				// AOE skill can't use
+				return false;
+			}
+		}
+		// check condition
+		return true;
+	}
 }

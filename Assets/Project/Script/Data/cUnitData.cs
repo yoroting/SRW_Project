@@ -1285,7 +1285,23 @@ public class cUnitData{
 	}
 		
 	//============================================================
-	//
+	public bool CheckSkillCanUse( SKILL skill )
+	{
+		if (skill == null)
+			return false;
+
+		if (Config.GOD == true)
+			return true;
+
+		if ( skill.n_MP > 0 && (skill.n_MP > this.n_MP) )
+			return false;
+		if ( skill.n_SP > 0 && (skill.n_SP > this.n_SP) )
+			return false;
+		if ( skill.n_CP > 0 && (skill.n_CP > this.n_CP) )
+			return false;
+		
+		return true;
+	}
 
 
 }

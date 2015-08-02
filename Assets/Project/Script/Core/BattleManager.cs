@@ -209,7 +209,7 @@ public partial class BattleManager
 			if ( Defer.eCampID  == _CAMP._PLAYER) {
 				// set open CMD 
 				// need set a range
-				Panel_CMDUnitUI.OpenCMDUI( _CMD_TYPE._COUNTER , nDeferID  );
+				Panel_CMDUnitUI.OpenCMDUI( _CMD_TYPE._COUNTER , nDeferID  , nAtkerID );
 				
 			}
 			else{
@@ -231,7 +231,7 @@ public partial class BattleManager
 						// check to reopen counter CMD UI	
 						if( !IsCounterMode() && !IsDefMode() ){
 							if( PanelManager.Instance.CheckUIIsOpening(  Panel_Skill.Name  )== false  ){ // don't pop if skill ui is opening
-								Panel_CMDUnitUI.OpenCMDUI( _CMD_TYPE._COUNTER , nDeferID  );
+							Panel_CMDUnitUI.OpenCMDUI( _CMD_TYPE._COUNTER , nDeferID  , nAtkerID );
 							}
 							return; // break when counter don't start
 						}
