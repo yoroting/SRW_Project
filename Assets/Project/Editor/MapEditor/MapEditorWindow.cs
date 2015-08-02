@@ -23,22 +23,23 @@ public class MapEditorWindow : EditorWindow
     /// <summary>
     /// 選擇要種的Tile
     /// </summary>
-    private MYGRIDS._TILE _tile = MYGRIDS._TILE._GREEN;
+    private static MYGRIDS._TILE _tile = MYGRIDS._TILE._GREEN;
     /// <summary>
     /// 選擇要種的Thing
     /// </summary>
     private MYGRIDS._THING _thing = MYGRIDS._THING._NULL;
 
     [MenuItem("Custom/Map Editor Window")]
-    static void Init()
+    public static void Init()
     {
         MapEditorWindow window = (MapEditorWindow)EditorWindow.GetWindow(typeof(MapEditorWindow));
         window.Show();
+
+        SceneView.onSceneGUIDelegate += OnSceneGUI;
     }
 
     void OnGUI()
     {
-
         if (_mapEdtor == null)
         {
             if (GameObject.Find("MapEditor") == null)
@@ -47,11 +48,14 @@ public class MapEditorWindow : EditorWindow
             _mapEdtor = GameObject.Find("MapEditor").GetComponent<MapEditor>();
         }
 
-
         #region 地圖名
         GUILayout.BeginHorizontal();
         GUILayout.Label("Map Name", GUILayout.Height(16));
         _mapEdtor.MapName = GUILayout.TextArea(_mapEdtor.MapName, GUILayout.Height(16));
+        if (GUILayout.Button("Load Scene By Name", GUILayout.Height(16)))
+        {
+            _mapEdtor.LoadScene(_mapEdtor.MapName);
+        }
         GUILayout.EndHorizontal();
         #endregion
 
@@ -59,11 +63,20 @@ public class MapEditorWindow : EditorWindow
 
         #region 讀取場景
         GUILayout.BeginHorizontal();
+        GUILayout.Label("Scene ID", GUILayout.Height(16));
         _sceneTextFieldString = GUILayout.TextField(_sceneTextFieldString, GUILayout.Height(16));
-        if (GUILayout.Button("Load Scene", GUILayout.Height(16)))
+        if (GUILayout.Button("Load Scene By ID", GUILayout.Height(16)))
         {
             _mapEdtor.LoadScene(Convert.ToInt32(_sceneTextFieldString));
         }
+        GUILayout.EndHorizontal(); 
+        #endregion
+
+        GUILayout.Space(16);
+
+        #region 著色模式
+        GUILayout.BeginHorizontal();
+        MapEditor.Instance.Mode = (MapEditor.DrawMode)EditorGUILayout.EnumPopup("Draw Mode", MapEditor.Instance.Mode, GUILayout.Height(16));
         GUILayout.EndHorizontal(); 
         #endregion
 
@@ -123,5 +136,16 @@ public class MapEditorWindow : EditorWindow
         GUILayout.Space(16);
 
         Repaint();
+    }
+
+    public static void OnSceneGUI(SceneView sceneView)
+    {
+        if (MapEditor.Instance != null && MapEditor.Instance.Mode == MapEditor.DrawMode.Select)
+        {
+            if (Selection.gameObjects != null && Selection.gameObjects.Length > 0)
+            {
+                MapEditor.Instance.ChangeTileValue((int)_tile);
+            }
+        }
     }
 }

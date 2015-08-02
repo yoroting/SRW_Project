@@ -7,13 +7,36 @@ using System.Collections.Generic;
 [ExecuteInEditMode]
 public class MapEditor : MonoBehaviour
 {
+    /// <summary>
+    /// 改變Tile的方式
+    /// </summary>
+    public enum DrawMode
+    {
+        /// <summary>
+        /// 當物件被選擇時改變
+        /// </summary>
+        Select,
+        /// <summary>
+        /// 當點選改變按鍵時
+        /// </summary>
+        Button,
+    }
+
     public static MapEditor Instance;
 
     public MyGrids Grids = new MyGrids();				// main grids . only one    // Use this for initialization
     public GameObject TilePlaneObj; // plane of all tiles sprite
     
+    /// <summary>
+    /// 要給編輯器讀取的場景名稱
+    /// </summary>
     [HideInInspector]
     public string MapName;
+    /// <summary>
+    /// 場景編輯器改變Tile的方式
+    /// </summary>
+    [HideInInspector]
+    public DrawMode Mode = DrawMode.Button;
     
     float fMinOffX;
     float fMaxOffX;
@@ -49,12 +72,6 @@ public class MapEditor : MonoBehaviour
         Instance = null;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     //private void Init()
     //{
     //    if (_constData == null)
@@ -66,8 +83,6 @@ public class MapEditor : MonoBehaviour
 
     public bool LoadScene(int sceneID)
     {
-        //Init();
-
         ClearScene();
 
         SCENE_NAME scn = ConstData.GetRow<SCENE_NAME>(sceneID);
@@ -77,14 +92,22 @@ public class MapEditor : MonoBehaviour
             return false;
         }
 
-        string rootPath = "file://" + Application.dataPath + "/StreamingAssets/scn/" + scn.s_MODLE_ID + ".scn";
-        WWW www = new WWW(rootPath);
+        LoadScene(scn.s_MODLE_ID);
+
+        return true;
+    }
+
+    public void LoadScene(string sceneName)
+    {
+        MapName = sceneName;
+        string path = "file://" + Application.dataPath + "/StreamingAssets/scn/" + sceneName + ".scn";
+
+        WWW www = new WWW(path);
         while (!www.isDone)
         {
         }
 
-        MapName = scn.s_MODLE_ID;
-        Debug.Log("load scn file on:" + rootPath);
+        Debug.Log("load scn file on:" + path);
 
         if (Grids.Load(www.bytes) == true)
         {
@@ -133,10 +156,7 @@ public class MapEditor : MonoBehaviour
             }
             // reget the drag limit 
             Resize();
-
         }
-
-        return true;
     }
 
     public void ClearScene()
@@ -299,13 +319,4 @@ public class MapEditor : MonoBehaviour
     void OnCellClick(GameObject go)
     {
     }
-
-    void OnCellEvent(iVec2 Loc)
-    {
-        if (Loc == null)
-            return;
-
-        Debug.LogFormat("Loc={0}, {1}", Loc.X, Loc.Y);
-    }
-
 }
