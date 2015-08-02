@@ -96,8 +96,45 @@ public class Panel_unit : MonoBehaviour {
 		bIsDead = false;
 		TarIdent = 0;
 
+		UITweener[] twAry = this.GetComponents< UITweener >();
+
+//		foreach (UITweener tw in twAry) {
+//			tw.enabled = false;
+//
+//		}
+
+//		TweenPosition twpos = this.GetComponent< TweenPosition > ();
+//		if (twpos != null) {
+//			twpos.enabled = false;
+//		}
+
+		// shake
+//		TweenShake tws = TweenShake.Begin(gameObject, 1.0f , 15 );
+//		if( tws )
+//		{
+//			tws.shakeX = true;
+//			tws.shakeY = true;
+//		}
+//		
+//		//TweenGrayLevel
+//		//Vector2 vfrom = new Vector3( 1.0f , 1.0f , 1.0f );
+//		//Vector2 vto   = new Vector3( 0.0f , 10.0f, 1.0f );
+//		TweenGrayLevel tw = TweenGrayLevel.Begin <TweenGrayLevel >( FaceObj, 1.0f);
+//		if (tw) {
 
 		//UIEventListener.Get ( this.gameObject ).onClick
+		GameObject instance = ResourcesManager.CreatePrefabGameObj ( this.gameObject ,"FX/Cartoon FX/CFXM4 SmokePuff Ground B" );
+		
+		ParticleSystem ps =instance.GetComponent< ParticleSystem>();
+		if (ps!= null) {
+			
+		}
+		ParticleSystemRenderer psr =instance.GetComponent< ParticleSystemRenderer>();
+		if (psr != null) {
+			psr.sortingLayerName = "FX";
+		}
+		
+		SetBorn (); // start born animate
 	}
 
 	// Awake
@@ -107,18 +144,18 @@ public class Panel_unit : MonoBehaviour {
 
 		//ParticleSystemRenderer
 
-		GameObject instance = ResourcesManager.CreatePrefabGameObj ( this.gameObject ,"FX/Cartoon FX/CFXM4 Splash" );
-
-		ParticleSystem ps =instance.GetComponent< ParticleSystem>();
-		if (ps!= null) {
-
-		}
-		ParticleSystemRenderer psr =instance.GetComponent< ParticleSystemRenderer>();
-		if (psr != null) {
-			psr.sortingLayerName = "FX";
-		}
-
-		SetBorn (); // start born animate
+//		GameObject instance = ResourcesManager.CreatePrefabGameObj ( this.gameObject ,"FX/Cartoon FX/CFXM4 Splash" );
+//
+//		ParticleSystem ps =instance.GetComponent< ParticleSystem>();
+//		if (ps!= null) {
+//
+//		}
+//		ParticleSystemRenderer psr =instance.GetComponent< ParticleSystemRenderer>();
+//		if (psr != null) {
+//			psr.sortingLayerName = "FX";
+//		}
+//
+//		SetBorn (); // start born animate
 		//GameObject instance = Resources.Load ( "/FX/Cartoon FX" );
 		//GameObject instance = CFX_SpawnSystem.GetNextObject ( CFX_SpawnSystem.instance.objectsToPreload[3] );
 		

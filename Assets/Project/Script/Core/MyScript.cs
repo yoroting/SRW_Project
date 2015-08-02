@@ -89,7 +89,13 @@ public class MyScript {
 					return false;
 				}	
 			}
-
+			else if( func.sFunc == "RATE"  )
+			{
+				if( ConditionRate( func.I(0) ) == false )
+				{
+					return false;
+				}	
+			}
 
 			else{
 				Debug.LogError( string.Format( "Error-Can't find script cond func '{0}'" , func.sFunc ) );
@@ -127,7 +133,14 @@ public class MyScript {
 	{
 		return true;
 	}
-	
+
+	bool ConditionRate( int Rate )
+	{
+		int nRoll = Random.Range (0, 100);
+
+		return ( Rate > nRoll );
+	}
+
 	bool ConditionAllDead( int nCampID )
 	{
 		if (BattleManager.Instance.IsBattlePhase ())
@@ -220,7 +233,8 @@ public class MyScript {
 	}
 	bool ConditionDist( int nChar1 , int nChar2 , int nDist )
 	{
-	
+		if (BattleManager.Instance.IsBattlePhase ())
+			return false;// don't check in battle
 
 		//check range
 		Panel_unit unit1 = Panel_StageUI.Instance.GetUnitByCharID (nChar1);
@@ -654,20 +668,47 @@ public class MyScript {
 				else if( func.sFunc  == "ADD_ATTACK") {
 					pool.Add( new ADD_ATTACK( func.I(0) ) );
 				}
-				else if( func.sFunc  == "ADD_DEF") {
-					pool.Add( new ADD_DEF( func.I(0) ) );
+				else if( func.sFunc  == "ADD_MAXDEF") {
+					pool.Add( new ADD_MAXDEF( func.I(0) ) );
+				}
+				else if( func.sFunc  == "ADD_DEF_I") {
+					pool.Add( new ADD_DEF_I( func.I(0) ) );
 				}
 				else if( func.sFunc  == "ADD_POWER") {
 					pool.Add( new ADD_POWER( func.I(0) ) );
 				}
-				else if( func.sFunc  == "ADD_HP") {
-					pool.Add( new ADD_HP( func.I(0) ) );
+				else if( func.sFunc  == "ADD_MAXHP") {
+					pool.Add( new ADD_MAXHP( func.I(0) ) );
 				}
-				else if( func.sFunc  == "ADD_MP") {
-					pool.Add( new ADD_MP( func.I(0) ) );
+				else if( func.sFunc  == "ADD_MAXMP") {
+					pool.Add( new ADD_MAXMP( func.I(0) ) );
 				}
-				else if( func.sFunc  == "ADD_SP") {
-					pool.Add( new ADD_SP( func.I(0) ) );
+				else if( func.sFunc  == "ADD_MAXSP") {
+					pool.Add( new ADD_MAXSP( func.I(0) ) );
+				}
+				else if( func.sFunc  == "ADDHP_I") {
+					pool.Add( new ADDHP_I( func.F(0) ) );
+				}
+				else if( func.sFunc  == "ADDMP_I") {
+					pool.Add( new ADDMP_I( func.I(0) ) );
+				}
+				else if( func.sFunc  == "ADDSP_I") {
+					pool.Add( new ADDSP_I( func.I(0) ) );
+				}
+				else if( func.sFunc  == "ADDCP_I") {
+					pool.Add( new ADDSP_I( func.I(0) ) );
+				}
+				else if( func.sFunc  == "ADDHP_E") {
+					pool.Add( new ADDHP_E( func.F(0) ) );
+				}
+				else if( func.sFunc  == "ADDMP_E") {
+					pool.Add( new ADDMP_E( func.I(0) ) );
+				}
+				else if( func.sFunc  == "ADDSP_E") {
+					pool.Add( new ADDSP_E( func.I(0) ) );
+				}
+				else if( func.sFunc  == "ADDCP_E") {
+					pool.Add( new ADDSP_I( func.I(0) ) );
 				}
 				else if( func.sFunc  == "MUL_DROP") {
 					pool.Add( new MUL_DROP( func.F(0) ) );
@@ -690,6 +731,21 @@ public class MyScript {
 				else if( func.sFunc  == "MUL_MPCOST") {
 					pool.Add( new MUL_MPCOST( func.F(0) ) );
 				}
+				//===
+				else if( func.sFunc  == "IS_DODGE") { // 必閃
+					pool.Add( new IS_DODGE( ) );
+					//pool.Add( new IS_UNIT_STATUS( _UNITSTATE._DODGE ) );
+				}
+				else if( func.sFunc  == "IS_CIRIT") {  //報及
+					pool.Add( new IS_CIRIT( ) );
+				}
+				else if( func.sFunc  == "IS_MERCY") {  //手加減
+					pool.Add( new IS_MERCY( ) );
+				}
+				else if( func.sFunc  == "IS_GUARD") { // 被防衛
+					pool.Add( new IS_GUARD( ) );
+				}
+				//===
 				else if( func.sFunc  == "ADD_MOVE") 
 				{
 					pool.Add( new ADD_MOVE( func.I(0) ) );

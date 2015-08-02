@@ -77,7 +77,8 @@ public class Panel_Mainten : MonoBehaviour {
 		//GameDataManager.Instance.nStageID += 1;
 //		PanelManager.Instance.OpenUI ( StoryUIPanel.Name );
 //		PanelManager.Instance.CloseUI ( Name );			// close this ui
-		ChooseNextStage();
+
+//		ChooseNextStage();
 		StartCoroutine ( EnterStory( GameDataManager.Instance.nStoryID ) );
 
 	}

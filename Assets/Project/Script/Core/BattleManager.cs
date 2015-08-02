@@ -25,6 +25,7 @@ public class cHitResult		//
 		_MP	 		,		// 增減 MP
 		_DEF		,		// 增減 DEF
 		_SP			,		// 增減 SP
+		_CP			,		// 增減 CP
 
 		_ADDBUFF	,
 		_DELBUFF	,
@@ -33,6 +34,10 @@ public class cHitResult		//
 		_HIT		,		// skill hit enemy
 		_BEHIT		,		// 被
 		_HITBACK	,
+
+		_DODGE		,		// 迴避
+
+
 	};
 
 
@@ -371,6 +376,10 @@ public partial class BattleManager
 					}
 				}
 			}
+			// 被打死不能反擊
+			if( Defer.IsStates(_UNITSTATE._DEAD)  ){
+				bCanCounter = false;
+			}
 
 			nPhase++;
 			break;
@@ -484,15 +493,19 @@ public partial class BattleManager
 			}
 
 			// Fight Finish
-			Atker.FightEnd( true );
-			if( Defer!= null  ){
+
+			if( (Defer!=null) && (Defer!=Atker) ){
 				Defer.FightEnd();
 			}
+			
 			foreach( cUnitData unit in AtkAffectPool )
 			{
-				unit.FightEnd();
-
+				if( (unit!=Atker) && (unit!=Defer) )
+					unit.FightEnd();				
 			}
+			Atker.FightEnd( true );
+
+
 			// cmd finish
 			
 			// action finish in atk action
@@ -605,17 +618,15 @@ public partial class BattleManager
 			nPhase++;
 			// cal cul drop
 
-
-
-
-
-			if( Defer != null ){
+			// avoid a unit be clear twice
+			if( (Defer!=null) && (Defer!=Atker) ){
 				Defer.FightEnd();
 			}
 
 			foreach( cUnitData unit in AtkAffectPool )
 			{
-				unit.FightEnd();				
+				if( (unit!=Atker) && (unit!=Defer) )
+					unit.FightEnd();				
 			}
 			Atker.FightEnd( true );
 
@@ -878,6 +889,31 @@ public partial class BattleManager
 		}
 	}
 
+	public void ShowBattleResValue( GameObject obj , string sMsg , int nMode )
+	{	
+		Vector3 v = new Vector3 (0, 0, 0);
+		if ( obj != null) {
+			v = obj.transform.parent.localPosition+obj.transform.localPosition;
+		}
+		GameObject go = Panel_StageUI.Instance.SpwanBattleValueObj ();
+		
+		if (go != null) {
+			//go.transform.position = v;
+			go.transform.localPosition = v;
+
+			
+			
+			UILabel lbl = go.GetComponent< UILabel >();
+			if( lbl )
+			{
+
+			//	lbl.gradientTop = new Color( 1.0f, 0.0f , 0.0f );
+
+				lbl.text = sMsg;
+			}
+		}
+	}
+
 	public void ShowAtkAssist( int nAtkIdent ,  int nDefIdent )
 	{
 		cUnitData pAtker = GameDataManager.Instance.GetUnitDateByIdent ( nAtkIdent );
@@ -1087,6 +1123,11 @@ public partial class BattleManager
 		List<cHitResult> resPool = new List<cHitResult> ();
 		resPool.Add ( new cHitResult( cHitResult._TYPE._HIT ,nAtker , nDefer  ) );
 
+		if (pDefer.IsStates (_UNITSTATE._DODGE)) {
+			resPool.Add (new cHitResult (cHitResult._TYPE._DODGE, nDefer, 0 ));	
+			return resPool;
+		}
+
 		// buff effect
 		float AtkMarPlus = pAtker.FightAttr.fAtkAssist;   // assist is base pils
 		float DefMarPlus = pDefer.FightAttr.fDefAssist;
@@ -1150,8 +1191,19 @@ public partial class BattleManager
 		}
 		else if( PowDmg < 0 ){
 			nAtkHp += (int)(PowDmg * pDefer.GetMulBurst() * pAtker.GetMulDamage() ); // it is neg value already
+			if (nAtkHp != 0) {
+				if (nAtkHp < 0 && ((pAtker.n_HP + pAtker.n_DEF) < Math.Abs (nAtkHp))) {
+					if (pDefer.IsStates (_UNITSTATE._MERCY)) {
+						nAtkHp = -(pAtker.n_HP + pAtker.n_DEF-1);
+					}
+					else {
+						pDefer.AddStates (_UNITSTATE._KILL);
+						pAtker.AddStates (_UNITSTATE._DEAD);
+					}
+				}
+				resPool.Add (new cHitResult (cHitResult._TYPE._HP, nAtker, nAtkHp));
+			}
 		}
-
 
 		// buff effect
 		float Atk = (pAtker.GetAtk() + AtkPlus)* fAtkFactor;
@@ -1168,27 +1220,36 @@ public partial class BattleManager
 		// 加成
 		fAtkDmg = fAtkDmg * pAtker.GetMulBurst () * pDefer.GetMulDamage ();
 
+		//玩家秒殺模式- cheat
+		if (Config.KILL_MODE ) {
+			if( pAtker.eCampID == _CAMP._PLAYER ){
+				fAtkDmg *= 100.0f;
+			}
+		}
+
+
 		nDefHp -= (int)(fAtkDmg);
 
 //		cHitResult res = new cHitResult (nAtker, nDefer );
 //		res.AtkHp = nAtkHp;
 //		res.DefHp = nDefHp;
-		if( nAtkHp != 0 ){
-			resPool.Add ( new cHitResult( cHitResult._TYPE._HP ,nAtker , nAtkHp  ) );
-			if( nAtkHp < 0 && ( (pAtker.n_HP+pAtker.n_DEF) < Math.Abs(nAtkHp) ) ){
-				pDefer.AddStates( _UNITSTATE._KILL );
-				pAtker.AddStates( _UNITSTATE._DEAD );
+
+
+		// normal attack
+
+		if( nDefHp < 0 && ( (pDefer.n_HP+pDefer.n_DEF) < Math.Abs(nDefHp) ) ){
+			if (pAtker.IsStates (_UNITSTATE._MERCY)) {
+				// 手加減
+				nDefHp = -(pDefer.n_HP+pDefer.n_DEF-1);
+			}
+			else {
+				pAtker.AddStates( _UNITSTATE._KILL );
+				pDefer.AddStates( _UNITSTATE._DEAD );  // dead
 			}
 		}
 
-		// 
 		resPool.Add ( new cHitResult( cHitResult._TYPE._HP ,nDefer , nDefHp  ) );
-
-		if( nDefHp < 0 && ( (pDefer.n_HP+pDefer.n_DEF) < Math.Abs(nDefHp) ) ){
-			pAtker.AddStates( _UNITSTATE._KILL );
-			pDefer.AddStates( _UNITSTATE._DEAD );  // dead
-		}
-
+		resPool.Add ( new cHitResult( cHitResult._TYPE._CP ,nDefer , 1  ) ); // def add 1 cp
 		// Skill Hit spec Effect
 //		MyScript.Instance.RunSkillEffect ( pAtker , pDefer, pAtker.FightAttr.Skill.s_HIT_EFFECT , ref resPool ); // bad frame work
 	//	pAtker.DoSkillHitEffect ( pDefer , ref resPool );

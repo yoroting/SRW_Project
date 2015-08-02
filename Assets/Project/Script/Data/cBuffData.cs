@@ -268,8 +268,8 @@ public class cBuffs
 					RemoveList.Add( pair.Key );
 				}
 			}
-			else if( pair.Value.nTime == -1 ){ // 本次戰鬥有造成傷害
-				if( Owner.IsStates( _UNITSTATE._DAMAGE ) ){
+			else if( pair.Value.nTime == -1 ){ 
+				if( Owner.IsStates( _UNITSTATE._DAMAGE ) ){// 本次戰鬥有實際造成傷害
 					RemoveList.Add( pair.Key );
 				}
 			}
@@ -517,7 +517,7 @@ public class cBuffs
 		
 	}
 
-	public bool CheckStatus( int nStatus ,ref int iValue , ref float fValue){
+	public bool CheckStatus( _UNITSTATE status ){
 
 
 		cUnitData unit_e = null ;
@@ -529,7 +529,7 @@ public class cBuffs
 			// normal effect
 			foreach( cEffect eft in pair.Value.EffectPool )
 			{
-				if( eft != null && eft._IsStatus( ref iValue , ref fValue ) )
+				if( eft != null && eft._IsStatus( status ) )
 				{
 					return true	;
 				}
@@ -550,7 +550,7 @@ public class cBuffs
 			{
 				foreach( cEffect eft in pair.Value.ConditionEffectPool )
 				{
-					if( eft != null && eft._IsStatus( ref iValue , ref fValue ) )
+					if( eft != null && eft._IsStatus( status ) )
 					{
 						return true	;
 					}

@@ -12,8 +12,13 @@ public enum _UNITSTATE
 	_DAMAGE   ,		//執行過傷害技能
 //	_DEFER    ,		// not atker is defer
 	_DEFMODE  ,
-	_DEAD	 ,
-	_DODGE	 ,
+	_DEAD	 ,		// 已死亡
+
+	_DODGE	 ,		// 迴避成功
+	_CIRIT	 ,		// 報擊
+	_MERCY	 ,		// 留情
+	_GUARD   ,		// 防衛	
+
 	_KILL		,  //本次戰鬥有殺人
 }
 
@@ -44,6 +49,7 @@ public class cAttrData
 	public int n_HP;
 	public int n_MP;
 	public int n_SP;
+	public int n_CP;
 	public int n_DEF;
 
 
@@ -76,6 +82,7 @@ public class cAttrData
 		n_HP = 0;
 		n_MP = 0;
 		n_SP = 0;
+		n_CP = 0;
 		n_DEF = 0;
 		n_ATK = 0;
 		n_POW = 0;
@@ -175,6 +182,7 @@ public class cUnitData{
 	public int n_HP;
 	public int n_MP;
 	public int n_SP;
+	public int n_CP;
 	public int n_DEF;
 
 	public int [] nActSch;		// current use 
@@ -420,11 +428,6 @@ public class cUnitData{
 		}
 	}
 
-	public void LoadFromSaveData()
-	{
-
-	}
-
 	public void SetContData( CHARS cData )
 	{
 		//n_CharID = cData.n_ID;	
@@ -602,7 +605,7 @@ public class cUnitData{
 		for (int i=0; i <bUpdateFlag.Length; i++) {
 			bUpdateFlag[i] = true ;
 		}
-		UpdateAttr ();
+		//UpdateAttr ();
 	}
 
 	public void UpdateAttr( )
@@ -853,6 +856,12 @@ public class cUnitData{
 	{
 
 		n_SP =  MyTool.ClampInt(n_SP+sp , 0 , GetMaxSP () ); 
+	}
+
+	public void AddCp( int cp , bool bShow= false )
+	{
+		
+		n_SP =  MyTool.ClampInt(n_CP+cp , 0 , 5 ); 
 	}
 
 	public void AddDef( int def , bool bShow= false  )
@@ -1106,22 +1115,13 @@ public class cUnitData{
 
 		FightAttr.SkillData = GameDataManager.Instance.GetSkillData(SkillID) ;   //new cSkillData ( ConstDataManager.Instance.GetRow< SKILL> ( SkillID ) );
 
+
+		// GET buff status 
+		GetBuffStatus ();
+
 		//UpdateFightAttr();
 
-		// update condition buff
 
-//		FightAttr.Skill = skill;
-//
-//		if (FightAttr.Skill != null) {
-//			FightAttr.CastPool = MyScript.Instance.CreateEffectPool (skill.s_CAST);
-//			FightAttr.CastEffPool = MyScript.Instance.CreateEffectPool (skill.s_CAST_EFFECT);
-//
-//
-//			FightAttr.HitPool = MyScript.Instance.CreateEffectPool (skill.s_HIT);
-//			FightAttr.HitEffPool = MyScript.Instance.CreateEffectPool (skill.s_HIT_EFFECT);
-//
-//			UpdateFightAttr();
-//		}
 	}
 
 	//fight end to clear data
@@ -1132,7 +1132,7 @@ public class cUnitData{
 				this.ActionFinished();
 			}
 		}
-
+		// Fight end to remove buff
 		if (Buffs.BuffFightEnd ( )) {
 			SetUpdate( cAttrData._BUFF );
 		}
@@ -1239,8 +1239,24 @@ public class cUnitData{
 		//Buffs.OnDo ( ref resPool );
 	}
 
-	// state battle flag
+	public void GetBuffStatus( ){
+		if (Buffs.CheckStatus ( _UNITSTATE._DODGE )) {
+			AddStates( _UNITSTATE._DODGE );
+		}
+		if (Buffs.CheckStatus ( _UNITSTATE._CIRIT )) {
+			AddStates( _UNITSTATE._CIRIT );
+		}
 
+		if (Buffs.CheckStatus ( _UNITSTATE._MERCY )) {
+			AddStates( _UNITSTATE._MERCY );
+		}
+		if (Buffs.CheckStatus ( _UNITSTATE._GUARD )) {
+			AddStates( _UNITSTATE._GUARD );
+		}
+	}
+
+	// state battle flag
+    // 戰鬥零時旗標
 	List< _UNITSTATE > States;
 
 	List< _UNITSTATE > GetStates()

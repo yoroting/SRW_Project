@@ -426,7 +426,8 @@ public class StoryUIPanel : MonoBehaviour {
 
 			string content = row.Field<string>( "s_CONTENT");
 			// replace   heroine name
-			string sText = content.Replace ( "$P" , Config.PlayerName ); // replace player name
+			string sText = content.Replace ( "$F" , Config.PlayerFirst ); // replace player name
+					sText = sText.Replace ( "$P" , Config.PlayerName ); // replace player name
 
 			SRW_TextBox pBox = PanelStoryText.GetComponent<SRW_TextBox>();
 			if( pBox )

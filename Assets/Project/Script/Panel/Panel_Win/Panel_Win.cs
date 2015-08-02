@@ -12,6 +12,13 @@ public class Panel_Win : MonoBehaviour {
 		Panel_StageUI.Instance.bIsStageEnd = true;
 		GameDataManager.Instance.EndStage ();   // 處理戰場結束的資料回存
 
+		// 決定 下一個story
+		STAGE_DATA stage = ConstDataManager.Instance.GetRow< STAGE_DATA > ( GameDataManager.Instance.nStageID );
+		if (stage != null) {
+			GameDataManager.Instance.nStoryID = stage.n_NEXT_STORY;
+		}
+
+
 	}
 	// Use this for initialization
 	void Start () {

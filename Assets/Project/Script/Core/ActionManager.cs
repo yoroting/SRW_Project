@@ -66,7 +66,15 @@ public class uAction
 		}
 	}
 
-
+	public void AddHitResult( cHitResult hit )
+	{
+		if( HitResult == null )
+			HitResult = new List<cHitResult>();
+		
+		if (hit != null) {
+			HitResult.Add( hit );
+		}
+	}
 };
 
 
@@ -203,6 +211,11 @@ public partial class ActionManager
 			act.nSkillID = nSkillID;
 			act.nActVar1 = nVar1;
 			act.nActVar2 = nVar2;
+			// normal attack gen 1 cp
+			if( nSkillID ==0 ){
+				act.AddHitResult( new cHitResult( cHitResult._TYPE._CP , nAtkIdent , 1 ) );
+			}
+
 		}
 		return act;
 	}
@@ -319,12 +332,38 @@ public partial class ActionManager
 							pUnit.ShowValueEffect( res.Value1 , 0 ); // HP
 							if( res.Value1 != 0 ) // maybe change data in  battle manage
 							{
-//								cUnitData pData = GameDataManager.Instance.GetUnitDateByIdent (res.Ident);
-//								if (pData != null) {
 								pUnit.pUnitData.AddHp (res.Value1   );
-//								}
 							}
 							
+						}break;
+						case cHitResult._TYPE._DEF:{
+							pUnit.ShowValueEffect( res.Value1 , 0 ); // DEF
+							if( res.Value1 != 0 ) // maybe change data in  battle manage
+							{
+								pUnit.pUnitData.AddDef (res.Value1   );
+							}
+							
+						}break;
+						case cHitResult._TYPE._MP:{
+							pUnit.ShowValueEffect( res.Value1 , 0 ); // MP
+							if( res.Value1 != 0 ) // maybe change data in  battle manage
+							{
+								pUnit.pUnitData.AddMp (res.Value1   );
+							}							
+						}break;
+						case cHitResult._TYPE._SP:{
+							pUnit.ShowValueEffect( res.Value1 , 0 ); // SP
+							if( res.Value1 != 0 ) // maybe change data in  battle manage
+							{
+								pUnit.pUnitData.AddSp (res.Value1   );
+							}							
+						}break;
+						case cHitResult._TYPE._CP:{
+							//pUnit.ShowValueEffect( res.Value1 , 0 ); // SP
+							if( res.Value1 != 0 ) // maybe change data in  battle manage
+							{
+								pUnit.pUnitData.AddCp (res.Value1   );
+							}							
 						}break;
 						case cHitResult._TYPE._ADDBUFF: // add buff
 						{
@@ -362,7 +401,14 @@ public partial class ActionManager
 						{
 							// it should have fx
 							
-						}break;							
+						}break;	
+						case cHitResult._TYPE._DODGE: // show miss
+						{
+							// it should have fx
+							BattleManager.Instance.ShowBattleResValue( pUnit.gameObject , "迴避" , 0 );
+						}break;	
+
+
 						}
 					}
 				}

@@ -22,6 +22,8 @@ public class cEffect
 	
 	//string strFunc;		// origin al string
 	//public int nID { set; get; }
+	public int 	 iValue =0;	
+	public float fValue=0.0f ;	
 	public int nSkillID =0;
 	public int nBuffID =0;
 
@@ -44,43 +46,42 @@ public class cEffect
 	public virtual void _BeHit( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ }			// BUFF 專用.受擊後　額外效果 
 
 	// cost
-	public virtual bool _IsStatus( ref int iValue , ref float fValue ){ return false; }				
+	public virtual bool _IsStatus( _UNITSTATE st  ){ return false; }				// check user in one status	
+
 }
 
 // Cast Effect
 public class ADDBUFF_I: cEffect
 {
-	public ADDBUFF_I( int buffid ){		nTarBuffID = buffid;	}
-	public int nTarBuffID ;
+	public ADDBUFF_I( int buffid ){		iValue = buffid;	}
+	public int iValue ;
 	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){
 		if (Atker != null) {
 			// ( int nBuffID , int nCastIdent , int nSkillID  , int nTargetId )
 			//pData.Buffs.AddBuff( res.Value1 , res.Value2, res.SkillID, res.Value3 );
-			list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF , Atker.n_Ident , nTarBuffID , Atker.n_Ident, nSkillID ,Defer.n_Ident  ) );
+			list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF , Atker.n_Ident , iValue , Atker.n_Ident, nSkillID ,Defer.n_Ident  ) );
 		}
 	}
 }
 public class ADDBUFF_E: cEffect
 {
-	public ADDBUFF_E( int buffid ){		nTarBuffID = buffid;;	}
-	public int nTarBuffID ;
+	public ADDBUFF_E( int buffid ){		iValue = buffid;;	}
+	public int iValue ;
 	
 	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 
 		if (Defer != null) {
 		//	list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF ,Defer.n_Ident , nBuffID ) );
-			list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF , Defer.n_Ident , nTarBuffID, Atker.n_Ident, nSkillID ,Defer.n_Ident  ) );
+			list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF , Defer.n_Ident , iValue, Atker.n_Ident, nSkillID ,Defer.n_Ident  ) );
 		}
 	}
 }
-
 
 
 // Attr
 public class ADD_MAR: cEffect
 {
 	public ADD_MAR( float f ){		fValue = f;	}
-	
-	public float fValue ;	
+
 	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
 		attr.f_MAR += fValue;
 	}
@@ -89,8 +90,6 @@ public class ADD_MAR: cEffect
 public class ADD_MAR_DIFF: cEffect
 {
 	public ADD_MAR_DIFF( float f ){	 fValue = f;	}
-	
-	public float fValue ;	
 	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
 		if ((Atker != null) && ( Defer != null)) {
 			float fDelt = Defer.GetBaseMar() - Atker.GetBaseMar();
@@ -104,8 +103,6 @@ public class ADD_MAR_DIFF: cEffect
 public class ADD_ATTACK_DIFF: cEffect
 {
 	public ADD_ATTACK_DIFF( float f ){	fValue = f;	}
-	
-	public float fValue ;	
 
 	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
 		if ((Atker != null) && ( Defer != null)) {
@@ -121,8 +118,6 @@ public class ADD_ATTACK: cEffect
 {
 	public ADD_ATTACK( int i ){	iValue = i;	}
 	
-	public int iValue ;	
-	
 	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
 		if ((Atker != null)) {
 			attr.n_ATK += iValue;
@@ -130,11 +125,9 @@ public class ADD_ATTACK: cEffect
 	}
 }
 
-public class ADD_DEF: cEffect
+public class ADD_MAXDEF: cEffect
 {
-	public ADD_DEF( int i ){	iValue = i;	}
-	
-	public int iValue ;	
+	public ADD_MAXDEF( int i ){	iValue = i;	}
 	
 	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
 		if ((Atker != null)) {
@@ -143,11 +136,27 @@ public class ADD_DEF: cEffect
 	}
 }
 
+public class ADD_DEF_I: cEffect
+{
+	public ADD_DEF_I( int i ){	iValue = i;	}
+	
+	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 
+			list.Add( new cHitResult( cHitResult._TYPE._DEF , Atker.n_Ident , iValue , Atker.n_Ident, nSkillID , nBuffID   ) );
+	}
+}
+public class ADD_DEF_E: cEffect
+{
+	public ADD_DEF_E( int i ){	iValue = i;	}
+	
+	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 
+		if (Defer != null) {
+			list.Add( new cHitResult( cHitResult._TYPE._DEF , Defer.n_Ident , iValue , Atker.n_Ident, nSkillID , nBuffID   ) );
+		}
+	}
+}
 public class ADD_POWER: cEffect
 {
 	public ADD_POWER( int i ){	iValue = i;	}
-	
-	public int iValue ;	
 	
 	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
 		if ((Atker != null)) {
@@ -155,11 +164,10 @@ public class ADD_POWER: cEffect
 		}
 	}
 }
-public class ADD_HP: cEffect
+
+public class ADD_MAXHP: cEffect
 {
-	public ADD_HP( int i ){	iValue = i;	}
-	
-	public int iValue ;	
+	public ADD_MAXHP( int i ){	iValue = i;	}
 	
 	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
 		if ((Atker != null)) {
@@ -167,23 +175,18 @@ public class ADD_HP: cEffect
 		}
 	}
 }
-public class ADD_MP: cEffect
+public class ADD_MAXMP: cEffect
 {
-	public ADD_MP( int i ){	iValue = i;	}
-	
-	public int iValue ;	
-	
+	public ADD_MAXMP( int i ){	iValue = i;	}
 	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
 		if ((Atker != null)) {
 			attr.n_MP += iValue;
 		}
 	}
 }
-public class ADD_SP: cEffect
+public class ADD_MAXSP: cEffect
 {
-	public ADD_SP( int i ){	iValue = i;	}
-	
-	public int iValue ;	
+	public ADD_MAXSP( int i ){	iValue = i;	}
 	
 	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
 		if ((Atker != null)) {
@@ -192,6 +195,85 @@ public class ADD_SP: cEffect
 	}
 }
 
+
+public class ADDHP_I: cEffect
+{
+	public ADDHP_I( float f ){	fValue = f;	}
+	
+	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 
+			float fHp = Atker.GetMaxHP() * fValue ;
+			//	list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF ,Defer.n_Ident , nBuffID ) );
+		list.Add( new cHitResult( cHitResult._TYPE._HP , Atker.n_Ident , (int)fHp  , Atker.n_Ident, nSkillID , nBuffID   ) );
+	}
+}
+public class ADDMP_I: cEffect
+{
+	public ADDMP_I( int i ){	iValue = i;	}
+	
+	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 	
+		list.Add( new cHitResult( cHitResult._TYPE._MP , Atker.n_Ident , iValue  , Atker.n_Ident, nSkillID , nBuffID   ) );
+	}
+}
+public class ADDSP_I: cEffect
+{
+	public ADDSP_I( int i ){	iValue = i;	}
+	
+	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 
+
+		list.Add( new cHitResult( cHitResult._TYPE._SP , Atker.n_Ident , iValue  , Atker.n_Ident, nSkillID , nBuffID   ) );
+	}
+}
+public class ADDCP_I: cEffect
+{
+	public ADDCP_I( int i ){	iValue = i;	}
+	
+	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 
+		
+		list.Add( new cHitResult( cHitResult._TYPE._CP , Atker.n_Ident , iValue  , Atker.n_Ident, nSkillID , nBuffID   ) );
+	}
+}
+public class ADDHP_E: cEffect
+{
+	public ADDHP_E( float f ){	fValue = f;	}
+	
+	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 
+		if (Defer != null) {
+			float fHp = Defer.GetMaxHP() * fValue ;
+			list.Add( new cHitResult( cHitResult._TYPE._HP , Defer.n_Ident , (int)fHp , Atker.n_Ident, nSkillID , nBuffID   ) );
+		}
+	}
+}
+public class ADDMP_E: cEffect
+{
+	public ADDMP_E( int i ){	iValue = i;	}
+	
+	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 	
+		if (Defer != null) {
+		
+			list.Add( new cHitResult( cHitResult._TYPE._MP , Defer.n_Ident , iValue , Atker.n_Ident, nSkillID , nBuffID   ) );
+		}
+	}
+}
+public class ADDSP_E: cEffect
+{
+	public ADDSP_E( int i ){	iValue = i;	}
+	
+	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 
+		if (Defer != null) {			
+			list.Add( new cHitResult( cHitResult._TYPE._SP , Defer.n_Ident , iValue , Atker.n_Ident, nSkillID , nBuffID   ) );
+		}
+
+	}
+}
+public class ADDCP_E: cEffect
+{
+	public ADDCP_E( int i ){	iValue = i;	}
+	
+	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 
+		
+		list.Add( new cHitResult( cHitResult._TYPE._CP , Defer.n_Ident , iValue  , Atker.n_Ident, nSkillID , nBuffID   ) );
+	}
+}
 // ==== MUL_BRUST
 public class MUL_DROP: cEffect
 {
@@ -263,8 +345,9 @@ public class MUL_MPCOST: cEffect
 	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
 		attr.fMpCostRate += fValue;
 	}
-
 }
+
+
 public class RECOVER_SP: cEffect
 {
 	public RECOVER_SP( float v ){ fValue = v;}
@@ -274,8 +357,41 @@ public class RECOVER_SP: cEffect
 //	}
 }
 
+//==== is status ==
+public class IS_DODGE: cEffect
+{
+	public IS_DODGE(  ){ }	
 
+	override public bool _IsStatus(  _UNITSTATE st ){
+		return (_UNITSTATE._DODGE == st );
+	}				// check user in one status		
+}
+public class IS_CIRIT: cEffect
+{
+	public IS_CIRIT( ){	}	
+	
+	override public bool _IsStatus(  _UNITSTATE st ){
+		return (st == _UNITSTATE._CIRIT);
+	}				// check user in one status		
+}
+public class IS_MERCY: cEffect
+{
+	public IS_MERCY( ){	}	
+	
+	override public  bool _IsStatus(  _UNITSTATE st ){
+		return (st == _UNITSTATE._MERCY);
+	}				// check user in one status		
+}
+public class IS_GUARD: cEffect
+{
+	public IS_GUARD( ){	}	
+	
+	override public  bool _IsStatus(  _UNITSTATE st ){
+		return (st == _UNITSTATE._GUARD);
+	}				// check user in one status		
+}
 
+//==========================================================================
 // use to cache condition sctipr parser result
 public class  cEffectCondition
 {

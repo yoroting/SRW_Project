@@ -465,7 +465,10 @@ public class Panel_Talk : MonoBehaviour {
 		obj.ClearText(); // clear text first
 
 		string s = GameSystem.GetTalkText ( nSayTextID );
-		string sText = s.Replace ( "$P" , Config.PlayerName ); // replace player name
+		string sText = s.Replace ( "$F" , Config.PlayerFirst ); // replace player name
+				sText = sText.Replace ( "$P" , Config.PlayerName ); // replace player name
+
+
 
 		obj.AddText(sText);
 		//SRW_TextBox pBox = obj.GetComponent<SRW_TextBox>();
@@ -484,7 +487,10 @@ public class Panel_Talk : MonoBehaviour {
 		if (string.IsNullOrEmpty (s)) {
 			sText = string.Format("CharSay null text in textid{0} ", nSayTextID);
 		} else {
-			sText = s.Replace ( "$P" , Config.PlayerName ); // replace player name		
+
+			sText = s.Replace ( "$F" , Config.PlayerFirst ); // replace player name
+			sText = sText.Replace ( "$P" , Config.PlayerName ); // replace player name			
+
 		}
 		obj.AddText(sText);
 	}

@@ -513,6 +513,7 @@ public partial class GameDataManager
 		// buff
 		unit.Buffs.ImportSavePool ( save.Buffs );
 
+
 		unit.UpdateAllAttr ();
 
 		return unit;
