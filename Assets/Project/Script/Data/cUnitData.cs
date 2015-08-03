@@ -1119,7 +1119,7 @@ public class cUnitData{
 		// GET buff status 
 		GetBuffStatus ();
 
-		//UpdateFightAttr();
+		// get skill data
 
 
 	}
@@ -1163,6 +1163,8 @@ public class cUnitData{
 		}
 
 		Buffs.OnCast (Defer, ref resPool);
+
+
 		//MyTool.DoSkillEffect ( this , Defer ,  FightAttr.SkillData.CastPool , FightAttr.SkillData.CastCond ,  FightAttr.SkillData.CastCondEffectPool , ref resPool  );
 	}
 

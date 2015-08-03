@@ -275,6 +275,10 @@ public partial class ActionManager
 						caster.n_SP -= skill.n_SP;  //
 						
 					}
+					if( skill.n_CP > 0 ){
+						caster.n_CP -= skill.n_CP;  //						
+					}
+
 				}
 
 				caster.DoCastEffect( ref act.HitResult  );

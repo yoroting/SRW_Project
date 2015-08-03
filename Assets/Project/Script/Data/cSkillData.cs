@@ -100,6 +100,7 @@ public class cSkillData
 	public void DoCastEffect( cUnitData atker , cUnitData defer , ref List<cHitResult>  pool  ){
 		AttrEffect ( atker , defer , CastPool ,CastCond , CastCondEffectPool );
 		DoEffect ( atker , defer , CastPool , CastCond , CastCondEffectPool , ref  pool );
+
 	}
 
 	public void DoHitEffect( cUnitData atker , cUnitData defer , ref List<cHitResult>  pool  ){
@@ -148,6 +149,19 @@ public class cSkillData
 		foreach( cEffect eft  in effPool )
 		{
 			eft._Attr(atker , defer , ref attr  )  ;
+			//================================================
+			if( eft._IsStatus( _UNITSTATE._DODGE ) == true ){
+				atker.AddStates( _UNITSTATE._DODGE );
+			}
+			if( eft._IsStatus( _UNITSTATE._CIRIT ) == true ){
+				atker.AddStates( _UNITSTATE._CIRIT );
+			}
+			if( eft._IsStatus( _UNITSTATE._MERCY ) == true ){
+				atker.AddStates( _UNITSTATE._MERCY );
+			}
+			if( eft._IsStatus( _UNITSTATE._GUARD ) == true ){
+				atker.AddStates( _UNITSTATE._GUARD );
+			}
 		}
 		if ( EffCond == null || CondEffPool == null)
 			return;
@@ -155,11 +169,24 @@ public class cSkillData
 		//cond eff
 		//if (MyScript.Instance.CheckSkillCond (strCond, atker, defer) == true)
 		if( EffCond.Check( atker , defer , nID, 0 ) == true )
-		{
-			
+		{			
 			foreach( cEffect eft  in CondEffPool )
 			{
-				eft._Attr(atker , defer ,ref attr  )  ;
+				eft._Attr(atker , defer ,ref attr  );
+
+				//================================================
+				if( eft._IsStatus( _UNITSTATE._DODGE ) == true ){
+					atker.AddStates( _UNITSTATE._DODGE );
+				}
+				if( eft._IsStatus( _UNITSTATE._CIRIT ) == true ){
+					atker.AddStates( _UNITSTATE._CIRIT );
+				}
+				if( eft._IsStatus( _UNITSTATE._MERCY ) == true ){
+					atker.AddStates( _UNITSTATE._MERCY );
+				}
+				if( eft._IsStatus( _UNITSTATE._GUARD ) == true ){
+					atker.AddStates( _UNITSTATE._GUARD );
+				}
 			}
 		}
 		
