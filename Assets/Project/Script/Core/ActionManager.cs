@@ -279,9 +279,17 @@ public partial class ActionManager
 						caster.n_CP -= skill.n_CP;  //						
 					}
 
-				}
+					caster.DoCastEffect( ref act.HitResult  );
 
-				caster.DoCastEffect( ref act.HitResult  );
+					// 直接回復防禦
+					if( skill.f_DEF > 0.0f  ){
+						float f = caster.GetMaxDef() * skill.f_DEF ;
+						act.HitResult.Add( new cHitResult( cHitResult._TYPE._DEF ,nAtkIdent , (int)f    ) ); 
+						//caster.AddDef( (int)f );
+
+					}
+
+				}
 			}
 
 		}

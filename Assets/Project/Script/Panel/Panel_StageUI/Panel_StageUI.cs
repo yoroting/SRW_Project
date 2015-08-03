@@ -1606,18 +1606,20 @@ public class Panel_StageUI : MonoBehaviour
 					data.n_Ident = GameDataManager.Instance.GenerSerialNO();
 				}
 			}
+		
 
 			// setup param
 			unit.CreateChar( nCharID , posx , posy , data );
 
 			// set up unit default value
-
+			// setup lv before
 			if( data == null ){
 				//campid = data.eCampID;
 				//lv = data.n_Lv;
 				unit.SetCamp( nCampID );	
 				unit.SetLevel( StageData.n_MOB_LV );
 				unit.SetLeader( nLeaderIdent );
+
 			}
 			else {
 				// setup in create char
