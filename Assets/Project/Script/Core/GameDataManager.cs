@@ -84,6 +84,7 @@ using MYGRIDS;
 		_SYSCHEAT,
 		_WIN,
 		_LOST,
+		_KILLALLE,			//全敵人死亡
 	}
 
 
@@ -763,6 +764,8 @@ public class cCMD{
 			CmdlistArray [idx].Add (_CMD_ID._SYSCHEAT);
 			CmdlistArray [idx].Add (_CMD_ID._WIN);
 			CmdlistArray [idx].Add (_CMD_ID._LOST);
+			CmdlistArray [idx].Add (_CMD_ID._KILLALLE);
+
 		}
 
 

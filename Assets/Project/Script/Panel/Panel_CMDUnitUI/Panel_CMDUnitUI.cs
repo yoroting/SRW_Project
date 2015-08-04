@@ -355,7 +355,16 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
 	}
 
-
+	public void KillAllEnemyCmd ()
+	{
+		foreach (KeyValuePair< int , cUnitData> pair in GameDataManager.Instance.UnitPool) {
+			if( pair.Value != null ){
+				if( pair.Value.eCampID == _CAMP._ENEMY ){
+					pair.Value.AddHp( -999999999 );
+				}
+			}
+		}
+	}
 
 	//==================================
 	// untility func
@@ -731,6 +740,10 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		} else if (name == _CMD_ID._SYSCHEAT.ToString ()) {
 			StageCheatCmd ();
 		}
+		else if (name == _CMD_ID._KILLALLE.ToString ()) {
+			KillAllEnemyCmd ();
+		}
+	 
 //
 
 

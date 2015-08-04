@@ -372,8 +372,9 @@ public class MyScript {
 			{
 				StagePopGroupEvent evt = new StagePopGroupEvent ();
 				//evt.eCamp 	= (_CAMP)func.I( 0 );
-				evt.nLeaderCharID = func.I( 0 );
-				evt.nCharID = func.I( 1 );
+
+				evt.nCharID = func.I( 0 );
+				evt.nLeaderCharID = func.I( 1 );
 				evt.stX		= func.I( 2 );
 				evt.stY		= func.I( 3 );
 				evt.edX		= func.I( 4 );
@@ -454,6 +455,15 @@ public class MyScript {
 				StageMoveToUnitEvent evt = new StageMoveToUnitEvent();
 				evt.nAtkCharID = func.I(0);
 				evt.nDefCharID = func.I(1);
+				//evt.nAtkSkillID = func.I(2);
+				GameEventManager.DispatchEvent ( evt  );
+			}
+			else if( func.sFunc  == "MOVE")  //  pop a group of mob
+			{
+				StageCharMoveEvent evt = new StageCharMoveEvent();
+				evt.nIdent = func.I(0);
+				evt.nX = func.I(1);
+				evt.nY = func.I(2);
 				//evt.nAtkSkillID = func.I(2);
 				GameEventManager.DispatchEvent ( evt  );
 			}
