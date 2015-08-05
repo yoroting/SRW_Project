@@ -1813,6 +1813,9 @@ public class Panel_StageUI : MonoBehaviour
 	{
 		if (unit == null)
 			return;
+		if (TarceMoveingUnit != null) // 避免富庶單位移動時會震動
+			return;
+
 
 		TarceMoveingUnit = unit;
 	}
