@@ -87,7 +87,7 @@ public class StageCharMoveEvent: GameEvent {
 	public int nIdent = 0;
 	public int nX = 0;
 	public int nY = 0;
-
+	public int nCharID =0; 
 	public StageCharMoveEvent(){
 		name = Name;		// important.  must have this line as key
 	}

@@ -274,7 +274,7 @@ public class cBuffs
 				}
 			}
 			else if( pair.Value.nTime == -2 ){ //本次戰鬥為防守方
-				if( Owner.IsStates( _UNITSTATE._ATKER ) == false ){
+				if( Owner.IsStates( _UNITSTATE._BEDAMAGE ) == true ){
 					RemoveList.Add( pair.Key );
 				}
 			}

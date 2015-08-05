@@ -1988,9 +1988,21 @@ public class Panel_StageUI : MonoBehaviour
 		int nIdent = Evt.nIdent;
 		int nX =  Evt.nX;
 		int nY =  Evt.nY;
+
+
+		if( nIdent == 0 && Evt.nCharID > 0 )
+		{
+			cUnitData data =GameDataManager.Instance.GetUnitDateByCharID( Evt.nCharID ) ;
+			if( data != null )
+			{
+				nIdent = data.n_Ident;
+			}
+		}
 //		if( IdentToUnit.ContainsKey(nIdent) == false )  {
 //			Debug.Log( "ERR: can't find unit to move" );
 //		}
+
+
 
 		Panel_unit unit = GetUnitByIdent ( nIdent); // IdentToUnit[ nIdent ];
 		if( unit != null )
@@ -2009,6 +2021,9 @@ public class Panel_StageUI : MonoBehaviour
 //				// trace it
 //				TraceUnit( unit );
 //			}
+		}
+		else{
+			Debug.LogError( " Err! OnStageCharMoveEvent with null unit");
 		}
 		//DelChar( _CAMP._ENEMY , nCharid );
 

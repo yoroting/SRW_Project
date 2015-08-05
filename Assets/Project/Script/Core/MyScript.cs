@@ -461,7 +461,8 @@ public class MyScript {
 			else if( func.sFunc  == "MOVE")  //  pop a group of mob
 			{
 				StageCharMoveEvent evt = new StageCharMoveEvent();
-				evt.nIdent = func.I(0);
+				evt.nIdent =0;
+				evt.nCharID = func.I(0);
 				evt.nX = func.I(1);
 				evt.nY = func.I(2);
 				//evt.nAtkSkillID = func.I(2);

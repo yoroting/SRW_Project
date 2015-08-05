@@ -1115,6 +1115,7 @@ public partial class BattleManager
 			return null;
 
 		pAtker.AddStates (_UNITSTATE._DAMAGE);
+		pDefer.AddStates (_UNITSTATE._BEDAMAGE);
 		if (bDefMode == true) {
 			pDefer.AddStates( _UNITSTATE._DEFMODE );
 		}

@@ -10,16 +10,20 @@ public enum _UNITSTATE
 	_NULL =0,
 	_ATKER    ,
 	_DAMAGE   ,		//執行過傷害技能
+	_BEDAMAGE	,   //發生過{被} 攻擊行為
 //	_DEFER    ,		// not atker is defer
 	_DEFMODE  ,
 	_DEAD	 ,		// 已死亡
 
-	_DODGE	 ,		// 迴避成功
+	//status
+	_DODGE	 ,		// 迴避
 	_CIRIT	 ,		// 報擊
 	_MERCY	 ,		// 留情
 	_GUARD   ,		// 防衛	
 
+	// 
 	_KILL		,  //本次戰鬥有殺人
+
 }
 
 public enum _ITEMSLOT

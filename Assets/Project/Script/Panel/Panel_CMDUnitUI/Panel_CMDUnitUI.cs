@@ -360,10 +360,11 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		foreach (KeyValuePair< int , cUnitData> pair in GameDataManager.Instance.UnitPool) {
 			if( pair.Value != null ){
 				if( pair.Value.eCampID == _CAMP._ENEMY ){
-					pair.Value.AddHp( -999999999 );
+					pair.Value.AddHp( -2099999999 );
 				}
 			}
 		}
+		EndCMDUI();
 	}
 
 	//==================================
