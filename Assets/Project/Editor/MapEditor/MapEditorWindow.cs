@@ -17,13 +17,9 @@ public class MapEditorWindow : EditorWindow
     /// </summary>
     private string _sceneTextFieldString = "1";
     /// <summary>
-    /// Layer字串
-    /// </summary>
-    private string _tileLayer = "1";
-    /// <summary>
     /// 地上物要種的layer
     /// </summary>
-    private string _thingLayerTextFieldString = "1";
+    private static string _thingLayerTextFieldString = "1";
     /// <summary>
     /// 選擇要種的Tile
     /// </summary>
@@ -31,7 +27,7 @@ public class MapEditorWindow : EditorWindow
     /// <summary>
     /// 選擇要種的Thing
     /// </summary>
-    private MYGRIDS._THING _thing = MYGRIDS._THING._NULL;
+    private static MYGRIDS._THING _thing = MYGRIDS._THING._NULL;
 
     [MenuItem("Custom/Map Editor Window")]
     public static void Init()
@@ -146,11 +142,18 @@ public class MapEditorWindow : EditorWindow
 
     public static void OnSceneGUI(SceneView sceneView)
     {
-        if (MapEditor.Instance != null && MapEditor.Instance.Mode == MapEditor.DrawMode.Select)
+        if (MapEditor.Instance != null && MapEditor.Instance.Mode == MapEditor.DrawMode.TileSelect)
         {
             if (Selection.gameObjects != null && Selection.gameObjects.Length > 0)
             {
                 MapEditor.Instance.ChangeTileValue((int)_tile);
+            }
+        }
+        else if (MapEditor.Instance != null && MapEditor.Instance.Mode == MapEditor.DrawMode.ThingSelect)
+        {
+            if (Selection.gameObjects != null && Selection.gameObjects.Length > 0)
+            {
+                MapEditor.Instance.AddThing((int)_thing, Convert.ToInt32(_thingLayerTextFieldString));
             }
         }
     }

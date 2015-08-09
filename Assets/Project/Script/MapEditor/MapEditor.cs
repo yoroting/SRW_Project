@@ -13,9 +13,13 @@ public class MapEditor : MonoBehaviour
     public enum DrawMode
     {
         /// <summary>
-        /// 當物件被選擇時改變
+        /// 當Tile被選擇時改變
         /// </summary>
-        Select,
+        TileSelect,
+        /// <summary>
+        /// 當Thing被選擇時改變
+        /// </summary>
+        ThingSelect,
         /// <summary>
         /// 當點選改變按鍵時
         /// </summary>
