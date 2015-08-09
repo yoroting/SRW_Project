@@ -221,11 +221,15 @@ public class cBuffs
 
 
 	// run 1 round .  buff time-1 with all >= 1 . remove buff if time become 0
-	public bool BuffRoundEnd()
+	public bool BuffRoundEnd( ref uAction act )
 	{
+		// 作用一次 buff
+		OnDo( null , ref act.HitResult);
 
+		//移除結束的BUFF
 		foreach( KeyValuePair<int , cBuffData>  pair in Pool )
 		{
+
 			//if( pair.Value.nCastIdent == castid )
 			if( pair.Value.nTime > 0 )
 			{
@@ -235,10 +239,10 @@ public class cBuffs
 			}
 		}
 
-
 		foreach( int id in RemoveList ){
 			Pool.Remove( id );
 		}
+
 		bool bUpdate = RemoveList.Count > 0;
 		RemoveList.Clear ();
 		return bUpdate;
@@ -269,12 +273,12 @@ public class cBuffs
 				}
 			}
 			else if( pair.Value.nTime == -1 ){ 
-				if( Owner.IsStates( _UNITSTATE._DAMAGE ) ){// 本次戰鬥有實際造成傷害
+				if( Owner.IsStates( _FIGHTSTATE._DAMAGE ) ){// 本次戰鬥有實際造成傷害
 					RemoveList.Add( pair.Key );
 				}
 			}
 			else if( pair.Value.nTime == -2 ){ //本次戰鬥為防守方
-				if( Owner.IsStates( _UNITSTATE._BEDAMAGE ) == true ){
+				if( Owner.IsStates( _FIGHTSTATE._BEDAMAGE ) == true ){
 					RemoveList.Add( pair.Key );
 				}
 			}
@@ -517,7 +521,7 @@ public class cBuffs
 		
 	}
 
-	public bool CheckStatus( _UNITSTATE status ){
+	public bool CheckStatus( _FIGHTSTATE status ){
 
 
 		cUnitData unit_e = null ;

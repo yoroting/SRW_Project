@@ -31,6 +31,8 @@ public class Panel_UnitInfo : MonoBehaviour {
 	public GameObject ItemGrid;
 	public GameObject FateGrid;
 	public GameObject BuffGrid;
+	public GameObject PassGrid; // 被動
+
 
 	public GameObject CloseBtnObj;
 
@@ -137,6 +139,8 @@ public class Panel_UnitInfo : MonoBehaviour {
 		UpdateFate ();
 		// set buff
 		UpdateBuff ();
+		//
+		UpdatePass ();
 	}
 
 	// Use this for initialization
@@ -272,6 +276,28 @@ public class Panel_UnitInfo : MonoBehaviour {
 		}
 	}
 
+	void UpdatePass ()
+	{
+		MyTool.DestoryGridItem ( PassGrid );
+
+		foreach ( KeyValuePair< int , cBuffData > pair in pUnitData.Buffs.Pool ) {
+			
+			GameObject go = ResourcesManager.CreatePrefabGameObj( PassGrid , "Prefab/Skill_simple" ); 
+			if( go == null )
+				continue;		
+			if( pair.Value.nTime != 0 )
+				continue;
+
+			Skill_Simple obj = go.GetComponent<Skill_Simple >();
+			if( obj != null ){
+				obj.nID = pair.Key;
+				obj.nType = 0; // 0 is ability
+				MyTool.SetLabelText( obj.lblName , MyTool.GetSkillName( pair.Key ) );
+			}
+			
+		}
+
+	}
 
 	// onclick event
 	void OnAbilityClick( GameObject go )

@@ -8,6 +8,7 @@ public class SCENE_NAME : ConstDataRow<SCENE_NAME>
 	public string s_SCENE_NAME;
 	public string s_IMAGENAME;
 	public int n_SCENE_WEATHER;
+	public string s_SCNEN_BACK;
 	public int n_SCENE_DAYANDNIGHT;
 	public int n_SCENE_TYPE;
 	public int n_SCENE_SUBTYPE;

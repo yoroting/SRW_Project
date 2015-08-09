@@ -6,24 +6,24 @@ using MYGRIDS;
 using MyClassLibrary;
 //using _SRW;
 // maybe don't use this
-public class cAI_CMD{
-	public enum _AI_TYPE
-	{
-		_NONE,
-		_MOVE,
-		_ATK,
-		_DEF,
-		_ABILITY,
-		_WAIT,
-	};
-
-	public int nTarIdent { set; get; }
-	public int nTarX { set; get; }
-	public int nTarY { set; get; }
-	public int nSkillID { set; get; }
-	public int nAbilityID { set; get; }
-
-}
+//public class cAI_CMD{
+//	public enum _AI_TYPE
+//	{
+//		_NONE,
+//		_MOVE,
+//		_ATK,
+//		_DEF,
+//		_ABILITY,
+//		_WAIT,
+//	};
+//
+//	public int nTarIdent { set; get; }
+//	public int nTarX { set; get; }
+//	public int nTarY { set; get; }
+//	public int nSkillID { set; get; }
+//	public int nAbilityID { set; get; }
+//
+//}
 
 
 public class Panel_unit : MonoBehaviour {
@@ -96,8 +96,7 @@ public class Panel_unit : MonoBehaviour {
 		bIsDead = false;
 		TarIdent = 0;
 
-		UITweener[] twAry = this.GetComponents< UITweener >();
-
+//		UITweener[] twAry = this.GetComponents< UITweener >();
 //		foreach (UITweener tw in twAry) {
 //			tw.enabled = false;
 //
@@ -680,9 +679,7 @@ public class Panel_unit : MonoBehaviour {
 			tw.to	= defer.transform.localPosition;
 
 			Debug.LogFormat("ActionAttack from {0} , {1} , locPos {2} , {3} ", tw.from.x, tw.from.y , transform.localPosition.x ,  transform.localPosition.y );
-//			EventDelegate del = new EventDelegate( OnTwAtkHit );
-//			del.oneShot = true;
-//			tw.SetOnFinished(  del ) ; // this will add 
+
 
 			MyTool.TweenSetOneShotOnFinish( tw , OnTwAtkHit ); // for once only
 //			tw.SetOnFinished( OnTwAtkHit );
@@ -724,6 +721,9 @@ public class Panel_unit : MonoBehaviour {
 
 	public void ActionWeakup( )
 	{
+		// 如果有數字 要表演// 
+		if( CurAction.HitResult.Count > 0  )
+			ActionManager.Instance.ExecActionHitResult ( CurAction  );
 
 	}
 
@@ -875,6 +875,8 @@ public class Panel_unit : MonoBehaviour {
 		{
 			tws.shakeX = true;
 			tws.shakeY = true;
+
+			Destroy( tws , 1.0f ); // 
 		}
 
 		//TweenGrayLevel
@@ -888,6 +890,7 @@ public class Panel_unit : MonoBehaviour {
 			MyTool.TweenSetOneShotOnFinish( tw , OnDead );
 //			tw.style = UITweener.Style.Once; // PLAY ONCE
 //			tw.SetOnFinished( OnDead );
+
 		}
 	}
 
@@ -900,6 +903,10 @@ public class Panel_unit : MonoBehaviour {
 		evt.nIdent = this.Ident ();
 
 		GameEventManager.DispatchEvent ( evt );
+
+		// avoid shake tween
+
+
 	}
 
 	public void SetBorn()
@@ -1013,6 +1020,7 @@ public class Panel_unit : MonoBehaviour {
 	{
 		return this.Loc.Dist (unit.Loc);
 	}
+
 	// enemy use
 	public void RunAI( )
 	{

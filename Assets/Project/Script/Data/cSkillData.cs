@@ -150,17 +150,17 @@ public class cSkillData
 		{
 			eft._Attr(atker , defer , ref attr  )  ;
 			//================================================
-			if( eft._IsStatus( _UNITSTATE._DODGE ) == true ){
-				atker.AddStates( _UNITSTATE._DODGE );
+			if( eft._IsStatus( _FIGHTSTATE._DODGE ) == true ){
+				atker.AddStates( _FIGHTSTATE._DODGE );
 			}
-			if( eft._IsStatus( _UNITSTATE._CIRIT ) == true ){
-				atker.AddStates( _UNITSTATE._CIRIT );
+			if( eft._IsStatus( _FIGHTSTATE._CIRIT ) == true ){
+				atker.AddStates( _FIGHTSTATE._CIRIT );
 			}
-			if( eft._IsStatus( _UNITSTATE._MERCY ) == true ){
-				atker.AddStates( _UNITSTATE._MERCY );
+			if( eft._IsStatus( _FIGHTSTATE._MERCY ) == true ){
+				atker.AddStates( _FIGHTSTATE._MERCY );
 			}
-			if( eft._IsStatus( _UNITSTATE._GUARD ) == true ){
-				atker.AddStates( _UNITSTATE._GUARD );
+			if( eft._IsStatus( _FIGHTSTATE._GUARD ) == true ){
+				atker.AddStates( _FIGHTSTATE._GUARD );
 			}
 		}
 		if ( EffCond == null || CondEffPool == null)
@@ -175,17 +175,17 @@ public class cSkillData
 				eft._Attr(atker , defer ,ref attr  );
 
 				//================================================
-				if( eft._IsStatus( _UNITSTATE._DODGE ) == true ){
-					atker.AddStates( _UNITSTATE._DODGE );
+				if( eft._IsStatus( _FIGHTSTATE._DODGE ) == true ){
+					atker.AddStates( _FIGHTSTATE._DODGE );
 				}
-				if( eft._IsStatus( _UNITSTATE._CIRIT ) == true ){
-					atker.AddStates( _UNITSTATE._CIRIT );
+				if( eft._IsStatus( _FIGHTSTATE._CIRIT ) == true ){
+					atker.AddStates( _FIGHTSTATE._CIRIT );
 				}
-				if( eft._IsStatus( _UNITSTATE._MERCY ) == true ){
-					atker.AddStates( _UNITSTATE._MERCY );
+				if( eft._IsStatus( _FIGHTSTATE._MERCY ) == true ){
+					atker.AddStates( _FIGHTSTATE._MERCY );
 				}
-				if( eft._IsStatus( _UNITSTATE._GUARD ) == true ){
-					atker.AddStates( _UNITSTATE._GUARD );
+				if( eft._IsStatus( _FIGHTSTATE._GUARD ) == true ){
+					atker.AddStates( _FIGHTSTATE._GUARD );
 				}
 			}
 		}

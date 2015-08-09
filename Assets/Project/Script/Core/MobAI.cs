@@ -8,13 +8,6 @@ using MyClassLibrary;
 public class MobAI  {
 
 
-	enum _AI_TYPE{
-		_NORMAL=0,  	// 主動攻擊
-		_PASSIVE=1,		// 被動攻擊
-		_DEFENCE=2,		// 堅守原地 
-		_TARGET=3,		// 前往指定 目標或地點
-		_POSITION=4		// 不在目標地點前往目標
-	};
 
 
 	public static void Run( Panel_unit mob )

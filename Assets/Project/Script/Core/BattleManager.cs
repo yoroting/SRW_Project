@@ -244,12 +244,12 @@ public partial class BattleManager
 					
 					
 					// set batle state
-					Atker.AddStates( _UNITSTATE._ATKER );
+					Atker.AddStates( _FIGHTSTATE._ATKER );
 					
-					//Defer.AddStates( _UNITSTATE._DEFER );
+					//Defer.AddStates( _FIGHTSTATE._DEFER );
 					
 					if( IsDefMode() ){
-						Defer.AddStates( _UNITSTATE._DEFMODE );
+						Defer.AddStates( _FIGHTSTATE._DEFMODE );
 					}
 					
 					
@@ -369,7 +369,7 @@ public partial class BattleManager
 				if(  defskill != null ){
 					nRange = defskill.n_RANGE;
 				}
-				if( Defer.IsStates( _UNITSTATE._DEAD ) == false )
+				if( Defer.IsStates( _FIGHTSTATE._DEAD ) == false )
 				{
 					if( iVec2.Dist(Atker.n_X,Atker.n_Y,Defer.n_X,Defer.n_Y ) <= nRange ){
 						bCanCounter = true;
@@ -377,7 +377,7 @@ public partial class BattleManager
 				}
 			}
 			// 被打死不能反擊
-			if( Defer.IsStates(_UNITSTATE._DEAD)  ){
+			if( Defer.IsStates(_FIGHTSTATE._DEAD)  ){
 				bCanCounter = false;
 			}
 
@@ -528,7 +528,7 @@ public partial class BattleManager
 		switch (nPhase) {
 		case 0:	// prepare for event check
 			Atker.SetFightAttr (nDeferID, nAtkerSkillID);
-			Atker.AddStates (_UNITSTATE._ATKER);
+			Atker.AddStates (_FIGHTSTATE._ATKER);
 			uAction pCastingAction = ActionManager.Instance.CreateCastAction (nAtkerID, nAtkerSkillID);// Casting
 			// skill attr
 			if (pCastingAction != null) {
@@ -1062,7 +1062,7 @@ public partial class BattleManager
 			}
 			//
 			// kill
-			if( Defer.IsStates( _UNITSTATE._DEAD ) ){
+			if( Defer.IsStates( _FIGHTSTATE._DEAD ) ){
 
 				exp = (exp*4)+20;
 				money  = 1000;
@@ -1114,17 +1114,17 @@ public partial class BattleManager
 		if ( (pAtker == null) || (pDefer == null) )
 			return null;
 
-		pAtker.AddStates (_UNITSTATE._DAMAGE);
-		pDefer.AddStates (_UNITSTATE._BEDAMAGE);
+		pAtker.AddStates (_FIGHTSTATE._DAMAGE);
+		pDefer.AddStates (_FIGHTSTATE._BEDAMAGE);
 		if (bDefMode == true) {
-			pDefer.AddStates( _UNITSTATE._DEFMODE );
+			pDefer.AddStates( _FIGHTSTATE._DEFMODE );
 		}
 		// create result pool
 
 		List<cHitResult> resPool = new List<cHitResult> ();
 		resPool.Add ( new cHitResult( cHitResult._TYPE._HIT ,nAtker , nDefer  ) );
 
-		if (pDefer.IsStates (_UNITSTATE._DODGE)) {
+		if (pDefer.IsStates (_FIGHTSTATE._DODGE)) {
 			resPool.Add (new cHitResult (cHitResult._TYPE._DODGE, nDefer, 0 ));	
 			return resPool;
 		}
@@ -1194,12 +1194,12 @@ public partial class BattleManager
 			nAtkHp += (int)(PowDmg * pDefer.GetMulBurst() * pAtker.GetMulDamage() ); // it is neg value already
 			if (nAtkHp != 0) {
 				if (nAtkHp < 0 && ((pAtker.n_HP + pAtker.n_DEF) < Math.Abs (nAtkHp))) {
-					if (pDefer.IsStates (_UNITSTATE._MERCY)) {
+					if (pDefer.IsStates (_FIGHTSTATE._MERCY)) {
 						nAtkHp = -(pAtker.n_HP + pAtker.n_DEF-1);
 					}
 					else {
-						pDefer.AddStates (_UNITSTATE._KILL);
-						pAtker.AddStates (_UNITSTATE._DEAD);
+						pDefer.AddStates (_FIGHTSTATE._KILL);
+						pAtker.AddStates (_FIGHTSTATE._DEAD);
 					}
 				}
 				resPool.Add (new cHitResult (cHitResult._TYPE._HP, nAtker, nAtkHp));
@@ -1239,13 +1239,13 @@ public partial class BattleManager
 		// normal attack
 
 		if( nDefHp < 0 && ( (pDefer.n_HP+pDefer.n_DEF) < Math.Abs(nDefHp) ) ){
-			if (pAtker.IsStates (_UNITSTATE._MERCY)) {
+			if (pAtker.IsStates (_FIGHTSTATE._MERCY)) {
 				// 手加減
 				nDefHp = -(pDefer.n_HP+pDefer.n_DEF-1);
 			}
 			else {
-				pAtker.AddStates( _UNITSTATE._KILL );
-				pDefer.AddStates( _UNITSTATE._DEAD );  // dead
+				pAtker.AddStates( _FIGHTSTATE._KILL );
+				pDefer.AddStates( _FIGHTSTATE._DEAD );  // dead
 			}
 		}
 

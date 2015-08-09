@@ -56,8 +56,7 @@ public class StoryUIPanel : MonoBehaviour {
 		//
 	//	GameEventManager.AddEventListener(  StoryStartStageEvent.Name , OnStoryStartStageEvent );
 #if DEBUG && UNITY_EDITOR
-		GameDataManager.Instance.nStoryID =4;
-
+		GameDataManager.Instance.nStoryID =5;
 #endif 
 
 		//PanelManager.Instance.OpenUI( "Panel_Loading");

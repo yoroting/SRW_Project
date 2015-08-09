@@ -102,8 +102,12 @@ public class Panel_Talk : MonoBehaviour {
 	void OnEnable () {
 		// clear all
 		Clear ();
-
+		if (Tex_BackGround != null) {
+			Tex_BackGround.SetActive( false );
+		}
 		SetScript ( GameDataManager.Instance.nTalkID ); 
+
+
 	}
 
 	// Update is called once per frame
@@ -262,6 +266,49 @@ public class Panel_Talk : MonoBehaviour {
 //		}
 //	}
 
+	public void OnTweenAlphaEnd()
+	{
+
+	}
+
+	public void SetBackground( int nSceneID )
+	{
+		if (Tex_BackGround == null)
+			return;
+
+		SCENE_NAME scene = ConstDataManager.Instance.GetRow<SCENE_NAME> ( nSceneID );
+		if (scene == null)
+			return;
+
+
+		NGUITools.SetActive( Tex_BackGround ,  true );
+	
+		string url = "Art/BG/" + scene.s_SCNEN_BACK;
+
+		Texture t= Resources.Load( url , typeof(Texture) ) as Texture; ;
+
+		UITexture tex = Tex_BackGround.GetComponent<UITexture>();
+		tex.mainTexture = t;				
+		//tex.MakePixelPerfect();
+
+		TweenAlpha twA = TweenAlpha.Begin<TweenAlpha> (Tex_BackGround , 1.0f); 
+		
+	
+		if( twA )
+		{
+			twA.from = 0.0f;
+			twA.to =  1.0f;
+			twA.SetOnFinished( OnTweenAlphaEnd );
+
+		}
+
+		Tex_BackGround.SetActive( true );
+
+
+
+	}
+
+
 	public void SetScript( int nScriptID )
 	{
 		m_nScriptIdx = 0; // current execute script
@@ -271,8 +318,10 @@ public class Panel_Talk : MonoBehaviour {
 			return;
 
 		// change Back Tex
-		if (m_cStageTalk.n_SCENE_ID > 0) {
-			// load tex of sceneID
+		if ( m_cStageTalk.n_SCENE_ID > 0 ) 
+		{
+			SetBackground( m_cStageTalk.n_SCENE_ID );
+			// load texture of sceneID
 
 		}
 

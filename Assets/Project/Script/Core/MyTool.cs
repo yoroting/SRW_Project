@@ -114,7 +114,7 @@ public class MyTool {
 		return "Error- No Leran School" + nSchool.ToString();
 	}
 
-	static bool CheckInPosPool( List < iVec2 > lst , iVec2 v )
+	public static bool CheckInPosPool( List < iVec2 > lst , iVec2 v )
 	{
 		if (lst == null || v == null)
 			return false;
@@ -125,10 +125,21 @@ public class MyTool {
 		}
 		return false;
 	}
-
+	
+	public static bool CheckInRect( int X , int Y , int rx1 , int ry1 , int w , int h )
+	{
+		w = Mathf.Abs (w);
+		h = Mathf.Abs (h);
+		if (rx1 <= X && X <= (rx1+w) ) {
+			if (ry1 <= Y && Y <= (ry1+h) ){
+				return true;
+			}
+		}
+		return false;
+	}
 
 	// tool func to get aoe affect pool
-	static public List < iVec2 > GetAOEPool( int nX , int nY , int nAoe , int nCastX , int nCastY )
+	public static List < iVec2 > GetAOEPool( int nX , int nY , int nAoe , int nCastX , int nCastY )
 	{
 		List < iVec2 > pool = null;
 		iVec2 st 	= new iVec2 ( nX , nY );

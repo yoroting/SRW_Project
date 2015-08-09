@@ -46,7 +46,7 @@ public class cEffect
 	public virtual void _BeHit( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ }			// BUFF 專用.受擊後　額外效果 
 
 	// cost
-	public virtual bool _IsStatus( _UNITSTATE st  ){ return false; }				// check user in one status	
+	public virtual bool _IsStatus( _FIGHTSTATE st  ){ return false; }				// check user in one status	
 
 }
 
@@ -362,32 +362,32 @@ public class IS_DODGE: cEffect
 {
 	public IS_DODGE(  ){ }	
 
-	override public bool _IsStatus(  _UNITSTATE st ){
-		return (_UNITSTATE._DODGE == st );
+	override public bool _IsStatus(  _FIGHTSTATE st ){
+		return (_FIGHTSTATE._DODGE == st );
 	}				// check user in one status		
 }
 public class IS_CIRIT: cEffect
 {
 	public IS_CIRIT( ){	}	
 	
-	override public bool _IsStatus(  _UNITSTATE st ){
-		return (st == _UNITSTATE._CIRIT);
+	override public bool _IsStatus(  _FIGHTSTATE st ){
+		return (st == _FIGHTSTATE._CIRIT);
 	}				// check user in one status		
 }
 public class IS_MERCY: cEffect
 {
 	public IS_MERCY( ){	}	
 	
-	override public  bool _IsStatus(  _UNITSTATE st ){
-		return (st == _UNITSTATE._MERCY);
+	override public  bool _IsStatus(  _FIGHTSTATE st ){
+		return (st == _FIGHTSTATE._MERCY);
 	}				// check user in one status		
 }
 public class IS_GUARD: cEffect
 {
 	public IS_GUARD( ){	}	
 	
-	override public  bool _IsStatus(  _UNITSTATE st ){
-		return (st == _UNITSTATE._GUARD);
+	override public  bool _IsStatus(  _FIGHTSTATE st ){
+		return (st == _FIGHTSTATE._GUARD);
 	}				// check user in one status		
 }
 
@@ -501,27 +501,27 @@ public class  cEffectCondition
 			// Fight stat check
 			else if( func.sFunc == "FST_ATKER"  )
 			{				
-				return data_I.IsStates( _UNITSTATE._ATKER );
+				return data_I.IsStates( _FIGHTSTATE._ATKER );
 			}
 			else if( func.sFunc == "FST_DEFER"  )
 			{				
-				return data_I.IsStates( _UNITSTATE._ATKER )==false;
+				return data_I.IsStates( _FIGHTSTATE._ATKER )==false;
 			}
 			else if( func.sFunc == "FST_DAMAGE"  )
 			{
-				return data_I.IsStates( _UNITSTATE._DAMAGE );
+				return data_I.IsStates( _FIGHTSTATE._DAMAGE );
 			}
 			else if( func.sFunc == "FST_KILL"  )
 			{
-				return data_I.IsStates( _UNITSTATE._KILL );
+				return data_I.IsStates( _FIGHTSTATE._KILL );
 			}
 			else if( func.sFunc == "FST_DEAD"  )
 			{
-				return data_I.IsStates( _UNITSTATE._DEAD );
+				return data_I.IsStates( _FIGHTSTATE._DEAD );
 			}
 			else if( func.sFunc == "FST_DODGE"  )
 			{
-				return data_I.IsStates( _UNITSTATE._DODGE );
+				return data_I.IsStates( _FIGHTSTATE._DODGE );
 			}
 			else{
 				Debug.LogError( string.Format( "Error-Can't find script cond func '{0}'" , func.sFunc ) );

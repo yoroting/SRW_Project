@@ -90,7 +90,8 @@ public class Panel_StageUI : MonoBehaviour
 
 	Dictionary< string , GameObject > OverCellPathPool;
 	Dictionary< string , GameObject > OverCellAOEPool;
-	//List< GameObject >				OverCellPool;			 
+	//List< GameObject >				OverCellPool;
+	Dictionary< string , GameObject > OverCellMarkPool;		// mark cell
 
 	//Dictionary< int , GameObject > EnemyPool;			// EnemyPool this should be group pool
 
@@ -196,8 +197,10 @@ public class Panel_StageUI : MonoBehaviour
         // create sub panel?
 
         Panel_CMDUnitUI.OpenCMDUI(_CMD_TYPE._SYS, 0);
-        PanelManager.Instance.OpenUI(Panel_UnitInfo.Name);
-        PanelManager.Instance.OpenUI(Panel_MiniUnitInfo.Name);
+		Panel_UnitInfo.OpenUI (0);
+        //PanelManager.Instance.OpenUI(Panel_UnitInfo.Name);
+		Panel_MiniUnitInfo.OpenUI (0);
+        //PanelManager.Instance.OpenUI(Panel_MiniUnitInfo.Name);
 
         //Dictionary< int , STAGE_EVENT > EvtPool;			// add event id 
 
@@ -346,7 +349,7 @@ public class Panel_StageUI : MonoBehaviour
 
 		OverCellAOEPool= new Dictionary< string , GameObject >();
 
-	
+		OverCellMarkPool = new Dictionary< string , GameObject >();		// mark cell
 		//List < iVec2 >
 		UnitPanelObj.CreatePool( 1);//st_CellObjPoolSize / 2 
 
@@ -560,6 +563,12 @@ public class Panel_StageUI : MonoBehaviour
 		if (GameDataManager.Instance.nActiveCamp != _CAMP._PLAYER)
 			return;
 
+		if (this.bIsStageEnd == true)
+			return;
+
+		if (BattleManager.Instance.IsBattlePhase ())
+			return;
+
 	
 		UnitCell unit = go.GetComponent<UnitCell>() ;
 		if( unit != null ){
@@ -699,6 +708,12 @@ public class Panel_StageUI : MonoBehaviour
 		
 		if( IsRunningEvent() == true  )
 			return; // block other action  
+
+		if (this.bIsStageEnd == true)
+			return;
+
+		if (BattleManager.Instance.IsBattlePhase ())
+			return;
 
 		Panel_unit unit = go.GetComponent<Panel_unit>() ;
 		if( unit == null )
@@ -1786,6 +1801,24 @@ public class Panel_StageUI : MonoBehaviour
 		}
 	}
 
+	public GameObject AddMark( int x , int y  )
+	{
+		GameObject mark = ResourcesManager.CreatePrefabGameObj(TilePlaneObj, "Prefab/PathOverEffect");
+		if( mark != null )
+		{
+			iVec2 v = new iVec2( x , y );
+			mark.name = string.Format("PATHOVER({0},{1},{2})", v.X , v.Y , 0 );
+			SynGridToLocalPos( mark , v.X , v.Y) ;
+				
+				//UIEventListener.Get(over).onClick += OnOverClick;
+				
+			OverCellMarkPool.Add( v.GetKey() , mark );
+			mark.SetActive( true );
+			return mark;
+		}
+		return null;
+	}
+
 	public Vector3 GetGridSynLocalPos( GameObject obj , int nx , int ny )
 	{
 		Vector3 v = obj.transform.localPosition;
@@ -1926,6 +1959,338 @@ public class Panel_StageUI : MonoBehaviour
 
 		}
 	}
+	// IO
+	public bool CheckIsEmptyPos( iVec2 pos )
+	{
+		if (Grids.Contain (pos) == false)
+			return false;
+		
+		// check tile
+		if( MyGrids.IsWalkAbleTile( Grids.GetValue( pos ) ) == false )
+			return false;
+		
+		// check thiing
+		
+		// check unit
+		foreach( KeyValuePair< int , Panel_unit  > pair in IdentToUnit )
+		{
+			if( pair.Value.Loc.Collision( pos ) ){
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	public iVec2 FindEmptyPos( iVec2 st  , int len = 999 )
+	{
+		if (CheckIsEmptyPos (st)) {
+			return st;
+		}
+		// get a empty pos that can pop 
+		
+		for (int i=1; i < len; i++) {
+			List<iVec2> pool = Grids.GetRangePool( st , i , i-1 );
+			if( pool == null )
+				continue;
+			foreach( iVec2 pos in pool )
+			{
+				if( CheckIsEmptyPos(pos) ){
+					return pos;
+				}
+			}
+		}
+		
+		
+		Debug.Log ( " Error ! can't find a Empty Pos");
+		return null;
+		
+		
+	}
+	// 
+	public List< iVec2> GetAllUnitPosList( )
+	{
+		List< iVec2> lst = new List< iVec2> ();
+		foreach (KeyValuePair < int , Panel_unit > p in IdentToUnit) {
+			lst.Add( p.Value.Loc );
+		}
+		
+		return lst;
+	}
+	
+	public List< iVec2>  GetUnitPKPosPool( Panel_unit unit , bool bCanPK  )
+	{
+		
+		List< iVec2> lst = new List< iVec2> ();
+		foreach (KeyValuePair < int , Panel_unit > pair in IdentToUnit) {
+			if( unit.CanPK( pair.Value ) == bCanPK )
+			{
+				lst.Add( pair.Value.Loc );
+			}
+		}		
+		return lst;
+	}
+	
+	//	public List< iVec2>  GetTarPosPKPosPool( Panel_unit unit , bool bCanPK  , int nTarX , int nTarY , int nDist = 0 )
+	//	{
+	//		List< iVec2> lst = new List< iVec2> ();
+	//		foreach (KeyValuePair < int , Panel_unit > pair in IdentToUnit) {
+	//			if( unit.CanPK( pair.Value ) == bCanPK )
+	//			{
+	//				lst.Add( pair.Value.Loc );
+	//			}
+	//		}		
+	//		return lst;
+	//
+	//	}
+	
+	public List< iVec2 > PathFinding( Panel_unit unit , iVec2 st , iVec2 ed , int nStep = 999)
+	{
+		// nStep = 999; // debug
+		
+		List< iVec2 > path = null;
+		//List< iVec2 > unitList =  GetUnitPosList();
+		
+		// try the short path
+		//this.GetUnitPKPosPool (unit, true);
+		
+		Grids.ClearIgnorePool();
+		Grids.AddIgnorePool (  GetUnitPKPosPool( unit , true  ) );  // all is block in first find
+		
+		//		List< iVec2 > nearList = Grids.GetRangePool( ed , 1  ); // the 4 pos can't stand ally
+		//		foreach( iVec2 pos in nearList ){
+		//			if( CheckIsEmptyPos( pos ) == false ){
+		//				Grids.AddIgnorePos( pos );
+		//			}
+		//		}
+		
+		// avoid the end node have ally
+		//List< iVec2 > nearList =  GetUnitPKPosPool( unit , );
+		
+		
+		path = Grids.PathFinding( st , ed , nStep  );
+		
+		//		if (path == null) {
+		//			Grids.ClearIgnorePool();
+		//			//Grids.AddIgnorePool ( GetUnitPosList() );  // only enemy is block in second find
+		//			Grids.AddIgnorePool(  GetUnitPKPosPool( unit , true  ) ); //
+		//			path = Grids.PathFinding( st , ed , nStep  );
+		//		}
+		
+		if (Config.GOD == true) {
+			CreatePathOverEffect (path); // draw path
+		}
+		
+		return path;
+	}
+	
+	// tool func to get aoe affect pool
+	public List < iVec2 > GetAOEPool( int nX , int nY , int nAoe )
+	{
+		iVec2 st = new iVec2 ( nX , nY );
+		Dictionary< string , iVec2 > tmp = new Dictionary< string , iVec2 >();
+		tmp.Add ( st.GetKey() , st );
+		//			pool.Add ( st );
+		
+		AOE aoe = ConstDataManager.Instance.GetRow<AOE> ( nAoe ) ;
+		if (aoe != null) {
+			// add extra first
+			cTextArray TA = new cTextArray();
+			TA.SetText ( aoe.s_EXTRA );
+			for( int i = 0 ; i < TA.GetMaxCol(); i++ )
+			{
+				CTextLine line  = TA.GetTextLine( i );
+				for( int j = 0 ; j < line.GetRowNum() ; j++ )
+				{
+					string s = line.m_kTextPool[ j ];
+					
+					string [] arg = s.Split( ",".ToCharArray() );
+					if( arg.Length < 2 )
+						continue;
+					if( arg[0] != null && arg[1] != null )
+					{
+						int x = int.Parse( arg[0] );
+						int y = int.Parse( arg[1] );
+						iVec2 v = st.MoveXY( x , y );
+						
+						if( Grids.Contain( v ) == false )
+							continue;
+						
+						string key = v.GetKey();
+						if( tmp.ContainsKey( key ) == false ){
+							tmp.Add( key , v );
+						}
+					}
+				}
+			}
+			// get range pool	
+			List<iVec2> r = Grids.GetRangePool( st , aoe.n_MAX , aoe.n_MIN );
+			
+			
+			
+		}
+		
+		List < iVec2 > pool = new List < iVec2 > ();
+		return pool;
+	}
+	
+	
+	
+	// restore from save data
+	public IEnumerator SaveLoading( cSaveData save )
+	{
+		//GameDataManager.Instance.nStoryID = nStoryID;
+		//GameDataManager.Instance.nStageID = save.n_StageID;
+		
+		PanelManager.Instance.OpenUI ("Panel_Loading");
+		
+		yield return  new WaitForEndOfFrame ();
+		
+		if (save.ePhase == _SAVE_PHASE._MAINTEN) {
+			
+			Panel_Mainten panel  = MyTool.GetPanel<Panel_Mainten>( PanelManager.Instance.OpenUI ( Panel_Mainten.Name ) );
+			yield return  new WaitForEndOfFrame();
+			
+			panel.RestoreBySaveData( save );
+			
+			
+		} else if (save.ePhase == _SAVE_PHASE._STAGE) {
+			
+			//PanelManager.Instance.OpenUI( Panel_StageUI.Name );  // don't run start() during open
+			
+			//check need clear stage
+			//		Panel_StageUI.Instance.bIsRestoreData = true;
+			Panel_StageUI.Instance.RestoreBySaveData ( save) ;
+			
+		}		
+		yield return  new WaitForEndOfFrame();
+		
+		cSaveData.SetLoading (false);
+		
+		if (save.ePhase != _SAVE_PHASE._STAGE) {
+			PanelManager.Instance.DestoryUI( Name );
+			//PanelManager.Instance.CloseUI (Name);  			// close stage when mainten
+		}
+		
+		PanelManager.Instance.CloseUI ("Panel_Loading");
+		yield break;
+		
+	}
+	
+	public void LoadSaveGame( cSaveData save )
+	{
+		if (save  == null)
+			return;
+		StartCoroutine (  SaveLoading( save  ) );
+		
+	}
+	
+	public bool RestoreBySaveData( cSaveData save )
+	{
+		//	cSaveData save = GameDataManager.Instance.SaveData;
+		if (save == null)
+			return false;
+		
+		
+		System.GC.Collect();			// Free memory resource here
+		
+		// clear data
+		Clear();						// 
+		Debug.Log("stagerestore :clearall");
+		
+		if (save.ePhase == _SAVE_PHASE._MAINTEN) {
+			// restore to mainten ui
+			return true;
+		}
+		
+		// re build done event 
+		GameDataManager.Instance.EvtDonePool = MyTool.ConvetToIntInt( save.EvtDonePool );
+		
+		
+		// check if in the same stage
+		if (StageData != null && StageData.n_ID != save.n_StageID ) {
+			// re load scene
+			GameDataManager.Instance.nStageID = save.n_StageID ;
+			// load const data
+			StageData = ConstDataManager.Instance.GetRow<STAGE_DATA>(GameDataManager.Instance.nStageID);
+			if (StageData == null)
+			{
+				Debug.LogFormat("stagerestore:StageData fail with ID {0}  ", GameDataManager.Instance.nStageID);
+				return false;
+			}
+			
+			// load scene file
+			if (LoadScene(StageData.n_SCENE_ID) == false)
+			{
+				Debug.LogFormat("stagerestore:LoadScene fail with ID {0} ", StageData.n_SCENE_ID);
+				return false;
+			}
+		}
+		
+		// re build evt pool
+		char[] split = { ';' };
+		string[] strEvent = StageData.s_EVENT.Split(split);
+		for (int i = 0; i < strEvent.Length; i++)
+		{
+			int nEventID = int.Parse(strEvent[i]);
+			STAGE_EVENT evt = ConstDataManager.Instance.GetRow<STAGE_EVENT>(nEventID);
+			if (evt != null)
+			{
+				// check if not loop event
+				if( (evt.n_TYPE&1) != 1 ){
+					if( GameDataManager.Instance.EvtDonePool.ContainsKey( nEventID ) == true )
+					{
+						continue;
+					}
+				}
+				
+				EvtPool.Add(nEventID, evt);
+			}
+		}
+		
+		Debug.Log("stageloding:create event Pool complete");
+		GameDataManager.Instance.nPlayerBGM = StageData.n_PLAYER_BGM;
+		GameDataManager.Instance.nEnemyBGM = StageData.n_ENEMY_BGM;
+		GameDataManager.Instance.nFriendBGM = StageData.n_FRIEND_BGM;
+		
+		
+		
+		// group pool
+		//	GameDataManager.Instance.GroupPool = GroupPool ;
+		GameDataManager.Instance.GroupPool   = MyTool.ConvetToIntInt( save.GroupPool );
+		// unit pool
+		foreach( cUnitSaveData s in save.CharPool )
+		{
+			cUnitData unit = GameDataManager.Instance.CreateCharbySaveData( s );
+			
+			GameObject obj = AddUnit( s.eCampID , s.n_CharID , s.n_X , s.n_Y , s.n_LeaderIdent , unit ) ;
+			if (obj != null) {		
+			} else {
+				Debug.Log (string.Format ("RestoreBySaveData PopUnit Fail with charid({0}) )", s.n_CharID  )  );			
+			}
+			
+			
+		}
+		
+		// reset bgm
+		
+		if( save.nPlayerBGM > 0 )
+			GameDataManager.Instance.nPlayerBGM = save.nPlayerBGM ;   //我方
+		if( save.nEnemyBGM > 0 )
+			GameDataManager.Instance.nEnemyBGM  = save.nEnemyBGM;	 // 敵方
+		if( save.nFriendBGM > 0 )
+			GameDataManager.Instance.nFriendBGM = save.nFriendBGM;	// 友方
+		
+		GameDataManager.Instance.ePhase = _SAVE_PHASE._STAGE;		// save to stage phase
+		
+		// stage bgm
+		PlayStageBGM ();
+		//GameDataManager.Instance.ImportSavePool( save.CharPool );
+		//		bIsRestoreData = false;
+		return true;
+	}
+
+
 
 	// Game event func
 	public void OnStageBGMEvent(GameEvent evt)
@@ -2190,7 +2555,12 @@ public class Panel_StageUI : MonoBehaviour
 
 		// send attack
 		//Panel_StageUI.Instance.MoveToGameObj(pDefUnit.gameObject , false );  // move to def 
-		ActionManager.Instance.CreateAttackAction( pAtkUnit.Ident() , pDefUnit.Ident(), Evt.nAtkSkillID );
+		uAction act  = ActionManager.Instance.CreateAttackAction( pAtkUnit.Ident() , pDefUnit.Ident(), Evt.nAtkSkillID );
+		if (act != null) {
+			//add skill perform
+
+
+		}
 		
 	}
 
@@ -2230,336 +2600,99 @@ public class Panel_StageUI : MonoBehaviour
 			
 		}
 	}
-
-
-	public bool CheckIsEmptyPos( iVec2 pos )
+	public void OnStageDelEventEvent( int nEvtID )
 	{
-		if (Grids.Contain (pos) == false)
-			return false;
-
-		// check tile
-		if( MyGrids.IsWalkAbleTile( Grids.GetValue( pos ) ) == false )
-			return false;
-
-		// check thiing
-
-		// check unit
-		foreach( KeyValuePair< int , Panel_unit  > pair in IdentToUnit )
-		{
-			if( pair.Value.Loc.Collision( pos ) ){
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	public iVec2 FindEmptyPos( iVec2 st  , int len = 999 )
-	{
-		if (CheckIsEmptyPos (st)) {
-			return st;
-		}
-		// get a empty pos that can pop 
-
-		for (int i=1; i < len; i++) {
-			List<iVec2> pool = Grids.GetRangePool( st , i , i-1 );
-			if( pool == null )
-					continue;
-			foreach( iVec2 pos in pool )
-			{
-				if( CheckIsEmptyPos(pos) ){
-					return pos;
-				}
-			}
-		}
-
-
-		Debug.Log ( " Error ! can't find a Empty Pos");
-		return null;
-
-
-	}
-	// 
-	public List< iVec2> GetAllUnitPosList( )
-	{
-		List< iVec2> lst = new List< iVec2> ();
-		foreach (KeyValuePair < int , Panel_unit > p in IdentToUnit) {
-			lst.Add( p.Value.Loc );
-		}
-
-		return lst;
-	}
-
-	public List< iVec2>  GetUnitPKPosPool( Panel_unit unit , bool bCanPK  )
-	{
-
-		List< iVec2> lst = new List< iVec2> ();
-		foreach (KeyValuePair < int , Panel_unit > pair in IdentToUnit) {
-			if( unit.CanPK( pair.Value ) == bCanPK )
-			{
-				lst.Add( pair.Value.Loc );
-			}
-		}		
-		return lst;
-	}
-
-//	public List< iVec2>  GetTarPosPKPosPool( Panel_unit unit , bool bCanPK  , int nTarX , int nTarY , int nDist = 0 )
-//	{
-//		List< iVec2> lst = new List< iVec2> ();
-//		foreach (KeyValuePair < int , Panel_unit > pair in IdentToUnit) {
-//			if( unit.CanPK( pair.Value ) == bCanPK )
-//			{
-//				lst.Add( pair.Value.Loc );
-//			}
-//		}		
-//		return lst;
-//
-//	}
-
-	public List< iVec2 > PathFinding( Panel_unit unit , iVec2 st , iVec2 ed , int nStep = 999)
-	{
-		// nStep = 999; // debug
-
-		List< iVec2 > path = null;
-		//List< iVec2 > unitList =  GetUnitPosList();
-
-		// try the short path
-		//this.GetUnitPKPosPool (unit, true);
-
-		Grids.ClearIgnorePool();
-		Grids.AddIgnorePool (  GetUnitPKPosPool( unit , true  ) );  // all is block in first find
-
-//		List< iVec2 > nearList = Grids.GetRangePool( ed , 1  ); // the 4 pos can't stand ally
-//		foreach( iVec2 pos in nearList ){
-//			if( CheckIsEmptyPos( pos ) == false ){
-//				Grids.AddIgnorePos( pos );
-//			}
-//		}
-
-		// avoid the end node have ally
-		//List< iVec2 > nearList =  GetUnitPKPosPool( unit , );
-
-
-		path = Grids.PathFinding( st , ed , nStep  );
-
-//		if (path == null) {
-//			Grids.ClearIgnorePool();
-//			//Grids.AddIgnorePool ( GetUnitPosList() );  // only enemy is block in second find
-//			Grids.AddIgnorePool(  GetUnitPKPosPool( unit , true  ) ); //
-//			path = Grids.PathFinding( st , ed , nStep  );
-//		}
-
-		if (Config.GOD == true) {
-			CreatePathOverEffect (path); // draw path
-		}
-
-		return path;
-	}
-
-	// tool func to get aoe affect pool
-	public List < iVec2 > GetAOEPool( int nX , int nY , int nAoe )
-	{
-		iVec2 st = new iVec2 ( nX , nY );
-		Dictionary< string , iVec2 > tmp = new Dictionary< string , iVec2 >();
-		tmp.Add ( st.GetKey() , st );
-		//			pool.Add ( st );
-		
-		AOE aoe = ConstDataManager.Instance.GetRow<AOE> ( nAoe ) ;
-		if (aoe != null) {
-			// add extra first
-			cTextArray TA = new cTextArray();
-			TA.SetText ( aoe.s_EXTRA );
-			for( int i = 0 ; i < TA.GetMaxCol(); i++ )
-			{
-				CTextLine line  = TA.GetTextLine( i );
-				for( int j = 0 ; j < line.GetRowNum() ; j++ )
-				{
-					string s = line.m_kTextPool[ j ];
-					
-					string [] arg = s.Split( ",".ToCharArray() );
-					if( arg.Length < 2 )
-						continue;
-					if( arg[0] != null && arg[1] != null )
-					{
-						int x = int.Parse( arg[0] );
-						int y = int.Parse( arg[1] );
-						iVec2 v = st.MoveXY( x , y );
-
-						if( Grids.Contain( v ) == false )
-							continue;
-
-						string key = v.GetKey();
-						if( tmp.ContainsKey( key ) == false ){
-							tmp.Add( key , v );
-						}
-					}
-				}
-			}
-			// get range pool	
-			List<iVec2> r = Grids.GetRangePool( st , aoe.n_MAX , aoe.n_MIN );
-			
-			
-			
-		}
-		
-		List < iVec2 > pool = new List < iVec2 > ();
-		return pool;
-	}
-
-
-
-	// restore from save data
-	public IEnumerator SaveLoading( cSaveData save )
-	{
-		//GameDataManager.Instance.nStoryID = nStoryID;
-		//GameDataManager.Instance.nStageID = save.n_StageID;
-		
-		PanelManager.Instance.OpenUI ("Panel_Loading");
-		
-		yield return  new WaitForEndOfFrame ();
-		
-		if (save.ePhase == _SAVE_PHASE._MAINTEN) {
-
-			Panel_Mainten panel  = MyTool.GetPanel<Panel_Mainten>( PanelManager.Instance.OpenUI ( Panel_Mainten.Name ) );
-			yield return  new WaitForEndOfFrame();
-			
-			panel.RestoreBySaveData( save );
-
-		
-		} else if (save.ePhase == _SAVE_PHASE._STAGE) {
-			
-			//PanelManager.Instance.OpenUI( Panel_StageUI.Name );  // don't run start() during open
-
-			//check need clear stage
-	//		Panel_StageUI.Instance.bIsRestoreData = true;
-			Panel_StageUI.Instance.RestoreBySaveData ( save) ;
-
-		}		
-		yield return  new WaitForEndOfFrame();
-
-		cSaveData.SetLoading (false);
-
-		if (save.ePhase != _SAVE_PHASE._STAGE) {
-			PanelManager.Instance.DestoryUI( Name );
-			//PanelManager.Instance.CloseUI (Name);  			// close stage when mainten
-		}
-
-		PanelManager.Instance.CloseUI ("Panel_Loading");
-		yield break;
-		
-	}
-
-	public void LoadSaveGame( cSaveData save )
-	{
-		if (save  == null)
+		if (nEvtID == 0)
 			return;
-		StartCoroutine (  SaveLoading( save  ) );
+		if (EvtPool.ContainsKey (nEvtID)) {
+			EvtPool.Remove( nEvtID );
+		}
+		foreach (STAGE_EVENT evt in WaitPool) {
+			if( evt.n_ID == nEvtID )
+			{
+				WaitPool.Remove( evt );
+				break;
+			}
+		}
+		return;
 
 	}
 
-	public bool RestoreBySaveData( cSaveData save )
+	public void OnStageAddBuff(int nCharID , int nBuffID )
 	{
-	//	cSaveData save = GameDataManager.Instance.SaveData;
-		if (save == null)
-			return false;
-
-
-		System.GC.Collect();			// Free memory resource here
-
-		// clear data
-		Clear();						// 
-		Debug.Log("stagerestore :clearall");
-
-		if (save.ePhase == _SAVE_PHASE._MAINTEN) {
-			// restore to mainten ui
-			return true;
+		if (nBuffID == 0) {
+			return ;
 		}
 
-		// re build done event 
-		GameDataManager.Instance.EvtDonePool = MyTool.ConvetToIntInt( save.EvtDonePool );
+		//Debug.Log ("OnStagePopCharEvent");
 
 
-		// check if in the same stage
-		if (StageData != null && StageData.n_ID != save.n_StageID ) {
-			// re load scene
-			GameDataManager.Instance.nStageID = save.n_StageID ;
-			// load const data
-			StageData = ConstDataManager.Instance.GetRow<STAGE_DATA>(GameDataManager.Instance.nStageID);
-			if (StageData == null)
-			{
-				Debug.LogFormat("stagerestore:StageData fail with ID {0}  ", GameDataManager.Instance.nStageID);
-				return false;
-			}
-			
-			// load scene file
-			if (LoadScene(StageData.n_SCENE_ID) == false)
-			{
-				Debug.LogFormat("stagerestore:LoadScene fail with ID {0} ", StageData.n_SCENE_ID);
-				return false;
-			}
-		}
-
-		// re build evt pool
-		char[] split = { ';' };
-		string[] strEvent = StageData.s_EVENT.Split(split);
-		for (int i = 0; i < strEvent.Length; i++)
-		{
-			int nEventID = int.Parse(strEvent[i]);
-			STAGE_EVENT evt = ConstDataManager.Instance.GetRow<STAGE_EVENT>(nEventID);
-			if (evt != null)
-			{
-				// check if not loop event
-				if( (evt.n_TYPE&1) != 1 ){
-					if( GameDataManager.Instance.EvtDonePool.ContainsKey( nEventID ) == true )
-					{
-						continue;
-					}
-				}
-
-				EvtPool.Add(nEventID, evt);
-			}
-		}
+		cUnitData data = GameDataManager.Instance.GetUnitDateByCharID (nCharID);
+		if (data != null) {
+			data.Buffs.AddBuff (nBuffID, nCharID, 0, 0);
+		} else {
+			Debug.LogErrorFormat("OnStageAddBuff {0} on null unit with char {1}" ,nBuffID, nCharID );
+		} 
+//		Panel_unit pUnit = GetUnitByCharID (nCharID);
+//		if (pUnit != null) {
+//		}
 		
-		Debug.Log("stageloding:create event Pool complete");
-		GameDataManager.Instance.nPlayerBGM = StageData.n_PLAYER_BGM;
-		GameDataManager.Instance.nEnemyBGM = StageData.n_ENEMY_BGM;
-		GameDataManager.Instance.nFriendBGM = StageData.n_FRIEND_BGM;
-
-
-
-		// group pool
-		//	GameDataManager.Instance.GroupPool = GroupPool ;
-		GameDataManager.Instance.GroupPool   = MyTool.ConvetToIntInt( save.GroupPool );
-		// unit pool
-		foreach( cUnitSaveData s in save.CharPool )
-		{
-			cUnitData unit = GameDataManager.Instance.CreateCharbySaveData( s );
-
-			GameObject obj = AddUnit( s.eCampID , s.n_CharID , s.n_X , s.n_Y , s.n_LeaderIdent , unit ) ;
-			if (obj != null) {		
-			} else {
-				Debug.Log (string.Format ("RestoreBySaveData PopUnit Fail with charid({0}) )", s.n_CharID  )  );			
-			}
-
-
-		}
-
-		// reset bgm
-
-		if( save.nPlayerBGM > 0 )
-			GameDataManager.Instance.nPlayerBGM = save.nPlayerBGM ;   //我方
-		if( save.nEnemyBGM > 0 )
-			GameDataManager.Instance.nEnemyBGM  = save.nEnemyBGM;	 // 敵方
-		if( save.nFriendBGM > 0 )
-			GameDataManager.Instance.nFriendBGM = save.nFriendBGM;	// 友方
-
-		GameDataManager.Instance.ePhase = _SAVE_PHASE._STAGE;		// save to stage phase
-
-		// stage bgm
-		PlayStageBGM ();
-		//GameDataManager.Instance.ImportSavePool( save.CharPool );
-//		bIsRestoreData = false;
-		return true;
 	}
 
+	public void OnStagePopMarkEvent( int x1 ,int y1 , int x2  , int y2  )
+	{
+		int sx = x1 < x2 ? x1 : x2;
+		int sy = y1 < y2 ? y1 : y2;
+		int ex = x1 > x2 ? x1 : x2; 
+		int ey = y1 > y2 ? y1 : y2 ;
+		
+		for( int i = sx ; i <= ex ; i++  ){
+			for( int j = sy ; j <= ey ; j++  ){
+				GameObject obj = AddMark ( i , j  );
+				if (obj != null) {	
+					
+				} else {
+					Debug.Log (string.Format ("OnStagePopMarkEvent Fail with ({0},{1}) ",  i , j )  );			
+				}
+			}
+		}
+
+		// camera to center
+		Vector3 v1 = MyTool.SnyGridtoLocalPos (x1, y1, ref Grids);
+		Vector3 v2 = MyTool.SnyGridtoLocalPos (x2, y2, ref Grids);
+		CameraMoveTo ((v1.x + v2.x) / 2, (v1.y + v2.y) / 2);
+	}
+
+	public void OnStageCameraCenterEvent( int x1 , int y1 )
+	{
+		Vector3 v1 = MyTool.SnyGridtoLocalPos (x1, y1, ref Grids);
+		CameraMoveTo ( v1.x , v1.y );
+	}
+
+	public void CameraMoveTo( float fx , float fy )
+	{
+		Vector3 v = new Vector3 (fx, fy);
+		Vector3 canv = TilePlaneObj.transform.localPosition; // shift
+		Vector3 realpos = v + canv;
+		
+		
+		//TilePlaneObj.transform.localPosition = -v;
+		float dist = Vector3.Magnitude( realpos );
+		
+		float during = dist/500.0f; // 這是最小值
+		//距離過大要算最大值
+		//	if (force == true) {
+		if (during > 1.0f) 
+			during = 1.0f;		// 不管多遠都不要超過1 秒
+		//	}
+		
+		TweenPosition tw = TweenPosition.Begin<TweenPosition> (TilePlaneObj, during);
+		if (tw != null) {
+			tw.SetStartToCurrentValue();
+			tw.to = -v;
+			bIsMoveToObj = true;
+			MyTool.TweenSetOneShotOnFinish( tw , MoveToGameObjEnd ); 
+			
+		}
+	}
 }

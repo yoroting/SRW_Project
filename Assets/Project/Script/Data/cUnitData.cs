@@ -5,7 +5,7 @@ using MyClassLibrary;
 //using _SRW;
 
 // 戰鬥零時摻數
-public enum _UNITSTATE
+public enum _FIGHTSTATE
 {
 	_NULL =0,
 	_ATKER    ,
@@ -25,13 +25,39 @@ public enum _UNITSTATE
 	_KILL		,  //本次戰鬥有殺人
 
 }
+//
+public enum _UNITTAG
+{
+	_NULL = 0,
+	_UNDEAD = 1 ,   // 除非隊長死否則無限重生
 
+}
+//
 public enum _ITEMSLOT
 {
 	_SLOT0 = 0,
 	_SLOT1 ,
 	_SLOTMAX ,
 }
+// AI 
+public enum _AI_SEARCH{
+	_NOCHANGE = -1,	// 
+
+	_NORMAL=0,  	// 主動攻擊
+	_PASSIVE=1,		// 被動攻擊
+	_DEFENCE=2,		// 堅守原地 
+	_TARGET=3,		// 前往指定 目標或地點
+	_POSITION=4		// 不在目標地點前往目標
+};
+
+public enum _AI_COMBO{
+	_NOCHANGE = -1,	// 
+
+	_NORMAL=0,  	// Normal attack
+	_DEFENCE=1,		// 
+	
+	
+};
 
 // base attr
 public class cAttrData
@@ -197,8 +223,10 @@ public class cUnitData{
 	public cBuffs						Buffs;				// all buffs of unit
 	public int []						Items;			// all buffs of unit
 	
-	public int nActionTime;			//				行動次數
+	public int nActionTime;							//	行動次數
 
+	public _AI_SEARCH  eSearchAI;								// 找怪物
+	public _AI_COMBO	 eComboAI;								// 選技能
 // save end
 
 	// calcul attr
@@ -217,6 +245,31 @@ public class cUnitData{
 	public cFightAttr					FightAttr;			// need update each calcul
 	//public cAttrData					BuffCondAttr;		// buff cond trig attr
 
+	// 企劃資料解析出來的特別旗標
+	List< _UNITTAG > Tags;
+	
+	List< _UNITTAG > GetTags()
+	{
+		if (Tags == null) {
+			Tags = new List< _UNITTAG >();
+		}
+		return Tags;
+	}
+	
+	public void AddTag( _UNITTAG tag ){
+		if ( GetTags ().IndexOf (tag) < 0 ) {
+			GetTags ().Add( tag );
+		}		
+	}	
+	public bool IsTag( _UNITTAG tag ){ return  (GetTags ().IndexOf(tag)>=0) ; }
+	
+	public void RemoveTag( _UNITTAG tag ){
+		GetTags ().Remove (tag);
+	}
+	
+	public void ClearTag(  ){
+		GetTags().Clear ();
+	}
 
 
 
@@ -255,6 +308,10 @@ public class cUnitData{
 
 		n_Lv = 1; // base lv
 		nActionTime = 1;
+
+		//===========
+		eSearchAI = _AI_SEARCH._NORMAL;								// 找怪物
+		eComboAI  = _AI_COMBO._NORMAL;								// 選技能
 	}
 
 	// setup update flag
@@ -506,6 +563,20 @@ public class cUnitData{
 
 		//AvtiveSchool (0, cData.n_INT_SCHOOL);
 		//AvtiveSchool (1, cData.n_EXT_SCHOOL);
+		// 取回Const 特定旗標
+		
+		// Set TAG 
+		string[] tags = cCharData.s_EXT_TAG.Split ( ";".ToCharArray() );
+		foreach (string s in tags) {
+			int tag =0;
+			if( int.TryParse( s , out tag ) ){ 
+				AddTag( ( _UNITTAG)tag );
+			}
+			
+		}
+		// set up AI
+		eSearchAI = (_AI_SEARCH)cCharData.n_MOBAI;
+
 
 
 		// fill base data;
@@ -543,13 +614,19 @@ public class cUnitData{
 			return;
 		int nOldLv = n_Lv;
 		n_Lv = lv;
-		SetUpdate (2);
+		//SetUpdate (2);
 		// 檢查習得能力
 		for( int i = nOldLv+1 ; i <=n_Lv ; i++ )
 		{
 			 // show learn ability
 
 		}
+		// update direct
+		UpdateLevelAttr ( );
+		// add sp 
+		int nSp = (lv - nOldLv) * Config.CharSpLVUp;
+		AddSp (nSp);
+
 	}
 
 	public bool CheckItemCanEquip( int nItemID )
@@ -633,7 +710,7 @@ public class cUnitData{
 
 		if (bUpdateFlag [ cAttrData._CHARLV ] == true) {
 			bUpdateFlag [ cAttrData._CHARLV ] = false;
-			UpdateLevelAttr (n_Lv);
+			UpdateLevelAttr ();
 		}
 
 		// no more need this
@@ -653,11 +730,13 @@ public class cUnitData{
 	}
 
 
-	void UpdateLevelAttr( int nLV )
+	void UpdateLevelAttr(  )
 	{
+	
 		cAttrData attr =GetAttrData( cAttrData._CHARLV ) ;
 		attr.Reset();
 
+		int nLV = this.n_Lv;
 		if ( nLV > Config.MaxCharLevel ) {
 			nLV = Config.MaxCharLevel;
 		}
@@ -801,6 +880,9 @@ public class cUnitData{
 		n_MP = GetMaxMP();
 		n_SP = GetMaxSP();
 		n_DEF = GetMaxDef();
+
+		nActionTime = 1;
+
 	}
 
 	public void AddHp( int nhp )
@@ -1212,7 +1294,9 @@ public class cUnitData{
 		
 		// restore full def
 		AddDef ( GetMaxDef()/2 , true );
-		
+
+		// 
+		AddCp (1);			
 //		uAction act =  ActionManager.Instance.CreateWeakUpAction ( this.n_Ident );
 //		if (act != null) {
 //			
@@ -1230,6 +1314,10 @@ public class cUnitData{
 	public void WeakUp( )
 	{
 		//AddActionTime (1);
+		if (nActionTime > 0) {
+			AddCp( 1 );		// 上回合，有殘留行動力的話獲的1 CP
+		}
+
 		nActionTime = 1;   // setup to default 
 
 		// restore def
@@ -1238,7 +1326,7 @@ public class cUnitData{
 		uAction act =  ActionManager.Instance.CreateWeakUpAction ( this.n_Ident );
 		if (act != null) {
 
-			if( Buffs.BuffRoundEnd( ) ){
+			if( Buffs.BuffRoundEnd( ref act ) ){
 				SetUpdate( cAttrData._BUFF );
 			}
 		}
@@ -1246,43 +1334,43 @@ public class cUnitData{
 	}
 
 	public void GetBuffStatus( ){
-		if (Buffs.CheckStatus ( _UNITSTATE._DODGE )) {
-			AddStates( _UNITSTATE._DODGE );
+		if (Buffs.CheckStatus ( _FIGHTSTATE._DODGE )) {
+			AddStates( _FIGHTSTATE._DODGE );
 		}
-		if (Buffs.CheckStatus ( _UNITSTATE._CIRIT )) {
-			AddStates( _UNITSTATE._CIRIT );
+		if (Buffs.CheckStatus ( _FIGHTSTATE._CIRIT )) {
+			AddStates( _FIGHTSTATE._CIRIT );
 		}
 
-		if (Buffs.CheckStatus ( _UNITSTATE._MERCY )) {
-			AddStates( _UNITSTATE._MERCY );
+		if (Buffs.CheckStatus ( _FIGHTSTATE._MERCY )) {
+			AddStates( _FIGHTSTATE._MERCY );
 		}
-		if (Buffs.CheckStatus ( _UNITSTATE._GUARD )) {
-			AddStates( _UNITSTATE._GUARD );
+		if (Buffs.CheckStatus ( _FIGHTSTATE._GUARD )) {
+			AddStates( _FIGHTSTATE._GUARD );
 		}
 	}
 
 	// state battle flag
-    // 戰鬥零時旗標
-	List< _UNITSTATE > States;
+    // 戰鬥臨時旗標
+	List< _FIGHTSTATE > States;
 
-	List< _UNITSTATE > GetStates()
+	List< _FIGHTSTATE > GetStates()
 	{
 		if (States == null) {
-			States = new List< _UNITSTATE >();
+			States = new List< _FIGHTSTATE >();
 		}
 		return States;
 	}
 
-	public void AddStates( _UNITSTATE st ){
+	public void AddStates( _FIGHTSTATE st ){
 		if ( GetStates ().IndexOf (st) < 0 ) {
 			GetStates ().Add( st );
 		}
 	
 	}
 
-	public bool IsStates( _UNITSTATE st ){ return  (GetStates ().IndexOf(st)>=0) ; }
+	public bool IsStates( _FIGHTSTATE st ){ return  (GetStates ().IndexOf(st)>=0) ; }
 
-	public void RemoveStates( _UNITSTATE st ){
+	public void RemoveStates( _FIGHTSTATE st ){
 		GetStates ().Remove (st);
 	}
 

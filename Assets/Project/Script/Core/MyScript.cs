@@ -56,7 +56,7 @@ public class MyScript {
 			}
 			else if( func.sFunc == "ROUND"  )
 			{
-				if( ConditionRound( func.I(0) ) == false )
+				if( ConditionRound( func.I(0), func.I(1) ) == false )
 				{
 					return false;
 				}				
@@ -96,7 +96,20 @@ public class MyScript {
 					return false;
 				}	
 			}
-
+			else if( func.sFunc == "INRECT"  )
+			{
+				if( ConditionInRect( func.I(0),func.I(1),func.I(2),func.I(3),func.I(4) ) == false )
+				{
+					return false;
+				}	
+			}
+			else if( func.sFunc == "NORECT"  )
+			{
+				if( ConditionNoRect( func.I(0),func.I(1),func.I(2),func.I(3),func.I(4) ) == false )
+				{
+					return false;
+				}	
+			}
 			else{
 				Debug.LogError( string.Format( "Error-Can't find script cond func '{0}'" , func.sFunc ) );
 			}
@@ -178,12 +191,16 @@ public class MyScript {
 		return true;
 	}
 	
-	bool ConditionRound( int nID )
+	bool ConditionRound( int nID , int nCamp =0)
 	{
 		//	if( GameDataManager.Instance.nRoundStatus != 0 )
 		//		return false;
-		
-		return (GameDataManager.Instance.nRound >=nID ) ;
+		if (GameDataManager.Instance.nRound >= nID) {
+			if( nCamp == (int)GameDataManager.Instance.nActiveCamp ){
+				return true;
+			}
+		}
+		return false ;
 	}
 	bool ConditionAfter( int nID , int nRound  )
 	{
@@ -276,6 +293,24 @@ public class MyScript {
 			else if( op == ">="){
 				return (fPer >= fValue);
 			}
+		}
+		return false;
+	}
+
+	bool ConditionInRect( int nChar1 ,int x1 ,int y1 , int x2 , int y2  ) 
+	{
+		cUnitData unit = GameDataManager.Instance.GetUnitDateByCharID ( nChar1 );
+		if (unit != null) {
+			return MyTool.CheckInRect( unit.n_X , unit.n_Y , x1 , y1 , x2-x1 , y2-y1 );
+		}
+		return false;
+	}
+
+	bool ConditionNoRect( int nChar1 ,int x1 ,int y1 , int x2 , int y2  ) 
+	{
+		cUnitData unit = GameDataManager.Instance.GetUnitDateByCharID ( nChar1 );
+		if (unit != null) {
+			return (MyTool.CheckInRect( unit.n_X , unit.n_Y , x1 , y1 , x2 , y2 )== false);
 		}
 		return false;
 	}
@@ -468,12 +503,42 @@ public class MyScript {
 				//evt.nAtkSkillID = func.I(2);
 				GameEventManager.DispatchEvent ( evt  );
 			}
+			else if( func.sFunc  == "ADDBUFF")  // Add buff
+			{
+				Panel_StageUI.Instance.OnStageAddBuff( func.I(0) , func.I(1) );
+			}
 			else if( func.sFunc  == "DELUNIT") 
 			{			
 				StageDelUnitEvent evt = new StageDelUnitEvent ();
 				//evt.eCamp = (_CAMP)func.I( 0 );
 				evt.nCharID = func.I( 0 );
 				GameEventManager.DispatchEvent ( evt );
+			}
+			else if( func.sFunc  == "DELEVENT") 
+			{
+				Panel_StageUI.Instance.OnStageDelEventEvent( func.I( 0 ) );
+			//	StageDelEventEvent evt = new StageDelEventEvent ();
+				//evt.eCamp = (_CAMP)func.I( 0 );
+			//	evt.nCharID = func.I( 0 );
+			//	GameEventManager.DispatchEvent ( evt );
+			}
+			else if( func.sFunc  == "POPMARK") 
+			{
+				Panel_StageUI.Instance.OnStagePopMarkEvent( func.I(0),func.I(1),func.I(2),func.I(3) );
+			}
+			else if( func.sFunc  == "CAMERACENTER") 
+			{
+				Panel_StageUI.Instance.OnStageCameraCenterEvent( func.I(0),func.I(1) );
+			}
+			else if( func.sFunc  == "SAI") 
+			{
+				// 改變單位索迪AI
+				GameDataManager.Instance.SetUnitSearchAI( func.I(0),(_AI_SEARCH)func.I(1),func.I(2),func.I(3) ); 
+			}
+			else if( func.sFunc  == "CAI") 
+			{
+				// 改變單位攻擊AI
+				GameDataManager.Instance.SetUnitComboAI( func.I(0),(_AI_COMBO)func.I(1) ); 
 			}
 			else if( func.sFunc  == "WIN") 
 			{
@@ -745,7 +810,7 @@ public class MyScript {
 				//===
 				else if( func.sFunc  == "IS_DODGE") { // 必閃
 					pool.Add( new IS_DODGE( ) );
-					//pool.Add( new IS_UNIT_STATUS( _UNITSTATE._DODGE ) );
+					//pool.Add( new IS_UNIT_STATUS( _FIGHTSTATE._DODGE ) );
 				}
 				else if( func.sFunc  == "IS_CIRIT") {  //報及
 					pool.Add( new IS_CIRIT( ) );

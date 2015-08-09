@@ -413,7 +413,23 @@ GameObject:
   - 4: {fileID: 444240}
   - 114: {fileID: 11476330}
   m_Layer: 5
-  m_Name: Grid_Fate
+  m_Name: Grid_Pass
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &148708
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 441376}
+  - 114: {fileID: 11467488}
+  m_Layer: 5
+  m_Name: Label_Name
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -549,6 +565,23 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &159668
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 483602}
+  - 114: {fileID: 11409420}
+  - 65: {fileID: 6516368}
+  m_Layer: 5
+  m_Name: Fate_title
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
 --- !u!1 &160982
 GameObject:
   m_ObjectHideFlags: 0
@@ -678,6 +711,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &171260
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 473500}
+  - 114: {fileID: 11464516}
+  m_Layer: 5
+  m_Name: Grid_Fate
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
 --- !u!1 &171722
 GameObject:
   m_ObjectHideFlags: 1
@@ -899,7 +948,7 @@ GameObject:
   - 114: {fileID: 11447516}
   - 65: {fileID: 6539618}
   m_Layer: 5
-  m_Name: Fate_title
+  m_Name: Pass_title
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -975,16 +1024,18 @@ Transform:
   - {fileID: 480708}
   - {fileID: 495074}
   - {fileID: 471082}
-  - {fileID: 476216}
+  - {fileID: 483602}
   - {fileID: 422494}
   - {fileID: 459880}
   - {fileID: 418972}
   - {fileID: 483226}
-  - {fileID: 444240}
+  - {fileID: 473500}
   - {fileID: 428914}
   - {fileID: 443358}
   - {fileID: 426136}
   - {fileID: 410530}
+  - {fileID: 476216}
+  - {fileID: 444240}
   m_Father: {fileID: 0}
   m_RootOrder: 0
 --- !u!4 &400702
@@ -1301,6 +1352,18 @@ Transform:
   - {fileID: 428020}
   m_Father: {fileID: 443358}
   m_RootOrder: 0
+--- !u!4 &441376
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 148708}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 483602}
+  m_RootOrder: 0
 --- !u!4 &443358
 Transform:
   m_ObjectHideFlags: 1
@@ -1325,7 +1388,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400688}
-  m_RootOrder: 13
+  m_RootOrder: 19
 --- !u!4 &448588
 Transform:
   m_ObjectHideFlags: 1
@@ -1520,6 +1583,18 @@ Transform:
   - {fileID: 404286}
   m_Father: {fileID: 400688}
   m_RootOrder: 7
+--- !u!4 &473500
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 171260}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 308, y: -77, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 400688}
+  m_RootOrder: 13
 --- !u!4 &474758
 Transform:
   m_ObjectHideFlags: 1
@@ -1544,7 +1619,7 @@ Transform:
   m_Children:
   - {fileID: 463354}
   m_Father: {fileID: 400688}
-  m_RootOrder: 8
+  m_RootOrder: 18
 --- !u!4 &479952
 Transform:
   m_ObjectHideFlags: 1
@@ -1609,6 +1684,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 400688}
   m_RootOrder: 12
+--- !u!4 &483602
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 159668}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 307, y: -26, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 441376}
+  m_Father: {fileID: 400688}
+  m_RootOrder: 8
 --- !u!4 &485522
 Transform:
   m_ObjectHideFlags: 1
@@ -1744,6 +1832,18 @@ BoxCollider:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 120894}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 200, y: 38, z: 0}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!65 &6516368
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 159668}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
@@ -1976,7 +2076,7 @@ MonoBehaviour:
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 3.41666675
+  aspectRatio: 3.45833325
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   mFont: {fileID: 0}
@@ -2200,6 +2300,56 @@ MonoBehaviour:
   mMaxLineHeight: 0
   mLineWidth: 0
   mMultiline: 1
+--- !u!114 &11409420
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 159668}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b3dc54f924693f41b5cbecb267e647a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leftAnchor:
+    target: {fileID: 0}
+    relative: 0
+    absolute: -2
+  rightAnchor:
+    target: {fileID: 0}
+    relative: 1
+    absolute: 2
+  bottomAnchor:
+    target: {fileID: 0}
+    relative: 0
+    absolute: 0
+  topAnchor:
+    target: {fileID: 0}
+    relative: 1
+    absolute: 2
+  updateAnchors: 0
+  mColor: {r: 1, g: 1, b: 1, a: 1}
+  mPivot: 4
+  mWidth: 200
+  mHeight: 38
+  mDepth: 0
+  autoResizeBoxCollider: 1
+  hideIfOffScreen: 0
+  keepAspectRatio: 0
+  aspectRatio: 5.26315784
+  mType: 0
+  mFillDirection: 4
+  mFillAmount: 1
+  mInvert: 0
+  mFlip: 0
+  centerType: 1
+  leftType: 1
+  rightType: 1
+  bottomType: 1
+  topType: 1
+  mAtlas: {fileID: 11400000, guid: 62adb30369acbf943a67cee0f69267a3, type: 2}
+  mSpriteName: Glow - Inner
+  mFillCenter: 1
 --- !u!114 &11409886
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3108,7 +3258,7 @@ MonoBehaviour:
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   mFont: {fileID: 0}
-  mText: "\u7DE3\u5206"
+  mText: "\u88AB\u52D5"
   mFontSize: 36
   mFontStyle: 0
   mAlignment: 2
@@ -3169,7 +3319,7 @@ MonoBehaviour:
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 2
+  aspectRatio: 2.05555558
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   mFont: {fileID: 0}
@@ -3420,7 +3570,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3001
+  startingRenderQueue: 3003
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 0
@@ -3576,7 +3726,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3007
+  startingRenderQueue: 3010
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 3
@@ -3729,6 +3879,27 @@ MonoBehaviour:
   hideInactive: 0
   keepWithinPanel: 0
   sorted: 0
+--- !u!114 &11464516
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 171260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07c4de3b4b6fe9045b059ee627c100df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  arrangement: 1
+  sorting: 0
+  pivot: 0
+  maxPerLine: 0
+  cellWidth: 200
+  cellHeight: 40
+  animateSmoothly: 0
+  hideInactive: 0
+  keepWithinPanel: 0
+  sorted: 0
 --- !u!114 &11464774
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3763,6 +3934,71 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scrollView: {fileID: 11473006}
   draggablePanel: {fileID: 0}
+--- !u!114 &11467488
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 148708}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9d0b5f3bbe925a408bd595c79d0bf63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leftAnchor:
+    target: {fileID: 0}
+    relative: 0
+    absolute: 0
+  rightAnchor:
+    target: {fileID: 0}
+    relative: 1
+    absolute: 0
+  bottomAnchor:
+    target: {fileID: 0}
+    relative: 0
+    absolute: 0
+  topAnchor:
+    target: {fileID: 0}
+    relative: 1
+    absolute: 0
+  updateAnchors: 1
+  mColor: {r: 1, g: 1, b: 1, a: 1}
+  mPivot: 4
+  mWidth: 200
+  mHeight: 48
+  mDepth: 1
+  autoResizeBoxCollider: 0
+  hideIfOffScreen: 0
+  keepAspectRatio: 0
+  aspectRatio: 4.16666651
+  keepCrispWhenShrunk: 1
+  mTrueTypeFont: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+  mFont: {fileID: 0}
+  mText: "\u7DE3\u5206"
+  mFontSize: 36
+  mFontStyle: 0
+  mAlignment: 2
+  mEncoding: 1
+  mMaxLineCount: 1
+  mEffectStyle: 0
+  mEffectColor: {r: 0, g: 0, b: 0, a: 1}
+  mSymbols: 1
+  mEffectDistance: {x: 1, y: 1}
+  mOverflow: 1
+  mMaterial: {fileID: 0}
+  mApplyGradient: 1
+  mGradientTop: {r: 1, g: 1, b: 1, a: 1}
+  mGradientBottom: {r: .699999988, g: .699999988, b: .699999988, a: 1}
+  mSpacingX: 0
+  mSpacingY: 0
+  mUseFloatSpacing: 0
+  mFloatSpacingX: 0
+  mFloatSpacingY: 0
+  mShrinkToFit: 0
+  mMaxLineWidth: 0
+  mMaxLineHeight: 0
+  mLineWidth: 0
+  mMultiline: 1
 --- !u!114 &11468344
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4296,7 +4532,7 @@ MonoBehaviour:
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 2
+  aspectRatio: 2.05555558
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   mFont: {fileID: 0}
@@ -4504,8 +4740,9 @@ MonoBehaviour:
   AbilityGrid: {fileID: 141062}
   SkillGrid: {fileID: 146620}
   ItemGrid: {fileID: 174760}
-  FateGrid: {fileID: 148604}
+  FateGrid: {fileID: 171260}
   BuffGrid: {fileID: 153432}
+  PassGrid: {fileID: 148604}
   CloseBtnObj: {fileID: 102890}
 --- !u!114 &11494450
 MonoBehaviour:
