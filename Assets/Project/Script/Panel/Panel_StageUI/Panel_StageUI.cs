@@ -947,8 +947,43 @@ public class Panel_StageUI : MonoBehaviour
 						// debug message
 						string err = string.Format( "Error: Create Tile Failed in Scene({0}),X({1},Y({2},T({3} )" , scn.s_MODLE_ID , i , j ,t ); 
 						Debug.Log(err);
-
+                        continue;
 					}
+
+                    UnitCell unityCell = cell.GetComponent<UnitCell>();
+                    if (unityCell == null)
+                        continue;
+
+                    List<MyThing> thingList = null;
+                    if (Grids.ThingPool.TryGetValue(unityCell.Loc.GetKey(), out thingList))
+                    {
+                        foreach(MyThing myThing in thingList)
+                        {
+                            if (myThing.Cell == null)
+                                continue;
+
+                            GameObject thing = ResourcesManager.CreatePrefabGameObj(cell, "Prefab/Thing");
+                            if (thing == null)
+                            {
+                                Debug.LogFormat("Create thing fail.(Key={0})", unityCell.Loc.GetKey());
+                                continue;
+                            }
+
+                            UISprite thingSprite = thing.GetComponent<UISprite>();
+                            if (thingSprite == null)
+                            {
+                                Debug.LogFormat("Thing Sprite is null.(Key={0})", unityCell.Loc.GetKey());
+                                continue;
+                            }
+
+                            thing.name = myThing.Layer.ToString();
+
+                            thingSprite.spriteName = MyGrids.GetThingSpriteName(myThing.Cell.Value);
+                            thingSprite.depth = myThing.Layer;
+
+                            NGUITools.SetDirty(thingSprite.gameObject);
+                        }
+                    }
 				}
 			}
 			// reget the drag limit 

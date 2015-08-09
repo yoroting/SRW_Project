@@ -595,7 +595,17 @@ namespace MYGRIDS
 
     }
 
-
+    /// <summary>
+    /// 地上物的資料
+    /// </summary>
+    public class MyThing
+    {
+        public cMyCell Cell = new cMyCell();
+        /// <summary>
+        /// 在哪一層地表
+        /// </summary>
+        public int Layer = 1;
+    }
 
     //  整體的操作容器 。座標是以(0,0) 為座標系的( （- HW ～ HW ）
     public class MyGrids
@@ -654,7 +664,7 @@ namespace MYGRIDS
             // default is min limit
             CreateLayer(1, 1); //預設一層
             //
-            ThingPool = new Dictionary<string, cMyCell>();     // 地上物
+            ThingPool = new Dictionary<string, List<MyThing>>();     // 地上物
         }
 
 
@@ -690,15 +700,27 @@ namespace MYGRIDS
         }
 
 
-        public void AddThing(int nX, int nY, int nValue)
+        public void AddThing(int nX, int nY, int nValue, int layer)
         {
-            cMyCell cell = new cMyCell(nX, nY, nValue);
+            MyThing newThing = new MyThing();
+            newThing.Cell = new cMyCell(nX, nY, nValue);
+            newThing.Layer = layer;
 
-            ThingPool.Add(cell.GetKey(), cell);
+            List<MyThing> thingList = null;
+            if (ThingPool.TryGetValue(newThing.Cell.GetKey(), out thingList))
+            {
+                thingList.Add(newThing);
+            }
+            else
+            {
+                thingList = new List<MyThing>();
+                thingList.Add(newThing);
 
+                ThingPool.Add(newThing.Cell.GetKey(), thingList);
+            }
         }
 
-        public cMyCell GetThing(int x, int y)
+        public List<MyThing> GetThing(int x, int y)
         {
             string key = iVec2.GetKey(x, y);
             if (ThingPool.ContainsKey(key))
@@ -712,14 +734,15 @@ namespace MYGRIDS
             ThingPool.Remove(iVec2.GetKey(nX, nY));
         }
 
-        public void ReplaceThing(int nX, int nY, int nValue)
+        public void ReplaceThing(int x, int y, int value, int layer)
         {
-            string skey = iVec2.GetKey(nX, nY);
-            if (ThingPool.ContainsKey(skey))
+            List<MyThing> thingList = null;
+            string skey = iVec2.GetKey(x, y);
+            if (ThingPool.TryGetValue(skey, out thingList))
             {
-                cMyCell cell = ThingPool[skey];
-                cell.Value = nValue;
-                ThingPool[skey] = cell;
+                MyThing thing = thingList.Find(item => item.Layer == layer);
+                if (thing != null)
+                    thing.Cell.Value = value;
             }
 
         }
@@ -1022,12 +1045,32 @@ namespace MYGRIDS
                         // 地上物
                         writer.Write(cMyCell.nVersion); // record cell ver
                         writer.Write(ThingPool.Count);
-                        foreach (KeyValuePair<string, cMyCell> pair in ThingPool)
+                        foreach (KeyValuePair<string, List<MyThing>> pair in ThingPool)
                         {
                             if (pair.Value != null)
                             {
                                 writer.Write(true);
-                                pair.Value.Write(ref writer);
+
+                                writer.Write(pair.Value.Count);
+                                foreach(MyThing thing in pair.Value)
+                                {
+                                    if (thing != null)
+                                    {
+                                        writer.Write(true);
+
+                                        if (thing.Cell != null)
+                                        {
+                                            writer.Write(true);
+                                            thing.Cell.Write(ref writer);
+                                        }
+                                        else
+                                            writer.Write(false);
+
+                                        writer.Write(thing.Layer);
+                                    }
+                                    else
+                                        writer.Write(false);
+                                }
                             }
                             else
                             {
@@ -1100,11 +1143,32 @@ namespace MYGRIDS
                         if (bExist == false)
                             continue;
 
-                        cMyCell cell = new cMyCell();
-                        cell.Read(ref reader, nCellVer);
-                        //  LstThing.Add(cell);
+                        List<MyThing> thingList = new List<MyThing>();
+                        int listCount = reader.ReadInt32();
+                        for (int j = 0; j < listCount; ++j)
+                        {
+                            bool thingExist = reader.ReadBoolean();
+                            if (!thingExist)
+                                continue;
 
-                        ThingPool.Add(cell.GetKey(), cell);
+                            MyThing newThing = new MyThing();
+
+                            bool cellExist = reader.ReadBoolean();
+                            if (cellExist)
+                            {
+                                cMyCell cell = new cMyCell();
+                                cell.Read(ref reader, nCellVer);
+
+                                newThing.Cell = cell;
+                            }
+
+                            newThing.Layer = reader.ReadInt32();
+
+                            thingList.Add(newThing);
+                        }
+
+                        if (thingList.Count > 0)
+                            ThingPool.Add(thingList[0].Cell.GetKey(), thingList);
                     }
                 }
             }
@@ -1124,7 +1188,10 @@ namespace MYGRIDS
 
         // Layer 的實體
         cMyLayer Layer;                                   //不公開。以免被誤操作。 （兩造 座標系不同）
-        public Dictionary<string, cMyCell> ThingPool = new Dictionary<string,cMyCell>();     // 地上物 集合
+        /// <summary>
+        /// 所有地上物
+        /// </summary>
+        public Dictionary<string, List<MyThing>> ThingPool = new Dictionary<string, List<MyThing>>();
 
         //=============================================================
         // Widget for pathfinding
@@ -1286,6 +1353,15 @@ namespace MYGRIDS
             return true;
         }
 
+        /// <summary>
+        /// 取得地上物的圖片名字
+        /// </summary>
+        /// <param name="thingValue"></param>
+        /// <returns></returns>
+        public static string GetThingSpriteName(int thingValue)
+        {
+            return "mount";
+        }
     }
 
 };

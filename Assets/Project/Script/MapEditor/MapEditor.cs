@@ -131,26 +131,39 @@ public class MapEditor : MonoBehaviour
                     if (cell == null)
                         continue;
 
-                    cMyCell thingCell = null;
-                    if (Grids.ThingPool.TryGetValue(cell.Loc.GetKey(), out thingCell))
+                    List<MyThing> thingList = null;
+                    if (Grids.ThingPool.TryGetValue(cell.Loc.GetKey(), out thingList))
                     {
-                        GameObject thing = ResourcesManager.CreatePrefabGameObj(cellGameObject, "Prefab/Thing");
-                        if (thing == null)
-                        {
-                            Debug.LogFormat("Create thing fail.(Key={0})", cell.Loc.GetKey());
+                        if (thingList.Count <= 0)
                             continue;
-                        }
 
-                        UISprite thingSprite = thing.GetComponent<UISprite>();
-                        if (thingSprite == null)
+                        foreach (MyThing thingData in thingList)
                         {
-                            Debug.LogFormat("Thing Sprite is null.(Key={0})", cell.Loc.GetKey());
-                            continue;
+                            if (thingData.Cell == null)
+                                continue;
+
+                            GameObject thing = ResourcesManager.CreatePrefabGameObj(cellGameObject, "Prefab/Thing");
+                            if (thing == null)
+                            {
+                                Debug.LogFormat("Create thing fail.(Key={0})", cell.Loc.GetKey());
+                                continue;
+                            }
+
+                            UISprite thingSprite = thing.GetComponent<UISprite>();
+                            if (thingSprite == null)
+                            {
+                                Debug.LogFormat("Thing Sprite is null.(Key={0})", cell.Loc.GetKey());
+                                continue;
+                            }
+
+                            thing.name = thingData.Layer.ToString();
+
+                            thingSprite.spriteName = MyGrids.GetThingSpriteName(thingData.Cell.Value);
+                            thingSprite.depth = thingData.Layer;
+
+                            NGUITools.SetDirty(thingSprite.gameObject);
+
                         }
-
-                        thingSprite.spriteName = "mount";
-
-                        NGUITools.SetDirty(thingSprite.gameObject);
                     }
                 }
             }
@@ -260,15 +273,21 @@ public class MapEditor : MonoBehaviour
         }
     }
 
-    public void AddThing(int thingValue)
+    public void AddThing(int thingValue, int layer)
     {
         foreach (GameObject item in Selection.gameObjects)
         {
             UnitCell cell = item.GetComponent<UnitCell>();
             if (cell == null)
-                continue;
+            {
+                // 有可能是點到地上物, 所以必須找看看parent
+                cell = item.transform.parent.GetComponent<UnitCell>();
+                if (cell == null)
+                    continue;
+            }
 
-            if (cell.transform.childCount == 0)
+            Transform thingTransform = cell.transform.FindChild(layer.ToString());
+            if (thingTransform == null)
             {
                 GameObject thing = ResourcesManager.CreatePrefabGameObj(cell.gameObject, "Prefab/Thing");
                 if (thing == null)
@@ -284,15 +303,18 @@ public class MapEditor : MonoBehaviour
                     return;
                 }
 
-                thingSprite.spriteName = "icemount";
+                thing.name = layer.ToString();
 
-                Grids.AddThing(cell.X(), cell.Y(), thingValue);
+                thingSprite.spriteName = "icemount";
+                thingSprite.depth = layer;
+
+                Grids.AddThing(cell.X(), cell.Y(), thingValue, layer);
 
                 NGUITools.SetDirty(thingSprite.gameObject);
             }
             else
             {
-                UISprite thingSprite = cell.transform.GetChild(0).GetComponent<UISprite>();
+                UISprite thingSprite = thingTransform.GetComponent<UISprite>();
                 if (thingSprite == null)
                 {
                     Debug.LogFormat("Thing has no UISprite");
@@ -301,7 +323,7 @@ public class MapEditor : MonoBehaviour
 
                 thingSprite.spriteName = "mount";
 
-                Grids.ReplaceThing(cell.X(), cell.Y(), thingValue);
+                Grids.ReplaceThing(cell.X(), cell.Y(), thingValue, layer);
 
                 NGUITools.SetDirty(thingSprite.gameObject);
             }

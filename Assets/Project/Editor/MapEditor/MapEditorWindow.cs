@@ -21,6 +21,10 @@ public class MapEditorWindow : EditorWindow
     /// </summary>
     private string _tileLayer = "1";
     /// <summary>
+    /// 地上物要種的layer
+    /// </summary>
+    private string _thingLayerTextFieldString = "1";
+    /// <summary>
     /// 選擇要種的Tile
     /// </summary>
     private static MYGRIDS._TILE _tile = MYGRIDS._TILE._GREEN;
@@ -110,9 +114,11 @@ public class MapEditorWindow : EditorWindow
         #region 改變地上物
         GUILayout.BeginHorizontal();
         _thing = (MYGRIDS._THING)EditorGUILayout.EnumPopup("Thing", _thing, GUILayout.Height(16));
+        GUILayout.Label("Layer", GUILayout.Height(16));
+        _thingLayerTextFieldString = GUILayout.TextField(_thingLayerTextFieldString, GUILayout.Height(16));
         if (GUILayout.Button("Change Thing Value", GUILayout.Height(16)))
         {
-            _mapEdtor.AddThing((int)_thing);
+            _mapEdtor.AddThing((int)_thing, Convert.ToInt32(_thingLayerTextFieldString));
         }
         GUILayout.EndHorizontal();
         #endregion
