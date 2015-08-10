@@ -457,6 +457,12 @@ public partial class GameDataManager
 		// buff
 		unit.Buffs.ImportSavePool ( save.Buffs );
 
+		//=== AI
+		unit.eSearchAI = save.eSearchAI;
+		unit.eComboAI = save.eComboAI;
+		unit.n_AITarget = save.nAITarget;
+		unit.n_AIX = save.nAIX;
+		unit.n_AIY = save.nAIY;
 
 		unit.UpdateAllAttr ();
 
@@ -573,12 +579,20 @@ public partial class GameDataManager
 	public void SetUnitSearchAI( int nCharID , _AI_SEARCH nSearchAI , int nArg1=0 , int nArg2 =0 )
 	{
 		cUnitData unit = GetUnitDateByCharID (nCharID);
-		if(unit != null) {
+		if (unit != null) {
 			//unit.n
-			if( nSearchAI != _AI_SEARCH._NOCHANGE ){
-				unit.eSearchAI  = nSearchAI;
-			}
+			if (nSearchAI != _AI_SEARCH._NOCHANGE) {
+				unit.eSearchAI = nSearchAI;
 
+				if (nSearchAI == _AI_SEARCH._TARGET) {
+					unit.n_AITarget = nArg1;
+				} else if (nSearchAI == _AI_SEARCH._POSITION) {
+					unit.n_AIX = nArg1;
+					unit.n_AIY = nArg2;
+				}
+			} 
+		} else {
+			Debug.LogErrorFormat( " Set SAI fail with {0} - {1} - {2}" , nCharID , nSearchAI  , nArg1 );
 
 		}
 	}
@@ -592,6 +606,10 @@ public partial class GameDataManager
 			if( nComboAI != _AI_COMBO._NOCHANGE ){
 				unit.eComboAI	= nComboAI;
 			}
+		}
+		else {
+			Debug.LogErrorFormat( " Set CAI fail with {0} - {1} " , nCharID , nComboAI   );
+			
 		}
 	}
 	// Event Status
@@ -690,3 +708,4 @@ public partial class GameDataManager
 		}
 	}
 }
+

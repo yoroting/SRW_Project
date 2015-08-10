@@ -210,6 +210,18 @@ public class MyTool {
 		}
 		return false;
 	}
+	
+	public static int GetSkillRange( int nID )
+	{
+		if (nID == 0)
+			return 1;
+
+		SKILL skl = ConstDataManager.Instance.GetRow< SKILL > ( nID );
+		if (skl == null)
+			return -1;
+
+		return skl.n_RANGE;
+	}
 
 	public static _PK_MODE GetSkillPKmode( int nSkillID )
 	{

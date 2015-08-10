@@ -227,6 +227,10 @@ public class cUnitData{
 
 	public _AI_SEARCH  eSearchAI;								// 找怪物
 	public _AI_COMBO	 eComboAI;								// 選技能
+
+	public int n_AITarget;						// AI目標
+	public int n_AIX;							// AI目標 X
+	public int n_AIY;							// AI目標 Y
 // save end
 
 	// calcul attr

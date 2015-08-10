@@ -58,7 +58,12 @@ public class cUnitSaveData{
 	// buff pool
 	[JsonName("school")]				public Dictionary< string , int > School;		// current school 
 	[JsonName("buffs")]					public List< cBuffSaveData> Buffs;		// current buffs
-
+	//==== AI
+	[JsonName("sai")][DefaultValue(_AI_SEARCH._NORMAL )]	public _AI_SEARCH eSearchAI=_AI_SEARCH._NORMAL ;		// current use 
+	[JsonName("cai")][DefaultValue(_AI_COMBO._NORMAL )]	public _AI_COMBO  eComboAI=_AI_COMBO._NORMAL ;		// current use 
+	[JsonName("aitar")][DefaultValue(0 )]	public 	int nAITarget = 0 ;		// current use 
+	[JsonName("aix")][DefaultValue(0 )]		public 	int nAIX = 0 ;		// current use 
+	[JsonName("aiy")][DefaultValue(0 )]		public 	int nAIY = 0 ;		// current use 
 
 	public cUnitSaveData(){}
 
@@ -85,6 +90,12 @@ public class cUnitSaveData{
 
 		School = MyTool.ConvetToStringInt ( data.SchoolPool );  // unit school pool
 		Buffs = data.Buffs.ExportSavePool ();					// unit buff pool
+
+		eSearchAI = data.eSearchAI;
+		eComboAI = data.eComboAI;
+		nAITarget = data.n_AITarget;
+		nAIX = data.n_AIX;
+		nAIY = data.n_AIY;
 	}
 
 }
