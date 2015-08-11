@@ -344,7 +344,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 180232}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 40, y: -0, z: 0}
+  m_LocalPosition: {x: 38, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 436244}
@@ -358,7 +358,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 109056}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5, y: -42, z: 0}
+  m_LocalPosition: {x: -5, y: -40.0000038, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 470346}
@@ -528,7 +528,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3001
+  startingRenderQueue: 3003
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 0
@@ -567,13 +567,13 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 0, g: 0, b: 0, a: .149019599}
   mPivot: 4
-  mWidth: 82
-  mHeight: 4
+  mWidth: 78
+  mHeight: 2
   mDepth: 1
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 20.5
+  aspectRatio: 39
   mType: 2
   mFillDirection: 4
   mFillAmount: 1
@@ -909,6 +909,8 @@ MonoBehaviour:
   bIsCasting: 0
   bIsShaking: 0
   bIsMoving: 0
+  bIsBorning: 0
+  bIsDeading: 0
 --- !u!114 &11459586
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1102,16 +1104,16 @@ MonoBehaviour:
     relative: 0
     absolute: 12
   updateAnchors: 1
-  mColor: {r: .977941155, g: .179768592, b: .179768592, a: 1}
+  mColor: {r: .977941155, g: .179768592, b: .179768592, a: 0}
   mPivot: 4
-  mWidth: 90
-  mHeight: 12
+  mWidth: 86
+  mHeight: 8
   mDepth: 2
   autoResizeBoxCollider: 1
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 7.5
-  mType: 1
+  aspectRatio: 10.75
+  mType: 0
   mFillDirection: 4
   mFillAmount: 1
   mInvert: 0
@@ -1219,13 +1221,13 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 1, g: 0, b: 0, a: 1}
   mPivot: 4
-  mWidth: 82
-  mHeight: 4
+  mWidth: 78
+  mHeight: 2
   mDepth: 2
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 20.5
+  aspectRatio: 39
   mType: 2
   mFillDirection: 4
   mFillAmount: 1

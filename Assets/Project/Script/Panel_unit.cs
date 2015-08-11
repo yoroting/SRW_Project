@@ -695,7 +695,7 @@ public class Panel_unit : MonoBehaviour {
 		// add preform in the future
 
 		// do hitresult direct
-		ActionManager.Instance.ExecActionHitResult ( CurAction );			// this is very import . all preform and data modify here!!
+		ActionManager.Instance.ExecActionEndResult ( CurAction );			// this is very import . all preform and data modify here!!
 	}
 	
 
@@ -723,7 +723,7 @@ public class Panel_unit : MonoBehaviour {
 	{
 		// 如果有數字 要表演// 
 		if( CurAction.HitResult.Count > 0  )
-			ActionManager.Instance.ExecActionHitResult ( CurAction  );
+			ActionManager.Instance.ExecActionEndResult ( CurAction  );
 
 	}
 
@@ -743,7 +743,7 @@ public class Panel_unit : MonoBehaviour {
 			}
 			
 		}
-		ActionManager.Instance.ExecActionHitResult ( CurAction  );
+		ActionManager.Instance.ExecActionEndResult ( CurAction  );
 
 
 	}
@@ -771,7 +771,30 @@ public class Panel_unit : MonoBehaviour {
 		// show new ability
 
 	}
+	public void HitBackTo( int GridX , int GridY )
+	{
+		// maybe need some other process in the future
+		// Panel_StageUI.Instance.TraceUnit (this); // no good here
+		
+		
+		//MoveTo ( GridX , GridY );
+		TarPos = new iVec2 (GridX, GridY);
+		//TarPos.X = x;
+		//TarPos.Y = y;
+		if (TarPos.Collision (Loc)) {
+			// this case won't trig move end event.
+			return;
+		}
+		if (PathList == null)
+			PathList = new List< iVec2 > ();
+		else // clear pathfild
+			PathList.Clear ();
 
+		PathList.Add ( TarPos );
+
+		MoveNextPoint();	// set to target pos
+
+	}
 
 	//==============Tween CAll back
 	public void OnTwAtkHit( )
@@ -787,10 +810,10 @@ public class Panel_unit : MonoBehaviour {
 	
 		// play effect , get by ext school 
 	
-		BattleManager.Instance.ShowBattleFX( TarIdent , "CFXM4 Hit B (Orange, CFX Blend)"  );
+		//BattleManager.Instance.ShowBattleFX( TarIdent , "CFXM4 Hit B (Orange, CFX Blend)"  );
 
 		//List< cHitResult>  resPool = BattleManager.Instance.CalAttackResult( Ident() , TarIdent );
-
+		ActionManager.Instance.ExecActionHitResult ( CurAction );	 // perform sm hit action
 
 //		bIsAtking = false;
 //		TarIdent = 0;
@@ -807,7 +830,7 @@ public class Panel_unit : MonoBehaviour {
 			//tw.Play();
 		} else {
 			//===========================================================
-			ActionManager.Instance.ExecActionHitResult ( CurAction );			// this is very import . all preform and data modify here!!
+			ActionManager.Instance.ExecActionEndResult ( CurAction );			// this is very import . all preform and data modify here!!
 			//===========================================================
 
 		}
@@ -816,7 +839,7 @@ public class Panel_unit : MonoBehaviour {
 	{
 		// move to loc pos
 		//===========================================================
-		ActionManager.Instance.ExecActionHitResult ( CurAction );			// this is very import . all preform and data modify here!!
+		ActionManager.Instance.ExecActionEndResult ( CurAction );			// this is very import . all preform and data modify here!!
 		//===========================================================
 
 		transform.localPosition =  MyTool.SnyGridtoLocalPos(Loc.X , Loc.Y , ref GameScene.Instance.Grids );

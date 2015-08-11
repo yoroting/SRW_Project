@@ -326,8 +326,52 @@ public partial class ActionManager
 		return  act;
 	}
 
-
 	public void ExecActionHitResult(  uAction action )
+	{
+		if (action == null)
+			return;
+
+		// some action play in hit task
+		List< cHitResult> resPool = action.HitResult;
+		if (resPool != null) {
+			foreach (cHitResult res in resPool) {
+				if (res == null) 
+					continue;
+				Panel_unit pUnit = Panel_StageUI.Instance.GetUnitByIdent (res.Ident);
+				if (pUnit) {
+					switch( res.eHitType )
+					{
+						case cHitResult._TYPE._HITBACK: // HitBack
+						{
+							// don't
+							pUnit.HitBackTo( res.Value1 , res.Value2 );
+						
+						}break;
+						case cHitResult._TYPE._HIT: // Hit
+						{
+							// Add FX effect 
+						//	BattleManager.Instance.ShowBattleFX( res.Ident , "CFXM4 Hit B (Orange, CFX Blend)"  );
+						
+						}break;		
+						case cHitResult._TYPE._BEHIT: // Hit
+						{
+							BattleManager.Instance.ShowBattleFX( res.Ident , "CFXM4 Hit B (Orange, CFX Blend)"  );
+							// it should have fx
+						
+						}break;	
+						case cHitResult._TYPE._DODGE: // show miss
+						{
+							// it should have fx
+							BattleManager.Instance.ShowBattleResValue( pUnit.gameObject , "迴避" , 0 );
+						}break;	
+					}
+				}
+
+			}
+		}
+	}
+
+	public void ExecActionEndResult(  uAction action )
 	{
 		if (action == null)
 			return;
@@ -399,26 +443,7 @@ public partial class ActionManager
 							}
 							
 						}break;
-						case cHitResult._TYPE._HITBACK: // HitBack
-						{
-							
-							
-						}break;
-						case cHitResult._TYPE._HIT: // Hit
-						{
-							// Add FX effect 
-							
-						}break;		
-						case cHitResult._TYPE._BEHIT: // Hit
-						{
-							// it should have fx
-							
-						}break;	
-						case cHitResult._TYPE._DODGE: // show miss
-						{
-							// it should have fx
-							BattleManager.Instance.ShowBattleResValue( pUnit.gameObject , "迴避" , 0 );
-						}break;	
+						
 
 
 						}

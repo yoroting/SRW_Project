@@ -1973,6 +1973,62 @@ public class Panel_StageUI : MonoBehaviour
 
 		}
 	}
+
+	public iVec2 SkillHitBackbyCharID(  int AtkChar , int DefChar , int nDist  )
+	{
+		cUnitData catker = GameDataManager.Instance.GetUnitDateByCharID ( AtkChar );
+		cUnitData cdefer = GameDataManager.Instance.GetUnitDateByCharID ( DefChar );
+		if (catker == null || cdefer == null)
+			return null;
+
+		return SkillHitBack ( catker.n_Ident , cdefer.n_Ident , nDist );
+	}
+
+	// SKill effect 
+	public iVec2 SkillHitBack(   int AtkID , int DefID , int nDist  )
+	{
+		Panel_unit Atker = GetUnitByIdent( AtkID ); 
+		Panel_unit Defer = GetUnitByIdent( DefID ); 
+		return SkillHitBack (Atker , Defer , nDist );
+	}
+
+	public iVec2 SkillHitBack(  Panel_unit Atker , Panel_unit Defer , int nDist  )
+	{
+
+		if (Atker == null || Defer == null || nDist == 0)
+			return null;
+		iVec2 vDir = new iVec2( Defer.Loc -  Atker.Loc );
+		//正規
+		if( vDir.X != 0 )
+			vDir.X /=    Mathf.Abs( vDir.X);
+		if( vDir.Y != 0 )
+			vDir.Y /=    Mathf.Abs( vDir.Y);
+		if( nDist < 0 ){
+			// pull		
+			vDir *= -1;
+		}
+
+		int d = Mathf.Abs( nDist  ) ;
+		iVec2 vFinal = new iVec2( Defer.Loc );
+		for( int i= 0 ; i < d ; i++ )
+		{
+			iVec2 tmp = vFinal.MoveXY( vDir.X , vDir.Y );
+			if( CheckIsEmptyPos( tmp ) == false )
+			{
+				break;
+			}
+			vFinal = tmp;
+		}
+
+		// check if real hit back
+		if( vFinal.Collision( Defer.Loc ) ){
+			return null;
+
+		}
+
+		return vFinal;
+	}
+
 	// IO
 	public bool CheckIsEmptyPos( iVec2 pos )
 	{
@@ -2539,22 +2595,30 @@ public class Panel_StageUI : MonoBehaviour
 		Panel_unit pDefUnit = GetUnitByCharID ( Evt.nDefCharID );
 		if (pAtkUnit == null || pDefUnit == null)
 			return;
-		int nRange = 1;
-		if (Evt.nAtkSkillID != 0) {
+		int nAtkId = pAtkUnit.Ident ();
+		int nDefId = pDefUnit.Ident ();
 
+		int nRange = 1;
+		int nHitBack = 0;
+		if (Evt.nAtkSkillID != 0) {
+			SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(Evt.nAtkSkillID); 
+			if( skl != null ){
+				nRange = skl.n_RANGE;
+				nHitBack = skl.n_HITBACK;
+			}
 		}
 
 		// check if need move 
 		int nDist = pAtkUnit.Loc.Dist (pDefUnit.Loc);
 		if (nDist > nRange) {
 
-			List< iVec2> path = GameScene.Instance.Grids.PathFinding( pAtkUnit.Loc , pDefUnit.Loc , 0  ); // no any block
+			List< iVec2> path =  MobAI.FindPathToTarget( pAtkUnit ,pDefUnit , 999  ); //GameScene.Instance.Grids.PathFinding( pAtkUnit.Loc , pDefUnit.Loc , 0  ); // no any block
 			//PathFinding
 			
-			if( path.Count > 2 )
+			if( (path!=null) && (path.Count>2) )
 			{
 				iVec2 last = path[path.Count -2 ];
-				ActionManager.Instance.CreateMoveAction( pAtkUnit.Ident() , last.X , last.Y );	
+				ActionManager.Instance.CreateMoveAction(nAtkId, last.X , last.Y );	
 				MoveToGameObj( pAtkUnit.gameObject , false );
 				TraceUnit( pAtkUnit );
 			}
@@ -2569,11 +2633,19 @@ public class Panel_StageUI : MonoBehaviour
 
 		// send attack
 		//Panel_StageUI.Instance.MoveToGameObj(pDefUnit.gameObject , false );  // move to def 
-		uAction act  = ActionManager.Instance.CreateAttackAction( pAtkUnit.Ident() , pDefUnit.Ident(), Evt.nAtkSkillID );
+		uAction act  = ActionManager.Instance.CreateAttackAction( nAtkId , nDefId, Evt.nAtkSkillID );
 		if (act != null) {
+			act.AddHitResult( new cHitResult( cHitResult._TYPE._HIT   , nAtkId , Evt.nAtkSkillID ) );
+			act.AddHitResult( new cHitResult( cHitResult._TYPE._BEHIT , nDefId , Evt.nAtkSkillID ) );
+
 			//add skill perform
-
-
+			if( nHitBack != 0 )
+			{
+				iVec2 vFinal = SkillHitBack( pAtkUnit , pDefUnit , nHitBack );
+				if( vFinal != null ){
+					act.AddHitResult( new cHitResult( cHitResult._TYPE._HITBACK , nDefId , vFinal.X , vFinal.Y ) );
+				}
+			}
 		}
 		
 	}
@@ -2599,8 +2671,8 @@ public class Panel_StageUI : MonoBehaviour
 			return;
 		int nDist = pAtkUnit.Loc.Dist (pDefUnit.Loc);
 		if (nDist > 1) {
-			
-			List< iVec2> path = GameScene.Instance.Grids.PathFinding( pAtkUnit.Loc , pDefUnit.Loc , 0  ); // no any block
+
+			List< iVec2> path = PathFinding( pAtkUnit , pAtkUnit.Loc ,  pDefUnit.Loc , 0  ); // no any block
 			//PathFinding
 			
 			if( path.Count > 2 )

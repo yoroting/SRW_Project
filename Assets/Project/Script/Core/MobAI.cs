@@ -499,7 +499,7 @@ public class MobAI  {
 	}
 
 
-	static List<iVec2> FindPathToTarget( Panel_unit Mob , Panel_unit Target  , int nMove )
+	public static List<iVec2> FindPathToTarget( Panel_unit Mob , Panel_unit Target  , int nMove )
 	{
 		if( Mob == null || Target == null ){
 			return null;

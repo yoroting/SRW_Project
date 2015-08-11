@@ -33,6 +33,7 @@ public class cHitResult		//
 		_CAST		,		// cast skill
 		_HIT		,		// skill hit enemy
 		_BEHIT		,		// 被
+
 		_HITBACK	,
 
 		_DODGE		,		// 迴避
@@ -1102,6 +1103,17 @@ public partial class BattleManager
 		}
 		//	MyScript.Instance.RunSkillEffect ( pAtker , null , pAtker.FightAttr.Skill.s_HIT_EFFECT , ref resPool ); // bad frame work
 
+		//--- hit back 
+		if (pAtker.FightAttr.SkillID!= 0) {
+			int nBack = pAtker.FightAttr.SkillData.skill.n_HITBACK;
+
+			iVec2 vFinal = Panel_StageUI.Instance.SkillHitBack(pAtker.n_Ident , pDefer.n_Ident , nBack  );
+			if( vFinal != null )
+			{
+				resPool.Add( new cHitResult( cHitResult._TYPE._HITBACK, pDefer.n_Ident , vFinal.X , vFinal.Y ) );
+			}
+		} 
+
 
 		//}
 		return resPool;
@@ -1123,6 +1135,8 @@ public partial class BattleManager
 
 		List<cHitResult> resPool = new List<cHitResult> ();
 		resPool.Add ( new cHitResult( cHitResult._TYPE._HIT ,nAtker , nDefer  ) );
+
+
 
 		if (pDefer.IsStates (_FIGHTSTATE._DODGE)) {
 			resPool.Add (new cHitResult (cHitResult._TYPE._DODGE, nDefer, 0 ));	
@@ -1148,7 +1162,7 @@ public partial class BattleManager
 
 		//float fAtkBurst  = 1.0f + pAtker.GetMulBurst ();
 		//float fDefDamage = 1.0f + pDefer.GetMulDamage ();
-
+		resPool.Add ( new cHitResult( cHitResult._TYPE._BEHIT , nDefer , pAtker.FightAttr.SkillID ) );
 
 		SKILL AtkerSkill = pAtker.FightAttr.SkillData.skill;
 		SKILL DeferSkill = pDefer.FightAttr.SkillData.skill;
