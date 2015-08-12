@@ -725,7 +725,7 @@ public class Panel_StageUI : MonoBehaviour
 			OnMobClick( unit );
 		}
 		else if(unit.eCampID == _CAMP._FRIEND) {
-			
+			OnMobClick( unit );
 		}
 	}
 

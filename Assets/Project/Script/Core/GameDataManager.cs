@@ -260,9 +260,24 @@ public partial class GameDataManager
 		{
 
 			// check for ally
-			nActiveCamp = _CAMP._ENEMY;
-//			nRoundStatus = _ROUND_STATUS._START;
+			cCamp camp = GameDataManager.Instance.GetCamp( _CAMP._FRIEND );
+			if( camp != null && camp.memLst.Count > 0 )
+			{
+				nActiveCamp = _CAMP._FRIEND;  
+			}
+			else {
+				nActiveCamp = _CAMP._ENEMY; // set to enemy if no friend
+			}
 
+			bRoundChange = false;
+		}
+		else if( nActiveCamp == _CAMP._FRIEND )
+		{
+			
+			// check for ally
+			nActiveCamp = _CAMP._ENEMY;
+			//			nRoundStatus = _ROUND_STATUS._START;
+			
 			bRoundChange = false;
 		}
 		else if( nActiveCamp == _CAMP._ENEMY )
