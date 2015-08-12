@@ -258,6 +258,8 @@ public partial class GameDataManager
 		bool bRoundChange = false;
 		if( nActiveCamp == _CAMP._PLAYER )
 		{
+
+			// check for ally
 			nActiveCamp = _CAMP._ENEMY;
 //			nRoundStatus = _ROUND_STATUS._START;
 
@@ -271,6 +273,7 @@ public partial class GameDataManager
 
 			bRoundChange =  true;
 		}
+
 
 		//weak up current for correct re def
 		StageWeakUpCampEvent cmd = new StageWeakUpCampEvent ();
