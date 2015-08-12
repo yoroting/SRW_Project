@@ -12,6 +12,7 @@ public class MapEditorWindow : EditorWindow
     /// MapEditor的component
     /// </summary>
     private MapEditor _mapEdtor;
+    private string _sceneFilePath = "";
     /// <summary>
     /// 場景編號的字串
     /// </summary>
@@ -33,6 +34,7 @@ public class MapEditorWindow : EditorWindow
     public static void Init()
     {
         MapEditorWindow window = (MapEditorWindow)EditorWindow.GetWindow(typeof(MapEditorWindow));
+        window.position = new Rect(512, 384, 400, 200);
         window.Show();
 
         SceneView.onSceneGUIDelegate += OnSceneGUI;
@@ -52,27 +54,35 @@ public class MapEditorWindow : EditorWindow
         GUILayout.BeginHorizontal();
         GUILayout.Label("Map Name", GUILayout.Height(16));
         _mapEdtor.MapName = GUILayout.TextArea(_mapEdtor.MapName, GUILayout.Height(16));
-        if (GUILayout.Button("Load Scene By Name", GUILayout.Height(16)))
+        if (GUILayout.Button("Load Scene", GUILayout.Height(16)))
         {
-            _mapEdtor.LoadScene(_mapEdtor.MapName);
+            //_mapEdtor.LoadScene(_mapEdtor.MapName);
+            _sceneFilePath = EditorUtility.OpenFilePanel(
+                "Select Scene File",
+                "./Assets/StreamAssets/",
+                "scn");
+            if (_sceneFilePath.Length != 0)
+            {
+                _mapEdtor.LoadScene(System.IO.Path.GetFileNameWithoutExtension(_sceneFilePath));
+            }
         }
         GUILayout.EndHorizontal();
         #endregion
 
         GUILayout.Space(16);
 
-        #region 讀取場景
-        GUILayout.BeginHorizontal();
-        GUILayout.Label("Scene ID", GUILayout.Height(16));
-        _sceneTextFieldString = GUILayout.TextField(_sceneTextFieldString, GUILayout.Height(16));
-        if (GUILayout.Button("Load Scene By ID", GUILayout.Height(16)))
-        {
-            _mapEdtor.LoadScene(Convert.ToInt32(_sceneTextFieldString));
-        }
-        GUILayout.EndHorizontal(); 
-        #endregion
+        //#region 讀取場景
+        //GUILayout.BeginHorizontal();
+        //GUILayout.Label("Scene ID", GUILayout.Height(16));
+        //_sceneTextFieldString = GUILayout.TextField(_sceneTextFieldString, GUILayout.Height(16));
+        //if (GUILayout.Button("Load Scene By ID", GUILayout.Height(16)))
+        //{
+        //    _mapEdtor.LoadScene(Convert.ToInt32(_sceneTextFieldString));
+        //}
+        //GUILayout.EndHorizontal(); 
+        //#endregion
 
-        GUILayout.Space(16);
+        //GUILayout.Space(16);
 
         #region 著色模式
         GUILayout.BeginHorizontal();
