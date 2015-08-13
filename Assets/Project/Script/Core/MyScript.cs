@@ -365,7 +365,7 @@ public class MyScript {
 	//------------------
 	// Stage Run
 	//-----------------
-	public void ParserScript( CTextLine line ,cUnitData data_I=null , cUnitData data_E=null )
+	public void ParserScript( CTextLine line , bool bSkip = false  )
 	{
 		List<cTextFunc> funcList =line.GetFuncList();
 		foreach( cTextFunc func in funcList )
@@ -432,6 +432,14 @@ public class MyScript {
 				// change bgm 
 				GameSystem.PlayBGM ( nID );
 			}
+			else if( func.sFunc == "P_BGM"  )
+			{
+				int nID = func.I( 0 );
+				// change bgm 
+				if( nID> 0 ){
+					GameDataManager.Instance.nPlayerBGM = nID;
+				}
+			}
 			else if( func.sFunc == "E_BGM"  )
 			{
 				int nID = func.I( 0 );
@@ -440,6 +448,30 @@ public class MyScript {
 					GameDataManager.Instance.nEnemyBGM = nID;
 				}
 			}
+			else if( func.sFunc == "F_BGM"  )
+			{
+				int nID = func.I( 0 );
+				// change bgm 
+				if( nID> 0 ){
+					GameDataManager.Instance.nFriendBGM = nID;
+				}
+			}
+			else if( func.sFunc == "BGMPHASE"  )
+			{
+				int nID = func.I( 0 );
+				if( nID> 0 ){
+					GameDataManager.Instance.nPlayerBGM = nID;
+				}
+				int nID2 = func.I( 1 );
+				if( nID2> 0 ){
+					GameDataManager.Instance.nEnemyBGM = nID2;
+				}
+				int nID3 = func.I( 2 );
+				if( nID3> 0 ){
+					GameDataManager.Instance.nFriendBGM = nID3;
+				}
+			}
+
 			else if( func.sFunc == "SAY" )
 			{
 				TalkSayEvent evt = new TalkSayEvent();
@@ -479,11 +511,13 @@ public class MyScript {
 
 			else if( func.sFunc  == "ATTACK")  //  pop a group of mob
 			{
-				StageBattleAttackEvent evt = new StageBattleAttackEvent();
-				evt.nAtkCharID = func.I(0);
-				evt.nDefCharID = func.I(1);
-				evt.nAtkSkillID = func.I(2);
-				GameEventManager.DispatchEvent ( evt  );
+				if( bSkip == false ){
+					StageBattleAttackEvent evt = new StageBattleAttackEvent();
+					evt.nAtkCharID = func.I(0);
+					evt.nDefCharID = func.I(1);
+					evt.nAtkSkillID = func.I(2);
+					GameEventManager.DispatchEvent ( evt  );
+				}
 			}
 			else if( func.sFunc  == "MOVETOUNIT")  //  pop a group of mob
 			{
@@ -506,6 +540,11 @@ public class MyScript {
 			else if( func.sFunc  == "ADDBUFF")  // Add buff
 			{
 				Panel_StageUI.Instance.OnStageAddBuff( func.I(0) , func.I(1) );
+			}
+			else if( func.sFunc  == "UNITDEAD") 
+			{			
+				int nCharID = func.I( 0 );		
+				Panel_StageUI.Instance.OnStageUnitDeadEvent( func.I(0));
 			}
 			else if( func.sFunc  == "DELUNIT") 
 			{			

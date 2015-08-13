@@ -20,7 +20,7 @@ public class Panel_Talk : MonoBehaviour {
 
 	STAGE_TALK m_cStageTalk;				// talk data class
 
-
+//	public bool bSkipMode;					// skip mode will change some behavior
 	private int m_nTalkIdx;					// 文字目前在哪一行
 	//private List<string> m_cTextList;		// 內容集合
 
@@ -107,7 +107,7 @@ public class Panel_Talk : MonoBehaviour {
 		}
 		SetScript ( GameDataManager.Instance.nTalkID ); 
 
-
+		//bSkipMode = false;
 	}
 
 	// Update is called once per frame
@@ -160,7 +160,7 @@ public class Panel_Talk : MonoBehaviour {
 
 		while( m_nScriptIdx< m_cScript.GetMaxCol ())
 		{
-			NextLine ();
+			NextLine ( true );
 		}
 		EndTalk();
 	}
@@ -343,7 +343,7 @@ public class Panel_Talk : MonoBehaviour {
 	}
 
 	// script go next line
-	public void NextLine()
+	public void NextLine( bool bSkip = false )
 	{
 		if (m_nScriptIdx >= m_cScript.GetMaxCol ())
 		{
@@ -352,7 +352,7 @@ public class Panel_Talk : MonoBehaviour {
 		}
 
 		//ParserScript ( m_cScript.GetTextLine( m_nScriptIdx++ )  );
-		MyScript.Instance.ParserScript ( m_cScript.GetTextLine( m_nScriptIdx++ )  );
+		MyScript.Instance.ParserScript ( m_cScript.GetTextLine( m_nScriptIdx++ ) , bSkip  );
 
 		m_bClickScript = false;
 	}

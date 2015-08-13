@@ -339,7 +339,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 			pCmder.OnSelected ( false );
 			cUnitData pCmdData  = GameDataManager.Instance.GetUnitDateByIdent( pCmder.Ident() );
 			if( pCmdData != null ){
-				pCmdData.AddHp( -999999999 );
+				pCmdData.AddHp( -2099999999 );
 			}
 			//pCmder.SetDead ();
 		}

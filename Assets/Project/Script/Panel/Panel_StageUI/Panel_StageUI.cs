@@ -2374,7 +2374,12 @@ public class Panel_StageUI : MonoBehaviour
 	}
 
 	public void OnStagePopUnitEvent(GameEvent evt)
-	{
+	{	
+		// auto close all say window
+		TalkSayEndEvent sayevt = new TalkSayEndEvent();
+		sayevt.nChar = 0;		
+		GameEventManager.DispatchEvent ( sayevt  );
+
 		//Debug.Log ("OnStagePopMobEvent");
 		StagePopUnitEvent Evt = evt as StagePopUnitEvent;
 		if (Evt == null)
@@ -2395,6 +2400,11 @@ public class Panel_StageUI : MonoBehaviour
 
 	public void OnStagePopGroupEvent(GameEvent evt)
 	{
+		// auto close all say window
+		TalkSayEndEvent sayevt = new TalkSayEndEvent();
+		sayevt.nChar = 0;		
+		GameEventManager.DispatchEvent ( sayevt  );
+
 		Debug.Log ("OnStagePopGroupEvent");
 		StagePopGroupEvent Evt = evt as StagePopGroupEvent;
 		if (Evt == null)
@@ -2607,6 +2617,8 @@ public class Panel_StageUI : MonoBehaviour
 				nHitBack = skl.n_HITBACK;
 			}
 		}
+		// show skill name
+
 
 		// check if need move 
 		int nDist = pAtkUnit.Loc.Dist (pDefUnit.Loc);
@@ -2630,6 +2642,9 @@ public class Panel_StageUI : MonoBehaviour
 
 
 		}
+
+		// show atk skill name 
+		ActionManager.Instance.CreateCastAction( nAtkId , Evt.nAtkSkillID  );
 
 		// send attack
 		//Panel_StageUI.Instance.MoveToGameObj(pDefUnit.gameObject , false );  // move to def 
@@ -2780,5 +2795,23 @@ public class Panel_StageUI : MonoBehaviour
 			MyTool.TweenSetOneShotOnFinish( tw , MoveToGameObjEnd ); 
 			
 		}
+	}
+	// 單位死亡
+	public void OnStageUnitDeadEvent( int nCharID )
+	{
+		foreach (KeyValuePair< int ,Panel_unit > pair in IdentToUnit) {
+			if( pair.Value!= null )
+			{
+				if( pair.Value.CharID == nCharID )
+				{
+					if( pair.Value.bIsDead == false )
+					{
+						pair.Value.SetDead();
+
+					}
+				}
+			}
+		}
+
 	}
 }
