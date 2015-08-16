@@ -56,7 +56,7 @@ public class StoryUIPanel : MonoBehaviour {
 		//
 	//	GameEventManager.AddEventListener(  StoryStartStageEvent.Name , OnStoryStartStageEvent );
 #if DEBUG && UNITY_EDITOR
-		GameDataManager.Instance.nStoryID =5;
+	//	GameDataManager.Instance.nStoryID =5;
 #endif 
 
 		//PanelManager.Instance.OpenUI( "Panel_Loading");
@@ -429,7 +429,7 @@ public class StoryUIPanel : MonoBehaviour {
 			string content = row.Field<string>( "s_CONTENT");
 			// replace   heroine name
 			string sText = content.Replace ( "$F" , Config.PlayerFirst ); // replace player name
-					sText = sText.Replace ( "$P" , Config.PlayerName ); // replace player name
+					sText = sText.Replace ( "$N" , Config.PlayerName ); // replace player name
 
 			SRW_TextBox pBox = PanelStoryText.GetComponent<SRW_TextBox>();
 			if( pBox )

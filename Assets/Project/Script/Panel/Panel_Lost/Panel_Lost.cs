@@ -9,8 +9,10 @@ public class Panel_Lost : MonoBehaviour {
 
 	void OnEnable()
 	{
-		Panel_StageUI.Instance.bIsStageEnd = true;
-		GameDataManager.Instance.EndStage ();   // 處理戰場結束的資料回存
+		Panel_StageUI.Instance.EndStage ();
+	//	Panel_StageUI.Instance.HideStage ();
+//		Panel_StageUI.Instance.bIsStageEnd = true;
+//		GameDataManager.Instance.EndStage ();   // 處理戰場結束的資料回存
 	}
 
 	// Use this for initialization
@@ -32,6 +34,7 @@ public class Panel_Lost : MonoBehaviour {
 	
 	void OnCloseBtnClick(GameObject go)
 	{	
+		Panel_StageUI.Instance.ShowStage (false);
 		// open main ten ui
 		PanelManager.Instance.OpenUI ( Panel_Mainten.Name );
 		

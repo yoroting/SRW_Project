@@ -29,6 +29,13 @@ public class SRW_TextBox : MonoBehaviour {
 	int m_nCurLineCount;
 	int m_nTextSpeed = 0;
 
+
+	public bool bIsShaking = false;
+	public bool bIsDeading = false;
+
+
+
+
 	bool	m_bOnClickMode;		//
 	public void SetClickMode()
 	{
@@ -174,6 +181,11 @@ public class SRW_TextBox : MonoBehaviour {
 		if( m_sPopText.Length > 0 )
 			return false;
 		if( m_lstsContextWait.Count > 0 )
+			return false;
+
+		if (bIsShaking)
+			return false;
+		if (bIsDeading)
 			return false;
 
 		return true;
@@ -496,7 +508,48 @@ public class SRW_TextBox : MonoBehaviour {
 		}
 	}
 
+	public void SetShake(  )
+	{
+		TweenShake tws = TweenShake.Begin (this.gameObject, 2.0f, 40.0f);
+		if( tws )
+		{
+			bIsShaking = true;
+			tws.shakeX = true;
+			tws.shakeY = true;
+			MyTool.TweenSetOneShotOnFinish( tws , OnShakeEnd );
+			//Destroy( tws , 2.1f ); // 
+		}
 
+	}
+	public void SetDead(  )
+	{
+		TweenGrayLevel tw = TweenGrayLevel.Begin <TweenGrayLevel >( _FaceTexObj, 2.0f);
+		if (tw) {
+			bIsDeading = true;
+			tw.from = 0.0f;
+			tw.to   = 1.0f;
+			MyTool.TweenSetOneShotOnFinish( tw , OnGrayEnd );
+			//			tw.style = UITweener.Style.Once; // PLAY ONCE
+			//			tw.SetOnFinished( OnDead );
+			
+		}
+	}
+
+	public void OnShakeEnd()
+	{	
+		bIsShaking = false;
+		// remove char
+	}
+
+	public void OnGrayEnd()
+	{	
+		bIsDeading = false;
+
+		// remove char
+		TalkSayEndEvent evt = new TalkSayEndEvent();
+		evt.nChar = this.CharID;
+		GameEventManager.DispatchEvent ( evt  );
+	}
 
 	// untility
 	int 	nTweenObjCount=0;

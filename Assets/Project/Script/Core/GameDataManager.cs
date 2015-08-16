@@ -154,6 +154,8 @@ public partial class GameDataManager
 		}
 
 		UnitPool.Clear ();
+
+
 	}
 
 
@@ -168,6 +170,7 @@ public partial class GameDataManager
 	}
 
 	//===================================================
+
 	public int nStoryID{ get; set; } 
 	public int nStageID{ get; set; } 
 	public int nTalkID{ get; set; } 

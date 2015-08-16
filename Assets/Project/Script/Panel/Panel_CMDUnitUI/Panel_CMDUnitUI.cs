@@ -554,9 +554,10 @@ public class Panel_CMDUnitUI : MonoBehaviour
 					return ; // this is finish task
 				}
 				else{
+
+					BattleManager.Instance.PlayCounterCast( pCmder.Ident() , nAtkerId , nSkillID );
 					//cast directly don't make a battle cmd to destory original enemy atk cmd
-					ActionManager.Instance.CreateCastAction( pCmder.Ident() , nSkillID );
-					ActionManager.Instance.CreateHitAction( pCmder.Ident() , -1 , -1 ,  nSkillID );
+
 					Panel_CMDUnitUI.CloseCMDUI(); // normal close
 
 				}

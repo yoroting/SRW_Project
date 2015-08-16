@@ -23,12 +23,16 @@ public class Config
 	// Cache value
 	public static float fScnRatio = 1.0f;		// screen (active/ real ) ratio. for cal mouse in local pos
 
-	public static string PlayerFirst = "主";
-	public static string PlayerName = "人公";
+	public static string PlayerFirst = "黃";
+	public static string PlayerName = "裳";
+
+	public static string DefaultPlayerFirst = "主";
+	public static string DefaultPlayerName = "人公";
+
 
 	public static int	MaxCharLevel = 20;
 	public static float CharMarLVUp = 1.0f;
-	public static int 	CharBaseSp = 20;
+	public static int 	CharBaseSp = 40;
 	public static int 	CharSpLVUp = 4;
 
 

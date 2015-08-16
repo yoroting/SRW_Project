@@ -365,7 +365,7 @@ public class MyScript {
 	//------------------
 	// Stage Run
 	//-----------------
-	public void ParserScript( CTextLine line , bool bSkip = false  )
+	public void ParserScript( CTextLine line   )
 	{
 		List<cTextFunc> funcList =line.GetFuncList();
 		foreach( cTextFunc func in funcList )
@@ -491,9 +491,26 @@ public class MyScript {
 				//Say( func.I(0), func.I(1) );
 				GameEventManager.DispatchEvent ( evt  );
 			}		
-			else if( func.sFunc == "CHANGEBACK") 
+			else if( func.sFunc == "TALKDEAD" )
 			{
-				
+				TalkDeadEvent evt = new TalkDeadEvent();			
+				evt.nChar  = func.I(0);			
+				GameEventManager.DispatchEvent ( evt  );
+				// del unit . if it on stage
+				Panel_StageUI.Instance.OnStageUnitDeadEvent( func.I(0)); // del unit auto
+			}		
+			else if( func.sFunc == "TALKSHAKE" )
+			{
+				TalkShakeEvent evt = new TalkShakeEvent();			
+				evt.nChar  = func.I(0);
+				GameEventManager.DispatchEvent ( evt  );
+			}		
+			else if( func.sFunc == "BACKBROUND") 
+			{
+				TalkBackGroundEvent evt = new TalkBackGroundEvent();
+				//evt.nType = func.I(0);
+				evt.nBackGroundID = func.I(0);
+				GameEventManager.DispatchEvent ( evt  );
 			}
 			else if( func.sFunc  == "SAYEND") 
 			{
@@ -511,13 +528,14 @@ public class MyScript {
 
 			else if( func.sFunc  == "ATTACK")  //  pop a group of mob
 			{
-				if( bSkip == false ){
+				// this is bad idea
+			//	if( bSkip == false ){
 					StageBattleAttackEvent evt = new StageBattleAttackEvent();
 					evt.nAtkCharID = func.I(0);
 					evt.nDefCharID = func.I(1);
 					evt.nAtkSkillID = func.I(2);
 					GameEventManager.DispatchEvent ( evt  );
-				}
+			//	}
 			}
 			else if( func.sFunc  == "MOVETOUNIT")  //  pop a group of mob
 			{
@@ -545,6 +563,12 @@ public class MyScript {
 			{			
 				int nCharID = func.I( 0 );		
 				Panel_StageUI.Instance.OnStageUnitDeadEvent( func.I(0));
+
+				// dont close auto.
+			//	TalkDeadEvent evt = new TalkDeadEvent();			
+			//	evt.nChar  = nCharID;			
+			//	GameEventManager.DispatchEvent ( evt  );
+
 			}
 			else if( func.sFunc  == "DELUNIT") 
 			{			
@@ -552,6 +576,14 @@ public class MyScript {
 				//evt.eCamp = (_CAMP)func.I( 0 );
 				evt.nCharID = func.I( 0 );
 				GameEventManager.DispatchEvent ( evt );
+
+				// say end  event
+				if( evt.nCharID != 0 ){
+					TalkSayEndEvent tlkevt = new TalkSayEndEvent();				
+					tlkevt.nChar = evt.nCharID;
+					GameEventManager.DispatchEvent ( tlkevt  );
+				}
+
 			}
 			else if( func.sFunc  == "DELEVENT") 
 			{
@@ -770,6 +802,19 @@ public class MyScript {
 				//	CacheHitResultPool.Add( new cHitResult(cHitResult._TYPE._ADDBUFF , data_I.n_Ident , nBuffID )  );
 					
 				}
+				// Hit effect
+				if( func.sFunc  == "HITBUFF_I") 
+				{
+					pool.Add( new HITBUFF_I( func.I(0) ) );
+				}
+				else if( func.sFunc  == "HITBUFF_E") 
+				{
+					pool.Add( new HITBUFF_E( func.I(0) ) );
+				}
+				else if( func.sFunc  == "UP_SKILL") 
+				{
+					pool.Add( new UP_SKILL( func.I(0) , func.I(1) ) );
+				}
 				// Attr
 				else if( func.sFunc  == "ADD_MAR") {
 					pool.Add( new ADD_MAR( func.F(0) ) );
@@ -802,19 +847,19 @@ public class MyScript {
 					pool.Add( new ADD_MAXSP( func.I(0) ) );
 				}
 				else if( func.sFunc  == "ADDHP_I") {
-					pool.Add( new ADDHP_I( func.F(0) ) );
+					pool.Add( new ADDHP_I( func.F(0), func.I(1) ) );
 				}
 				else if( func.sFunc  == "ADDMP_I") {
-					pool.Add( new ADDMP_I( func.I(0) ) );
+					pool.Add( new ADDMP_I( func.I(0), func.I(1) ) );
 				}
 				else if( func.sFunc  == "ADDSP_I") {
-					pool.Add( new ADDSP_I( func.I(0) ) );
+					pool.Add( new ADDSP_I( func.I(0)) );
 				}
 				else if( func.sFunc  == "ADDCP_I") {
 					pool.Add( new ADDSP_I( func.I(0) ) );
 				}
 				else if( func.sFunc  == "ADDHP_E") {
-					pool.Add( new ADDHP_E( func.F(0) ) );
+					pool.Add( new ADDHP_E( func.F(0), func.I(1) ) );
 				}
 				else if( func.sFunc  == "ADDMP_E") {
 					pool.Add( new ADDMP_E( func.I(0) ) );

@@ -121,18 +121,23 @@ public class cCMD{
 		CmdlistArray [idx].Add ( _CMD_ID._SCHOOL ); 
 		CmdlistArray [idx].Add ( _CMD_ID._WAIT ); 
 		CmdlistArray [idx].Add ( _CMD_ID._CANCEL ); 
-		
-		CmdlistArray [idx].Add ( _CMD_ID._SUICIDE );
-		CmdlistArray [idx].Add ( _CMD_ID._CHEAT );
+
+		if (Config.GOD == true) {
+			CmdlistArray [idx].Add (_CMD_ID._SUICIDE);
+			CmdlistArray [idx].Add (_CMD_ID._CHEAT);
+		}
 		
 		// enemy
 		idx = (int)_CMD_TYPE._ENEMY;
 		CmdlistArray [idx] = new List<_CMD_ID> ();
 		CmdlistArray [idx].Add (  _CMD_ID._INFO  );
 		CmdlistArray [idx].Add ( _CMD_ID._CANCEL );
-		CmdlistArray [idx].Add ( _CMD_ID._SUICIDE );
-		CmdlistArray [idx].Add ( _CMD_ID._CHEAT );
-		
+
+		if (Config.GOD == true) {
+			CmdlistArray [idx].Add (_CMD_ID._SUICIDE);
+			CmdlistArray [idx].Add (_CMD_ID._CHEAT);
+			CmdlistArray [idx].Add (_CMD_ID._SKILL);
+		}
 		
 		// 
 		idx = (int)_CMD_TYPE._MENU;
@@ -143,13 +148,13 @@ public class cCMD{
 		idx = (int)_CMD_TYPE._WAITATK;
 		CmdlistArray [idx] = new List<_CMD_ID> ();
 		//		CmdlistArray [idx].Add ( _CMD_ID._ATK ); 
-		if (Config.GOD == true) {
-			CmdlistArray [idx].Add ( _CMD_ID._ABILITY );  // god for debug
-		}
 		CmdlistArray [idx].Add ( _CMD_ID._SKILL ); 
 		CmdlistArray [idx].Add ( _CMD_ID._WAIT ); 
 		CmdlistArray [idx].Add ( _CMD_ID._CANCEL ); 
-		
+
+		if (Config.GOD == true) {
+			CmdlistArray [idx].Add ( _CMD_ID._ABILITY );  // god for debug
+		}
 		// wait sel a pos
 		idx = (int)_CMD_TYPE._WAITMOVE;
 		CmdlistArray [idx] = new List<_CMD_ID> ();

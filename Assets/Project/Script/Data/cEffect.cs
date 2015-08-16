@@ -47,7 +47,7 @@ public class cEffect
 
 	// cost
 	public virtual bool _IsStatus( _FIGHTSTATE st  ){ return false; }				// check user in one status	
-
+	public virtual int _UpSkill( int nBaseSkillID  ){ return nBaseSkillID;	} 					// 判斷有無進階的武功招式
 }
 
 // Cast Effect
@@ -57,9 +57,9 @@ public class ADDBUFF_I: cEffect
 	public int iValue ;
 	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){
 		if (Atker != null) {
-			// ( int nBuffID , int nCastIdent , int nSkillID  , int nTargetId )
-			//pData.Buffs.AddBuff( res.Value1 , res.Value2, res.SkillID, res.Value3 );
-			list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF , Atker.n_Ident , iValue , Atker.n_Ident, nSkillID ,Defer.n_Ident  ) );
+		
+			int nDefId = 0;			if( Defer != null )nDefId = Defer.n_Ident;
+			list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF , Atker.n_Ident , iValue , Atker.n_Ident, nSkillID ,nDefId  ) );
 		}
 	}
 }
@@ -70,9 +70,56 @@ public class ADDBUFF_E: cEffect
 	
 	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 
 		if (Defer != null) {
+			if( Defer.IsStates( _FIGHTSTATE._DODGE ) )
+				return ;
+
 		//	list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF ,Defer.n_Ident , nBuffID ) );
-			list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF , Defer.n_Ident , iValue, Atker.n_Ident, nSkillID ,Defer.n_Ident  ) );
+			int nAtkId = 0;			if( Atker != null )nAtkId = Atker.n_Ident;
+			list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF , Defer.n_Ident , iValue, nAtkId , nSkillID , Defer.n_Ident  ) );
 		}
+	}
+}
+
+// Hit effect
+public class HITBUFF_I: cEffect
+{
+	public HITBUFF_I( int buffid ){		iValue = buffid;	}
+	public int iValue ;
+	override public void _Hit( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){
+		if (Atker != null) {
+			// ( int nBuffID , int nCastIdent , int nSkillID  , int nTargetId )
+			//pData.Buffs.AddBuff( res.Value1 , res.Value2, res.SkillID, res.Value3 );
+			int nDefId = 0;			if( Defer != null )nDefId = Defer.n_Ident;
+			list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF , Atker.n_Ident , iValue , Atker.n_Ident, nSkillID ,nDefId  ) );
+		}
+	}
+}
+
+public class HITBUFF_E: cEffect
+{
+	public HITBUFF_E( int buffid ){		iValue = buffid;;	}
+
+	
+	override public void _Hit( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 
+		if (Defer != null) {
+			if( Defer.IsStates( _FIGHTSTATE._DODGE ) )
+				return ;
+			//	list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF ,Defer.n_Ident , nBuffID ) );
+			int nAtkId = 0;			if( Atker != null )nAtkId = Atker.n_Ident;
+			list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF , Defer.n_Ident , iValue, nAtkId , nSkillID ,Defer.n_Ident  ) );
+		}
+	}
+}
+// upgrade skill
+public class UP_SKILL: cEffect
+{
+	public UP_SKILL( int baseid, int upid ){iValue = baseid; iValue2=upid;}
+	public int iValue2 ;
+	override public int _UpSkill( int nBaseSkillID  )
+	{
+		if (nBaseSkillID == iValue)
+			return  iValue2;
+		return nBaseSkillID;
 	}
 }
 
@@ -198,20 +245,22 @@ public class ADD_MAXSP: cEffect
 
 public class ADDHP_I: cEffect
 {
-	public ADDHP_I( float f ){	fValue = f;	}
-	
+	public ADDHP_I( float f , int i ){	fValue = f;	iValue = i; }
+
+
 	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 
 			float fHp = Atker.GetMaxHP() * fValue ;
 			//	list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF ,Defer.n_Ident , nBuffID ) );
-		list.Add( new cHitResult( cHitResult._TYPE._HP , Atker.n_Ident , (int)fHp  , Atker.n_Ident, nSkillID , nBuffID   ) );
+		list.Add( new cHitResult( cHitResult._TYPE._HP , Atker.n_Ident , (int)fHp + iValue , Atker.n_Ident, nSkillID , nBuffID   ) );
 	}
 }
 public class ADDMP_I: cEffect
 {
-	public ADDMP_I( int i ){	iValue = i;	}
+	public ADDMP_I( float f , int i ){	fValue = f;	iValue = i;	}
 	
 	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 	
-		list.Add( new cHitResult( cHitResult._TYPE._MP , Atker.n_Ident , iValue  , Atker.n_Ident, nSkillID , nBuffID   ) );
+		float fMp = Atker.GetMaxMP() * fValue ;
+		list.Add( new cHitResult( cHitResult._TYPE._MP , Atker.n_Ident , (int)fMp +iValue  , Atker.n_Ident, nSkillID , nBuffID   ) );
 	}
 }
 public class ADDSP_I: cEffect
@@ -234,12 +283,12 @@ public class ADDCP_I: cEffect
 }
 public class ADDHP_E: cEffect
 {
-	public ADDHP_E( float f ){	fValue = f;	}
+	public ADDHP_E(float f , int i ){	fValue = f;	iValue = i;	}
 	
 	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 
 		if (Defer != null) {
 			float fHp = Defer.GetMaxHP() * fValue ;
-			list.Add( new cHitResult( cHitResult._TYPE._HP , Defer.n_Ident , (int)fHp , Atker.n_Ident, nSkillID , nBuffID   ) );
+			list.Add( new cHitResult( cHitResult._TYPE._HP , Defer.n_Ident , (int)fHp +iValue , Atker.n_Ident, nSkillID , nBuffID   ) );
 		}
 	}
 }
@@ -425,12 +474,28 @@ public class  cEffectCondition
 		{
 			if( func.sFunc == "GO" )
 			{
-				
 				return true;		// always true
 			}
 			else if( func.sFunc == "NULL" || func.sFunc == "0" )
 			{
 				return   false;		// always fail
+			}
+			else if( func.sFunc == "RATE"  )
+			{
+				int Rate = func.I (0);
+				int nRoll = Random.Range (0, 100);				
+				return ( Rate > nRoll );
+				//return data_I.IsStates( _FIGHTSTATE._DODGE );
+			}
+			else if( func.sFunc == "MRATE"  )  // 必須比兩者武功差值
+			{
+				if( data_E == null || data_I == null )
+					return false;
+				int Rate = func.I (0);
+				Rate += (int)(( data_I.GetMar() - data_E.GetMar() )* 0.5f);
+				int nRoll = Random.Range (0, 100);				
+				return ( Rate > nRoll );
+
 			}
 			if( func.sFunc == "HP_I"  )
 			{
@@ -523,6 +588,7 @@ public class  cEffectCondition
 			{
 				return data_I.IsStates( _FIGHTSTATE._DODGE );
 			}
+
 			else{
 				Debug.LogError( string.Format( "Error-Can't find script cond func '{0}'" , func.sFunc ) );
 			}

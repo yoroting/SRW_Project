@@ -62,6 +62,7 @@ public class Panel_StageUI : MonoBehaviour
 	public bool	bIsStageEnd;								// this stage is end
 	bool 							bIsMoveToObj;		// is move camera to obj
 //	public bool	bIsRestoreData;								// this stage is need restore data
+	public bool m_bIsSkipMode;							// skip for script perform
 
 	// drag canvas limit								
 	float fMinOffX ;
@@ -104,6 +105,7 @@ public class Panel_StageUI : MonoBehaviour
         instance = this; 		// special singleton
         bIsReady = false;
         bIsStageEnd = false;
+		m_bIsSkipMode = false;
         //UIRoot mRoot = NGUITools.FindInParents<UIRoot>(gameObject);	
         //fUIRatio = (float)mRoot.activeHeight / Screen.height;
 
@@ -292,6 +294,10 @@ public class Panel_StageUI : MonoBehaviour
         // check drop event
         if (BattleManager.Instance.ProcessDrop() == true)
             return;
+
+		if( bIsStageEnd == true ){  // 每個敵方單位行動後都可能觸發，關卡結束 要避免AI 繼續運算
+			return ; // block all ai here
+		}
 
         //===================		// this will throw unit action or trig Event
         if (RunCampAI(GameDataManager.Instance.nActiveCamp) == false)
@@ -1286,6 +1292,11 @@ public class Panel_StageUI : MonoBehaviour
 
 	public bool IsAnyActionRunning()
 	{
+		// for win event
+		if( (TilePlaneObj != null) && !TilePlaneObj.activeSelf ){
+			return false;
+		}
+
 		if(BattleMsg.nMsgCount > 0)
 			return true;
 
@@ -1405,6 +1416,10 @@ public class Panel_StageUI : MonoBehaviour
 		// change faction if all unit moved or dead.
 		List<Panel_unit> lst = GetUnitListByCamp (nCamp);
 		foreach (Panel_unit unit in lst ) {
+			if( bIsStageEnd == true ){  // 每個敵方單位行動後都可能觸發，關卡結束 要避免AI 繼續運算
+				return true; // block all ai here
+			}
+
 			if( unit.CanDoCmd() )
 			{
 				unit.RunAI();
@@ -1815,6 +1830,41 @@ public class Panel_StageUI : MonoBehaviour
 		}
 	}
 
+	public void EndStage()
+	{
+		bIsStageEnd = true;
+		
+		GameDataManager.Instance.EndStage ();   // 處理戰場結束的資料回存
+	}
+
+	public void ShowStage( bool bShow )
+	{
+		if (TilePlaneObj != null) {
+//			TweenAlpha tw = TweenAlpha.Begin<TweenAlpha>( TilePlaneObj , 1.0f );
+//			if( tw != null )
+//			{
+//				if( bShow  )
+//				{
+//					MyTool.SetAlpha( TilePlaneObj , 0.0f );
+//					tw.from = 0.0f;
+//					tw.to   = 1.0f;
+//
+//				}
+//				else 
+//				{
+//					MyTool.SetAlpha( TilePlaneObj , 1.0f );
+//					tw.from = 1.0f;
+//					tw.to   = 0.0f;
+//
+//				}
+//			}
+			TilePlaneObj.SetActive (bShow);
+		}
+
+	}
+
+
+
 	public GameObject AddMark( int x , int y  )
 	{
 		GameObject mark = ResourcesManager.CreatePrefabGameObj(TilePlaneObj, "Prefab/PathOverEffect");
@@ -1893,7 +1943,7 @@ public class Panel_StageUI : MonoBehaviour
 
 	public void TraceUnit( Panel_unit unit )
 	{
-		if (unit == null)
+		if (unit == null || bIsStageEnd )
 			return;
 		if (TarceMoveingUnit != null) // 避免富庶單位移動時會震動
 			return;
@@ -1905,7 +1955,7 @@ public class Panel_StageUI : MonoBehaviour
 
 	public void MoveToGameObj( GameObject obj , bool force = false , float time = 1.0f)
 	{
-		if (obj == null)
+		if (obj == null || bIsStageEnd)
 			return;
 		Vector3 v = obj.transform.localPosition;
 		Vector3 canv = TilePlaneObj.transform.localPosition; // shift
@@ -2272,7 +2322,13 @@ public class Panel_StageUI : MonoBehaviour
 			// restore to mainten ui
 			return true;
 		}
-		
+
+
+		// stage data  set in stage load
+		GameDataManager.Instance.nRound   = save.n_Round;
+		GameDataManager.Instance.nActiveCamp = save.e_Camp ;
+		GameDataManager.Instance.nMoney = save.n_Money ;
+
 		// re build done event 
 		GameDataManager.Instance.EvtDonePool = MyTool.ConvetToIntInt( save.EvtDonePool );
 		
@@ -2490,7 +2546,12 @@ public class Panel_StageUI : MonoBehaviour
 		Panel_unit unit = GetUnitByIdent ( nIdent); // IdentToUnit[ nIdent ];
 		if( unit != null )
 		{
-			unit.MoveTo( nX , nY ); 
+			if (m_bIsSkipMode) { 
+				unit.SetXY( nX , nY );
+			}
+			else {
+				unit.MoveTo( nX , nY ); 
+			}
 
 //			// check if need trace unit 
 //			Vector3 v = unit.transform.localPosition;
@@ -2627,12 +2688,21 @@ public class Panel_StageUI : MonoBehaviour
 			List< iVec2> path =  MobAI.FindPathToTarget( pAtkUnit ,pDefUnit , 999  ); //GameScene.Instance.Grids.PathFinding( pAtkUnit.Loc , pDefUnit.Loc , 0  ); // no any block
 			//PathFinding
 			
-			if( (path!=null) && (path.Count>2) )
+			if( (path!=null) && (path.Count>=2) )  // Mob AI 找到的會是目標的周圍
 			{
-				iVec2 last = path[path.Count -2 ];
-				ActionManager.Instance.CreateMoveAction(nAtkId, last.X , last.Y );	
-				MoveToGameObj( pAtkUnit.gameObject , false );
-				TraceUnit( pAtkUnit );
+				iVec2 last = path[path.Count -1 ];
+
+				if (m_bIsSkipMode)
+				{
+					// change pos directly 
+					pAtkUnit.SetXY( last.X , last.Y );
+				}
+				else 
+				{
+					ActionManager.Instance.CreateMoveAction(nAtkId, last.X , last.Y );	
+					MoveToGameObj( pAtkUnit.gameObject , false );
+					TraceUnit( pAtkUnit );
+				}
 			}
 
 			// send move act
@@ -2642,27 +2712,35 @@ public class Panel_StageUI : MonoBehaviour
 
 
 		}
+		// attak perform 
+		if (m_bIsSkipMode) {
+			 // perform pos directly
+			if (nHitBack != 0) {
+				iVec2 vFinal = SkillHitBack (pAtkUnit, pDefUnit, nHitBack);
+				if (vFinal != null) {
+					pDefUnit.SetXY( vFinal.X , vFinal.Y );
+				}
+			}
 
-		// show atk skill name 
-		ActionManager.Instance.CreateCastAction( nAtkId , Evt.nAtkSkillID  );
+		} else {
+			ActionManager.Instance.CreateCastAction (nAtkId, Evt.nAtkSkillID);
 
-		// send attack
-		//Panel_StageUI.Instance.MoveToGameObj(pDefUnit.gameObject , false );  // move to def 
-		uAction act  = ActionManager.Instance.CreateAttackAction( nAtkId , nDefId, Evt.nAtkSkillID );
-		if (act != null) {
-			act.AddHitResult( new cHitResult( cHitResult._TYPE._HIT   , nAtkId , Evt.nAtkSkillID ) );
-			act.AddHitResult( new cHitResult( cHitResult._TYPE._BEHIT , nDefId , Evt.nAtkSkillID ) );
+			// send attack
+			//Panel_StageUI.Instance.MoveToGameObj(pDefUnit.gameObject , false );  // move to def 
+			uAction act = ActionManager.Instance.CreateAttackAction (nAtkId, nDefId, Evt.nAtkSkillID);
+			if (act != null) {
+				act.AddHitResult (new cHitResult (cHitResult._TYPE._HIT, nAtkId, Evt.nAtkSkillID));
+				act.AddHitResult (new cHitResult (cHitResult._TYPE._BEHIT, nDefId, Evt.nAtkSkillID));
 
-			//add skill perform
-			if( nHitBack != 0 )
-			{
-				iVec2 vFinal = SkillHitBack( pAtkUnit , pDefUnit , nHitBack );
-				if( vFinal != null ){
-					act.AddHitResult( new cHitResult( cHitResult._TYPE._HITBACK , nDefId , vFinal.X , vFinal.Y ) );
+				//add skill perform
+				if (nHitBack != 0) {
+					iVec2 vFinal = SkillHitBack (pAtkUnit, pDefUnit, nHitBack);
+					if (vFinal != null) {
+						act.AddHitResult (new cHitResult (cHitResult._TYPE._HITBACK, nDefId, vFinal.X, vFinal.Y));
+					}
 				}
 			}
 		}
-		
 	}
 
 	public void OnStageMoveToUnitEvent(GameEvent evt)
@@ -2693,9 +2771,18 @@ public class Panel_StageUI : MonoBehaviour
 			if( path.Count > 2 )
 			{
 				iVec2 last = path[path.Count -2 ];
-				ActionManager.Instance.CreateMoveAction( pAtkUnit.Ident() , last.X , last.Y );	
-				MoveToGameObj( pAtkUnit.gameObject , false );
-				TraceUnit( pAtkUnit );
+
+				if (m_bIsSkipMode)
+				{
+					// change pos directly 
+					pAtkUnit.SetXY( last.X , last.Y );
+				}
+				else{    
+
+					ActionManager.Instance.CreateMoveAction( pAtkUnit.Ident() , last.X , last.Y );	
+					MoveToGameObj( pAtkUnit.gameObject , false );
+					TraceUnit( pAtkUnit );
+				}
 			}
 			// move only
 			
@@ -2766,12 +2853,18 @@ public class Panel_StageUI : MonoBehaviour
 
 	public void OnStageCameraCenterEvent( int x1 , int y1 )
 	{
+		if (m_bIsSkipMode)
+			return;
+
 		Vector3 v1 = MyTool.SnyGridtoLocalPos (x1, y1, ref Grids);
 		CameraMoveTo ( v1.x , v1.y );
 	}
 
 	public void CameraMoveTo( float fx , float fy )
 	{
+		if (m_bIsSkipMode)
+			return;
+
 		Vector3 v = new Vector3 (fx, fy);
 		Vector3 canv = TilePlaneObj.transform.localPosition; // shift
 		Vector3 realpos = v + canv;
@@ -2813,5 +2906,6 @@ public class Panel_StageUI : MonoBehaviour
 			}
 		}
 
+	
 	}
 }

@@ -354,6 +354,10 @@ public class MobAI  {
 			int nDist = pair.Value; // value is dist
 			if( nDist > nSkillRange  ) // pathfind if need
 			{
+				// 距離太遠，怎樣都不可能到的 先放棄
+				if( (nSkillRange+nMove) < nDist )
+					continue;
+
 				List< iVec2> path = FindPathToTarget( mob , pair.Key , nMove );
 				if( path == null || (path.Count ==0) )
 				{

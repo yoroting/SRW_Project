@@ -79,7 +79,13 @@ public class Panel_UnitInfo : MonoBehaviour {
 
 
 		// name 
-		MyTool.SetLabelText( NameObj , pUnitData.cCharData.s_NAME );
+		string name = pUnitData.cCharData.s_NAME;
+		if (nCharIdent == 1) {
+			//女角特別更名
+			name = Config.PlayerFirst + Config.PlayerName;
+		}
+
+		MyTool.SetLabelText( NameObj , name );
 
 
 		ReloadData();
@@ -208,12 +214,14 @@ public class Panel_UnitInfo : MonoBehaviour {
 			
 			UIEventListener.Get(go).onClick += OnSkillClick; // 
 			
-			
+			int nSkillID = pair.Key;
+			nSkillID = pUnitData.Buffs.GetUpgradeSkill( nSkillID ); // Get upgrade skill
+
 			Skill_Simple obj = go.GetComponent<Skill_Simple >();
 			if( obj != null ){
-				obj.nID = pair.Key;
+				obj.nID = nSkillID;
 				obj.nType = 1; // 0 is ability
-				MyTool.SetLabelText( obj.lblName , MyTool.GetSkillName( pair.Key ) );
+				MyTool.SetLabelText( obj.lblName , MyTool.GetSkillName( nSkillID) );
 			}
 			
 		}

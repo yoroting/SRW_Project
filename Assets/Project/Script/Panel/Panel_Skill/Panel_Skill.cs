@@ -96,7 +96,9 @@ public class Panel_Skill : MonoBehaviour {
 				if( skl.n_PASSIVE == 1 )
 					continue;
 
-				sklLst.Add( skl );
+				int nSkillID = skl.n_ID;
+				nSkillID = pData.Buffs.GetUpgradeSkill( nSkillID ); // Get upgrade skill
+				sklLst.Add(  ConstDataManager.Instance.GetRow<SKILL>(nSkillID) );
 			}
 
 //			int ISch = pData.nActSch [0];

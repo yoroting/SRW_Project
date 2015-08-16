@@ -851,9 +851,8 @@ public class Panel_unit : MonoBehaviour {
 
 	public void ShowValueEffect( int nValue , int nMode )
 	{
+		//nMode : 0 - hp , 1- def , 2 - mp , 3 -sp
 		if (nValue < 0) {
-
-
 			// shake
 			TweenShake tw = TweenShake.Begin(gameObject, 0.2f , 10 );
 			if (tw) {

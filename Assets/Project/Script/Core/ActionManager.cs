@@ -61,6 +61,9 @@ public class uAction
 		if( HitResult == null )
 			HitResult = new List<cHitResult>();
 
+		if (pool == null)
+			return;
+
 		foreach (cHitResult hit in pool) {
 			HitResult.Add( hit );
 		}
@@ -249,7 +252,7 @@ public partial class ActionManager
 		return  act;
 	}
 
-	public uAction CreateCastAction( int nAtkIdent , int nSkillID )
+	public uAction CreateCastAction( int nAtkIdent , int nSkillID ,int nTargetIdent =0 )
 	{
 		uAction act = CreateAction (nAtkIdent, _ACTION._CAST);
 		if( act != null )  {
@@ -278,8 +281,8 @@ public partial class ActionManager
 					if( skill.n_CP > 0 ){
 						caster.n_CP -= skill.n_CP;  //						
 					}
-
-					caster.DoCastEffect( ref act.HitResult  );
+					cUnitData target = GameDataManager.Instance.GetUnitDateByIdent( nTargetIdent );
+					caster.DoCastEffect( nSkillID  , target ,  ref act.HitResult  );
 
 					// 直接回復防禦
 					if( skill.f_DEF > 0.0f  ){
@@ -393,7 +396,7 @@ public partial class ActionManager
 							
 						}break;
 						case cHitResult._TYPE._DEF:{
-							pUnit.ShowValueEffect( res.Value1 , 0 ); // DEF
+							pUnit.ShowValueEffect( res.Value1 , 1 ); // DEF
 							if( res.Value1 != 0 ) // maybe change data in  battle manage
 							{
 								pUnit.pUnitData.AddDef (res.Value1   );
@@ -401,14 +404,14 @@ public partial class ActionManager
 							
 						}break;
 						case cHitResult._TYPE._MP:{
-							pUnit.ShowValueEffect( res.Value1 , 0 ); // MP
+							pUnit.ShowValueEffect( res.Value1 , 2 ); // MP
 							if( res.Value1 != 0 ) // maybe change data in  battle manage
 							{
 								pUnit.pUnitData.AddMp (res.Value1   );
 							}							
 						}break;
 						case cHitResult._TYPE._SP:{
-							pUnit.ShowValueEffect( res.Value1 , 0 ); // SP
+							pUnit.ShowValueEffect( res.Value1 , 3 ); // SP
 							if( res.Value1 != 0 ) // maybe change data in  battle manage
 							{
 								pUnit.pUnitData.AddSp (res.Value1   );

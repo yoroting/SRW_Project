@@ -199,6 +199,31 @@ public class TalkSayEndEvent: GameEvent {
 		name = Name;		// important.  must have this line as key
 	}
 }
+public class TalkBackGroundEvent: GameEvent {
+	public const string Name = "TalkBackGroundEvent";
+	public int nBackGroundID = 0;
+	public int nType  ;
+	
+	public TalkBackGroundEvent(){
+		name = Name;		// important.  must have this line as key
+	}
+}
+public class TalkDeadEvent: GameEvent {
+	public const string Name = "TalkDeadEvent";
+	public int nChar = 0;
+	
+	public TalkDeadEvent(){
+		name = Name;		// important.  must have this line as key
+	}
+}
+public class TalkShakeEvent: GameEvent {
+	public const string Name = "TalkShakeEvent";
+	public int nChar = 0;
+	
+	public TalkShakeEvent(){
+		name = Name;		// important.  must have this line as key
+	}
+}
 
 // Battle
 public class StageBattleAttackEvent: GameEvent {

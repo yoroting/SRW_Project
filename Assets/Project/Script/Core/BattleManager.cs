@@ -257,7 +257,7 @@ public partial class BattleManager
 					
 					
 					// atk start cast action
-					uAction pCastingAction = ActionManager.Instance.CreateCastAction( nAtkerID, nAtkerSkillID  );
+				uAction pCastingAction = ActionManager.Instance.CreateCastAction( nAtkerID, nAtkerSkillID ,nDeferID );
 					// skill attr
 					if( pCastingAction != null )
 					{
@@ -298,7 +298,7 @@ public partial class BattleManager
 
 			break;
 		case 2:			// def casting
-			uAction pCastingAction = ActionManager.Instance.CreateCastAction( nDeferID , nDeferSkillID  );
+			uAction pCastingAction = ActionManager.Instance.CreateCastAction( nDeferID , nDeferSkillID , nAtkerID );
 			if( pCastingAction != null )
 			{
 //				Defer.DoSkillCastEffect( ref pCastingAction.HitResult  );
@@ -530,7 +530,7 @@ public partial class BattleManager
 		case 0:	// prepare for event check
 			Atker.SetFightAttr (nDeferID, nAtkerSkillID);
 			Atker.AddStates (_FIGHTSTATE._ATKER);
-			uAction pCastingAction = ActionManager.Instance.CreateCastAction (nAtkerID, nAtkerSkillID);// Casting
+			uAction pCastingAction = ActionManager.Instance.CreateCastAction (nAtkerID, nAtkerSkillID,nDeferID);// Casting
 			// skill attr
 			if (pCastingAction != null) {
 	//			Atker.DoSkillCastEffect( ref pCastingAction.HitResult );
@@ -711,6 +711,7 @@ public partial class BattleManager
 	List< cUnitData > AtkAffectPool = null; //攻方影響人數
 	List< cUnitData > DefAffectPool = null; //守方反擊影響人數
 
+
 	// CC link
 //	List< cUnitData > AtkCCPool = null;
 //	List< cUnitData > DefCCPool = null;
@@ -770,6 +771,43 @@ public partial class BattleManager
 	{
 		nBattleID = nBattleID;
 	}
+
+	// 針對 counter 的立即處理
+	public void PlayCounterCast (int nCastIdent, int nTarIdent , int nSkillID )
+	{
+		cUnitData Caster = GameDataManager.Instance.GetUnitDateByIdent ( nCastIdent );
+		cUnitData Target = GameDataManager.Instance.GetUnitDateByIdent ( nTarIdent );
+
+		ActionManager.Instance.CreateCastAction( nCastIdent , nSkillID );
+		// hit effect
+		uAction pAct = ActionManager.Instance.CreateHitAction ( nCastIdent, 0 , 0 , nSkillID );
+		if( pAct != null )
+		{
+			//必須先取得影響人數
+			int nTarX = 0;
+			int nTarY = 0;
+		
+			// 只有簡單給 buff 可以執行
+
+			SKILL skl = ConstDataManager.Instance.GetRow<SKILL>( nSkillID );
+			if( skl == null )
+				return;
+
+			pAct.AddHitResult(  CalSkillHitResult( Caster, Target , nSkillID ) ) ;
+
+		}
+
+
+//		nAtkerID = nAtkIdent;
+//		nDeferID = nTarIdent;
+//		nTarGridX = nGridX;
+//		nTarGridY = nGridY;
+//		
+//		nAtkerSkillID = nSkillID;
+//		
+//		eBattleType = _BATTLE._CAST ;
+	}
+
 //	public void Play()
 //	{
 //		bPause = false;
@@ -841,6 +879,7 @@ public partial class BattleManager
 	}
 	public void ShowBattleResValue( GameObject obj , int nValue , int nMode )
 	{	
+		//nMode : 0 - hp , 1- def , 2 - mp , 3 -sp
 		Vector3 v = new Vector3 (0, 0, 0);
 		if ( obj != null) {
 			// show in screen center
@@ -871,15 +910,19 @@ public partial class BattleManager
 //
 //			}
 
+			//nMode : 0 - hp , 1- def , 2 - mp , 3 -sp
 
 			UILabel lbl = go.GetComponent< UILabel >();
 			if( lbl )
 			{
 				if( nValue > 0 )
 				{
-					// heal 
-					
-					lbl.gradientTop = new Color( 0.0f, 1.0f , 0.0f );
+					if( nMode == 1 ){
+						lbl.gradientTop = new Color( 1.0f, 1.0f , 0.0f );
+					}
+					else {
+						lbl.gradientTop = new Color( 0.0f, 1.0f , 0.0f );
+					}
 				}
 				else{ 
 					// damage
@@ -1082,42 +1125,6 @@ public partial class BattleManager
 
 	}
 
-	// cal result of castout hit
-	public List<cHitResult> CalSkillHitResult( cUnitData pAtker , cUnitData pDefer , int nSkillID  )
-	{
-		//cUnitData pAtker = GameDataManager.Instance.GetUnitDateByIdent( nAtker ); 	//Panel_StageUI.Instance.GetUnitByIdent( nAtker ); 
-		if ( (pAtker == null) || (pDefer == null) )
-			return null;
-		List<cHitResult> resPool = new List<cHitResult> ();
-		//resPool.Add ( new cHitResult( cHitResult._TYPE._HIT ,pAtker   ) ); // not a really hit
-	//	SKILL Skill = pAtker.FightAttr.SkillData.skill;
-
-	//	if (Skill.n_TARGET == 0 ) { // self cast a buff
-			// hit result
-
-//		MyTool.DoSkillEffect( pAtker , pAtker.FightAttr.HitPool , Skill.s_CAST_TRIG ,  pAtker.FightAttr.HitEffPool , ref resPool  );
-		pAtker.DoHitEffect(pDefer , ref resPool );
-		if (pDefer != null) {
-			pDefer.DoBeHitEffect( pAtker , ref resPool );
-
-		}
-		//	MyScript.Instance.RunSkillEffect ( pAtker , null , pAtker.FightAttr.Skill.s_HIT_EFFECT , ref resPool ); // bad frame work
-
-		//--- hit back 
-		if (pAtker.FightAttr.SkillID!= 0) {
-			int nBack = pAtker.FightAttr.SkillData.skill.n_HITBACK;
-
-			iVec2 vFinal = Panel_StageUI.Instance.SkillHitBack(pAtker.n_Ident , pDefer.n_Ident , nBack  );
-			if( vFinal != null )
-			{
-				resPool.Add( new cHitResult( cHitResult._TYPE._HITBACK, pDefer.n_Ident , vFinal.X , vFinal.Y ) );
-			}
-		} 
-
-
-		//}
-		return resPool;
-	}
 
 	public List<cHitResult> CalAttackResult( int nAtker , int nDefer , bool bDefMode = false )
 	{
@@ -1126,8 +1133,11 @@ public partial class BattleManager
 		if ( (pAtker == null) || (pDefer == null) )
 			return null;
 
-		pAtker.AddStates (_FIGHTSTATE._DAMAGE);
-		pDefer.AddStates (_FIGHTSTATE._BEDAMAGE);
+		//標示用，讓後面有判斷依據
+		pAtker.AddStates (_FIGHTSTATE._DAMAGE);		// 使用傷害姓技能
+		pDefer.AddStates (_FIGHTSTATE._BEDAMAGE);// 被使用傷害姓技能
+
+
 		if (bDefMode == true) {
 			pDefer.AddStates( _FIGHTSTATE._DEFMODE );
 		}
@@ -1137,11 +1147,12 @@ public partial class BattleManager
 		resPool.Add ( new cHitResult( cHitResult._TYPE._HIT ,nAtker , nDefer  ) );
 
 
-
+		// 守方強制迴避
 		if (pDefer.IsStates (_FIGHTSTATE._DODGE)) {
 			resPool.Add (new cHitResult (cHitResult._TYPE._DODGE, nDefer, 0 ));	
 			return resPool;
 		}
+
 
 		// buff effect
 		float AtkMarPlus = pAtker.FightAttr.fAtkAssist;   // assist is base pils
@@ -1272,20 +1283,52 @@ public partial class BattleManager
 
 		return resPool;
 	}
+	// cal result of castout hit
+	public List<cHitResult> CalSkillHitResult( cUnitData pAtker , cUnitData pDefer , int nSkillID  )
+	{
+		//cUnitData pAtker = GameDataManager.Instance.GetUnitDateByIdent( nAtker ); 	//Panel_StageUI.Instance.GetUnitByIdent( nAtker ); 
+		if ( (pAtker == null) || (pDefer == null) )
+			return null;
+
+		// 守方強制迴避- Yoro 不能下在這裡。會造成一些該上的BUFF沒上到
+	//	if (pDefer.IsStates (_FIGHTSTATE._DODGE)) {		
+//			return null;
+//		}
+
+		List<cHitResult> resPool = new List<cHitResult> ();
+	
+		//		MyTool.DoSkillEffect( pAtker , pAtker.FightAttr.HitPool , Skill.s_CAST_TRIG ,  pAtker.FightAttr.HitEffPool , ref resPool  );
+		pAtker.DoHitEffect( nSkillID, pDefer , ref resPool );
+		if (pDefer != null) {
+			pDefer.DoBeHitEffect( pAtker , ref resPool );
+			
+		}
+		//	MyScript.Instance.RunSkillEffect ( pAtker , null , pAtker.FightAttr.Skill.s_HIT_EFFECT , ref resPool ); // bad frame work
+
+		if (pDefer.IsStates (_FIGHTSTATE._DODGE)) {		
+			return resPool;
+		}
+		//--- hit back 
+		if (pAtker.FightAttr.SkillID!= 0) {
+			int nBack = pAtker.FightAttr.SkillData.skill.n_HITBACK;
+			
+			iVec2 vFinal = Panel_StageUI.Instance.SkillHitBack(pAtker.n_Ident , pDefer.n_Ident , nBack  );
+			if( vFinal != null )
+			{
+				resPool.Add( new cHitResult( cHitResult._TYPE._HITBACK, pDefer.n_Ident , vFinal.X , vFinal.Y ) );
+			}
+		} 
+		
+		
+		//}
+		return resPool;
+	}
 
 	// Operation Token ID 
 	//
 	public bool CanPK( _CAMP  camp1 , _CAMP  camp2 ) 	
 	{
 		return MyTool.CanPK(camp1 , camp2   );
-//		if (camp1 != camp2 ) {
-//			if( camp1 == _CAMP._ENEMY || camp2 == _CAMP._ENEMY )
-//			{
-//				return true;
-//			}
-//		}
-//		
-//		return false;
 	}
 
 

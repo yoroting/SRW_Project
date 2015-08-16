@@ -547,7 +547,7 @@ MonoBehaviour:
   topType: 1
   mSprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   mMat: {fileID: 0}
-  mShader: {fileID: 4800000, guid: e75727d9555d9d14ca51d91908c681bc, type: 3}
+  mShader: {fileID: 4800000, guid: 4f20449ee8fceed4a9a19c1bc4c5ebce, type: 3}
   mBorder: {x: 10, y: 10, z: 10, w: 10}
   mFixedAspect: 0
   mPixelSize: 1
@@ -637,6 +637,8 @@ MonoBehaviour:
   m_lstsContextWait: []
   m_sPopText: 
   m_sShowText: 
+  bIsShaking: 0
+  bIsDeading: 0
 --- !u!114 &11417614
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -653,6 +655,8 @@ MonoBehaviour:
   m_lstsContextWait: []
   m_sPopText: 
   m_sShowText: 
+  bIsShaking: 0
+  bIsDeading: 0
 --- !u!114 &11421044
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -702,7 +706,7 @@ MonoBehaviour:
   topType: 1
   mSprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   mMat: {fileID: 0}
-  mShader: {fileID: 4800000, guid: e75727d9555d9d14ca51d91908c681bc, type: 3}
+  mShader: {fileID: 4800000, guid: 4f20449ee8fceed4a9a19c1bc4c5ebce, type: 3}
   mBorder: {x: 10, y: 10, z: 10, w: 10}
   mFixedAspect: 0
   mPixelSize: 1
@@ -1014,7 +1018,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3003
+  startingRenderQueue: 3006
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 0
@@ -1097,6 +1101,8 @@ MonoBehaviour:
   m_lstsContextWait: []
   m_sPopText: 
   m_sShowText: 
+  bIsShaking: 0
+  bIsDeading: 0
 --- !u!114 &11442720
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1225,7 +1231,7 @@ MonoBehaviour:
     height: 1
   mTexture: {fileID: 2800000, guid: d696b807d9946de48b4378fdbf0432cb, type: 3}
   mMat: {fileID: 0}
-  mShader: {fileID: 4800000, guid: e75727d9555d9d14ca51d91908c681bc, type: 3}
+  mShader: {fileID: 4800000, guid: 4f20449ee8fceed4a9a19c1bc4c5ebce, type: 3}
   mBorder: {x: 0, y: 0, z: 0, w: 0}
   mFixedAspect: 0
 --- !u!114 &11451444

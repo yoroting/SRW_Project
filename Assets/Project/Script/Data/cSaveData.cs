@@ -13,6 +13,7 @@ using System.ComponentModel;
 public class cBuffSaveData{
 
 	[JsonName("id")] [DefaultValue(0)]public int nID ;
+
 	[JsonName("time")] [DefaultValue(0)]public int nTime ;			//還有幾回合 
 	[JsonName("num")] [DefaultValue(0)]public int nNum ;			//疊幾層了	
 	
@@ -104,6 +105,7 @@ public class cUnitSaveData{
 [Serializable][JsonName("save")]
 public class cSaveData{
 	[JsonName("ver")] [DefaultValue(1)] public int nVersion=1;
+
 	[JsonName("idx")] [DefaultValue(0)] public int n_IDX;
 	[JsonName("story")] [DefaultValue(0)] public int n_StoryID;
 	[JsonName("stage")] [DefaultValue(0)] public int n_StageID;
@@ -114,6 +116,10 @@ public class cSaveData{
 	[JsonName("stars")] [DefaultValue(0)] public int n_Stars;			//熟練度
 
 	[JsonName("phase")] [DefaultValue(_SAVE_PHASE._MAINTEN)] public _SAVE_PHASE ePhase = _SAVE_PHASE._MAINTEN;			//  0 - 整備 , 1-戰場上 , 2- sys
+
+	[JsonName("pfirst")]public string sPlayerFirst ;			//玩家姓
+	[JsonName("pname")] public string sPlayerName ;			//玩家名
+
 //	 string sFileName;
 
 //	 public cSaveData( int nIdx )
@@ -153,6 +159,9 @@ public class cSaveData{
 		n_IDX = nIdx;
 
 		//把所有要記錄的都寫在這
+		sPlayerFirst = Config.PlayerFirst;
+		sPlayerName = Config.PlayerName;
+
 		n_StoryID = GameDataManager.Instance.nStoryID;
 		n_StageID = GameDataManager.Instance.nStageID;
 		n_Round = GameDataManager.Instance.nRound;
@@ -199,6 +208,14 @@ public class cSaveData{
 		// clear data
 
 //		GameDataManager.Instance.SaveData = this; // for startcoror
+		//把所有要記錄的都寫在這
+
+		Config.PlayerFirst = sPlayerFirst ;
+		Config.PlayerName = sPlayerName;
+		if (string.IsNullOrEmpty (Config.PlayerFirst))
+			Config.PlayerFirst = Config.DefaultPlayerFirst;
+		if (string.IsNullOrEmpty (Config.PlayerName))
+			Config.PlayerName = Config.DefaultPlayerName;
 
 
 		GameDataManager.Instance.StoragePool.Clear();
@@ -208,10 +225,12 @@ public class cSaveData{
 		// reset data
 		GameDataManager.Instance.nStoryID = n_StoryID;
 		GameDataManager.Instance.nStageID = n_StageID;
-		GameDataManager.Instance.nRound   = n_Round;
-		GameDataManager.Instance.nActiveCamp = e_Camp ;
 		GameDataManager.Instance.nMoney = n_Money;
 		GameDataManager.Instance.nStars = n_Stars;
+
+		// stage data  set in stage load
+//		GameDataManager.Instance.nRound   = n_Round;
+//		GameDataManager.Instance.nActiveCamp = e_Camp ;
 
 		// need set after stage load
 //		if( nPlayerBGM > 0 )

@@ -353,6 +353,11 @@ public class cUnitData{
 		if (tbl != null) {
 			foreach( SKILL skl in tbl )
 			{
+				if( skl.n_LEVEL_LEARN  < 0 )// 小於0的是進階技能。不能直接學
+				{
+					continue;
+				}
+
 				if( skl.n_LEVEL_LEARN > nLv && (!Config.GOD) )
 				{
 					continue;
@@ -360,10 +365,16 @@ public class cUnitData{
 				if( skl.n_SCHOOL != id )
 					continue;
 
+				int nSklID = skl.n_ID;
+//				//判斷是否進階
+//				if( Buffs.HaveBuff( skl.n_UPGRADE_BUFF ) )
+//				{
+//					nSklID = skl.n_UPGRADE_SKILL;
+//				}
 				//
-				if( SkillPool.ContainsKey( skl.n_ID ) == false )
+				if( SkillPool.ContainsKey( nSklID ) == false )
 				{
-					AddSkill( skl.n_ID );
+					AddSkill( nSklID );
 				}
 			}
 		}
@@ -503,7 +514,21 @@ public class cUnitData{
 		n_Rank = cData.n_RANK;
 		// set school;
 		SkillPool.Clear ();
+		//被動能力先，因為會影響出生BUFF 與技能進階
+		//Set born Buff
+		if (cData.s_BUFF != "0" && cData.s_BUFF.ToUpper() != "NULL") {
+			string [] strBorn = cData.s_BUFF.Split(";".ToCharArray());
+			for( int i= 0 ; i <strBorn.Length; i++  )
+			{
+				int nBuffID = 0;
+				if( int.TryParse( strBorn[i] , out nBuffID ) ){
+					Buffs.AddBuff( nBuffID , n_Ident , 0 , 0 );
+				}
+			}
+		}
 
+
+		///==
 		cTextArray TA = new cTextArray ();
 		TA.SetText (cData.s_SCHOOL);
 		for (int i = 0; i < TA.GetMaxCol(); i++) {
@@ -541,17 +566,7 @@ public class cUnitData{
 				}
 			}
 		}
-		//Set born Buff
-		if (cData.s_BUFF != "0" && cData.s_BUFF.ToUpper() != "NULL") {
-			string [] strBorn = cData.s_BUFF.Split(";".ToCharArray());
-			for( int i= 0 ; i <strBorn.Length; i++  )
-			{
-				int nBuffID = 0;
-				if( int.TryParse( strBorn[i] , out nBuffID ) ){
-					Buffs.AddBuff( nBuffID , n_Ident , 0 , 0 );
-				}
-			}
-		}
+
 
 		// set up item
 		if (cData.n_ITEM1 > 0) {
@@ -579,9 +594,7 @@ public class cUnitData{
 			
 		}
 		// set up AI
-		eSearchAI = (_AI_SEARCH)cCharData.n_MOBAI;
-
-
+		eSearchAI = (_AI_SEARCH)cCharData.n_MOBAI; // 
 
 		// fill base data;
 		Relive();
@@ -951,7 +964,7 @@ public class cUnitData{
 	public void AddCp( int cp , bool bShow= false )
 	{
 		
-		n_SP =  MyTool.ClampInt(n_CP+cp , 0 , 5 ); 
+		n_CP =  MyTool.ClampInt(n_CP+cp , 0 , 5 ); 
 	}
 
 	public void AddDef( int def , bool bShow= false  )
@@ -1245,24 +1258,28 @@ public class cUnitData{
 		Buffs.UpdateCondAttr (ref  attr );
 	}
 
-	public void DoCastEffect( ref List< cHitResult > resPool )
+	public void DoCastEffect( int nSkillID  , cUnitData tarunit , ref List< cHitResult > resPool )
 	{
-		cUnitData Defer = GameDataManager.Instance.GetUnitDateByIdent (FightAttr.TarIdent);
-		if (FightAttr.SkillData != null) {
-			FightAttr.SkillData.DoCastEffect (this, Defer, ref resPool);  
+		//cUnitData Defer = GameDataManager.Instance.GetUnitDateByIdent (FightAttr.TarIdent);
+
+		cSkillData skilldata = MyTool.GetSkillData ( nSkillID ) ;
+		if (skilldata != null) {
+			skilldata.DoCastEffect (this, tarunit, ref resPool);  
 		}
 
-		Buffs.OnCast (Defer, ref resPool);
+		Buffs.OnCast (tarunit, ref resPool);
 
 
 		//MyTool.DoSkillEffect ( this , Defer ,  FightAttr.SkillData.CastPool , FightAttr.SkillData.CastCond ,  FightAttr.SkillData.CastCondEffectPool , ref resPool  );
 	}
 
 
-	public void DoHitEffect( cUnitData tarunit , ref List< cHitResult > resPool )
+	public void DoHitEffect( int nSkillID  , cUnitData tarunit , ref List< cHitResult > resPool )
 	{
-		if (FightAttr.SkillData != null) {
-			FightAttr.SkillData.DoHitEffect (this, tarunit, ref resPool);  
+
+		cSkillData skilldata = MyTool.GetSkillData ( nSkillID ) ;
+		if (skilldata != null) {
+			skilldata.DoHitEffect (this, tarunit, ref resPool);  
 		}
 
 		Buffs.OnHit (tarunit, ref resPool);
@@ -1276,19 +1293,9 @@ public class cUnitData{
 	}
 
 	public void DoBeHitEffect( cUnitData tarunit , ref List< cHitResult > resPool )
-	{
-		if (FightAttr.SkillData != null) {
-			FightAttr.SkillData.DoHitEffect (this, tarunit, ref resPool);  
-		}
-		
+	{		
 		Buffs.OnBeHit (tarunit, ref resPool);
-		//		MyTool.DoSkillEffect ( this , tarunit , FightAttr.SkillData.HitPool , FightAttr.SkillData.HitCond ,  FightAttr.SkillData.CastCondEffectPool , ref resPool  );
-		
-		//		if (FightAttr.Skill == null)
-		//			return;
-		//		
-		//		MyTool.DoSkillEffect ( this , FightAttr.HitPool , FightAttr.Skill.s_HIT_TRIG ,  FightAttr.HitEffPool , ref resPool  );
-		
+
 	}
 
 	public void Waiting( )

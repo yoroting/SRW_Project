@@ -9,14 +9,12 @@ public class Panel_Win : MonoBehaviour {
 
 	void OnEnable()
 	{
-		Panel_StageUI.Instance.bIsStageEnd = true;
-		GameDataManager.Instance.EndStage ();   // 處理戰場結束的資料回存
+		Panel_StageUI.Instance.EndStage ();
+		//Panel_StageUI.Instance.bIsStageEnd = true;
 
-		// 決定 下一個story
-		STAGE_DATA stage = ConstDataManager.Instance.GetRow< STAGE_DATA > ( GameDataManager.Instance.nStageID );
-		if (stage != null) {
-			GameDataManager.Instance.nStoryID = stage.n_NEXT_STORY;
-		}
+		// GameDataManager.Instance.EndStage ();   // 處理戰場結束的資料回存
+
+		// hide stage 
 
 
 	}
@@ -39,8 +37,26 @@ public class Panel_Win : MonoBehaviour {
 	
 	void OnCloseBtnClick(GameObject go)
 	{	
-		// open main ten ui
-		PanelManager.Instance.OpenUI ( Panel_Mainten.Name );
+
+		// if it have talk event. play it
+		Panel_StageUI.Instance.ShowStage (false);
+		// 決定 下一個story
+		STAGE_DATA stage = ConstDataManager.Instance.GetRow< STAGE_DATA > ( GameDataManager.Instance.nStageID );
+		if (stage != null) {
+			GameDataManager.Instance.nStoryID = stage.n_NEXT_STORY;
+
+			if( stage.n_WIN_TALK > 0 ){
+				GameSystem.TalkEvent( stage.n_WIN_TALK );
+			}
+			else{
+				// open main ten ui directly
+				PanelManager.Instance.OpenUI ( Panel_Mainten.Name );
+
+			}
+
+		}
+
+
 		// Go to Mainten Ui 
 		PanelManager.Instance.DestoryUI ( Name );
 

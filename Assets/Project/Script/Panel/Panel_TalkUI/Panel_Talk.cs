@@ -30,6 +30,7 @@ public class Panel_Talk : MonoBehaviour {
 
 	// script pause;
 	bool m_bClickScript;
+	bool m_bIsClosing ;
 
 	// tween check
 	private int nTweenObjCount;
@@ -68,7 +69,9 @@ public class Panel_Talk : MonoBehaviour {
 		GameEventManager.AddEventListener(  TalkSetCharEvent.Name , OnTalkSetCharEvent );
 		GameEventManager.AddEventListener(  TalkSayEndEvent.Name , OnTalkSayEndEvent );
 
-
+		GameEventManager.AddEventListener(  TalkBackGroundEvent.Name , OnTalkBackGroundEvent );
+		GameEventManager.AddEventListener(  TalkDeadEvent.Name , OnTalkDeadEvent );
+		GameEventManager.AddEventListener(  TalkShakeEvent.Name , OnTalkShakeEvent );
 
 	//	CharSay( 1  , 9 );
 		// cause some mob pop in talk event. player can't skip talk event to avoid bug
@@ -107,11 +110,24 @@ public class Panel_Talk : MonoBehaviour {
 		}
 		SetScript ( GameDataManager.Instance.nTalkID ); 
 
+		//MyTool.SetAlpha (this.gameObject, 1.0f);
+		TweenAlpha tw = TweenAlpha.Begin<TweenAlpha>( this.gameObject , 0.2f );
+		if (tw != null) {
+			//MyTool.SetAlpha (TilePlaneObj, 0.0f);
+			tw.from = 0.0f;
+			tw.to = 1.0f;
+			//tw.onFinished = null ;
+		}
+
+		m_bIsClosing = false;
 		//bSkipMode = false;
 	}
 
 	// Update is called once per frame
 	void Update () {
+
+		if (m_bIsClosing)
+			return;
 
 		// pause when unit is animate
 		if( Panel_StageUI.Instance.IsAnyActionRunning() == true ) // wait all tween / fx / textbox / battle msg finish / unit move
@@ -135,6 +151,11 @@ public class Panel_Talk : MonoBehaviour {
 		GameEventManager.RemoveEventListener(  TalkSetCharEvent.Name , OnTalkSetCharEvent );
 		GameEventManager.RemoveEventListener(  TalkSayEndEvent.Name , OnTalkSayEndEvent );
 
+		GameEventManager.RemoveEventListener(  TalkBackGroundEvent.Name , OnTalkBackGroundEvent );
+		GameEventManager.RemoveEventListener(  TalkDeadEvent.Name , OnTalkDeadEvent );
+		GameEventManager.RemoveEventListener(  TalkShakeEvent.Name , OnTalkShakeEvent );
+
+
 	}
 	// Base Panel click
 	void OnPanelClick(GameObject go)
@@ -157,19 +178,42 @@ public class Panel_Talk : MonoBehaviour {
 	void OnSkipClick(GameObject go)
 	{
 		//if (IsAllEnd())
+		Panel_StageUI.Instance.m_bIsSkipMode = true;
 
 		while( m_nScriptIdx< m_cScript.GetMaxCol ())
 		{
-			NextLine ( true );
+			NextLine ( );
 		}
 		EndTalk();
+
+		Panel_StageUI.Instance.m_bIsSkipMode = false;
 	}
 
 	// close talk panel
 	void EndTalk()
 	{
-		PanelManager.Instance.CloseUI( Panel_Talk.Name );
+		// if stage is end .. open main ten ui
+		if (Panel_StageUI.Instance.bIsStageEnd == true) {
+			PanelManager.Instance.OpenUI ( Panel_Mainten.Name );
+		}			 
 
+		TweenAlpha tw = TweenAlpha.Begin<TweenAlpha>( this.gameObject , 1.0f );
+		if (tw != null) {
+			//MyTool.SetAlpha (TilePlaneObj, 0.0f);
+			tw.from = 1.0f;
+			tw.to = 0.0f;
+			MyTool.TweenSetOneShotOnFinish( tw , EndTalkFinish );
+		}
+
+		m_bIsClosing = true;
+	}
+
+	void EndTalkFinish()
+	{
+		if (m_bIsClosing) {
+			m_bIsClosing = false;
+			PanelManager.Instance.CloseUI (Panel_Talk.Name);
+		}
 	}
 
 	public SRW_TextBox SelTextBoxObjByType( int nType )
@@ -343,7 +387,7 @@ public class Panel_Talk : MonoBehaviour {
 	}
 
 	// script go next line
-	public void NextLine( bool bSkip = false )
+	public void NextLine( )
 	{
 		if (m_nScriptIdx >= m_cScript.GetMaxCol ())
 		{
@@ -352,7 +396,7 @@ public class Panel_Talk : MonoBehaviour {
 		}
 
 		//ParserScript ( m_cScript.GetTextLine( m_nScriptIdx++ )  );
-		MyScript.Instance.ParserScript ( m_cScript.GetTextLine( m_nScriptIdx++ ) , bSkip  );
+		MyScript.Instance.ParserScript ( m_cScript.GetTextLine( m_nScriptIdx++ )   );
 
 		m_bClickScript = false;
 	}
@@ -396,6 +440,29 @@ public class Panel_Talk : MonoBehaviour {
 		CharEnd( Evt.nChar );
 	}
 
+	// set back ground
+	void OnTalkBackGroundEvent( GameEvent evt )
+	{
+		TalkBackGroundEvent Evt = evt as TalkBackGroundEvent;
+		if (Evt == null)
+			return;
+		this.SetBackground ( Evt.nBackGroundID );
+	}
+	// set talk dead
+	void OnTalkDeadEvent( GameEvent evt )
+	{
+		TalkDeadEvent Evt = evt as TalkDeadEvent;
+		if (Evt == null)
+			return;
+		this.CharDead ( Evt.nChar );
+	}
+	void OnTalkShakeEvent( GameEvent evt )
+	{
+		TalkShakeEvent Evt = evt as TalkShakeEvent;
+		if (Evt == null)
+			return;
+		this.CharShake ( Evt.nChar  );
+	}
 
 //	void ParserScript( CTextLine line )
 //	{
@@ -515,7 +582,7 @@ public class Panel_Talk : MonoBehaviour {
 
 		string s = GameSystem.GetTalkText ( nSayTextID );
 		string sText = s.Replace ( "$F" , Config.PlayerFirst ); // replace player name
-				sText = sText.Replace ( "$P" , Config.PlayerName ); // replace player name
+				sText = sText.Replace ( "$N" , Config.PlayerName ); // replace player name
 
 
 
@@ -538,7 +605,7 @@ public class Panel_Talk : MonoBehaviour {
 		} else {
 
 			sText = s.Replace ( "$F" , Config.PlayerFirst ); // replace player name
-			sText = sText.Replace ( "$P" , Config.PlayerName ); // replace player name			
+			sText = sText.Replace ( "$N" , Config.PlayerName ); // replace player name			
 
 		}
 		obj.AddText(sText);
@@ -588,11 +655,39 @@ public class Panel_Talk : MonoBehaviour {
 		}
 		
 	}
-	public void SetShock( int nType , int nShockType )
+	public void CharShake( int nCharID  )
 	{
-		
+		foreach( KeyValuePair < int ,SRW_TextBox > pair in m_idToObj )
+		{
+			if( pair.Value != null )
+			{
+				if( pair.Value.CharID == nCharID )
+				{
+					//return pair.Value;
+					// CloseBox( pair.Key , 0 );
+					pair.Value.SetShake();
+				}
+			}
+		}
 		
 	}
+
+	public void CharDead( int nCharID  )
+	{
+		foreach( KeyValuePair < int ,SRW_TextBox > pair in m_idToObj )
+		{
+			if( pair.Value != null )
+			{
+				if( pair.Value.CharID == nCharID )
+				{
+					//return pair.Value;
+					// CloseBox( pair.Key , 0 );
+					pair.Value.SetDead();
+				}
+			}
+		}
+	}
+
 	public void CloseBox( int nType , int nCloseType )
 	{
 		SRW_TextBox obj = SelTextBoxObjByType (nType) ;

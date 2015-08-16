@@ -219,6 +219,24 @@ public class cBuffs
 		return null;
 	}
 
+	// 取得因BUFF而進階的技能
+	public int GetUpgradeSkill( int nSkillID )
+	{
+		foreach( KeyValuePair<int , cBuffData>  pair in Pool )
+		{
+			foreach( cEffect eft in pair.Value.EffectPool )
+			{
+				if( eft != null )
+				{
+					int nTemp = eft._UpSkill( nSkillID ); 
+					if( nTemp != nSkillID ){
+						return nTemp;
+					}
+				}
+			}
+		}
+		return nSkillID;
+	}
 
 	// run 1 round .  buff time-1 with all >= 1 . remove buff if time become 0
 	public bool BuffRoundEnd( ref uAction act )
@@ -262,6 +280,9 @@ public class cBuffs
 				cUnitData unit = null ;
 				if( pair.Value.nTargetIdent > 0 ){
 					unit = GameDataManager.Instance.GetUnitDateByIdent ( pair.Value.nTargetIdent );
+					if( unit == null ){
+						Debug.LogErrorFormat( "Buff BuffFightEnd CharID{0}-Buff{1} with null TargetIdent{2} " , Owner.n_CharID , pair.Value.nID , pair.Value.nTargetIdent  );
+					}
 				}
 				else {
 					unit = unit_e;
@@ -326,6 +347,9 @@ public class cBuffs
 			cUnitData unit = null ;
 			if( pair.Value.nTargetIdent > 0 ){
 				unit = GameDataManager.Instance.GetUnitDateByIdent ( pair.Value.nTargetIdent );
+				if( unit == null ){
+					Debug.LogErrorFormat( "UpdateAttr CharID{0}-Buff{1} with null TargetIdent{2} " , Owner.n_CharID , pair.Value.nID , pair.Value.nTargetIdent  );
+				}
 			}
 			else {
 				unit = unit_e;
@@ -352,6 +376,9 @@ public class cBuffs
 			cUnitData unit = null ;
 			if( pair.Value.nTargetIdent > 0 ){
 				unit = GameDataManager.Instance.GetUnitDateByIdent ( pair.Value.nTargetIdent );
+				if( unit == null ){
+					Debug.LogErrorFormat( "UpdateCondAttr CharID{0}-Buff{1} with null TargetIdent{2} " , Owner.n_CharID , pair.Value.nID , pair.Value.nTargetIdent  );
+				}
 			}
 			else {
 				unit = unit_e;
@@ -387,6 +414,9 @@ public class cBuffs
 			cUnitData unit = null ;
 			if( pair.Value.nTargetIdent > 0 ){
 				unit = GameDataManager.Instance.GetUnitDateByIdent ( pair.Value.nTargetIdent );
+				if( unit == null ){
+					Debug.LogErrorFormat( "Buff OnDo CharID{0}-Buff{1} with null TargetIdent{2} " , Owner.n_CharID , pair.Value.nID , pair.Value.nTargetIdent  );
+				}
 			}
 			else {
 				unit = unit_e;
@@ -426,6 +456,9 @@ public class cBuffs
 			cUnitData unit = null ;
 			if( pair.Value.nTargetIdent > 0 ){
 				unit = GameDataManager.Instance.GetUnitDateByIdent ( pair.Value.nTargetIdent );
+				if( unit == null ){
+					Debug.LogErrorFormat( "Buff OnCast CharID{0}-Buff{1} with null TargetIdent{2} " , Owner.n_CharID , pair.Value.nID , pair.Value.nTargetIdent  );
+				}
 			}
 			else {
 				unit = unit_e;
@@ -464,6 +497,9 @@ public class cBuffs
 			cUnitData unit = null ;
 			if( pair.Value.nTargetIdent > 0 ){
 				unit = GameDataManager.Instance.GetUnitDateByIdent ( pair.Value.nTargetIdent );
+				if( unit == null ){
+					Debug.LogErrorFormat( "Buff OnHit CharID{0}-Buff{1} with null TargetIdent{2} " , Owner.n_CharID , pair.Value.nID , pair.Value.nTargetIdent  );
+				}
 			}
 			else {
 				unit = unit_e;
@@ -502,6 +538,9 @@ public class cBuffs
 			cUnitData unit = null ;
 			if( pair.Value.nTargetIdent > 0 ){
 				unit = GameDataManager.Instance.GetUnitDateByIdent ( pair.Value.nTargetIdent );
+				if( unit == null ){
+					Debug.LogErrorFormat( "Buff OnBeHit CharID{0}-Buff{1} with null TargetIdent{2} " , Owner.n_CharID , pair.Value.nID , pair.Value.nTargetIdent  );
+				}
 			}
 			else {
 				unit = unit_e;
@@ -544,6 +583,9 @@ public class cBuffs
 			cUnitData unit = null ;
 			if( pair.Value.nTargetIdent > 0 ){
 				unit = GameDataManager.Instance.GetUnitDateByIdent ( pair.Value.nTargetIdent );
+				if( unit == null ){
+					Debug.LogErrorFormat( "Buff CheckStatus CharID{0}-Buff{1} with null TargetIdent{2} " , Owner.n_CharID , pair.Value.nID , pair.Value.nTargetIdent  );
+				}
 			}
 			else {
 				unit = unit_e;
