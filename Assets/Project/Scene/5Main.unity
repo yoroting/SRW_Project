@@ -668,7 +668,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 156318, guid: cfa057b5163a60741bb67ec2db63f91c, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11491810, guid: cfa057b5163a60741bb67ec2db63f91c, type: 2}
       propertyPath: aspectRatio
@@ -676,7 +676,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11491810, guid: cfa057b5163a60741bb67ec2db63f91c, type: 2}
       propertyPath: mWidth
-      value: 108
+      value: 106
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: cfa057b5163a60741bb67ec2db63f91c, type: 2}
