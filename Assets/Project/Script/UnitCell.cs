@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 using MYGRIDS;
-using UnityEditor;
 
 public enum _CellType
 {

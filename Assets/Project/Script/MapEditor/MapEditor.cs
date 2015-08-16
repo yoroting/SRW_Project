@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR
+using UnityEngine;
 using System.Collections;
 using MYGRIDS;
 using UnityEditor;
@@ -346,3 +347,4 @@ public class MapEditor : MonoBehaviour
     {
     }
 }
+#endif
