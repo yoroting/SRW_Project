@@ -31,6 +31,7 @@ public class Config
 
 
 	public static int	MaxCharLevel = 20;
+	public static int	MaxCP = 5;
 	public static float CharMarLVUp = 1.0f;
 	public static int 	CharBaseSp = 40;
 	public static int 	CharSpLVUp = 4;

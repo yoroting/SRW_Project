@@ -244,13 +244,54 @@ namespace MYGRIDS
 
         }
 
-        public List<iVec2> AdjacentList()
+        public List<iVec2> AdjacentList( int nRadius = 1 )
         {
             List<iVec2> lst = new List<iVec2>();
-            lst.Add(new iVec2(X - 1, Y));
-            lst.Add(new iVec2(X, Y - 1));
-            lst.Add(new iVec2(X + 1, Y));
-            lst.Add(new iVec2(X, Y + 1));
+			if( nRadius <= 1){
+            	lst.Add(new iVec2(X - 1, Y));
+            	lst.Add(new iVec2(X, Y - 1));
+            	lst.Add(new iVec2(X + 1, Y));
+            	lst.Add(new iVec2(X, Y + 1));
+				return lst;
+			}
+			// expan size
+			// 正向
+			for (int i = 0; i <= nRadius; i++) // 0 不用計算
+			{
+				int x1 = X + i;           // 正
+				for (int j = 0; j <= nRadius; j++) // 0 不用計算
+				{
+					int tmp = i + j;
+					if (tmp > nRadius || tmp < 1)
+						continue;					
+						
+					int y1 = Y + j;           // 正
+					lst.Add(new iVec2(x1, y1));
+
+					if (j == 0)                 // avoid 0 duplic
+						continue;
+						
+					int y2 = Y - j;           // 反 
+					lst.Add(new iVec2(x1, y2));						
+				}
+				if (i == 0)                      // avoid 0 duplic
+					continue;
+				int x2 = X - i;           // 反
+				for (int j = 0; j <= nRadius; j++) // 0 不用計算
+				{
+					int tmp = i + j;
+					if (tmp > nRadius || tmp < 1)
+						continue;          // over dist 						
+					int y1 = Y + j;           // 正
+					lst.Add(new iVec2(x2, y1));							
+						
+					if (j == 0)                 // avoid 0 duplic
+						continue;
+						
+					int y2 = Y - j;           // 反 
+					lst.Add(new iVec2(x2, y2));
+				}
+			}
             return lst;
         }
         // 移動座標

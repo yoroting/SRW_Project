@@ -456,20 +456,41 @@ public class MyScript {
 					GameDataManager.Instance.nFriendBGM = nID;
 				}
 			}
+
+
 			else if( func.sFunc == "BGMPHASE"  )
 			{
-				int nID = func.I( 0 );
-				if( nID> 0 ){
-					GameDataManager.Instance.nPlayerBGM = nID;
-				}
-				int nID2 = func.I( 1 );
-				if( nID2> 0 ){
-					GameDataManager.Instance.nEnemyBGM = nID2;
-				}
-				int nID3 = func.I( 2 );
-				if( nID3> 0 ){
-					GameDataManager.Instance.nFriendBGM = nID3;
-				}
+				int nPhase = func.I( 0 );
+				GameDataManager.Instance.nPlayerBGM = 100 + nPhase ; // from 100-109
+				GameDataManager.Instance.nEnemyBGM  = 110 + nPhase ; // from 110-119	
+				GameDataManager.Instance.nEnemyBGM  = 120 + nPhase ; // from 120-129	
+
+//				if( nID> 0 ){
+//					GameDataManager.Instance.nPlayerBGM = nID;
+//				}
+//				int nID2 = func.I( 1 );
+//				if( nID2> 0 ){
+//					GameDataManager.Instance.nEnemyBGM = nID2;
+//				}
+//				int nID3 = func.I( 2 );
+//				if( nID3> 0 ){
+//					GameDataManager.Instance.nFriendBGM = nID3;
+//				}
+			}
+			else if( func.sFunc == "HELPBGM"  ) // 支援登場
+			{
+				int nID = 130+func.I( 0 );// from 130 - 139
+				GameSystem.PlayBGM ( nID );
+			}
+			else if( func.sFunc == "FORCEBGM"  ) // 敵軍登場
+			{
+				int nID = 140 + func.I( 0 ); // from 140-149
+				GameSystem.PlayBGM ( nID );
+			}
+			else if( func.sFunc == "BOSSBGM"  ) // BOSS FIGHT BGM
+			{
+				int nID = 150 + func.I( 0 ); // from 140-149
+				GameSystem.PlayBGM ( nID );
 			}
 
 			else if( func.sFunc == "SAY" )

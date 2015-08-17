@@ -964,12 +964,17 @@ public class cUnitData{
 	public void AddCp( int cp , bool bShow= false )
 	{
 		
-		n_CP =  MyTool.ClampInt(n_CP+cp , 0 , 5 ); 
+		n_CP =  MyTool.ClampInt(n_CP+cp , 0 , GetMaxCP() ); 
 	}
 
 	public void AddDef( int def , bool bShow= false  )
 	{
 		n_DEF =  MyTool.ClampInt(n_DEF+def , 0 , GetMaxDef () );  //   NGUIMath.ClampIndex (n_DEF, GetMaxDef ());	
+	}
+
+	public int GetMaxCP ()
+	{
+		return  Config.MaxCP;
 	}
 
 	// Get Data func

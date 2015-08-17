@@ -17,7 +17,7 @@ public class MobAI  {
 		int nSkillID = -1;		// 0 - no attack
 		// select a skill
 		if( mobdata.eComboAI == _AI_COMBO._NORMAL ){
-			nSkillID = 0;
+			nSkillID = SelSkill( mob.pUnitData );
 		}
 
 		int nMove = mobdata.GetMov ()  ; 
@@ -157,7 +157,7 @@ public class MobAI  {
 	{
 		int ident = mob.Ident ();
 		int nSkillRange = MyTool.GetSkillRange ( nSkillID );
-		Dictionary< Panel_unit , int > pool = Panel_StageUI.Instance.GetUnitHpPool(mob, true);
+		Dictionary< Panel_unit , int > pool = Panel_StageUI.Instance.GetUnitHpPool(mob, true , (nMove+nSkillRange) );
 		// Sort HP
 		var items = from pair in pool orderby pair.Value ascending select pair;
 		// 範圍內 低血量
@@ -167,7 +167,7 @@ public class MobAI  {
 			int nDist = mob.Loc.Dist( pair.Key.Loc );
 			if( nDist > nSkillRange  ) // pathfind if need
 			{
-				List< iVec2> path = FindPathToTarget( mob , pair.Key , nMove );
+				List< iVec2> path = FindPathToTarget( mob , pair.Key , nMove , nSkillRange );
 				if( path == null || (path.Count ==0) )
 				{
 					continue;
@@ -229,7 +229,7 @@ public class MobAI  {
 			int nDist = pair.Value; // value is dist
 			if( nDist > nSkillRange  ) // pathfind if need
 			{
-				List< iVec2> path = FindPathToTarget( mob , pair.Key , nMove );
+				List< iVec2> path = FindPathToTarget( mob , pair.Key , nMove , nSkillRange );
 				if( path == null || (path.Count ==0) )
 				{
 					continue; // can't find path try next target
@@ -358,7 +358,7 @@ public class MobAI  {
 				if( (nSkillRange+nMove) < nDist )
 					continue;
 
-				List< iVec2> path = FindPathToTarget( mob , pair.Key , nMove );
+				List< iVec2> path = FindPathToTarget( mob , pair.Key , nMove , nSkillRange );
 				if( path == null || (path.Count ==0) )
 				{
 					continue; // can't find path try next target
@@ -428,7 +428,7 @@ public class MobAI  {
 		int nDist = mob.Loc.Dist( target.Loc )   ; // value is dist
 		if( nDist > nSkillRange  ) // pathfind if need
 		{
-			List<iVec2> path = FindPathToTarget( mob , target , nMove );
+			List<iVec2> path = FindPathToTarget( mob , target , nMove , nSkillRange );
 			if( path == null || (path.Count ==0) )
 			{
 				//continue; // can't find path try next target
@@ -503,25 +503,24 @@ public class MobAI  {
 	}
 
 
-	public static List<iVec2> FindPathToTarget( Panel_unit Mob , Panel_unit Target  , int nMove )
+	public static List<iVec2> FindPathToTarget( Panel_unit Mob , Panel_unit Target  , int nMove , int nRange =1 )
 	{
 		if( Mob == null || Target == null ){
 			return null;
 		}
 		int ident = Mob.Ident();
 
-		List< iVec2 > nearList = Target.Loc.AdjacentList (); // the 4 pos can't stand ally
+		List< iVec2 > nearList = Target.Loc.AdjacentList ( nRange ); // the 4 pos can't stand ally
 		Dictionary< iVec2 , int > distpool = new Dictionary< iVec2 , int > ();
 		foreach (iVec2 v in nearList) {
-			if (Panel_StageUI.Instance.CheckIsEmptyPos (v) == true) {// 目標 周圍 不可以站人
+			if (Panel_StageUI.Instance.CheckIsEmptyPos (v) == true) {// 目標 pos 不可以站人
 				int d =v.Dist (Mob.Loc);
-
 				distpool.Add (v, d );
 			}
 		}
-		//int nDist=0;
-		// iVec2 last = null;
 
+		// dist sort
+		// try each path until can atk
 		var itemsdist = from pair2 in distpool orderby pair2.Value ascending select pair2;
 		foreach (KeyValuePair<iVec2 , int> pair2 in itemsdist) {
 
@@ -539,7 +538,6 @@ public class MobAI  {
 				}
 				else {
 					nLimit= nMove;  // this will happen?
-
 				}
 			}
 
@@ -568,11 +566,104 @@ public class MobAI  {
 	}
 
 
-	static int SelSkill( Panel_unit Mob )
+	static public int SelSkill( cUnitData pMob , cUnitData pTarget = null , bool bCounterMode = false  )
 	{
-		if( Mob == null ){
-			return -1;  // no attack
+		return 11702; // debug
+
+		cUnitData pData = pMob;
+		if( pData == null ){
+			return 0;  // no attack
 		}
+		// defence ai always defence
+		if( pData.eComboAI == _AI_COMBO._DEFENCE ){
+			return -1;
+		}
+
+		int nDist = 0;
+		if( pTarget != null ){
+			nDist = iVec2.Dist(pMob.n_X , pMob.n_Y ,pTarget.n_X , pTarget.n_Y );
+		}
+
+		// 普攻永遠有機會 ,CP 越高，普攻機會越低
+		if( nDist <= 1 ){
+			int r = Random.Range( 0, pData.GetMaxCP() );
+			if( r > pData.n_CP ){
+				return 0;				// select normal attack
+			}
+		}
+		// 全部權重
+		//int nTotalWidget = 0;
+		// list skill 
+		//List< SKILL> sklLst = new List< SKILL>();	
+		Dictionary< int , int > sklPool  = new Dictionary< int , int >();
+		// normal attack
+
+		//sklPool.Add( 0 , (pData.GetMaxCP() - pData.n_CP) +1 ); // 普攻永遠有機會 ,CP 越高，普攻機會越低
+
+		foreach(  KeyValuePair< int , cSkillData > pair in pData.SkillPool ){
+				int nSkillID = pair.Value.nID;
+				nSkillID = pData.Buffs.GetUpgradeSkill( nSkillID ); // Get upgrade skill
+				if( nSkillID ==0 )
+					continue;
+
+				SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(nSkillID);				
+				if( skl.n_SCHOOL == 0 )	// == 0 is ability
+					continue;				
+				if( skl.n_PASSIVE == 1 )
+					continue;
+
+				// check cp && MP
+				if( (pData.n_CP < skl.n_CP) || (pData.n_MP < skl.n_MP) ){
+//					continue;
+				}
+
+				// 防招只在破防時使用
+				if( skl.f_DEF > 0.0f && pData.n_DEF>0)
+					continue;
+
+				//牽制招不對小怪物用
+				cSkillData skldata = GameDataManager.Instance.GetSkillData( nSkillID );
+				if( skldata.IsTag( _SKILLTAG._TIEUP ) )
+				{
+					if( pTarget == null )
+						continue;
+					if( (pMob.GetMar() - pTarget.GetMar()) < 20.0f )
+						continue;
+				}
+
+
+				// check range when counter mode
+				if( bCounterMode){
+					//// 點地技能不能放	
+					if( skl.n_RANGE < nDist )
+						continue;
+				}
+				// 
+
+				int widget = skl.n_CP; // cp is base widget
+
+				// 	MODIFY widget 
+				if( skl.n_AREA != 0 ){
+					widget +=3; // aoe first
+				}
+
+				sklPool.Add( nSkillID , widget );
+				//sklLst.Add(  skl );
+		}
+		// 
+		if( (sklPool.Count > 0) )
+		{
+			// random a skill
+			int id = MyTool.RollWidgetPool( sklPool );
+			return id;
+		}
+		else{
+			if( bCounterMode ){
+				if( nDist > 1 )
+					return -1;
+			}
+		}
+
 
 
 		return 0; // normal attack

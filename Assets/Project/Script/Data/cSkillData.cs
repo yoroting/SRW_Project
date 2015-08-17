@@ -12,7 +12,9 @@ public enum _SKILLTAG
 	_BANATK 	= 3,	//攻擊 禁用
 	_BANDEF 	= 4,	//防禦 禁用
 	_NOMOVE 	= 5, 	//不可移動後攻擊
-	
+
+	// TAG for mob ai check
+	_TIEUP 		= 100,	//牽制
 };
 // use for cache skill table data
 public class cSkillData
@@ -25,6 +27,7 @@ public class cSkillData
 		skill = skl;
 		if (skill == null)
 			return; 
+		nID = skill.n_ID;
 		// fill data
 		UseCond = MyScript.Instance.CreateEffectCondition ( skill.s_CONDITION );
 

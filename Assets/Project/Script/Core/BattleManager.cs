@@ -204,8 +204,6 @@ public partial class BattleManager
 
 		switch (nPhase) {
 		case 0:	// prepare for event check
-
-
 			// open CMD UI for def player
 			if ( Defer.eCampID  == _CAMP._PLAYER) {
 				// set open CMD 
@@ -216,8 +214,14 @@ public partial class BattleManager
 			else{
 				// mob need a method to get skill
 				eDefCmdID = _CMD_ID._COUNTER; // mob select counter this time
+				int nSklId = MobAI.SelSkill( Defer , Atker ,false  );
+				if( nSklId < 0 ){
+					eDefCmdID = _CMD_ID._DEF;  //select defence
+				}
+				else{
+					nDeferSkillID = nSklId;		// counter skill
+				}
 			}
-
 			
 			nPhase++;
 			break;
@@ -322,7 +326,6 @@ public partial class BattleManager
 			uAction pAtkAction = ActionManager.Instance.CreateAttackAction(nAtkerID,nDeferID,nAtkerSkillID  );
 			if( pAtkAction != null )
 			{
-
 				pAtkAction.AddHitResult(  CalAttackResult( nAtkerID , nDeferID , IsDefMode() ) ) ;
 				pAtkAction.AddHitResult( CalSkillHitResult(  Atker , Defer  , nAtkerSkillID ) );
 
@@ -354,6 +357,8 @@ public partial class BattleManager
 					//}
 					//Atker.Buffs.OnHit( unit , ref pAtkAction.HitResult );
 				}
+				//=========================
+				Debug.LogFormat( "atk charid{0}, skill{1} , aff{2}", Atker.n_CharID  , nAtkerSkillID ,  AtkAffectPool.Count );
 			}
 			//should cal atk hit result for performance
 			//			Panel_unit unitAtk = Panel_StageUI.Instance.GetUnitByIdent( nAtkerID );
@@ -429,11 +434,10 @@ public partial class BattleManager
 					//Defer.Buffs.OnHit( unit , ref pCountAct.HitResult );
 				}
 
-				//				Panel_unit unitDef = Panel_StageUI.Instance.GetUnitByIdent( nDeferID );
-				//				if( unitDef != null )
-				//				{
-				//					unitDef.ActionAttack( nAtkerID );
-				//				}
+				//====
+				Debug.LogFormat( "def charid{0}, skill{1} , aff{2}",Defer.n_CharID  , nDeferSkillID ,  DefAffectPool.Count );
+
+
 			}
 			nPhase++;
 			break;
@@ -1082,11 +1086,14 @@ public partial class BattleManager
 					continue;
 				}
 
-
 				if(  CanPK( Atker.eCampID , pUnit.eCampID ) == bCanPK ){
 					pool.Add( pUnit );
 				}
 			}
+		}
+		//=============================================================
+		if( pool.Count == 0 ){
+			Debug.Log( " GetAffectPool with 0 ");
 		}
 
 	}

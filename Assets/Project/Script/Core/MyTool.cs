@@ -202,7 +202,7 @@ public class MyTool {
 	public static bool IsDamageSkill( int nSkillID )
 	{
 		if (nSkillID == 0) {
-			return true;
+			return true; // skill -0 is damage skill
 		}
 		cSkillData skldata = GameDataManager.Instance.GetSkillData (nSkillID);
 		if( skldata != null  ){
@@ -210,7 +210,25 @@ public class MyTool {
 		}
 		return false;
 	}
-	
+
+	public static bool IsSkillTag( int nSkillID , _SKILLTAG tag )
+	{
+		if (nSkillID == 0) {
+			if( tag == _SKILLTAG._DAMAGE ){
+				return true;
+			}
+			else {
+				return false;  
+			}
+		}
+		cSkillData skldata = GameDataManager.Instance.GetSkillData (nSkillID);
+		if( skldata != null  ){
+			return skldata.IsTag( tag );
+		}
+		return false;
+	}
+
+
 	public static int GetSkillRange( int nID )
 	{
 		if (nID == 0)
@@ -218,7 +236,7 @@ public class MyTool {
 
 		SKILL skl = ConstDataManager.Instance.GetRow< SKILL > ( nID );
 		if (skl == null)
-			return -1;
+			return 0;
 
 		return skl.n_RANGE;
 	}
@@ -338,7 +356,26 @@ public class MyTool {
 
 		}
 	}
-
+	public static int RollWidgetPool( Dictionary<int , int > pool )
+	{
+		if( pool == null )
+			return 0;
+		//=====================================
+		int totWidget = 0;
+		foreach( KeyValuePair<int,int> p in pool ){
+			totWidget += p.Value;
+		}
+		int roll = Random.Range( 0 , totWidget );
+		// find item
+		int sumWidget = 0;
+		foreach( KeyValuePair<int,int> p2 in pool ){
+			sumWidget += p2.Value;
+			if( sumWidget >= roll ){
+				return p2.Key;
+			}
+		}
+		return 0; 
+	}
 
 	public static void TweenSetOneShotOnFinish( UITweener Tween , EventDelegate.Callback call )
 	{

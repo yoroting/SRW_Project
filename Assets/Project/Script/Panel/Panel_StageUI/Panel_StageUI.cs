@@ -1392,13 +1392,17 @@ public class Panel_StageUI : MonoBehaviour
 		return pool;
 	}
 	// get nearest pk unit
-	public Dictionary< Panel_unit , int > GetUnitHpPool( Panel_unit unit , bool bCanPK )
+	public Dictionary< Panel_unit , int > GetUnitHpPool( Panel_unit unit , bool bCanPK , int nLimit=999)
 	{
 		Dictionary< Panel_unit , int > pool = new Dictionary< Panel_unit , int > (); // unit , dist
 		foreach( KeyValuePair<int ,Panel_unit > pair in IdentToUnit )
 		{
 			if( unit.CanPK( pair.Value ) == bCanPK )
 			{
+				int nDist = unit.Loc.Dist( pair.Value.Loc );
+				if( nDist > nLimit )
+					continue;
+
 				//  int nDist = pair.Value.Loc.Dist( unit.Loc );
 				int nHP = pair.Value.pUnitData.n_HP;
 				pool.Add( pair.Value , nHP );

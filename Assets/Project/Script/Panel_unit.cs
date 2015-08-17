@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -536,7 +537,7 @@ public class Panel_unit : MonoBehaviour {
 				nSubActFlow++;
 				break;
 			case 1:
-				ActionAttack( CurAction.nTarIdent );
+				ActionAttack( CurAction.nTarIdent , CurAction.nSkillID );
 				nSubActFlow++;
 				break;
 			case 2:
@@ -660,7 +661,7 @@ public class Panel_unit : MonoBehaviour {
 
 
 
-	public void ActionAttack( int tarident )
+	public void ActionAttack( int tarident  , int skillid )
 	{
 		TarIdent = tarident;
 		Panel_unit defer = Panel_StageUI.Instance.GetUnitByIdent( TarIdent );
@@ -669,20 +670,37 @@ public class Panel_unit : MonoBehaviour {
 			return;
 		}
 
+
+		// fly item
+		if( MyTool.IsSkillTag( skillid , _SKILLTAG._FLY ) )
+		{
+			// create a fly item
+			TweenRotation twr = TweenRotation.Begin< TweenRotation >( gameObject , 0.5f );
+			if( twr != null )
+			{
+				twr.SetStartToCurrentValue();
+				twr.to	= new Vector3( 0.0f , 0.0f , -360.0f );//Math.PI
+
+				MyTool.TweenSetOneShotOnFinish( twr , OnTwAtkFlyHit ); // for once only
+				bIsAtking = true;
+			}
+
+			return;
+		}
+
 		//Vector3 vOrg = this.transform.localPosition;
 		//Vector3 vTar = defer.transform.localPosition;
+
+		// melee attack
 
 		TweenPosition tw = TweenPosition.Begin< TweenPosition >( this.gameObject , 0.2f );
 		if( tw != null )
 		{
 			tw.SetStartToCurrentValue();
 			tw.to	= defer.transform.localPosition;
-
-			Debug.LogFormat("ActionAttack from {0} , {1} , locPos {2} , {3} ", tw.from.x, tw.from.y , transform.localPosition.x ,  transform.localPosition.y );
-
-
+//			Debug.LogFormat("ActionAttack from {0} , {1} , locPos {2} , {3} ", tw.from.x, tw.from.y , transform.localPosition.x ,  transform.localPosition.y );
 			MyTool.TweenSetOneShotOnFinish( tw , OnTwAtkHit ); // for once only
-//			tw.SetOnFinished( OnTwAtkHit );
+
 
 			bIsAtking = true;
 		}
@@ -779,8 +797,6 @@ public class Panel_unit : MonoBehaviour {
 		
 		//MoveTo ( GridX , GridY );
 		TarPos = new iVec2 (GridX, GridY);
-		//TarPos.X = x;
-		//TarPos.Y = y;
 		if (TarPos.Collision (Loc)) {
 			// this case won't trig move end event.
 			return;
@@ -800,34 +816,19 @@ public class Panel_unit : MonoBehaviour {
 	public void OnTwAtkHit( )
 	{
 		// move back 
-		Debug.LogFormat (this.ToString () + " hit Target{0}", TarIdent);
+//		Debug.LogFormat (this.ToString () + " hit Target{0}", TarIdent);
 
 		Vector3  vTar = MyTool.SnyGridtoLocalPos(Loc.X , Loc.Y , ref GameScene.Instance.Grids );
-		//Vector3 vTar = defer.transform.localPosition;
-
-		//TweenPosition tw = new TweenPosition (); 
-
-	
-		// play effect , get by ext school 
-	
-		//BattleManager.Instance.ShowBattleFX( TarIdent , "CFXM4 Hit B (Orange, CFX Blend)"  );
-
-		//List< cHitResult>  resPool = BattleManager.Instance.CalAttackResult( Ident() , TarIdent );
 		ActionManager.Instance.ExecActionHitResult ( CurAction );	 // perform sm hit action
 
-//		bIsAtking = false;
-//		TarIdent = 0;
 		TweenPosition tw = TweenPosition.Begin< TweenPosition >( this.gameObject , 0.3f ); // always move back to start pos
 		if (tw != null) {
-			//tw.from = vOrg;
 			tw.SetStartToCurrentValue ();
-			Debug.LogFormat ("ActionHit from {0} , {1} ,loc Pos {2} , {3}  ", tw.from.x, tw.from.y, transform.localPosition.x, transform.localPosition.y);
+			//Debug.LogFormat ("ActionHit from {0} , {1} ,loc Pos {2} , {3}  ", tw.from.x, tw.from.y, transform.localPosition.x, transform.localPosition.y);
 			tw.to = vTar;
-			Debug.LogFormat ("ActionHit to {0} , {1} ,loc  {2} , {3}  ", tw.to.x, tw.to.y, Loc.X, Loc.Y);
-			//tw.onFinished.Clear();
+			//Debug.LogFormat ("ActionHit to {0} , {1} ,loc  {2} , {3}  ", tw.to.x, tw.to.y, Loc.X, Loc.Y);
 			MyTool.TweenSetOneShotOnFinish (tw, OnTwAtkEnd); // for once only
-			//tw.SetOnFinished(  OnTwAtkEnd ) ;
-			//tw.Play();
+
 		} else {
 			//===========================================================
 			ActionManager.Instance.ExecActionEndResult ( CurAction );			// this is very import . all preform and data modify here!!
@@ -835,6 +836,13 @@ public class Panel_unit : MonoBehaviour {
 
 		}
 	}
+	public void OnTwAtkFlyHit( )
+	{
+		ActionManager.Instance.ExecActionHitResult ( CurAction );	 // perform sm hit action
+
+		OnTwAtkEnd(); // Hit is end
+	}
+
 	public void OnTwAtkEnd( )
 	{
 		// move to loc pos
