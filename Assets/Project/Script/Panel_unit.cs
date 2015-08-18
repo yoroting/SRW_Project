@@ -580,10 +580,19 @@ public class Panel_unit : MonoBehaviour {
 			{
 			case 0:
 				nSubActFlow++;
-				ActionCasting( CurAction.nSkillID );
+				ActionCasting( CurAction.nSkillID  , CurAction.nTarGridX , CurAction.nTarGridY );
 				//ActionMove( CurAction.nTarGridX , CurAction.nTarGridY  );
 				break;
 			case 1:
+				if( BattleMsg.nMsgCount == 0 ){// wait all msg complete
+					// clear effect cell
+					Panel_StageUI.Instance.ClearAOECellEffect();
+					// play effect
+					ActionManager.Instance.ExecActionEndResult ( CurAction  );
+					nSubActFlow++;
+				}
+				break;
+			case 2:
 				nSubActFlow++;
 				CurAction = null; // clear act
 				break;
@@ -745,7 +754,7 @@ public class Panel_unit : MonoBehaviour {
 
 	}
 
-	public void ActionCasting( int nSkillID )
+	public void ActionCasting( int nSkillID , int nTarGridX ,int nTarGridY )
 	{
 		if( CurAction.nSkillID == 0 ){
 			BattleManager.Instance.ShowBattleMsg( this  , MyTool.GetUnitSchoolFullName(Ident(), pUnitData.nActSch[1] ) );  // Get school name
@@ -758,12 +767,14 @@ public class Panel_unit : MonoBehaviour {
 				
 				// play fx
 				GameSystem.PlayFX( this.gameObject , "CFXM4 Magic Drain Fast" );
+				// show effect area
+				if( skl.n_AREA > 0 )
+				{
+					Panel_StageUI.Instance.CreateAOEOverEffect( this , nTarGridX , nTarGridY ,skl.n_AREA );
+				}
 			}
-			
 		}
-		ActionManager.Instance.ExecActionEndResult ( CurAction  );
-
-
+	//	ActionManager.Instance.ExecActionEndResult ( CurAction  );
 	}
 
 	public void ActionDrop( int nExp , int nMoney )

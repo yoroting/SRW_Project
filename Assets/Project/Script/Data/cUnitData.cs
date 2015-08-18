@@ -30,6 +30,7 @@ public enum _UNITTAG
 {
 	_NULL = 0,
 	_UNDEAD = 1 ,   // 除非隊長死否則無限重生
+	_CHARGE = 2 ,    // 突襲移動. no block
 
 }
 //
@@ -249,8 +250,9 @@ public class cUnitData{
 	public cFightAttr					FightAttr;			// need update each calcul
 	//public cAttrData					BuffCondAttr;		// buff cond trig attr
 
-	// 企劃資料解析出來的特別旗標
-	List< _UNITTAG > Tags;
+	// 企劃資料解析出來的特別旗標，支援buff 動態 新增
+
+	List< _UNITTAG > Tags;		
 	
 	List< _UNITTAG > GetTags()
 	{
@@ -265,7 +267,11 @@ public class cUnitData{
 			GetTags ().Add( tag );
 		}		
 	}	
-	public bool IsTag( _UNITTAG tag ){ return  (GetTags ().IndexOf(tag)>=0) ; }
+	public bool IsTag( _UNITTAG tag ){
+		if( GetTags ().IndexOf(tag) >= 0 )
+			return true;
+		return Buffs.CheckTag( tag );
+	}
 	
 	public void RemoveTag( _UNITTAG tag ){
 		GetTags ().Remove (tag);
@@ -1035,6 +1041,11 @@ public class cUnitData{
 		if (nSp < 1)			nSp = 1;
 		return nSp;
 	}
+	public float GetHpPercent()
+	{
+		return (float)n_HP / GetMaxHP();
+	}
+
 
 	// only get school + char lv
 	public float GetBaseMar()
@@ -1384,7 +1395,8 @@ public class cUnitData{
 	
 	}
 
-	public bool IsStates( _FIGHTSTATE st ){ return  (GetStates ().IndexOf(st)>=0) ; }
+	public bool IsStates( _FIGHTSTATE st ){  return (GetStates ().IndexOf(st)>=0); }
+
 
 	public void RemoveStates( _FIGHTSTATE st ){
 		GetStates ().Remove (st);

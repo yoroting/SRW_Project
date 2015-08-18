@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using MyClassLibrary;
-
+using MYGRIDS;
 
 public class cEffect
 {
@@ -47,6 +47,9 @@ public class cEffect
 
 	// cost
 	public virtual bool _IsStatus( _FIGHTSTATE st  ){ return false; }				// check user in one status	
+
+	public virtual bool _IsTag(  _UNITTAG tag ){ return false; }								// check unit extra tag
+
 	public virtual int _UpSkill( int nBaseSkillID  ){ return nBaseSkillID;	} 					// 判斷有無進階的武功招式
 }
 
@@ -242,11 +245,18 @@ public class ADD_MAXSP: cEffect
 	}
 }
 
+public class ADD_MOVE: cEffect
+{
+	public ADD_MOVE( int n ){		nValue = n;	}
+	public int nValue ;
+	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
+		attr.n_MOV += nValue;
+	}
+}
 
 public class ADDHP_I: cEffect
 {
 	public ADDHP_I( float f , int i ){	fValue = f;	iValue = i; }
-
 
 	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 
 			float fHp = Atker.GetMaxHP() * fValue ;
@@ -294,12 +304,12 @@ public class ADDHP_E: cEffect
 }
 public class ADDMP_E: cEffect
 {
-	public ADDMP_E( int i ){	iValue = i;	}
+	public ADDMP_E(float f , int i ){	fValue = f;	iValue = i;	}
 	
 	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 	
 		if (Defer != null) {
-		
-			list.Add( new cHitResult( cHitResult._TYPE._MP , Defer.n_Ident , iValue , Atker.n_Ident, nSkillID , nBuffID   ) );
+			float fMp = Defer.GetMaxMP() * fValue ;
+			list.Add( new cHitResult( cHitResult._TYPE._MP , Defer.n_Ident , (int)fMp +iValue , Atker.n_Ident, nSkillID , nBuffID   ) );
 		}
 	}
 }
@@ -378,14 +388,38 @@ public class MUL_POWER: cEffect
 	}
 }
 
-public class ADD_MOVE: cEffect
+public class MUL_MAXHP: cEffect
 {
-	public ADD_MOVE( int n ){		nValue = n;	}
-	public int nValue ;
+	public MUL_MAXHP( float v ){ fValue = v; }
+	
 	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
-		attr.n_MOV += nValue;
+		if ((Atker != null)) {
+			attr.fHpRate += fValue;
+		}
 	}
 }
+public class MUL_MAXMP: cEffect
+{
+	public MUL_MAXMP( float v ){ fValue = v; }
+	
+	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
+		if ((Atker != null)) {
+			attr.fMpRate += fValue;
+		}
+	}
+}
+public class MUL_MAXSP: cEffect
+{
+	public MUL_MAXSP( float v ){ fValue = v; }
+	
+	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
+		if ((Atker != null)) {
+			attr.fSpRate += fValue;
+		}
+	}
+}
+
+
 //==== cost ==
 public class MUL_MPCOST: cEffect
 {
@@ -404,6 +438,16 @@ public class RECOVER_SP: cEffect
 //	override public void _Mul_SpCost( ref float value ){ 
 //		value += F;
 //	}
+}
+
+//==== tag status ==
+public class TAG_CHARGE: cEffect
+{
+	public TAG_CHARGE(  ){ }	
+	
+	override public bool _IsTag(  _UNITTAG tag ){
+		return (_UNITTAG._CHARGE == tag );
+	}				// check user in one status		
 }
 
 //==== is status ==
@@ -499,20 +543,35 @@ public class  cEffectCondition
 			}
 			if( func.sFunc == "HP_I"  )
 			{
-				return   false;		// always fail
+				float f1 = data_I.n_HP /data_I.GetMaxHP() ;
+				float f2 =  func.F( 1 ) ;
+				if( MyScript.Instance.ConditionFloat( f1 , func.S(0) ,f2  ) == false  ){
+					return   false;		//  fail
+				}
 			}
 			else if( func.sFunc == "HP_E"  )
 			{
-				return   false;		// always fail
+				float f1 = data_E.n_HP /data_E.GetMaxHP() ;
+				float f2 =  func.F( 1 ) ;
+				if( MyScript.Instance.ConditionFloat( f1 , func.S(0) ,f2  ) == false  ){
+					return   false;		//  fail
+				}
 			}
 			else if( func.sFunc == "MAR_I"  )
 			{
 				float f1 = data_I.GetMar();
 				float f2 = 0.0f;
-				if( func.S( 1 ) == "E" )
-				{
+				string s1 = func.S( 1 );  // s1 
+				if( s1 == "E" ){
 					if( data_E != null ){
 						f2 = data_E.GetMar();
+					}else{
+						return false; // no enemy is false
+					}
+				}
+				if( s1 == "I" ){
+					if( data_I != null ){
+						f2 = data_I.GetMar();
 					}else{
 						return false; // no enemy is false
 					}
@@ -520,47 +579,83 @@ public class  cEffectCondition
 				else{
 					f2 = func.F( 1 );
 				}
-				
+				//
 				if( MyScript.Instance.ConditionFloat( f1 , func.S(0) ,f2  ) == false  ){
 					return   false;		// always fail
 				}
 			}
 			else if( func.sFunc == "MAR_E"  )
-			{					
-				return   false;		// always fail
+			{		
+				float f1 = data_E.GetMar();
+				float f2 = 0.0f;
+				string s1 = func.S( 1 );  // s1 
+				if( s1 == "E" ){
+					if( data_E != null ){
+						f2 = data_E.GetMar();
+					}else{
+						return false; // no enemy is false
+					}
+				}
+				if( s1 == "I" ){
+					if( data_I != null ){
+						f2 = data_I.GetMar();
+					}else{
+						return false; // no enemy is false
+					}
+				}
+				else{
+					f2 = func.F( 1 );
+				}
+				//
+				if( MyScript.Instance.ConditionFloat( f1 , func.S(0) ,f2  ) == false  ){
+					return   false;		// always fail
+				}			
 			}
 			else if( func.sFunc == "BUFF_I"  )
 			{
+				int buffid = func.I(0);
+				if( data_I!= null ){
+					if( !data_I.Buffs.HaveBuff( buffid ) )
+						return false;
+				}
 				return   false;		// always fail
 			}
 			else if( func.sFunc == "BUFF_E"  )
 			{
+				int buffid = func.I(0);
+				if( data_E != null ){
+					if( !data_E.Buffs.HaveBuff( buffid ) )
+						return false;
+				}
 				return   false;		// always fail
 			}
 			else if( func.sFunc == "SCHOOL_I"  )
 			{
-				
-				return false;
+				int schoolid = func.I(0);
+				if( data_I.nActSch[0] != schoolid && data_I.nActSch[1] != schoolid   ){
+					return false;	
+				}
 			}
 			else if( func.sFunc == "SCHOOL_E"  )
 			{
-				
-				return false;
+				int schoolid = func.I(0);
+				if( data_E.nActSch[0] != schoolid && data_E.nActSch[1] != schoolid   ){
+					return false;	
+				}
 			}
-			else if( func.sFunc == "SKILL_I"  )
+			else if( func.sFunc == "RANGE"  )
 			{
-				
-				return false;
-			}
-			else if( func.sFunc == "SKILL_E"  )
-			{
-				
-				return false;
-			}
-			else if( func.sFunc == "RANGE_E"  )
-			{
-				
-				return false;
+				if( (data_I!= null) && (data_E != null) )	
+				{
+					int Range =  func.I(1);
+					int nDist = iVec2.Dist( data_I.n_X , data_I.n_Y ,  data_E.n_X , data_E.n_Y );
+					if( MyScript.Instance.ConditionInt( nDist , func.S(0) ,Range  ) == false  ){
+						return   false;		// always fail
+					}		
+
+				}else{
+					return false;
+				}
 			}
 
 			// Fight stat check

@@ -560,9 +560,52 @@ public class cBuffs
 		
 	}
 
+
+	public bool CheckTag( _UNITTAG tag ){
+		cUnitData unit_e = null ;
+		if( Owner.FightAttr.TarIdent > 0 ){
+			GameDataManager.Instance.GetUnitDateByIdent ( Owner.FightAttr.TarIdent );
+		}
+		foreach( KeyValuePair< int , cBuffData > pair in Pool )
+		{
+			// normal effect
+			foreach( cEffect eft in pair.Value.EffectPool )
+			{
+				if( eft != null && eft._IsTag( tag ) )
+				{
+					return true	;
+				}
+			}
+			// condition
+			cUnitData unit = null ;
+			if( pair.Value.nTargetIdent > 0 ){
+				unit = GameDataManager.Instance.GetUnitDateByIdent ( pair.Value.nTargetIdent );
+				if( unit == null ){
+					Debug.LogErrorFormat( "Buff CheckTag CharID{0}-Buff{1} with null TargetIdent{2} " , Owner.n_CharID , pair.Value.nID , pair.Value.nTargetIdent  );
+				}
+			}
+			else {
+				unit = unit_e;
+			}
+			
+			//if( MyScript.Instance.CheckSkillCond( pair.Value.tableData.s_BUFF_CONDITON , this.Owner , unit_e ) == true )
+			if( pair.Value.Condition.Check( this.Owner , unit , pair.Value.nSkillID , pair.Value.nID ) )
+			{
+				foreach( cEffect eft in pair.Value.ConditionEffectPool )
+				{
+					if( eft != null && eft._IsTag( tag ) )
+					{
+						return true	;
+					}
+				}
+			}
+		}
+		
+		return false;
+	}
+
+	//  ==
 	public bool CheckStatus( _FIGHTSTATE status ){
-
-
 		cUnitData unit_e = null ;
 		if( Owner.FightAttr.TarIdent > 0 ){
 			GameDataManager.Instance.GetUnitDateByIdent ( Owner.FightAttr.TarIdent );
@@ -577,9 +620,7 @@ public class cBuffs
 					return true	;
 				}
 			}
-
-			// condition
-			// condition
+					// condition
 			cUnitData unit = null ;
 			if( pair.Value.nTargetIdent > 0 ){
 				unit = GameDataManager.Instance.GetUnitDateByIdent ( pair.Value.nTargetIdent );

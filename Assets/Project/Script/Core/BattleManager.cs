@@ -257,11 +257,8 @@ public partial class BattleManager
 						Defer.AddStates( _FIGHTSTATE._DEFMODE );
 					}
 					
-					
-					
-					
 					// atk start cast action
-				uAction pCastingAction = ActionManager.Instance.CreateCastAction( nAtkerID, nAtkerSkillID ,nDeferID );
+					uAction pCastingAction = ActionManager.Instance.CreateCastAction( nAtkerID, nAtkerSkillID ,nDeferID , nTarGridX , nTarGridY );
 					// skill attr
 					if( pCastingAction != null )
 					{
@@ -302,7 +299,7 @@ public partial class BattleManager
 
 			break;
 		case 2:			// def casting
-			uAction pCastingAction = ActionManager.Instance.CreateCastAction( nDeferID , nDeferSkillID , nAtkerID );
+			uAction pCastingAction = ActionManager.Instance.CreateCastAction( nDeferID , nDeferSkillID , nAtkerID  );
 			if( pCastingAction != null )
 			{
 //				Defer.DoSkillCastEffect( ref pCastingAction.HitResult  );
@@ -330,15 +327,11 @@ public partial class BattleManager
 				pAtkAction.AddHitResult( CalSkillHitResult(  Atker , Defer  , nAtkerSkillID ) );
 
 
-				int nTarX = this.nTarGridX;
-				int nTarY = this.nTarGridY;
-				if( Defer != null ){
-					nTarX = Defer.n_X;
-					nTarY = Defer.n_Y;
-				}
+				//int nTarX = this.nTarGridX;
+				//int nTarY = this.nTarGridY;
 
 				// get affectpool
-				GetAffectPool( Atker , nDeferID , Atker.FightAttr.SkillID , nTarX , nTarY , ref AtkAffectPool);
+				GetAffectPool( Atker , Defer , Atker.FightAttr.SkillID , 0 , 0 , ref AtkAffectPool);
 				foreach( cUnitData unit in AtkAffectPool )
 				{
 					//=====================
@@ -351,14 +344,14 @@ public partial class BattleManager
 					}
 					ShowDefAssist( unit.n_Ident , false );
 
-					pAtkAction.AddHitResult(  CalAttackResult( nAtkerID , unit.n_Ident ) ) ;
+					pAtkAction.AddHitResult(  CalAttackResult( nAtkerID , unit.n_Ident , true) ) ;
 					//if( nAtkerSkillID > 0 ){
 					pAtkAction.AddHitResult( CalSkillHitResult(  Atker , unit  , nAtkerSkillID ) );
 					//}
 					//Atker.Buffs.OnHit( unit , ref pAtkAction.HitResult );
 				}
 				//=========================
-				Debug.LogFormat( "atk charid{0}, skill{1} , aff{2}", Atker.n_CharID  , nAtkerSkillID ,  AtkAffectPool.Count );
+			//	Debug.LogFormat( "atk charid{0}, skill{1} , aff{2}", Atker.n_CharID  , nAtkerSkillID ,  AtkAffectPool.Count );
 			}
 			//should cal atk hit result for performance
 			//			Panel_unit unitAtk = Panel_StageUI.Instance.GetUnitByIdent( nAtkerID );
@@ -413,7 +406,7 @@ public partial class BattleManager
 //					Defer.Buffs.OnHit( Atker , ref pCountAct.HitResult );
 				}
 
-				GetAffectPool( Defer , nAtkerID , Defer.FightAttr.SkillID , 0 , 0 , ref DefAffectPool );
+				GetAffectPool( Defer , Atker , Defer.FightAttr.SkillID , 0 , 0 , ref DefAffectPool );
 				foreach( cUnitData unit in DefAffectPool )
 				{
 					//=====================
@@ -426,7 +419,7 @@ public partial class BattleManager
 
 					ShowDefAssist( unit.n_Ident , false );
 					
-					pCountAct.AddHitResult(  CalAttackResult( nDeferID , unit.n_Ident ) ) ;
+					pCountAct.AddHitResult(  CalAttackResult( nDeferID , unit.n_Ident , true ) ) ; // always def for aoe affect
 
 					//if( nDeferSkillID > 0 ){
 					pCountAct.AddHitResult( CalSkillHitResult( Defer,  unit , nDeferSkillID ) );
@@ -435,7 +428,7 @@ public partial class BattleManager
 				}
 
 				//====
-				Debug.LogFormat( "def charid{0}, skill{1} , aff{2}",Defer.n_CharID  , nDeferSkillID ,  DefAffectPool.Count );
+				//Debug.LogFormat( "def charid{0}, skill{1} , aff{2}",Defer.n_CharID  , nDeferSkillID ,  DefAffectPool.Count );
 
 
 			}
@@ -534,7 +527,7 @@ public partial class BattleManager
 		case 0:	// prepare for event check
 			Atker.SetFightAttr (nDeferID, nAtkerSkillID);
 			Atker.AddStates (_FIGHTSTATE._ATKER);
-			uAction pCastingAction = ActionManager.Instance.CreateCastAction (nAtkerID, nAtkerSkillID,nDeferID);// Casting
+			uAction pCastingAction = ActionManager.Instance.CreateCastAction (nAtkerID, nAtkerSkillID,nDeferID , nTarGridX , nTarGridY );// Casting
 			// skill attr
 			if (pCastingAction != null) {
 	//			Atker.DoSkillCastEffect( ref pCastingAction.HitResult );
@@ -570,7 +563,7 @@ public partial class BattleManager
 				}
 
 				// Affect pool
-				GetAffectPool( Atker , nDeferID , Atker.FightAttr.SkillID , nTarX , nTarY , ref AtkAffectPool);
+				GetAffectPool( Atker , Defer , Atker.FightAttr.SkillID , nTarX , nTarY , ref AtkAffectPool);
 				foreach( cUnitData unit in AtkAffectPool )
 				{
 					if( unit == Defer  )
@@ -659,6 +652,8 @@ public partial class BattleManager
 				string str = "獲得 " + MyTool.GetItemName( itemid );
 				nDropItemPool.RemoveAt(0);
 				ShowBattleMsg( 0 , str );
+
+				GameDataManager.Instance.AddItemtoBag( itemid );// Add to item pool
 				return true ;
 			}
 		}
@@ -677,6 +672,29 @@ public partial class BattleManager
 			return true;
 		}
 		return false;
+	}
+
+	// recycle all drop exp when stage end
+	public void RecycleDrop()
+	{
+		// item
+		foreach( int itemid in nDropItemPool )
+		{			
+			GameDataManager.Instance.AddItemtoBag( itemid );// Add to item pool	
+		}
+		nDropItemPool.Clear();
+		// exp 
+		foreach( KeyValuePair<int , int> pair in nDropExpPool )
+		{
+			cUnitData pUnitData = GameDataManager.Instance.GetUnitDateByIdent( pair.Key );
+			pUnitData.AddExp( pair.Value );
+
+		}
+		nDropExpPool.Clear();
+		// money
+		GameDataManager.Instance.nMoney += nDropMoney;
+		nDropMoney = 0;
+
 	}
 
 	//===================================================
@@ -782,7 +800,7 @@ public partial class BattleManager
 		cUnitData Caster = GameDataManager.Instance.GetUnitDateByIdent ( nCastIdent );
 		cUnitData Target = GameDataManager.Instance.GetUnitDateByIdent ( nTarIdent );
 
-		ActionManager.Instance.CreateCastAction( nCastIdent , nSkillID );
+		ActionManager.Instance.CreateCastAction( nCastIdent , nSkillID  , nTarIdent );
 		// hit effect
 		uAction pAct = ActionManager.Instance.CreateHitAction ( nCastIdent, 0 , 0 , nSkillID );
 		if( pAct != null )
@@ -1040,16 +1058,21 @@ public partial class BattleManager
 		return ( eDefCmdID == _CMD_ID._DEF );
 	}
 
-	public void GetAffectPool( cUnitData Atker , int nDefer , int SkillID , int nTarX , int nTarY , ref List< cUnitData> pool )
+	public void GetAffectPool( cUnitData Atker , cUnitData Defer , int SkillID , int nTarX , int nTarY , ref List< cUnitData> pool )
 	{
 		// don't push defer to affect pool
-
+		int nDefer = 0;
 		SKILL skl = ConstDataManager.Instance.GetRow< SKILL > ( SkillID );
 		if (skl == null) {
 			return;
 		}
 		if (skl.n_AREA == 0)
 			return;
+		if( Defer != null ){
+			nTarX = Defer.n_X;
+			nTarY = Defer.n_Y;
+			nDefer = Defer.n_Ident;
+		}
 
 		List < iVec2 > lst = MyTool.GetAOEPool ( nTarX ,nTarY,skl.n_AREA ,Atker.n_X , Atker.n_Y  );
 
@@ -1092,9 +1115,9 @@ public partial class BattleManager
 			}
 		}
 		//=============================================================
-		if( pool.Count == 0 ){
-			Debug.Log( " GetAffectPool with 0 ");
-		}
+//		if( pool.Count == 0 ){
+//			Debug.Log( " GetAffectPool with 0 ");
+//		}
 
 	}
 

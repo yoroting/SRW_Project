@@ -168,20 +168,44 @@ public class GameSystem : MonoBehaviour {
 		if (m_nCurBGMIdx == nBGMIdx)
 			return;
 
+		m_nCurBGMIdx = nBGMIdx;		// record current bgm
+		if( m_nCurBGMIdx == 0 )
+			return ;
+
 		// 播放  mian BGM
-		DataRow row = ConstDataManager.Instance.GetRow("BGM", nBGMIdx );
-		if( row != null )
+		BGM bgm =  ConstDataManager.Instance.GetRow<BGM>( nBGMIdx  );
+		if( bgm!= null )
 		{
-			string strFile = row.Field< string >("s_FILENAME");
+			string strFile = bgm.s_FILENAME ;
 			if( !String.IsNullOrEmpty( strFile ))
 			{
-				string audioPath = ResourcesManager.GetAudioClipPath( AudioChannelType.BGM ,  strFile );
+				string audioPath = ResourcesManager.GetAudioClipPath( AudioChannelType.BGM , strFile );
 				AudioManager.Instance.Play( AudioChannelType.BGM ,  audioPath );				
-
-				m_nCurBGMIdx = nBGMIdx;		// record current bgm
 			}
 		}
+
+
+//		DataRow row = ConstDataManager.Instance.GetRow("BGM", nBGMIdx );
+//		if( row != null )
+//		{
+//			string strFile = row.Field< string >("s_FILENAME");
+//			if( !String.IsNullOrEmpty( strFile ))
+//			{
+//				string audioPath = ResourcesManager.GetAudioClipPath( AudioChannelType.BGM ,  strFile );
+//				AudioManager.Instance.Play( AudioChannelType.BGM ,  audioPath );				
+//
+//				m_nCurBGMIdx = nBGMIdx;		// record current bgm
+//				return ;
+//			}
+//		}
 	}
+
+	public static Panel_CheckBox OpenCheckBox()
+	{
+		return MyTool.GetPanel<Panel_CheckBox>( PanelManager.Instance.OpenUI ( Panel_CheckBox.Name ) );
+	}
+
+
 
 	public static void TalkEvent( int nTalkID )
 	{

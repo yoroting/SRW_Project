@@ -46,6 +46,7 @@ public enum _CMD_ID  // list of cmd btn id
 	_WAIT,			//
 	_INFO ,			// 	
 	_COUNTER,			// 反擊	
+
 	_STAGEINFO ,			// 	
 	_CANCEL ,			// 	
 	_NEWGAME,
@@ -54,6 +55,8 @@ public enum _CMD_ID  // list of cmd btn id
 	_ROUNDEND,
 	_GAMEEND,
 	_OPTION,
+
+	//================================
 	_SUICIDE,
 	_CHEAT,
 	_SYSCHEAT,

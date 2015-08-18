@@ -13,14 +13,12 @@ public class Panel_Lost : MonoBehaviour {
 	//	Panel_StageUI.Instance.HideStage ();
 //		Panel_StageUI.Instance.bIsStageEnd = true;
 //		GameDataManager.Instance.EndStage ();   // 處理戰場結束的資料回存
+		GameSystem.PlayBGM ( 6 ); // lost music
 	}
 
 	// Use this for initialization
 	void Start () {
 		UIEventListener.Get(SpritObj).onClick += OnCloseBtnClick; // for trig next lineev
-		
-		
-		GameSystem.PlayBGM ( 6 ); // lost music
 	}
 	
 	// Update is called once per frame

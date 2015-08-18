@@ -86,8 +86,8 @@ public class Panel_StageUI : MonoBehaviour
 //	bool							CheckEventPause;	// 	event check pause
 
 	// Select effect
-	Dictionary< string , GameObject >  OverCellPool;			// Over tile effect pool ( in = cell key )
-	Dictionary< string , GameObject >  OverCellAtkPool;			// Over tile effect pool( attack ) ( in = cell key )
+	Dictionary< string , GameObject >  OverCellPool;			// Over tile effect pool ( str = cell key )
+	Dictionary< string , GameObject >  OverCellAtkPool;			// Over tile effect pool( attack ) ( str = cell key )
 
 	Dictionary< string , GameObject > OverCellPathPool;
 	Dictionary< string , GameObject > OverCellAOEPool;
@@ -189,10 +189,10 @@ public class Panel_StageUI : MonoBehaviour
 		
 		Debug.Log("stageloding:create event Pool complete");
 		
-		
-		GameDataManager.Instance.nPlayerBGM = StageData.n_PLAYER_BGM ;   //我方
-		GameDataManager.Instance.nEnemyBGM  = StageData.n_ENEMY_BGM;	 // 敵方
-		GameDataManager.Instance.nFriendBGM = StageData.n_FRIEND_BGM;	// 友方
+		GameDataManager.Instance.SetBGMPhase( 0 );
+		//GameDataManager.Instance.nPlayerBGM = StageData.n_PLAYER_BGM ;   //我方
+		//GameDataManager.Instance.nEnemyBGM  = StageData.n_ENEMY_BGM;	 // 敵方
+		//GameDataManager.Instance.nFriendBGM = StageData.n_FRIEND_BGM;	// 友方
 
         // regedit game event
         RegeditGameEvent(true);
@@ -1105,11 +1105,16 @@ public class Panel_StageUI : MonoBehaviour
 		}
 
 
+		ClearAOECellEffect();
+
+	}
+
+	public void ClearAOECellEffect(  )
+	{
 		AoeEftObj.RecycleAll ();
 		if (OverCellAOEPool != null) {
 			OverCellAOEPool.Clear();
 		}
-
 	}
 
 	public void CreateMoveOverEffect( Panel_unit unit )
@@ -1242,26 +1247,22 @@ public class Panel_StageUI : MonoBehaviour
 
 	}
 
-	public void CreateAOEOverEffect( int nX , int nY , int nAOE )
+	public void CreateAOEOverEffect( Panel_unit CastUnit  ,int nX , int nY , int nAOE )
 	{
 		AoeEftObj.RecycleAll();
 
 		if( OverCellAOEPool != null ){
 			OverCellAOEPool.Clear ();
 		}
+		if( CastUnit == null )
+			return ;
 
-		Panel_unit unit = MyTool.CMDUI().pCmder;
+		Panel_unit unit = CastUnit ; // MyTool.CMDUI().pCmder;
 		int nOrgX = unit.X ();
 		int nOrgY = unit.Y ();
 
 		List<iVec2> aoeList = MyTool.GetAOEPool (nX, nY, nAOE ,nOrgX, nOrgY );
 		// 將來要處理 旋轉!
-	
-		// get rotation
-
-
-
-
 
 		// start create over eff
 		foreach( iVec2 v in aoeList )
@@ -1283,10 +1284,10 @@ public class Panel_StageUI : MonoBehaviour
 			}
 		}
 		//Debug.Log( "create Aoeeffect cell with ticket:" + during );
-		Panel_CheckBox panel = MyTool.GetPanel<Panel_CheckBox>( PanelManager.Instance.OpenUI ( Panel_CheckBox.Name ) );
-		if (panel) {
-			panel.SetAoeCheck();
-		}
+//		Panel_CheckBox panel = MyTool.GetPanel<Panel_CheckBox>( PanelManager.Instance.OpenUI ( Panel_CheckBox.Name ) );
+//		if (panel) {
+//			panel.SetAoeCheck();
+//		}
 	}
 	// Check any action is running
 
@@ -2008,6 +2009,7 @@ public class Panel_StageUI : MonoBehaviour
 	{
 		if( StageData != null )
 		{
+			GameSystem.PlayBGM( 0 ); // stop bgm for replay
 
 			//SCENE_NAME scn = ConstDataManager.Instance.GetRow<SCENE_NAME> ( StageData.n_SCENE_ID );
 			//if (scn == null)
@@ -2173,20 +2175,13 @@ public class Panel_StageUI : MonoBehaviour
 		// nStep = 999; // debug
 		
 		List< iVec2 > path = null;
-		//List< iVec2 > unitList =  GetUnitPosList();
-		
-		// try the short path
-		//this.GetUnitPKPosPool (unit, true);
-		
 		Grids.ClearIgnorePool();
-		Grids.AddIgnorePool (  GetUnitPKPosPool( unit , true  ) );  // all is block in first find
-		
-		//		List< iVec2 > nearList = Grids.GetRangePool( ed , 1  ); // the 4 pos can't stand ally
-		//		foreach( iVec2 pos in nearList ){
-		//			if( CheckIsEmptyPos( pos ) == false ){
-		//				Grids.AddIgnorePos( pos );
-		//			}
-		//		}
+
+		cUnitData pData = unit.pUnitData;
+
+		if( !pData.IsTag( _UNITTAG._CHARGE ) ) {
+			Grids.AddIgnorePool (  GetUnitPKPosPool( unit , true  ) );  // all is block in first find
+		}
 		
 		// avoid the end node have ally
 		//List< iVec2 > nearList =  GetUnitPKPosPool( unit , );
@@ -2194,13 +2189,7 @@ public class Panel_StageUI : MonoBehaviour
 		
 		path = Grids.PathFinding( st , ed , nStep  );
 		
-		//		if (path == null) {
-		//			Grids.ClearIgnorePool();
-		//			//Grids.AddIgnorePool ( GetUnitPosList() );  // only enemy is block in second find
-		//			Grids.AddIgnorePool(  GetUnitPKPosPool( unit , true  ) ); //
-		//			path = Grids.PathFinding( st , ed , nStep  );
-		//		}
-		
+
 		if (Config.GOD == true) {
 			CreatePathOverEffect (path); // draw path
 		}
@@ -2379,9 +2368,12 @@ public class Panel_StageUI : MonoBehaviour
 		}
 		
 		Debug.Log("stageloding:create event Pool complete");
-		GameDataManager.Instance.nPlayerBGM = StageData.n_PLAYER_BGM;
-		GameDataManager.Instance.nEnemyBGM = StageData.n_ENEMY_BGM;
-		GameDataManager.Instance.nFriendBGM = StageData.n_FRIEND_BGM;
+
+
+		GameDataManager.Instance.SetBGMPhase( 0 );
+//		GameDataManager.Instance.nPlayerBGM = StageData.n_PLAYER_BGM;
+//		GameDataManager.Instance.nEnemyBGM = StageData.n_ENEMY_BGM;
+//		GameDataManager.Instance.nFriendBGM = StageData.n_FRIEND_BGM;
 		
 		
 		
@@ -2727,7 +2719,7 @@ public class Panel_StageUI : MonoBehaviour
 			}
 
 		} else {
-			ActionManager.Instance.CreateCastAction (nAtkId, Evt.nAtkSkillID);
+			ActionManager.Instance.CreateCastAction (nAtkId, Evt.nAtkSkillID, nDefId );
 
 			// send attack
 			//Panel_StageUI.Instance.MoveToGameObj(pDefUnit.gameObject , false );  // move to def 

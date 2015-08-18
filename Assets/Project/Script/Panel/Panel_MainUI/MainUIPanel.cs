@@ -33,8 +33,7 @@ public class MainUIPanel : BasicPanel {
 		  2.ConstDataRow row = ConstDataManager.Instance.GetRow("SKILL", 1);	
 		*/
 
-		// 播放  mian BGM
-		GameSystem.PlayBGM ( 1 );
+	
 //		DataRow row = ConstDataManager.Instance.GetRow("MUSIC", 1);
 //		if( row != null )
 //		{
@@ -53,6 +52,14 @@ public class MainUIPanel : BasicPanel {
 		}
 
 
+	}
+
+	// set up startup 
+	void OnEnable()
+	{
+		GameDataManager.Instance.ePhase = _SAVE_PHASE._STARTUP;		
+		// 播放  mian BGM
+		GameSystem.PlayBGM ( 1 );
 	}
 
 	// Use this for initialization

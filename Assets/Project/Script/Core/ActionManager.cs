@@ -252,18 +252,48 @@ public partial class ActionManager
 		return  act;
 	}
 
-	public uAction CreateCastAction( int nAtkIdent , int nSkillID ,int nTargetIdent =0 )
+	public uAction CreateCastAction( int nAtkIdent , int nSkillID , int nTargetIdent , int nGridX=0, int nGridY=0  )
 	{
 		uAction act = CreateAction (nAtkIdent, _ACTION._CAST);
 		if( act != null )  {
-			act.HitResult.Add( new cHitResult( cHitResult._TYPE._CAST, nAtkIdent, nSkillID ) );
 			act.nSkillID = nSkillID;
+			act.HitResult.Add( new cHitResult( cHitResult._TYPE._CAST, nAtkIdent, nSkillID ) );
+
 			cUnitData caster = GameDataManager.Instance.GetUnitDateByIdent( nAtkIdent );
 			if( caster != null ){
 				// 有 cost
 				if( nSkillID > 0 )
 				{
 					SKILL skill = ConstDataManager.Instance.GetRow<SKILL>(nSkillID); 
+					switch( skill.n_TARGET ){
+						case 0:	//0→對自己施展
+						case 6:	//6→自我AOE我方
+						case 7:	//7→自我AOE敵方
+						case 8:	//8→自我AOEALL
+							act.nTarGridX = caster.n_X;
+							act.nTarGridY = caster.n_Y;
+							break;
+						case 1:	//→需要敵方目標
+						case 2:	//→需要友方目標
+							cUnitData Target = GameDataManager.Instance.GetUnitDateByIdent( nTargetIdent );
+							if( Target != null ){
+								act.nTarGridX = Target.n_X;
+								act.nTarGridY = Target.n_Y;
+							}else{
+								// bug
+								Debug.LogErrorFormat( "CreateCastAction on null target{0},skill{1},x{2},y{3} " ,nTargetIdent,nSkillID, nGridX , nGridY );	
+							}
+							break;
+						case 3:	//→MAP敵方
+						case 4: //→MAP我方
+						case 5:	//→MAPALL
+							act.nTarGridX = nGridX;
+							act.nTarGridY = nGridY;
+						break;
+					}
+
+
+
 					// don't use fightattr . counter will  cast without fightattr
 					if( skill.n_MP > 0 ){
 						float frate =  caster.GetMulMpCost ();
@@ -291,10 +321,11 @@ public partial class ActionManager
 						//caster.AddDef( (int)f );
 
 					}
-
 				}
 			}
-
+			else{ // bug
+				Debug.LogErrorFormat( "CreateCastAction with null caster{0},skill{1},x{2},y{3} " ,nAtkIdent,nSkillID, nGridX , nGridY );	
+			}
 		}
 		return  act;
 	}

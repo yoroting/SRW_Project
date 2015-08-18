@@ -7,7 +7,7 @@ public class Panel_Mainten : MonoBehaviour {
 	public GameObject btnSave;
 	public GameObject btnLoad;
 	public GameObject btnNextStage;
-
+	public GameObject btnGameEnd;
 
 	// Use this for initialization
 	void OnEnable()
@@ -20,7 +20,7 @@ public class Panel_Mainten : MonoBehaviour {
 		UIEventListener.Get(btnUnit).onClick += OnUnitClick; // for trig next lineev
 		UIEventListener.Get(btnSave).onClick += OnSaveClick; // for trig next lineev
 		UIEventListener.Get(btnLoad).onClick += OnLoadClick; // for trig next lineev
-
+		UIEventListener.Get(btnGameEnd).onClick += OnEndClick; // for trig next lineev
 	}
 	
 	// Update is called once per frame
@@ -38,7 +38,7 @@ public class Panel_Mainten : MonoBehaviour {
 
 			// free here waill cause some  StartCoroutine of stageUI break 
 			if( cSaveData.IsLoading()== false ){
-				 PanelManager.Instance.DestoryUI( Panel_StageUI.Name ); // don't destory .. this is singoleten obj.. may be need to free singolten 
+				 PanelManager.Instance.DestoryUI( Panel_StageUI.Name ); 
 			//PanelManager.Instance.CloseUI( Panel_StageUI.Name );
 			// need to free all stage resource
 
@@ -98,6 +98,13 @@ public class Panel_Mainten : MonoBehaviour {
 		//StartCoroutine ( SaveLoading( save) 
 
 	}
+	void OnEndClick( GameObject go )
+	{
+		PanelManager.Instance.OpenUI( MainUIPanel.Name );
+
+		PanelManager.Instance.CloseUI( Name );
+	}
+
 
 	//===========================================================
 	IEnumerator SaveLoading( cSaveData save )

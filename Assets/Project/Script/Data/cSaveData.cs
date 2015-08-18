@@ -206,7 +206,7 @@ public class cSaveData{
 	public void RestoreData( _SAVE_PHASE phase )
 	{
 		// clear data
-
+		GameSystem.PlayBGM( 0 ); // stop bgm
 //		GameDataManager.Instance.SaveData = this; // for startcoror
 		//把所有要記錄的都寫在這
 
@@ -294,12 +294,13 @@ public class cSaveData{
 	{
 		if (IsLoading ())
 			return false;
-		SetLoading (true);
-
 		string sKeyName = GetKey( Idx );
 		string sJson = PlayerPrefs.GetString ( sKeyName , "" );
-		if (string.IsNullOrEmpty (sJson))
+		if (string.IsNullOrEmpty (sJson)){
+
 			return false;
+		}
+		SetLoading (true);
 		// ---- DESERIALIZATION ----
 		
 		JsonReaderSettings readerSettings = new JsonReaderSettings();

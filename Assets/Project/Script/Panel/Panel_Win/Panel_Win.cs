@@ -16,14 +16,14 @@ public class Panel_Win : MonoBehaviour {
 
 		// hide stage 
 
-
+		GameSystem.PlayBGM ( 5 );
 	}
 	// Use this for initialization
 	void Start () {
 		UIEventListener.Get(SpritObj).onClick += OnCloseBtnClick; // for trig next lineev
 
 
-		GameSystem.PlayBGM ( 5 );
+
 	}
 	
 	// Update is called once per frame

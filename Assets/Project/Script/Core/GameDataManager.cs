@@ -144,6 +144,9 @@ public partial class GameDataManager
 
 	public void EndStage()
 	{
+		// recycle drop
+		BattleManager.Instance.RecycleDrop();
+
 		// 把 unit pool 資料回存到 storage
 		foreach( KeyValuePair< int , cUnitData > pair in UnitPool )
 		{
@@ -155,6 +158,8 @@ public partial class GameDataManager
 
 		UnitPool.Clear ();
 
+		// stop bgm
+		GameSystem.PlayBGM( 0 );
 
 	}
 
@@ -689,7 +694,6 @@ public partial class GameDataManager
 			}
 		}
 
-
 		return pool;
 	}
 
@@ -727,6 +731,17 @@ public partial class GameDataManager
 				//CreateCharbySaveData( save )	
 			}
 		}
+	}
+
+	public void SetBGMPhase( int nPhase )
+	{
+		// 0-正常 , 1-勝利 , 2-緊張 , 3-悲壯 ,4-壓迫
+		if( nPhase < 0 || nPhase >9)
+			return;
+
+		nPlayerBGM = 100 + nPhase ; // from 100-109
+		nEnemyBGM  = 110 + nPhase ; // from 110-119	
+		nFriendBGM  = 120 + nPhase ; // from 120-129	
 	}
 }
 

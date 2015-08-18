@@ -331,6 +331,23 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		EndCMDUI (); // really close
 	}
 
+	public void GameEndCmd ()
+	{
+		EndCMDUI (); // really close
+
+		// close stage ui
+		if (PanelManager.Instance.CheckUIIsOpening (Panel_StageUI.Name)){
+			// entry endstage
+			Panel_StageUI.Instance.EndStage ();
+
+			Panel_StageUI.Instance.ShowStage (false);
+			// free here waill cause some  StartCoroutine of stageUI break 
+			PanelManager.Instance.DestoryUI( Panel_StageUI.Name ); 
+		}
+
+		// reopen main UI
+		PanelManager.Instance.OpenUI( MainUIPanel.Name );
+	}
 
 	public void  RunSuicide(  )
 	{
@@ -441,8 +458,12 @@ public class Panel_CMDUnitUI : MonoBehaviour
 			//int y = nGridY;
 			
 			Panel_StageUI.Instance.ClearOverCellEffect ();
-			Panel_StageUI.Instance.CreateAOEOverEffect( nGridX , nGridY , CMD.nAOEID);
-			
+			Panel_StageUI.Instance.CreateAOEOverEffect( pCmder  , nGridX , nGridY , CMD.nAOEID);
+
+			Panel_CheckBox panel = GameSystem.OpenCheckBox();
+			if (panel) {
+				panel.SetAoeCheck();
+			}
 			return;	// block cmd
 		}
 
@@ -473,8 +494,11 @@ public class Panel_CMDUnitUI : MonoBehaviour
 				y = unit.Y();
 			}
 			Panel_StageUI.Instance.ClearOverCellEffect ();
-			Panel_StageUI.Instance.CreateAOEOverEffect( x , y , CMD.nAOEID );
-			
+			Panel_StageUI.Instance.CreateAOEOverEffect( pCmder , x , y , CMD.nAOEID );
+			Panel_CheckBox panel = GameSystem.OpenCheckBox();
+			if (panel) {
+				panel.SetAoeCheck();
+			}
 			return;
 			// block cmd
 		}
@@ -624,9 +648,12 @@ public class Panel_CMDUnitUI : MonoBehaviour
 					//if( CMD.nAOEID > 0 )
 					//{
 					CMD.eCMDAOETARGET = _CMD_TARGET._POS;
-					Panel_StageUI.Instance.CreateAOEOverEffect( pCmder.X() , pCmder.Y() , CMD.nAOEID );
+					Panel_StageUI.Instance.CreateAOEOverEffect( pCmder ,  pCmder.X() , pCmder.Y() , CMD.nAOEID );
 					//}
-
+					Panel_CheckBox panel = GameSystem.OpenCheckBox();
+					if (panel) {
+						panel.SetAoeCheck();
+					}
 					//MakeCmd();
 					//Panel_StageUI.Instance.ClearOverCellEffect ();
 					//CMD.Clear ();				// clear cmd status
@@ -729,7 +756,10 @@ public class Panel_CMDUnitUI : MonoBehaviour
 			SaveCmd ();
 		} else if (name == _CMD_ID._LOAD.ToString ()) {
 			LoadCmd ();
+		}	else if (name == _CMD_ID._GAMEEND.ToString ()) {
+			GameEndCmd ();
 		}
+
 // cheat code
 		else if (name == _CMD_ID._SUICIDE.ToString ()) {
 			RunSuicide ();

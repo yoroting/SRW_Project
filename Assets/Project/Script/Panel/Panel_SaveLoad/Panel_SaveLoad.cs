@@ -116,9 +116,9 @@ public class Panel_SaveLoad : MonoBehaviour {
 	{
 		Item_SaveData obj = go.GetComponent<Item_SaveData >();
 		if (obj != null) {
-			cSaveData.Load( obj.nID , ePhase );
-
-			PanelManager.Instance.CloseUI (Name);
+			if( cSaveData.Load( obj.nID , ePhase ) ){
+				PanelManager.Instance.CloseUI (Name);
+			}
 		}
 	}
 }

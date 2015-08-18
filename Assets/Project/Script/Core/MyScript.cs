@@ -273,26 +273,27 @@ public class MyScript {
 
 		cUnitData unit = GameDataManager.Instance.GetUnitDateByCharID ( nChar1 );
 		if (unit != null) {
-			float fPer = (float)unit.n_HP / (float)unit.GetMaxHP();
+			float fPer = unit.GetHpPercent();
 
-			if( op == "<"){
-				return (fPer < fValue);
-			}
-			else if( op == "<="){
-				return (fPer <= fValue);
-			}
-			else if( op == "=="){
-				return (fPer == fValue);
-			}
-			else if( op == "!="){
-				return (fPer != fValue);
-			}
-			else if( op == ">"){
-				return (fPer > fValue);
-			}
-			else if( op == ">="){
-				return (fPer >= fValue);
-			}
+//			return ConditionFloat( fPer , op , fValue );
+//			if( op == "<"){
+//				return (fPer < fValue);
+//			}
+//			else if( op == "<="){
+//				return (fPer <= fValue);
+//			}
+//			else if( op == "=="){
+//				return (fPer == fValue);
+//			}
+//			else if( op == "!="){
+//				return (fPer != fValue);
+//			}
+//			else if( op == ">"){
+//				return (fPer > fValue);
+//			}
+//			else if( op == ">="){
+//				return (fPer >= fValue);
+//			}
 		}
 		return false;
 	}
@@ -460,22 +461,9 @@ public class MyScript {
 
 			else if( func.sFunc == "BGMPHASE"  )
 			{
+				// 0-正常 , 1-勝利 , 2-緊張 , 3-悲壯 ,4-壓迫
 				int nPhase = func.I( 0 );
-				GameDataManager.Instance.nPlayerBGM = 100 + nPhase ; // from 100-109
-				GameDataManager.Instance.nEnemyBGM  = 110 + nPhase ; // from 110-119	
-				GameDataManager.Instance.nEnemyBGM  = 120 + nPhase ; // from 120-129	
-
-//				if( nID> 0 ){
-//					GameDataManager.Instance.nPlayerBGM = nID;
-//				}
-//				int nID2 = func.I( 1 );
-//				if( nID2> 0 ){
-//					GameDataManager.Instance.nEnemyBGM = nID2;
-//				}
-//				int nID3 = func.I( 2 );
-//				if( nID3> 0 ){
-//					GameDataManager.Instance.nFriendBGM = nID3;
-//				}
+				GameDataManager.Instance.SetBGMPhase( nPhase );
 			}
 			else if( func.sFunc == "HELPBGM"  ) // 支援登場
 			{
@@ -809,19 +797,11 @@ public class MyScript {
 			foreach( cTextFunc func in funcList )
 			{
 				// Fight Effect
-				if( func.sFunc  == "ADDBUFF_E") 
-				{
-					int nBuffID = func.I(0);
-					pool.Add( new ADDBUFF_E( nBuffID ) );
-				//	CacheHitResultPool.Add( new cHitResult(cHitResult._TYPE._ADDBUFF , data_E.n_Ident , nBuffID )  );
-					
+				if( func.sFunc  == "ADDBUFF_E") 				{
+					pool.Add( new ADDBUFF_E( func.I(0) ) );
 				}
-				else if( func.sFunc  == "ADDBUFF_I") 
-				{
-					int nBuffID = func.I(0);
-					pool.Add( new ADDBUFF_I( nBuffID ) );
-				//	CacheHitResultPool.Add( new cHitResult(cHitResult._TYPE._ADDBUFF , data_I.n_Ident , nBuffID )  );
-					
+				else if( func.sFunc  == "ADDBUFF_I") 				{
+					pool.Add( new ADDBUFF_I( func.I(0) ) );
 				}
 				// Hit effect
 				if( func.sFunc  == "HITBUFF_I") 
@@ -832,10 +812,38 @@ public class MyScript {
 				{
 					pool.Add( new HITBUFF_E( func.I(0) ) );
 				}
+				// skill upgrade
 				else if( func.sFunc  == "UP_SKILL") 
 				{
 					pool.Add( new UP_SKILL( func.I(0) , func.I(1) ) );
 				}
+
+				// char data modify
+				else if( func.sFunc  == "ADDHP_I") {
+					pool.Add( new ADDHP_I( func.F(0), func.I(1) ) );
+				}
+				else if( func.sFunc  == "ADDHP_E") {
+					pool.Add( new ADDHP_E( func.F(0), func.I(1) ) );
+				}
+				else if( func.sFunc  == "ADDMP_I") {
+					pool.Add( new ADDMP_I( func.F(0), func.I(1) ) );
+				}
+				else if( func.sFunc  == "ADDMP_E") {
+					pool.Add( new ADDMP_E( func.F(0), func.I(1) ) );
+				}
+				else if( func.sFunc  == "ADDSP_I") {
+					pool.Add( new ADDSP_I( func.I(0)) );
+				}
+				else if( func.sFunc  == "ADDCP_I") {
+					pool.Add( new ADDSP_I( func.I(0) ) );
+				}
+				else if( func.sFunc  == "ADDSP_E") {
+					pool.Add( new ADDSP_E( func.I(0) ) );
+				}
+				else if( func.sFunc  == "ADDCP_E") {
+					pool.Add( new ADDSP_I( func.I(0) ) );
+				}
+
 				// Attr
 				else if( func.sFunc  == "ADD_MAR") {
 					pool.Add( new ADD_MAR( func.F(0) ) );
@@ -867,29 +875,12 @@ public class MyScript {
 				else if( func.sFunc  == "ADD_MAXSP") {
 					pool.Add( new ADD_MAXSP( func.I(0) ) );
 				}
-				else if( func.sFunc  == "ADDHP_I") {
-					pool.Add( new ADDHP_I( func.F(0), func.I(1) ) );
-				}
-				else if( func.sFunc  == "ADDMP_I") {
-					pool.Add( new ADDMP_I( func.I(0), func.I(1) ) );
-				}
-				else if( func.sFunc  == "ADDSP_I") {
-					pool.Add( new ADDSP_I( func.I(0)) );
-				}
-				else if( func.sFunc  == "ADDCP_I") {
-					pool.Add( new ADDSP_I( func.I(0) ) );
-				}
-				else if( func.sFunc  == "ADDHP_E") {
-					pool.Add( new ADDHP_E( func.F(0), func.I(1) ) );
-				}
-				else if( func.sFunc  == "ADDMP_E") {
-					pool.Add( new ADDMP_E( func.I(0) ) );
-				}
-				else if( func.sFunc  == "ADDSP_E") {
-					pool.Add( new ADDSP_E( func.I(0) ) );
-				}
-				else if( func.sFunc  == "ADDCP_E") {
-					pool.Add( new ADDSP_I( func.I(0) ) );
+
+
+
+				else if( func.sFunc  == "ADD_MOVE") 
+				{
+					pool.Add( new ADD_MOVE( func.I(0) ) );
 				}
 				else if( func.sFunc  == "MUL_DROP") {
 					pool.Add( new MUL_DROP( func.F(0) ) );
@@ -909,15 +900,30 @@ public class MyScript {
 				else if( func.sFunc  == "MUL_POWER"){
 					pool.Add( new MUL_POWER( func.F(0) ) );
 				}
+				else if( func.sFunc  == "MUL_MAXHP") {
+					pool.Add( new MUL_MAXHP( func.F(0) ) );
+				}
+				else if( func.sFunc  == "MUL_MAXMP") {
+					pool.Add( new MUL_MAXMP( func.F(0) ) );
+				}
+				else if( func.sFunc  == "MUL_MAXSP") {
+					pool.Add( new MUL_MAXSP( func.F(0) ) );
+				}
+				
 				else if( func.sFunc  == "MUL_MPCOST") {
 					pool.Add( new MUL_MPCOST( func.F(0) ) );
 				}
-				//===
+				//=============== Tag 
+				else if( func.sFunc  == "TAG_CHARGE") {  // 
+					pool.Add( new TAG_CHARGE( ) );
+				}
+
+				//=============== fight status
 				else if( func.sFunc  == "IS_DODGE") { // 必閃
 					pool.Add( new IS_DODGE( ) );
 					//pool.Add( new IS_UNIT_STATUS( _FIGHTSTATE._DODGE ) );
 				}
-				else if( func.sFunc  == "IS_CIRIT") {  //報及
+				else if( func.sFunc  == "IS_CIRIT") {  // 
 					pool.Add( new IS_CIRIT( ) );
 				}
 				else if( func.sFunc  == "IS_MERCY") {  //手加減
@@ -927,12 +933,7 @@ public class MyScript {
 					pool.Add( new IS_GUARD( ) );
 				}
 				//===
-				else if( func.sFunc  == "ADD_MOVE") 
-				{
-					pool.Add( new ADD_MOVE( func.I(0) ) );
-					//	CacheHitResultPool.Add( new cHitResult(cHitResult._TYPE._ADDBUFF , data_I.n_Ident , nBuffID )  );
-					
-				}
+
 			
 			}
 
