@@ -275,7 +275,8 @@ public class MyScript {
 		if (unit != null) {
 			float fPer = unit.GetHpPercent();
 
-//			return ConditionFloat( fPer , op , fValue );
+			return ConditionFloat( fPer , op , fValue );
+
 //			if( op == "<"){
 //				return (fPer < fValue);
 //			}

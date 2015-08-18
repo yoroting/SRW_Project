@@ -251,7 +251,13 @@ public class Panel_unit : MonoBehaviour {
 			GameDataManager.Instance.BackUnitToStorage( Ident() );
 		}
 		else {
-			GameDataManager.Instance.DelUnit( Ident() );
+			if( pUnitData.IsTag( _UNITTAG._UNDEAD ) )
+			{
+				pUnitData.SetUnDead();  // don't clear
+			}
+			else {
+				GameDataManager.Instance.DelUnit( Ident() );
+			}
 		}
 	}
 

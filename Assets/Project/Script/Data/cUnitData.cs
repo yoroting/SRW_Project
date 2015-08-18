@@ -1340,6 +1340,16 @@ public class cUnitData{
 	// pass 1 round
 	public void WeakUp( )
 	{
+		if( n_HP == 0 ){
+			int a =0;
+			// relive
+			Relive();
+
+			Panel_StageUI.Instance.CreateUnitByUnitData( this );
+
+
+		}
+
 		//AddActionTime (1);
 		if (nActionTime > 0) {
 			AddCp( 1 );		// 上回合，有殘留行動力的話獲的1 CP
@@ -1358,6 +1368,16 @@ public class cUnitData{
 			}
 		}
 		//Buffs.OnDo ( ref resPool );
+	}
+
+	// mark as undead to wait relive
+	public void SetUnDead()
+	{
+		n_HP = 0;
+
+		nActionTime = 0; // no more action
+		n_X = n_BornX;
+		n_Y = n_BornY;
 	}
 
 	public void GetBuffStatus( ){

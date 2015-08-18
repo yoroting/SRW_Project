@@ -1633,7 +1633,10 @@ public class Panel_StageUI : MonoBehaviour
 	// Widget func	 
 	public GameObject CreateUnitByUnitData( cUnitData data )
 	{
-		return null;
+		if(  data == null )
+			return null;
+
+		return AddUnit( data.eCampID , data.n_CharID , data.n_BornX , data.n_BornY , data.n_LeaderIdent , data );
 	}
 
 
