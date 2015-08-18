@@ -62,6 +62,18 @@ public class MyTool {
 		return ID.ToString ();
 
 	}
+	public static string GetCharName( int nID )
+	{
+		if (nID == 0) {
+			return Config.PlayerFirst + Config.DefaultPlayerName;
+		}
+		CHARS chardata = ConstDataManager.Instance.GetRow<CHARS> (nID);
+		if (chardata != null) {
+			return chardata.s_NAME;
+		}
+		return "null";
+	}
+
 
 	public static string GetSkillName( int nID )
 	{

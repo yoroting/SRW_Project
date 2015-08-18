@@ -199,7 +199,13 @@ public partial class BattleManager
 
 		cUnitData Atker = GameDataManager.Instance.GetUnitDateByIdent ( nAtkerID );
 		cUnitData Defer = GameDataManager.Instance.GetUnitDateByIdent ( nDeferID );
-		//
+		// 因為事件的觸發～ 可能讓 atker / defer 消失。需有配套
+		if (Atker == null || Defer == null) {
+			nPhase = 10; // 戰鬥被中斷，直接結束
+
+			Debug.Log( " null unit when RunAttack" );
+		}
+
 		//Panel_unit uDefer = Panel_StageUI.Instance.GetUnitByIdent( nDeferID ); 
 
 		switch (nPhase) {
@@ -246,8 +252,7 @@ public partial class BattleManager
 					// init fight attr each time
 					Atker.SetFightAttr( nDeferID , nAtkerSkillID );
 					Defer.SetFightAttr( nAtkerID , nDeferSkillID );
-					
-					
+
 					// set batle state
 					Atker.AddStates( _FIGHTSTATE._ATKER );
 					
@@ -326,7 +331,7 @@ public partial class BattleManager
 				pAtkAction.AddHitResult(  CalAttackResult( nAtkerID , nDeferID , IsDefMode() ) ) ;
 				pAtkAction.AddHitResult( CalSkillHitResult(  Atker , Defer  , nAtkerSkillID ) );
 
-
+				//獎勵計算要提早
 				//int nTarX = this.nTarGridX;
 				//int nTarY = this.nTarGridY;
 
@@ -434,21 +439,16 @@ public partial class BattleManager
 			}
 			nPhase++;
 			break;
-		case 9: 	// fight end . show exp
+		case 9: 	// 結算獎勵
 			
-			nPhase++;
-			break;
-		case 10:			// close all 
-			nPhase++;
-			// add Exp / Money  action
 			if ( Atker.eCampID  == _CAMP._PLAYER) {
 				if( Atker == null ){
 					Debug.Log( "atker is dead");
 				}
-
+				
 				int nExp=0;
 				int nMoney=0;
-
+				
 				CalDropResult( Atker , Defer , ref nExp , ref nMoney );
 				foreach( cUnitData unit in AtkAffectPool ){
 					CalDropResult( Atker , unit , ref nExp ,ref nMoney );
@@ -459,21 +459,22 @@ public partial class BattleManager
 				if( nMoney < 0) nMoney = 0;
 				nExp = (int)(nExp*fmuldrop);
 				if( nExp < 0) nExp = 0;
-
+				
 				nDropMoney += nMoney;
 				nDropExpPool.Add( Atker.n_Ident , nExp );
 				//ActionManager.Instance.CreateDropAction( Atker.n_Ident , nExp , nMoney );
-
+				
 			}
-
+			
+			
 			if ( Defer.eCampID  == _CAMP._PLAYER) {
 				int nExp=0;
 				int nMoney=0;
 				if( Defer == null ){
 					Debug.Log( "def is dead");
 				}
-
-
+				
+				
 				CalDropResult( Defer, Atker , ref nExp ,ref  nMoney );
 				foreach( cUnitData unit in DefAffectPool ){
 					CalDropResult( Defer , unit , ref nExp ,ref nMoney );
@@ -483,12 +484,18 @@ public partial class BattleManager
 				if( nMoney < 0) nMoney = 0;
 				nExp = (int)(nExp*fmuldrop);
 				if( nExp < 0) nExp = 0;
-
+				
 				nDropMoney += nMoney;
 				nDropExpPool.Add( Defer.n_Ident , nExp );
 				//ActionManager.Instance.CreateDropAction( Defer.n_Ident , nExp , nMoney );
-
+				
 			}
+
+			nPhase++;
+			break;
+		case 10:			// close all 
+			nPhase++;
+			// add Exp / Money  action
 
 			// Fight Finish
 
@@ -501,7 +508,8 @@ public partial class BattleManager
 				if( (unit!=Atker) && (unit!=Defer) )
 					unit.FightEnd();				
 			}
-			Atker.FightEnd( true );
+			if( Atker != null )
+				Atker.FightEnd( true );
 
 
 			// cmd finish

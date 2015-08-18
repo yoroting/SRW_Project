@@ -201,7 +201,7 @@ public class Panel_StageUI : MonoBehaviour
         Panel_CMDUnitUI.OpenCMDUI(_CMD_TYPE._SYS, 0);
 		Panel_UnitInfo.OpenUI (0);
         //PanelManager.Instance.OpenUI(Panel_UnitInfo.Name);
-		Panel_MiniUnitInfo.OpenUI (0);
+		Panel_MiniUnitInfo.OpenUI (null);
         //PanelManager.Instance.OpenUI(Panel_MiniUnitInfo.Name);
 
         //Dictionary< int , STAGE_EVENT > EvtPool;			// add event id 
@@ -250,8 +250,8 @@ public class Panel_StageUI : MonoBehaviour
         if (bIsStageEnd == true)
             return;
 
-        // Real update
-        GameDataManager.Instance.Update();
+        // Real update .. update each frae is not a good idea
+       // GameDataManager.Instance.Update();
 
         // block other event
         if (IsAnyActionRunning() == true) // wait all tween / fx / textbox / battle msg finish / unit move
@@ -1635,7 +1635,24 @@ public class Panel_StageUI : MonoBehaviour
 	{
 		if(  data == null )
 			return null;
-
+//		int nCharID = data.n_CharID;
+//		int x = data.n_BornX;
+//		int y = data.n_BornY;
+//		GameObject obj = UnitPanelObj.Spawn( TilePlaneObj.transform );
+//		if( obj == null )return null;
+//		obj.name = string.Format ("unit-{0}",nCharID );	
+//		Panel_unit unit = obj.GetComponent<Panel_unit>();
+//		if (unit != null) {
+//			iVec2 pos = FindEmptyPos( new iVec2(x , y));
+//			int posx = x;
+//			int posy = y;
+//			if( pos !=null ){
+//				posx = pos.X;
+//				posy = pos.Y;
+//			}
+//			unit.CreateChar( nCharID , posx , posy , data );
+//
+//		}
 		return AddUnit( data.eCampID , data.n_CharID , data.n_BornX , data.n_BornY , data.n_LeaderIdent , data );
 	}
 
@@ -1655,22 +1672,6 @@ public class Panel_StageUI : MonoBehaviour
 		GameObject obj = UnitPanelObj.Spawn( TilePlaneObj.transform );
 		if( obj == null )return null;
 		obj.name = string.Format ("unit-{0}",nCharID );	
-		
-		
-		// charge face text				
-//		UITexture tex = obj.GetComponentInChildren<UITexture>();
-//		
-//		if( tex )
-//		{
-//			if(tex != null){
-//				//	DynamicAssetBundleLoader.LoadTexture(tex,DynamicAssetBundleLoader.SSAssetType.Card, "CARD_" + card.PicName);
-//				
-//				string url = "Art/char/" + charData.s_FILENAME +"_S";
-//				Texture t= Resources.Load <Texture>( url  ) ;
-//				tex.mainTexture = t;
-//				// tex.MakePixelPerfect(); don't make pixel it
-//			}
-//		}
 
 		// regedit to gamedata manager
 		Panel_unit unit = obj.GetComponent<Panel_unit>();
@@ -2602,6 +2603,11 @@ public class Panel_StageUI : MonoBehaviour
 		// change bgm
 		PlayStageBGM ();
 
+		// relive undead
+		GameDataManager.Instance.ReLiveUndeadUnit (Evt.nCamp);
+
+
+		// weakup  
 		List< Panel_unit > lst = GetUnitListByCamp ( Evt.nCamp );
 		foreach( Panel_unit unit in lst )
 		{
@@ -2787,23 +2793,24 @@ public class Panel_StageUI : MonoBehaviour
 			
 		}
 	}
-	public void OnStageDelEventEvent( int nEvtID )
-	{
-		if (nEvtID == 0)
-			return;
-		if (EvtPool.ContainsKey (nEvtID)) {
-			EvtPool.Remove( nEvtID );
-		}
-		foreach (STAGE_EVENT evt in WaitPool) {
-			if( evt.n_ID == nEvtID )
-			{
-				WaitPool.Remove( evt );
-				break;
-			}
-		}
-		return;
-
-	}
+	// 本作法 會造成存讀黨的問題
+//	public void OnStageDelEventEvent( int nEvtID )
+//	{
+//		if (nEvtID == 0)
+//			return;
+//		if (EvtPool.ContainsKey (nEvtID)) {
+//			EvtPool.Remove( nEvtID );
+//		}
+//		foreach (STAGE_EVENT evt in WaitPool) {
+//			if( evt.n_ID == nEvtID )
+//			{
+//				WaitPool.Remove( evt );
+//				break;
+//			}
+//		}
+//		return;
+//
+//	}
 
 	public void OnStageAddBuff(int nCharID , int nBuffID )
 	{

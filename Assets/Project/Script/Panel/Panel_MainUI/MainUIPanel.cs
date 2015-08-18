@@ -12,7 +12,7 @@ public class MainUIPanel : BasicPanel {
 	public GameObject LoadButton;
 	public GameObject GalleryButton;
 	public GameObject SetUpButton;
-
+	public GameObject GameEndButton;
 	void Awake(){
 #if DEBUG && UNITY_EDITOR
 		// Avoid Const data null for debug

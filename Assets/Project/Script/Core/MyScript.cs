@@ -68,6 +68,13 @@ public class MyScript {
 					return false;
 				}				
 			}
+			else if( func.sFunc  == "NODONE")  //檢查的事件沒有完成
+			{
+				if( ConditionNotDone( func.I(0) ) == false )
+				{
+					return false;
+				}	
+			}
 			else if( func.sFunc == "COMBAT"  )
 			{
 				if( ConditionCombat( func.I(0),func.I(1)  ) == false )
@@ -110,6 +117,8 @@ public class MyScript {
 					return false;
 				}	
 			}
+
+
 			else{
 				Debug.LogError( string.Format( "Error-Can't find script cond func '{0}'" , func.sFunc ) );
 			}
@@ -211,6 +220,14 @@ public class MyScript {
 		}
 		return false;
 	}
+	bool ConditionNotDone( int nID  )
+	{
+		if( !GameDataManager.Instance.EvtDonePool.ContainsKey (nID) ) {
+			return true;
+		}
+		return false;
+	}
+
 	bool ConditionCombat( int nChar1 , int nChar2  )
 	{
 		if( BattleManager.Instance.IsBattlePhase() )
@@ -595,14 +612,12 @@ public class MyScript {
 				}
 
 			}
-			else if( func.sFunc  == "DELEVENT") 
-			{
-				Panel_StageUI.Instance.OnStageDelEventEvent( func.I( 0 ) );
-			//	StageDelEventEvent evt = new StageDelEventEvent ();
-				//evt.eCamp = (_CAMP)func.I( 0 );
-			//	evt.nCharID = func.I( 0 );
-			//	GameEventManager.DispatchEvent ( evt );
-			}
+			//不能刪除 等待執行 event. 會造成 讀檔上的麻煩
+//			else if( func.sFunc  == "DELEVENT") 
+//			{
+//				Panel_StageUI.Instance.OnStageDelEventEvent( func.I( 0 ) );			
+//			}
+
 			else if( func.sFunc  == "POPMARK") 
 			{
 				Panel_StageUI.Instance.OnStagePopMarkEvent( func.I(0),func.I(1),func.I(2),func.I(3) );

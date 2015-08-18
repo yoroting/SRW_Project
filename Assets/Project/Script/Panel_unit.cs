@@ -251,8 +251,7 @@ public class Panel_unit : MonoBehaviour {
 			GameDataManager.Instance.BackUnitToStorage( Ident() );
 		}
 		else {
-			if( pUnitData.IsTag( _UNITTAG._UNDEAD ) )
-			{
+			if( pUnitData.CheckCanRePop() )	{
 				pUnitData.SetUnDead();  // don't clear
 			}
 			else {
@@ -325,6 +324,10 @@ public class Panel_unit : MonoBehaviour {
 		// return if unit data keep null
 		if( pUnitData == null )
 			return;
+
+		//record born pos
+		pUnitData.n_BornX = x; 
+		pUnitData.n_BornY = y; 
 
 		SetXY( x , y );
 		CHARS charData = ConstDataManager.Instance.GetRow<CHARS>( nCharID );

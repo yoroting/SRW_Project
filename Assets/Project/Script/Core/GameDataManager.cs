@@ -166,13 +166,13 @@ public partial class GameDataManager
 
 
 	// need this to update all data's attr
-	public void Update()
-	{
-		// update all unit's attr
-		foreach (KeyValuePair< int , cUnitData > pair in UnitPool) {
-			pair.Value.UpdateAttr();
-		}
-	}
+//	public void Update()
+//	{
+//		// update all unit's attr
+//		foreach (KeyValuePair< int , cUnitData > pair in UnitPool) {
+//			pair.Value.UpdateAttr();
+//		}
+//	}
 
 	//===================================================
 
@@ -309,44 +309,6 @@ public partial class GameDataManager
 
 		return bRoundChange;	 
 	}
-	//Dictionary< int , Abil > ConAbilityPool;
-//	public CHARS GetConstCharData( int nCharId )
-//	{
-//		CHARS p = null;
-//
-//		p = ConstDataManager.Instance.GetRow<CHARS> (nCharId);
-//		if (p == null) {
-//			Debug.LogErrorFormat( "can't get char constdata {0}" , nCharId );
-//			p = new CHARS(); // fill empty value
-//		}
-//
-//		return p;
-//	}
-//
-//	public SCHOOL GetConstSchoolData( int nSchoolId )
-//	{
-//		SCHOOL p = null;
-//		p = ConstDataManager.Instance.GetRow<SCHOOL> (nSchoolId);
-//		if (p == null) {
-//			Debug.LogErrorFormat( "can't get school constdata {0}" , nSchoolId );
-//			p = new SCHOOL(); // fill empty value
-//		}
-//
-//		return p;		
-//	}
-//
-
-//	public SKILL GetConstSkillData( int nSkillId )
-//	{
-//		SKILL p = null;
-//
-//		p = ConstDataManager.Instance.GetRow<SKILL> (nSkillId);
-//		if (p == null) {
-//			Debug.LogErrorFormat( "can't get SKILL constdata {0}" , nSkillId );
-//			p = new SKILL(); // fill empty value
-//		}
-//		return p;		
-//	}
 
 	Dictionary< int , cSkillData > SkillDataCachePool;
 	// cache to get skill data
@@ -428,15 +390,19 @@ public partial class GameDataManager
 		return unit;
 	}
 
-	public bool AddCharToPool( cUnitData unit  )
+	public bool AddCharToPool( cUnitData unit )
 	{
 		// check game data to insert
-		if( UnitPool.ContainsKey( unit.n_Ident ) == true ){
+		if (UnitPool.ContainsKey (unit.n_Ident) == true) {
 			//cUnitData org = UnitPool[ unit.n_Ident ];
 			//UnitPool.Remove( unit.n_Ident );
-			Debug.LogErrorFormat( "Err Add double unit ident{0},charid{1} to gamedata manager " , unit.n_Ident , unit.n_CharID );
-		}
-		UnitPool.Add( unit.n_Ident , unit );
+			if( unit.IsTag(_UNITTAG._UNDEAD) == false  ){
+				Debug.LogErrorFormat ("Err Add double unit ident{0},charid{1} to gamedata manager ", unit.n_Ident, unit.n_CharID);
+			}
+
+		} else {
+			UnitPool.Add( unit.n_Ident , unit );
+		}		
 
 		return true;
 	}
@@ -491,7 +457,7 @@ public partial class GameDataManager
 		unit.n_AIY = save.nAIY;
 
 		unit.UpdateAllAttr ();
-
+		unit.UpdateAttr ();
 		return unit;
 	}
 
@@ -598,6 +564,21 @@ public partial class GameDataManager
 			return true;
 		}
 		return false;
+	}
+
+	public void ReLiveUndeadUnit( _CAMP camp ) // all  undead
+	{
+		foreach (KeyValuePair< int , cUnitData > pair in UnitPool) {
+			if( camp != pair.Value.eCampID )
+				continue;
+			// relive
+			cUnitData p = pair.Value;
+			if( p.n_HP == 0 ){
+				p.Relive();
+				Panel_StageUI.Instance.CreateUnitByUnitData( p );
+			}
+		}
+
 	}
 	/// <summary>
 	///  AI

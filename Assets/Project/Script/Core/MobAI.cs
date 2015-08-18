@@ -568,7 +568,7 @@ public class MobAI  {
 
 	static public int SelSkill( cUnitData pMob , cUnitData pTarget = null , bool bCounterMode = false  )
 	{
-		return 11702; // debug
+		//return 11702; // debug
 
 		cUnitData pData = pMob;
 		if( pData == null ){

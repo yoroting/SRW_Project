@@ -14,4 +14,5 @@ public class BUFF : ConstDataRow<BUFF>
 	public string s_CONDITIONAL_BUFF;
 	public string s_CONSTANT_BUFF;
 	public string s_BUFF_FXS;
+	public string s_NAME;
 }

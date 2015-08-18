@@ -748,7 +748,7 @@ public class cUnitData{
 		}
 
 		// don't update each frame for performance . call condition update for each calcul
-	//	UpdateBuffConditionAttr ();		// always check condition and update
+		UpdateBuffConditionAttr ();		// always check condition and update
 
 	}
 
@@ -905,6 +905,10 @@ public class cUnitData{
 		n_DEF = GetMaxDef();
 
 		nActionTime = 1;
+
+		//
+		UpdateAllAttr ();
+		UpdateAttr ();
 
 	}
 
@@ -1240,7 +1244,7 @@ public class cUnitData{
 
 		// get skill data
 
-
+		UpdateAttr ();
 	}
 
 	//fight end to clear data
@@ -1251,17 +1255,19 @@ public class cUnitData{
 				this.ActionFinished();
 			}
 		}
+		ClearState(); // clear fight state
+		
+		//FightAttr.ClearBase (); // clear base attr only
+		FightAttr.Reset();			// clear all fight attr
+
 		// Fight end to remove buff
 		if (Buffs.BuffFightEnd ( )) {
 			SetUpdate( cAttrData._BUFF );
 		}
 
-		ClearState(); // clear fight state
-		
-		//FightAttr.ClearBase (); // clear base attr only
-		FightAttr.Reset();			// clear all fight attr
-		
-		UpdateBuffConditionAttr();
+		UpdateAllAttr ();
+		UpdateAttr ();
+
 	}
 
 
@@ -1340,20 +1346,11 @@ public class cUnitData{
 	// pass 1 round
 	public void WeakUp( )
 	{
-		if( n_HP == 0 ){
-			int a =0;
-			// relive
-			Relive();
-
-			Panel_StageUI.Instance.CreateUnitByUnitData( this );
-
-
-		}
 
 		//AddActionTime (1);
-		if (nActionTime > 0) {
-			AddCp( 1 );		// 上回合，有殘留行動力的話獲的1 CP
-		}
+//		if (nActionTime > 0) {
+//			AddCp( 1 );		// 上回合，有殘留行動力的話獲的1 CP
+//		}
 
 		nActionTime = 1;   // setup to default 
 
@@ -1371,6 +1368,21 @@ public class cUnitData{
 	}
 
 	// mark as undead to wait relive
+	public bool CheckCanRePop( )
+	{
+		if (this.IsTag (  _UNITTAG._UNDEAD ) ) {
+			if( n_LeaderIdent > 0){
+				cUnitData leader = GameDataManager.Instance.GetUnitDateByIdent( n_LeaderIdent );
+				if( leader != null ){
+					if( leader.n_HP > 0 && !MyTool.CanPK( eCampID , leader.eCampID ) ){
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
 	public void SetUnDead()
 	{
 		n_HP = 0;

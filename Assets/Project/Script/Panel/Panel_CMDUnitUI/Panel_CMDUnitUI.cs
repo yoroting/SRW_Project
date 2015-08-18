@@ -123,6 +123,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 	//	if (pUnit != null) {
 	//		pUnit.OnSelected( true );
 	//	}
+
 	}
 
 	void OnDisable()
@@ -132,6 +133,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 	//	if (pUnit != null) {
 	//		pUnit.OnSelected( false );
 	//	}
+		Panel_MiniUnitInfo.CloseUI ();
 	}
 
 	void ClearCmdPool()
@@ -198,6 +200,11 @@ public class Panel_CMDUnitUI : MonoBehaviour
 			Panel_StageUI.Instance.ClearOverCellEffect ();
 			Panel_StageUI.Instance.CreateAttackOverEffect (pCmder);
 
+		}
+
+		// show sample info
+		if (pCmder != null) {
+			Panel_MiniUnitInfo.OpenUI (pCmder.pUnitData );
 		}
 	}
 
@@ -845,6 +852,11 @@ public class Panel_CMDUnitUI : MonoBehaviour
 			panel.SetCmder (cmder);
 
 			Panel_StageUI.Instance.MoveToGameObj( cmder.gameObject );
+
+			// show sample info
+			if (cmder != null) {
+				Panel_MiniUnitInfo.OpenUI ( cmder.pUnitData );
+			}
 			//Panel_StageUI.Instance.TraceUnit( cmder );
 		}
 		panel.SetAttacker (TarIdent);
@@ -854,6 +866,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		panel.CreateCMDList (type);
 		//if (PanelManager.Instance.CheckUIIsOpening (Panel_CMDUnitUI.Name)) {
 		//}
+
 
 		return panel;
 	}
