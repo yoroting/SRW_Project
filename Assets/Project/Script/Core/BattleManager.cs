@@ -196,13 +196,11 @@ public partial class BattleManager
 	//必定造成傷害與 反擊/攻守/協防的攻擊流程
 	public void RunAttack()
 	{
-
 		cUnitData Atker = GameDataManager.Instance.GetUnitDateByIdent ( nAtkerID );
 		cUnitData Defer = GameDataManager.Instance.GetUnitDateByIdent ( nDeferID );
 		// 因為事件的觸發～ 可能讓 atker / defer 消失。需有配套
 		if (Atker == null || Defer == null) {
 			nPhase = 10; // 戰鬥被中斷，直接結束
-
 			Debug.Log( " null unit when RunAttack" );
 		}
 
@@ -331,6 +329,7 @@ public partial class BattleManager
 				pAtkAction.AddHitResult(  CalAttackResult( nAtkerID , nDeferID , IsDefMode() ) ) ;
 				pAtkAction.AddHitResult( CalSkillHitResult(  Atker , Defer  , nAtkerSkillID ) );
 
+	//			CalDropResult( Atker , Defer );
 				//獎勵計算要提早
 				//int nTarX = this.nTarGridX;
 				//int nTarY = this.nTarGridY;
@@ -352,6 +351,8 @@ public partial class BattleManager
 					pAtkAction.AddHitResult(  CalAttackResult( nAtkerID , unit.n_Ident , true) ) ;
 					//if( nAtkerSkillID > 0 ){
 					pAtkAction.AddHitResult( CalSkillHitResult(  Atker , unit  , nAtkerSkillID ) );
+
+//					CalDropResult( Atker , unit );
 					//}
 					//Atker.Buffs.OnHit( unit , ref pAtkAction.HitResult );
 				}
@@ -408,6 +409,7 @@ public partial class BattleManager
 				if (pCountAct != null) {
 					pCountAct.AddHitResult( CalAttackResult( nDeferID , nAtkerID , false ) ); // must not def at this time
 					pCountAct.AddHitResult( CalSkillHitResult( Defer,  Atker , nDeferSkillID ) );
+//					CalDropResult( Defer , Atker );
 //					Defer.Buffs.OnHit( Atker , ref pCountAct.HitResult );
 				}
 
@@ -428,6 +430,8 @@ public partial class BattleManager
 
 					//if( nDeferSkillID > 0 ){
 					pCountAct.AddHitResult( CalSkillHitResult( Defer,  unit , nDeferSkillID ) );
+
+					//CalDropResult( Defer , unit );
 					//}
 					//Defer.Buffs.OnHit( unit , ref pCountAct.HitResult );
 				}
@@ -441,55 +445,55 @@ public partial class BattleManager
 			break;
 		case 9: 	// 結算獎勵
 			
-			if ( Atker.eCampID  == _CAMP._PLAYER) {
-				if( Atker == null ){
-					Debug.Log( "atker is dead");
-				}
-				
-				int nExp=0;
-				int nMoney=0;
-				
-				CalDropResult( Atker , Defer , ref nExp , ref nMoney );
-				foreach( cUnitData unit in AtkAffectPool ){
-					CalDropResult( Atker , unit , ref nExp ,ref nMoney );
-				}
-				// drop rate on final value
-				float fmuldrop = 1.0f + Atker.GetMulDrop();
-				nMoney = (int)(nMoney*fmuldrop);
-				if( nMoney < 0) nMoney = 0;
-				nExp = (int)(nExp*fmuldrop);
-				if( nExp < 0) nExp = 0;
-				
-				nDropMoney += nMoney;
-				nDropExpPool.Add( Atker.n_Ident , nExp );
-				//ActionManager.Instance.CreateDropAction( Atker.n_Ident , nExp , nMoney );
-				
-			}
-			
-			
-			if ( Defer.eCampID  == _CAMP._PLAYER) {
-				int nExp=0;
-				int nMoney=0;
-				if( Defer == null ){
-					Debug.Log( "def is dead");
-				}
-				
-				
-				CalDropResult( Defer, Atker , ref nExp ,ref  nMoney );
-				foreach( cUnitData unit in DefAffectPool ){
-					CalDropResult( Defer , unit , ref nExp ,ref nMoney );
-				}
-				float fmuldrop = 1.0f + Defer.GetMulDrop();
-				nMoney = (int)(nMoney*fmuldrop);
-				if( nMoney < 0) nMoney = 0;
-				nExp = (int)(nExp*fmuldrop);
-				if( nExp < 0) nExp = 0;
-				
-				nDropMoney += nMoney;
-				nDropExpPool.Add( Defer.n_Ident , nExp );
-				//ActionManager.Instance.CreateDropAction( Defer.n_Ident , nExp , nMoney );
-				
-			}
+//			if ( Atker.eCampID  == _CAMP._PLAYER) {
+//				if( Atker == null ){
+//					Debug.Log( "atker is dead");
+//				}
+//				
+//				int nExp=0;
+//				int nMoney=0;
+//				
+//				CalDropResult( Atker , Defer , ref nExp , ref nMoney );
+//				foreach( cUnitData unit in AtkAffectPool ){
+//					CalDropResult( Atker , unit , ref nExp ,ref nMoney );
+//				}
+//				// drop rate on final value
+//				float fmuldrop = 1.0f + Atker.GetMulDrop();
+//				nMoney = (int)(nMoney*fmuldrop);
+//				if( nMoney < 0) nMoney = 0;
+//				nExp = (int)(nExp*fmuldrop);
+//				if( nExp < 0) nExp = 0;
+//				
+//				nDropMoney += nMoney;
+//				nDropExpPool.Add( Atker.n_Ident , nExp );
+//				//ActionManager.Instance.CreateDropAction( Atker.n_Ident , nExp , nMoney );
+//				
+//			}
+//			
+//			
+//			if ( Defer.eCampID  == _CAMP._PLAYER) {
+//				int nExp=0;
+//				int nMoney=0;
+//				if( Defer == null ){
+//					Debug.Log( "def is dead");
+//				}
+//				
+//				
+//				CalDropResult( Defer, Atker , ref nExp ,ref  nMoney );
+//				foreach( cUnitData unit in DefAffectPool ){
+//					CalDropResult( Defer , unit , ref nExp ,ref nMoney );
+//				}
+//				float fmuldrop = 1.0f + Defer.GetMulDrop();
+//				nMoney = (int)(nMoney*fmuldrop);
+//				if( nMoney < 0) nMoney = 0;
+//				nExp = (int)(nExp*fmuldrop);
+//				if( nExp < 0) nExp = 0;
+//				
+//				nDropMoney += nMoney;
+//				nDropExpPool.Add( Defer.n_Ident , nExp );
+//				//ActionManager.Instance.CreateDropAction( Defer.n_Ident , nExp , nMoney );
+//				
+//			}
 
 			nPhase++;
 			break;
@@ -508,6 +512,7 @@ public partial class BattleManager
 				if( (unit!=Atker) && (unit!=Defer) )
 					unit.FightEnd();				
 			}
+			// atker clear at last
 			if( Atker != null )
 				Atker.FightEnd( true );
 
@@ -590,30 +595,30 @@ public partial class BattleManager
 				}
 
 				//pAct.AddHitResult( CalSkillHitResult( nAtkerID, nTarGridX , nTarGridY , nAtkerSkillID ) );
-				if ( Atker.eCampID  == _CAMP._PLAYER) {
-					if( Atker == null ){
-						Debug.Log( "atker is dead");
-					}
-					
-					if( bIsDamage ){
-						int nExp=0;
-						int nMoney=0;
-						CalDropResult( Atker , Defer , ref nExp , ref nMoney );
-						foreach( cUnitData unit in AtkAffectPool ){
-							CalDropResult( Atker , unit , ref nExp ,ref nMoney );
-						}
-						// drop rate on final value
-						float fmuldrop = 1.0f + Atker.GetMulDrop();
-						nMoney = (int)(nMoney*fmuldrop);
-						if( nMoney < 0) nMoney = 0;
-						nExp = (int)(nExp*fmuldrop);
-						if( nExp < 0) nExp = 0;
-						
-						nDropMoney += nMoney;
-						nDropExpPool.Add( Atker.n_Ident , nExp );
-						//ActionManager.Instance.CreateDropAction( Atker.n_Ident , nExp , nMoney );
-					}
-				}
+//				if ( Atker.eCampID  == _CAMP._PLAYER) {
+//					if( Atker == null ){
+//						Debug.Log( "atker is dead");
+//					}
+//					
+//					if( bIsDamage ){
+//						int nExp=0;
+//						int nMoney=0;
+//						CalDropResult( Atker , Defer , ref nExp , ref nMoney );
+//						foreach( cUnitData unit in AtkAffectPool ){
+//							CalDropResult( Atker , unit , ref nExp ,ref nMoney );
+//						}
+//						// drop rate on final value
+//						float fmuldrop = 1.0f + Atker.GetMulDrop();
+//						nMoney = (int)(nMoney*fmuldrop);
+//						if( nMoney < 0) nMoney = 0;
+//						nExp = (int)(nExp*fmuldrop);
+//						if( nExp < 0) nExp = 0;
+//						
+//						nDropMoney += nMoney;
+//						nDropExpPool.Add( Atker.n_Ident , nExp );
+//						//ActionManager.Instance.CreateDropAction( Atker.n_Ident , nExp , nMoney );
+//					}
+//				}
 			}
 			nPhase++;
 			break;
@@ -634,7 +639,9 @@ public partial class BattleManager
 				if( (unit!=Atker) && (unit!=Defer) )
 					unit.FightEnd();				
 			}
-			Atker.FightEnd( true );
+			if( Atker != null ){
+				Atker.FightEnd( true );
+			}
 
 			// cmd finish
 			
@@ -1129,37 +1136,49 @@ public partial class BattleManager
 
 	}
 
-	public void CalDropResult( cUnitData Atker , cUnitData Defer , ref int nExp , ref int nMoney )
+	public void CalDropResult( cUnitData Atker , cUnitData Defer )
 	{
-		if( Atker == null ) return ;
-		int exp 	= 1; // base exp
+		if( Atker == null || Defer == null ) return ;
+		if( Atker.eCampID != _CAMP._PLAYER  ) return;
+
+		float fdroprate = 1.0f + Atker.GetMulDrop();
+
+		//
+		int exp 	= 10; // base exp
 		int money 	= 0;
 		if( Defer != null ){
 			int nDiffLv = Defer.n_Lv-Atker.n_Lv;
-			if( nDiffLv > 3  ){
-				exp +=3;
-			}
-			else if( nDiffLv > -3  ){
-				exp +=1;
-			}
-			//
+			exp += (nDiffLv*2);
+			exp = MyTool.ClampInt( exp , 1 , 20 );
+
 			// kill
 			if( Defer.IsStates( _FIGHTSTATE._DEAD ) ){
 
-				exp = (exp*4)+20;
-				money  = 1000;
+				exp = (exp*3) ;
+				money  = 1000 ;
 
 				// check drop item
 				if( Defer.cCharData.n_ITEM_DROP  > 0 ){
 					nDropItemPool.Add( Defer.cCharData.n_ITEM_DROP );
 				}
-
 			}
 		}
-		nExp 	+= exp ; 
-		nMoney 	+= money;
+		// mul drop
+		money =  MyTool.ClampInt(  money , 0 ,   (int)(money*fdroprate * Defer.cCharData.f_DROP_EXP) );
+		exp   =  MyTool.ClampInt(  exp , 0 ,   (int)(exp*fdroprate * Defer.cCharData.f_DROP_MONEY) );
 
+		// Add to pool
+		//nExp 	+= exp ; 
+		//nMoney 	+= money;
 
+		//====
+		nDropMoney += money;
+		if( nDropExpPool.ContainsKey( Atker.n_Ident )  ){
+			nDropExpPool[Atker.n_Ident ] += exp;
+		}
+		else {
+			nDropExpPool.Add( Atker.n_Ident , exp );
+		}
 
 	}
 
@@ -1314,10 +1333,9 @@ public partial class BattleManager
 
 		resPool.Add ( new cHitResult( cHitResult._TYPE._HP ,nDefer , nDefHp  ) );
 		resPool.Add ( new cHitResult( cHitResult._TYPE._CP ,nDefer , 1  ) ); // def add 1 cp
-		// Skill Hit spec Effect
-//		MyScript.Instance.RunSkillEffect ( pAtker , pDefer, pAtker.FightAttr.Skill.s_HIT_EFFECT , ref resPool ); // bad frame work
-	//	pAtker.DoSkillHitEffect ( pDefer , ref resPool );
-	//	MyTool.DoSkillEffect ( pAtker , pAtker.FightAttr.HitPool , pAtker.FightAttr.Skill.s_HIT_TRIG ,  pAtker.FightAttr.HitEffPool , ref resPool  );
+
+		//有傷害的才會造成掉落
+		CalDropResult( pAtker , pDefer );
 
 		return resPool;
 	}

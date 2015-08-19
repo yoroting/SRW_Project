@@ -182,7 +182,7 @@ public class Panel_Talk : MonoBehaviour {
 
 		while( m_nScriptIdx< m_cScript.GetMaxCol ())
 		{
-			NextLine ( );
+			NextLine ( ); // 
 		}
 		EndTalk();
 

@@ -246,18 +246,31 @@ public class Panel_unit : MonoBehaviour {
 
 	void OnDisable () 
 	{
+		// bad place.. move to on dead dead 
 		// don't del unit during stage
+
+
+	}
+
+	public void FreeUnitData()
+	{
 		if (eCampID == _CAMP._PLAYER) {
 			GameDataManager.Instance.BackUnitToStorage( Ident() );
+			return ;
 		}
 		else {
-			if( pUnitData.CheckCanRePop() )	{
-				pUnitData.SetUnDead();  // don't clear
-			}
-			else {
-				GameDataManager.Instance.DelUnit( Ident() );
-			}
+			if( Panel_StageUI.Instance.bIsStageEnd == false )
+			{
+				if( pUnitData.CheckCanRePop() )	{
+					pUnitData.SetUnDead();  // don't clear
+					return;
+				}
+			}		
 		}
+		// default is clear 
+		GameDataManager.Instance.DelUnit( Ident() );
+
+		pUnitData = null;
 	}
 
 	public bool IsIdle()
@@ -323,7 +336,7 @@ public class Panel_unit : MonoBehaviour {
 		}
 		// return if unit data keep null
 		if( pUnitData == null )
-			return;
+			return;	
 
 		//record born pos
 		pUnitData.n_BornX = x; 

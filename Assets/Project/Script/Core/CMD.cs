@@ -139,6 +139,7 @@ public class cCMD{
 		if (Config.GOD == true) {
 			CmdlistArray [idx].Add (_CMD_ID._SUICIDE);
 			CmdlistArray [idx].Add (_CMD_ID._CHEAT);
+			CmdlistArray [idx].Add (_CMD_ID._ATK);
 			CmdlistArray [idx].Add (_CMD_ID._SKILL);
 		}
 		

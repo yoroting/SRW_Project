@@ -33,94 +33,100 @@ public class MyScript {
 		List<cTextFunc> funcList =line.GetFuncList();
 		foreach( cTextFunc func in funcList )
 		{
-			if( func.sFunc == "GO" )
-			{
-				if( ConditionGO( ) == false )
-				{
-					return false;
-				}	
-			}
-			else if( func.sFunc == "ALLDEAD" )
-			{
-				if( ConditionAllDead( func.I(0) ) == false )
-				{
-					return false;
-				}				
-			}
-			else if( func.sFunc == "DEAD"  )
-			{
-				if( ConditionUnitDead( func.I(0), func.I(1) ) == false )
-				{
-					return false;
-				}				
-			}
-			else if( func.sFunc == "ROUND"  )
-			{
-				if( ConditionRound( func.I(0), func.I(1) ) == false )
-				{
-					return false;
-				}				
-			}		
-			else if( func.sFunc == "AFTER"  )
-			{
-				if( ConditionAfter( func.I(0),func.I(1)  ) == false )
-				{
-					return false;
-				}				
-			}
-			else if( func.sFunc  == "NODONE")  //檢查的事件沒有完成
-			{
-				if( ConditionNotDone( func.I(0) ) == false )
-				{
-					return false;
-				}	
-			}
-			else if( func.sFunc == "COMBAT"  )
+			if( func.sFunc == "COMBAT"  )
 			{
 				if( ConditionCombat( func.I(0),func.I(1)  ) == false )
 				{
 					return false;
 				}		
 			}
-			else if( func.sFunc == "DIST"  )
+			else if( func.sFunc == "GO" )
 			{
-				if( ConditionDist( func.I(0),func.I(1) ,func.I(2) ) == false )
+				if( ConditionGO( ) == false )
 				{
 					return false;
 				}	
 			}
-			else if( func.sFunc == "HP"  )
-			{
-				if( ConditionHp( func.I(0), func.S(1)  ,func.F(2) ) == false )
-				{
-					return false;
-				}	
-			}
-			else if( func.sFunc == "RATE"  )
-			{
-				if( ConditionRate( func.I(0) ) == false )
-				{
-					return false;
-				}	
-			}
-			else if( func.sFunc == "INRECT"  )
-			{
-				if( ConditionInRect( func.I(0),func.I(1),func.I(2),func.I(3),func.I(4) ) == false )
-				{
-					return false;
-				}	
-			}
-			else if( func.sFunc == "NORECT"  )
-			{
-				if( ConditionNoRect( func.I(0),func.I(1),func.I(2),func.I(3),func.I(4) ) == false )
-				{
-					return false;
-				}	
-			}
+			// 以上 可以在 戰鬥中檢查
+			else { 
+				// 以下 不可在 戰鬥中檢查
+				if (BattleManager.Instance.IsBattlePhase ())
+					return false;// don't check in battle
 
+				if( func.sFunc == "ALLDEAD" )
+				{
+					if( ConditionAllDead( func.I(0) ) == false )
+					{
+						return false;
+					}				
+				}
+				else if( func.sFunc == "DEAD"  )
+				{
+					if( ConditionUnitDead( func.I(0), func.I(1) ) == false )
+					{
+						return false;
+					}				
+				}
+				else if( func.sFunc == "ROUND"  )
+				{
+					if( ConditionRound( func.I(0), func.I(1) ) == false )
+					{
+						return false;
+					}				
+				}		
+				else if( func.sFunc == "AFTER"  )
+				{
+					if( ConditionAfter( func.I(0),func.I(1)  ) == false )
+					{
+						return false;
+					}				
+				}
+				else if( func.sFunc  == "NODONE")  //檢查的事件沒有完成
+				{
+					if( ConditionNotDone( func.I(0) ) == false )
+					{
+						return false;
+					}	
+				}
 
-			else{
-				Debug.LogError( string.Format( "Error-Can't find script cond func '{0}'" , func.sFunc ) );
+				else if( func.sFunc == "DIST"  )
+				{
+					if( ConditionDist( func.I(0),func.I(1) ,func.I(2) ) == false )
+					{
+						return false;
+					}	
+				}
+				else if( func.sFunc == "HP"  )
+				{
+					if( ConditionHp( func.I(0), func.S(1)  ,func.F(2) ) == false )
+					{
+						return false;
+					}	
+				}
+				else if( func.sFunc == "RATE"  )
+				{
+					if( ConditionRate( func.I(0) ) == false )
+					{
+						return false;
+					}	
+				}
+				else if( func.sFunc == "INRECT"  )
+				{
+					if( ConditionInRect( func.I(0),func.I(1),func.I(2),func.I(3),func.I(4) ) == false )
+					{
+						return false;
+					}	
+				}
+				else if( func.sFunc == "NORECT"  )
+				{
+					if( ConditionNoRect( func.I(0),func.I(1),func.I(2),func.I(3),func.I(4) ) == false )
+					{
+						return false;
+					}	
+				}
+				else{
+					Debug.LogError( string.Format( "Error-Can't find script cond func '{0}'" , func.sFunc ) );
+				}
 			}
 		}
 		return true;
@@ -155,7 +161,46 @@ public class MyScript {
 	{
 		return true;
 	}
+	bool ConditionCombat( int nChar1 , int nChar2  )
+	{
+		if( BattleManager.Instance.IsBattlePhase() )
+		{
+			Panel_unit atker = Panel_StageUI.Instance.GetUnitByIdent( BattleManager.Instance.nAtkerID );
+			Panel_unit defer = Panel_StageUI.Instance.GetUnitByIdent( BattleManager.Instance.nDeferID );
+			int atkerid = 0;
+			int deferid = 0;
+			if( atker!=null )
+			{
+				atkerid = atker.CharID;
+			}
+			if( defer!=null )
+			{
+				deferid = defer.CharID;
+			}
+			
+			if( nChar1 != 0 )
+			{
+				if( (atkerid!=nChar1) && ( deferid!=nChar1) )
+				{
+					return false;
+				}
+			}
+			if( nChar2 != 0 )
+			{
+				if( (atkerid!=nChar2) && ( deferid!=nChar2) )
+				{
+					return false;
+				}
+			}
+			return true;
+			
+		}
+		
+		return false;
+	}
 
+
+	//====================================================
 	bool ConditionRate( int Rate )
 	{
 		int nRoll = Random.Range (0, 100);
@@ -165,8 +210,6 @@ public class MyScript {
 
 	bool ConditionAllDead( int nCampID )
 	{
-		if (BattleManager.Instance.IsBattlePhase ())
-			return false;// don't check in battle
 		// assign id
 		cCamp unit = GameDataManager.Instance.GetCamp( (_CAMP)nCampID );
 		if( unit != null )
@@ -178,9 +221,6 @@ public class MyScript {
 	
 	bool ConditionUnitDead( int nCampID ,int nCharID )
 	{
-		if (BattleManager.Instance.IsBattlePhase ())
-			return false;// don't check in battle
-
 		// assign id
 		cCamp camp = GameDataManager.Instance.GetCamp( (_CAMP)nCampID );
 		if( camp != null )
@@ -228,48 +268,9 @@ public class MyScript {
 		return false;
 	}
 
-	bool ConditionCombat( int nChar1 , int nChar2  )
-	{
-		if( BattleManager.Instance.IsBattlePhase() )
-		{
-			Panel_unit atker = Panel_StageUI.Instance.GetUnitByIdent( BattleManager.Instance.nAtkerID );
-			Panel_unit defer = Panel_StageUI.Instance.GetUnitByIdent( BattleManager.Instance.nDeferID );
-			int atkerid = 0;
-			int deferid = 0;
-			if( atker!=null )
-			{
-				atkerid = atker.CharID;
-			}
-			if( defer!=null )
-			{
-				deferid = defer.CharID;
-			}
 
-			if( nChar1 != 0 )
-			{
-				if( (atkerid!=nChar1) && ( deferid!=nChar1) )
-				{
-					return false;
-				}
-			}
-			if( nChar2 != 0 )
-			{
-				if( (atkerid!=nChar2) && ( deferid!=nChar2) )
-				{
-					return false;
-				}
-			}
-			return true;
-
-		}
-
-		return false;
-	}
 	bool ConditionDist( int nChar1 , int nChar2 , int nDist )
 	{
-		if (BattleManager.Instance.IsBattlePhase ())
-			return false;// don't check in battle
-
 		//check range
 		Panel_unit unit1 = Panel_StageUI.Instance.GetUnitByCharID (nChar1);
 		Panel_unit unit2 = Panel_StageUI.Instance.GetUnitByCharID (nChar2);
@@ -285,9 +286,6 @@ public class MyScript {
 
 	bool ConditionHp( int nChar1 , string op , float fValue )
 	{
-		if (BattleManager.Instance.IsBattlePhase ())
-			return false;// don't check in battle
-
 		cUnitData unit = GameDataManager.Instance.GetUnitDateByCharID ( nChar1 );
 		if (unit != null) {
 			float fPer = unit.GetHpPercent();
@@ -397,7 +395,8 @@ public class MyScript {
 				evt.nX		= func.I( 1 );
 				evt.nY		= func.I( 2 );
 				evt.nValue1 = func.I( 3 ); // pop num
-				GameEventManager.DispatchEvent ( evt );
+				Panel_StageUI.Instance.OnStagePopUnitEvent( evt ); 
+				//GameEventManager.DispatchEvent ( evt );
 			}
 			else if( func.sFunc == "POPMOB" )
 			{
@@ -408,8 +407,8 @@ public class MyScript {
 				evt.nY		= func.I( 2 );
 				evt.nValue1 = func.I( 3 ); // pop num
 				//test code 
-
-				GameEventManager.DispatchEvent ( evt );
+				Panel_StageUI.Instance.OnStagePopUnitEvent( evt ); 
+				//GameEventManager.DispatchEvent ( evt );
 			}
 			else if( func.sFunc == "POP" )
 			{
@@ -419,7 +418,8 @@ public class MyScript {
 				evt.nX		= func.I( 2 );
 				evt.nY		= func.I( 3 );
 				evt.nValue1 = func.I( 4 ); // pop num
-				GameEventManager.DispatchEvent ( evt );
+				Panel_StageUI.Instance.OnStagePopUnitEvent( evt ); 
+				//GameEventManager.DispatchEvent ( evt );
 
 			}
 			else if( func.sFunc == "POPGROUP" )
@@ -434,7 +434,8 @@ public class MyScript {
 				evt.edX		= func.I( 4 );
 				evt.edY		= func.I( 5 );
 				evt.nPopType = func.I( 6 ); // pop num
-				GameEventManager.DispatchEvent ( evt );
+				Panel_StageUI.Instance.OnStagePopGroupEvent( evt ); 
+				//GameEventManager.DispatchEvent ( evt );
 				
 			}
 			else if( func.sFunc == "TALK"  ) // open talkui
@@ -550,19 +551,21 @@ public class MyScript {
 			// stage event
 			else if( func.sFunc  == "STAGEBGM") 
 			{
-				GameEventManager.DispatchEvent ( new StageBGMEvent()  );				
+				Panel_StageUI.Instance.OnStageBGMEvent( new StageBGMEvent()  ); 
+				//GameEventManager.DispatchEvent ( new StageBGMEvent()  );				
 			}
 
 			else if( func.sFunc  == "ATTACK")  //  pop a group of mob
 			{
 				// this is bad idea
-			//	if( bSkip == false ){
+			
 					StageBattleAttackEvent evt = new StageBattleAttackEvent();
 					evt.nAtkCharID = func.I(0);
 					evt.nDefCharID = func.I(1);
 					evt.nAtkSkillID = func.I(2);
-					GameEventManager.DispatchEvent ( evt  );
-			//	}
+					Panel_StageUI.Instance.OnStageBattleAttackEvent( evt  ); 
+					//GameEventManager.DispatchEvent ( evt  );
+			
 			}
 			else if( func.sFunc  == "MOVETOUNIT")  //  pop a group of mob
 			{
@@ -570,7 +573,8 @@ public class MyScript {
 				evt.nAtkCharID = func.I(0);
 				evt.nDefCharID = func.I(1);
 				//evt.nAtkSkillID = func.I(2);
-				GameEventManager.DispatchEvent ( evt  );
+				Panel_StageUI.Instance.OnStageMoveToUnitEvent( evt  ); 
+				//GameEventManager.DispatchEvent ( evt  );
 			}
 			else if( func.sFunc  == "MOVE")  //  pop a group of mob
 			{
@@ -580,7 +584,9 @@ public class MyScript {
 				evt.nX = func.I(1);
 				evt.nY = func.I(2);
 				//evt.nAtkSkillID = func.I(2);
-				GameEventManager.DispatchEvent ( evt  );
+				Panel_StageUI.Instance.OnStageCharMoveEvent( evt  ); 
+				//GameEventManager.DispatchEvent ( evt  );
+
 			}
 			else if( func.sFunc  == "ADDBUFF")  // Add buff
 			{
@@ -602,7 +608,8 @@ public class MyScript {
 				StageDelUnitEvent evt = new StageDelUnitEvent ();
 				//evt.eCamp = (_CAMP)func.I( 0 );
 				evt.nCharID = func.I( 0 );
-				GameEventManager.DispatchEvent ( evt );
+				Panel_StageUI.Instance.OnStageDelUnitEvent( evt  ); 
+				//GameEventManager.DispatchEvent ( evt );
 
 				// say end  event
 				if( evt.nCharID != 0 ){

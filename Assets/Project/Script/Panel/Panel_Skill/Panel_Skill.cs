@@ -80,27 +80,39 @@ public class Panel_Skill : MonoBehaviour {
 
 		pData = data;
 
-		DataTable pTable = ConstDataManager.Instance.GetTable < SKILL > ();
-		if (pTable == null) 
-			return;
-
 		List< SKILL > sklLst = new List< SKILL > ();
 
 		if (eType == _SKILL_TYPE._SKILL) {
 
+			//神模式的主角 全招式都能放
+			if( Config.GOD == true && data.n_CharID== 1   )
+			{
+				DataTable pTable = ConstDataManager.Instance.GetTable < SKILL > ();
+				if (pTable == null) 
+					return;
 
-			foreach(  KeyValuePair< int , cSkillData > pair in pData.SkillPool ){
-				SKILL skl = pair.Value.skill;
-				if( skl.n_SCHOOL == 0 )	// == 0 is ability
-					continue;				
-				if( skl.n_PASSIVE == 1 )
-					continue;
-
-				int nSkillID = skl.n_ID;
-				nSkillID = pData.Buffs.GetUpgradeSkill( nSkillID ); // Get upgrade skill
-				sklLst.Add(  ConstDataManager.Instance.GetRow<SKILL>(nSkillID) );
+				foreach( SKILL skl in pTable )
+				{
+					if( skl.n_SCHOOL == 0 )	// == 0 is ability
+						continue;
+					if( skl.n_PASSIVE == 1 )
+						continue;
+					sklLst.Add( skl );
+				}
 			}
+			else {
+				foreach(  KeyValuePair< int , cSkillData > pair in pData.SkillPool ){
+					SKILL skl = pair.Value.skill;
+					if( skl.n_SCHOOL == 0 )	// == 0 is ability
+						continue;				
+					if( skl.n_PASSIVE == 1 )
+						continue;
 
+					int nSkillID = skl.n_ID;
+					nSkillID = pData.Buffs.GetUpgradeSkill( nSkillID ); // Get upgrade skill
+					sklLst.Add(  ConstDataManager.Instance.GetRow<SKILL>(nSkillID) );
+				}
+			}
 //			int ISch = pData.nActSch [0];
 //			int ESch = pData.nActSch [1];
 //			int ELv = pData.GetSchoolLv (ESch);

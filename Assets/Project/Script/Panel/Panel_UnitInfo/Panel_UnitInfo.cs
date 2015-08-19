@@ -79,13 +79,8 @@ public class Panel_UnitInfo : MonoBehaviour {
 
 
 		// name 
-		string name = pUnitData.cCharData.s_NAME;
-		if (nCharIdent == 1) {
-			//女角特別更名
-			name = Config.PlayerFirst + Config.PlayerName;
-		}
-
-		MyTool.SetLabelText( NameObj , name );
+		//string name = pUnitData.cCharData.s_NAME;
+		MyTool.SetLabelText( NameObj , MyTool.GetCharName( nCharId ) );
 
 
 		ReloadData();

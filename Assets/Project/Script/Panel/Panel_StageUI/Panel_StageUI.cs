@@ -430,13 +430,14 @@ public class Panel_StageUI : MonoBehaviour
 	}
 
 	void Clear()  // public for gamedatamanage to load 
-	{
+	{	
 		//
 		ClearOverCellEffect ();
 
 		// clear unit 
 		foreach (KeyValuePair<int , Panel_unit  > pair in IdentToUnit) {
 			//NGUITools.Destroy( pair.Value.gameObject );
+			//pair.Value.FreeUnitData();
 			pair.Value.Recycle();
 		}
 		IdentToUnit.Clear ();
@@ -787,7 +788,7 @@ public class Panel_StageUI : MonoBehaviour
 			bool bInAtkCell = OverCellAtkPool.ContainsKey (sKey);
 			
 			if( bInAtkCell && (_PK_MODE._ENEMY ==  MyTool.GetSkillPKmode (cCMD.Instance.nSkillID) ) ){
-				return ;
+					return ;
 			}
 
 			if ( bInAtkCell == true) {
@@ -1696,6 +1697,7 @@ public class Panel_StageUI : MonoBehaviour
 			}
 		
 
+
 			// setup param
 			unit.CreateChar( nCharID , posx , posy , data );
 
@@ -1763,13 +1765,9 @@ public class Panel_StageUI : MonoBehaviour
 			if( camp != null )
 			{
 				camp.memLst.Remove ( nIdent );
-			}
-			//unit.pUnitData; 
-			//NGUITools.Destroy( unit.gameObject );
+			}		
+			unit.FreeUnitData();
 			unit.Recycle( );
-			//int nsize = UnitPanelObj.GetPooled().Count ;
-
-			//UnitPanelObj.Recycle( .Spawn( TilePlaneObj.transform );
 		}
 		IdentToUnit.Remove( nIdent );
 	}
@@ -1789,6 +1787,7 @@ public class Panel_StageUI : MonoBehaviour
 				{
 					if( nCharid == unit.CharID )
 					{
+						unit.FreeUnitData();
 						unit.Recycle();
 						//NGUITools.Destroy( unit.gameObject );
 
@@ -1822,6 +1821,7 @@ public class Panel_StageUI : MonoBehaviour
 					}
 					//unit.pUnitData; 
 					//NGUITools.Destroy( unit.gameObject );
+					unit.FreeUnitData();
 					unit.Recycle();
 				}
 				IdentToUnit.Remove( id );

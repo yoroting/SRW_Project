@@ -65,7 +65,7 @@ public class MyTool {
 	public static string GetCharName( int nID )
 	{
 		if (nID == 0) {
-			return Config.PlayerFirst + Config.DefaultPlayerName;
+			return Config.PlayerFirst + Config.PlayerName;
 		}
 		CHARS chardata = ConstDataManager.Instance.GetRow<CHARS> (nID);
 		if (chardata != null) {
