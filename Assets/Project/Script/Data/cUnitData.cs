@@ -1408,6 +1408,8 @@ public class cUnitData{
 		}
 	}
 
+	public bool IsDead(){ return (n_HP <= 0); }
+
 	// state battle flag
     // 戰鬥臨時旗標
 	List< _FIGHTSTATE > States;

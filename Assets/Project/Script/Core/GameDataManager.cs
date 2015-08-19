@@ -125,7 +125,7 @@ public partial class GameDataManager
 
 	public void Clear()
 	{
-
+		Debug.Log(" game data clear called");
 	}
 
 	public void ResetStage()
@@ -363,7 +363,7 @@ public partial class GameDataManager
 	}
 
 	// 昌庫腳色
-	public Dictionary< int , cUnitData > StoragePool;		//以 unit data 結構存才能顯示 詳細資訊		
+	public Dictionary< int , cUnitData > StoragePool;		//以 < charid , unit > unit data 結構存才能顯示 詳細資訊		
 
 	// don't public this
 	int nSerialNO;		// object serial NO
@@ -371,43 +371,37 @@ public partial class GameDataManager
 //	int GenerMobSerialNO( ){ return (++nSerialNO)*(-1) ; }
 
 	// public  unit data
-	public Dictionary< int , cUnitData > UnitPool;			// add event id 
+	public Dictionary< int , cUnitData > UnitPool;			// add  < ident , unit >  event id  
 
-	public cUnitData CreateChar( int nCharID )
+	public cUnitData CreateChar( int nCharID , _CAMP camp , int bornx , int borny , int nLeaderId )
 	{
-		cUnitData unit = new cUnitData();
-		unit.n_Ident = GenerSerialNO( );
-		unit.n_CharID = nCharID;
+		cUnitData data = new cUnitData();
+		data.n_Ident = GenerSerialNO( );
+		data.n_CharID = nCharID;
 
 		CHARS cdata = ConstDataManager.Instance.GetRow< CHARS > (nCharID);
 		if (cdata == null) {
 			Debug.LogErrorFormat( "CreateChar with null data {0}" , nCharID );
 
 		}
-		unit.SetContData( cdata  );
+		data.SetContData( cdata  );
+		data.eCampID = camp;
+		data.n_X = data.n_BornX = bornx;
+		data.n_Y = data.n_BornY = borny;
+		data.n_LeaderIdent = nLeaderId;
+		if (UnitPool.ContainsKey (data.n_Ident)) {
+			Debug.LogErrorFormat( "Err double key when GDM CreateChar with ident{0},charid{1}" ,data.n_Ident ,nCharID  );
 
-		UnitPool.Add( unit.n_Ident , unit );
-		return unit;
+		}
+		else{
+			UnitPool.Add( data.n_Ident , data );
+		}
+		return data;
 	}
 
-	public bool AddCharToPool( cUnitData unit )
-	{
-		// check game data to insert
-		if (UnitPool.ContainsKey (unit.n_Ident) == true) {
-			//cUnitData org = UnitPool[ unit.n_Ident ];
-			//UnitPool.Remove( unit.n_Ident );
-			if( unit.IsTag(_UNITTAG._UNDEAD) == false  ){
-				Debug.LogErrorFormat ("Err Add double unit ident{0},charid{1} to gamedata manager ", unit.n_Ident, unit.n_CharID);
-			}
 
-		} else {
-			UnitPool.Add( unit.n_Ident , unit );
-		}		
 
-		return true;
-	}
-
-	public cUnitData CreateCharbySaveData( cUnitSaveData save )
+	public cUnitData CreateCharbySaveData( cUnitSaveData save , bool bAddtoPool = false )
 	{
 		cUnitData unit = new cUnitData();
 		unit.n_Ident = save.n_Ident;  //GenerSerialNO( );
@@ -458,9 +452,71 @@ public partial class GameDataManager
 
 		unit.UpdateAllAttr ();
 		unit.UpdateAttr ();
+
+		if (bAddtoPool) {
+			AddCharToPool( unit );
+		} else { // add to storge
+			AddCharToStorage( unit );
+		}
+
 		return unit;
 	}
 
+	public bool AddCharToPool( cUnitData unit )
+	{
+		// check game data to insert
+		if (UnitPool.ContainsKey (unit.n_Ident) == true) {
+			//if( unit.IsTag(_UNITTAG._UNDEAD) == false  ){
+				Debug.LogErrorFormat ("Err Add double unit ident{0},charid{1} to gamedata manager char pool ", unit.n_Ident, unit.n_CharID);
+			//}
+			
+		} else {
+			UnitPool.Add( unit.n_Ident , unit );
+		}		
+		
+		return true;
+	}
+	public bool AddCharToStorage( cUnitData unit )
+	{
+
+		// check game data to insert
+		if (StoragePool.ContainsKey (unit.n_CharID) == true) {
+			Debug.LogErrorFormat ("Err Add double unit ident{0},charid{1} to gamedata manager storage pool", unit.n_Ident, unit.n_CharID);
+			
+		} else {
+			StoragePool.Add( unit.n_CharID , unit );
+		}		
+		
+		return true;
+	}
+	// for stage pop unit
+	public cUnitData StagePopUnit ( int nCharID, _CAMP eCamp,  int nBX, int nBY , int nLeaderID =0 )
+	{
+		if (eCamp == _CAMP._PLAYER) {
+			cUnitData data = null;
+			if (StoragePool.TryGetValue (nCharID , out data ) )
+			{
+				data.n_Ident = GenerSerialNO() ;  // reassign ident
+				data.eCampID = eCamp;
+				data.n_X = data.n_BornX = nBX;
+				data.n_Y = data.n_BornY = nBY;
+				data.n_LeaderIdent = nLeaderID;
+				// Add to char pool
+				AddCharToPool( data );
+
+				// remove from storage
+				RemoveStorageUnit( nCharID );
+				//StoragePool.Remove( nCharID );
+
+				return  data;
+			}
+		} 
+
+		return  CreateChar( nCharID , eCamp, nBX , nBY , nLeaderID ); // already add to pool
+
+	}
+
+	//========
 	public cUnitData GetUnitDateByIdent( int nIdent )
 	{
 		if (nIdent == 0)			return null; // return direct to avoid no key err log
@@ -564,6 +620,13 @@ public partial class GameDataManager
 			return true;
 		}
 		return false;
+	}
+
+	public void ClearStorageUnit(  )
+	{
+		if (StoragePool != null) {
+			StoragePool.Clear();
+		} 
 	}
 
 	public void ReLiveUndeadUnit( _CAMP camp ) // all  undead
@@ -689,7 +752,7 @@ public partial class GameDataManager
 			// add to char 
 			cUnitData data = CreateCharbySaveData( save );
 			if( data != null ){
-				StoragePool.Add( save.n_CharID , data );
+
 				//Panel_StageUI.Instance.CreateUnitByUnitData( data ) ;
 				//CreateCharbySaveData( save )	
 			}
@@ -704,12 +767,11 @@ public partial class GameDataManager
 
 		foreach( cUnitSaveData save in pool ) {
 			// add to char 
-			cUnitData data = CreateCharbySaveData( save );
+			cUnitData data = CreateCharbySaveData( save  , true );
 			if( data != null ){
-				UnitPool.Add( data.n_Ident , data ); // add to unit pool first
+				//UnitPool.Add( data.n_Ident , data ); // add to unit pool first
+			//	Panel_StageUI.Instance.CreateUnitByUnitData( data ) ; // need create panel_unit
 
-				Panel_StageUI.Instance.CreateUnitByUnitData( data ) ;
-				//CreateCharbySaveData( save )	
 			}
 		}
 	}

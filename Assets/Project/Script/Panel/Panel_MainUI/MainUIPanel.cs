@@ -60,6 +60,7 @@ public class MainUIPanel : BasicPanel {
 		GameDataManager.Instance.ePhase = _SAVE_PHASE._STARTUP;		
 		// 播放  mian BGM
 		GameSystem.PlayBGM ( 1 );
+	
 	}
 
 	// Use this for initialization
@@ -105,6 +106,10 @@ public class MainUIPanel : BasicPanel {
 	//	GameDataManager.Instance.nStoryID = Config.StartStory; //回到第一關
 
 	//	PanelManager.Instance.OpenUI( "Panel_Loading");
+
+		// clear all game data		
+		GameDataManager.Instance.ClearStorageUnit ();
+		GameDataManager.Instance.ResetStage ();
 
 		StartCoroutine ( EnterStory( Config.StartStory ) );
 

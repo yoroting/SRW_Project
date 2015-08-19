@@ -251,11 +251,53 @@ public class Panel_unit : MonoBehaviour {
 
 
 	}
+	public void SetUnitData( cUnitData data )
+	{
+		pUnitData = data;
+	
+
+//		if (pUnitData == null) {
+//			pUnitData = GameDataManager.Instance.CreateChar (nCharID);
+//		}
+//		else{
+//			// check game data to insert
+//			GameDataManager.Instance.AddCharToPool( pUnitData );
+//		}
+
+		// return if unit data keep null
+		if (pUnitData == null) {
+			Debug.Log( "SetUnitData with null data" );
+			return;	
+		}
+		
+		CharID = data.n_CharID;
+		
+		SetXY( data.n_X , data.n_Y );
+
+		CHARS charData = ConstDataManager.Instance.GetRow<CHARS>( CharID );
+		if( charData == null)
+			return;
+		// change face
+		string url = "Art/char/" + charData.s_FILENAME +"_S";
+		UITexture face = FaceObj.GetComponent<UITexture>();
+		if( face != null )
+		{
+			face.mainTexture = Resources.Load <Texture>( url  ) ;
+			
+		}
+		
+		// have assign data
+		//if (data != null) {
+		SetCamp( data.eCampID );
+			//SetLevel( data.n_Lv );
+		//}
+	}
 
 	public void FreeUnitData()
 	{
 		if (eCampID == _CAMP._PLAYER) {
 			GameDataManager.Instance.BackUnitToStorage( Ident() );
+			pUnitData = null;
 			return ;
 		}
 		else {
@@ -321,26 +363,29 @@ public class Panel_unit : MonoBehaviour {
 
 	}
 
-	public void CreateChar( int nCharID , int x , int y , cUnitData data = null )
+	public void CreateChar( int nCharID , int x , int y , cUnitData data  )
 	{
 		CharID = nCharID;
 
 		pUnitData = data;
 
-		if (pUnitData == null) {
-			pUnitData = GameDataManager.Instance.CreateChar (nCharID);
-		}
-		else{
-			// check game data to insert
-			GameDataManager.Instance.AddCharToPool( pUnitData );
-		}
+		// no more create data here
+//		if (pUnitData == null) {
+//			pUnitData = GameDataManager.Instance.CreateChar (nCharID);
+//		}
+//		else{
+//			// check game data to insert
+//			GameDataManager.Instance.AddCharToPool( pUnitData );
+//		}
+
+
 		// return if unit data keep null
 		if( pUnitData == null )
 			return;	
 
 		//record born pos
-		pUnitData.n_BornX = x; 
-		pUnitData.n_BornY = y; 
+		//pUnitData.n_BornX = x; 
+		//pUnitData.n_BornY = y; 
 
 		SetXY( x , y );
 		CHARS charData = ConstDataManager.Instance.GetRow<CHARS>( nCharID );
@@ -406,7 +451,8 @@ public class Panel_unit : MonoBehaviour {
 
 	public bool IsMoving()
 	{
-		if( nTweenMoveCount != 0  || bIsMoving )
+		//if( nTweenMoveCount != 0  || bIsMoving )
+		if( bIsMoving )
 			return true;
 
 		if( (PathList!=null) && PathList.Count > 0  )
@@ -955,6 +1001,10 @@ public class Panel_unit : MonoBehaviour {
 //			tw.SetOnFinished( OnDead );
 
 		}
+
+		// free data here
+		//FreeUnitData ();
+
 	}
 
 	public void OnDead()
@@ -1014,7 +1064,7 @@ public class Panel_unit : MonoBehaviour {
 			break;
 		}
 
-		sp.alpha= 0.5f;
+		sp.alpha= 1.0f;
 
 		GameDataManager.Instance.AddCampMember( camp , Ident() ); // global game data
 

@@ -1632,6 +1632,10 @@ public class Panel_StageUI : MonoBehaviour
 	}
 
 	// Widget func	 
+
+
+
+
 	public GameObject CreateUnitByUnitData( cUnitData data )
 	{
 		if(  data == null )
@@ -1654,11 +1658,11 @@ public class Panel_StageUI : MonoBehaviour
 //			unit.CreateChar( nCharID , posx , posy , data );
 //
 //		}
-		return AddUnit( data.eCampID , data.n_CharID , data.n_BornX , data.n_BornY , data.n_LeaderIdent , data );
+		return AddUnit( data ,data.eCampID , data.n_CharID , data.n_X , data.n_Y , data.n_LeaderIdent );
 	}
 
 
-	GameObject AddUnit( _CAMP nCampID , int nCharID , int x , int y  , int nLeaderIdent = 0 , cUnitData data = null)
+	GameObject AddUnit( cUnitData data , _CAMP nCampID , int nCharID , int x , int y  , int nLeaderIdent = 0  )
 	{
 //		CHARS charData = GameDataManager.Instance.GetConstCharData (nCharID); //ConstDataManager.Instance.GetRow<CHARS>( nCharID );
 //		if( charData == null)
@@ -1668,6 +1672,12 @@ public class Panel_StageUI : MonoBehaviour
 			Debug.Log( "Stage Addunit to null TilePlane" );
 			return null;
 		}
+		if (data == null) {
+			Debug.LogError( "Stage Addunit with null unitdata");
+			return null;
+		}
+
+
 		//GameObject obj = ResourcesManager.CreatePrefabGameObj( TilePlaneObj , "Prefab/Panel_Unit" );
 
 		GameObject obj = UnitPanelObj.Spawn( TilePlaneObj.transform );
@@ -1687,28 +1697,31 @@ public class Panel_StageUI : MonoBehaviour
 				posx = pos.X;
 				posy = pos.Y;
 			}
-
+			data.n_X = posx;
+			data.n_Y = posy;
 			// load data . if char exist in storage pool
-			if( (data==null) && (nCampID==_CAMP._PLAYER) ){
-				data = GameDataManager.Instance.GetStorageUnit( nCharID );
-				if( data != null ){
-					data.n_Ident = GameDataManager.Instance.GenerSerialNO();
-				}
-			}
+			// no more operate game data pool
+//			if( (data==null) && (nCampID==_CAMP._PLAYER) ){
+//				data = GameDataManager.Instance.GetStorageUnit( nCharID );
+//				if( data != null ){
+//					data.n_Ident = GameDataManager.Instance.GenerSerialNO();
+//				}
+//			}
 		
 
 
 			// setup param
-			unit.CreateChar( nCharID , posx , posy , data );
+			unit.SetUnitData( data );
+			//unit.CreateChar( nCharID , posx , posy , data );
 
 			// set up unit default value
 			// setup lv before
 			if( data == null ){
 				//campid = data.eCampID;
 				//lv = data.n_Lv;
-				unit.SetCamp( nCampID );	
-				unit.SetLevel( StageData.n_MOB_LV );
-				unit.SetLeader( nLeaderIdent );
+//				unit.SetCamp( nCampID );	
+//				unit.SetLevel( StageData.n_MOB_LV );
+//			unit.SetLeader( nLeaderIdent );
 
 			}
 			else {
@@ -1720,19 +1733,17 @@ public class Panel_StageUI : MonoBehaviour
 
 			//add to stage obj
 			if( IdentToUnit.ContainsKey( unit.Ident() )  ){
-				Debug.LogErrorFormat( " Err Add soublie ident{0}, charid{1} of panel_unit to stage " , unit.Ident(), unit.CharID );
+				Debug.LogErrorFormat( " Err Add doublie ident{0}, charid{1} of panel_unit to stage " , unit.Ident(), unit.CharID );
 
 			}
-
-			IdentToUnit.Add( unit.Ident() , unit  ) ;// stage gameobj
+			else {
+				IdentToUnit.Add( unit.Ident() , unit  ) ;// stage gameobj
+			}
 
 			//ensure data in storage is remove
-			GameDataManager.Instance.RemoveStorageUnit( nCharID );
+//			GameDataManager.Instance.RemoveStorageUnit( nCharID );
 
-			// set game data
-		//	unit.pUnitData.n_LeaderIdent = nLeaderIdent;
-		//	unit.pUnitData.n_X			 = x;
-		//	unit.pUnitData.n_Y			 = y;
+		
 		}
 		
 		// position // set in create
@@ -1740,12 +1751,7 @@ public class Panel_StageUI : MonoBehaviour
 
 		UIEventListener.Get (obj).onClick = null;
 		UIEventListener.Get (obj).onClick += OnUnitClick;
-//		if (nCampID == _CAMP._PLAYER) {		
-//			UIEventListener.Get (obj).onClick += OnCharClick;
-//		} else if (nCampID == _CAMP._ENEMY) {
-//			UIEventListener.Get (obj).onClick += OnMobClick;
-//		}
-		
+
 		// if obj out of screen. move to it auto
 		MoveToGameObj ( obj , false );
 
@@ -2384,19 +2390,32 @@ public class Panel_StageUI : MonoBehaviour
 		// group pool
 		//	GameDataManager.Instance.GroupPool = GroupPool ;
 		GameDataManager.Instance.GroupPool   = MyTool.ConvetToIntInt( save.GroupPool );
+
 		// unit pool
-		foreach( cUnitSaveData s in save.CharPool )
-		{
-			cUnitData unit = GameDataManager.Instance.CreateCharbySaveData( s );
-			
-			GameObject obj = AddUnit( s.eCampID , s.n_CharID , s.n_X , s.n_Y , s.n_LeaderIdent , unit ) ;
+		GameDataManager.Instance.ImportSavePool (save.CharPool);
+
+		// recreate panel unit
+		foreach (KeyValuePair<int , cUnitData > pair  in   GameDataManager.Instance.UnitPool) {
+			if(	 pair.Value.n_HP <= 0 )
+				continue; // don't create for dead unit
+
+			GameObject obj = CreateUnitByUnitData( pair.Value ) ;
 			if (obj != null) {		
+				// normal create
 			} else {
-				Debug.Log (string.Format ("RestoreBySaveData PopUnit Fail with charid({0}) )", s.n_CharID  )  );			
+				Debug.Log (string.Format ("RestoreBySaveData PopUnit Fail with char({0}) )",pair.Value.n_CharID  )  );			
 			}
-			
-			
 		}
+//		foreach( cUnitSaveData s in save.CharPool )
+//		{
+//			cUnitData data = GameDataManager.Instance.CreateCharbySaveData( s  , true );
+//			
+//			GameObject obj = AddUnit( data ) ;
+//			if (obj != null) {		
+//			} else {
+//				Debug.Log (string.Format ("RestoreBySaveData PopUnit Fail with charid({0}) )", s.n_CharID  )  );			
+//			}
+//		}
 		
 		// reset bgm
 		
@@ -2445,7 +2464,9 @@ public class Panel_StageUI : MonoBehaviour
 			nPopNum = Evt.nValue1;
 
 		for (int i=0; i < nPopNum; i++) {
-			GameObject obj = AddUnit (Evt.eCamp, Evt.nCharID, Evt.nX, Evt.nY);
+			cUnitData cData = GameDataManager.Instance.StagePopUnit( Evt.nCharID,Evt.eCamp, Evt.nX, Evt.nY ); 
+
+			GameObject obj = CreateUnitByUnitData (  cData );
 			if (obj != null) {		
 			} else {
 				Debug.Log (string.Format ("OnStagePopUnitEvent Fail with charid({0}) num({1})", Evt.nCharID  , nPopNum )  );			
@@ -2485,7 +2506,14 @@ public class Panel_StageUI : MonoBehaviour
 
 			for( int i = sx ; i <= ex ; i++  ){
 				for( int j = sy ; j <= ey ; j++  ){
-					GameObject obj = AddUnit ( pLeader.eCampID, Evt.nCharID , i , j , nLeaderIdent  );
+					//cUnitData cData =  GameDataManager.Instance.StagePopUnit( Evt.nCharID,Evt.eCamp, i , j ,nLeaderIdent  ); 
+					cUnitData cData = GameDataManager.Instance.CreateChar( Evt.nCharID  , pLeader.eCampID , i , j  , nLeaderIdent );
+					if( cData == null ){
+						continue ;
+					}
+
+
+					GameObject obj = CreateUnitByUnitData ( cData  );
 					if (obj != null) {	
 
 					} else {

@@ -1012,6 +1012,9 @@ public partial class BattleManager
 		{
 			if( pair.Key == nAtkIdent )
 				continue;
+			if( pair.Value.IsDead())
+				continue;
+
 			if( CanPK( pAtker.eCampID , pair.Value.eCampID )== false )
 			{
 				  
@@ -1043,7 +1046,8 @@ public partial class BattleManager
 		{
 			if( pair.Key == nDefIdent )
 				continue;
-
+			if( pair.Value.IsDead() )
+				continue;
 			if( CanPK( pDefer.eCampID , pair.Value.eCampID )== false )
 			{
 				
