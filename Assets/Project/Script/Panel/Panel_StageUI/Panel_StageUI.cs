@@ -1781,6 +1781,8 @@ public class Panel_StageUI : MonoBehaviour
 	// Take care use ident to delete
 	void DelUnit(  int nCharid )
 	{
+		//change to del all unit with char
+		List<int> mlist = new List<int>();
 		//Dictionary< _CAMP , cCamp > CampPool = GameDataManager.Instance.GetCamp;			// add Camp
 		foreach (KeyValuePair<_CAMP , cCamp > pair in GameDataManager.Instance.CampPool) {
 
@@ -1805,6 +1807,14 @@ public class Panel_StageUI : MonoBehaviour
 
 			}
 		}
+		///
+		foreach( int id in mlist )
+		{
+
+		}
+
+
+
 	}
 
 
@@ -2797,13 +2807,13 @@ public class Panel_StageUI : MonoBehaviour
 			return;
 		int nDist = pAtkUnit.Loc.Dist (pDefUnit.Loc);
 		if (nDist > 1) {
-
-			List< iVec2> path = PathFinding( pAtkUnit , pAtkUnit.Loc ,  pDefUnit.Loc , 0  ); // no any block
+			List< iVec2> path = MobAI.FindPathToTarget( pAtkUnit , pDefUnit , 999 );
+			//List< iVec2> path = PathFinding( pAtkUpDefUnitnit , pAtkUnit.Loc ,  pDefUnit.Loc , 0  ); // no any block
 			//PathFinding
 			
-			if( path.Count > 2 )
+			if( path != null && path.Count > 1 )
 			{
-				iVec2 last = path[path.Count -2 ];
+				iVec2 last = path[path.Count -1 ];
 
 				if (m_bIsSkipMode)
 				{
@@ -2926,6 +2936,12 @@ public class Panel_StageUI : MonoBehaviour
 	// 單位死亡
 	public void OnStageUnitDeadEvent( int nCharID )
 	{
+		if( m_bIsSkipMode )
+		{
+			DelUnit( nCharID );
+			return;
+		}
+
 		foreach (KeyValuePair< int ,Panel_unit > pair in IdentToUnit) {
 			if( pair.Value!= null )
 			{
@@ -2933,8 +2949,7 @@ public class Panel_StageUI : MonoBehaviour
 				{
 					if( pair.Value.bIsDead == false )
 					{
-						pair.Value.SetDead();
-
+							pair.Value.SetDead();
 					}
 				}
 			}
