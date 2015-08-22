@@ -215,10 +215,10 @@ public partial class BattleManager
 				Panel_CMDUnitUI.OpenCMDUI( _CMD_TYPE._COUNTER , nDeferID  , nAtkerID );
 				
 			}
-			else{
+			else{ 
 				// mob need a method to get skill
 				eDefCmdID = _CMD_ID._COUNTER; // mob select counter this time
-				int nSklId = MobAI.SelSkill( Defer , Atker ,false  );
+				int nSklId = MobAI.SelSkill( Defer , Atker ,true  );
 				if( nSklId < 0 ){
 					eDefCmdID = _CMD_ID._DEF;  //select defence
 				}
@@ -246,6 +246,7 @@ public partial class BattleManager
 						}
 					}
 					//ShowBattleMsg( nAtkerID , "attack" );
+					// change defer skill if deence								 
 					
 					// init fight attr each time
 					Atker.SetFightAttr( nDeferID , nAtkerSkillID );
@@ -258,6 +259,7 @@ public partial class BattleManager
 					
 					if( IsDefMode() ){
 						Defer.AddStates( _FIGHTSTATE._DEFMODE );
+						nDeferSkillID = Config.sysDefSkillID;
 					}
 					
 					// atk start cast action
@@ -540,6 +542,8 @@ public partial class BattleManager
 		case 0:	// prepare for event check
 			Atker.SetFightAttr (nDeferID, nAtkerSkillID);
 			Atker.AddStates (_FIGHTSTATE._ATKER);
+
+
 			uAction pCastingAction = ActionManager.Instance.CreateCastAction (nAtkerID, nAtkerSkillID,nDeferID , nTarGridX , nTarGridY );// Casting
 			// skill attr
 			if (pCastingAction != null) {
@@ -702,6 +706,9 @@ public partial class BattleManager
 		foreach( KeyValuePair<int , int> pair in nDropExpPool )
 		{
 			cUnitData pUnitData = GameDataManager.Instance.GetUnitDateByIdent( pair.Key );
+			if( pUnitData == null )
+				continue;		// by pass and wait stage end to recycle
+
 			pUnitData.AddExp( pair.Value );
 
 		}

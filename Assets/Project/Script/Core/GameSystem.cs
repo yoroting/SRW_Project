@@ -139,6 +139,19 @@ public class GameSystem : MonoBehaviour {
 	}
 
 	// 目前操作
+	public static GameObject PlayFX( GameObject go , int nFxid )
+	{
+		if (go == null || nFxid ==0 )
+			return null;
+	
+		FX fx =  ConstDataManager.Instance.GetRow<FX>( nFxid );
+		if (fx != null) {
+			return PlayFX( go , fx.s_FILENAME );
+		}
+		return null;
+	}
+
+
 	public static GameObject PlayFX( GameObject go , string name )
 	{
 		if (go == null)

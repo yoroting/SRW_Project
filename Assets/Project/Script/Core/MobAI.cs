@@ -569,6 +569,8 @@ public class MobAI  {
 	static public int SelSkill( cUnitData pMob , cUnitData pTarget = null , bool bCounterMode = false  )
 	{
 		//return 11702; // debug
+		//nDeferSkillID = 11704;  //天羅地網
+
 
 		cUnitData pData = pMob;
 		if( pData == null ){
@@ -606,6 +608,9 @@ public class MobAI  {
 				if( nSkillID ==0 )
 					continue;
 
+				// all continue for test				
+					continue;
+
 				SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(nSkillID);				
 				if( skl.n_SCHOOL == 0 )	// == 0 is ability
 					continue;				
@@ -613,9 +618,13 @@ public class MobAI  {
 					continue;
 
 				// check cp && MP
-				if( (pData.n_CP < skl.n_CP) || (pData.n_MP < skl.n_MP) ){
-//					continue;
+				if( (pData.n_CP < skl.n_CP) ){
+					continue;
 				}
+				if( (pData.n_MP < skl.n_MP) ){
+				//	continue;
+				}
+
 
 				// 防招只在破防時使用
 				if( skl.f_DEF > 0.0f && pData.n_DEF>0)
@@ -651,6 +660,10 @@ public class MobAI  {
 				//sklLst.Add(  skl );
 		}
 		// 
+		if (nDist > 1) {
+			int a =0;
+		}
+
 		if( (sklPool.Count > 0) )
 		{
 			// random a skill
@@ -663,8 +676,6 @@ public class MobAI  {
 					return -1;
 			}
 		}
-
-
 
 		return 0; // normal attack
 	}

@@ -558,6 +558,14 @@ public class Panel_Talk : MonoBehaviour {
 					return false;
 			}
 		}
+		// stage is not complete
+		if (Panel_StageUI.Instance != null ) {
+			if( Panel_StageUI.Instance.IsAnyActionRunning() ){
+				return false;
+			}
+		
+		}
+
 
 		// cehck all tween is end
 //		SRW_TextBox obj1 = SelTextBoxObjByType (1) ;

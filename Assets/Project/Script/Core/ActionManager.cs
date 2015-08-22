@@ -275,6 +275,7 @@ public partial class ActionManager
 							break;
 						case 1:	//→需要敵方目標
 						case 2:	//→需要友方目標
+						{
 							cUnitData Target = GameDataManager.Instance.GetUnitDateByIdent( nTargetIdent );
 							if( Target != null ){
 								act.nTarGridX = Target.n_X;
@@ -283,12 +284,21 @@ public partial class ActionManager
 								// bug
 								Debug.LogErrorFormat( "CreateCastAction on null target{0},skill{1},x{2},y{3} " ,nTargetIdent,nSkillID, nGridX , nGridY );	
 							}
+						}
 							break;
 						case 3:	//→MAP敵方
 						case 4: //→MAP我方
 						case 5:	//→MAPALL
+						{
 							act.nTarGridX = nGridX;
 							act.nTarGridY = nGridY;
+							//  mob counter 防呆
+							cUnitData Target = GameDataManager.Instance.GetUnitDateByIdent( nTargetIdent );
+							if( Target != null ){
+								act.nTarGridX = Target.n_X;
+								act.nTarGridY = Target.n_Y;
+							}
+						}
 						break;
 					}
 

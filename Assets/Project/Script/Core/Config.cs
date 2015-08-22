@@ -44,8 +44,10 @@ public class Config
 	public static bool GOD = true;
 	public static bool MOBAI = true;				// all mob no atk 
 	public static bool DRAWGRID = false;
-	public static bool KILL_MODE = true;
+	public static bool KILL_MODE = false;
 
 	public static int  WIDTH = 960;
 	public static int  HEIGHT = 640;
+
+	public static int  sysDefSkillID = 499;
 }

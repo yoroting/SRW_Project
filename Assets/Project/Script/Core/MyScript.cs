@@ -47,6 +47,13 @@ public class MyScript {
 					return false;
 				}	
 			}
+			else if( func.sFunc == "HP"  )
+			{
+				if( ConditionHp( func.I(0), func.S(1)  ,func.F(2) ) == false )
+				{
+					return false;
+				}	
+			}
 			// 以上 可以在 戰鬥中檢查
 			else { 
 				// 以下 不可在 戰鬥中檢查
@@ -96,13 +103,7 @@ public class MyScript {
 						return false;
 					}	
 				}
-				else if( func.sFunc == "HP"  )
-				{
-					if( ConditionHp( func.I(0), func.S(1)  ,func.F(2) ) == false )
-					{
-						return false;
-					}	
-				}
+
 				else if( func.sFunc == "RATE"  )
 				{
 					if( ConditionRate( func.I(0) ) == false )
@@ -483,6 +484,8 @@ public class MyScript {
 				// 0-正常 , 1-勝利 , 2-緊張 , 3-悲壯 ,4-壓迫
 				int nPhase = func.I( 0 );
 				GameDataManager.Instance.SetBGMPhase( nPhase );
+				// play stage bgm
+				Panel_StageUI.Instance.OnStageBGMEvent( new StageBGMEvent()  ); 
 			}
 			else if( func.sFunc == "HELPBGM"  ) // 支援登場
 			{
@@ -496,7 +499,7 @@ public class MyScript {
 			}
 			else if( func.sFunc == "BOSSBGM"  ) // BOSS FIGHT BGM
 			{
-				int nID = 150 + func.I( 0 ); // from 140-149
+				int nID = 150 + func.I( 0 ); // from 150-159
 				GameSystem.PlayBGM ( nID );
 			}
 
@@ -624,7 +627,13 @@ public class MyScript {
 //			{
 //				Panel_StageUI.Instance.OnStageDelEventEvent( func.I( 0 ) );			
 //			}
+			else if( func.sFunc  == "UNITCAMP") 
+			{			
+				int nCharid =  func.I(0);
+				int nCampid = func.I(1);
 
+				Panel_StageUI.Instance.OnStageUnitCampEvent( nCharid , (_CAMP)nCampid );
+			}
 			else if( func.sFunc  == "POPMARK") 
 			{
 				Panel_StageUI.Instance.OnStagePopMarkEvent( func.I(0),func.I(1),func.I(2),func.I(3) );
@@ -858,13 +867,13 @@ public class MyScript {
 					pool.Add( new ADDSP_I( func.I(0)) );
 				}
 				else if( func.sFunc  == "ADDCP_I") {
-					pool.Add( new ADDSP_I( func.I(0) ) );
+					pool.Add( new ADDCP_I( func.I(0) ) );
 				}
 				else if( func.sFunc  == "ADDSP_E") {
 					pool.Add( new ADDSP_E( func.I(0) ) );
 				}
 				else if( func.sFunc  == "ADDCP_E") {
-					pool.Add( new ADDSP_I( func.I(0) ) );
+					pool.Add( new ADDCP_I( func.I(0) ) );
 				}
 
 				// Attr

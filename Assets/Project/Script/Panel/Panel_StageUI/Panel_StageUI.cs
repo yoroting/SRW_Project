@@ -800,24 +800,6 @@ public class Panel_StageUI : MonoBehaviour
 			}
 			return ;
 		}
-
-
-
-
-
-//		if( obj != null )
-//		{
-//			Panel_CMDUnitUI panel = obj.GetComponent<Panel_CMDUnitUI>();
-//			if( panel != null )
-//			{
-//				panel.Setup( unit );
-//			}
-
-//		}
-		//if( PanelManager.Instance.CheckUIIsOpening( Panel_CMDUnitUI.Name ) )
-		//unit.OnClick( this );
-
-		//unit.Identify;
 	}
 
 	void OnMobClick(Panel_unit unit)
@@ -841,8 +823,18 @@ public class Panel_StageUI : MonoBehaviour
 
 		bool bInAtkCell = OverCellAtkPool.ContainsKey (sKey);
 
-		if( bInAtkCell && (_PK_MODE._PLAYER ==  MyTool.GetSkillPKmode (cCMD.Instance.nSkillID) ) ){
-			return ;
+		if( bInAtkCell  ){
+			if( _PK_MODE._PLAYER ==  MyTool.GetSkillPKmode (cCMD.Instance.nSkillID) ){
+				if( unit.eCampID == _CAMP._ENEMY ){
+					return ;
+				}
+
+			}
+			else{
+				if( unit.eCampID == _CAMP._FRIEND ){
+					return ;
+				}
+			}
 		}
 
 		ClearOverCellEffect(  ); // all solution will clear
@@ -851,9 +843,6 @@ public class Panel_StageUI : MonoBehaviour
 
 		// open new cmd ui when this idn't a new cmd
 		if (bInAtkCell) {
-
-
-
 
 			if (cCMD.Instance.eCMDSTATUS == _CMD_STATUS._WAIT_TARGET) {		
 
@@ -1784,37 +1773,48 @@ public class Panel_StageUI : MonoBehaviour
 		//change to del all unit with char
 		List<int> mlist = new List<int>();
 		//Dictionary< _CAMP , cCamp > CampPool = GameDataManager.Instance.GetCamp;			// add Camp
-		foreach (KeyValuePair<_CAMP , cCamp > pair in GameDataManager.Instance.CampPool) {
-
-
-			foreach( int id in pair.Value.memLst )
-			{
-				// id = ident
-				Panel_unit unit = null;
-				if( IdentToUnit.TryGetValue(id , out unit ) )
-				{
-					if( nCharid == unit.CharID )
-					{
-						unit.FreeUnitData();
-						unit.Recycle();
-						//NGUITools.Destroy( unit.gameObject );
-
-						IdentToUnit.Remove( id );
-						pair.Value.memLst.Remove( id );
-						return;
-					}
-				}
-
+		foreach (KeyValuePair< int , Panel_unit > pair in IdentToUnit) {
+			if( pair.Value == null ){
+				Debug.LogErrorFormat( "DelUnit with null unit at charid {0} ",nCharid );
+				continue;
 			}
+			if( pair.Value.CharID != nCharid )
+				continue;
+
+			pair.Value.FreeUnitData();
+			pair.Value.Recycle();
+			mlist.Add( pair.Key );
 		}
+
+
+//		foreach (KeyValuePair<_CAMP , cCamp > pair in GameDataManager.Instance.CampPool) {
+//
+//
+//			foreach( int id in pair.Value.memLst )
+//			{
+//				// id = ident
+//				Panel_unit unit = null;
+//				if( IdentToUnit.TryGetValue(id , out unit ) )
+//				{
+//					if( nCharid == unit.CharID )
+//					{
+//						unit.FreeUnitData();
+//						unit.Recycle();
+//						//NGUITools.Destroy( unit.gameObject );
+//
+//						IdentToUnit.Remove( id );
+//						pair.Value.memLst.Remove( id );
+//						return;
+//					}
+//				}
+//
+//			}
+//		}
 		///
 		foreach( int id in mlist )
 		{
-
+			IdentToUnit.Remove( id );
 		}
-
-
-
 	}
 
 
@@ -2130,13 +2130,33 @@ public class Panel_StageUI : MonoBehaviour
 	
 	public iVec2 FindEmptyPos( iVec2 st  , int len = 999 )
 	{
+		// len == 0
 		if (CheckIsEmptyPos (st)) {
 			return st;
 		}
-		// get a empty pos that can pop 
-		
-		for (int i=1; i < len; i++) {
-			List<iVec2> pool = Grids.GetRangePool( st , i , i-1 );
+		// len == 1
+		List<iVec2> pool = st.AdjacentList (1);
+		foreach( iVec2 pos in pool )
+		{
+			if( CheckIsEmptyPos(pos) ){
+				return pos;
+			}
+		}
+		// len == 2  ,, special rule
+		pool.Add (st.MoveXY (1, 1));		pool.Add (st.MoveXY (1, -1));		pool.Add (st.MoveXY (-1, 1));		pool.Add (st.MoveXY (-1, -1));
+		pool.Add (st.MoveXY (2, 0));		pool.Add (st.MoveXY (0, 2));		pool.Add (st.MoveXY (-2, 0));		pool.Add (st.MoveXY (0, -2));
+		foreach( iVec2 pos in pool )
+		{
+			if( CheckIsEmptyPos(pos) ){
+				return pos;
+			}
+		}
+
+		//len > 3
+		// get a empty pos that can pop 		
+		for (int i=2; i < len; i++) {
+			pool.Clear ();
+			pool = Grids.GetRangePool( st , i , i-1 );
 			if( pool == null )
 				continue;
 			foreach( iVec2 pos in pool )
@@ -2556,8 +2576,27 @@ public class Panel_StageUI : MonoBehaviour
 
 	}
 
+	public void OnStageUnitCampEvent( int nCharid , _CAMP nCampid )
+	{
+		foreach (KeyValuePair< int , Panel_unit> pair in this.IdentToUnit) {
+			if( pair.Value.CharID == nCharid )
+			{
+				if( pair.Value.eCampID !=  nCampid ){
+					pair.Value.SetCamp( nCampid );
+				}
+			}
+		}
+	}
+
+
 	public void OnStageCharMoveEvent(GameEvent evt)
 	{
+		// say end
+		TalkSayEndEvent sayevt = new TalkSayEndEvent();
+		sayevt.nChar = 0;		
+		GameEventManager.DispatchEvent ( sayevt  );
+
+
 		//Debug.Log ("OnStagePopCharEvent");
 		StageCharMoveEvent Evt = evt as StageCharMoveEvent;
 		if (Evt == null)
@@ -2578,7 +2617,11 @@ public class Panel_StageUI : MonoBehaviour
 //		if( IdentToUnit.ContainsKey(nIdent) == false )  {
 //			Debug.Log( "ERR: can't find unit to move" );
 //		}
+		// find vaild pos
 
+		iVec2 pos = FindEmptyPos ( new iVec2(nX,nY ));
+		nX = pos.X;
+		nY = pos.Y;
 
 
 		Panel_unit unit = GetUnitByIdent ( nIdent); // IdentToUnit[ nIdent ];
@@ -2728,25 +2771,37 @@ public class Panel_StageUI : MonoBehaviour
 		int nDist = pAtkUnit.Loc.Dist (pDefUnit.Loc);
 		if (nDist > nRange) {
 
-			List< iVec2> path =  MobAI.FindPathToTarget( pAtkUnit ,pDefUnit , 999  ); //GameScene.Instance.Grids.PathFinding( pAtkUnit.Loc , pDefUnit.Loc , 0  ); // no any block
-			//PathFinding
-			
-			if( (path!=null) && (path.Count>=2) )  // Mob AI 找到的會是目標的周圍
+			iVec2 last = FindEmptyPos ( pDefUnit.Loc );
+			if (m_bIsSkipMode)
 			{
-				iVec2 last = path[path.Count -1 ];
-
-				if (m_bIsSkipMode)
-				{
-					// change pos directly 
-					pAtkUnit.SetXY( last.X , last.Y );
-				}
-				else 
-				{
-					ActionManager.Instance.CreateMoveAction(nAtkId, last.X , last.Y );	
-					MoveToGameObj( pAtkUnit.gameObject , false );
-					TraceUnit( pAtkUnit );
-				}
+				// change pos directly 
+				pAtkUnit.SetXY( last.X , last.Y );
 			}
+			else{    
+				ActionManager.Instance.CreateMoveAction( pAtkUnit.Ident() , last.X , last.Y );	
+				MoveToGameObj( pAtkUnit.gameObject , false );
+				TraceUnit( pAtkUnit );
+			}
+
+//			List< iVec2> path =  MobAI.FindPathToTarget( pAtkUnit ,pDefUnit , 999  ); //GameScene.Instance.Grids.PathFinding( pAtkUnit.Loc , pDefUnit.Loc , 0  ); // no any block
+//			//PathFinding
+//			
+//			if( (path!=null) && (path.Count>=2) )  // Mob AI 找到的會是目標的周圍
+//			{
+//				iVec2 last = path[path.Count -1 ];
+//
+//				if (m_bIsSkipMode)
+//				{
+//					// change pos directly 
+//					pAtkUnit.SetXY( last.X , last.Y );
+//				}
+//				else 
+//				{
+//					ActionManager.Instance.CreateMoveAction(nAtkId, last.X , last.Y );	
+//					MoveToGameObj( pAtkUnit.gameObject , false );
+//					TraceUnit( pAtkUnit );
+//				}
+//			}
 
 			// send move act
 
@@ -2807,26 +2862,38 @@ public class Panel_StageUI : MonoBehaviour
 			return;
 		int nDist = pAtkUnit.Loc.Dist (pDefUnit.Loc);
 		if (nDist > 1) {
-			List< iVec2> path = MobAI.FindPathToTarget( pAtkUnit , pDefUnit , 999 );
-			//List< iVec2> path = PathFinding( pAtkUpDefUnitnit , pAtkUnit.Loc ,  pDefUnit.Loc , 0  ); // no any block
-			//PathFinding
-			
-			if( path != null && path.Count > 1 )
+			iVec2 last = FindEmptyPos ( pDefUnit.Loc );
+			if (m_bIsSkipMode)
 			{
-				iVec2 last = path[path.Count -1 ];
-
-				if (m_bIsSkipMode)
-				{
-					// change pos directly 
-					pAtkUnit.SetXY( last.X , last.Y );
-				}
-				else{    
-
-					ActionManager.Instance.CreateMoveAction( pAtkUnit.Ident() , last.X , last.Y );	
-					MoveToGameObj( pAtkUnit.gameObject , false );
-					TraceUnit( pAtkUnit );
-				}
+				// change pos directly 
+				pAtkUnit.SetXY( last.X , last.Y );
 			}
+			else{    
+				ActionManager.Instance.CreateMoveAction( pAtkUnit.Ident() , last.X , last.Y );	
+				MoveToGameObj( pAtkUnit.gameObject , false );
+				TraceUnit( pAtkUnit );
+			}
+
+//			List< iVec2> path = MobAI.FindPathToTarget( pAtkUnit , pDefUnit , 999 );
+//			//List< iVec2> path = PathFinding( pAtkUpDefUnitnit , pAtkUnit.Loc ,  pDefUnit.Loc , 0  ); // no any block
+//			//PathFinding
+//			
+//			if( path != null && path.Count > 1 )
+//			{
+//				iVec2 last = path[path.Count -1 ];
+//
+//				if (m_bIsSkipMode)
+//				{
+//					// change pos directly 
+//					pAtkUnit.SetXY( last.X , last.Y );
+//				}
+//				else{    
+//
+//					ActionManager.Instance.CreateMoveAction( pAtkUnit.Ident() , last.X , last.Y );	
+//					MoveToGameObj( pAtkUnit.gameObject , false );
+//					TraceUnit( pAtkUnit );
+//				}
+//			}
 			// move only
 			
 		}
