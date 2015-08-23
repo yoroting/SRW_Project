@@ -1332,8 +1332,7 @@ public partial class BattleManager
 		// normal attack
 
 		if( nDefHp < 0 && ( (pDefer.n_HP+pDefer.n_DEF) < Math.Abs(nDefHp) ) ){
-			if (pAtker.IsStates (_FIGHTSTATE._MERCY)) {
-				// 手加減
+			if (pAtker.IsStates (_FIGHTSTATE._MERCY) || pDefer.IsTag( _UNITTAG._NODIE ) ) {		// 手加減 或 defer is 不死身
 				nDefHp = -(pDefer.n_HP+pDefer.n_DEF-1);
 			}
 			else {
@@ -1344,6 +1343,7 @@ public partial class BattleManager
 
 		resPool.Add ( new cHitResult( cHitResult._TYPE._HP ,nDefer , nDefHp  ) );
 		resPool.Add ( new cHitResult( cHitResult._TYPE._CP ,nDefer , 1  ) ); // def add 1 cp
+
 
 		//有傷害的才會造成掉落
 		CalDropResult( pAtker , pDefer );

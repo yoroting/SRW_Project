@@ -93,7 +93,7 @@ public class Panel_UnitInfo : MonoBehaviour {
 
 		pUnitData.UpdateAllAttr ();
 		pUnitData.UpdateAttr ();
-
+		pUnitData.UpdateBuffConditionAttr ();
 		// lv
 		MyTool.SetLabelInt( LvObj , pUnitData.n_Lv );
 		// exp 

@@ -69,7 +69,7 @@ public class MyScript {
 				}
 				else if( func.sFunc == "DEAD"  )
 				{
-					if( ConditionUnitDead( func.I(0), func.I(1) ) == false )
+					if( ConditionUnitDead( (_CAMP)func.I(0), func.I(1) ) == false )
 					{
 						return false;
 					}				
@@ -88,14 +88,13 @@ public class MyScript {
 						return false;
 					}				
 				}
-				else if( func.sFunc  == "NODONE")  //檢查的事件沒有完成
+				else if( (func.sFunc  == "NODONE") || (func.sFunc=="NO") )  //檢查的事件沒有完成
 				{
 					if( ConditionNotDone( func.I(0) ) == false )
 					{
 						return false;
 					}	
 				}
-
 				else if( func.sFunc == "DIST"  )
 				{
 					if( ConditionDist( func.I(0),func.I(1) ,func.I(2) ) == false )
@@ -212,32 +211,43 @@ public class MyScript {
 	bool ConditionAllDead( int nCampID )
 	{
 		// assign id
-		cCamp unit = GameDataManager.Instance.GetCamp( (_CAMP)nCampID );
-		if( unit != null )
-		{
-			return (unit.memLst.Count<=0) ;
-		}
-		return true;
+//		cCamp unit = GameDataManager.Instance.GetCamp( (_CAMP)nCampID );
+//		if( unit != null )
+//		{
+//			return (unit.memLst.Count<=0) ;
+//		}
+		int nCount = GameDataManager.Instance.GetCampNum ( (_CAMP)nCampID  );
+		return (nCount <= 0);
+
+//		return true;
 	}
 	
-	bool ConditionUnitDead( int nCampID ,int nCharID )
+	bool ConditionUnitDead( _CAMP nCampID ,int nCharID )
 	{
 		// assign id
-		cCamp camp = GameDataManager.Instance.GetCamp( (_CAMP)nCampID );
-		if( camp != null )
-		{
-			foreach( int no in  camp.memLst )
-			{
-				Panel_unit unit =  Panel_StageUI.Instance.GetUnitByIdent( no ); //this.IdentToUnit[ no ];
-				if( unit != null )
-				{
-					if( unit.CharID ==  nCharID )
-					{
-						return false;
-					}
-				}
-			}
-		}
+//		cCamp camp = GameDataManager.Instance.GetCamp( (_CAMP)nCampID );
+//		if( camp != null )
+//		{
+//			foreach( int no in  camp.memLst )
+//			{
+//				Panel_unit unit =  Panel_StageUI.Instance.GetUnitByIdent( no ); //this.IdentToUnit[ no ];
+//				if( unit != null )
+//				{
+//					if( unit.CharID ==  nCharID )
+//					{
+//						return false;
+//					}
+//				}
+//			}
+//		}
+		foreach( KeyValuePair< int , cUnitData > pair in GameDataManager.Instance.UnitPool ){
+			if( pair.Value.eCampID != nCampID )
+				continue;
+			if( pair.Value.n_CharID != nCharID )
+				continue;
+			
+			return false;
+		}  
 		return true;
 	}
 	
@@ -591,9 +601,29 @@ public class MyScript {
 				//GameEventManager.DispatchEvent ( evt  );
 
 			}
+			else if( func.sFunc  == "FX")  // Add buff
+			{
+				Panel_StageUI.Instance.OnStagePlayFX( func.I(0) , func.I(1));
+			}	
 			else if( func.sFunc  == "ADDBUFF")  // Add buff
 			{
-				Panel_StageUI.Instance.OnStageAddBuff( func.I(0) , func.I(1) );
+				Panel_StageUI.Instance.OnStageAddBuff( func.I(0) , func.I(1) , func.I(2) );
+			}	
+			else if( func.sFunc  == "DELBUFF")  // Add buff
+			{
+				Panel_StageUI.Instance.OnStageAddBuff( func.I(0) , func.I(1) , func.I(2) );
+			}
+			else if( func.sFunc  == "ADDHP")  // Add HP
+			{
+				Panel_StageUI.Instance.OnStageAddUnitValue( func.I(0) , 0 , func.F(1) );
+			}
+			else if( func.sFunc  == "ADDDEF")  // Add DEF
+			{
+				Panel_StageUI.Instance.OnStageAddUnitValue( func.I(0) , 1 ,func.F(1) );
+			}
+			else if( func.sFunc  == "ADDMP")  // Add HP
+			{
+				Panel_StageUI.Instance.OnStageAddUnitValue( func.I(0) , 2 , func.F(1) );
 			}
 			else if( func.sFunc  == "UNITDEAD") 
 			{			
@@ -621,6 +651,16 @@ public class MyScript {
 					GameEventManager.DispatchEvent ( tlkevt  );
 				}
 
+			}
+			else if( func.sFunc  == "JOIN") 
+			{		
+				int nCharID = func.I( 0 );
+				GameDataManager.Instance.EnableStorageUnit(nCharID, true );
+			}
+			else if( func.sFunc  == "LEAVE") 
+			{			
+				int nCharID = func.I( 0 );
+				GameDataManager.Instance.EnableStorageUnit(nCharID, false );
 			}
 			//不能刪除 等待執行 event. 會造成 讀檔上的麻煩
 //			else if( func.sFunc  == "DELEVENT") 
@@ -949,7 +989,9 @@ public class MyScript {
 				else if( func.sFunc  == "TAG_CHARGE") {  // 
 					pool.Add( new TAG_CHARGE( ) );
 				}
-
+				else if( func.sFunc  == "TAG_NODIE") {  // 不死身
+					pool.Add( new TAG_NODIE( ) );
+				}
 				//=============== fight status
 				else if( func.sFunc  == "IS_DODGE") { // 必閃
 					pool.Add( new IS_DODGE( ) );
@@ -964,6 +1006,7 @@ public class MyScript {
 				else if( func.sFunc  == "IS_GUARD") { // 被防衛
 					pool.Add( new IS_GUARD( ) );
 				}
+			
 				//===
 
 			

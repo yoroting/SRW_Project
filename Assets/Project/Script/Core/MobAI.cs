@@ -608,9 +608,6 @@ public class MobAI  {
 				if( nSkillID ==0 )
 					continue;
 
-				// all continue for test				
-					continue;
-
 				SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(nSkillID);				
 				if( skl.n_SCHOOL == 0 )	// == 0 is ability
 					continue;				

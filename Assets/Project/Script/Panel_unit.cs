@@ -201,19 +201,15 @@ public class Panel_unit : MonoBehaviour {
 		if( pUnitData != null )
 		{
 			// Update HP
-			UISlider hpbar = HpBarObj.GetComponent<UISlider>();
-			if( hpbar != null ){
-				float hp 	= pUnitData.n_HP;
-				float nMaxhp  = pUnitData.GetMaxHP();
-				hpbar.value = hp / nMaxhp;
-			}
-			// Update Def
-			UISlider defbar = DefBarObj.GetComponent<UISlider>();
-			if( defbar != null ){
-				float def 	= pUnitData.n_DEF;
-				float nMaxdef  = pUnitData.GetMaxDef();
-				hpbar.value = def / nMaxdef;
-			}
+			float hp 	= pUnitData.n_HP;
+			float nMaxhp  = pUnitData.GetMaxHP();
+			float def 	= pUnitData.n_DEF;
+			float nMaxdef  = pUnitData.GetMaxDef();
+			float nTotal =  nMaxdef+nMaxhp;
+			if( nTotal == 0) nTotal = 1;
+
+
+
 
 			if( pUnitData.n_HP <= 0 ){				 
 				pUnitData.n_HP =0;
@@ -228,13 +224,14 @@ public class Panel_unit : MonoBehaviour {
 				pUnitData.n_SP =0;
 			}
 
-			UISlider hpSlider = HpBarObj.GetComponent<UISlider>();
-			if( hpSlider != null ){
-				hpSlider.value =  (float) pUnitData.n_HP /  (float) pUnitData.GetMaxHP() ;
+			UISlider hpbar = HpBarObj.GetComponent<UISlider>();
+			if( hpbar != null ){
+				hpbar.value = hp / nTotal;
 			}
-			UISlider defSlider = DefBarObj.GetComponent<UISlider>();
-			if( defSlider != null ){
-				defSlider.value =  (float) pUnitData.n_DEF /  (float) pUnitData.GetMaxDef() ;
+			// Update Def
+			UISlider defbar = DefBarObj.GetComponent<UISlider>();
+			if( defbar != null ){
+				defbar.value = (def+hp) / nTotal;
 			}
 
 		}	
@@ -1049,7 +1046,7 @@ public class Panel_unit : MonoBehaviour {
 
 	public void SetCamp( _CAMP camp )
 	{
-		GameDataManager.Instance.DelCampMember( eCampID , Ident() ); // global game data
+//		GameDataManager.Instance.DelCampMember( eCampID , Ident() ); // global game data
 
 		eCampID = camp;
 		UISprite sp = BGObj.GetComponent<UISprite>();
@@ -1071,7 +1068,12 @@ public class Panel_unit : MonoBehaviour {
 
 		sp.alpha= 1.0f;
 
-		GameDataManager.Instance.AddCampMember( camp , Ident() ); // global game data
+		//=======================
+		if(pUnitData != null) {
+		   pUnitData.eCampID = eCampID;
+		}
+
+//		GameDataManager.Instance.AddCampMember( camp , Ident() ); // global game data
 
 	}
 

@@ -21,8 +21,11 @@ public enum _FIGHTSTATE
 	_MERCY	 ,		// 留情
 	_GUARD   ,		// 防衛	
 
+
 	// 
 	_KILL		,  //本次戰鬥有殺人
+
+
 
 }
 //
@@ -31,7 +34,7 @@ public enum _UNITTAG
 	_NULL = 0,
 	_UNDEAD = 1 ,   // 除非隊長死否則無限重生
 	_CHARGE = 2 ,    // 突襲移動. no block
-
+	_NODIE	= 3 ,		// 不死身... 劇情NPC
 }
 //
 public enum _ITEMSLOT
@@ -197,8 +200,8 @@ public class cUnitData{
 
 
 	public CHARS cCharData;
-	public int n_Rank;		// max school lv
-
+	//public int n_Rank;		// max school lv
+	public bool bEnable;			// is join party
 // save data start
 	public int n_Ident;		// auto create by game system
 	public _CAMP eCampID;
@@ -296,6 +299,7 @@ public class cUnitData{
 
 	public cUnitData()
 	{
+		bEnable = false;
 		SchoolPool  = new Dictionary< int , int > ();
 		AbilityPool = new Dictionary< int , int > ();
 		SkillPool 	= new Dictionary< int , cSkillData > ();
@@ -517,7 +521,7 @@ public class cUnitData{
 		if (n_CharID != cData.n_ID) {
 			Debug.LogErrorFormat ("cUnitData{0} set wrong SetContData{1}", n_CharID, cData.n_ID);
 		}
-		n_Rank = cData.n_RANK;
+		//n_Rank = cData.n_RANK;
 		// set school;
 		SkillPool.Clear ();
 		//被動能力先，因為會影響出生BUFF 與技能進階
@@ -748,7 +752,8 @@ public class cUnitData{
 		}
 
 		// don't update each frame for performance . call condition update for each calcul
-		UpdateBuffConditionAttr ();		// always check condition and update
+//		if( bUpCond )
+//			UpdateBuffConditionAttr ();		// always check condition and update
 
 	}
 
@@ -990,7 +995,8 @@ public class cUnitData{
 	// Get Data func
 	public int GetMaxHP()
 	{
-//		UpdateAttr(); // update first to get newest data
+		UpdateAttr(  ); // update first to get newest data
+
 		int nHp = cCharData.n_HP ;		// base HP
 		float fHpRate = 1.0f;
 		foreach( KeyValuePair< int ,cAttrData > pair  in Attr )
@@ -1011,7 +1017,7 @@ public class cUnitData{
 	}
 	public int GetMaxMP()
 	{
-//		UpdateAttr(); // update first to get newest data
+		UpdateAttr(  ); // update first to get newest data
 		int nMp = 0;
 		float fMpRate = 1.0f;
 		foreach( KeyValuePair< int ,cAttrData > pair  in Attr )
@@ -1030,7 +1036,7 @@ public class cUnitData{
 	}
 	public int GetMaxSP()
 	{
-//		UpdateAttr(); // update first to get newest data
+		UpdateAttr(  ); // update first to get newest data
 		int nSp = 0;
 		float fSpRate = 1.0f;
 		foreach( KeyValuePair< int ,cAttrData > pair  in Attr )
@@ -1047,6 +1053,7 @@ public class cUnitData{
 	}
 	public float GetHpPercent()
 	{
+		UpdateAttr(  );
 		return (float)n_HP / GetMaxHP();
 	}
 
@@ -1054,6 +1061,7 @@ public class cUnitData{
 	// only get school + char lv
 	public float GetBaseMar()
 	{
+		UpdateAttr(  );
 		float f = 0;
 		for (int i = cAttrData._INTSCH; i <=  cAttrData._CHARLV; i++) {
 			cAttrData att = GetAttrData( i );
@@ -1065,6 +1073,7 @@ public class cUnitData{
 
 	public int GetBaseAttack()
 	{
+		UpdateAttr(  );
 		int  n = 0;
 		for (int i = cAttrData._INTSCH; i <=  cAttrData._CHARLV; i++) {
 			cAttrData att = GetAttrData( i );
@@ -1076,7 +1085,7 @@ public class cUnitData{
 
 	public float GetMar()
 	{
-//		UpdateAttr(); // update first to get newest data
+		UpdateAttr(  ); // update first to get newest data
 		float f = 0;
 		foreach( KeyValuePair< int ,cAttrData > pair  in Attr )
 		{
@@ -1088,7 +1097,7 @@ public class cUnitData{
 
 	public int GetAtk()
 	{
-//		UpdateAttr(); // update first to get newest data
+		UpdateAttr(  ); // update first to get newest data
 		int n = 0;
 		float fAtkRate = 1.0f;
 		foreach( KeyValuePair< int ,cAttrData > pair  in Attr )
@@ -1107,7 +1116,7 @@ public class cUnitData{
 
 	public int GetMaxDef()
 	{
-//		UpdateAttr(); // update first to get newest data
+		UpdateAttr(  ); // update first to get newest data
 		int n = 0;
 		float fDefRate = 1.0f;
 		foreach( KeyValuePair< int ,cAttrData > pair  in Attr )
@@ -1124,7 +1133,7 @@ public class cUnitData{
 	}
 	public int GetPow()
 	{
-//		UpdateAttr(); // update first to get newest data
+		UpdateAttr(  ); // update first to get newest data
 		int n = 0;
 		float fPowRate = 1.0f;
 		foreach( KeyValuePair< int ,cAttrData > pair  in Attr )
@@ -1142,7 +1151,7 @@ public class cUnitData{
 
 	public int GetMov()
 	{
-//		UpdateAttr(); // update first to get newest data
+		UpdateAttr(  ); // update first to get newest data
 		int n = 0;
 		foreach( KeyValuePair< int ,cAttrData > pair  in Attr )
 		{
@@ -1155,7 +1164,7 @@ public class cUnitData{
 
 	public float GetMulDrop()
 	{
-		//		UpdateAttr(); // update first to get newest data
+		UpdateAttr(  ); // update first to get newest data
 		float f = 1.0f;
 		foreach( KeyValuePair< int ,cAttrData > pair  in Attr ){
 			f +=pair.Value.fDropRate;
@@ -1166,7 +1175,7 @@ public class cUnitData{
 
 	public float GetMulDamage()
 	{
-		// UpdateAttr(); // update first to get newest data
+		UpdateAttr(  ); // update first to get newest data
 		float f = 1.0f;
 		foreach( KeyValuePair< int ,cAttrData > pair  in Attr ){
 			f +=pair.Value.fDamageRate;
@@ -1176,7 +1185,7 @@ public class cUnitData{
 	}
 	public float GetMulBurst()
 	{
-		//		UpdateAttr(); // update first to get newest data
+		UpdateAttr(  ); // update first to get newest data
 		float f = 1.0f;
 		foreach( KeyValuePair< int ,cAttrData > pair  in Attr ){
 			f +=pair.Value.fBurstRate;
@@ -1187,7 +1196,7 @@ public class cUnitData{
 
 	public float GetMulAttack()
 	{
-		//		UpdateAttr(); // update first to get newest data
+		UpdateAttr(  ); // update first to get newest data
 		float f = 1.0f;
 		foreach( KeyValuePair< int ,cAttrData > pair  in Attr ){
 			f +=pair.Value.fAtkRate;
@@ -1198,7 +1207,7 @@ public class cUnitData{
 
 	public float GetMulDef()
 	{
-		//		UpdateAttr(); // update first to get newest data
+		UpdateAttr(  ); // update first to get newest data
 		float f = 1.0f;
 		foreach( KeyValuePair< int ,cAttrData > pair  in Attr ){
 			f +=pair.Value.fDefRate;
@@ -1208,7 +1217,7 @@ public class cUnitData{
 	}
 	public float GetMulPower()
 	{
-		//		UpdateAttr(); // update first to get newest data
+		UpdateAttr(  ); // update first to get newest data
 		float f = 1.0f;
 		foreach( KeyValuePair< int ,cAttrData > pair  in Attr ){
 			f +=pair.Value.fPowRate;
@@ -1219,7 +1228,7 @@ public class cUnitData{
 
 	public float GetMulMpCost()
 	{
-		//		UpdateAttr(); // update first to get newest data
+		UpdateAttr(  ); // update first to get newest data
 		float f = 1.0f;
 		foreach( KeyValuePair< int ,cAttrData > pair  in Attr ){
 			f +=pair.Value.fMpCostRate;
@@ -1244,7 +1253,8 @@ public class cUnitData{
 
 		// get skill data
 
-		UpdateAttr ();
+		UpdateAttr (  );
+		UpdateBuffConditionAttr ();
 	}
 
 	//fight end to clear data
@@ -1266,7 +1276,8 @@ public class cUnitData{
 		}
 
 		UpdateAllAttr ();
-		UpdateAttr ();
+		UpdateAttr (  );
+		UpdateBuffConditionAttr ();
 
 	}
 

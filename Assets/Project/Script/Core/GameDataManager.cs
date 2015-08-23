@@ -64,17 +64,18 @@ using MYGRIDS;
 
 
 
+// no more use cCamp
+//public class cCamp
+//{
+//	public _CAMP CampID { set; get; }
+//	public List<int> memLst;
 //
-public class cCamp
-{
-	public _CAMP CampID { set; get; }
-	public List<int> memLst;
+//	public cCamp()
+//	{
+//		memLst = new List<int>();
+//	}
+//}
 
-	public cCamp()
-	{
-		memLst = new List<int>();
-	}
-}
 /// <summary>預設存在的 Channel Type</summary>
 
 public partial class GameDataManager 
@@ -93,7 +94,7 @@ public partial class GameDataManager
 		//this.GetAudioClipFunc = getAudioClipFunc;
 		StoragePool = new Dictionary< int , cUnitData > ();		
 		UnitPool = new Dictionary< int , cUnitData >();
-		CampPool = new Dictionary< _CAMP , cCamp >();
+//		CampPool = new Dictionary< _CAMP , cCamp >();
 		EvtDonePool = new Dictionary< int , int > ();			// record event complete round 
 //		ConCharPool = new Dictionary< int , CHARS >();
 //		ConCharPool   = new Dictionary< int , CHARS >() ;
@@ -134,7 +135,7 @@ public partial class GameDataManager
 		nRound = 0;
 		nActiveCamp = _CAMP._PLAYER;
 		UnitPool.Clear ();
-		CampPool.Clear ();
+		//CampPool.Clear ();
 		EvtDonePool.Clear();
 		GroupPool.Clear();
 
@@ -209,51 +210,66 @@ public partial class GameDataManager
 
 
 	// Camp
-	public Dictionary< _CAMP , cCamp > CampPool;			// add Camp
-	public cCamp GetCamp( _CAMP nCampID )
+//	public Dictionary< _CAMP , cCamp > CampPool;			// add Camp
+//	public cCamp GetCamp( _CAMP nCampID )
+//	{
+//		if( CampPool.ContainsKey( nCampID ) )
+//		{
+//			return CampPool[ nCampID ];
+//		}
+//		return null;
+//	}
+//
+//	public void AddCampMember( _CAMP nCampID , int nMemIdent )
+//	{
+//		if( CampPool.ContainsKey( nCampID ) ){
+//			cCamp unit = CampPool[ nCampID ];
+//			if( unit != null ){
+//				if( unit.memLst.Contains( nMemIdent ) == false  )
+//				{
+//					unit.memLst.Add( nMemIdent );
+//				}
+//			}
+//		}
+//		else{
+//			cCamp unit = new cCamp();
+//			unit.CampID = nCampID;
+//			unit.memLst.Add( nMemIdent );
+//			CampPool.Add( nCampID , unit );
+//		}
+//		// find unit to set camp
+//		cUnitData data = GetUnitDateByIdent ( nMemIdent );
+//		if (data != null) {
+//			data.eCampID = nCampID;
+//		}
+//
+//
+//	}
+//	public void DelCampMember( _CAMP nCampID , int nMemIdent )
+//	{
+//		if( CampPool.ContainsKey( nCampID ) ){
+//			cCamp unit = CampPool[ nCampID ];
+//			if( unit != null )
+//			{
+//				unit.memLst.Remove( nMemIdent );
+//			}
+//		}
+//	}
+	public int GetCampNum( _CAMP eCampID )
 	{
-		if( CampPool.ContainsKey( nCampID ) )
+		int cout = 0;
+		foreach( KeyValuePair< int , cUnitData > pair in UnitPool )
 		{
-			return CampPool[ nCampID ];
-		}
-		return null;
-	}
-
-	public void AddCampMember( _CAMP nCampID , int nMemIdent )
-	{
-		if( CampPool.ContainsKey( nCampID ) ){
-			cCamp unit = CampPool[ nCampID ];
-			if( unit != null ){
-				if( unit.memLst.Contains( nMemIdent ) == false  )
-				{
-					unit.memLst.Add( nMemIdent );
-				}
+			if( pair.Value == null  )
+				continue;
+			if( pair.Value.eCampID ==  eCampID ){
+				cout++;
 			}
 		}
-		else{
-			cCamp unit = new cCamp();
-			unit.CampID = nCampID;
-			unit.memLst.Add( nMemIdent );
-			CampPool.Add( nCampID , unit );
-		}
-		// find unit to set camp
-		cUnitData data = GetUnitDateByIdent ( nMemIdent );
-		if (data != null) {
-			data.eCampID = nCampID;
-		}
+		return cout;
+	}
 
 
-	}
-	public void DelCampMember( _CAMP nCampID , int nMemIdent )
-	{
-		if( CampPool.ContainsKey( nCampID ) ){
-			cCamp unit = CampPool[ nCampID ];
-			if( unit != null )
-			{
-				unit.memLst.Remove( nMemIdent );
-			}
-		}
-	}
 	// switch to next Camp. return true if round change
 	public bool NextCamp()
 	{
@@ -268,8 +284,9 @@ public partial class GameDataManager
 		{
 
 			// check for ally
-			cCamp camp = GameDataManager.Instance.GetCamp( _CAMP._FRIEND );
-			if( camp != null && camp.memLst.Count > 0 )
+			//cCamp camp = GameDataManager.Instance.GetCamp( _CAMP._FRIEND );
+			int nCount = GetCampNum(_CAMP._FRIEND );
+			if( nCount > 0 )
 			{
 				nActiveCamp = _CAMP._FRIEND;  
 			}
@@ -403,14 +420,14 @@ public partial class GameDataManager
 
 	public cUnitData CreateCharbySaveData( cUnitSaveData save , bool bAddtoPool = false )
 	{
-		cUnitData unit = new cUnitData();
-		unit.n_Ident = save.n_Ident;  //GenerSerialNO( );
-		unit.n_CharID = save.n_CharID;
+		cUnitData unit  = new cUnitData();
+		unit.n_Ident 	= save.n_Ident;  //GenerSerialNO( );
+		unit.n_CharID 	= save.n_CharID;
+		unit.bEnable 	= save.b_Enable;
 
 		if (unit.n_Ident > nSerialNO) {
 			nSerialNO = unit.n_Ident;  // update serial NO if need 
 		}
-
 		
 		CHARS cdata = ConstDataManager.Instance.GetRow< CHARS > (unit.n_CharID);
 		if (cdata == null) {
@@ -591,6 +608,7 @@ public partial class GameDataManager
 			StoragePool.Remove( data.n_CharID );
 		}
 		data.Relive ();
+		data.bEnable = true;
 		StoragePool.Add( data.n_CharID , data );
 	}
 
@@ -621,6 +639,14 @@ public partial class GameDataManager
 		}
 		return false;
 	}
+
+	public void EnableStorageUnit( int nCharID , bool bEnable = false )
+	{
+		if (StoragePool.ContainsKey (nCharID) == true) {
+			StoragePool[nCharID].bEnable = bEnable;
+		}
+	}
+
 
 	public void ClearStorageUnit(  )
 	{

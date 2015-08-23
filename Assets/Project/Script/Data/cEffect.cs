@@ -449,7 +449,14 @@ public class TAG_CHARGE: cEffect
 		return (_UNITTAG._CHARGE == tag );
 	}				// check user in one status		
 }
-
+public class TAG_NODIE: cEffect
+{
+	public TAG_NODIE(  ){ }	
+	
+	override public bool _IsTag(  _UNITTAG tag ){
+		return (_UNITTAG._NODIE == tag );
+	}				// check user in one status		
+}
 //==== is status ==
 public class IS_DODGE: cEffect
 {

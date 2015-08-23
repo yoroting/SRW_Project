@@ -53,7 +53,7 @@ public class Panel_MiniUnitInfo : MonoBehaviour {
 			return;
 		pUnitData.UpdateAllAttr ();
 		pUnitData.UpdateAttr ();
-
+		pUnitData.UpdateBuffConditionAttr ();
 
 		MyTool.SetLabelText (lblName, MyTool.GetCharName (pUnitData.n_CharID));
 		MyTool.SetLabelInt (lblMar, (int)pUnitData.GetMar ());

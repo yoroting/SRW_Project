@@ -174,7 +174,7 @@ public class Panel_StageUI : MonoBehaviour
         //GameDataManager.Instance.nRound = 0;		// many mob pop in talk ui. we need a 0 round to avoid issue
 
         //Record All Event to execute
-        //EvtPool.Clear();
+        EvtPool.Clear();
 		char[] split = { ';' };
 		string[] strEvent = StageData.s_EVENT.Split(split);
 		for (int i = 0; i < strEvent.Length; i++)
@@ -212,7 +212,7 @@ public class Panel_StageUI : MonoBehaviour
 
 
 
-        bIsLoading = false;
+        bIsLoading = false;		// debug mode no coror to close loading
 
         long during = System.DateTime.Now.Ticks - tick;
         Debug.Log("stage srart loding complete. total ticket:" + during);
@@ -447,7 +447,9 @@ public class Panel_StageUI : MonoBehaviour
 
 		//GameDataManager.Instance.nRound = 0;		// many mob pop in talk ui. we need a 0 round to avoid issue
 		//GameDataManager.Instance.nActiveCamp  = _CAMP._PLAYER;
-		
+
+		NextEvent = null;
+
 		//Record All Event to execute
 		EvtPool.Clear();
 
@@ -1353,17 +1355,29 @@ public class Panel_StageUI : MonoBehaviour
 	public List<Panel_unit> GetUnitListByCamp( _CAMP nCamp )
 	{
 		List<Panel_unit> lst = new List<Panel_unit> ();
-		cCamp camp = GameDataManager.Instance.GetCamp( nCamp );
-		if (camp != null) {
-			foreach( int ident in camp.memLst )
+		foreach (KeyValuePair< int ,Panel_unit > pair in IdentToUnit) {
+			if( pair.Value!= null )
 			{
-				Panel_unit unit = GetUnitByIdent( ident ); 
-				if( unit != null )
+				if( pair.Value.eCampID == nCamp )
 				{
-					lst.Add( unit );
+					lst.Add( pair.Value );
+					//return pair.Value;
 				}
 			}
 		}
+
+
+//		cCamp camp = GameDataManager.Instance.GetCamp( nCamp );
+//		if (camp != null) {
+//			foreach( int ident in camp.memLst )
+//			{
+//				Panel_unit unit = GetUnitByIdent( ident ); 
+//				if( unit != null )
+//				{
+//					lst.Add( unit );
+//				}
+//			}
+//		}
 
 		return lst;
 	}
@@ -1458,6 +1472,9 @@ public class Panel_StageUI : MonoBehaviour
 		{
 			GetEventToRun();
 			// get next event to run
+			if( NextEvent!= null ){
+				Debug.LogFormat( "Get Event{0} to run" ,NextEvent.n_ID  );
+			}
 
 		}
 
@@ -1522,7 +1539,14 @@ public class Panel_StageUI : MonoBehaviour
 			return  ;
 		if( EvtPool.Count<=0)
 			return ;
-		
+
+		if (bIsStageEnd) {
+			Debug.LogError( " check event when stage end");
+		}
+		if (bIsLoading) {
+			Debug.LogError( " check event when stage loading");
+		}
+
 		List< int > removeLst = new List< int >();
 		// get next event to run
 		foreach( KeyValuePair< int ,STAGE_EVENT > pair in EvtPool ) 
@@ -1756,11 +1780,11 @@ public class Panel_StageUI : MonoBehaviour
 		Panel_unit unit = IdentToUnit[ nIdent ];
 		if( unit != null )
 		{
-			cCamp camp =  GameDataManager.Instance.GetCamp( unit.eCampID  );
-			if( camp != null )
-			{
-				camp.memLst.Remove ( nIdent );
-			}		
+//			cCamp camp =  GameDataManager.Instance.GetCamp( unit.eCampID  );
+//			if( camp != null )
+//			{
+//				camp.memLst.Remove ( nIdent );
+//			}		
 			unit.FreeUnitData();
 			unit.Recycle( );
 		}
@@ -1818,40 +1842,53 @@ public class Panel_StageUI : MonoBehaviour
 	}
 
 
-	void DelChar( _CAMP nCampID , int nChar )
+	void DelChar( _CAMP nCampID , int nCharID )
 	{
-		cCamp camp =  GameDataManager.Instance.GetCamp( nCampID );
-		if( camp == null )
-			return ;
-		List< int > remove = new List< int >();
-		foreach( int id in camp.memLst )
+//		cCamp camp =  GameDataManager.Instance.GetCamp( nCampID );
+//		if( camp == null )
+//			return ;
+		List< int > remove = new List< int >(); // ident pool
+		//foreach( int id in camp.memLst )
+		foreach( KeyValuePair<int , Panel_unit> pair in IdentToUnit )
 		{
-			if( IdentToUnit.ContainsKey( id ) == true )
-			{
-				Panel_unit unit = IdentToUnit[ id ];
-				if( unit != null )
-				{
-					if( nChar != unit.CharID )
-					{
-						continue;
-					}
-					//unit.pUnitData; 
-					//NGUITools.Destroy( unit.gameObject );
-					unit.FreeUnitData();
-					unit.Recycle();
-				}
-				IdentToUnit.Remove( id );
-				remove.Add( id );
+			if( pair.Value == null )
+				continue;
+			if( (pair.Value.CharID) == nCharID && (pair.Value.eCampID ==nCampID) ){
+				//NGUITools.Destroy( unit.gameObject );
+				pair.Value.FreeUnitData(); // dis connect with gamedata manager
+				pair.Value.Recycle();
+
+				remove.Add( pair.Key );
 			}
-			else{
-				// fail obj??
-				remove.Add( id );
-			}
+
+//			if( IdentToUnit.ContainsKey( id ) == true )
+//			{
+//				Panel_unit unit = IdentToUnit[ id ];
+//				if( unit != null )
+//				{
+//					if( nChar != unit.CharID )
+//					{
+//						continue;
+//					}
+//					//unit.pUnitData; 
+//					//NGUITools.Destroy( unit.gameObject );
+//					unit.FreeUnitData();
+//					unit.Recycle();
+//				}
+//				IdentToUnit.Remove( id );
+//				remove.Add( id );
+//			}
+//			else{
+//				// fail obj??
+//				remove.Add( id );
+//			}
+
 		}
 
 		foreach( int id in remove )
 		{
-			camp.memLst.Remove( id );
+			IdentToUnit.Remove( id );
+		//	camp.memLst.Remove( id );
 		}
 	}
 
@@ -1940,7 +1977,7 @@ public class Panel_StageUI : MonoBehaviour
 		return false;
 	}
 
-	public bool CheckUnitDead()
+	public bool CheckUnitDead( bool bAll = false )
 	{
 		foreach ( KeyValuePair<int , cUnitData > pair in GameDataManager.Instance.UnitPool) {
 			if( pair.Value != null )
@@ -1954,7 +1991,9 @@ public class Panel_StageUI : MonoBehaviour
 						if( punit.bIsDead == false )
 						{
 							punit.SetDead();
-							return true;
+							if( !bAll ){
+								return true;
+							}
 						}
 
 					}
@@ -2173,6 +2212,52 @@ public class Panel_StageUI : MonoBehaviour
 		
 		
 	}
+	public iVec2 FindEmptyPosToAttack( iVec2 to  , iVec2 from,int len = 999 )
+	{
+		List<iVec2> pool = new List<iVec2> ();
+		//len > 3
+		// get a empty pos that can pop 		
+		for (int i=1; i < len; i++) {
+			pool.Clear ();
+			if( i == 1 ){
+				pool = to.AdjacentList (1);
+			}
+			else if( i == 2 )
+			{
+				pool.Add (to.MoveXY (1, 1));		pool.Add (to.MoveXY (1, -1));		pool.Add (to.MoveXY (-1, 1));		pool.Add (to.MoveXY (-1, -1));
+				pool.Add (to.MoveXY (2, 0));		pool.Add (to.MoveXY (0, 2));		pool.Add (to.MoveXY (-2, 0));		pool.Add (to.MoveXY (0, -2));
+
+			}
+			else {
+				pool = Grids.GetRangePool( to , i , i-1 );
+			}
+			// start sort 
+			if( pool == null || pool.Count == 0  )
+				continue;
+
+			Dictionary< iVec2 , int > distpool = new Dictionary< iVec2 , int > ();
+			foreach (iVec2 v in pool) {
+				if (Panel_StageUI.Instance.CheckIsEmptyPos (v) == true) {// 目標 pos 不可以站人
+					int d =v.Dist (from);
+					distpool.Add (v, d );
+				}
+			}
+
+			var itemsdist = from pair2 in distpool orderby pair2.Value ascending select pair2;
+			foreach (KeyValuePair<iVec2 , int> pair2 in itemsdist) {
+				// sort already
+				if( pair2.Key != null  ){
+					return pair2.Key;
+				}
+			}
+		}
+		
+		
+		Debug.Log ( " Error ! can't find a Empty Pos");
+		return null;
+		
+		
+	}
 	// 
 	public List< iVec2> GetAllUnitPosList( )
 	{
@@ -2294,7 +2379,8 @@ public class Panel_StageUI : MonoBehaviour
 	{
 		//GameDataManager.Instance.nStoryID = nStoryID;
 		//GameDataManager.Instance.nStageID = save.n_StageID;
-		
+
+
 		PanelManager.Instance.OpenUI ("Panel_Loading");
 		
 		yield return  new WaitForEndOfFrame ();
@@ -2334,6 +2420,12 @@ public class Panel_StageUI : MonoBehaviour
 	{
 		if (save  == null)
 			return;
+		
+		// set stage is end & load to avoud update check()
+		this.bIsLoading = true;
+		this.bIsStageEnd = true;
+
+
 		StartCoroutine (  SaveLoading( save  ) );
 		
 	}
@@ -2387,6 +2479,7 @@ public class Panel_StageUI : MonoBehaviour
 		}
 		
 		// re build evt pool
+		EvtPool.Clear ();
 		char[] split = { ';' };
 		string[] strEvent = StageData.s_EVENT.Split(split);
 		for (int i = 0; i < strEvent.Length; i++)
@@ -2462,6 +2555,11 @@ public class Panel_StageUI : MonoBehaviour
 		PlayStageBGM ();
 		//GameDataManager.Instance.ImportSavePool( save.CharPool );
 		//		bIsRestoreData = false;
+
+		bIsLoading = false;
+		bIsStageEnd = false;
+
+
 		return true;
 	}
 
@@ -2619,19 +2717,21 @@ public class Panel_StageUI : MonoBehaviour
 //		}
 		// find vaild pos
 
-		iVec2 pos = FindEmptyPos ( new iVec2(nX,nY ));
-		nX = pos.X;
-		nY = pos.Y;
 
 
 		Panel_unit unit = GetUnitByIdent ( nIdent); // IdentToUnit[ nIdent ];
 		if( unit != null )
 		{
+			iVec2 pos = new iVec2(nX ,nY );
+			if( CheckIsEmptyPos(pos)== false ){
+				pos = FindEmptyPosToAttack  ( pos , unit.Loc );
+			}
+			//
 			if (m_bIsSkipMode) { 
-				unit.SetXY( nX , nY );
+				unit.SetXY( pos.X , pos.Y );
 			}
 			else {
-				unit.MoveTo( nX , nY ); 
+				unit.MoveTo( pos.X , pos.Y ); 
 			}
 
 //			// check if need trace unit 
@@ -2771,7 +2871,8 @@ public class Panel_StageUI : MonoBehaviour
 		int nDist = pAtkUnit.Loc.Dist (pDefUnit.Loc);
 		if (nDist > nRange) {
 
-			iVec2 last = FindEmptyPos ( pDefUnit.Loc );
+			iVec2 last = FindEmptyPosToAttack ( pDefUnit.Loc , pAtkUnit.Loc);
+
 			if (m_bIsSkipMode)
 			{
 				// change pos directly 
@@ -2862,7 +2963,7 @@ public class Panel_StageUI : MonoBehaviour
 			return;
 		int nDist = pAtkUnit.Loc.Dist (pDefUnit.Loc);
 		if (nDist > 1) {
-			iVec2 last = FindEmptyPos ( pDefUnit.Loc );
+			iVec2 last = FindEmptyPosToAttack ( pDefUnit.Loc , pAtkUnit.Loc );
 			if (m_bIsSkipMode)
 			{
 				// change pos directly 
@@ -2917,26 +3018,97 @@ public class Panel_StageUI : MonoBehaviour
 //
 //	}
 
-	public void OnStageAddBuff(int nCharID , int nBuffID )
+	public void OnStagePlayFX(int nCharID , int nFXID  )
+	{
+		if (nFXID == 0) {
+			return ;
+		}
+		int nTot = 0;
+		foreach (KeyValuePair< int ,Panel_unit> pair in IdentToUnit) {
+			Panel_unit unit = pair.Value;
+			if (unit.CharID != nCharID)
+				continue;
+
+			nTot++;
+			GameSystem.PlayFX(unit.gameObject , nFXID );
+		
+		}
+		if (nTot == 0) {
+			Debug.LogErrorFormat ("OnStagePlayFX {0} on null unit with char {1} ", nFXID, nCharID);
+		}
+	}
+
+
+	public void OnStageAddBuff(int nCharID , int nBuffID , int nDel = 0 )
 	{
 		if (nBuffID == 0) {
 			return ;
 		}
-
-		//Debug.Log ("OnStagePopCharEvent");
-
-
-		cUnitData data = GameDataManager.Instance.GetUnitDateByCharID (nCharID);
-		if (data != null) {
-			data.Buffs.AddBuff (nBuffID, nCharID, 0, 0);
-		} else {
-			Debug.LogErrorFormat("OnStageAddBuff {0} on null unit with char {1}" ,nBuffID, nCharID );
-		} 
-//		Panel_unit pUnit = GetUnitByCharID (nCharID);
-//		if (pUnit != null) {
-//		}
-		
+		int nTot = 0;
+		foreach (KeyValuePair< int ,Panel_unit> pair in IdentToUnit) {
+			Panel_unit unit = pair.Value;
+			if (unit.CharID != nCharID)
+				continue;
+			//
+			if (unit.pUnitData == null)
+				continue;
+			nTot++;
+			if( nDel == 0 ){
+				unit.pUnitData.Buffs.AddBuff (nBuffID, nCharID, 0, 0);
+			}
+			else{
+				unit.pUnitData.Buffs.DelBuff( nBuffID, true );
+				
+			}
+		}
+		if (nTot == 0) {
+			Debug.LogErrorFormat ("OnStageAddBuff {0} on null unit with char {1} , type{2}", nBuffID, nCharID,nDel);
+		}
 	}
+
+	//
+	public void OnStageAddUnitValue(int nCharID , int nType , float f )
+	{
+		if (f == 0)
+			return;		
+		int nTot = 0;
+		foreach (KeyValuePair< int ,Panel_unit> pair in IdentToUnit) {
+			Panel_unit unit = pair.Value;
+			if( unit.CharID != nCharID )
+				continue;
+			//
+			if( unit.pUnitData == null )
+				continue;
+			nTot++;
+			int nValue = 0;
+			switch( nType ){
+				case 0:{
+					nValue = (int)(unit.pUnitData.GetMaxHP()*f);
+					unit.pUnitData.AddHp( nValue );
+				}	break; // HP
+				case 1:{
+					nValue = (int)(unit.pUnitData.GetMaxDef()*f);
+					unit.pUnitData.AddDef( nValue );
+				}	break; // DEF
+				case 2:{
+					nValue = (int)(unit.pUnitData.GetMaxMP()*f);
+					unit.pUnitData.AddMp( nValue );
+				}	break; // MP
+			}
+			//====================================
+			if( nValue != 0 ){	
+				unit.ShowValueEffect( nValue , nType ); // MP
+			}
+		}
+
+		if (nTot == 0) {
+			Debug.LogErrorFormat("OnStageAddUnitValue on null unit with char {0} at type{1}= {2}% " , nCharID,nType, f );
+		}
+		//else {
+		//	Debug.LogErrorFormat("OnStageAddUnitValue on null unit with char {0} at type{1}= {2}% " , nCharID,nType, f );
+		//} 
+	}
+
 
 	public void OnStagePopMarkEvent( int x1 ,int y1 , int x2  , int y2  )
 	{

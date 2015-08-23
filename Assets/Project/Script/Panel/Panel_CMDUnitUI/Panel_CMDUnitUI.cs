@@ -375,8 +375,14 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
 	public void  StageCheatCmd(  )
 	{
-		GameDataManager.Instance.nMoney += 99999999;
+	//	GameDataManager.Instance.nMoney += 99999999;
+	//	PanelManager.Instance.OpenUI (Panel_SysCheat.Name);
+	}
 
+	public void  StageSysCheatCmd(  )
+	{
+		//	GameDataManager.Instance.nMoney += 99999999;
+		PanelManager.Instance.OpenUI (Panel_SysCheat.Name);
 	}
 
 	public void KillAllEnemyCmd ()
@@ -388,6 +394,8 @@ public class Panel_CMDUnitUI : MonoBehaviour
 				}
 			}
 		}
+		Panel_StageUI.Instance.CheckUnitDead (true);
+
 		EndCMDUI();
 	}
 
@@ -770,7 +778,14 @@ public class Panel_CMDUnitUI : MonoBehaviour
 // cheat code
 		else if (name == _CMD_ID._SUICIDE.ToString ()) {
 			RunSuicide ();
-		} else if (name == _CMD_ID._WIN.ToString ()) {
+		}
+		else if (name == _CMD_ID._CHEAT.ToString ()) {
+			//StageSysCheatCmd ();
+		}
+		else if (name == _CMD_ID._SYSCHEAT.ToString ()) {
+			StageSysCheatCmd ();
+		}
+		else if (name == _CMD_ID._WIN.ToString ()) {
 			PanelManager.Instance.OpenUI (Panel_Win.Name);
 			//RunSuicide(  );
 		} else if (name == _CMD_ID._LOST.ToString ()) {

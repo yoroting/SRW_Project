@@ -189,7 +189,7 @@ public class cSkillData
 				}
 				if( eft._IsStatus( _FIGHTSTATE._GUARD ) == true ){
 					atker.AddStates( _FIGHTSTATE._GUARD );
-				}
+				}			
 			}
 		}
 		
