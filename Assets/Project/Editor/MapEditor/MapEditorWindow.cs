@@ -11,12 +11,11 @@ public class MapEditorWindow : EditorWindow
     /// <summary>
     /// MapEditor的component
     /// </summary>
-    private MapEditor _mapEdtor;
-    private string _sceneFilePath = "";
+    private MapEditor _mapEditor;
     /// <summary>
-    /// 場景編號的字串
+    /// 場景檔路徑位置
     /// </summary>
-    private string _sceneTextFieldString = "1";
+    private string _sceneFilePath = "";
     /// <summary>
     /// 地上物要種的layer
     /// </summary>
@@ -42,18 +41,20 @@ public class MapEditorWindow : EditorWindow
 
     void OnGUI()
     {
-        if (_mapEdtor == null)
+        if (_mapEditor == null)
         {
             if (GameObject.Find("MapEditor") == null)
                 return;
 
-            _mapEdtor = GameObject.Find("MapEditor").GetComponent<MapEditor>();
+            _mapEditor = GameObject.Find("MapEditor").GetComponent<MapEditor>();
+            if (_mapEditor == null)
+                return;
         }
 
         #region 地圖名
         GUILayout.BeginHorizontal();
         GUILayout.Label("Map Name", GUILayout.Height(16));
-        _mapEdtor.MapName = GUILayout.TextArea(_mapEdtor.MapName, GUILayout.Height(16));
+        _mapEditor.MapName = GUILayout.TextArea(_mapEditor.MapName, GUILayout.Height(16));
         if (GUILayout.Button("Load Scene", GUILayout.Height(16)))
         {
             //_mapEdtor.LoadScene(_mapEdtor.MapName);
@@ -63,26 +64,13 @@ public class MapEditorWindow : EditorWindow
                 "scn");
             if (_sceneFilePath.Length != 0)
             {
-                _mapEdtor.LoadScene(System.IO.Path.GetFileNameWithoutExtension(_sceneFilePath));
+                _mapEditor.LoadScene(System.IO.Path.GetFileNameWithoutExtension(_sceneFilePath));
             }
         }
         GUILayout.EndHorizontal();
         #endregion
 
         GUILayout.Space(16);
-
-        //#region 讀取場景
-        //GUILayout.BeginHorizontal();
-        //GUILayout.Label("Scene ID", GUILayout.Height(16));
-        //_sceneTextFieldString = GUILayout.TextField(_sceneTextFieldString, GUILayout.Height(16));
-        //if (GUILayout.Button("Load Scene By ID", GUILayout.Height(16)))
-        //{
-        //    _mapEdtor.LoadScene(Convert.ToInt32(_sceneTextFieldString));
-        //}
-        //GUILayout.EndHorizontal(); 
-        //#endregion
-
-        //GUILayout.Space(16);
 
         #region 著色模式
         GUILayout.BeginHorizontal();
@@ -110,7 +98,7 @@ public class MapEditorWindow : EditorWindow
         _tile = (MYGRIDS._TILE)EditorGUILayout.EnumPopup("Tile", _tile, GUILayout.Height(16));
         if (GUILayout.Button("Change Tile Value", GUILayout.Height(16)))
         {
-            _mapEdtor.ChangeTileValue((int)_tile);
+            _mapEditor.ChangeTileValue((int)_tile);
         }
         GUILayout.EndHorizontal();
         #endregion
@@ -124,7 +112,7 @@ public class MapEditorWindow : EditorWindow
         _thingLayerTextFieldString = GUILayout.TextField(_thingLayerTextFieldString, GUILayout.Height(16));
         if (GUILayout.Button("Change Thing Value", GUILayout.Height(16)))
         {
-            _mapEdtor.AddThing((int)_thing, Convert.ToInt32(_thingLayerTextFieldString));
+            _mapEditor.AddThing((int)_thing, Convert.ToInt32(_thingLayerTextFieldString));
         }
         GUILayout.EndHorizontal();
         #endregion
@@ -133,14 +121,20 @@ public class MapEditorWindow : EditorWindow
 
         #region 清空場景、存檔
         GUILayout.BeginHorizontal();
+        if (GUILayout.Button("New Scene", GUILayout.Height(16)))
+        {
+            CreateNewSceneWindow window = (CreateNewSceneWindow)EditorWindow.GetWindow(typeof(CreateNewSceneWindow));
+            window.position = new Rect(512, 384, 200, 20);
+            window.Show();
+        }
         if (GUILayout.Button("Clear Scene", GUILayout.Height(16)))
         {
-            _mapEdtor.ClearScene();
+            _mapEditor.ClearScene();
         }
         if (GUILayout.Button("Save Scene", GUILayout.Height(16)))
         {
-            string mapPath = Application.dataPath + "/StreamingAssets/scn/" + _mapEdtor.MapName + ".scn";
-            _mapEdtor.SaveGrid(mapPath);
+            string mapPath = Application.dataPath + "/StreamingAssets/scn/" + _mapEditor.MapName + ".scn";
+            _mapEditor.SaveGrid(mapPath);
         }
         GUILayout.EndHorizontal();
         #endregion

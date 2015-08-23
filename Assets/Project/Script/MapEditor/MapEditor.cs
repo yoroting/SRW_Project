@@ -102,8 +102,31 @@ public class MapEditor : MonoBehaviour
         return true;
     }
 
+    /// <summary>
+    /// 建立一個新的場景
+    /// </summary>
+    /// <param name="sceneName">場景名稱</param>
+    public void CreateNewScene(string sceneName, int halfWidth, int halfHeight)
+    {
+        ClearScene();
+
+        MapName = sceneName;
+
+        Grids = new MyGrids();
+        Grids.hW = halfWidth;
+        Grids.hH = halfHeight;
+
+        CreateSprite();
+    }
+
+    /// <summary>
+    /// 讀取場景
+    /// </summary>
+    /// <param name="sceneName">場景名稱</param>
     public void LoadScene(string sceneName)
     {
+        ClearScene();
+
         MapName = sceneName;
         string path = "file://" + Application.dataPath + "/StreamingAssets/scn/" + sceneName + ".scn";
 
@@ -116,64 +139,7 @@ public class MapEditor : MonoBehaviour
 
         if (Grids.Load(www.bytes) == true)
         {
-            // start to create sprite
-            for (int i = -Grids.hW; i <= Grids.hW; i++)
-            {
-                for (int j = -Grids.hH; j <= Grids.hH; j++)
-                {
-                    _TILE t = Grids.GetValue(i, j);
-
-                    GameObject cellGameObject = GetTileCellPrefab(i, j, t);
-                    if (cellGameObject == null)
-                    {
-                        // debug message
-                        string err = string.Format("Error: Create Tile Failed in Scene({0}),X({1},Y({2},T({3} )", "SRW000", i, j, t);
-                        Debug.Log(err);
-                        continue;
-                    }
-
-                    UnitCell cell = cellGameObject.GetComponent<UnitCell>();
-                    if (cell == null)
-                        continue;
-
-                    List<MyThing> thingList = null;
-                    if (Grids.ThingPool.TryGetValue(cell.Loc.GetKey(), out thingList))
-                    {
-                        if (thingList.Count <= 0)
-                            continue;
-
-                        foreach (MyThing thingData in thingList)
-                        {
-                            if (thingData.Cell == null)
-                                continue;
-
-                            GameObject thing = ResourcesManager.CreatePrefabGameObj(cellGameObject, "Prefab/Thing");
-                            if (thing == null)
-                            {
-                                Debug.LogFormat("Create thing fail.(Key={0})", cell.Loc.GetKey());
-                                continue;
-                            }
-
-                            UISprite thingSprite = thing.GetComponent<UISprite>();
-                            if (thingSprite == null)
-                            {
-                                Debug.LogFormat("Thing Sprite is null.(Key={0})", cell.Loc.GetKey());
-                                continue;
-                            }
-
-                            thing.name = thingData.Layer.ToString();
-
-                            thingSprite.spriteName = MyGrids.GetThingSpriteName(thingData.Cell.Value);
-                            thingSprite.depth = thingData.Layer;
-
-                            NGUITools.SetDirty(thingSprite.gameObject);
-
-                        }
-                    }
-                }
-            }
-            // reget the drag limit 
-            Resize();
+            CreateSprite();
         }
     }
 
@@ -182,56 +148,109 @@ public class MapEditor : MonoBehaviour
         MyTool.DestoryImmediateAllChildren(TilePlaneObj);
     }
 
+    private void CreateSprite()
+    {
+        // start to create sprite
+        for (int i = -Grids.hW; i <= Grids.hW; i++)
+        {
+            for (int j = -Grids.hH; j <= Grids.hH; j++)
+            {
+                _TILE t = Grids.GetValue(i, j);
+
+                GameObject cellGameObject = GetTileCellPrefab(i, j, t);
+                if (cellGameObject == null)
+                {
+                    // debug message
+                    string err = string.Format("Error: Create Tile Failed in Scene({0}),X({1},Y({2},T({3} )", "SRW000", i, j, t);
+                    Debug.Log(err);
+                    continue;
+                }
+
+                UnitCell cell = cellGameObject.GetComponent<UnitCell>();
+                if (cell == null)
+                    continue;
+
+                List<MyThing> thingList = null;
+                if (Grids.ThingPool.TryGetValue(cell.Loc.GetKey(), out thingList))
+                {
+                    if (thingList.Count <= 0)
+                        continue;
+
+                    foreach (MyThing thingData in thingList)
+                    {
+                        if (thingData.Cell == null)
+                            continue;
+
+                        GameObject thing = ResourcesManager.CreatePrefabGameObj(cellGameObject, "Prefab/Thing");
+                        if (thing == null)
+                        {
+                            Debug.LogFormat("Create thing fail.(Key={0})", cell.Loc.GetKey());
+                            continue;
+                        }
+
+                        UISprite thingSprite = thing.GetComponent<UISprite>();
+                        if (thingSprite == null)
+                        {
+                            Debug.LogFormat("Thing Sprite is null.(Key={0})", cell.Loc.GetKey());
+                            continue;
+                        }
+
+                        thing.name = thingData.Layer.ToString();
+
+                        thingSprite.spriteName = MyGrids.GetThingSpriteName(thingData.Cell.Value);
+                        thingSprite.depth = thingData.Layer;
+
+                        NGUITools.SetDirty(thingSprite.gameObject);
+
+                    }
+                }
+            }
+        }
+        // reget the drag limit 
+        Resize();
+    }
+
     GameObject GetTileCellPrefab(int x, int y, _TILE t)
     {
+        string tileSpriteName = "";
         SCENE_TILE tile = ConstData.GetRow<SCENE_TILE>((int)t);
         if (tile != null)
         {
-            //tile.s_FILE_NAME;
-            GameObject cell = ResourcesManager.CreatePrefabGameObj(TilePlaneObj, "Prefab/TileCell");
-            UISprite sprite = cell.GetComponent<UISprite>();
-            if (sprite != null)
-            {
-                sprite.spriteName = tile.s_FILE_NAME;
-
-            }
-            UIDragObject drag = cell.GetComponent<UIDragObject>();
-            if (drag != null)
-            {
-                drag.target = TilePlaneObj.transform;
-
-            }
-
-            // tranform
-            //			float locx =0, locy =0;
-            //			Grids.GetRealXY(ref locx , ref locy , new iVec2( x , y ) );			
-            //			Vector3 pos = new Vector3( locx , locy , 0 );
-            if (cell != null)
-            {
-                SynGridToLocalPos(cell, x, y);
-                //cell.transform.localPosition = pos; 
-
-                cell.name = string.Format("Cell({0},{1},{2})", x, y, 0);
-
-                UnitCell unit = cell.GetComponent<UnitCell>();
-                if (unit != null)
-                {
-                    unit.X(x);
-                    unit.Y(y);
-
-                }
-                //==========================================================
-                UIEventListener.Get(cell).onClick += OnCellClick;
-                //	UIEventListener.Get(cell).onPress += OnCellPress;
-
-            }
-
-
-            return cell;
+            tileSpriteName = tile.s_FILE_NAME;
         }
-        //_TILE._GREEN
 
-        return null;
+        GameObject cell = ResourcesManager.CreatePrefabGameObj(TilePlaneObj, "Prefab/TileCell");
+        UISprite sprite = cell.GetComponent<UISprite>();
+        if (sprite != null)
+        {
+            sprite.spriteName = tileSpriteName;
+
+        }
+        UIDragObject drag = cell.GetComponent<UIDragObject>();
+        if (drag != null)
+        {
+            drag.target = TilePlaneObj.transform;
+
+        }
+
+        if (cell != null)
+        {
+            SynGridToLocalPos(cell, x, y);
+
+            cell.name = string.Format("Cell({0},{1},{2})", x, y, 0);
+
+            UnitCell unit = cell.GetComponent<UnitCell>();
+            if (unit != null)
+            {
+                unit.X(x);
+                unit.Y(y);
+
+            }
+            //==========================================================
+            UIEventListener.Get(cell).onClick += OnCellClick;
+        }
+
+        return cell;
     }
 
     public void Resize()
