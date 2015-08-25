@@ -374,9 +374,8 @@ public class Panel_CMDUnitUI : MonoBehaviour
 	}
 
 	public void  StageCheatCmd(  )
-	{
-	//	GameDataManager.Instance.nMoney += 99999999;
-	//	PanelManager.Instance.OpenUI (Panel_SysCheat.Name);
+	{	
+		PanelManager.Instance.OpenUI (Panel_Cheat.Name);
 	}
 
 	public void  StageSysCheatCmd(  )
@@ -780,7 +779,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 			RunSuicide ();
 		}
 		else if (name == _CMD_ID._CHEAT.ToString ()) {
-			//StageSysCheatCmd ();
+			StageCheatCmd ();
 		}
 		else if (name == _CMD_ID._SYSCHEAT.ToString ()) {
 			StageSysCheatCmd ();

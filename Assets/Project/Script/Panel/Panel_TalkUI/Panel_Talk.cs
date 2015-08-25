@@ -177,6 +177,10 @@ public class Panel_Talk : MonoBehaviour {
 	}
 	void OnSkipClick(GameObject go)
 	{
+		if (m_bIsClosing == true)
+			return;
+
+
 		//if (IsAllEnd())
 		Panel_StageUI.Instance.m_bIsSkipMode = true;
 

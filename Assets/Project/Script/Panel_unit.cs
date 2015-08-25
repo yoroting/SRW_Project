@@ -1062,7 +1062,8 @@ public class Panel_unit : MonoBehaviour {
 			break;
 
 		default:
-			sp.color = new Color( 1.0f , 1.0f , 0.0f );
+			sp.color = new Color( 0.0f , 1.0f , 0.0f );// green
+			//sp.color = new Color( 1.0f , 1.0f , 0.0f );// yellow
 			break;
 		}
 

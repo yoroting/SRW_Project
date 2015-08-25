@@ -10,6 +10,7 @@ public class Panel_SysCheat : MonoBehaviour {
 	public GameObject KillChk;           // Kill mode
 	public GameObject MobAIChk;           // Kill mode
 	public GameObject MoneyInput;           // Kill mode
+	public GameObject MoneyBtn;           // Set money
 
 	// Use this for initialization
 	void Start () {
@@ -18,7 +19,9 @@ public class Panel_SysCheat : MonoBehaviour {
 		UIEventListener.Get(MobAIChk).onClick += OnMobAIClick; 
 		UIEventListener.Get(CloseBtn).onClick += OnCloseClick; 
 
-		UIEventListener.Get(MoneyInput).onSubmit += OnMoneySubmit; 
+		//UIEventListener.Get(MoneyInput).onSubmit += OnMoneySubmit; 
+		UIEventListener.Get(MoneyBtn).onClick += OnMoneyClick; 
+		
 
 
 	}
@@ -33,8 +36,7 @@ public class Panel_SysCheat : MonoBehaviour {
 		ai.value =Config.MOBAI;
 
 		UIInput min = MoneyInput.GetComponent<UIInput> ();
-	//	min.value = GameDataManager.Instance.nMoney.ToString();
-
+		min.value = GameDataManager.Instance.nMoney.ToString();
 
 
 	}
@@ -66,9 +68,9 @@ public class Panel_SysCheat : MonoBehaviour {
 		UIToggle ui = go.GetComponent<UIToggle> ();
 		Config.MOBAI =  ui.value ;
 	}
-	public void OnMoneySubmit(GameObject go)
+	public void OnMoneyClick(GameObject go)
 	{
-		UIInput min = go.GetComponent<UIInput> ();
+		UIInput min = MoneyInput.GetComponent<UIInput> ();
 		int money = 0;
 		if (int.TryParse (min.value, out money)) {
 			GameDataManager.Instance.nMoney = money;
