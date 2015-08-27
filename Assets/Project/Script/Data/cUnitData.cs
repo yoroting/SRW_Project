@@ -341,7 +341,7 @@ public class cUnitData{
 
 		int lv = 0;
 		if (SchoolPool.TryGetValue (id, out lv)) {
-			if( nLv > lv )
+			if( nLv != lv )
 			{
 				SchoolPool[ id ] = nLv;
 			}
@@ -618,6 +618,22 @@ public class cUnitData{
 			return 0;
 		}
 		return nLv;
+	}
+	public int GetIntSchID(  )
+	{
+		return  nActSch[ 0 ];
+	}
+	public int GetExtSchID(  )
+	{
+		return  nActSch[ 1 ];
+	}
+	public int GetIntSchLv(  )
+	{
+		return GetSchoolLv( nActSch[ 0 ] );
+	}
+	public int GetExtSchLv(  )
+	{
+		return GetSchoolLv( nActSch[ 1 ] );
 	}
 
 //	 void AvtiveSchool( int index , int School )

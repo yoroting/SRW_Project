@@ -431,7 +431,7 @@ Transform:
   m_GameObject: {fileID: 327366483}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: .00277777785, y: .00277777785, z: .00277777785}
+  m_LocalScale: {x: .00312500005, y: .00312500005, z: .00312500005}
   m_Children:
   - {fileID: 916965768}
   m_Father: {fileID: 0}
@@ -666,11 +666,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11491810, guid: cfa057b5163a60741bb67ec2db63f91c, type: 2}
       propertyPath: aspectRatio
-      value: 2.20833325
+      value: 2.16666675
       objectReference: {fileID: 0}
     - target: {fileID: 11491810, guid: cfa057b5163a60741bb67ec2db63f91c, type: 2}
       propertyPath: mWidth
-      value: 106
+      value: 104
       objectReference: {fileID: 0}
     - target: {fileID: 116588, guid: cfa057b5163a60741bb67ec2db63f91c, type: 2}
       propertyPath: m_IsActive

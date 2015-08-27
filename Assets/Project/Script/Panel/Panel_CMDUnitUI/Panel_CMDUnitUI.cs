@@ -375,7 +375,16 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
 	public void  StageCheatCmd(  )
 	{	
-		PanelManager.Instance.OpenUI (Panel_Cheat.Name);
+		Panel_Cheat panel = MyTool.GetPanel<Panel_Cheat>( PanelManager.Instance.OpenUI (Panel_Cheat.Name) );
+		if( panel != null ){
+
+			if( pCmder != null ){
+				panel.SetData( pCmder.pUnitData );
+			}
+			else{
+				PanelManager.Instance.CloseUI( Panel_Cheat.Name );
+			}
+		}
 	}
 
 	public void  StageSysCheatCmd(  )
