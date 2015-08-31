@@ -108,6 +108,19 @@ public class MyTool {
 		return item.s_NAME;
 	}
 
+	public static string GetStoryName( int nID )
+	{
+		//	return "null";
+		DataRow row = ConstDataManager.Instance.GetRow( "STORY_NAME" , nID );
+		if( row != null )
+		{				
+			string content = row.Field<string>( "s_NAME");
+			string sname = string.Format( "第{0}關 {1}" , nID ,content );
+			return sname;
+		}
+		return "null";
+
+	}
 
 	public static string GetUnitSchoolFullName( int nIdent , int nSchool )
 	{
@@ -423,7 +436,12 @@ public class MyTool {
 
 	public static T GetPanel<T>( GameObject obj   )
 	{	
-		return obj.GetComponent< T > ();  
+		if (obj != null)
+			return obj.GetComponent< T > ();
+		else {
+			Debug.LogError( "err GetPanel<T>" );
+			return default (T);
+		}
 	}
 
 	public static List<T> CutList<T>( List<T> lst , int Len )

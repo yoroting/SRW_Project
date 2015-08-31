@@ -9,6 +9,10 @@ public class Panel_Mainten : MonoBehaviour {
 	public GameObject btnNextStage;
 	public GameObject btnGameEnd;
 
+	public GameObject btnCheat;
+
+	public GameObject lblStoryName;
+
 	// Use this for initialization
 	void OnEnable()
 	{
@@ -21,11 +25,13 @@ public class Panel_Mainten : MonoBehaviour {
 		UIEventListener.Get(btnSave).onClick += OnSaveClick; // for trig next lineev
 		UIEventListener.Get(btnLoad).onClick += OnLoadClick; // for trig next lineev
 		UIEventListener.Get(btnGameEnd).onClick += OnEndClick; // for trig next lineev
+
+		UIEventListener.Get(btnCheat).onClick += OnCheatClick; // cheat
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+		SetStoryName ();
 	}
 
 	public void OnPopReady()
@@ -105,6 +111,11 @@ public class Panel_Mainten : MonoBehaviour {
 		PanelManager.Instance.CloseUI( Name );
 	}
 
+	void OnCheatClick( GameObject go )
+	{
+		PanelManager.Instance.OpenUI( Panel_SysCheat.Name );
+	
+	}
 
 	//===========================================================
 	IEnumerator SaveLoading( cSaveData save )
@@ -163,8 +174,16 @@ public class Panel_Mainten : MonoBehaviour {
 
 		}	
 	
+	//	SetStoryName ();
 		GameDataManager.Instance.ePhase = _SAVE_PHASE._MAINTEN;		// save to stage phase
 
 		return true;
+	}
+
+	public void SetStoryName( )
+	{
+		if( lblStoryName != null ){
+			MyTool.SetLabelText( lblStoryName , MyTool.GetStoryName(  GameDataManager.Instance.nStoryID ) );
+		}
 	}
 }

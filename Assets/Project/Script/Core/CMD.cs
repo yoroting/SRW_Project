@@ -100,14 +100,15 @@ public class cCMD{
 		CmdlistArray [idx].Add ( _CMD_ID._SAVE ); 
 		CmdlistArray [idx].Add ( _CMD_ID._LOAD ); 
 		CmdlistArray [idx].Add ( _CMD_ID._ROUNDEND ); 
+		CmdlistArray [idx].Add ( _CMD_ID._OPTION ); 
 		CmdlistArray [idx].Add ( _CMD_ID._GAMEEND ); 
 		CmdlistArray [idx].Add ( _CMD_ID._CANCEL ); 
 		
 		if (Config.GOD == true) {
 			CmdlistArray [idx].Add (_CMD_ID._SYSCHEAT);
-			CmdlistArray [idx].Add (_CMD_ID._WIN);
-			CmdlistArray [idx].Add (_CMD_ID._LOST);
-			CmdlistArray [idx].Add (_CMD_ID._KILLALLE);
+//			CmdlistArray [idx].Add (_CMD_ID._WIN);
+//			CmdlistArray [idx].Add (_CMD_ID._LOST);
+//			CmdlistArray [idx].Add (_CMD_ID._KILLALLE);
 			
 		}
 		
@@ -122,7 +123,7 @@ public class cCMD{
 		CmdlistArray [idx].Add ( _CMD_ID._ABILITY ); 
 		//	CmdlistArray [idx].Add ( _CMD_ID._DEF ); 
 		CmdlistArray [idx].Add ( _CMD_ID._SCHOOL ); 
-		CmdlistArray [idx].Add ( _CMD_ID._WAIT ); 
+		//CmdlistArray [idx].Add ( _CMD_ID._WAIT );  // no need wait here
 		CmdlistArray [idx].Add ( _CMD_ID._CANCEL ); 
 
 		if (Config.GOD == true) {

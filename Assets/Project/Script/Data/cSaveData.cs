@@ -278,7 +278,8 @@ public class cSaveData{
 		}
 		else if(phase == _SAVE_PHASE._STARTUP )
 		{
-			MainUIPanel panel = MyTool.GetPanel< MainUIPanel >( PanelManager.Instance.JustGetUI( MainUIPanel.Name ) );
+			//MainUIPanel panel = MyTool.GetPanel< MainUIPanel >( PanelManager.Instance.JustGetUI( MainUIPanel.Name ) );
+			MainUIPanel panel = MyTool.GetPanel< MainUIPanel >( PanelManager.Instance.OpenUI( MainUIPanel.Name ) );
 			if( panel != null ){
 				panel.LoadSaveGame( this );
 			}

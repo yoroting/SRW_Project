@@ -204,7 +204,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 150, y: 40, z: 0}
+  m_Size: {x: 150, y: 75, z: 0}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &11405100
 MonoBehaviour:
@@ -248,12 +248,12 @@ MonoBehaviour:
   mColor: {r: 0, g: 0, b: 0, a: .152941182}
   mPivot: 4
   mWidth: 144
-  mHeight: 34
+  mHeight: 69
   mDepth: 1
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 4.23529434
+  aspectRatio: 2.0869565
   mType: 2
   mFillDirection: 4
   mFillAmount: 1
@@ -313,12 +313,12 @@ MonoBehaviour:
   mColor: {r: .690196097, g: .588235319, b: .407843143, a: 1}
   mPivot: 4
   mWidth: 150
-  mHeight: 40
+  mHeight: 75
   mDepth: 0
   autoResizeBoxCollider: 1
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 3.75
+  aspectRatio: 2
   mType: 1
   mFillDirection: 4
   mFillAmount: 1
@@ -359,6 +359,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pCmder: {fileID: 0}
+  nAtkerId: 0
   NGuiGrids: {fileID: 172222}
   CmdButton: {fileID: 128370}
 --- !u!114 &11464524
@@ -422,7 +423,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3004
+  startingRenderQueue: 3003
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 0
@@ -462,12 +463,12 @@ MonoBehaviour:
   mColor: {r: .23880595, g: .197638646, b: .121185109, a: 1}
   mPivot: 4
   mWidth: 142
-  mHeight: 32
+  mHeight: 67
   mDepth: 2
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 4.4375
+  aspectRatio: 2.11940289
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   mFont: {fileID: 0}
@@ -512,7 +513,7 @@ MonoBehaviour:
   pivot: 4
   maxPerLine: 0
   cellWidth: 150
-  cellHeight: 40
+  cellHeight: 75
   animateSmoothly: 1
   hideInactive: 0
   keepWithinPanel: 1

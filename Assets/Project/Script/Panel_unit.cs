@@ -420,7 +420,7 @@ public class Panel_unit : MonoBehaviour {
 		} else {
 			PathList = Panel_StageUI.Instance.PathFinding( this  , Loc , TarPos  ); // ensure  we can reach 
 
-			if( PathList == null ) // move direct if no path can find
+			if( (PathList == null) || (PathList.Count<=0) ) // move direct if no path can find
 			{
 				PathList = GameScene.Instance.Grids.GetPathList (Loc, TarPos);
 			}
@@ -977,7 +977,8 @@ public class Panel_unit : MonoBehaviour {
 
 		// check if ant event need to run?
 		//
-		BGObj.SetActive (false);
+		MaskObj.SetActive (false); // 
+	//	BGObj.SetActive (false); // why this?
 		bIsDead = true; // set dead
 		bIsDeading = true;
 		// shake

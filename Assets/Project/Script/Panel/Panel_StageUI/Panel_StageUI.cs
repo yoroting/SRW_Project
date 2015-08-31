@@ -2438,7 +2438,12 @@ public class Panel_StageUI : MonoBehaviour
 		
 		
 		System.GC.Collect();			// Free memory resource here
-		
+
+		Panel_Loading ploading = MyTool.GetPanel<Panel_Loading>( PanelManager.Instance.JustGetUI ( Panel_Loading.Name ) );
+		if( ploading != null )	{
+			ploading.ShowStoryName();
+		}
+
 		// clear data
 		Clear();						// 
 		Debug.Log("stagerestore :clearall");

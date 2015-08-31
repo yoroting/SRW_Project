@@ -237,7 +237,15 @@ public class StoryUIPanel : MonoBehaviour {
 	{
 		GameDataManager.Instance.nStageID = nStageID;
 
-		PanelManager.Instance.OpenUI( "Panel_Loading");
+		GameObject obj = PanelManager.Instance.OpenUI( "Panel_Loading");
+		if (obj != null) {
+			Panel_Loading ploading = MyTool.GetPanel<Panel_Loading>( obj );
+			if( ploading != null )	{
+				ploading.ShowStoryName();
+			}	
+		}
+
+		
 		yield return false;
 
 		PanelManager.Instance.OpenUI( Panel_StageUI.Name );//"Panel_StageUI"

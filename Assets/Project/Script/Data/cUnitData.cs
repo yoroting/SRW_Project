@@ -1281,7 +1281,6 @@ public class cUnitData{
 				this.ActionFinished();
 			}
 		}
-		ClearState(); // clear fight state
 		
 		//FightAttr.ClearBase (); // clear base attr only
 		FightAttr.Reset();			// clear all fight attr
@@ -1290,6 +1289,9 @@ public class cUnitData{
 		if (Buffs.BuffFightEnd ( )) {
 			SetUpdate( cAttrData._BUFF );
 		}
+
+		// state 最後清
+		ClearState(); // clear fight state
 
 		UpdateAllAttr ();
 		UpdateAttr (  );

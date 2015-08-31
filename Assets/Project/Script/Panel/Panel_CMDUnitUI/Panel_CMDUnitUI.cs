@@ -367,10 +367,11 @@ public class Panel_CMDUnitUI : MonoBehaviour
 			}
 			//pCmder.SetDead ();
 		}
-		pCmder = null;
-		CMD.Clear ();
-		// send clear over
-		Panel_StageUI.Instance.ClearOverCellEffect ();
+//		pCmder = null;
+//		CMD.Clear ();
+//		// send clear over
+//		Panel_StageUI.Instance.ClearOverCellEffect ();
+		EndCMDUI();
 	}
 
 	public void  StageCheatCmd(  )
@@ -385,12 +386,14 @@ public class Panel_CMDUnitUI : MonoBehaviour
 				PanelManager.Instance.CloseUI( Panel_Cheat.Name );
 			}
 		}
+		EndCMDUI();
 	}
 
 	public void  StageSysCheatCmd(  )
 	{
 		//	GameDataManager.Instance.nMoney += 99999999;
 		PanelManager.Instance.OpenUI (Panel_SysCheat.Name);
+		EndCMDUI();
 	}
 
 	public void KillAllEnemyCmd ()

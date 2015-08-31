@@ -8,7 +8,7 @@ public class CMD_BTN : MonoBehaviour {
 		UIWidget wi = this.GetComponent<UIWidget >();
 		if( wi != null ){
 			wi.width = 150;  // size fix to correct wh
-			wi.height = 40;			
+			wi.height = 75;			
 		}
 		Vector3 v = this.transform.localScale;
 		v = new Vector3 ( 1.0f , 1.0f , 1.0f );
