@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using MyClassLibrary;			// for parser string
 
 public class Panel_Talk_bak : MonoBehaviour {
-	public const string Name = "Panel_Talk";
+	public const string Name = "Panel_Talk_bak";
 
 	public GameObject Tex_BackGround;
 	public GameObject TalkWindow_Up;

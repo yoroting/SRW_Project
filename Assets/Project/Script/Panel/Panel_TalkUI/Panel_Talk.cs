@@ -7,22 +7,25 @@ public class Panel_Talk : MonoBehaviour {
 	public const string Name = "Panel_Talk";
 
 	public GameObject Tex_BackGround;
-	public GameObject TalkWindow_Up;
-	public GameObject TalkWindow_Down;
+//	public GameObject TalkWindow_Up;
+//	public GameObject TalkWindow_Down;
 	public GameObject Skip_Button;
 
+	public GameObject AVG_Obj;			//右邊人像
+	public GameObject NameObj;				// 名稱物件
 
-	public GameObject TalkWindow_new;
-	//public GameObject StartButton;
-	private Dictionary<int, SRW_TextBox> m_idToObj; // 管理 產生的 Prefab 物件 
+	public GameObject TalkWindow_new;		//對話框框
+
+	// AVG 用的新物件
+	private Dictionary<int, SRW_AVGObj> m_idToFace; // 臉部管理
+	public SRW_TextBox  TalkWindow;
 
 	private int nLastPopType;			// for auto pop box
 
 	STAGE_TALK m_cStageTalk;				// talk data class
 
-//	public bool bSkipMode;					// skip mode will change some behavior
 	private int m_nTalkIdx;					// 文字目前在哪一行
-	//private List<string> m_cTextList;		// 內容集合
+
 
 
 	private int 	  m_nScriptIdx;			// cur script index
@@ -45,8 +48,14 @@ public class Panel_Talk : MonoBehaviour {
 
 
 	void Awake(){
-		m_idToObj = new Dictionary<int, SRW_TextBox > ();
-	//	m_cTextList = new List<string> ();
+
+		if( TalkWindow_new == null ){
+			Debug.LogError( " Err! Talk UI no Talk window");
+		}
+
+		TalkWindow = TalkWindow_new.GetComponent<SRW_TextBox>();
+		m_idToFace = new Dictionary<int, SRW_AVGObj > ();
+
 		m_cScript = new cTextArray ();
 
 		nTweenObjCount = 0;
@@ -55,11 +64,12 @@ public class Panel_Talk : MonoBehaviour {
 		UIEventListener.Get(Skip_Button).onClick += OnSkipClick; // for trig next line
 
 		// templete
-		TalkWindow_Up.SetActive( false );
-		TalkWindow_Down.SetActive( false );
-	//	TalkWindow_new.SetActive( false );
-	//	m_idToObj.Add(  0 , TalkWindow_Up );
-	//	m_idToObj.Add(  1 , TalkWindow_Down );
+//		TalkWindow_Up.SetActive( false );
+//		TalkWindow_Down.SetActive( false );
+
+		// hide talk window
+		TalkWindow_new.SetActive( false );
+		NameObj.SetActive ( false );
 		// for fast debug 
 		//ConstDataManager.Instance.isLazyMode = false;
 		//StartCoroutine(ConstDataManager.Instance.ReadDataStreaming("pcz/", Config.COMMON_DATA_NAMES));
@@ -72,14 +82,11 @@ public class Panel_Talk : MonoBehaviour {
 		GameEventManager.AddEventListener(  TalkBackGroundEvent.Name , OnTalkBackGroundEvent );
 		GameEventManager.AddEventListener(  TalkDeadEvent.Name , OnTalkDeadEvent );
 		GameEventManager.AddEventListener(  TalkShakeEvent.Name , OnTalkShakeEvent );
-
-	//	CharSay( 1  , 9 );
-		// cause some mob pop in talk event. player can't skip talk event to avoid bug
-	//	NGUITools.SetActive( Skip_Button , false );
-//#if UNITY_EDITOR
-	//	NGUITools.SetActive( Skip_Button , true );	
-//#endif 
-
+	
+		if(AVG_Obj != null ) {
+			AVG_Obj.SetActive( false );
+		}
+		GameDataManager.Instance.nTalkID = 1;
 	}
 	// Use this for initialization
 	void Start () {
@@ -90,15 +97,21 @@ public class Panel_Talk : MonoBehaviour {
 
 	void Clear()
 	{
-		foreach( KeyValuePair<int , SRW_TextBox > pair in m_idToObj )
-		{
-			if( pair.Value != null )
-			{
-				NGUITools.Destroy( pair.Value.gameObject );	
-			}
+		if( TalkWindow != null ){
+			TalkWindow.gameObject.SetActive( false );
 		}
-		m_idToObj.Clear ();
 
+		//AVG_FaceR.i
+		if( m_idToFace != null ){
+			foreach( KeyValuePair<int , SRW_AVGObj > pair in m_idToFace )
+			{
+				if( pair.Value != null )
+				{
+					NGUITools.Destroy( pair.Value.gameObject );	
+				}
+			}
+			m_idToFace.Clear();
+		}
 	}
 
 
@@ -110,7 +123,6 @@ public class Panel_Talk : MonoBehaviour {
 		}
 		SetScript ( GameDataManager.Instance.nTalkID ); 
 
-		//MyTool.SetAlpha (this.gameObject, 1.0f);
 		TweenAlpha tw = TweenAlpha.Begin<TweenAlpha>( this.gameObject , 0.2f );
 		if (tw != null) {
 			//MyTool.SetAlpha (TilePlaneObj, 0.0f);
@@ -130,7 +142,7 @@ public class Panel_Talk : MonoBehaviour {
 			return;
 
 		// pause when unit is animate
-		if( Panel_StageUI.Instance.IsAnyActionRunning() == true ) // wait all tween / fx / textbox / battle msg finish / unit move
+		if( (Panel_StageUI.Instance!=null) && (Panel_StageUI.Instance.IsAnyActionRunning()==true) ) // wait all tween / fx / textbox / battle msg finish / unit move
 				return;							// don't check event run finish here.
 
 		//if (ActionManager.Instance.Run () == true)
@@ -165,14 +177,7 @@ public class Panel_Talk : MonoBehaviour {
 			m_bClickScript = true; // go next script
 		}
 		else{
-			// don't change script. only text box go next line
-			foreach( KeyValuePair<int, SRW_TextBox> pair in m_idToObj  )
-			{
-				pair.Value.OnTextBoxClick( pair.Value.gameObject ) ;
-
-			}
-			//private Dictionary<int, SRW_TextBox> m_idToObj; // 管理 產生的 Prefab 物件
-
+			TalkWindow.OnTextBoxClick( TalkWindow.gameObject  );
 		}
 	}
 	void OnSkipClick(GameObject go)
@@ -197,7 +202,7 @@ public class Panel_Talk : MonoBehaviour {
 	void EndTalk()
 	{
 		// if stage is end .. open main ten ui
-		if (Panel_StageUI.Instance.bIsStageEnd == true) {
+		if ( (Panel_StageUI.Instance!= null) && (Panel_StageUI.Instance.bIsStageEnd == true) ) {
 			PanelManager.Instance.OpenUI ( Panel_Mainten.Name );
 		}			 
 
@@ -219,43 +224,41 @@ public class Panel_Talk : MonoBehaviour {
 			PanelManager.Instance.CloseUI (Panel_Talk.Name);
 		}
 	}
-
-	public SRW_TextBox SelTextBoxObjByType( int nType )
+	public SRW_AVGObj SelAVGObjByType( int nType , int nCharID  )
 	{
-		if (m_idToObj.ContainsKey (nType) == false) {
-			GameObject obj = ResourcesManager.CreatePrefabGameObj (this.gameObject, "Prefab/SRW_TEXTBOX");
+		if (m_idToFace.ContainsKey (nType) == false) {
+			GameObject obj = ResourcesManager.CreatePrefabGameObj (this.gameObject, "Prefab/SRW_AVGObj");
 			if( obj )
 			{
 				// insert to map
 				NGUITools.SetActive( obj , true );
 				
-//				m_idToObj.Add( nType , obj );
-
-				// setup Type
-				SRW_TextBox boxobj =  obj.GetComponent<SRW_TextBox>( );
+					// setup Type
+				SRW_AVGObj boxobj =  obj.GetComponent<SRW_AVGObj>( );
 				if( boxobj )
 				{
+					boxobj.ChangeFace( nCharID );
 					boxobj.ChangeLayout( nType );
 				}
-				m_idToObj.Add( nType , boxobj );
+				m_idToFace.Add( nType , boxobj );
 				nLastPopType = nType;
 				return boxobj ;
 			}
-
+			
 		}
 		else {
-			return  m_idToObj[ nType ];
+			return  m_idToFace[ nType ];
 			//m_idToObj.TryGetValue( nType , out obj  );
 		}
-
-
+		
+		
 		return null;
 	}
-
-	public SRW_TextBox  SelTextBoxObjByCharID( int nCharid )
+	
+	public SRW_AVGObj  SelAVGObjByCharID( int nCharid )
 	{
 		//
-		foreach( KeyValuePair < int ,SRW_TextBox > pair in m_idToObj )
+		foreach( KeyValuePair < int ,SRW_AVGObj > pair in m_idToFace )
 		{
 			if( pair.Value != null )
 			{
@@ -267,57 +270,61 @@ public class Panel_Talk : MonoBehaviour {
 		}
 		// if this is not exist. create new
 		int nType =0;
-		if( m_idToObj.ContainsKey (0) == false )
+		if( m_idToFace.ContainsKey (0) == false )
 		{
 			nType = 0;
 		}
-		else if( m_idToObj.ContainsKey (1) == false )
+		else if( m_idToFace.ContainsKey (1) == false )
 		{
 			nType = 1;
 		}
-		else{ // auto destory 0 . and create
-
+		else{ // auto destory 0 . and create			
 			nType = (nLastPopType==0)?1:0; 
 			CloseBox( nType , 0 );
 		}
 		nLastPopType = nType;
 		// create plane
-		GameObject obj = ResourcesManager.CreatePrefabGameObj (this.gameObject, "Prefab/SRW_TEXTBOX");
+		GameObject obj = ResourcesManager.CreatePrefabGameObj (this.gameObject, "Prefab/SRW_AVGObj");
 		if( obj )
 		{
 			// insert to map
 			NGUITools.SetActive( obj , true );
 			
-			//m_idToObj.Add( nType , obj );
-			
 			// setup Type
-			SRW_TextBox boxobj =  obj.GetComponent<SRW_TextBox>( );
+			SRW_AVGObj boxobj =  obj.GetComponent<SRW_AVGObj>( );
 			if( boxobj )
 			{
-				boxobj.ChangeLayout( nType );
 				boxobj.ChangeFace( nCharid );
+				boxobj.ChangeLayout( nType );
 			}
-			m_idToObj.Add( nType , boxobj );
-			
+			m_idToFace.Add( nType , boxobj );			
 			return boxobj ;
-		}
-
+		}		
 		return null;
 	}
-//	public void SetTextBoxActive( int nType , bool bActive )
-//	{
-//		if (nType == 0) {
-//			TalkWindow_Up.SetActive( bActive );
-//		}
-//		else if (nType == 1) {
-//			TalkWindow_Down.SetActive( bActive );
-//		}
-//	}
 
 	public void OnTweenAlphaEnd()
 	{
 
 	}
+
+	public void SetName( int nCharID )
+	{
+		if( nCharID == 0 ){
+			NameObj.SetActive( false );
+			return ;
+		}
+
+		NameObj.SetActive( true );
+		string name = MyTool.GetCharName( nCharID );
+		UILabel lbl = NameObj.GetComponentInChildren< UILabel >();
+		if( lbl != null ){
+			lbl.text = name;
+		}
+
+
+	}
+
 
 	public void SetBackground( int nSceneID )
 	{
@@ -351,9 +358,6 @@ public class Panel_Talk : MonoBehaviour {
 		}
 
 		Tex_BackGround.SetActive( true );
-
-
-
 	}
 
 
@@ -411,17 +415,14 @@ public class Panel_Talk : MonoBehaviour {
 		TalkSayEvent Evt = evt as TalkSayEvent;
 		if (Evt == null)
 			return;
-		CharSay( Evt.nChar  , Evt.nSayID );
 
+		CharSay( Evt.nChar  , Evt.nSayID );
 
 		// find obj to move
 		Panel_unit unit = Panel_StageUI.Instance.GetUnitByCharID ( Evt.nChar );
 		if (unit != null) {
 			Panel_StageUI.Instance.MoveToGameObj (unit.gameObject, false);
 		}
-//		SetChar( Evt.nType , Evt.nChar );
-//		Say( Evt.nType , Evt.nSayID );
-
 	}
 
 	void OnTalkSetCharEvent( GameEvent evt )
@@ -468,100 +469,25 @@ public class Panel_Talk : MonoBehaviour {
 		this.CharShake ( Evt.nChar  );
 	}
 
-//	void ParserScript( CTextLine line )
-//	{
-//		//m_cTextList.Clear();
-//		//m_nTextIdx = 0 ; // change text 
-//		List<cTextFunc> funcList =line.GetFuncList();
-//		foreach( cTextFunc func in funcList )
-//		{
-//			if( func.sFunc == "SAY" )
-//			{
-//				Say( func.At(0), func.At(1) );
-//			}
-//			else if( func.sFunc == "SETCHAR" )
-//			{
-//				SetChar( func.At(0), func.At(1) );
-//			}		
-//			else if( func.sFunc == "CHANGEBACK") 
-//			{
-//				
-//			}
-//			else if( func.sFunc  == "CLOSE") 
-//			{
-//				CloseBox( func.At(0), func.At(1) );
-//			}
-//			else if( func.sFunc  == "BGM") 
-//			{
-//				int id = func.At(0);
-//				GameSystem.PlayBGM( id ); 
-//				//CloseBox( func.At(0), func.At(1) );
-//			}
-//			// stage event
-//			else if( func.sFunc  == "STAGEBGM") 
-//			{
-//				GameEventManager.DispatchEvent ( new StageBGMEvent()  );
-//
-//			}
-//			// pop unit in stage
-//			else if( func.sFunc  == "POPCHAR") 
-//			{
-//				int charid = func.At( 0 );
-//				StagePopCharEvent evt = new StagePopCharEvent ();
-//				evt.nCharID = func.At( 0 );
-//				evt.nX		= func.At( 1 );
-//				evt.nY		= func.At( 2 );
-//				GameEventManager.DispatchEvent ( evt );
-//			}
-//			else if( func.sFunc  == "POPMOB") 
-//			{
-//				int charid = func.At( 0 );
-//				StagePopMobEvent evt = new StagePopMobEvent ();
-//				evt.nCharID = func.At( 0 );
-//				evt.nX		= func.At( 1 );
-//				evt.nY		= func.At( 2 );
-//				GameEventManager.DispatchEvent ( evt );
-//			}
-//			else if( func.sFunc  == "POPGROUP")  //  pop a group of mob
-//			{
-//
-//			}
-//			else if( func.sFunc  == "DELCHAR") 
-//			{
-//				int charid = func.At( 0 );
-//				StageDelCharEvent evt = new StageDelCharEvent ();
-//				evt.nCharID = func.At( 0 );
-//				GameEventManager.DispatchEvent ( evt );
-//			}
-//			else if( func.sFunc  == "DELMOB") 
-//			{
-//				int charid = func.At( 0 );
-//				StageDelMobEvent evt = new StageDelMobEvent ();
-//				evt.nCharID = func.At( 0 );
-//				GameEventManager.DispatchEvent ( evt );
-//			}
-//			else{
-//				// error 
-//
-//				Debug.Log( string.Format( "Error-Can't find script func '{0}'" , func.sFunc ) );
-//			}
-//		}
-//
-//
-//
-//	}
 
 	public bool IsAllEnd()
 	{
 		// check both box is end
-		foreach( KeyValuePair<int , SRW_TextBox > pair in m_idToObj )
+		if( TalkWindow.IsEnd() == false )
+			return false;
+
+		// face anime
+		foreach( KeyValuePair < int ,SRW_AVGObj > pair in m_idToFace )
 		{
-			SRW_TextBox pBox = pair.Value;
-			if( pBox && pBox.IsEnd() == false )
+			if( pair.Value != null )
 			{
+				if( pair.Value.IsEnd() == false  )
+				{
 					return false;
+				}
 			}
 		}
+
 		// stage is not complete
 		if (Panel_StageUI.Instance != null ) {
 			if( Panel_StageUI.Instance.IsAnyActionRunning() ){
@@ -570,45 +496,36 @@ public class Panel_Talk : MonoBehaviour {
 		
 		}
 
-
-		// cehck all tween is end
-//		SRW_TextBox obj1 = SelTextBoxObjByType (1) ;
-//		if (obj1 != null) {
-//			if( obj1.IsEnd() == false )
-//				return false;
-//		}
-
 		return true;
 	}
 
-	public void Say( int nType , int nSayTextID )
+	public void SpeakAll( bool bSpeak )
 	{
-	//	SetTextBoxActive ( nType , true ); // need active first to awake() to do some thing
-
-		SRW_TextBox obj = SelTextBoxObjByType (nType) ;
-		if (obj == null)
-			return;
-
-		// get Text form talk_text
-		obj.ClearText(); // clear text first
-
-		string s = GameSystem.GetTalkText ( nSayTextID );
-		string sText = s.Replace ( "$F" , Config.PlayerFirst ); // replace player name
-				sText = sText.Replace ( "$N" , Config.PlayerName ); // replace player name
-
-
-
-		obj.AddText(sText);
-		//SRW_TextBox pBox = obj.GetComponent<SRW_TextBox>();
-		//if (pBox) {
-		//	pBox.AddText (sText);
-		//}
+		foreach( KeyValuePair < int ,SRW_AVGObj> pair in m_idToFace )
+		{
+			if( pair.Value != null )
+			{
+				pair.Value.Speak( bSpeak );
+			}
+		}
 	}
+	
 	public void CharSay( int nCharID , int nSayTextID )
 	{
-		SRW_TextBox obj = SelTextBoxObjByCharID (nCharID) ;
+		SpeakAll( false );
+
+		SetName( nCharID ); // name 
+		SRW_AVGObj avgobj = SelAVGObjByCharID( nCharID );// face 
+		if( avgobj!= null ){
+			avgobj.Speak( true );
+		}
+
+		//SRW_TextBox obj = SelTextBoxObjByCharID (nCharID) ;
+		SRW_TextBox obj =  TalkWindow;// SelTextBoxObjByCharID (nCharID) ;
 		if (obj == null)
 			return;
+
+		obj.gameObject.SetActive( true );
 		obj.ClearText(); // clear text first
 		string s = GameSystem.GetTalkText ( nSayTextID );
 		string sText = "";
@@ -620,6 +537,7 @@ public class Panel_Talk : MonoBehaviour {
 			sText = sText.Replace ( "$N" , Config.PlayerName ); // replace player name			
 
 		}
+		obj.ClearText();
 		obj.AddText(sText);
 	}
 
@@ -627,18 +545,19 @@ public class Panel_Talk : MonoBehaviour {
 	{
 		 // 0 = close all
 		if (nCharID == 0) {
-			foreach( KeyValuePair < int ,SRW_TextBox > pair in m_idToObj )
+			foreach( KeyValuePair < int ,SRW_AVGObj> pair in m_idToFace )
 			{
 				if( pair.Value != null )
 				{
 					NGUITools.Destroy( pair.Value.gameObject );
 				}
 			}
-			m_idToObj.Clear();
+			m_idToFace.Clear();
+
 			return;
 		}
 
-		foreach( KeyValuePair < int ,SRW_TextBox > pair in m_idToObj )
+		foreach( KeyValuePair < int ,SRW_AVGObj > pair in m_idToFace )
 		{
 			if( pair.Value != null )
 			{
@@ -655,59 +574,50 @@ public class Panel_Talk : MonoBehaviour {
 	public void SetChar( int nType , int nCharID )
 	{
 		//SetTextBoxActive ( nType , true ); // need active first to awake() to do some thing
-		
-		//SRW_TextBox obj = SelTextBoxObjByType (nType) ;
-		SRW_TextBox obj = SelTextBoxObjByType (nType) ;
-		if (obj) {
-			// get Text form talk_text
-			//SRW_TextBox pBox = obj.GetComponent<SRW_TextBox> ();
-			//if (pBox) {
-			obj.ChangeFace (nCharID);
-			//}
-		}
-		
+		SRW_AVGObj obj = SelAVGObjByType (nType , nCharID ) ;
+//		if (obj) {	
+//			obj.ChangeFace (nCharID);
+//		}
+
 	}
 	public void CharShake( int nCharID  )
 	{
-		foreach( KeyValuePair < int ,SRW_TextBox > pair in m_idToObj )
+		foreach( KeyValuePair < int ,SRW_AVGObj > pair in m_idToFace )
 		{
 			if( pair.Value != null )
 			{
 				if( pair.Value.CharID == nCharID )
 				{
-					//return pair.Value;
-					// CloseBox( pair.Key , 0 );
 					pair.Value.SetShake();
 				}
 			}
 		}
-		
 	}
 
 	public void CharDead( int nCharID  )
 	{
-		foreach( KeyValuePair < int ,SRW_TextBox > pair in m_idToObj )
+		foreach( KeyValuePair < int ,SRW_AVGObj > pair in m_idToFace )
 		{
 			if( pair.Value != null )
 			{
 				if( pair.Value.CharID == nCharID )
-				{
-					//return pair.Value;
-					// CloseBox( pair.Key , 0 );
+				{		
 					pair.Value.SetDead();
 				}
 			}
 		}
+
 	}
 
 	public void CloseBox( int nType , int nCloseType )
 	{
-		SRW_TextBox obj = SelTextBoxObjByType (nType) ;
-		if (obj) {
-			NGUITools.Destroy( obj.gameObject );
-			m_idToObj.Remove( nType );
-		
+		// this may create and destory
+		if( m_idToFace.ContainsKey( nType ) )
+		{
+			NGUITools.Destroy( m_idToFace[nType].gameObject );
+			m_idToFace.Remove( nType );
 		}
+
 	}
 	// widget func
 

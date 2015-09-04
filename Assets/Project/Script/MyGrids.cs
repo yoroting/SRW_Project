@@ -62,6 +62,11 @@ namespace MYGRIDS
         _RIGHT = 2,
         _DOWN = 3,
         _LEFT = 4,
+
+		_RIGHT_UP = 5,
+		_LEFT_UP = 6,
+		_RIGHT_DOWN = 7,
+		_LEFT_DOWN = 8,
     };
 
     // int 的 2維向量。將來可能會使用到
@@ -152,8 +157,55 @@ namespace MYGRIDS
                 return _DIR._LEFT; // left  
             }
             return _DIR._NULL;
-
         }
+
+		// get 8 way dir
+		static public _DIR Get8Dir(int stx, int sty, int edx, int edy)
+		{
+			int nDiffX = edx - stx;
+			int nDiffY = edy - sty;
+			// 只處理4正維方向。斜角 不處理
+			if (nDiffX == 0)
+			{
+				if (nDiffY > 0)
+				{
+					return _DIR._UP;// up
+				}
+				else if (nDiffY < 0)
+				{
+					return _DIR._DOWN;// down
+				}
+			}
+			else if (nDiffY == 0)
+			{
+				if (nDiffX > 0)
+				{
+					return _DIR._RIGHT; // right
+				}
+				else if (nDiffX < 0)
+				{
+					return _DIR._LEFT; // left  
+				}
+			}
+			else if (nDiffX > 0 && nDiffY > 0)
+			{
+				return _DIR._RIGHT_UP;// up
+			}
+			else if (nDiffX < 0 && nDiffY < 0)
+			{
+				return _DIR._LEFT_DOWN;// down;
+			}
+			else if (nDiffX > 0 && nDiffY < 0)
+			{
+				return _DIR._RIGHT_DOWN; // right
+			}
+			else if (nDiffX < 0 && nDiffY > 0)
+			{
+				return _DIR._LEFT_UP; // left  
+			}
+			return _DIR._NULL;
+		}
+
         public _DIR GetDir(int x, int y)
         {
             return GetDir(X, Y, x, y);
@@ -1039,6 +1091,52 @@ namespace MYGRIDS
             return lst;
         }
 
+
+		public List<iVec2> GetZocPool(iVec2 self, ref List<iVec2> enemy)
+		{
+			List<iVec2> lst = new List<iVec2>();
+			foreach (iVec2 v2 in enemy)
+			{
+				_DIR  dir = iVec2.Get8Dir( self.X , self.Y , v2.X , v2.Y );
+				// 8 dir
+				switch( dir ){
+					case _DIR._UP:
+						lst.Add(  v2.MoveXY( 1 , 1 ) );
+						lst.Add(  v2.MoveXY( -1 , 1 ) );
+					break;						
+					case _DIR._DOWN:
+						lst.Add(  v2.MoveXY( 1 , -1 ) );
+						lst.Add(  v2.MoveXY( -1 , -1 ) );
+					break;						
+					case _DIR._LEFT:
+						lst.Add(  v2.MoveXY( -1 , 1 ) );
+						lst.Add(  v2.MoveXY( -1 , -1 ) );
+					break;
+					case _DIR._RIGHT:
+						lst.Add(  v2.MoveXY( 1 , 1 ) );
+						lst.Add(  v2.MoveXY( 1 , -1 ) );
+					break;
+					case _DIR._RIGHT_UP:
+						lst.Add(  v2.MoveXY( 0 , 1 ) );
+						lst.Add(  v2.MoveXY( 1 , 0 ) );
+					break;
+					case _DIR._RIGHT_DOWN:
+						lst.Add(  v2.MoveXY( 0 , -1 ) );
+						lst.Add(  v2.MoveXY( 1 , 0 ) );
+					break;
+					case _DIR._LEFT_UP:
+						lst.Add(  v2.MoveXY( 0 , 1 ) );
+						lst.Add(  v2.MoveXY( -1 , 0 ) );
+					break;
+					case _DIR._LEFT_DOWN:
+						lst.Add(  v2.MoveXY( 0 , -1 ) );
+						lst.Add(  v2.MoveXY( -1 , 0 ) );
+					break;
+				}
+			}
+
+			return lst;
+		}
 
         // Check if pos in grid
         public bool Contain(iVec2 v)

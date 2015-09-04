@@ -1127,7 +1127,12 @@ public class Panel_StageUI : MonoBehaviour
 
 	//	List<iVec2> moveList =  Grids.GetRangePool (unit.Loc, pdata.GetMov()  , 1);
 		Grids.ClearIgnorePool();
-		Grids.AddIgnorePool( GetUnitPKPosPool(unit , true  ) );
+		List< iVec2 > pkPosPool = GetUnitPKPosPool(unit , true  );
+
+		if( !pdata.IsTag( _UNITTAG._CHARGE ) ) {
+			Grids.AddIgnorePool( pkPosPool );
+			Grids.AddIgnorePool( Grids.GetZocPool( unit.Loc ,ref  pkPosPool ) ); // APPLY ZOC	
+		}
 
 		List<iVec2> moveList =  Grids.MoveAbleCell (unit.Loc, pdata.GetMov() );
 
@@ -2305,7 +2310,9 @@ public class Panel_StageUI : MonoBehaviour
 		cUnitData pData = unit.pUnitData;
 
 		if( !pData.IsTag( _UNITTAG._CHARGE ) ) {
-			Grids.AddIgnorePool (  GetUnitPKPosPool( unit , true  ) );  // all is block in first find
+			List< iVec2 > pkPosPool = GetUnitPKPosPool( unit , true  );
+			Grids.AddIgnorePool (  pkPosPool );  // all is block in first find
+			Grids.AddIgnorePool( Grids.GetZocPool(unit.Loc , ref pkPosPool ) ); // APPLY ZOC	
 		}
 		
 		// avoid the end node have ally
