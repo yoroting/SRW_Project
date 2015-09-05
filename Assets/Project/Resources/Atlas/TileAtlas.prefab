@@ -41,6 +41,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   material: {fileID: 2100000, guid: 8e1d19f82995a044bbc1e42ffc4a9cec, type: 2}
   mSprites:
+  - name: border
+    x: 0
+    y: 412
+    width: 100
+    height: 100
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
+    paddingLeft: 0
+    paddingRight: 0
+    paddingTop: 0
+    paddingBottom: 0
   - name: green
     x: 101
     y: 412
@@ -55,8 +68,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: icemount
-    x: 96
-    y: 316
+    x: 0
+    y: 215
     width: 94
     height: 95
     borderLeft: 0
@@ -69,7 +82,7 @@ MonoBehaviour:
     paddingBottom: 3
   - name: land
     x: 0
-    y: 412
+    y: 311
     width: 100
     height: 100
     borderLeft: 0
@@ -81,7 +94,7 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: mount
-    x: 0
+    x: 101
     y: 315
     width: 95
     height: 96
@@ -94,8 +107,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 4
   - name: tree
-    x: 0
-    y: 221
+    x: 95
+    y: 217
     width: 91
     height: 93
     borderLeft: 0

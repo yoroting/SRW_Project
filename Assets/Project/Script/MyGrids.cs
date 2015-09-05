@@ -14,16 +14,17 @@ namespace MYGRIDS
         /// <summary>
         /// 無效
         /// </summary>
-        [Description("test")]
+        [Description("_TILE")]
         _NULL = 0,
-        _GREEN = 1,    // 綠地( 平原/石路/河流 ) 
-        _LAND = 2,    // 平原( 石路 )
-        _RIVER = 3,    // 河流( 平原/湖 ) 
-        _LAKE = 4,    // 湖  ( 河流 )
-        _SNOW = 5,    // 雪  ( 河流 )
-        _SAND = 6,    // 沙地 ( 平原 )
-        _DIRT = 7,    // 泥版 ( 平原/道路 )
-        _ROAD = 8,	// 石路	
+		_BORDER = 1,    // 外框
+        _GREEN = 2,    // 綠地( 平原/石路/河流 ) 
+        _LAND = 3,    // 平原( 石路 )
+        _RIVER =4,    // 河流( 平原/湖 ) 
+        _LAKE = 5,    // 湖  ( 河流 )
+        _SNOW = 6,    // 雪  ( 河流 )
+        _SAND = 7,    // 沙地 ( 平原 )
+        _DIRT = 8,    // 泥版 ( 平原/道路 )
+        _ROAD = 9,	// 石路	
 
     };
 
@@ -57,12 +58,13 @@ namespace MYGRIDS
 
     public enum _DIR
     {
+		// 4 way
         _NULL = 0,
         _UP = 1,
         _RIGHT = 2,
         _DOWN = 3,
         _LEFT = 4,
-
+		// 8 way 
 		_RIGHT_UP = 5,
 		_LEFT_UP = 6,
 		_RIGHT_DOWN = 7,
@@ -703,7 +705,7 @@ namespace MYGRIDS
     //  整體的操作容器 。座標是以(0,0) 為座標系的( （- HW ～ HW ）
     public class MyGrids
     {
-        public const int Version = 1;
+        public const int Version = 2; // 2 : support background text file
 
         // singleton
         private static MyGrids instance;
@@ -718,7 +720,7 @@ namespace MYGRIDS
                 return instance;
             }
         }
-
+		public string sBackGround;			//背景圖標示
         public int MaxW;
         public int MaxH;
         /// <summary>
@@ -758,11 +760,13 @@ namespace MYGRIDS
             CreateLayer(1, 1); //預設一層
             //
             ThingPool = new Dictionary<string, List<MyThing>>();     // 地上物
+			//
+			sBackGround = "null";
         }
 
 
         // 建立 layer
-        // 了確保　建立的必為　2的幕次方大小+1。所以　設定都是半徑
+        // 了確保　建立的必為　2的倍數+1。所以　設定都是半徑
         public void CreateLayer(int nhalfW, int nhalfH)
         {
             hW = nhalfW;
@@ -1216,6 +1220,9 @@ namespace MYGRIDS
                                 writer.Write(false);
                             }
                         }
+						// back ground tex
+						writer.Write( sBackGround );
+
                     }
                 }
                 catch
@@ -1309,6 +1316,12 @@ namespace MYGRIDS
                         if (thingList.Count > 0)
                             ThingPool.Add(thingList[0].Cell.GetKey(), thingList);
                     }
+
+					if (version >= 2){
+						// if is new ver
+						sBackGround = reader.ReadString();
+					}
+
                 }
             }
             finally
@@ -1317,6 +1330,7 @@ namespace MYGRIDS
             }
             // create path findere map
 
+			SetPixelWH ( PW , PH );
             // create path finder struct during loading
             //InitializePathFindMap (); 
             GetPathFinder().ApplyMap(map); // apply here for new nodes

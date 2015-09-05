@@ -170,8 +170,15 @@ namespace SimpleAStarExample
 		{
 			if (pool == null)
 				return;
+			int w = nodes.GetLength(0);
+			int h = nodes.GetLength(1);
 			foreach(Point p in  pool )
 			{
+				if( p.X < 0 || p.X >= w )
+					continue;
+				if( p.Y < 0 || p.Y >= h )
+					continue;
+
 				Node n = this.nodes[ p.X, p.Y ]; 
 				if( n != null )
 				{

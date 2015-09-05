@@ -944,9 +944,10 @@ public class Panel_StageUI : MonoBehaviour
 			{
 				NGUITools.Destroy( go );
 			}
+			GameObject background =  GetBackGroundPrefab( Grids );
+			if( background != null ){
 
-
-			// start to create sprite
+			}			// start to create sprite
 			for( int i = -Grids.hW ; i <= Grids.hW ; i++ ){
 				for( int j = -Grids.hH ; j <= Grids.hH ; j++ )
 				{			
@@ -1069,6 +1070,31 @@ public class Panel_StageUI : MonoBehaviour
 			//_TILE._GREEN
 
 		return null;
+	}
+	GameObject GetBackGroundPrefab( MyGrids grid )
+	{
+		GameObject obj = ResourcesManager.CreatePrefabGameObj(TilePlaneObj, "Prefab/BGTexture");
+		UITexture uitex = obj.GetComponent<UITexture>(); 
+		if( uitex != null )
+		{
+			//string url = "Art/map/" + grid.sBackGround;
+			string url = "Art/MAP/" + "20738-1";
+			//Texture2D tex = Resources.LoadAssetAtPath(url, typeof(Texture2D)) as Texture2D;
+			Texture t= Resources.Load( url , typeof(Texture) ) as Texture; ;
+			uitex.mainTexture = t;				
+
+			uitex.width = grid.TotalW;
+			uitex.height = grid.TotalH;
+			uitex.depth = -1; // < 0 
+
+		}
+		UIDragObject drag = obj.GetComponent<UIDragObject>(); 
+		if( drag != null )
+		{
+			drag.target = TilePlaneObj.transform ;
+			
+		}
+		return obj;
 	}
 
 	public GameObject SpwanBattleValueObj( )

@@ -113,8 +113,9 @@ public class MapEditor : MonoBehaviour
         MapName = sceneName;
 
         Grids = new MyGrids();
-        Grids.hW = halfWidth;
-        Grids.hH = halfHeight;
+		Grids.CreateLayer (halfWidth, halfHeight);
+  //      Grids.hW = halfWidth;
+  //      Grids.hH = halfHeight;
 
         CreateSprite();
     }
