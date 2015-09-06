@@ -114,6 +114,23 @@ namespace MYGRIDS
             return dist;
 
         }
+		static public iVec2 Move8Dir(int stx, int sty, _DIR dir )
+		{
+			iVec2 v = new iVec2 ( stx , sty );
+			switch( dir )
+			{
+			case _DIR._UP:  v.Y++; 	break;
+			case _DIR._DOWN: v.Y--; break;
+			case _DIR._RIGHT: v.X++; break;
+			case _DIR._LEFT: v.X--;	break;			
+
+			case _DIR._RIGHT_UP: v.X++;v.Y++; break;
+			case _DIR._RIGHT_DOWN: v.X++;v.Y--;break;
+			case _DIR._LEFT_UP: v.X--;v.Y++; break;
+			case _DIR._LEFT_DOWN: v.X--;v.Y--; break;
+			}
+			return v;
+		}
 
         static public _DIR GetDir(int stx, int sty, int edx, int edy)
         {
@@ -212,6 +229,11 @@ namespace MYGRIDS
         {
             return GetDir(X, Y, x, y);
         }
+
+		public _DIR Get8Dir(int x, int y)
+		{
+			return Get8Dir (X, Y, x, y );
+		}
 
         public void Rotate(_DIR dir)
         {

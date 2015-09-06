@@ -42,7 +42,7 @@ public class StageDelUnitEvent: GameEvent {
 	public const string Name = "StageDelUnitEvent";
 	public _CAMP eCamp=  _CAMP._PLAYER ;
 	public int nCharID = 0; 
-	
+	public int nDelType = 0; 
 	public StageDelUnitEvent(){
 		name = Name;		// important.  must have this line as key
 	}

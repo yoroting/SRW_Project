@@ -12,10 +12,15 @@ public enum _SKILLTAG
 	_BANATK 	= 3,	//攻擊 禁用
 	_BANDEF 	= 4,	//防禦 禁用
 	_NOMOVE 	= 5, 	//不可移動後攻擊
-
+	_ROTATE		= 6,	// 原地旋轉
+	_JUMP		= 7,	// 跳躍攻擊
+	_FLASH		= 8,	// AOE閃擊
+	_BOW		= 9,	// 拉弓攻擊
 	// TAG for mob ai check
 	_TIEUP 		= 100,	//牽制
 };
+
+
 // use for cache skill table data
 public class cSkillData
 {
@@ -58,6 +63,10 @@ public class cSkillData
 			int tag =0;
 			if( int.TryParse( s , out tag ) ){ 
 				AddTag( ( _SKILLTAG)tag );
+			}
+			else{
+				Debug.LogErrorFormat( "paser skill tag fail with {0} , maybe have ':'  not ';' " , nID );
+
 			}
 
 		}

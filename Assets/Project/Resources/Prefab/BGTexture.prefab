@@ -58,7 +58,7 @@ MonoBehaviour:
   scrollMomentum: {x: 0, y: 0, z: 0}
   restrictWithinPanel: 0
   contentRect: {fileID: 0}
-  dragEffect: 2
+  dragEffect: 0
   momentumAmount: 35
   scale: {x: 1, y: 1, z: 0}
   scrollWheelFactor: 0

@@ -211,7 +211,10 @@ public class cCMD{
 	
 	public int nTarGridX;
 	public int nTarGridY;
-	
+
+	public int nCMDGridX;
+	public int nCMDGridY;
+
 	public int nSkillID;
 	public int nAbilityID;
 	
@@ -240,7 +243,10 @@ public class cCMD{
 		
 		nTarGridX = 0;
 		nTarGridY = 0;
-		
+
+//		nCMDGridX = 0;
+//		nCMDGridY = 0;
+
 		nSkillID = 0;
 		nAbilityID = 0;
 		nItemID = 0;

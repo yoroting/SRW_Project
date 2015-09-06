@@ -4,7 +4,7 @@ using System.Collections;
 public class SRW_AVGObj : MonoBehaviour {
 
 	//public GameObject	_FaceTexObj;  // Face Texture
-	UITexture _FaceTexObj;  // Face Texture
+	public UITexture _FaceTexObj;  // Face Texture
 	public int CharID { set; get; }
 	public bool bIsShaking = false;
 	public bool bIsDeading = false;
@@ -18,6 +18,16 @@ public class SRW_AVGObj : MonoBehaviour {
 		_FaceTexObj = this.gameObject.GetComponent<UITexture>(); 
 
 	}
+
+	void OnEnable()
+	{
+		transform.localRotation = new Quaternion(); 
+		transform.localScale = new Vector3( 1.0f, 1.0f ,1.0f);
+		if (_FaceTexObj != null) {
+			_FaceTexObj.alpha = 1.0f;
+		}
+	}
+
 
 	void Start () {
 
@@ -176,7 +186,23 @@ public class SRW_AVGObj : MonoBehaviour {
 			
 		}
 	}
-	
+	public void FadeOut( )
+	{
+		_FaceTexObj.alpha = 1.0f;
+		TweenAlpha twa = TweenAlpha.Begin<TweenAlpha> (this.gameObject, 0.5f);
+		if (twa != null) {
+			twa.to = 0.0f;
+		}
+	}
+	public void SetScale(  float fScale)
+	{
+		//_FaceTexObj.alpha = 1.0f;
+		TweenScale tws = TweenScale.Begin<TweenScale> (this.gameObject, 0.5f);
+		if (tws != null) {
+			tws.to = new Vector3( fScale , fScale );
+		}
+	}
+
 	public void OnShakeEnd()
 	{	
 		bIsShaking = false;

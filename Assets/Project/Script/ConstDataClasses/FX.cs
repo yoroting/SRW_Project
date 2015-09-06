@@ -7,6 +7,9 @@ public class FX : ConstDataRow<FX>
 	public string s_NAME;
 	public string s_FILENAME;
 	public int n_TAG;
+	public float f_SACLE;
+	public float f_ROTX;
+	public float f_ROTY;
 	public string s_SOUND;
 	public float f_SOUNDDELAY;
 	public int n_LINKFX;

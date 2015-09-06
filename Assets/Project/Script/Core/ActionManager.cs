@@ -214,6 +214,8 @@ public partial class ActionManager
 			act.nSkillID = nSkillID;
 			act.nActVar1 = nVar1;
 			act.nActVar2 = nVar2;
+
+			act.AddHitResult( new cHitResult( cHitResult._TYPE._CASTOUT , nAtkIdent ,nSkillID , nDefIdent , 0 , 0  ) );
 			// normal attack gen 1 cp
 			if( nSkillID ==0 ){
 				act.AddHitResult( new cHitResult( cHitResult._TYPE._CP , nAtkIdent , 1 ) );
@@ -347,6 +349,8 @@ public partial class ActionManager
 			act.nSkillID = nSkillID;
 			act.nTarGridX = X;
 			act.nTarGridY = Y;		
+
+			act.AddHitResult( new cHitResult( cHitResult._TYPE._CASTOUT , nAtkIdent ,nSkillID ,0, X , Y  ) );
 		}
 		return  act;
 	}
@@ -391,13 +395,14 @@ public partial class ActionManager
 							pUnit.HitBackTo( res.Value1 , res.Value2 );
 						
 						}break;
-						case cHitResult._TYPE._HIT: // Hit
+						case cHitResult._TYPE._CASTOUT: // cast out
 						{
 							// Add FX effect 
+						pUnit.ShowSkillFX( res.Value1 , res.Value2, res.Value3 , res.Value4   );
 						//	BattleManager.Instance.ShowBattleFX( res.Ident , "CFXM4 Hit B (Orange, CFX Blend)"  );
 						
 						}break;		
-						case cHitResult._TYPE._BEHIT: // Hit
+						case cHitResult._TYPE._BEHIT: // be Hit fX
 						{
 							BattleManager.Instance.ShowBattleFX( res.Ident , "CFXM4 Hit B (Orange, CFX Blend)"  );
 							// it should have fx
@@ -471,7 +476,7 @@ public partial class ActionManager
 							{
 								cUnitData pData = GameDataManager.Instance.GetUnitDateByIdent (res.Ident);
 								if (pData != null) {
-									pData.Buffs.AddBuff( res.Value1 , res.Value2, res.SkillID, res.Value3 );
+									pData.Buffs.AddBuff( res.Value1 , res.Value2, res.Value3 ,res.Value4);
 								}
 							}
 							

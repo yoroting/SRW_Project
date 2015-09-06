@@ -490,7 +490,14 @@ public class IS_GUARD: cEffect
 		return (st == _FIGHTSTATE._GUARD);
 	}				// check user in one status		
 }
-
+public class IS_THROUGH: cEffect
+{
+	public IS_THROUGH( ){	}	
+	
+	override public bool _IsStatus(  _FIGHTSTATE st ){
+		return (st == _FIGHTSTATE._THROUGH);
+	}				// check user in one status		
+}
 //==========================================================================
 // use to cache condition sctipr parser result
 public class  cEffectCondition

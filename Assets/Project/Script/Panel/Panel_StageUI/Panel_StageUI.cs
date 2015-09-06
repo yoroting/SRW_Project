@@ -49,6 +49,8 @@ public class Panel_StageUI : MonoBehaviour
 	public GameObject AtkEftObj; 	// 
 	public GameObject AoeEftObj; 	// 
 	public GameObject ValueEftObj; 	// 
+	public GameObject AvgObj;		//
+
 
 	Panel_unit TarceMoveingUnit; //  Trace the moving unit
 
@@ -364,6 +366,9 @@ public class Panel_StageUI : MonoBehaviour
 		AoeEftObj.CreatePool( st_CellObjPoolSize /4 );
 
 		ValueEftObj.CreatePool( st_CellObjPoolSize / 10  );
+
+		AvgObj.CreatePool ( st_CellObjPoolSize / 10 );
+
 	}
 
 	public void RegeditGameEvent( bool bTrue )
@@ -545,6 +550,8 @@ public class Panel_StageUI : MonoBehaviour
 		AoeEftObj.SetActive (false);
 
 		ValueEftObj.SetActive (false);
+		AvgObj.SetActive (false);
+
 //		if (BattleValue.nValueCount != 0) {
 //		}
 
@@ -587,6 +594,11 @@ public class Panel_StageUI : MonoBehaviour
 			Debug.Log(str);
 			bool bIsAtkCell = OverCellAtkPool.ContainsKey( sKey );
 			bool bIsOverCell = OverCellPool.ContainsKey( sKey );
+
+			if( Config.GOD ){
+				bIsAtkCell = true; // god can atk all place
+			}
+
 
 		
 
@@ -672,26 +684,10 @@ public class Panel_StageUI : MonoBehaviour
 //			if( PanelManager.Instance.CheckUIIsOpening( "Panel_CMDUI" ) == false  )
 //			{
 			Panel_CMDUnitUI.OpenCMDUI( _CMD_TYPE._CELL , null );
-//			cCMD.Instance.eCMDTYPE = _CMD_TYPE._CELL; 
-//				GameObject obj = PanelManager.Instance.OpenUI( Panel_CmdSysUI.Name );
-//				if (obj != null) {
-				//	NGUITools.SetActive( obj, true );
-				//	Vector3 vLoc = this.gameObject.transform.localPosition ;
-					//UICamera.mainCamera.ScreenPointToRay
-				//	UIRoot mRoot = NGUITools.FindInParents<UIRoot>(gameObject);					
-				//	float ratio = (float)mRoot.activeHeight / Screen.height;
 
-				//	vLoc.x = MyTool.ScreenToLocX( Input.mousePosition.x );
-				//	vLoc.y = MyTool.ScreenToLocY( Input.mousePosition.y );
+			cCMD.Instance.nCMDGridX = unit.X();
+			cCMD.Instance.nCMDGridY = unit.Y();
 
-				//	obj.transform.localPosition = vLoc;// MousePosition;
-					//
-//					Panel_CmdSysUI co = obj.GetComponent< Panel_CmdSysUI >();
-//					if( co )
-//					{					
-//					}
-//				}
-//			}
 		}
 	}
 
@@ -1314,6 +1310,32 @@ public class Panel_StageUI : MonoBehaviour
 	}
 	// Check any action is running
 
+	public void PlayFX( int nFxID , int nX , int nY  )
+	{
+		GameObject go = GameSystem.PlayFX ( TilePlaneObj ,nFxID);
+		if (go != null) {
+			go.transform.localPosition = MyTool.SnyGridtoLocalPos( nX , nY , ref Grids );
+		}
+	}
+
+	public void PlayAOEFX( Panel_unit CastUnit  , int nFxID , int nX , int nY , int nAOE )
+	{
+		if (nAOE == 0) {
+			Debug.LogError( "stage play AOE fx fail with 0 ");
+			return ;
+		}
+
+
+		Panel_unit unit = CastUnit ; // MyTool.CMDUI().pCmder;
+		int nOrgX = unit.X ();
+		int nOrgY = unit.Y ();
+		
+		List<iVec2> aoeList = MyTool.GetAOEPool (nX, nY, nAOE ,nOrgX, nOrgY );
+		foreach (iVec2 v in aoeList) {
+			PlayFX( nFxID , v.X , v.Y);
+		}
+	}
+
 	public bool IsAnyActionRunning()
 	{
 		// for win event
@@ -1823,6 +1845,22 @@ public class Panel_StageUI : MonoBehaviour
 	}
 
 	// Take care use ident to delete
+	void LeaveUnit(  int nCharid )
+	{
+		//Dictionary< _CAMP , cCamp > CampPool = GameDataManager.Instance.GetCamp;			// add Camp
+		foreach (KeyValuePair< int , Panel_unit > pair in IdentToUnit) {
+			if( pair.Value == null ){
+				Debug.LogErrorFormat( "DelUnit with null unit at charid {0} ",nCharid );
+				continue;
+			}
+			if( pair.Value.CharID != nCharid )
+				continue;
+			
+			pair.Value.SetLeave();
+		}
+	}
+
+
 	void DelUnit(  int nCharid )
 	{
 		//change to del all unit with char
@@ -1842,29 +1880,6 @@ public class Panel_StageUI : MonoBehaviour
 		}
 
 
-//		foreach (KeyValuePair<_CAMP , cCamp > pair in GameDataManager.Instance.CampPool) {
-//
-//
-//			foreach( int id in pair.Value.memLst )
-//			{
-//				// id = ident
-//				Panel_unit unit = null;
-//				if( IdentToUnit.TryGetValue(id , out unit ) )
-//				{
-//					if( nCharid == unit.CharID )
-//					{
-//						unit.FreeUnitData();
-//						unit.Recycle();
-//						//NGUITools.Destroy( unit.gameObject );
-//
-//						IdentToUnit.Remove( id );
-//						pair.Value.memLst.Remove( id );
-//						return;
-//					}
-//				}
-//
-//			}
-//		}
 		///
 		foreach( int id in mlist )
 		{
@@ -1873,55 +1888,33 @@ public class Panel_StageUI : MonoBehaviour
 	}
 
 
-	void DelChar( _CAMP nCampID , int nCharID )
-	{
-//		cCamp camp =  GameDataManager.Instance.GetCamp( nCampID );
-//		if( camp == null )
-//			return ;
-		List< int > remove = new List< int >(); // ident pool
-		//foreach( int id in camp.memLst )
-		foreach( KeyValuePair<int , Panel_unit> pair in IdentToUnit )
-		{
-			if( pair.Value == null )
-				continue;
-			if( (pair.Value.CharID) == nCharID && (pair.Value.eCampID ==nCampID) ){
-				//NGUITools.Destroy( unit.gameObject );
-				pair.Value.FreeUnitData(); // dis connect with gamedata manager
-				pair.Value.Recycle();
-
-				remove.Add( pair.Key );
-			}
-
-//			if( IdentToUnit.ContainsKey( id ) == true )
-//			{
-//				Panel_unit unit = IdentToUnit[ id ];
-//				if( unit != null )
-//				{
-//					if( nChar != unit.CharID )
-//					{
-//						continue;
-//					}
-//					//unit.pUnitData; 
-//					//NGUITools.Destroy( unit.gameObject );
-//					unit.FreeUnitData();
-//					unit.Recycle();
-//				}
-//				IdentToUnit.Remove( id );
-//				remove.Add( id );
+//	void DelChar( _CAMP nCampID , int nCharID )
+//	{
+////		cCamp camp =  GameDataManager.Instance.GetCamp( nCampID );
+////		if( camp == null )
+////			return ;
+//		List< int > remove = new List< int >(); // ident pool
+//		//foreach( int id in camp.memLst )
+//		foreach( KeyValuePair<int , Panel_unit> pair in IdentToUnit )
+//		{
+//			if( pair.Value == null )
+//				continue;
+//			if( (pair.Value.CharID) == nCharID && (pair.Value.eCampID ==nCampID) ){
+//				//NGUITools.Destroy( unit.gameObject );
+//				pair.Value.FreeUnitData(); // dis connect with gamedata manager
+//				pair.Value.Recycle();
+//
+//				remove.Add( pair.Key );
 //			}
-//			else{
-//				// fail obj??
-//				remove.Add( id );
-//			}
-
-		}
-
-		foreach( int id in remove )
-		{
-			IdentToUnit.Remove( id );
-		//	camp.memLst.Remove( id );
-		}
-	}
+//
+//		}
+//
+//		foreach( int id in remove )
+//		{
+//			IdentToUnit.Remove( id );
+//		//	camp.memLst.Remove( id );
+//		}
+//	}
 
 	public void EndStage()
 	{
@@ -1956,7 +1949,62 @@ public class Panel_StageUI : MonoBehaviour
 
 	}
 
+	public GameObject AddAVGObj( int nIdent , bool bAssist= false , bool batk = true )
+	{
+		return null;
 
+		int nIdx = 0;
+		if (bAssist) {
+			nIdx ++;
+		}
+
+
+		cUnitData pData = GameDataManager.Instance.GetUnitDateByIdent ( nIdent );
+		if (pData!= null) {
+			GameObject obj = AvgObj.Spawn( MaskPanelObj.transform , new Vector3( 0.0f , -640.0f , 0.0f )  );
+			if( obj != null ){
+				SRW_AVGObj avg = obj.GetComponent< SRW_AVGObj > ();
+				if( avg != null ){
+					avg.ChangeFace( pData.n_CharID );
+					Vector3 tarPos = new Vector3();
+					if( pData.eCampID == _CAMP._ENEMY ){ tarPos.x = -(240.0f+ nIdx*64);  }
+					else{ tarPos.x = (240.0f+ nIdx*64 ); }
+					//============================================
+					TweenPosition tw = TweenPosition.Begin<TweenPosition>( obj , 0.3f );
+					if( tw != null ){
+						tw.from =  new Vector3( 0.0f , -640.0f , 0.0f );
+						tw.to = tarPos;
+					}
+					// index
+					if(nIdx==0 ){
+						avg._FaceTexObj.depth = 2;
+					}
+					else{
+						avg._FaceTexObj.depth = 1;
+					}
+				}
+			}
+			return obj;
+		}
+		return null;
+	}
+
+	public void FadeOutAVGObj(  )
+	{
+		foreach (GameObject obj in AvgObj.GetSpawned()) {
+			SRW_AVGObj avg = obj.GetComponent< SRW_AVGObj > ();
+			if( avg != null ){
+				avg.FadeOut();
+				avg.SetScale( 2.0f ); 
+			}
+		}
+	}
+
+
+	public void ClearAVGObj(  )
+	{
+		AvgObj.RecycleAll ();
+	}
 
 	public GameObject AddMark( int x , int y  )
 	{
@@ -2708,7 +2756,18 @@ public class Panel_StageUI : MonoBehaviour
 		if (Evt == null)
 			return;
 		int nCharid = Evt.nCharID;
-		DelUnit( nCharid );
+
+		if (m_bIsSkipMode) {
+			DelUnit (nCharid);
+			return;
+		}
+ 		// normal mode to play
+		LeaveUnit (nCharid);
+//		if (Evt.nDelType == 1) {
+//			LeaveUnit (nCharid);
+//		} else {
+//			DelUnit (nCharid);
+//		}
 
 	}
 
@@ -2966,7 +3025,7 @@ public class Panel_StageUI : MonoBehaviour
 			//Panel_StageUI.Instance.MoveToGameObj(pDefUnit.gameObject , false );  // move to def 
 			uAction act = ActionManager.Instance.CreateAttackAction (nAtkId, nDefId, Evt.nAtkSkillID);
 			if (act != null) {
-				act.AddHitResult (new cHitResult (cHitResult._TYPE._HIT, nAtkId, Evt.nAtkSkillID));
+				//act.AddHitResult (new cHitResult (cHitResult._TYPE._HIT, nAtkId, Evt.nAtkSkillID));
 				act.AddHitResult (new cHitResult (cHitResult._TYPE._BEHIT, nDefId, Evt.nAtkSkillID));
 
 				//add skill perform

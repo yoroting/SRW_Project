@@ -641,6 +641,9 @@ public class MyScript {
 				StageDelUnitEvent evt = new StageDelUnitEvent ();
 				//evt.eCamp = (_CAMP)func.I( 0 );
 				evt.nCharID = func.I( 0 );
+				evt.nDelType = 1; // always is leave mode
+
+
 				Panel_StageUI.Instance.OnStageDelUnitEvent( evt  ); 
 				//GameEventManager.DispatchEvent ( evt );
 
@@ -1006,7 +1009,9 @@ public class MyScript {
 				else if( func.sFunc  == "IS_GUARD") { // 被防衛
 					pool.Add( new IS_GUARD( ) );
 				}
-			
+				else if( func.sFunc  == "IS_THROUGH") { // 攻擊穿透
+					pool.Add( new IS_THROUGH( ) );
+				}
 				//===
 
 			

@@ -143,10 +143,45 @@ public class GameSystem : MonoBehaviour {
 	{
 		if (go == null || nFxid ==0 )
 			return null;
-	
+
+
 		FX fx =  ConstDataManager.Instance.GetRow<FX>( nFxid );
 		if (fx != null) {
-			return PlayFX( go , fx.s_FILENAME );
+			GameObject obj = null ;
+			// play on tile
+			if( fx.n_TAG == 3 )
+			{
+				obj = PlayFX( Panel_StageUI.Instance.TilePlaneObj , fx.s_FILENAME );
+				if( obj != null ){
+					obj.transform.localPosition = go.transform.localPosition;
+				}
+			}
+			else{
+				obj = PlayFX( go , fx.s_FILENAME );
+			}
+
+
+			if( obj != null ){
+				// rotate
+				if( (fx.f_ROTX != 0.0f) || (fx.f_ROTY != 0.0f) ){
+					obj.transform.localRotation = Quaternion.Euler( fx.f_ROTX , fx.f_ROTY , 0.0f );
+				}
+				// scale
+				if( fx.f_SACLE > 0.0f ){
+					ParticleSystem ps = obj.GetComponent<ParticleSystem>();
+					if( ps != null ){						
+							ps.startSize *=  fx.f_SACLE;						
+					}
+					ParticleSystem[] pss = obj.GetComponentsInChildren<ParticleSystem>();
+					foreach( ParticleSystem ps2 in pss )
+					{
+						ps2.startSize *=  fx.f_SACLE;
+					}
+				}
+			}
+
+
+			return obj;
 		}
 		return null;
 	}
@@ -169,6 +204,12 @@ public class GameSystem : MonoBehaviour {
 		if (psr != null) {
 			psr.sortingLayerName = "FX";
 		}
+		// for child
+		ParticleSystemRenderer[] psrs = instance.GetComponentsInChildren<ParticleSystemRenderer>();
+		foreach (ParticleSystemRenderer psr2 in psrs) {
+			psr2.sortingLayerName = "FX";
+		}
+
 		return instance;
 	}
 

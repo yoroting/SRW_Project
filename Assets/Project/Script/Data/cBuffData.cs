@@ -648,7 +648,6 @@ public class cBuffs
 		return false;
 	}
 
-
 	public List< cBuffSaveData > ExportSavePool(){
 		List< cBuffSaveData > pool = new List< cBuffSaveData > ();
 		foreach( KeyValuePair< int , cBuffData > pair in Pool  )

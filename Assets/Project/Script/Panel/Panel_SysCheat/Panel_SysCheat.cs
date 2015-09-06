@@ -22,6 +22,13 @@ public class Panel_SysCheat : MonoBehaviour {
 //	public GameObject StoryInput;           // Kill mode
 //	public GameObject StoryBtn;           // Set money
 
+	// pop mob
+	public GameObject CharIdInput;           // pop char id
+	public GameObject CampPoplist;           // sel camp
+	public GameObject PopMobBtn;           // Set money
+	public int nPopCharID;
+
+
 	// Use this for initialization
 	void Start () {
 		UIEventListener.Get(GodChk).onClick += OnGODClick; 
@@ -36,8 +43,9 @@ public class Panel_SysCheat : MonoBehaviour {
 		UIEventListener.Get(MoneyBtn).onClick += OnMoneyClick; 
 
 		//UIEventListener.Get(StoryPoplist).onSubmit += OnJumpStory; 
+		UIEventListener.Get(PopMobBtn).onClick += OnPopMobClick; 
 
-
+		///
 		UIPopupList popList = StoryPoplist.GetComponent<UIPopupList>();
 		if (popList != null) {		
 			//添加触发事件
@@ -52,7 +60,21 @@ public class Panel_SysCheat : MonoBehaviour {
 				}
 			}
 		}
+		// camp
+		UIPopupList campList = CampPoplist.GetComponent<UIPopupList>();
+		if (campList != null) {		
+			//添加触发事件
+			//	EventDelegate.Add (popList.onChange, label.SetCurrentSelection);
+			//EventDelegate.Add (popList.onChange, StoryComboboxChange);
+			
+			campList.Clear ();
+			 
+			campList.AddItem(_CAMP._PLAYER.ToString()  );
+			campList.AddItem(_CAMP._ENEMY.ToString() );
+			campList.AddItem(_CAMP._FRIEND.ToString());
 
+
+		}
 
 //		foreach(DataTable table in tableList)
 //		{
@@ -144,6 +166,37 @@ public class Panel_SysCheat : MonoBehaviour {
 		Panel_StageUI.Instance.CheckUnitDead (true);
 
 		PanelManager.Instance.CloseUI ( Name ); 
+	}
+
+	public void OnPopMobClick(GameObject go)
+	{
+		UIInput input = CharIdInput.GetComponent< UIInput> ();
+		int.TryParse (input.value , out  nPopCharID );
+		if (nPopCharID <= 0)
+			return;
+
+		_CAMP camp = _CAMP._PLAYER;
+		UIPopupList popList = CampPoplist.GetComponent<UIPopupList>();
+		if (popList != null) {	
+			if( popList.value.ToString() == _CAMP._PLAYER.ToString()  ){
+				camp = _CAMP._PLAYER;
+			}
+			else if( popList.value.ToString() == _CAMP._ENEMY.ToString()  ){
+				camp = _CAMP._ENEMY;
+			}
+			else if( popList.value.ToString() == _CAMP._FRIEND.ToString()  )
+			{
+				camp = _CAMP._FRIEND;
+			}
+		}
+
+		StagePopUnitEvent evt = new StagePopUnitEvent ();
+		evt.eCamp   = camp;
+		evt.nCharID = nPopCharID;
+		evt.nX		= cCMD.Instance.nCMDGridX;
+		evt.nY		= cCMD.Instance.nCMDGridY;
+		Panel_StageUI.Instance.OnStagePopUnitEvent( evt ); 
+
 	}
 
 

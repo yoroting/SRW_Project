@@ -16,7 +16,7 @@ public class FightBulletTween_Direction : MonoBehaviour {
 	public bool IsTweenEnd{ get{ return isTweenEnd; } }
 
 	/// <summary>移動速度值</summary>
-	private float moveSpeed = 30f;
+	private float moveSpeed = 30f; // 30.0f
 	/// <summary>目標移動速度值</summary>
 	private float targetMoveSpeed = 20f;
 	/// <summary>移動加速度</summary>
@@ -25,9 +25,9 @@ public class FightBulletTween_Direction : MonoBehaviour {
 	/// <summary>當前移動方向（角度）</summary>
 	private float nowAngle;
 	/// <summary>轉向速度值（變更角度的速度）</summary>
-	private float angleSpeed = 8f;
+	private float angleSpeed = 8.0f; // 8.0f
 	/// <summary>轉向加速度值（變更角度速度的加速度）</summary>
-	private float angleAddSpeed = 0.1f;
+	private float angleAddSpeed = 0.1f; // 0.1f
 
 
 	void Start(){

@@ -39,6 +39,12 @@ public class MyTool {
 
 	}
 
+	public static iVec2 SnyLocalPostoGrid( Vector3 v ,  ref MyGrids grids  )
+	{
+		iVec2 l = new iVec2( grids.GetGridX (v.x) , grids.GetGridY (v.y));
+		return l;
+	}
+
 	public static float GetEffectValue( float fValue , float fRate , float fPlus )
 	{
 		if( fRate < 0.0f ) fRate = 0.0f;

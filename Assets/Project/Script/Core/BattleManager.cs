@@ -31,7 +31,8 @@ public class cHitResult		//
 		_DELBUFF	,
 
 		_CAST		,		// cast skill
-		_HIT		,		// skill hit enemy
+		_CASTOUT	,		// cast out skill
+		//_HIT		,		// skill hit enemy
 		_BEHIT		,		// 被
 
 		_HITBACK	,
@@ -42,14 +43,15 @@ public class cHitResult		//
 	};
 
 
-	public cHitResult( _TYPE type , int ident , int value1 =0,int value2=0,int value3=0,int value4=0 )
+	public cHitResult( _TYPE type , int ident ,int value1 =0,int value2=0,int value3=0,int value4=0 )
 	{
 		eHitType = type;
 		Ident = ident; 
+	//	SkillID = skillid;
 		Value1 = value1;
 		Value2 = value2;
 		Value3 = value3;
-		Value3 = value4;
+		Value4 = value4;
 	}
 //	public cHitResult( int nAtkIdent , int nDefIdent )
 //	{
@@ -60,7 +62,7 @@ public class cHitResult		//
 	public _TYPE eHitType{ set; get;}
 
 	public int Ident{ set; get;}
-	public int SkillID{ set; get;}
+//	public int SkillID{ set; get;}
 	public int Value1{ set; get;}
 	public int Value2{ set; get;}
 	public int Value3{ set; get;}
@@ -208,6 +210,7 @@ public partial class BattleManager
 
 		switch (nPhase) {
 		case 0:	// prepare for event check
+			Panel_StageUI.Instance.ClearAVGObj();
 			// open CMD UI for def player
 			if ( Defer.eCampID  == _CAMP._PLAYER) {
 				// set open CMD 
@@ -325,6 +328,8 @@ public partial class BattleManager
 			nPhase++;
 			break;
 		case 5:			// atk -> def 
+			Panel_StageUI.Instance.FadeOutAVGObj();
+			//
 			uAction pAtkAction = ActionManager.Instance.CreateAttackAction(nAtkerID,nDeferID,nAtkerSkillID  );
 			if( pAtkAction != null )
 			{
@@ -337,7 +342,11 @@ public partial class BattleManager
 				//int nTarY = this.nTarGridY;
 
 				// get affectpool
-				GetAffectPool( Atker , Defer , Atker.FightAttr.SkillID , 0 , 0 , ref AtkAffectPool);
+				if (Atker.IsStates( _FIGHTSTATE._THROUGH ) ) {
+					GetThroughPool( Atker , Defer ,Atker.FightAttr.SkillID , 0 , 0 , ref AtkAffectPool );
+				}
+
+				GetAffectPool( Atker , Defer , Atker.FightAttr.SkillID , 0 , 0 , ref AtkAffectPool );
 				foreach( cUnitData unit in AtkAffectPool )
 				{
 					//=====================
@@ -391,6 +400,7 @@ public partial class BattleManager
 			nPhase++;
 			break;
 		case 6:
+			Panel_StageUI.Instance.ClearAVGObj();
 			if (bCanCounter){
 				ShowAtkAssist( nDeferID , nAtkerID );
 			}
@@ -404,6 +414,7 @@ public partial class BattleManager
 			break;
 
 		case 8:			//  def -> atk
+			Panel_StageUI.Instance.FadeOutAVGObj();
 			if ( bCanCounter ) {
 
 				uAction pCountAct = ActionManager.Instance.CreateAttackAction (nDeferID,nAtkerID, nDeferSkillID );
@@ -414,7 +425,9 @@ public partial class BattleManager
 //					CalDropResult( Defer , Atker );
 //					Defer.Buffs.OnHit( Atker , ref pCountAct.HitResult );
 				}
-
+				if (Defer.IsStates( _FIGHTSTATE._THROUGH ) ) {
+					GetThroughPool( Defer , Atker ,Defer.FightAttr.SkillID , 0 , 0 , ref AtkAffectPool );
+				}
 				GetAffectPool( Defer , Atker , Defer.FightAttr.SkillID , 0 , 0 , ref DefAffectPool );
 				foreach( cUnitData unit in DefAffectPool )
 				{
@@ -528,6 +541,7 @@ public partial class BattleManager
 			
 			// Do Counter
 			Clear ();
+
 			break;
 		}
 	}
@@ -540,6 +554,8 @@ public partial class BattleManager
 		
 		switch (nPhase) {
 		case 0:	// prepare for event check
+			Panel_StageUI.Instance.ClearAVGObj();
+
 			Atker.SetFightAttr (nDeferID, nAtkerSkillID);
 			Atker.AddStates (_FIGHTSTATE._ATKER);
 
@@ -554,6 +570,7 @@ public partial class BattleManager
 			nPhase++;
 			break;
 		case 1:			// hit
+			Panel_StageUI.Instance.FadeOutAVGObj();
 			// hit effect
 			uAction pAct = ActionManager.Instance.CreateHitAction ( nAtkerID, nTarGridX , nTarGridY , nAtkerSkillID );
 			if( pAct != null )
@@ -580,9 +597,16 @@ public partial class BattleManager
 				}
 
 				// Affect pool
-				GetAffectPool( Atker , Defer , Atker.FightAttr.SkillID , nTarX , nTarY , ref AtkAffectPool);
+				if (Atker.IsStates( _FIGHTSTATE._THROUGH ) ) {
+					if( bIsDamage ){
+						GetThroughPool( Atker , Defer ,Atker.FightAttr.SkillID , 0 , 0 , ref AtkAffectPool );
+					}
+				}
+
+				GetAffectPool( Atker , Defer , Atker.FightAttr.SkillID , nTarX , nTarY , ref AtkAffectPool );
 				foreach( cUnitData unit in AtkAffectPool )
 				{
+
 					if( unit == Defer  )
 						continue;
 					//=====================
@@ -651,6 +675,7 @@ public partial class BattleManager
 			
 			// action finish in atk action
 			Clear ();
+			Panel_StageUI.Instance.ClearAVGObj();
 			break;
 		}
 	}
@@ -1002,7 +1027,7 @@ public partial class BattleManager
 		}
 	}
 
-	public void ShowAtkAssist( int nAtkIdent ,  int nDefIdent )
+	public void ShowAtkAssist( int nAtkIdent ,  int nDefIdent , bool bShow = true )
 	{
 		cUnitData pAtker = GameDataManager.Instance.GetUnitDateByIdent ( nAtkIdent );
 		if ( pAtker == null)
@@ -1031,11 +1056,13 @@ public partial class BattleManager
 				}
 
 				// addto cc pool?
-				ShowBattleMsg( pair.Key , "助攻");
-
+				if(bShow== true ){
+					ShowBattleMsg( pair.Key , "助攻");
+					// AVG obj
+					Panel_StageUI.Instance.AddAVGObj( pair.Key  , true , true );
+				}
 				// add to pool regedit to unit data?
 				pAtker.FightAttr.fAtkAssist += Config.AssistRate;
-
 			}
 		}
 
@@ -1066,9 +1093,13 @@ public partial class BattleManager
 				// addto cc pool?
 				if( bShow == true ){
 					ShowBattleMsg( pair.Key , "協防");
+					// AVG obj
+					Panel_StageUI.Instance.AddAVGObj( pair.Key , true , false );
 				}
 				//
 				pDefer.FightAttr.fDefAssist += Config.AssistRate;
+
+
 			}
 		}
 	}
@@ -1084,7 +1115,41 @@ public partial class BattleManager
 		return ( eDefCmdID == _CMD_ID._DEF );
 	}
 
-	public void GetAffectPool( cUnitData Atker , cUnitData Defer , int SkillID , int nTarX , int nTarY , ref List< cUnitData> pool )
+	public void GetThroughPool( cUnitData Atker , cUnitData Defer , int SkillID , int nTarX , int nTarY  , ref List< cUnitData> pool, int nLen=1  )
+	{
+		int nDefer = 0;
+		if( Defer != null ){
+			nTarX = Defer.n_X;
+			nTarY = Defer.n_Y;
+			nDefer = Defer.n_Ident;
+		}
+
+		if( pool == null ){
+			pool = new List< cUnitData > ();
+		}
+
+		// Get through effect
+
+		_DIR dir = iVec2.Get8Dir( Atker.n_X ,Atker.n_Y , nTarX , nTarY );
+		iVec2 v = new iVec2( nTarX , nTarY );
+		for( int i = 0 ; i < nLen ; i++ ){
+			v = iVec2.Move8Dir(  v.X , v.Y , dir );
+			cUnitData pUnit = GameDataManager.Instance.GetUnitDateByPos( v.X  ,v.Y );
+			if( pUnit != null ){
+					// defer don't add . he have a spec process
+			if( pUnit.n_Ident == nDefer )  
+					continue;
+				
+			if(  CanPK( Atker.eCampID , pUnit.eCampID ) == true ){
+				if( pool.IndexOf( pUnit )< 0 ){
+					pool.Add( pUnit );
+				}
+			}
+			}
+		}
+	}
+
+	public void GetAffectPool( cUnitData Atker , cUnitData Defer , int SkillID , int nTarX , int nTarY , ref List< cUnitData> pool  )
 	{
 		// don't push defer to affect pool
 		int nDefer = 0;
@@ -1114,7 +1179,7 @@ public partial class BattleManager
 		//      5-MAP-all 
 		bool bCanPK = false;
 		bool bAll = false;
-		if ((skl.n_TARGET == 1) || (skl.n_TARGET == 3)) {
+		if ((skl.n_TARGET == 1) || (skl.n_TARGET == 3) || (skl.n_TARGET == 7)) {
 			bCanPK = true;
 		} else if( skl.n_TARGET == 5 ){
 			bAll = true;
@@ -1128,18 +1193,23 @@ public partial class BattleManager
 				// defer don't add . he have a spec process
 				if( pUnit.n_Ident == nDefer )  
 					continue;
-
 				 
 				if( bAll == true ){ // all is no need check
-					pool.Add( pUnit );
+					if( pool.IndexOf( pUnit )< 0 ){
+						pool.Add( pUnit );
+					}
 					continue;
 				}
 
 				if(  CanPK( Atker.eCampID , pUnit.eCampID ) == bCanPK ){
-					pool.Add( pUnit );
+					if( pool.IndexOf( pUnit )< 0 ){
+						pool.Add( pUnit );
+					}
 				}
 			}
 		}
+
+
 		//=============================================================
 //		if( pool.Count == 0 ){
 //			Debug.Log( " GetAffectPool with 0 ");
@@ -1212,7 +1282,7 @@ public partial class BattleManager
 		// create result pool
 
 		List<cHitResult> resPool = new List<cHitResult> ();
-		resPool.Add ( new cHitResult( cHitResult._TYPE._HIT ,nAtker , nDefer  ) );
+	//	resPool.Add ( new cHitResult( cHitResult._TYPE._HIT ,nAtker , nDefer  ) );
 
 
 		// 守方強制迴避

@@ -20,7 +20,7 @@ public enum _FIGHTSTATE
 	_CIRIT	 ,		// 報擊
 	_MERCY	 ,		// 留情
 	_GUARD   ,		// 防衛	
-
+	_THROUGH  ,		// 穿透
 
 	// 
 	_KILL		,  //本次戰鬥有殺人
@@ -1264,8 +1264,8 @@ public class cUnitData{
 		FightAttr.SkillData = GameDataManager.Instance.GetSkillData(SkillID) ;   //new cSkillData ( ConstDataManager.Instance.GetRow< SKILL> ( SkillID ) );
 
 
-		// GET buff status 
-		GetBuffStatus ();
+		//// GET buff status 
+		//GetBuffStatus ();
 
 		// get skill data
 
@@ -1421,21 +1421,21 @@ public class cUnitData{
 		n_Y = n_BornY;
 	}
 
-	public void GetBuffStatus( ){
-		if (Buffs.CheckStatus ( _FIGHTSTATE._DODGE )) {
-			AddStates( _FIGHTSTATE._DODGE );
-		}
-		if (Buffs.CheckStatus ( _FIGHTSTATE._CIRIT )) {
-			AddStates( _FIGHTSTATE._CIRIT );
-		}
-
-		if (Buffs.CheckStatus ( _FIGHTSTATE._MERCY )) {
-			AddStates( _FIGHTSTATE._MERCY );
-		}
-		if (Buffs.CheckStatus ( _FIGHTSTATE._GUARD )) {
-			AddStates( _FIGHTSTATE._GUARD );
-		}
-	}
+//	public void GetBuffStatus( ){
+//		if (Buffs.CheckStatus ( _FIGHTSTATE._DODGE )) {
+//			AddStates( _FIGHTSTATE._DODGE );
+//		}
+//		if (Buffs.CheckStatus ( _FIGHTSTATE._CIRIT )) {
+//			AddStates( _FIGHTSTATE._CIRIT );
+//		}
+//
+//		if (Buffs.CheckStatus ( _FIGHTSTATE._MERCY )) {
+//			AddStates( _FIGHTSTATE._MERCY );
+//		}
+//		if (Buffs.CheckStatus ( _FIGHTSTATE._GUARD )) {
+//			AddStates( _FIGHTSTATE._GUARD );
+//		}
+//	}
 
 	public bool IsDead(){ return (n_HP <= 0); }
 
@@ -1458,9 +1458,23 @@ public class cUnitData{
 	
 	}
 
-	public bool IsStates( _FIGHTSTATE st ){  return (GetStates ().IndexOf(st)>=0); }
-
-
+	public bool IsStates( _FIGHTSTATE st ){ 
+		if (GetStates ().IndexOf (st) >= 0) {
+			return true;
+		}	
+		return Buffs.CheckStatus (st);
+	}
+//	public bool GetStateValue( _FIGHTSTATE st , out float f , out int i )
+//	{
+//		bool bFind = false;
+//		f = 0.0f;
+//		i = 0;
+//
+//
+//
+//		return bFind;
+//	}
+		 
 	public void RemoveStates( _FIGHTSTATE st ){
 		GetStates ().Remove (st);
 	}
