@@ -404,7 +404,7 @@ public partial class ActionManager
 						}break;		
 						case cHitResult._TYPE._BEHIT: // be Hit fX
 						{
-							BattleManager.Instance.ShowBattleFX( res.Ident , "CFXM4 Hit B (Orange, CFX Blend)"  );
+							BattleManager.Instance.ShowBattleFX( res.Ident , 3 );
 							// it should have fx
 						
 						}break;	

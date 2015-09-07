@@ -131,17 +131,18 @@ public class Panel_unit : MonoBehaviour {
 
 
 		//UIEventListener.Get ( this.gameObject ).onClick
-		GameObject instance = ResourcesManager.CreatePrefabGameObj ( this.gameObject ,"FX/Cartoon FX/CFXM4 SmokePuff Ground B" );
-		
-		ParticleSystem ps =instance.GetComponent< ParticleSystem>();
-		if (ps!= null) {
-			
-		}
-		ParticleSystemRenderer psr =instance.GetComponent< ParticleSystemRenderer>();
-		if (psr != null) {
-			psr.sortingLayerName = "FX";
-		}
-		
+//		GameObject instance = ResourcesManager.CreatePrefabGameObj ( this.gameObject ,"FX/Cartoon FX/CFXM4 SmokePuff Ground B" );
+//		
+//		ParticleSystem ps =instance.GetComponent< ParticleSystem>();
+//		if (ps!= null) {
+//			
+//		}
+//		ParticleSystemRenderer psr =instance.GetComponent< ParticleSystemRenderer>();
+//		if (psr != null) {
+//			psr.sortingLayerName = "FX";
+//		}
+
+
 		SetBorn (); // start born animate
 	}
 
@@ -1337,6 +1338,7 @@ public class Panel_unit : MonoBehaviour {
 			MyTool.TweenSetOneShotOnFinish( tw , OnBornFinish );
 		}
 
+		GameSystem.PlayFX (gameObject, 1);
 	}
 	public void OnBornFinish()
 	{

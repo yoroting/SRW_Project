@@ -195,7 +195,12 @@ public class GameSystem : MonoBehaviour {
 		string path = "FX/Cartoon FX/" + name;
 
 		GameObject instance = ResourcesManager.CreatePrefabGameObj ( go ,path );
-		
+		if (instance == null) {
+			Debug.LogErrorFormat( " PlayFX fail can't load file {0}",path );
+			return null;
+		}
+
+
 		ParticleSystem ps =instance.GetComponent< ParticleSystem>();
 		if (ps!= null) {
 			
@@ -209,6 +214,9 @@ public class GameSystem : MonoBehaviour {
 		foreach (ParticleSystemRenderer psr2 in psrs) {
 			psr2.sortingLayerName = "UI";
 		}
+
+		AutoParticleQueue q = instance.AddComponent <AutoParticleQueue>();
+
 
 		return instance;
 	}

@@ -925,7 +925,7 @@ public partial class BattleManager
 
 	}
 
-	public void ShowBattleFX( int nIdent , string fx )
+	public void ShowBattleFX( int nIdent , int nFxId )
 	{
 		Panel_unit unit = Panel_StageUI.Instance.GetUnitByIdent( nIdent ); 
 		if (unit == null)
@@ -933,7 +933,7 @@ public partial class BattleManager
 
 		//string path = "FX/Cartoon FX/" + fx;
 		//GameObject go = ResourcesManager.CreatePrefabGameObj ( unit.gameObject , fx );
-		GameObject go = GameSystem.PlayFX ( unit.gameObject , fx  );
+		GameObject go = GameSystem.PlayFX ( unit.gameObject , nFxId  );
 		if (go != null) {
 
 		}
