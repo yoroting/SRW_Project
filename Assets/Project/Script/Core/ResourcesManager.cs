@@ -44,6 +44,7 @@ public class ResourcesManager {
 		if(clip == null){
 			Debug.LogError("音效資源讀取失敗:" + audioPath);
 		}
+		//clip.loadInBackground = true;
 		return clip; 
 	}
 

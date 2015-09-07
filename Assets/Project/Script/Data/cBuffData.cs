@@ -481,6 +481,17 @@ public class cBuffs
 	{
 		if (Pool.Count == 0)
 			return;
+//		// dodge 
+//		if( unit_e != null ){
+//			if( unit_e.IsStates(_FIGHTSTATE._DODGE)  ){
+//				return ;
+//			}
+//		}
+//		// miss
+//		if( Owner.IsStates( _FIGHTSTATE._MISS ) ){
+//			return ;
+//		}
+
 		// normal hit
 		foreach( KeyValuePair< int , cBuffData > pair in Pool )
 		{

@@ -190,6 +190,12 @@ public class Panel_SysCheat : MonoBehaviour {
 			}
 		}
 
+		if( camp == _CAMP._PLAYER )
+		{
+			GameDataManager.Instance.RemoveStorageUnit( nPopCharID ); // to avoid re use storage data
+		}
+
+
 		StagePopUnitEvent evt = new StagePopUnitEvent ();
 		evt.eCamp   = camp;
 		evt.nCharID = nPopCharID;

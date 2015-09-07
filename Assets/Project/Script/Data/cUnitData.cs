@@ -21,7 +21,8 @@ public enum _FIGHTSTATE
 	_MERCY	 ,		// 留情
 	_GUARD   ,		// 防衛	
 	_THROUGH  ,		// 穿透
-
+	_MISS		,	// 失誤
+	_COMBO	,		// 攻擊後強制原地再次攻擊
 	// 
 	_KILL		,  //本次戰鬥有殺人
 
@@ -35,6 +36,7 @@ public enum _UNITTAG
 	_UNDEAD = 1 ,   // 除非隊長死否則無限重生
 	_CHARGE = 2 ,    // 突襲移動. no block
 	_NODIE	= 3 ,		// 不死身... 劇情NPC
+	_SILENCE = 4 ,    // can't  skill
 }
 //
 public enum _ITEMSLOT
@@ -103,6 +105,8 @@ public class cAttrData
 	public float fBurstRate;	//	曾商
 	public float fDamageRate; 	// 承受傷害
 
+	public float fDrainHpRate;  // 
+	public float fDrainMpRate;  //
 
 	public float fDropRate;
 	public float fMpCostRate;
@@ -124,6 +128,9 @@ public class cAttrData
 
 		fBurstRate = 0.0f;
 		fDamageRate = 0.0f;
+
+		fDrainHpRate =0.0f;  // 
+		fDrainMpRate =0.0f;  //
 
 		fDropRate = 0.0f;
 		fMpCostRate = 0.0f;
@@ -1252,6 +1259,37 @@ public class cUnitData{
 		if (f < 0.0f )			f = 0.0f;
 		return f;
 	}
+
+	public float GetDrainHP()
+	{
+		UpdateAttr(  ); // update first to get newest data
+		
+		float fDrainHpRate = 0.0f;
+		foreach( KeyValuePair< int ,cAttrData > pair  in Attr )
+		{
+			fDrainHpRate +=pair.Value.fDrainHpRate;
+		}
+		if (fDrainHpRate < 0.0f)
+			fDrainHpRate = 0.0f;		
+		return fDrainHpRate;
+	}
+
+
+	public float GetDrainMP()
+	{
+		UpdateAttr(  ); // update first to get newest data
+
+		float fDrainMpRate = 0.0f;
+		foreach( KeyValuePair< int ,cAttrData > pair  in Attr )
+		{
+			fDrainMpRate +=pair.Value.fDrainMpRate;
+		}
+		if (fDrainMpRate < 0.0f)
+			fDrainMpRate = 0.0f;
+
+		return fDrainMpRate;
+	}
+
 	// Fight Attr
 	public void SetFightAttr( int nTarId , int SkillID )
 	{

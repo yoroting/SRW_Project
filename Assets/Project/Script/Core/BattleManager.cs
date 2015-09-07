@@ -1414,6 +1414,23 @@ public partial class BattleManager
 		resPool.Add ( new cHitResult( cHitResult._TYPE._HP ,nDefer , nDefHp  ) );
 		resPool.Add ( new cHitResult( cHitResult._TYPE._CP ,nDefer , 1  ) ); // def add 1 cp
 
+		// drain hp / mp
+		float fDrainHpRate = pAtker.GetDrainHP();
+		float fDrainMpRate = pAtker.GetDrainMP();
+		if( (nDefHp < 0) &&  fDrainHpRate > 0.0f ){
+			int nDrainHP = -(int)(nDefHp*fDrainHpRate);
+			if( nDrainHP != 0 ){
+				resPool.Add ( new cHitResult( cHitResult._TYPE._HP ,nAtker , nDrainHP  ) );
+			}
+		}
+
+		if( fDrainMpRate>0.0f  )
+		{
+			int nDrainMp = (int)(pDefer.GetMaxMP()*fDrainMpRate);
+			if( nDrainMp != 0 ){
+				resPool.Add ( new cHitResult( cHitResult._TYPE._MP ,nAtker , nDrainMp  ) );
+			}
+		}
 
 		//有傷害的才會造成掉落
 		CalDropResult( pAtker , pDefer );
@@ -1427,10 +1444,13 @@ public partial class BattleManager
 		if ( (pAtker == null) || (pDefer == null) )
 			return null;
 
-		// 守方強制迴避- Yoro 不能下在這裡。會造成一些該上的BUFF沒上到
-	//	if (pDefer.IsStates (_FIGHTSTATE._DODGE)) {		
-//			return null;
-//		}
+		// 守方強制迴避- Yoro : 需過濾非攻擊性技能
+		bool bIsDamage =  MyTool.IsDamageSkill( nSkillID );
+		if( bIsDamage ){
+			if (pDefer.IsStates (_FIGHTSTATE._DODGE)) {		
+				return null;
+			}
+		}
 
 		List<cHitResult> resPool = new List<cHitResult> ();
 	

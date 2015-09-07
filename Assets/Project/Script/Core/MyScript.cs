@@ -950,9 +950,12 @@ public class MyScript {
 				else if( func.sFunc  == "ADD_MAXSP") {
 					pool.Add( new ADD_MAXSP( func.I(0) ) );
 				}
-
-
-
+				else if( func.sFunc  == "MUL_DRAINHP") {
+					pool.Add( new MUL_DRAINHP( func.I(0) ) );
+				}
+				else if( func.sFunc  == "MUL_DRAINMP") {
+					pool.Add( new MUL_DRAINMP( func.I(0) ) );
+				}
 				else if( func.sFunc  == "ADD_MOVE") 
 				{
 					pool.Add( new ADD_MOVE( func.I(0) ) );
@@ -995,6 +998,9 @@ public class MyScript {
 				else if( func.sFunc  == "TAG_NODIE") {  // 不死身
 					pool.Add( new TAG_NODIE( ) );
 				}
+				else if( func.sFunc  == "TAG_SILENCE") {  // 被封言
+					pool.Add( new TAG_SILENCE( ) );
+				}
 				//=============== fight status
 				else if( func.sFunc  == "IS_DODGE") { // 必閃
 					pool.Add( new IS_DODGE( ) );
@@ -1011,6 +1017,12 @@ public class MyScript {
 				}
 				else if( func.sFunc  == "IS_THROUGH") { // 攻擊穿透
 					pool.Add( new IS_THROUGH( ) );
+				}
+				else if( func.sFunc  == "IS_MISS") { // 失誤
+					pool.Add( new IS_MISS( ) );
+				}
+				else if( func.sFunc  == "IS_COMBO") { // 失誤
+					pool.Add( new IS_COMBO( ) );
 				}
 				//===
 

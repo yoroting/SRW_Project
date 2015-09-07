@@ -202,12 +202,12 @@ public class GameSystem : MonoBehaviour {
 		}
 		ParticleSystemRenderer psr =instance.GetComponent< ParticleSystemRenderer>();
 		if (psr != null) {
-			psr.sortingLayerName = "FX";
+			psr.sortingLayerName = "UI";
 		}
 		// for child
 		ParticleSystemRenderer[] psrs = instance.GetComponentsInChildren<ParticleSystemRenderer>();
 		foreach (ParticleSystemRenderer psr2 in psrs) {
-			psr2.sortingLayerName = "FX";
+			psr2.sortingLayerName = "UI";
 		}
 
 		return instance;

@@ -245,6 +245,8 @@ public class ADD_MAXSP: cEffect
 	}
 }
 
+
+
 public class ADD_MOVE: cEffect
 {
 	public ADD_MOVE( int n ){		nValue = n;	}
@@ -418,6 +420,24 @@ public class MUL_MAXSP: cEffect
 		}
 	}
 }
+//====  Drain ===
+public class MUL_DRAINHP: cEffect
+{
+	public MUL_DRAINHP( float v ){ fValue = v;}
+	public float fValue ;	
+	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
+		attr.fDrainHpRate += fValue;
+	}
+}
+
+public class MUL_DRAINMP: cEffect
+{
+	public MUL_DRAINMP( float v ){ fValue = v;}
+	public float fValue ;	
+	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
+		attr.fDrainMpRate += fValue;
+	}
+}
 
 
 //==== cost ==
@@ -457,6 +477,15 @@ public class TAG_NODIE: cEffect
 		return (_UNITTAG._NODIE == tag );
 	}				// check user in one status		
 }
+public class TAG_SILENCE: cEffect
+{
+	public TAG_SILENCE(  ){ }	
+	
+	override public bool _IsTag(  _UNITTAG tag ){
+		return (_UNITTAG._SILENCE == tag );
+	}				// check user in one status		
+}
+
 //==== is status ==
 public class IS_DODGE: cEffect
 {
@@ -496,6 +525,22 @@ public class IS_THROUGH: cEffect
 	
 	override public bool _IsStatus(  _FIGHTSTATE st ){
 		return (st == _FIGHTSTATE._THROUGH);
+	}				// check user in one status		
+}
+public class IS_MISS: cEffect
+{
+	public IS_MISS( ){	}	
+	
+	override public bool _IsStatus(  _FIGHTSTATE st ){
+		return (st == _FIGHTSTATE._MISS);
+	}				// check user in one status		
+}
+public class IS_COMBO: cEffect
+{
+	public IS_COMBO( ){	}	
+	
+	override public bool _IsStatus(  _FIGHTSTATE st ){
+		return (st == _FIGHTSTATE._COMBO);
 	}				// check user in one status		
 }
 //==========================================================================
