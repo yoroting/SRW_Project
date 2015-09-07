@@ -31,7 +31,7 @@ public class MapEditor : MonoBehaviour
 
     public MyGrids Grids = new MyGrids();				// main grids . only one    // Use this for initialization
     public GameObject TilePlaneObj; // plane of all tiles sprite
-    
+
     /// <summary>
     /// 要給編輯器讀取的場景名稱
     /// </summary>
@@ -47,6 +47,12 @@ public class MapEditor : MonoBehaviour
     float fMaxOffX;
     float fMinOffY;
     float fMaxOffY;
+
+    /// <summary>
+    /// 背景圖片物件
+    /// </summary>
+    private GameObject _backGroundObject;
+
 
     /// <summary>
     /// Const Data資料
@@ -140,6 +146,10 @@ public class MapEditor : MonoBehaviour
 
         if (Grids.Load(www.bytes) == true)
         {
+            if (_backGroundObject == null)
+                _backGroundObject = Panel_StageUI.CreateBackgroundTexture(gameObject, Grids.TotalW, Grids.TotalH, Grids.sBackGround);
+            else
+                Panel_StageUI.ChangeBackgroundTexture(_backGroundObject, Grids.TotalW, Grids.TotalH, Grids.sBackGround);
             CreateSprite();
         }
     }
@@ -147,6 +157,16 @@ public class MapEditor : MonoBehaviour
     public void ClearScene()
     {
         MyTool.DestoryImmediateAllChildren(TilePlaneObj);
+
+        UITexture backgroundTexture = _backGroundObject.GetComponent<UITexture>();
+        backgroundTexture.mainTexture = null;
+    }
+
+    public void ChangeBackground(string name)
+    {
+        Grids.sBackGround = name;
+        Panel_StageUI.ChangeBackgroundTexture(_backGroundObject, Grids.TotalW, Grids.TotalH, name);
+        NGUITools.SetDirty(_backGroundObject);
     }
 
     private void CreateSprite()

@@ -940,11 +940,14 @@ public class Panel_StageUI : MonoBehaviour
 			{
 				NGUITools.Destroy( go );
 			}
-			GameObject background =  GetBackGroundPrefab( Grids );
-			if( background != null ){
 
-			}			// start to create sprite
-			for( int i = -Grids.hW ; i <= Grids.hW ; i++ ){
+            CreateBackgroundTexture(TilePlaneObj, Grids.TotalW, Grids.TotalH, "Art/MAP/" + "20738-1");
+            //GameObject background =  GetBackGroundPrefab( Grids );
+            //if( background != null ){
+
+            //}
+            // start to create sprite
+            for ( int i = -Grids.hW ; i <= Grids.hW ; i++ ){
 				for( int j = -Grids.hH ; j <= Grids.hH ; j++ )
 				{			
 					_TILE t = Grids.GetValue( i , j  );
@@ -1067,33 +1070,72 @@ public class Panel_StageUI : MonoBehaviour
 
 		return null;
 	}
-	GameObject GetBackGroundPrefab( MyGrids grid )
-	{
-		GameObject obj = ResourcesManager.CreatePrefabGameObj(TilePlaneObj, "Prefab/BGTexture");
-		UITexture uitex = obj.GetComponent<UITexture>(); 
-		if( uitex != null )
-		{
-			//string url = "Art/map/" + grid.sBackGround;
-			string url = "Art/MAP/" + "20738-1";
-			//Texture2D tex = Resources.LoadAssetAtPath(url, typeof(Texture2D)) as Texture2D;
-			Texture t= Resources.Load( url , typeof(Texture) ) as Texture; ;
-			uitex.mainTexture = t;				
 
-			uitex.width = grid.TotalW;
-			uitex.height = grid.TotalH;
-			uitex.depth = -1; // < 0 
+    /// <summary>
+    /// 產生背景圖片
+    /// </summary>
+    /// <param name="parent"></param>
+    /// <param name="width"></param>
+    /// <param name="height"></param>
+    /// <param name="name"></param>
+    public static GameObject CreateBackgroundTexture(GameObject parent, int width, int height, string name)
+    {
+        GameObject obj = ResourcesManager.CreatePrefabGameObj(parent, "Prefab/BGTexture");
+        ChangeBackgroundTexture(obj, width, height, name);
 
-		}
-		UIDragObject drag = obj.GetComponent<UIDragObject>(); 
-		if( drag != null )
-		{
-			drag.target = TilePlaneObj.transform ;
-			
-		}
-		return obj;
-	}
+        return obj;
+    }
 
-	public GameObject SpwanBattleValueObj( )
+    public static void ChangeBackgroundTexture(GameObject gameObject, int width, int height, string name)
+    {
+        UITexture uitex = gameObject.GetComponent<UITexture>();
+        if (uitex != null)
+        {
+            //string url = "Art/map/" + grid.sBackGround;
+            //string url = "Art/MAP/" + "20738-1";
+            //Texture2D tex = Resources.LoadAssetAtPath(url, typeof(Texture2D)) as Texture2D;
+            Texture t = Resources.Load(name, typeof(Texture)) as Texture; ;
+            uitex.mainTexture = t;
+
+            uitex.width = width;
+            uitex.height = height;
+            uitex.depth = -1; // < 0 
+
+        }
+        UIDragObject drag = gameObject.GetComponent<UIDragObject>();
+        if (drag != null)
+        {
+            drag.target = gameObject.transform.parent.transform;
+        }
+    }
+
+    //GameObject GetBackGroundPrefab(MyGrids grid)
+    //{
+    //    GameObject obj = ResourcesManager.CreatePrefabGameObj(TilePlaneObj, "Prefab/BGTexture");
+    //    UITexture uitex = obj.GetComponent<UITexture>();
+    //    if (uitex != null)
+    //    {
+    //        //string url = "Art/map/" + grid.sBackGround;
+    //        string url = "Art/MAP/" + "20738-1";
+    //        //Texture2D tex = Resources.LoadAssetAtPath(url, typeof(Texture2D)) as Texture2D;
+    //        Texture t = Resources.Load(url, typeof(Texture)) as Texture; ;
+    //        uitex.mainTexture = t;
+
+    //        uitex.width = grid.TotalW;
+    //        uitex.height = grid.TotalH;
+    //        uitex.depth = -1; // < 0 
+
+    //    }
+    //    UIDragObject drag = obj.GetComponent<UIDragObject>();
+    //    if (drag != null)
+    //    {
+    //        drag.target = TilePlaneObj.transform;
+
+    //    }
+    //    return obj;
+    //}
+
+    public GameObject SpwanBattleValueObj( )
 	{
 		GameObject go = ValueEftObj.Spawn( MaskPanelObj.transform );
 		go.SetActive (true);

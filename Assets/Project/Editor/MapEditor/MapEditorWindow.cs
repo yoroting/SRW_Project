@@ -17,6 +17,14 @@ public class MapEditorWindow : EditorWindow
     /// </summary>
     private string _sceneFilePath = "";
     /// <summary>
+    /// 背景圖片名稱
+    /// </summary>
+    private string _backgroundName = "";
+    /// <summary>
+    /// 背景圖路徑
+    /// </summary>
+    private string _backgroundPath = "";
+    /// <summary>
     /// 地上物要種的layer
     /// </summary>
     private static string _thingLayerTextFieldString = "1";
@@ -60,11 +68,32 @@ public class MapEditorWindow : EditorWindow
             //_mapEdtor.LoadScene(_mapEdtor.MapName);
             _sceneFilePath = EditorUtility.OpenFilePanel(
                 "Select Scene File",
-                "./Assets/StreamAssets/",
+                "Assets/StreamAssets/",
                 "scn");
             if (_sceneFilePath.Length != 0)
             {
                 _mapEditor.LoadScene(System.IO.Path.GetFileNameWithoutExtension(_sceneFilePath));
+            }
+        }
+        GUILayout.EndHorizontal();
+        #endregion
+
+        GUILayout.Space(16);
+
+        #region 背景圖
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("Background", GUILayout.Height(16));
+        GUILayout.Label(_backgroundName, GUILayout.Height(16));
+        if (GUILayout.Button("Select", GUILayout.Height(16)))
+        {
+            _backgroundPath = EditorUtility.OpenFilePanel(
+                "Select Background",
+                "Assets/Project/Resources/Art/MAP",
+                "png");
+            if (_backgroundPath.Length != 0)
+            {
+                _backgroundName = System.IO.Path.GetFileNameWithoutExtension(_backgroundPath);
+                _mapEditor.ChangeBackground("Art/MAP/" + _backgroundName);
             }
         }
         GUILayout.EndHorizontal();
