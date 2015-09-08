@@ -187,7 +187,7 @@ public class GameSystem : MonoBehaviour {
 	}
 
 
-	public static GameObject PlayFX( GameObject go , string name )
+	public static GameObject PlayFX( GameObject go , string name , string sortLayer="UI")
 	{
 		if (go == null)
 			return null;
@@ -207,15 +207,23 @@ public class GameSystem : MonoBehaviour {
 		}
 		ParticleSystemRenderer psr =instance.GetComponent< ParticleSystemRenderer>();
 		if (psr != null) {
-			psr.sortingLayerName = "UI";
+			psr.sortingLayerName =sortLayer;
 		}
 		// for child
 		ParticleSystemRenderer[] psrs = instance.GetComponentsInChildren<ParticleSystemRenderer>();
 		foreach (ParticleSystemRenderer psr2 in psrs) {
-			psr2.sortingLayerName = "UI";
+			psr2.sortingLayerName = sortLayer;
 		}
 
 		AutoParticleQueue q = instance.AddComponent <AutoParticleQueue>();
+		//q.se
+
+		//check auto destory
+		CFX_AutoDestructShuriken des = instance.GetComponent< CFX_AutoDestructShuriken > ();
+		killParticle kill = instance.GetComponent< killParticle > ();
+		if( des == null && kill == null ){
+			Debug.LogErrorFormat( " particle won't auto destory at {0}",name );
+		}
 
 
 		return instance;

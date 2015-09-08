@@ -62,6 +62,10 @@ public class AutoParticleQueue : MonoBehaviour
 		cacheRenderer = null;
 	}
 
+	public void SetQueueOffset( int nOffset ){
+		queueOffset = nOffset;
+	}
+
 	private void SetQueue(int queue){
 		if(cacheGameObject == null)
 			return;

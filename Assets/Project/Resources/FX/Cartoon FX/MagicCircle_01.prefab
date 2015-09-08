@@ -82,7 +82,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 127552}
-  m_LocalRotation: {x: -.707106829, y: 0, z: 0, w: .707106829}
+  m_LocalRotation: {x: -.5, y: 0, z: 0, w: .866025388}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -279,7 +279,7 @@ ParticleSystem:
         rgba: 4278204920
       minMaxState: 0
     startSize:
-      scalar: 2.1500001
+      scalar: .404000014
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1332,7 +1332,7 @@ ParticleSystem:
         rgba: 4294967295
       minMaxState: 0
     startSize:
-      scalar: 2.1500001
+      scalar: .404000014
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2258,7 +2258,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 0
     startSpeed:
-      scalar: 5
+      scalar: 1
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2273,7 +2273,7 @@ ParticleSystem:
         serializedVersion: 2
         m_Curve:
         - time: 0
-          value: .400000006
+          value: .399999976
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -2375,7 +2375,7 @@ ParticleSystem:
         rgba: 4278217215
       minMaxState: 0
     startSize:
-      scalar: 3
+      scalar: .600000024
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2427,7 +2427,7 @@ ParticleSystem:
     serializedVersion: 2
     enabled: 1
     type: 4
-    radius: 3.5
+    radius: 250
     angle: 0
     length: 5
     boxX: 1
@@ -3355,7 +3355,19 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: ShapeModule.radius
+      value: 250
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_LocalRotation.x
+      value: -.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_LocalRotation.w
+      value: .866025388
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 127552}

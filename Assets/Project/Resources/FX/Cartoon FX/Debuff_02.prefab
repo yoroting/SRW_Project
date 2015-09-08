@@ -59,7 +59,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 133164}
-  m_LocalRotation: {x: -.707106888, y: 0, z: 0, w: .707106769}
+  m_LocalRotation: {x: -.382683486, y: 0, z: 0, w: .923879564}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -165,7 +165,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 0
     startSpeed:
-      scalar: 20
+      scalar: 2
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -339,12 +339,12 @@ ParticleSystem:
       minMaxState: 3
     gravityModifier: 1
     inheritVelocity: 0
-    maxNumParticles: 300
+    maxNumParticles: 20
   ShapeModule:
     serializedVersion: 2
     enabled: 1
     type: 4
-    radius: 2
+    radius: 100
     angle: 25
     length: 0
     boxX: 1
@@ -1173,7 +1173,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 0
     startSpeed:
-      scalar: 20
+      scalar: 2
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1300,7 +1300,7 @@ ParticleSystem:
         rgba: 4278190114
       minMaxState: 0
     startSize:
-      scalar: 2
+      scalar: .200000003
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1347,12 +1347,12 @@ ParticleSystem:
       minMaxState: 3
     gravityModifier: 5
     inheritVelocity: 0
-    maxNumParticles: 50
+    maxNumParticles: 10
   ShapeModule:
     serializedVersion: 2
     enabled: 1
     type: 4
-    radius: 1
+    radius: 50
     angle: 10
     length: 5
     boxX: 1
@@ -2176,7 +2176,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 0
     startSpeed:
-      scalar: 20
+      scalar: 2
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2303,7 +2303,7 @@ ParticleSystem:
         rgba: 4278190153
       minMaxState: 0
     startSize:
-      scalar: 2
+      scalar: .200000003
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2350,12 +2350,12 @@ ParticleSystem:
       minMaxState: 3
     gravityModifier: 7
     inheritVelocity: 0
-    maxNumParticles: 50
+    maxNumParticles: 10
   ShapeModule:
     serializedVersion: 2
     enabled: 1
     type: 4
-    radius: 1
+    radius: 50
     angle: 0
     length: 5
     boxX: 1

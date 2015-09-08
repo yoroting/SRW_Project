@@ -622,10 +622,25 @@ public class Panel_unit : MonoBehaviour {
 		//need a pool for multi act
 		CurAction = act;
 		nSubActFlow = 0;
+
+		// plane 
+		UIPanel p = this.GetComponent<UIPanel> ();
+		p.depth += 10;
 		//RunAction (); // don't first run. it will broke unit update flow
 		return true;
 	}
+	public bool ActionFinished(  )
+	{
+		// plane 
+		UIPanel p = this.GetComponent<UIPanel> ();
+		p.depth -= 10;
 
+		//need a pool for multi act
+		CurAction = null;
+		nSubActFlow ++;
+
+		return true;
+	}
 	public void RunAction()
 	{
 		if (CurAction == null)
@@ -641,9 +656,7 @@ public class Panel_unit : MonoBehaviour {
 				nSubActFlow++;
 				break;
 			case 1:
-			//	ActionFinished ();
-				CurAction = null; // clear act
-				nSubActFlow++;
+				ActionFinished ();			
 				break;
 			}
 
@@ -667,9 +680,7 @@ public class Panel_unit : MonoBehaviour {
 				break;
 
 			case 3:
-			//	ActionFinished ();
-				CurAction = null; // clear act
-				nSubActFlow++;
+				ActionFinished();
 				break;
 			}
 
@@ -689,8 +700,7 @@ public class Panel_unit : MonoBehaviour {
 				}
 				break;
 			case 2:
-				nSubActFlow++;
-				CurAction = null; // clear act
+				ActionFinished();
 				break;
 			}
 			break;
@@ -720,8 +730,7 @@ public class Panel_unit : MonoBehaviour {
 //				}
 				break;
 			case 2:
-				nSubActFlow++;
-				CurAction = null; // clear act
+				ActionFinished();
 				break;
 			}
 			break;
@@ -745,8 +754,7 @@ public class Panel_unit : MonoBehaviour {
 				break;
 
 			case 2:
-				nSubActFlow++;
-				CurAction = null; // clear act
+				ActionFinished();
 				break;
 			}
 			break;
@@ -761,8 +769,7 @@ public class Panel_unit : MonoBehaviour {
 				//ActionMove( CurAction.nTarGridX , CurAction.nTarGridY  );
 				break;
 			case 1:
-				nSubActFlow++;
-				CurAction = null; // clear act
+				ActionFinished();
 				break;
 			}
 			break;
@@ -777,8 +784,7 @@ public class Panel_unit : MonoBehaviour {
 				//ActionMove( CurAction.nTarGridX , CurAction.nTarGridY  );
 				break;
 			case 1:
-				nSubActFlow++;
-				CurAction = null; // clear act
+				ActionFinished();
 				break;
 			}
 			break;
@@ -792,15 +798,15 @@ public class Panel_unit : MonoBehaviour {
 				//ActionMove( CurAction.nTarGridX , CurAction.nTarGridY  );
 				break;
 			case 1:
-				nSubActFlow++;
-				CurAction = null; // clear act
+				ActionFinished();
 				break;
 			}
 			break;
 
 
 		default:
-			CurAction = null; // set null to avoid char block in infinite action
+		//CurAction = null; // set null to avoid char block in infinite action
+			ActionFinished();
 			break;
 
 		}
