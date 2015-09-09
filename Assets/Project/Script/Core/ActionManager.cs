@@ -269,6 +269,10 @@ public partial class ActionManager
 					SKILL skill = ConstDataManager.Instance.GetRow<SKILL>(nSkillID); 
 					switch( skill.n_TARGET ){
 						case 0:	//0→對自己施展
+							act.nTarGridX = caster.n_X;
+							act.nTarGridY = caster.n_Y;
+							nTargetIdent = nAtkIdent;
+							break;
 						case 6:	//6→自我AOE我方
 						case 7:	//7→自我AOE敵方
 						case 8:	//8→自我AOEALL
@@ -311,17 +315,14 @@ public partial class ActionManager
 						float frate =  caster.GetMulMpCost ();
 
 						int cost = MyTool.GetEffectValue( skill.n_MP , frate , 0 );	
-
-						caster.n_MP -= cost;  //
-
+						caster.AddMp( -cost );
 
 					}
 					if( skill.n_SP > 0 ){
-						caster.n_SP -= skill.n_SP;  //
-						
+						caster.AddSp ( -skill.n_SP);
 					}
 					if( skill.n_CP > 0 ){
-						caster.n_CP -= skill.n_CP;  //						
+						caster.AddCp( -skill.n_CP );
 					}
 					cUnitData target = GameDataManager.Instance.GetUnitDateByIdent( nTargetIdent );
 					caster.DoCastEffect( nSkillID  , target ,  ref act.HitResult  );
@@ -374,6 +375,8 @@ public partial class ActionManager
 		return  act;
 	}
 
+
+
 	public void ExecActionHitResult(  uAction action )
 	{
 		if (action == null)
@@ -398,13 +401,21 @@ public partial class ActionManager
 						case cHitResult._TYPE._CASTOUT: // cast out
 						{
 							// Add FX effect 
-						pUnit.ShowSkillFX( res.Value1 , res.Value2, res.Value3 , res.Value4   );
+							pUnit.ShowSkillFX( res.Value1 , res.Value2, res.Value3 , res.Value4   );
 						//	BattleManager.Instance.ShowBattleFX( res.Ident , "CFXM4 Hit B (Orange, CFX Blend)"  );
 						
 						}break;		
 						case cHitResult._TYPE._BEHIT: // be Hit fX
 						{
-							BattleManager.Instance.ShowBattleFX( res.Ident , 3 );
+							int nhitFX = 0; 
+							SKILL skl = ConstDataManager.Instance.GetRow<SKILL> (res.Value1);
+							if( skl != null ){								
+								nhitFX=skl.n_HIT_FX;
+							}
+							if( nhitFX == 0)
+								nhitFX = 203;// default 
+
+							BattleManager.Instance.ShowBattleFX( res.Ident , nhitFX );
 							// it should have fx
 						
 						}break;	

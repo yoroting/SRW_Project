@@ -1311,7 +1311,7 @@ public partial class BattleManager
 
 		//float fAtkBurst  = 1.0f + pAtker.GetMulBurst ();
 		//float fDefDamage = 1.0f + pDefer.GetMulDamage ();
-		resPool.Add ( new cHitResult( cHitResult._TYPE._BEHIT , nDefer , pAtker.FightAttr.SkillID ) );
+		//resPool.Add ( new cHitResult( cHitResult._TYPE._BEHIT , nDefer , pAtker.FightAttr.SkillID ) );
 
 		SKILL AtkerSkill = pAtker.FightAttr.SkillData.skill;
 		SKILL DeferSkill = pDefer.FightAttr.SkillData.skill;
@@ -1453,6 +1453,10 @@ public partial class BattleManager
 		}
 
 		List<cHitResult> resPool = new List<cHitResult> ();
+		if (pDefer != null) {
+			resPool.Add (new cHitResult (cHitResult._TYPE._BEHIT, pDefer.n_Ident, pAtker.FightAttr.SkillID)); // for play fx
+		}
+
 	
 		//		MyTool.DoSkillEffect( pAtker , pAtker.FightAttr.HitPool , Skill.s_CAST_TRIG ,  pAtker.FightAttr.HitEffPool , ref resPool  );
 		pAtker.DoHitEffect( nSkillID, pDefer , ref resPool );

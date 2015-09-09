@@ -33,7 +33,9 @@ public class GameSystem : MonoBehaviour {
 
 	static bool isSystemAwaked = false;
 
-	public static int m_nCurBGMIdx { set; get; }
+	static public  int m_nCurBGMIdx { set; get; }
+
+	static public bool bFXPlayMode{ set; get; }			// 特效 播放模式 0 - normal
 
 	//===============================
 	protected virtual void Awake () 
@@ -112,7 +114,7 @@ public class GameSystem : MonoBehaviour {
 #if DEBUG && UNITY_EDITOR
 		GameDataManager.Instance.nStageID  =1;
 #endif
-
+		bFXPlayMode = true;
 	}
 	
 	void Start()
@@ -144,6 +146,8 @@ public class GameSystem : MonoBehaviour {
 		if (go == null || nFxid ==0 )
 			return null;
 
+		if (bFXPlayMode == false)
+			return null;
 
 		FX fx =  ConstDataManager.Instance.GetRow<FX>( nFxid );
 		if (fx != null) {
@@ -179,19 +183,24 @@ public class GameSystem : MonoBehaviour {
 					}
 				}
 			}
-
-
+			// play wav sound
+			if( fx.s_SOUND !="0" && fx.s_SOUND !="null" ){
+				PlaySound( fx.s_SOUND );
+			}
 			return obj;
 		}
 		return null;
 	}
 
 
-	public static GameObject PlayFX( GameObject go , string name , string sortLayer="UI")
+	public static GameObject PlayFX( GameObject go , string name , string sortLayer="FX")
 	{
 		if (go == null)
 			return null;
 
+		if (bFXPlayMode == false)
+			return null;
+			 
 		string path = "FX/Cartoon FX/" + name;
 
 		GameObject instance = ResourcesManager.CreatePrefabGameObj ( go ,path );
@@ -229,6 +238,11 @@ public class GameSystem : MonoBehaviour {
 		return instance;
 	}
 
+	public static void PlaySound( string strFile )
+	{
+		string audioPath = ResourcesManager.GetAudioClipPath( AudioChannelType.SoundFX , strFile );
+		AudioManager.Instance.Play( AudioChannelType.SoundFX ,  audioPath );
+	}
 
 	public static void PlayBGM( int nBGMIdx )
 	{

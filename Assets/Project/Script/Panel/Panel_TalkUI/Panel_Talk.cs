@@ -215,6 +215,9 @@ public class Panel_Talk : MonoBehaviour {
 		}
 
 		m_bIsClosing = true;
+
+		GameSystem.bFXPlayMode = true;
+
 	}
 
 	void EndTalkFinish()
@@ -308,7 +311,7 @@ public class Panel_Talk : MonoBehaviour {
 
 	}
 
-	public void SetName( int nCharID )
+	public void SetName( int nCharID , GameObject go )
 	{
 		if( nCharID == 0 ){
 			NameObj.SetActive( false );
@@ -322,7 +325,11 @@ public class Panel_Talk : MonoBehaviour {
 			lbl.text = name;
 		}
 
-
+		if (go != null) {
+			Vector3 vPos = NameObj.transform.localPosition;
+			vPos.x = go.transform.localPosition.x;
+			NameObj.transform.localPosition = vPos;
+		}
 	}
 
 
@@ -330,6 +337,8 @@ public class Panel_Talk : MonoBehaviour {
 	{
 		if (Tex_BackGround == null)
 			return;
+
+		GameSystem.bFXPlayMode = false; // no more play fx
 
 		SCENE_NAME scene = ConstDataManager.Instance.GetRow<SCENE_NAME> ( nSceneID );
 		if (scene == null)
@@ -514,11 +523,13 @@ public class Panel_Talk : MonoBehaviour {
 	{
 		SpeakAll( false );
 
-		SetName( nCharID ); // name 
+
 		SRW_AVGObj avgobj = SelAVGObjByCharID( nCharID );// face 
 		if( avgobj!= null ){
 			avgobj.Speak( true );
 		}
+
+		SetName( nCharID , avgobj.gameObject ); // name 
 
 		//SRW_TextBox obj = SelTextBoxObjByCharID (nCharID) ;
 		SRW_TextBox obj =  TalkWindow;// SelTextBoxObjByCharID (nCharID) ;

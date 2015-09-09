@@ -18,6 +18,7 @@ public class SKILL : ConstDataRow<SKILL>
 	public int n_CP;
 	public int n_RANGE;
 	public int n_CAST_FX;
+	public int n_SWING_FX;
 	public int n_CASTOUT_FX;
 	public int n_HIT_FX;
 	public int n_MISSILE_ID;

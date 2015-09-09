@@ -408,6 +408,40 @@ public class MyTool {
 		return 0; 
 	}
 
+	public static void RotateGameObjToGridXY( GameObject go , int nX , int nY , int nToX , int nToY )
+	{
+		_DIR dir =  iVec2.Get8Dir ( nX, nY ,nToX, nToY );
+		//Vector3 rot ;
+		switch (dir) {
+		case _DIR._UP:
+			go.transform.localRotation = Quaternion.Euler (-90, 0, 0);
+			break;
+		case _DIR._RIGHT:
+			go.transform.localRotation = Quaternion.Euler (0, 90, 0);
+			break;
+		case _DIR._DOWN:
+			go.transform.localRotation = Quaternion.Euler (90, 0, 0);
+			break;
+		case _DIR._LEFT:
+			go.transform.localRotation = Quaternion.Euler (0, -90, 0);
+			break;
+			// 8 way 
+		case _DIR._RIGHT_UP:
+			go.transform.localRotation = Quaternion.Euler (-45, 90, 0);
+			break;
+		case _DIR._LEFT_UP:
+			go.transform.localRotation = Quaternion.Euler (-45, -90, 0);
+			break;
+		case _DIR._RIGHT_DOWN:
+			go.transform.localRotation = Quaternion.Euler (45, 90, 0);
+			break;
+		case _DIR._LEFT_DOWN:
+			go.transform.localRotation = Quaternion.Euler (45, -90, 0);
+			break;
+		}
+
+	}
+
 	public static void TweenSetOneShotOnFinish( UITweener Tween , EventDelegate.Callback call )
 	{
 		if (Tween != null) {

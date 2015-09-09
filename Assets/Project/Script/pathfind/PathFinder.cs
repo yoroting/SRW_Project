@@ -1,4 +1,5 @@
-﻿using System;
+﻿using UnityEngine; // for debug log
+using System;
 using System.Collections.Generic;
 //using System.Drawing;
 using System.Linq;
@@ -60,6 +61,13 @@ namespace SimpleAStarExample
 		/// <param name="searchParameters"></param>
 		public List<Point> FindPath(Point Start, Point End )
 		{
+			if (Start.X >= width || Start.Y >= height || End.X >= width || End.Y >= height) {
+				//DebugConsole.print( "error find path with error point" );
+				Debug.LogErrorFormat( " FindPath Error from ({0},{1}) to ({2},{3})" ,Start.X ,Start.Y , End.X , End.Y );
+				List<Point> path = new List<Point>(); // null path
+				return path;
+			}
+
 			this.startNode = this.nodes[Start.X, Start.Y];
 			this.startNode.State = NodeState.Open;
 			this.startNode.IsWalkable = true;

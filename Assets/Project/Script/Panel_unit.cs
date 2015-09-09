@@ -143,7 +143,7 @@ public class Panel_unit : MonoBehaviour {
 //		}
 
 
-		SetBorn (); // start born animate
+//		SetBorn (); // start born animate
 	}
 
 	// Awake
@@ -824,6 +824,11 @@ public class Panel_unit : MonoBehaviour {
 		}
 
 		bIsAtking = true;
+
+		// swing fx
+		ShowSwingFX( skillid , TarIdent , 0 , 0 );
+
+
 		// fly item
 		if (MyTool.IsSkillTag (skillid, _SKILLTAG._FLY)) {
 			string missile= "ACT_FLAME";
@@ -898,17 +903,21 @@ public class Panel_unit : MonoBehaviour {
 	public void ActionHit( int skillid , int GridX , int GridY )
 	{
 		bIsAtking = true;
+		SKILL skl = ConstDataManager.Instance.GetRow<SKILL> (skillid); 
+
+
+		// swing fx
+		ShowSwingFX( skillid , TarIdent ,GridX ,GridY );
+
+		// attack perform
 		if (MyTool.IsSkillTag (skillid, _SKILLTAG._FLY)) {
 			string missile = "ACT_FLAME";
 			Missile missdata = null;
-			if (skillid > 0) {
-				SKILL skl = ConstDataManager.Instance.GetRow<SKILL> (skillid); 
-				if (skl != null) {
-					if (skl.n_MISSILE_ID > 0) {
-						missdata = ConstDataManager.Instance.GetRow<Missile> (skl.n_MISSILE_ID); 
-						if (missdata != null) {
-							missile = missdata.s_MISSILE;
-						}
+			if (skl != null) {
+				if (skl.n_MISSILE_ID > 0) {
+					missdata = ConstDataManager.Instance.GetRow<Missile> (skl.n_MISSILE_ID); 
+					if (missdata != null) {
+						missile = missdata.s_MISSILE;
 					}
 				}
 			}
@@ -921,8 +930,7 @@ public class Panel_unit : MonoBehaviour {
 		} else if (MyTool.IsSkillTag (skillid, _SKILLTAG._ROTATE)) {
 			RotateAttack();
 			return;
-		} else if (MyTool.IsSkillTag (skillid, _SKILLTAG._FLASH)) {
-			SKILL skl = ConstDataManager.Instance.GetRow<SKILL> (skillid); 
+		} else if (MyTool.IsSkillTag (skillid, _SKILLTAG._FLASH)) {		
 			if (skl != null && skl.n_AREA > 0) {
 				// get aoe pool
 				int nTarX = GridX;
@@ -1344,7 +1352,10 @@ public class Panel_unit : MonoBehaviour {
 			MyTool.TweenSetOneShotOnFinish( tw , OnBornFinish );
 		}
 
-		GameSystem.PlayFX (gameObject, 1);
+		CHARS data = ConstDataManager.Instance.GetRow <CHARS>(CharID);
+		if (data != null) {
+			GameSystem.PlayFX (gameObject, data.n_BORN_FX );
+		}
 	}
 	public void OnBornFinish()
 	{
@@ -1357,7 +1368,7 @@ public class Panel_unit : MonoBehaviour {
 		if (bIsLeaving == true)
 			return;
 		// play leave fx
-		GameObject fx =  GameSystem.PlayFX ( this.gameObject , 5  ); // need rot x  to -75
+		GameObject fx =  GameSystem.PlayFX ( this.gameObject , 205  ); // need rot x  to -75
 
 		bIsLeaving = true;
 		
@@ -1559,6 +1570,29 @@ public class Panel_unit : MonoBehaviour {
 
 	//====== Fight 
 
+	public void ShowSwingFX( int nSkillID , int nTarIdent , int nX , int nY )
+	{
+		if (nSkillID == 0) {
+			return ;
+		}
+		if (nTarIdent != 0) {
+			cUnitData pdata = GameDataManager.Instance.GetUnitDateByIdent( nTarIdent  );
+			if( pdata == null ){
+				return;
+			}
+			nX = pdata.n_X; nY = pdata.n_Y;
+		}
+		//=================cast skill
+		SKILL skl = ConstDataManager.Instance.GetRow< SKILL > ( nSkillID ); 
+		if (skl == null)
+			return;
+		GameObject go = GameSystem.PlayFX ( this.gameObject , skl.n_SWING_FX );
+		if (go == null) {
+			return;
+		}
+		MyTool.RotateGameObjToGridXY( go , Loc.X , Loc.Y , nX, nY );
+	}
+
 	public void ShowSkillFX( int nSkillID , int nTarIdent , int nX , int nY )
 	{
 		Debug.Log ("show skillfx");
@@ -1597,35 +1631,36 @@ public class Panel_unit : MonoBehaviour {
 			}
 
 			if (fxData.n_TAG == 1) {			// 處理旋轉
-				_DIR dir = Loc.Get8Dir (nX, nY);
-				//Vector3 rot ;
-				switch (dir) {
-				case _DIR._UP:
-				go.transform.localRotation = Quaternion.Euler (-90, 0, 0);
-				break;
-				case _DIR._RIGHT:
-					go.transform.localRotation = Quaternion.Euler (0, 90, 0);
-					break;
-				case _DIR._DOWN:
-					go.transform.localRotation = Quaternion.Euler (90, 0, 0);
-					break;
-				case _DIR._LEFT:
-					go.transform.localRotation = Quaternion.Euler (0, -90, 0);
-					break;
-				// 8 way 
-				case _DIR._RIGHT_UP:
-					go.transform.localRotation = Quaternion.Euler (-45, 90, 0);
-					break;
-				case _DIR._LEFT_UP:
-					go.transform.localRotation = Quaternion.Euler (-45, -90, 0);
-					break;
-				case _DIR._RIGHT_DOWN:
-					go.transform.localRotation = Quaternion.Euler (45, 90, 0);
-					break;
-				case _DIR._LEFT_DOWN:
-					go.transform.localRotation = Quaternion.Euler (45, -90, 0);
-					break;
-				}
+				MyTool.RotateGameObjToGridXY( go , Loc.X , Loc.Y , nX, nY );
+//				_DIR dir = Loc.Get8Dir (nX, nY);
+//				//Vector3 rot ;
+//				switch (dir) {
+//				case _DIR._UP:
+//				go.transform.localRotation = Quaternion.Euler (-90, 0, 0);
+//				break;
+//				case _DIR._RIGHT:
+//					go.transform.localRotation = Quaternion.Euler (0, 90, 0);
+//					break;
+//				case _DIR._DOWN:
+//					go.transform.localRotation = Quaternion.Euler (90, 0, 0);
+//					break;
+//				case _DIR._LEFT:
+//					go.transform.localRotation = Quaternion.Euler (0, -90, 0);
+//					break;
+//				// 8 way 
+//				case _DIR._RIGHT_UP:
+//					go.transform.localRotation = Quaternion.Euler (-45, 90, 0);
+//					break;
+//				case _DIR._LEFT_UP:
+//					go.transform.localRotation = Quaternion.Euler (-45, -90, 0);
+//					break;
+//				case _DIR._RIGHT_DOWN:
+//					go.transform.localRotation = Quaternion.Euler (45, 90, 0);
+//					break;
+//				case _DIR._LEFT_DOWN:
+//					go.transform.localRotation = Quaternion.Euler (45, -90, 0);
+//					break;
+//				}
 			}
 		}
 	}

@@ -540,7 +540,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 422376}
-  m_RootOrder: 1
+  m_RootOrder: 2
 --- !u!4 &416910
 Transform:
   m_ObjectHideFlags: 1
@@ -573,12 +573,12 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 192426}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -200, y: 0, z: 0}
+  m_LocalPosition: {x: -279, y: -35, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 485648}
-  - {fileID: 414792}
   - {fileID: 449940}
+  - {fileID: 414792}
   m_Father: {fileID: 447770}
   m_RootOrder: 1
 --- !u!4 &430606
@@ -687,7 +687,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 118038}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -258, y: 199, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 447770}
@@ -708,9 +708,9 @@ Transform:
   - {fileID: 497798}
   - {fileID: 468410}
   - {fileID: 447716}
-  - {fileID: 449650}
-  - {fileID: 443444}
   - {fileID: 460126}
+  - {fileID: 443444}
+  - {fileID: 449650}
   m_Father: {fileID: 0}
   m_RootOrder: 0
 --- !u!4 &449636
@@ -738,7 +738,7 @@ Transform:
   - {fileID: 416910}
   - {fileID: 496654}
   m_Father: {fileID: 447770}
-  m_RootOrder: 6
+  m_RootOrder: 8
 --- !u!4 &449940
 Transform:
   m_ObjectHideFlags: 1
@@ -750,7 +750,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 422376}
-  m_RootOrder: 2
+  m_RootOrder: 1
 --- !u!4 &460126
 Transform:
   m_ObjectHideFlags: 1
@@ -763,7 +763,7 @@ Transform:
   m_Children:
   - {fileID: 420198}
   m_Father: {fileID: 447770}
-  m_RootOrder: 8
+  m_RootOrder: 6
 --- !u!4 &466580
 Transform:
   m_ObjectHideFlags: 1
@@ -1638,7 +1638,7 @@ MonoBehaviour:
   mClipping: 0
   mClipRange: {x: 0, y: 0, z: 300, w: 200}
   mClipSoftness: {x: 4, y: 4}
-  mDepth: 12
+  mDepth: 22
   mSortingOrder: 0
   mClipOffset: {x: 0, y: 0}
 --- !u!114 &11443562

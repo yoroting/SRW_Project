@@ -131,6 +131,14 @@ public class cBuffs
 			data = CreateData(buff, nCastIdent , nSkillID ,nTargetId  );
 			Pool.Add( buff.n_STACK ,  data );
 		}
+
+		// play buff fx
+		if (buff.n_BUFF_FXS > 0) {
+
+			Panel_unit unit = Panel_StageUI.Instance.GetUnitByIdent( Owner.n_Ident );
+			GameSystem.PlayFX( unit.gameObject ,buff.n_BUFF_FXS);
+		}
+
 		return data;
 	}
 

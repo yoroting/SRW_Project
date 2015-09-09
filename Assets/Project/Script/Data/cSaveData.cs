@@ -208,6 +208,8 @@ public class cSaveData{
 	{
 		// clear data
 		GameSystem.PlayBGM( 0 ); // stop bgm
+		GameSystem.bFXPlayMode = false;
+
 //		GameDataManager.Instance.SaveData = this; // for startcoror
 		//把所有要記錄的都寫在這
 

@@ -1355,6 +1355,7 @@ namespace MYGRIDS
 			SetPixelWH ( PW , PH );
             // create path finder struct during loading
             //InitializePathFindMap (); 
+			pathfinder = null;// clear to reset pathfind 
             GetPathFinder().ApplyMap(map); // apply here for new nodes
 
             return true;

@@ -565,6 +565,8 @@ public class Panel_StageUI : MonoBehaviour
 
 		GameDataManager.Instance.ePhase = _SAVE_PHASE._STAGE;		// save to stage phase
 
+		GameSystem.bFXPlayMode = true;								// start play fx
+
 		bIsReady = true;		// all ready .. close the loading ui
 	}
 
@@ -595,11 +597,9 @@ public class Panel_StageUI : MonoBehaviour
 			bool bIsAtkCell = OverCellAtkPool.ContainsKey( sKey );
 			bool bIsOverCell = OverCellPool.ContainsKey( sKey );
 
-			if( Config.GOD ){
-				bIsAtkCell = true; // god can atk all place
-			}
-
-
+//			if( Config.GOD ){
+//				bIsAtkCell = true; // god can atk all place
+//			}
 		
 
 			if( cCMD.Instance.eCMDSTATUS == _CMD_STATUS._WAIT_TARGET )
@@ -1850,7 +1850,7 @@ public class Panel_StageUI : MonoBehaviour
 
 			//ensure data in storage is remove
 //			GameDataManager.Instance.RemoveStorageUnit( nCharID );
-
+			unit.SetBorn (); // start born animate
 		
 		}
 		
@@ -1872,6 +1872,11 @@ public class Panel_StageUI : MonoBehaviour
 
 	void DelUnitbyIdent(  int nIdent )
 	{
+		if (IdentToUnit.ContainsKey (nIdent) == false) {
+			Debug.LogErrorFormat( "DelUnitbyIdent with no key {0}" ,nIdent  );
+			return ;
+		}
+
 		Panel_unit unit = IdentToUnit[ nIdent ];
 		if( unit != null )
 		{
@@ -2533,7 +2538,7 @@ public class Panel_StageUI : MonoBehaviour
 			PanelManager.Instance.DestoryUI( Name );
 			//PanelManager.Instance.CloseUI (Name);  			// close stage when mainten
 		}
-		
+	
 		PanelManager.Instance.CloseUI ("Panel_Loading");
 		yield break;
 		
