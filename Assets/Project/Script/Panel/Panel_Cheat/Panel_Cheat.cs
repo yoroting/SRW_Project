@@ -133,7 +133,7 @@ public class Panel_Cheat : MonoBehaviour {
 	{
 		int nlv =  pData.GetIntSchLv();
 		int nTo = MyTool.ClampInt( nlv+1 , 0 , 10 );
-		pData.SetSchool(  pData.GetIntSchID() , nTo  );
+		pData.LearnSchool(  pData.GetIntSchID() , nTo  );
 
 		SetData( pData );
 		//MyTool.SetLabelInt( IntValueobj , pData.GetIntSchLv(  ) );
@@ -142,7 +142,7 @@ public class Panel_Cheat : MonoBehaviour {
 	{
 		int nlv =  pData.GetIntSchLv();
 		int nTo = MyTool.ClampInt( nlv-1 , 0 , 10 );
-		pData.SetSchool(  pData.GetIntSchID() , nTo  );
+		pData.LearnSchool(  pData.GetIntSchID() , nTo  );
 
 		SetData( pData );
 		//MyTool.SetLabelInt( IntValueobj , pData.GetIntSchLv(  ) );
@@ -151,7 +151,7 @@ public class Panel_Cheat : MonoBehaviour {
 	{
 		int nlv =  pData.GetExtSchLv();
 		int nTo = MyTool.ClampInt( nlv+1 , 0 , 10 );
-		pData.SetSchool(  pData.GetExtSchID() , nTo  );
+		pData.LearnSchool(  pData.GetExtSchID() , nTo  );
 
 		SetData( pData );
 		//MyTool.SetLabelInt( ExtValueobj , pData.GetExtSchLv(  ) );
@@ -160,7 +160,7 @@ public class Panel_Cheat : MonoBehaviour {
 	{
 		int nlv =  pData.GetExtSchLv();
 		int nTo = MyTool.ClampInt( nlv-1 , 0 , 10 );
-		pData.SetSchool(  pData.GetExtSchID() , nTo  );
+		pData.LearnSchool(  pData.GetExtSchID() , nTo  );
 
 		SetData( pData );
 		//MyTool.SetLabelInt( ExtValueobj , pData.GetExtSchLv(  ) );

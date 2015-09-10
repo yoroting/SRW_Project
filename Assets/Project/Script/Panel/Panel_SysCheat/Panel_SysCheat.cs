@@ -88,7 +88,7 @@ public class Panel_SysCheat : MonoBehaviour {
 		god.value =Config.GOD;
 		UIToggle kill = KillChk.GetComponent<UIToggle> ();
 		kill.value =Config.KILL_MODE;
-		UIToggle ai = KillChk.GetComponent<UIToggle> ();
+		UIToggle ai = MobAIChk.GetComponent<UIToggle> ();
 		ai.value =Config.MOBAI;
 
 		UIInput min = MoneyInput.GetComponent<UIInput> ();

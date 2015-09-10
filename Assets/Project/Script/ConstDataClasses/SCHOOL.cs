@@ -9,6 +9,7 @@ public class SCHOOL : ConstDataRow<SCHOOL>
 	public int n_MAXLV;
 	public int n_TYPE;
 	public int n_RELATIVE;
+	public int n_BUFF;
 	public int n_MOV;
 	public int n_RANK;
 	public float f_MAR_LVUP;

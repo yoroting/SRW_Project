@@ -878,7 +878,11 @@ public class Panel_unit : MonoBehaviour {
 			BowAttack( nTarX ,nTarY );
 			return ;		
 		}
-	
+		//  非攻擊型技能，跳過攻擊動作
+		else if( MyTool.IsSkillTag (skillid, _SKILLTAG._DAMAGE)== false ){
+			OnTwAtkHit();
+			return ;
+		}
 
 		//Vector3 vOrg = this.transform.localPosition;
 		//Vector3 vTar = defer.transform.localPosition;

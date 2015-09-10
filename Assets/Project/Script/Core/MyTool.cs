@@ -83,6 +83,14 @@ public class MyTool {
 
 	public static string GetSkillName( int nID )
 	{
+		DataRow row = ConstDataManager.Instance.GetRow( (int)ConstDataTables.SKILL_TEXT , nID );
+		if( row != null )
+		{				
+			string content = row.Field<string>( "s_TITLE");
+			return content;
+			
+		}
+
 		SKILL skl = ConstDataManager.Instance.GetRow< SKILL > ( nID );
 		if (skl == null)
 			return "null";
@@ -91,15 +99,17 @@ public class MyTool {
 
 	public static string GetBuffName( int nID )
 	{
-		//BUFF buff = ConstDataManager.Instance.GetRow< BUFF > ( nID );
-		//if (buff == null)
-		//	return "null";
 		DataRow row = ConstDataManager.Instance.GetRow( (int)ConstDataTables.BUFF_TIP , nID );
 		if( row != null )
 		{				
 			string content = row.Field<string>( "s_TITLE");
 			return content;
 
+		}
+		// try get in buff data
+		BUFF buff = ConstDataManager.Instance.GetRow< BUFF > ( nID );
+		if (buff != null) {
+			return buff.s_NAME;
 		}
 		return "null";
 	}

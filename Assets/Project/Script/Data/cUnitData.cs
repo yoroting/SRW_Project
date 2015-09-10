@@ -340,8 +340,8 @@ public class cUnitData{
 	{
 		bUpdateFlag [index] = true;
 	}
-
-	public void SetSchool( int id , int nLv )
+	//提升武功，不一定會馬上使用
+	public void LearnSchool( int id , int nLv )						// 
 	{
 		if (nLv <= 0)
 			nLv = 1;
@@ -358,57 +358,39 @@ public class cUnitData{
 			SchoolPool.Add(id , nLv );
 		}
 
-		// update both for save
-		SetUpdate ( cAttrData._INTSCH );
-		SetUpdate ( cAttrData._EXTSCH );
-
-		// clean then re add skill 
-		RemoveSkillBySchool ( id );
-
-		//
-		DataTable tbl = ConstDataManager.Instance.GetTable< SKILL > ();
-		if (tbl != null) {
-			foreach( SKILL skl in tbl )
-			{
-				if( skl.n_LEVEL_LEARN  < 0 )// 小於0的是進階技能。不能直接學
-				{
-					continue;
-				}
-
-				if( skl.n_LEVEL_LEARN > nLv && (!Config.GOD) )
-				{
-					continue;
-				}
-				if( skl.n_SCHOOL != id )
-					continue;
-
-				int nSklID = skl.n_ID;
-//				//判斷是否進階
-//				if( Buffs.HaveBuff( skl.n_UPGRADE_BUFF ) )
-//				{
-//					nSklID = skl.n_UPGRADE_SKILL;
-//				}
-				//
-				if( SkillPool.ContainsKey( nSklID ) == false )
-				{
-					AddSkill( nSklID );
-				}
-			}
+		// check need upgrade skill
+		SCHOOL school = ConstDataManager.Instance.GetRow<SCHOOL>( id );
+		if( school == null )
+			return;
+		int nIdx = cAttrData._INTSCH;
+		if ( school.n_TYPE==1 ){
+			nIdx = cAttrData._EXTSCH;
+		}
+		int nOldSchId = nActSch[ nIdx ];
+		if (nOldSchId == id) {
+			RemoveSkillBySchool( nOldSchId );
+			AddSkillBySchool( id );
+			SetUpdate ( nIdx );					// update attr
 		}
 
-	}
+		// update both for save
+//		SetUpdate ( cAttrData._INTSCH );
+//		SetUpdate ( cAttrData._EXTSCH );
 
-	public void ChangeSchool( int SchID )
+		// clean then re add skill 
+		//RemoveSkillBySchool ( id );
+
+		//
+	
+
+	}
+	//
+	public void ActiveSchool( int SchID )
 	{
 		SCHOOL school = ConstDataManager.Instance.GetRow<SCHOOL>( SchID );
 		if( school == null )
 			return;
 
-		int lv = 0;
-		if (SchoolPool.TryGetValue (SchID, out lv) == false ) {
-			Debug.LogErrorFormat( "Unit can't change school type{0} to sch{1} to , charid={2},identid={3}  " , school.n_TYPE ,SchID, n_CharID, n_Ident );
-			return ;
-		}
 
 		int nIdx = cAttrData._INTSCH;
 		if ( school.n_TYPE==1 ){
@@ -422,10 +404,12 @@ public class cUnitData{
 		RemoveSkillBySchool( nOldSchId );
 
 		// set new school
-		SetSchool(SchID , lv ); // for ability / Skill
+		//SetSchool(SchID , lv ); // for ability / Skill
+
+		AddSkillBySchool ( SchID );
 
 		//	
-		nActSch [nIdx] = SchID;
+		nActSch [nIdx] = SchID;		// active
 
 		// update
 		SetUpdate( nIdx );
@@ -460,6 +444,60 @@ public class cUnitData{
 		}
 	}
 
+	public void AddSkillBySchool ( int  SchID )
+	{
+		if (0 == SchID)
+			return;
+
+		SCHOOL school = ConstDataManager.Instance.GetRow<SCHOOL>( SchID );
+		if( school == null )
+			return;
+
+		int nLv = 0;	// get school lv
+		if (SchoolPool.TryGetValue (SchID, out nLv) == false ) {
+			Debug.LogErrorFormat( "Unit can't change school type{0} to sch{1} to , charid={2},identid={3}  " , school.n_TYPE ,SchID, n_CharID, n_Ident );
+			return ;
+		}
+
+		DataTable tbl = ConstDataManager.Instance.GetTable< SKILL > ();
+		if (tbl != null) {
+			foreach( SKILL skl in tbl )
+			{
+				if( skl.n_LEVEL_LEARN  < 0 )// 小於0的是進階技能。不能直接學
+				{
+					continue;
+				}
+				
+				if( skl.n_LEVEL_LEARN > nLv && (!Config.GOD) )
+				{
+					continue;
+				}
+				if( skl.n_SCHOOL != SchID )
+					continue;
+				
+				int nSklID = skl.n_ID;
+				//				//判斷是否進階
+				//				if( Buffs.HaveBuff( skl.n_UPGRADE_BUFF ) )
+				//				{
+				//					nSklID = skl.n_UPGRADE_SKILL;
+				//				}
+				//
+				if( SkillPool.ContainsKey( nSklID ) == false )
+				{
+					AddSkill( nSklID );
+				}
+			}
+		}
+		
+		// add school buff
+
+		if (school != null) {
+			if( school.n_BUFF != 0 ){
+				Buffs.AddBuff(school.n_BUFF  , 0 , 0 , 0 );
+			}
+		}
+
+	}
 	public void RemoveSkillBySchool ( int  schid )
 	{
 		if( 0 == schid )
@@ -480,6 +518,13 @@ public class cUnitData{
 			//SkillPool.Remove( id );
 		}
 
+		// remove school buff
+		SCHOOL school = ConstDataManager.Instance.GetRow<SCHOOL> ( schid );
+		if (school != null) {
+			if( school.n_BUFF != 0 ){
+				Buffs.DelBuff(school.n_BUFF  , true );
+			}
+		}
 
 	}
 
@@ -560,7 +605,7 @@ public class cUnitData{
 					if (arg [1] != null) {
 						lv = int.Parse (arg [1]);
 					}
-					SetSchool (school, lv);
+					LearnSchool (school, lv);
 				}
 			}
 		}
@@ -594,8 +639,8 @@ public class cUnitData{
 		} 
 
 		// active school
-		ChangeSchool( cData.n_INT_SCHOOL );
-		ChangeSchool( cData.n_EXT_SCHOOL );
+		ActiveSchool( cData.n_INT_SCHOOL );
+		ActiveSchool( cData.n_EXT_SCHOOL );
 
 		//AvtiveSchool (0, cData.n_INT_SCHOOL);
 		//AvtiveSchool (1, cData.n_EXT_SCHOOL);

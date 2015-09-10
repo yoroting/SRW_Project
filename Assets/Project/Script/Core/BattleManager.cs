@@ -418,9 +418,12 @@ public partial class BattleManager
 			if ( bCanCounter ) {
 
 				uAction pCountAct = ActionManager.Instance.CreateAttackAction (nDeferID,nAtkerID, nDeferSkillID );
-
+				bool bIsDamage =  MyTool.IsDamageSkill( nDeferSkillID );
 				if (pCountAct != null) {
-					pCountAct.AddHitResult( CalAttackResult( nDeferID , nAtkerID , false ) ); // must not def at this time
+					if( bIsDamage ){
+						pCountAct.AddHitResult( CalAttackResult( nDeferID , nAtkerID , false ) ); // must not def at this time
+					}
+
 					pCountAct.AddHitResult( CalSkillHitResult( Defer,  Atker , nDeferSkillID ) );
 //					CalDropResult( Defer , Atker );
 //					Defer.Buffs.OnHit( Atker , ref pCountAct.HitResult );
@@ -440,8 +443,10 @@ public partial class BattleManager
 					}
 
 					ShowDefAssist( unit.n_Ident , false );
-					
-					pCountAct.AddHitResult(  CalAttackResult( nDeferID , unit.n_Ident , true ) ) ; // always def for aoe affect
+
+					if(bIsDamage){
+						pCountAct.AddHitResult(  CalAttackResult( nDeferID , unit.n_Ident , true ) ) ; // always def for aoe affect
+					}
 
 					//if( nDeferSkillID > 0 ){
 					pCountAct.AddHitResult( CalSkillHitResult( Defer,  unit , nDeferSkillID ) );
