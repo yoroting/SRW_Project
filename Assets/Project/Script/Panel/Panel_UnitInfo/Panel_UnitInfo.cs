@@ -266,7 +266,8 @@ public class Panel_UnitInfo : MonoBehaviour {
 		MyTool.DestoryGridItem ( BuffGrid );
 
 		foreach ( KeyValuePair< int , cBuffData > pair in pUnitData.Buffs.Pool ) {
-			
+			if( pair.Value.nTime == 0 ) // never 0  
+				continue;
 			GameObject go = ResourcesManager.CreatePrefabGameObj( BuffGrid , "Prefab/Bufficon" ); 
 			if( go == null )
 				continue;		
@@ -282,13 +283,15 @@ public class Panel_UnitInfo : MonoBehaviour {
 	void UpdatePass ()
 	{
 		MyTool.DestoryGridItem ( PassGrid );
+
 		foreach ( KeyValuePair< int , cBuffData > pair in pUnitData.Buffs.Pool ) {
-			
-			GameObject go = ResourcesManager.CreatePrefabGameObj( PassGrid , "Prefab/Skill_simple" ); 
-			if( go == null )
-				continue;		
 			if( pair.Value.nTime != 0 ) // only 0  
 				continue;
+
+			GameObject go = ResourcesManager.CreatePrefabGameObj( PassGrid , "Prefab/Skill_simple" ); 
+			if( go == null )
+				continue;	
+
 
 			Skill_Simple obj = go.GetComponent<Skill_Simple >();
 			if( obj != null ){

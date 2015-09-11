@@ -271,7 +271,7 @@ public partial class ActionManager
 						case 0:	//0→對自己施展
 							act.nTarGridX = caster.n_X;
 							act.nTarGridY = caster.n_Y;
-							nTargetIdent = nAtkIdent;
+						//	nTargetIdent = nAtkIdent; // will cause ( atker == defer )
 							break;
 						case 6:	//6→自我AOE我方
 						case 7:	//7→自我AOE敵方
@@ -407,13 +407,13 @@ public partial class ActionManager
 						}break;		
 						case cHitResult._TYPE._BEHIT: // be Hit fX
 						{
-							int nhitFX = 0; 
+							int nhitFX = 203;// default  
 							SKILL skl = ConstDataManager.Instance.GetRow<SKILL> (res.Value1);
 							if( skl != null ){								
-								nhitFX=skl.n_HIT_FX;
+								nhitFX=skl.n_HIT_FX;  // skill data may cancel hit fx to 0
 							}
-							if( nhitFX == 0)
-								nhitFX = 203;// default 
+							//if( nhitFX == 0)
+							//	nhitFX = 203;
 
 							BattleManager.Instance.ShowBattleFX( res.Ident , nhitFX );
 							// it should have fx
