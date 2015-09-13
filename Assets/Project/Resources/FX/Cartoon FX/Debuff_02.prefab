@@ -114,7 +114,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b11907cc8c1ba9349af74c7c9bdc3e79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 2
+  time: 1
 --- !u!198 &19840716
 ParticleSystem:
   m_ObjectHideFlags: 1
@@ -132,7 +132,7 @@ ParticleSystem:
   InitialModule:
     enabled: 1
     startLifetime:
-      scalar: .699999988
+      scalar: 2
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -165,7 +165,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 0
     startSpeed:
-      scalar: 2
+      scalar: .100000001
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -292,7 +292,7 @@ ParticleSystem:
         rgba: 4278190118
       minMaxState: 0
     startSize:
-      scalar: 1
+      scalar: .200000003
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -337,9 +337,9 @@ ParticleSystem:
         m_PreInfinity: 2
         m_PostInfinity: 2
       minMaxState: 3
-    gravityModifier: 1
+    gravityModifier: .200000003
     inheritVelocity: 0
-    maxNumParticles: 20
+    maxNumParticles: 10
   ShapeModule:
     serializedVersion: 2
     enabled: 1
@@ -604,7 +604,7 @@ ParticleSystem:
   VelocityModule:
     enabled: 1
     x:
-      scalar: 6
+      scalar: 1
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -618,8 +618,8 @@ ParticleSystem:
       minCurve:
         serializedVersion: 2
         m_Curve:
-        - time: 0
-          value: -1
+        - time: .00975609757
+          value: -.972972989
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -627,12 +627,17 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 2
     y:
-      scalar: 6
+      scalar: 1.20000005
       maxCurve:
         serializedVersion: 2
         m_Curve:
-        - time: 0
+        - time: .00487804879
           value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        - time: .502439022
+          value: .081081152
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -642,7 +647,7 @@ ParticleSystem:
         serializedVersion: 2
         m_Curve:
         - time: 0
-          value: -1
+          value: .0270268917
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -650,7 +655,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 2
     z:
-      scalar: 20
+      scalar: 10
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1173,7 +1178,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 0
     startSpeed:
-      scalar: 2
+      scalar: .100000001
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1345,14 +1350,14 @@ ParticleSystem:
         m_PreInfinity: 2
         m_PostInfinity: 2
       minMaxState: 3
-    gravityModifier: 5
+    gravityModifier: .5
     inheritVelocity: 0
     maxNumParticles: 10
   ShapeModule:
     serializedVersion: 2
     enabled: 1
     type: 4
-    radius: 50
+    radius: 20
     angle: 10
     length: 5
     boxX: 1
@@ -1617,7 +1622,7 @@ ParticleSystem:
   VelocityModule:
     enabled: 1
     x:
-      scalar: 5
+      scalar: 1
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1655,7 +1660,7 @@ ParticleSystem:
         serializedVersion: 2
         m_Curve:
         - time: 0
-          value: -1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -2143,7 +2148,7 @@ ParticleSystem:
   InitialModule:
     enabled: 1
     startLifetime:
-      scalar: .699999988
+      scalar: .5
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2176,7 +2181,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 0
     startSpeed:
-      scalar: 2
+      scalar: .100000001
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2348,14 +2353,14 @@ ParticleSystem:
         m_PreInfinity: 2
         m_PostInfinity: 2
       minMaxState: 3
-    gravityModifier: 7
+    gravityModifier: .5
     inheritVelocity: 0
     maxNumParticles: 10
   ShapeModule:
     serializedVersion: 2
     enabled: 1
     type: 4
-    radius: 50
+    radius: 2.20000005
     angle: 0
     length: 5
     boxX: 1
@@ -2620,7 +2625,7 @@ ParticleSystem:
   VelocityModule:
     enabled: 1
     x:
-      scalar: 5
+      scalar: .5
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2643,11 +2648,11 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 2
     y:
-      scalar: 5
+      scalar: 2.5
       maxCurve:
         serializedVersion: 2
         m_Curve:
-        - time: 0
+        - time: .00487804785
           value: 1
           inSlope: 0
           outSlope: 0
@@ -2663,12 +2668,12 @@ ParticleSystem:
         serializedVersion: 2
         m_Curve:
         - time: 0
-          value: -1
+          value: .0540539026
           inSlope: 0
           outSlope: 0
           tangentMode: 0
-        - time: 1
-          value: -1
+        - time: .985365868
+          value: .0540539026
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -3263,7 +3268,11 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: EmissionModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 133164}

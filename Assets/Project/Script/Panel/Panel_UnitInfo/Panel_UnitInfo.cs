@@ -86,6 +86,12 @@ public class Panel_UnitInfo : MonoBehaviour {
 		ReloadData();
 	}
 
+	void OnDisable()
+	{
+		Panel_Tip.CloseUI (); // auto close tip
+
+	}
+
 	void ReloadData()
 	{
 		if( pUnitData == null )
@@ -123,10 +129,10 @@ public class Panel_UnitInfo : MonoBehaviour {
 		// school name
 		
 		//SCHOOL inSch = GameDataManager.Instance.GetConstSchoolData( data.nActSch[0] ); // int 
-		MyTool.SetLabelText( IntSchObj , MyTool.GetUnitSchoolFullName( nCharIdent , pUnitData.nActSch[0] )  );
+		MyTool.SetLabelText( IntSchObj , MyTool.GetUnitSchoolFullName( nCharIdent , pUnitData.GetIntSchID() )  );
 		
-		SCHOOL exSch = ConstDataManager.Instance.GetRow<SCHOOL>( pUnitData.nActSch[1] );//   GameDataManager.Instance.GetConstSchoolData( pUnitData.nActSch[1] ); // ext 
-		MyTool.SetLabelText( ExtSchObj , MyTool.GetUnitSchoolFullName( nCharIdent , pUnitData.nActSch[1] ) );
+		//SCHOOL exSch = ConstDataManager.Instance.GetRow<SCHOOL>( pUnitData.nActSch[1] );//   GameDataManager.Instance.GetConstSchoolData( pUnitData.nActSch[1] ); // ext 
+		MyTool.SetLabelText( ExtSchObj , MyTool.GetUnitSchoolFullName( nCharIdent , pUnitData.GetExtSchID() ) );
 
 
 		// Set ability
@@ -137,7 +143,7 @@ public class Panel_UnitInfo : MonoBehaviour {
 		// set item 
 		UpdateItem ();
 		// set fate
-		UpdateFate ();
+		//UpdateFate ();
 		// set buff
 		UpdateBuff ();
 		//
@@ -257,10 +263,7 @@ public class Panel_UnitInfo : MonoBehaviour {
 
 
 	}
-	void UpdateFate()
-	{
 
-	}
 	void UpdateBuff()
 	{
 		MyTool.DestoryGridItem ( BuffGrid );
@@ -291,7 +294,7 @@ public class Panel_UnitInfo : MonoBehaviour {
 			GameObject go = ResourcesManager.CreatePrefabGameObj( PassGrid , "Prefab/Skill_simple" ); 
 			if( go == null )
 				continue;	
-
+			UIEventListener.Get(go).onClick += OnBuffClick; // this is a buff
 
 			Skill_Simple obj = go.GetComponent<Skill_Simple >();
 			if( obj != null ){
@@ -307,28 +310,38 @@ public class Panel_UnitInfo : MonoBehaviour {
 	// onclick event
 	void OnAbilityClick( GameObject go )
 	{
-
+		Skill_Simple obj = go.GetComponent<Skill_Simple >();
+		if (obj != null) {
+			Panel_Tip.OpenSkillTip( obj.nID );
+			//Panel_Tip.OpenUI( MyTool.GetSkillName( obj.nID )   ); 
+		}
 		
 	}
 	void OnSkillClick( GameObject go )
 	{		
 		Skill_Simple obj = go.GetComponent<Skill_Simple >();
 		if (obj != null) {
-			Panel_Tip.OpenUI( MyTool.GetSkillName( obj.nID ) ); 
+			Panel_Tip.OpenSkillTip( obj.nID );
+			//Panel_Tip.OpenUI( MyTool.GetSkillName( obj.nID )   ); 
 		}
 	}
 
 	void OnItemClick( GameObject go )
 	{
-		
+		Skill_Simple obj = go.GetComponent<Skill_Simple >();
+		if (obj != null) {
+			Panel_Tip.OpenItemTip( obj.nID );
+			//Panel_Tip.OpenUI( MyTool.GetSkillName( obj.nID )   ); 
+		}
 	}
-	void OnFateClick( GameObject go )
-	{
-		
-	}
+
 	void OnBuffClick( GameObject go )
 	{
-		
+		Skill_Simple obj = go.GetComponent<Skill_Simple >();
+		if (obj != null) {
+			Panel_Tip.OpenBuffTip( obj.nID );
+			//Panel_Tip.OpenUI( MyTool.GetSkillName( obj.nID )   ); 
+		}
 	}
 
 }

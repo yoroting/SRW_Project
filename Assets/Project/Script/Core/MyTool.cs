@@ -377,6 +377,16 @@ public class MyTool {
 		grid.repositionNow = true;		// need this for second pop to re pos
 	}
 
+	public static void DestoryTweens( GameObject go )
+	{
+		if ( go == null)
+			return ;
+		UITweener[] tws = go.GetComponents< UITweener > ();
+		foreach (UITweener tw in tws) {
+			NGUITools.Destroy (tw);
+			//Destroy( tw );B
+		}
+	}
 	//
 	public static void SetLabelText( GameObject go , string sText )
 	{

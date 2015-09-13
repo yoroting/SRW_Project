@@ -7,7 +7,7 @@ public class BuffIcon : MonoBehaviour {
 	
 	public GameObject NumObj;
 	
-	public int 	nBiffID;
+	public int 	nBuffID;
 	
 	
 	// Use this for initialization
@@ -21,7 +21,7 @@ public class BuffIcon : MonoBehaviour {
 	}
 	
 	public void SetBuffData ( int nID , int nNum =1) {
-		nBiffID = nID;
+		nBuffID = nID;
 		// Set Icon Pic
 		SKILL skl = ConstDataManager.Instance.GetRow< SKILL >( nID ); 
 		if(skl != null  ){
@@ -47,15 +47,16 @@ public class BuffIcon : MonoBehaviour {
 	void OnBuffClick( GameObject go )
 	{
 		// show Tip
-		DataRow row = ConstDataManager.Instance.GetRow( (int)ConstDataTables.BUFF_TIP , nBiffID );
-		if( row != null )
-		{				
-			string sTip = row.Field<string>( "s_TIP");
-
-			// set tip 
-			Panel_Tip.OpenUI( sTip );
-			
-		}
+//		string nBuffName = MyTool.GetBuffName ( nBiffID );
+//
+//		string sTip = "";
+//		// get content
+//		DataRow row = ConstDataManager.Instance.GetRow( (int)ConstDataTables.BUFF_TIP , nBiffID );
+//		if( row != null )
+//		{				
+//			sTip = row.Field<string>( "s_TIP");		
+//		}
+		Panel_Tip.OpenBuffTip ( nBuffID );
 	}
 
 }

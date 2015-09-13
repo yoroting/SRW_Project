@@ -15,9 +15,25 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &135478
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 499500}
+  - 114: {fileID: 11480186}
+  m_Layer: 5
+  m_Name: Label-Title
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &149490
 GameObject:
-  m_ObjectHideFlags: 1
+  m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 4
@@ -42,7 +58,7 @@ GameObject:
   - 114: {fileID: 11440778}
   - 114: {fileID: 11456506}
   - 114: {fileID: 11495876}
-  - 54: {fileID: 5404570}
+  - 54: {fileID: 5419524}
   m_Layer: 5
   m_Name: Panel_Tip
   m_TagString: Untagged
@@ -59,8 +75,8 @@ GameObject:
   m_Component:
   - 4: {fileID: 441032}
   - 114: {fileID: 11465212}
-  - 65: {fileID: 6532410}
   - 114: {fileID: 11487348}
+  - 65: {fileID: 6584806}
   m_Layer: 5
   m_Name: Control - Simple Text Box
   m_TagString: Untagged
@@ -75,10 +91,10 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 149490}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 10, y: -8, z: 0}
+  m_LocalPosition: {x: -124, y: -18, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 441032}
+  m_Father: {fileID: 481164}
   m_RootOrder: 0
 --- !u!4 &441032
 Transform:
@@ -87,13 +103,12 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 190658}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -140, y: 32, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 422466}
   - {fileID: 497898}
   m_Father: {fileID: 481164}
-  m_RootOrder: 0
+  m_RootOrder: 2
 --- !u!4 &481164
 Transform:
   m_ObjectHideFlags: 1
@@ -101,9 +116,11 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 162992}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -170, y: 6, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 422466}
+  - {fileID: 499500}
   - {fileID: 441032}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -118,8 +135,20 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 441032}
+  m_RootOrder: 0
+--- !u!4 &499500
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 135478}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 481164}
   m_RootOrder: 1
---- !u!54 &5404570
+--- !u!54 &5419524
 Rigidbody:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -134,18 +163,18 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!65 &6532410
+--- !u!65 &6584806
 BoxCollider:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 190658}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 320, y: 124, z: 0}
-  m_Center: {x: 160, y: -62, z: 0}
+  m_Size: {x: 280, y: 162, z: 0}
+  m_Center: {x: 140, y: -81, z: 0}
 --- !u!114 &11440778
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -182,7 +211,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3001
+  startingRenderQueue: 3007
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 0
@@ -220,29 +249,29 @@ MonoBehaviour:
   leftAnchor:
     target: {fileID: 0}
     relative: 0
-    absolute: -10
+    absolute: -16
   rightAnchor:
     target: {fileID: 0}
     relative: 1
-    absolute: 8
+    absolute: 16
   bottomAnchor:
     target: {fileID: 422466}
     relative: 0
-    absolute: -8
+    absolute: -16
   topAnchor:
     target: {fileID: 0}
-    relative: 1
-    absolute: 8
-  updateAnchors: 0
+    relative: .5
+    absolute: 32
+  updateAnchors: 1
   mColor: {r: .441695511, g: .365592539, b: 1, a: 1}
   mPivot: 0
-  mWidth: 320
-  mHeight: 124
+  mWidth: 280
+  mHeight: 162
   mDepth: 0
   autoResizeBoxCollider: 1
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 2.58064508
+  aspectRatio: 1.7283951
   mType: 1
   mFillDirection: 4
   mFillAmount: 1
@@ -256,6 +285,71 @@ MonoBehaviour:
   mAtlas: {fileID: 11400000, guid: 62adb30369acbf943a67cee0f69267a3, type: 2}
   mSpriteName: Highlight - Shadowed
   mFillCenter: 1
+--- !u!114 &11480186
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 135478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9d0b5f3bbe925a408bd595c79d0bf63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leftAnchor:
+    target: {fileID: 0}
+    relative: 0
+    absolute: 0
+  rightAnchor:
+    target: {fileID: 0}
+    relative: 1
+    absolute: 0
+  bottomAnchor:
+    target: {fileID: 0}
+    relative: 0
+    absolute: 0
+  topAnchor:
+    target: {fileID: 0}
+    relative: 1
+    absolute: 0
+  updateAnchors: 1
+  mColor: {r: 1, g: 1, b: 1, a: 1}
+  mPivot: 4
+  mWidth: 248
+  mHeight: 32
+  mDepth: 2
+  autoResizeBoxCollider: 0
+  hideIfOffScreen: 0
+  keepAspectRatio: 0
+  aspectRatio: 7.75
+  keepCrispWhenShrunk: 1
+  mTrueTypeFont: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+  mFont: {fileID: 0}
+  mText: TipTitle1234567
+  mFontSize: 32
+  mFontStyle: 0
+  mAlignment: 2
+  mEncoding: 1
+  mMaxLineCount: 1
+  mEffectStyle: 0
+  mEffectColor: {r: 0, g: 0, b: 0, a: 1}
+  mSymbols: 1
+  mEffectDistance: {x: 1, y: 1}
+  mOverflow: 0
+  mMaterial: {fileID: 0}
+  mApplyGradient: 1
+  mGradientTop: {r: 1, g: 1, b: 0, a: 1}
+  mGradientBottom: {r: .699999988, g: .699999988, b: .699999988, a: 1}
+  mSpacingX: 0
+  mSpacingY: 0
+  mUseFloatSpacing: 0
+  mFloatSpacingX: 0
+  mFloatSpacingY: 0
+  mShrinkToFit: 0
+  mMaxLineWidth: 0
+  mMaxLineHeight: 0
+  mLineWidth: 0
+  mMultiline: 1
 --- !u!114 &11487348
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -289,6 +383,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nTipType: 0
   nTipID: 0
+  spBG: {fileID: 190658}
+  lblTitle: {fileID: 135478}
   lblText: {fileID: 149490}
 --- !u!114 &11497548
 MonoBehaviour:
@@ -304,36 +400,36 @@ MonoBehaviour:
   leftAnchor:
     target: {fileID: 0}
     relative: 0
-    absolute: 10
+    absolute: 0
   rightAnchor:
     target: {fileID: 0}
     relative: 1
-    absolute: -8
+    absolute: 0
   bottomAnchor:
     target: {fileID: 0}
     relative: 0
-    absolute: 8
+    absolute: 125
   topAnchor:
     target: {fileID: 0}
     relative: 1
-    absolute: -8
+    absolute: -2
   updateAnchors: 1
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 0
-  mWidth: 302
-  mHeight: 108
+  mWidth: 248
+  mHeight: 96
   mDepth: 1
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 2.79629636
+  aspectRatio: 2.58333325
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   mFont: {fileID: 0}
   mText: 'Press here to start typing
 
     fsdfs'
-  mFontSize: 36
+  mFontSize: 32
   mFontStyle: 0
   mAlignment: 0
   mEncoding: 1

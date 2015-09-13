@@ -951,10 +951,10 @@ public class MyScript {
 					pool.Add( new ADD_MAXSP( func.I(0) ) );
 				}
 				else if( func.sFunc  == "MUL_DRAINHP") {
-					pool.Add( new MUL_DRAINHP( func.I(0) ) );
+					pool.Add( new MUL_DRAINHP( func.F(0) ) );
 				}
 				else if( func.sFunc  == "MUL_DRAINMP") {
-					pool.Add( new MUL_DRAINMP( func.I(0) ) );
+					pool.Add( new MUL_DRAINMP( func.F(0) ) );
 				}
 				else if( func.sFunc  == "ADD_MOVE") 
 				{
@@ -991,6 +991,11 @@ public class MyScript {
 				else if( func.sFunc  == "MUL_MPCOST") {
 					pool.Add( new MUL_MPCOST( func.F(0) ) );
 				}
+				// immune
+				else if( func.sFunc  == "IMMUNE") {
+					pool.Add( new IMMUNE( func.I(0) ) );
+				}
+
 				//=============== Tag 
 				else if( func.sFunc  == "TAG_CHARGE") {  // 
 					pool.Add( new TAG_CHARGE( ) );

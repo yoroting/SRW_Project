@@ -46,6 +46,8 @@ public class cEffect
 	public virtual void _BeHit( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ }			// BUFF 專用.受擊後　額外效果 
 
 	// cost
+	public virtual bool _IsImmune(  int nBuffType ){		return false;	}				// check user in one status		
+
 	public virtual bool _IsStatus( _FIGHTSTATE st  ){ return false; }				// check user in one status	
 
 	public virtual bool _IsTag(  _UNITTAG tag ){ return false; }								// check unit extra tag
@@ -483,6 +485,15 @@ public class TAG_SILENCE: cEffect
 	
 	override public bool _IsTag(  _UNITTAG tag ){
 		return (_UNITTAG._SILENCE == tag );
+	}				// check user in one status		
+}
+//==== immune buff==
+public class IMMUNE: cEffect
+{
+	public IMMUNE( int v ){  iValue = v; }	
+	
+	override public bool _IsImmune(  int nBuffType ){
+		return (iValue == nBuffType );
 	}				// check user in one status		
 }
 

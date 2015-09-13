@@ -844,7 +844,8 @@ public class Panel_unit : MonoBehaviour {
 					}
 				}
 			}
-			FightBulletFX fbFx = FightBulletFX.CreatFX (missile, this.transform, this.transform.localPosition, defer.transform.localPosition, OnTwAtkFlyHit);
+			// attach on parent
+			FightBulletFX fbFx = FightBulletFX.CreatFX (missile, transform.parent , this.transform.localPosition, defer.transform.localPosition, OnTwAtkFlyHit);
 
 			// create a fly item
 			return;

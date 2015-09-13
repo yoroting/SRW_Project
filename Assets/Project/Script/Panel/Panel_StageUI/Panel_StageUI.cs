@@ -1135,9 +1135,9 @@ public class Panel_StageUI : MonoBehaviour
     //    return obj;
     //}
 
-    public GameObject SpwanBattleValueObj( )
+    public GameObject SpwanBattleValueObj( Vector3 vPos  )
 	{
-		GameObject go = ValueEftObj.Spawn( MaskPanelObj.transform );
+		GameObject go = ValueEftObj.Spawn( MaskPanelObj.transform  , vPos );
 		go.SetActive (true);
 		return go;
 	}

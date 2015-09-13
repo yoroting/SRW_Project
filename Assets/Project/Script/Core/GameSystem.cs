@@ -214,15 +214,16 @@ public class GameSystem : MonoBehaviour {
 		if (ps!= null) {
 			
 		}
-		ParticleSystemRenderer psr =instance.GetComponent< ParticleSystemRenderer>();
-		if (psr != null) {
-			psr.sortingLayerName =sortLayer;
-		}
-		// for child
-		ParticleSystemRenderer[] psrs = instance.GetComponentsInChildren<ParticleSystemRenderer>();
-		foreach (ParticleSystemRenderer psr2 in psrs) {
-			psr2.sortingLayerName = sortLayer;
-		}
+		SetParticleRenderLayer ( instance ,sortLayer  );
+//		ParticleSystemRenderer psr =instance.GetComponent< ParticleSystemRenderer>();
+//		if (psr != null) {
+//			psr.sortingLayerName =sortLayer;
+//		}
+//		// for child
+//		ParticleSystemRenderer[] psrs = instance.GetComponentsInChildren<ParticleSystemRenderer>();
+//		foreach (ParticleSystemRenderer psr2 in psrs) {
+//			psr2.sortingLayerName = sortLayer;
+//		}
 
 		AutoParticleQueue q = instance.AddComponent <AutoParticleQueue>();
 		//q.se
@@ -234,9 +235,24 @@ public class GameSystem : MonoBehaviour {
 			Debug.LogErrorFormat( " particle won't auto destory at {0}",name );
 		}
 
-
 		return instance;
 	}
+	public static void SetParticleRenderLayer( GameObject instance , string sortLayer="FX" )
+	{
+		if (instance == null)
+			return;
+		// change layer
+		ParticleSystemRenderer psr =instance.GetComponent< ParticleSystemRenderer>();
+		if (psr != null) {
+			psr.sortingLayerName =sortLayer;
+		}
+		// for child
+		ParticleSystemRenderer[] psrs = instance.GetComponentsInChildren<ParticleSystemRenderer>();
+		foreach (ParticleSystemRenderer psr2 in psrs) {
+			psr2.sortingLayerName = sortLayer;
+		}
+	}
+
 
 	public static void PlaySound( string strFile )
 	{

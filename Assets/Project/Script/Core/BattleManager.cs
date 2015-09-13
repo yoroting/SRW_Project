@@ -982,17 +982,25 @@ public partial class BattleManager
 			//v = obj.transform.position ;
 		}
 		//Panel_StageUI.Instance.TilePlaneObj.transform.localPosition;
-
+		// modify local pos
+		switch (nMode) {
+//		case 0:  // hp 
+//			break;
+		case 1:  // def
+			v.y += 50;
+			break;
+		case 2:  // mp
+			v.y -= 50;
+			break;
+		
+		}
+			
 
 		//GameObject go = ResourcesManager.CreatePrefabGameObj ( Panel_StageUI.Instance.MaskPanelObj , "Prefab/BattleValue" );
-		GameObject go = Panel_StageUI.Instance.SpwanBattleValueObj ();
-
-		//string path = "Prefab/BattleValue";
-		//GameObject go = ResourcesManager.CreatePrefabGameObj ( obj , path );
-		//GameObject go = GameSystem.PlayFX ( unit.gameObject , fx  );
+		GameObject go = Panel_StageUI.Instance.SpwanBattleValueObj ( v );
 		if (go != null) {
 			//go.transform.position = v;
-			go.transform.localPosition = v;
+			//go.transform.localPosition = v;
 			//Tween Y 將造成 成像上的偏移錯誤。徹底解決前～不開放
 			// tween Y here for correct pos value
 //			TweenY twnY = TweenY.Begin<TweenY>( go , 0.5f ); 
@@ -1008,19 +1016,66 @@ public partial class BattleManager
 			UILabel lbl = go.GetComponent< UILabel >();
 			if( lbl )
 			{
-				if( nValue > 0 )
-				{
-					if( nMode == 1 ){
-						lbl.gradientTop = new Color( 1.0f, 1.0f , 0.0f );
+				switch( nMode ){
+				case 0:  // hp 
+					if( nValue > 0 ){								
+						lbl.gradientTop = new Color( 0.0f, 1.0f , 0.0f );	// green
 					}
-					else {
-						lbl.gradientTop = new Color( 0.0f, 1.0f , 0.0f );
+					else{
+						lbl.gradientTop = new Color( 1.0f, 0.0f , 0.0f );	// red
 					}
+					break;
+
+				case 1:  // def 
+						if( nValue > 0 ){
+							lbl.gradientTop = new Color( 1.0f, 1.0f , 0.0f );  // yellow
+						}
+						else{
+							lbl.gradientTop = new Color( 0.0f, 1.0f , 0.0f );	// red
+						}
+					break;
+					case 2:  // mp 
+						if( nValue > 0 ){
+						lbl.gradientTop = new Color( 0.0f, 0.0f , 1.0f );  // blue 
+						}
+						else{
+						lbl.gradientTop = new Color( 1.0f, 0.0f , 1.0f );	// purple
+						}
+					break;
+					case 3:  // sp 
+					if( nValue > 0 ){
+						lbl.gradientTop = new Color( 1.0f, 1.0f , 1.0f );  // white
+					}
+					else{
+						lbl.gradientTop = new Color( 0.0f, 0.0f , 0.0f );	// black
+					}
+					break;
+				default:
+					if( nValue > 0 ){								
+						lbl.gradientTop = new Color( 0.0f, 1.0f , 0.0f );	// green
+					}
+					else{
+						lbl.gradientTop = new Color( 1.0f, 0.0f , 0.0f );	// red
+					}
+					break;
 				}
-				else{ 
-					// damage
-					lbl.gradientTop = new Color( 1.0f, 0.0f , 0.0f );
-				}
+//
+//				if( nValue > 0 )
+//				{
+//					if( nMode == 1 ){
+//						lbl.gradientTop = new Color( 1.0f, 1.0f , 0.0f );
+//					}
+//					else {
+//						lbl.gradientTop = new Color( 0.0f, 1.0f , 0.0f );
+//					}
+//				}
+//				else{ 
+//					// damage
+//					lbl.gradientTop = new Color( 1.0f, 0.0f , 0.0f );
+//				}
+//
+//
+
 				lbl.text = nValue.ToString();
 			}
 		}
@@ -1032,13 +1087,11 @@ public partial class BattleManager
 		if ( obj != null) {
 			v = obj.transform.parent.localPosition+obj.transform.localPosition;
 		}
-		GameObject go = Panel_StageUI.Instance.SpwanBattleValueObj ();
+		GameObject go = Panel_StageUI.Instance.SpwanBattleValueObj ( v );
 		
 		if (go != null) {
 			//go.transform.position = v;
-			go.transform.localPosition = v;
-
-			
+			//go.transform.localPosition = v;			
 			
 			UILabel lbl = go.GetComponent< UILabel >();
 			if( lbl )
@@ -1465,7 +1518,8 @@ public partial class BattleManager
 		{
 			int nDrainMp = (int)(pDefer.GetMaxMP()*fDrainMpRate);
 			if( nDrainMp != 0 ){
-				resPool.Add ( new cHitResult( cHitResult._TYPE._MP ,nAtker , nDrainMp  ) );
+				resPool.Add ( new cHitResult( cHitResult._TYPE._MP ,nDefer , -nDrainMp  ) );  	// drain mp
+				resPool.Add ( new cHitResult( cHitResult._TYPE._MP ,nAtker , nDrainMp  ) );		// restory mp
 			}
 		}
 
