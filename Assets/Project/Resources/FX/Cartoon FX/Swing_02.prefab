@@ -140,7 +140,7 @@ ParticleSystem:
   m_GameObject: {fileID: 128226}
   lengthInSec: .550000012
   startDelay: 0
-  speed: 1
+  speed: 2
   randomSeed: 0
   looping: 0
   prewarm: 0
@@ -1188,7 +1188,7 @@ ParticleSystem:
   m_GameObject: {fileID: 133934}
   lengthInSec: .400000006
   startDelay: 0
-  speed: 1
+  speed: 2
   randomSeed: 0
   looping: 0
   prewarm: 0
@@ -2236,7 +2236,7 @@ ParticleSystem:
   m_GameObject: {fileID: 134290}
   lengthInSec: .550000012
   startDelay: 0
-  speed: 1
+  speed: 2
   randomSeed: 0
   looping: 0
   prewarm: 0
@@ -3284,7 +3284,7 @@ ParticleSystem:
   m_GameObject: {fileID: 176182}
   lengthInSec: .550000012
   startDelay: 0
-  speed: 1
+  speed: 2
   randomSeed: 0
   looping: 0
   prewarm: 0

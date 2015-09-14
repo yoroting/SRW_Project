@@ -141,20 +141,21 @@ public class ADD_MAR: cEffect
 
 public class ADD_MAR_DIFF: cEffect
 {
-	public ADD_MAR_DIFF( float f ){	 fValue = f;	}
+	public ADD_MAR_DIFF( float f , int i ){	 fValue = f; iValue = i;	}
 	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
 		if ((Atker != null) && ( Defer != null)) {
 			float fDelt = Defer.GetBaseMar() - Atker.GetBaseMar();
 			fDelt *=fValue;
 			// this is final
 			attr.f_MAR += fDelt;
+			attr.f_MAR += iValue;
 		}
 	}
 }
 
 public class ADD_ATTACK_DIFF: cEffect
 {
-	public ADD_ATTACK_DIFF( float f ){	fValue = f;	}
+	public ADD_ATTACK_DIFF( float f , int i ){	fValue = f;	iValue = i; }
 
 	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
 		if ((Atker != null) && ( Defer != null)) {
@@ -162,6 +163,7 @@ public class ADD_ATTACK_DIFF: cEffect
 			fDelt *=fValue;
 			// this is final
 			attr.n_ATK += (int)fDelt;
+			attr.n_ATK += iValue;
 		}
 	}
 }

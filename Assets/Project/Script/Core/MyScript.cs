@@ -924,10 +924,10 @@ public class MyScript {
 					pool.Add( new ADD_MAR( func.F(0) ) );
 				}
 				else if( func.sFunc  == "ADD_MAR_DIFF") {
-					pool.Add( new ADD_MAR_DIFF( func.F(0) ) );
+					pool.Add( new ADD_MAR_DIFF( func.F(0) , func.I(1) ) );
 				}
 				else if( func.sFunc  == "ADD_ATTACK_DIFF") {
-					pool.Add( new ADD_ATTACK_DIFF( func.F(0) ) );
+					pool.Add( new ADD_ATTACK_DIFF( func.F(0), func.I(1) ) );
 				}
 				else if( func.sFunc  == "ADD_ATTACK") {
 					pool.Add( new ADD_ATTACK( func.I(0) ) );

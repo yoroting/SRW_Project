@@ -1591,11 +1591,17 @@ public class Panel_unit : MonoBehaviour {
 		SKILL skl = ConstDataManager.Instance.GetRow< SKILL > ( nSkillID ); 
 		if (skl == null)
 			return;
+
+		FX fxData = ConstDataManager.Instance.GetRow< FX > ( skl.n_SWING_FX ); 
+		if (fxData == null)
+			return;
+
 		GameObject go = GameSystem.PlayFX ( this.gameObject , skl.n_SWING_FX );
 		if (go == null) {
 			return;
 		}
-		MyTool.RotateGameObjToGridXY( go , Loc.X , Loc.Y , nX, nY );
+		// rotate have 2 type to rotate
+		//MyTool.RotateGameObjToGridXY( go , Loc.X , Loc.Y , nX, nY   );
 	}
 
 	public void ShowSkillFX( int nSkillID , int nTarIdent , int nX , int nY )
