@@ -1146,7 +1146,7 @@ public class Panel_unit : MonoBehaviour {
 		if( twr != null )
 		{
 			twr.SetStartToCurrentValue();
-			twr.to	= new Vector3( 0.0f , 0.0f , -360.0f );//Math.PI
+			twr.to	= new Vector3( 0.0f , 0.0f , 360.0f );//Math.PI
 			MyTool.TweenSetOneShotOnFinish( twr , OnTwAtkRotateEnd ); // for once only
 		}
 	}
@@ -1574,7 +1574,6 @@ public class Panel_unit : MonoBehaviour {
 
 
 	//====== Fight 
-
 	public void ShowSwingFX( int nSkillID , int nTarIdent , int nX , int nY )
 	{
 		if (nSkillID == 0) {
@@ -1587,21 +1586,25 @@ public class Panel_unit : MonoBehaviour {
 			}
 			nX = pdata.n_X; nY = pdata.n_Y;
 		}
-		//=================cast skill
+
+		//====================== cast skill ================================
 		SKILL skl = ConstDataManager.Instance.GetRow< SKILL > ( nSkillID ); 
 		if (skl == null)
-			return;
-
-		FX fxData = ConstDataManager.Instance.GetRow< FX > ( skl.n_SWING_FX ); 
-		if (fxData == null)
 			return;
 
 		GameObject go = GameSystem.PlayFX ( this.gameObject , skl.n_SWING_FX );
 		if (go == null) {
 			return;
 		}
+
+		FX fxData = ConstDataManager.Instance.GetRow< FX > ( skl.n_SWING_FX ); 
+		if (fxData == null)
+			return;
+
 		// rotate have 2 type to rotate
-		//MyTool.RotateGameObjToGridXY( go , Loc.X , Loc.Y , nX, nY   );
+		if (fxData.n_TAG == 1) {			// 處理旋轉
+			MyTool.RotateGameObjToGridXY( go , Loc.X , Loc.Y , nX, nY , fxData.n_ROT_TYPE );
+		}
 	}
 
 	public void ShowSkillFX( int nSkillID , int nTarIdent , int nX , int nY )
@@ -1618,7 +1621,7 @@ public class Panel_unit : MonoBehaviour {
 			}
 			nX = pdata.n_X; nY = pdata.n_Y;
 		}
-		//=================cast skill
+		//================ cast skill =================
 		SKILL skl = ConstDataManager.Instance.GetRow< SKILL > ( nSkillID ); 
 		if (skl == null)
 			return;
@@ -1641,37 +1644,8 @@ public class Panel_unit : MonoBehaviour {
 				return;
 			}
 
-			if (fxData.n_TAG == 1) {			// 處理旋轉
-				MyTool.RotateGameObjToGridXY( go , Loc.X , Loc.Y , nX, nY );
-//				_DIR dir = Loc.Get8Dir (nX, nY);
-//				//Vector3 rot ;
-//				switch (dir) {
-//				case _DIR._UP:
-//				go.transform.localRotation = Quaternion.Euler (-90, 0, 0);
-//				break;
-//				case _DIR._RIGHT:
-//					go.transform.localRotation = Quaternion.Euler (0, 90, 0);
-//					break;
-//				case _DIR._DOWN:
-//					go.transform.localRotation = Quaternion.Euler (90, 0, 0);
-//					break;
-//				case _DIR._LEFT:
-//					go.transform.localRotation = Quaternion.Euler (0, -90, 0);
-//					break;
-//				// 8 way 
-//				case _DIR._RIGHT_UP:
-//					go.transform.localRotation = Quaternion.Euler (-45, 90, 0);
-//					break;
-//				case _DIR._LEFT_UP:
-//					go.transform.localRotation = Quaternion.Euler (-45, -90, 0);
-//					break;
-//				case _DIR._RIGHT_DOWN:
-//					go.transform.localRotation = Quaternion.Euler (45, 90, 0);
-//					break;
-//				case _DIR._LEFT_DOWN:
-//					go.transform.localRotation = Quaternion.Euler (45, -90, 0);
-//					break;
-//				}
+			if (fxData.n_TAG == 1) {	// 處理旋轉
+				MyTool.RotateGameObjToGridXY( go , Loc.X , Loc.Y , nX, nY , fxData.n_ROT_TYPE  );
 			}
 		}
 	}

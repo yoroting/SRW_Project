@@ -23,6 +23,7 @@ public enum _FIGHTSTATE
 	_THROUGH  ,		// 穿透
 	_MISS		,	// 失誤
 	_COMBO	,		// 攻擊後強制原地再次攻擊
+	_BROKEN,		// 破防
 	// 
 	_KILL		,  //本次戰鬥有殺人
 
@@ -685,6 +686,23 @@ public class cUnitData{
 	}
 	public int GetExtSchLv(  )
 	{
+		return GetSchoolLv( nActSch[ 1 ] );
+	}
+
+	public int GetIntSchRank(  )
+	{
+		SCHOOL sch = ConstDataManager.Instance.GetRow<SCHOOL> ( nActSch[ 0 ] );
+		if( sch != null ){
+			return sch.n_RANK;
+		}
+		return 0;
+	}
+	public int GetExtSchRank(  )
+	{
+		SCHOOL sch = ConstDataManager.Instance.GetRow<SCHOOL> ( nActSch[ 1 ] );
+		if( sch != null ){
+			return sch.n_RANK;
+		}
 		return GetSchoolLv( nActSch[ 1 ] );
 	}
 

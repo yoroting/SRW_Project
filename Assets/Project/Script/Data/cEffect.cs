@@ -556,6 +556,17 @@ public class IS_COMBO: cEffect
 		return (st == _FIGHTSTATE._COMBO);
 	}				// check user in one status		
 }
+
+public class IS_BROKEN: cEffect
+{
+	public IS_BROKEN( ){	}	
+	
+	override public bool _IsStatus(  _FIGHTSTATE st ){
+		return (st == _FIGHTSTATE._BROKEN);
+	}				// check user in one status		
+}
+
+
 //==========================================================================
 // use to cache condition sctipr parser result
 public class  cEffectCondition
@@ -641,7 +652,7 @@ public class  cEffectCondition
 						return false; // no enemy is false
 					}
 				}
-				if( s1 == "I" ){
+				else if( s1 == "I" ){
 					if( data_I != null ){
 						f2 = data_I.GetMar();
 					}else{
@@ -668,7 +679,7 @@ public class  cEffectCondition
 						return false; // no enemy is false
 					}
 				}
-				if( s1 == "I" ){
+				else if( s1 == "I" ){
 					if( data_I != null ){
 						f2 = data_I.GetMar();
 					}else{
@@ -729,7 +740,63 @@ public class  cEffectCondition
 					return false;
 				}
 			}
+			//雙方內外功星等比較
+			else if( func.sFunc == "INTRANK_I"  )
+			{
+				int i1 = data_I.GetIntSchRank();
+				int i2 = 0;
+				string s1 = func.S( 1 );  // s1 
+				if( s1 == "E" ){
+					if( data_E != null ){
+						i2 = data_E.GetIntSchRank();
+					}else{
+						return false; // no enemy is false
+					}
+				}
+				else if( s1 == "I" ){
+					if( data_I != null ){
+						i2 = data_I.GetIntSchRank();
+					}else{
+						return false; // no enemy is false
+					}
+				}
+				else{
+					i2 = func.I( 1 );
+				}
+				//
+				if( MyScript.Instance.ConditionInt( i1 , func.S(0) ,i2  ) == false  ){
+					return   false;		// always fail
+				}
 
+			}
+			else if( func.sFunc == "EXTRANK_I"  )
+			{
+				int i1 = data_I.GetExtSchRank();
+				int i2 = 0;
+				string s1 = func.S( 1 );  // s1 
+				if( s1 == "E" ){
+					if( data_E != null ){
+						i2 = data_E.GetExtSchRank();
+					}else{
+						return false; // no enemy is false
+					}
+				}
+				else if( s1 == "I" ){
+					if( data_I != null ){
+						i2 = data_I.GetExtSchRank();
+					}else{
+						return false; // no enemy is false
+					}
+				}
+				else{
+					i2 = func.I( 1 );
+				}
+				//
+				if( MyScript.Instance.ConditionInt( i1 , func.S(0) ,i2  ) == false  ){
+					return   false;		// always fail
+				}
+				
+			}
 			// Fight stat check
 			else if( func.sFunc == "FST_ATKER"  )
 			{				
@@ -754,6 +821,22 @@ public class  cEffectCondition
 			else if( func.sFunc == "FST_DODGE"  )
 			{
 				return data_I.IsStates( _FIGHTSTATE._DODGE );
+			}
+			else if( func.sFunc == "FST_THROUGH"  )
+			{
+				return data_I.IsStates( _FIGHTSTATE._THROUGH );
+			}
+			else if( func.sFunc == "FST_MISS"  )
+			{
+				return data_I.IsStates( _FIGHTSTATE._MISS );
+			}
+			else if( func.sFunc == "FST_COMBO"  )
+			{
+				return data_I.IsStates( _FIGHTSTATE._COMBO );
+			}
+			else if( func.sFunc == "FST_BROKEN"  )
+			{
+				return data_I.IsStates( _FIGHTSTATE._BROKEN );
 			}
 
 			else{

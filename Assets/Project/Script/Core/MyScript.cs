@@ -1029,6 +1029,10 @@ public class MyScript {
 				else if( func.sFunc  == "IS_COMBO") { // 失誤
 					pool.Add( new IS_COMBO( ) );
 				}
+				else if( func.sFunc  == "IS_BROKEN") { // 破防
+					pool.Add( new IS_BROKEN( ) );
+				}
+
 				//===
 
 			

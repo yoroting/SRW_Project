@@ -16,10 +16,10 @@ namespace MYGRIDS
         /// </summary>
         [Description("_TILE")]
         _NULL = 0,
-		_BORDER = 1,    // 外框
+		_BORDER =1,    // 外框
         _GREEN = 2,    // 綠地( 平原/石路/河流 ) 
-        _LAND = 3,    // 平原( 石路 )
-        _RIVER =4,    // 河流( 平原/湖 ) 
+        _LAND  = 3,    // 平原( 石路 )
+        _RIVER = 4,    // 河流( 平原/湖 ) 
         _LAKE = 5,    // 湖  ( 河流 )
         _SNOW = 6,    // 雪  ( 河流 )
         _SAND = 7,    // 沙地 ( 平原 )
@@ -58,17 +58,18 @@ namespace MYGRIDS
 
     public enum _DIR
     {
-		// 4 way
-        _NULL = 0,
-        _UP = 1,
-        _RIGHT = 2,
-        _DOWN = 3,
-        _LEFT = 4,
+		// 4 way       
+        _UP 	 = 0,
+		_LEFT_UP = 1,
+		_LEFT 	 = 2,
+		_LEFT_DOWN  = 3,
+		_DOWN 	 = 4,
+		_RIGHT_DOWN = 5,
+        _RIGHT   = 6,
+		_RIGHT_UP = 7,
+		
 		// 8 way 
-		_RIGHT_UP = 5,
-		_LEFT_UP = 6,
-		_RIGHT_DOWN = 7,
-		_LEFT_DOWN = 8,
+
     };
 
     // int 的 2維向量。將來可能會使用到
@@ -175,9 +176,9 @@ namespace MYGRIDS
             {
                 return _DIR._LEFT; // left  
             }
-            return _DIR._NULL;
-        }
-
+			return _DIR._UP;
+		}
+		
 		// get 8 way dir
 		static public _DIR Get8Dir(int stx, int sty, int edx, int edy)
 		{
@@ -222,7 +223,7 @@ namespace MYGRIDS
 			{
 				return _DIR._LEFT_UP; // left  
 			}
-			return _DIR._NULL;
+			return _DIR._UP; // UP as default
 		}
 
         public _DIR GetDir(int x, int y)

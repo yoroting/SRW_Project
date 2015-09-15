@@ -453,35 +453,75 @@ public class MyTool {
 		return 0; 
 	}
 
-	public static void RotateGameObjToGridXY( GameObject go , int nX , int nY , int nToX , int nToY )
+	public static void RotateGameObjToGridXY( GameObject go , int nX , int nY , int nToX , int nToY  , int nRotType = 0 )
 	{
 		_DIR dir =  iVec2.Get8Dir ( nX, nY ,nToX, nToY );
 		//Vector3 rot ;
 		switch (dir) {
 		case _DIR._UP:
-			go.transform.localRotation = Quaternion.Euler (-90, 0, 0);
+			if( 0 == nRotType ){ // Z-axis
+				go.transform.localRotation = Quaternion.Euler (0, 0, 0);
+			}
+			else{				// y - axis
+				go.transform.localRotation = Quaternion.Euler (-90, 0, 0);
+			}
 			break;
 		case _DIR._RIGHT:
-			go.transform.localRotation = Quaternion.Euler (0, 90, 0);
+			if( 0 == nRotType ){
+				go.transform.localRotation = Quaternion.Euler (0, 0, -90);
+			}
+			else{
+				go.transform.localRotation = Quaternion.Euler (0, 90, 0);
+			}
 			break;
 		case _DIR._DOWN:
-			go.transform.localRotation = Quaternion.Euler (90, 0, 0);
+			if( 0 == nRotType ){
+				go.transform.localRotation = Quaternion.Euler (0, 0, 180);
+			}
+			else{
+				go.transform.localRotation = Quaternion.Euler (90, 0, 0);
+			}
 			break;
 		case _DIR._LEFT:
-			go.transform.localRotation = Quaternion.Euler (0, -90, 0);
+			if( 0 == nRotType ){
+				go.transform.localRotation = Quaternion.Euler (0, 0, 90);
+			}
+			else{
+				go.transform.localRotation = Quaternion.Euler (0, -90, 0);
+			}
 			break;
 			// 8 way 
 		case _DIR._RIGHT_UP:
-			go.transform.localRotation = Quaternion.Euler (-45, 90, 0);
+			if( 0 == nRotType ){
+				go.transform.localRotation = Quaternion.Euler (0, 0, -45);
+			}
+			else{
+				go.transform.localRotation = Quaternion.Euler (-45, 90, 0);
+			}
 			break;
 		case _DIR._LEFT_UP:
-			go.transform.localRotation = Quaternion.Euler (-45, -90, 0);
+			if( 0 == nRotType ){
+				go.transform.localRotation = Quaternion.Euler (0, 0, 45);
+			}
+			else{
+				go.transform.localRotation = Quaternion.Euler (-45, -90, 0);
+			}
 			break;
 		case _DIR._RIGHT_DOWN:
-			go.transform.localRotation = Quaternion.Euler (45, 90, 0);
+			if( 0 == nRotType ){
+				go.transform.localRotation = Quaternion.Euler (0, 0, -135);
+			}
+			else{
+				go.transform.localRotation = Quaternion.Euler (45, 90, 0);
+			}
 			break;
 		case _DIR._LEFT_DOWN:
-			go.transform.localRotation = Quaternion.Euler (45, -90, 0);
+			if( 0 == nRotType ){
+				go.transform.localRotation = Quaternion.Euler (0, 0, 135);	
+			}
+			else{
+				go.transform.localRotation = Quaternion.Euler (45, -90, 0);
+			}
 			break;
 		}
 

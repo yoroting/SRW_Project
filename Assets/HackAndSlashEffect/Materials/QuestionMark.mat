@@ -93,12 +93,12 @@ Material:
         second: .600000024
       data:
         first:
-          name: _Parallax
-        second: .0199999996
-      data:
-        first:
           name: _InvFade
         second: 1
+      data:
+        first:
+          name: _Parallax
+        second: .0199999996
       data:
         first:
           name: _ZWrite
@@ -154,9 +154,9 @@ Material:
         second: {r: .382352948, g: .382352948, b: .382352948, a: 1}
       data:
         first:
-          name: _EmissionColorUI
-        second: {r: .764705896, g: .764705896, b: .764705896, a: 1}
-      data:
-        first:
           name: _EmisColor
         second: {r: 1, g: 1, b: 1, a: 1}
+      data:
+        first:
+          name: _EmissionColorUI
+        second: {r: .764705896, g: .764705896, b: .764705896, a: 1}
