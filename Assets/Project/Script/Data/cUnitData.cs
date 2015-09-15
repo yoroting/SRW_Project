@@ -1169,7 +1169,7 @@ public class cUnitData{
 		return n;
 	}
 
-	public float GetMar()
+	public float GetMar( bool bTrue=false )
 	{
 		UpdateAttr(  ); // update first to get newest data
 		float f = 0;
@@ -1177,11 +1177,14 @@ public class cUnitData{
 		{
 			f +=pair.Value.f_MAR;
 		}
+		if (bTrue)
+			return f;
+
 		if (f < 0.0f )			f = 0.0f;
 		return f;
 	}
 
-	public int GetAtk()
+	public int GetAtk(  bool bTrue=false )
 	{
 		UpdateAttr(  ); // update first to get newest data
 		int n = 0;
@@ -1195,6 +1198,8 @@ public class cUnitData{
 		if (fAtkRate < 0.0f)
 			fAtkRate = 0.0f;
 		n = (int)(fAtkRate* n);
+		if (bTrue)
+			return n;
 
 		if (n < 0)			n = 0;
 		return n;

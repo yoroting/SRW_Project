@@ -2507,11 +2507,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11491810, guid: cfa057b5163a60741bb67ec2db63f91c, type: 2}
       propertyPath: mWidth
-      value: 106
+      value: 108
       objectReference: {fileID: 0}
     - target: {fileID: 11491810, guid: cfa057b5163a60741bb67ec2db63f91c, type: 2}
       propertyPath: aspectRatio
-      value: 2.20833325
+      value: 2.25
       objectReference: {fileID: 0}
     - target: {fileID: 497798, guid: cfa057b5163a60741bb67ec2db63f91c, type: 2}
       propertyPath: m_RootOrder

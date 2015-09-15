@@ -144,7 +144,7 @@ public class ADD_MAR_DIFF: cEffect
 	public ADD_MAR_DIFF( float f , int i ){	 fValue = f; iValue = i;	}
 	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
 		if ((Atker != null) && ( Defer != null)) {
-			float fDelt = Defer.GetBaseMar() - Atker.GetBaseMar();
+			float fDelt = Defer.GetMar( true ) - Atker.GetMar( true );
 			fDelt *=fValue;
 			// this is final
 			attr.f_MAR += fDelt;
