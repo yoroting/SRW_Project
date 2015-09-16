@@ -879,6 +879,13 @@ public class Panel_unit : MonoBehaviour {
 			BowAttack( nTarX ,nTarY );
 			return ;		
 		}
+		else if (MyTool.IsSkillTag (skillid, _SKILLTAG._NOACT)) {
+			
+			int nTarX = defer.Loc.X;
+			int nTarY = defer.Loc.Y;
+			NoActAttack( nTarX ,nTarY );
+			return ;		
+		}
 		//  非攻擊型技能，跳過攻擊動作
 		else if( MyTool.IsSkillTag (skillid, _SKILLTAG._DAMAGE)== false ){
 			OnTwAtkHit();
@@ -952,6 +959,10 @@ public class Panel_unit : MonoBehaviour {
 		else if (MyTool.IsSkillTag (skillid, _SKILLTAG._BOW)) {
 			BowAttack( GridX ,GridY );
 			return ;
+		}
+		else if (MyTool.IsSkillTag (skillid, _SKILLTAG._NOACT)) {
+			NoActAttack( GridX ,GridY );
+			return ;		
 		}
 		// exec result directly
 		ActionManager.Instance.ExecActionHitResult ( CurAction );
@@ -1210,6 +1221,14 @@ public class Panel_unit : MonoBehaviour {
 
 		bIsAtking = false;
 	}
+
+	public void NoActAttack( int GridX , int  GridY )
+	{
+		bIsAtking = true;
+		ActionManager.Instance.ExecActionHitResult ( CurAction );	 // perform sm hit action
+		bIsAtking = false;
+	}
+
 
 	//==============Tween CAll back
 	public void OnTwAtkHit( )

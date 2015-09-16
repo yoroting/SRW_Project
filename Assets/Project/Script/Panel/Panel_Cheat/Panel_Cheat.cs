@@ -40,6 +40,17 @@ public class Panel_Cheat : MonoBehaviour {
 	public GameObject CpDelobj;
 		
 
+	public GameObject SchValueobj;
+	public GameObject SchAddobj;
+	public GameObject SchDelobj;
+
+	public GameObject BuffValueobj;
+	public GameObject BuffAddobj;
+	public GameObject BuffDelobj;
+
+	public GameObject Item1Valueobj;
+	public GameObject Item1Addobj;
+	public GameObject Item1Delobj;
 
 	// Use this for initialization
 	void Start () {
@@ -61,6 +72,16 @@ public class Panel_Cheat : MonoBehaviour {
 
 		UIEventListener.Get(CpAddobj).onClick += OnAddCpClick; 
 		UIEventListener.Get(CpDelobj).onClick += OnDelCpClick; 
+
+
+		UIEventListener.Get(SchAddobj).onClick += OnAddSchClick; 
+		UIEventListener.Get(SchDelobj).onClick += OnDelSchClick; 
+
+		UIEventListener.Get(BuffAddobj).onClick += OnAddBuffClick; 
+		UIEventListener.Get(BuffDelobj).onClick += OnDelBuffClick; 
+
+		UIEventListener.Get(Item1Addobj).onClick += OnAddItem1Click; 
+		UIEventListener.Get(Item1Delobj).onClick += OnDelItem1Click; 
 	}
 	
 	// Update is called once per frame
@@ -221,6 +242,36 @@ public class Panel_Cheat : MonoBehaviour {
 	{
 		pData.AddCp( -pData.GetMaxCP()  );		
 		SetData( pData );
+	}
+
+	void OnAddSchClick(GameObject go)
+	{
+	
+	}
+	
+	void OnDelSchClick(GameObject go)
+	{
+	
+	}
+
+	void OnAddBuffClick(GameObject go)
+	{
+		
+	}
+	
+	void OnDelBuffClick(GameObject go)
+	{
+		
+	}
+
+	void OnAddItem1Click(GameObject go)
+	{
+		
+	}
+	
+	void OnDelItem1Click(GameObject go)
+	{
+		
 	}
 
 
