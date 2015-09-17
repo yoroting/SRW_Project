@@ -271,6 +271,9 @@ public class Panel_UnitInfo : MonoBehaviour {
 		foreach ( KeyValuePair< int , cBuffData > pair in pUnitData.Buffs.Pool ) {
 			if( pair.Value.nTime == 0 ) // never 0  
 				continue;
+			if( pair.Value.tableData.n_HIDE > 0 )
+				continue;
+
 			GameObject go = ResourcesManager.CreatePrefabGameObj( BuffGrid , "Prefab/Bufficon" ); 
 			if( go == null )
 				continue;		
@@ -289,6 +292,8 @@ public class Panel_UnitInfo : MonoBehaviour {
 
 		foreach ( KeyValuePair< int , cBuffData > pair in pUnitData.Buffs.Pool ) {
 			if( pair.Value.nTime != 0 ) // only 0  
+				continue;
+			if( pair.Value.tableData.n_HIDE > 0 )
 				continue;
 
 			GameObject go = ResourcesManager.CreatePrefabGameObj( PassGrid , "Prefab/Skill_simple" ); 
