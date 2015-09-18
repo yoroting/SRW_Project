@@ -385,6 +385,43 @@ public class cUnitData{
 	
 
 	}
+
+	public void ForgetSchool( int SchID )
+	{
+		if( SchoolPool.ContainsKey( SchID) ) {
+			int nIdx = -1;
+			SCHOOL sch = ConstDataManager.Instance.GetRow<SCHOOL> ( SchID );
+			if( sch != null ){
+				if ( sch.n_TYPE==0 ){
+					if( SchID == GetIntSchID() ){
+						nIdx = cAttrData._INTSCH;
+					}
+				}
+				else{
+					if( SchID == GetExtSchID() ){
+						nIdx = cAttrData._EXTSCH;
+					}
+				}
+			}
+
+			SchoolPool.Remove( SchID );
+
+			// if forget active school
+			if( nIdx >= 0 ){
+				// find school to active
+				foreach( KeyValuePair<int , int > pair in SchoolPool ){
+					SCHOOL school = ConstDataManager.Instance.GetRow<SCHOOL>( pair.Key );
+					if( school == null )
+						continue;
+					if( school.n_TYPE ==  nIdx ){
+						ActiveSchool( pair.Key  );
+						break;
+					}
+				}
+			}
+		}
+	}
+	
 	//
 	public void ActiveSchool( int SchID )
 	{
@@ -674,24 +711,24 @@ public class cUnitData{
 	}
 	public int GetIntSchID(  )
 	{
-		return  nActSch[ 0 ];
+		return  nActSch[ cAttrData._INTSCH ];
 	}
 	public int GetExtSchID(  )
 	{
-		return  nActSch[ 1 ];
+		return  nActSch[ cAttrData._EXTSCH ];
 	}
 	public int GetIntSchLv(  )
 	{
-		return GetSchoolLv( nActSch[ 0 ] );
+		return GetSchoolLv( nActSch[ cAttrData._INTSCH ] );
 	}
 	public int GetExtSchLv(  )
 	{
-		return GetSchoolLv( nActSch[ 1 ] );
+		return GetSchoolLv( nActSch[ cAttrData._EXTSCH ] );
 	}
 
 	public int GetIntSchRank(  )
 	{
-		SCHOOL sch = ConstDataManager.Instance.GetRow<SCHOOL> ( nActSch[ 0 ] );
+		SCHOOL sch = ConstDataManager.Instance.GetRow<SCHOOL> ( nActSch[ cAttrData._INTSCH ] );
 		if( sch != null ){
 			return sch.n_RANK;
 		}
@@ -699,11 +736,11 @@ public class cUnitData{
 	}
 	public int GetExtSchRank(  )
 	{
-		SCHOOL sch = ConstDataManager.Instance.GetRow<SCHOOL> ( nActSch[ 1 ] );
+		SCHOOL sch = ConstDataManager.Instance.GetRow<SCHOOL> ( nActSch[ cAttrData._EXTSCH ] );
 		if( sch != null ){
 			return sch.n_RANK;
 		}
-		return GetSchoolLv( nActSch[ 1 ] );
+		return GetSchoolLv( nActSch[ cAttrData._EXTSCH ] );
 	}
 
 //	 void AvtiveSchool( int index , int School )
@@ -760,7 +797,13 @@ public class cUnitData{
 	{
 		if (slot >= _ITEMSLOT._SLOTMAX)
 			return 0; 
+
 		int nOldItemID = Items [(int)slot];
+		if( nOldItemID == nItemID ){
+			return 0;
+		}
+
+
 		ITEM_MISC olditem = ConstDataManager.Instance.GetRow< ITEM_MISC > ( nOldItemID );
 		if ( olditem != null) {
 			Buffs.DelBuff( olditem.n_ID_BUFF );
@@ -768,7 +811,7 @@ public class cUnitData{
 
 
 		// replace 
-		Items [(int)slot] = nItemID;
+		Items [(int)slot] = nItemID; // maybe set to 0 here
 		ITEM_MISC newitem = ConstDataManager.Instance.GetRow< ITEM_MISC > ( nItemID );
 		if ( newitem != null) {
 			Buffs.AddBuff( newitem.n_ID_BUFF , this.n_Ident , 0 , 0 );

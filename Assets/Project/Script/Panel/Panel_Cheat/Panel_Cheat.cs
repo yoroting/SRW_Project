@@ -246,32 +246,78 @@ public class Panel_Cheat : MonoBehaviour {
 
 	void OnAddSchClick(GameObject go)
 	{
-	
+		UIInput SchInput = SchValueobj.GetComponent<UIInput>();
+		if( SchInput != null ){
+			int nSch = 0;
+			if( int.TryParse(  SchInput.value , out nSch ) ){
+				SCHOOL sch = ConstDataManager.Instance.GetRow<SCHOOL> ( nSch );
+				if( sch != null ){
+					pData.LearnSchool( nSch , 5 );
+
+					pData.ActiveSchool( nSch );
+				}
+			}
+		}
 	}
 	
 	void OnDelSchClick(GameObject go)
 	{
-	
+		UIInput SchInput = SchValueobj.GetComponent<UIInput>();
+		if( SchInput != null ){
+			int nSch = 0;
+			if( int.TryParse(  SchInput.value , out nSch ) ){
+				SCHOOL sch = ConstDataManager.Instance.GetRow<SCHOOL> ( nSch );
+				if( sch != null ){
+					pData.ForgetSchool( nSch );
+					
+				}
+			}
+		}
 	}
 
 	void OnAddBuffClick(GameObject go)
 	{
-		
+		UIInput buffInput = BuffValueobj.GetComponent<UIInput>();
+		if( buffInput != null ){
+			int id = 0;
+			if( int.TryParse(  buffInput.value , out id ) ){
+				pData.Buffs.AddBuff( id , 0 , 0 , 0 ); 
+			}
+		}
 	}
 	
 	void OnDelBuffClick(GameObject go)
 	{
-		
+		UIInput buffInput = BuffValueobj.GetComponent<UIInput>();
+		if( buffInput != null ){
+			int id = 0;
+			if( int.TryParse(  buffInput.value , out id ) ){
+				pData.Buffs.DelBuffBySkillID( id  ); 
+			}
+		}		
 	}
 
 	void OnAddItem1Click(GameObject go)
 	{
-		
+		UIInput itemInput = Item1Valueobj.GetComponent<UIInput>();
+		if( itemInput != null ){
+			int id = 0;
+			if( int.TryParse(  itemInput.value , out id ) ){
+				pData.EquipItem( _ITEMSLOT._SLOT0 , id ) ;
+				//pData.Buffs.AddBuff( id , 0 , 0 , 0 ); 
+			}
+		}
 	}
 	
 	void OnDelItem1Click(GameObject go)
 	{
-		
+		UIInput itemInput = Item1Valueobj.GetComponent<UIInput>();
+		if( itemInput != null ){
+			int id = 0;
+			if( int.TryParse(  itemInput.value , out id ) ){
+				pData.EquipItem( _ITEMSLOT._SLOT0 , 0 ) ;
+			}
+		}
 	}
 
 

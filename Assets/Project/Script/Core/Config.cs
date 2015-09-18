@@ -45,6 +45,7 @@ public class Config
 	public static bool MOBAI = true;				// all mob no atk 
 	public static bool DRAWGRID = false;
 	public static bool KILL_MODE = false;
+	public static bool DebugInfo = true;			// 
 
 	public static int  WIDTH = 960;
 	public static int  HEIGHT = 640;

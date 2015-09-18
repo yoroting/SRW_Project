@@ -35,6 +35,8 @@ public class Panel_unit : MonoBehaviour {
 	public GameObject MaskObj;
 	public GameObject BGObj;
 
+	public GameObject TailObj;		// 尾巴特效
+
 	public _CAMP 	eCampID;
 	public int  	CharID;			// not identift
 	public iVec2 Loc;
@@ -828,6 +830,8 @@ public class Panel_unit : MonoBehaviour {
 		// swing fx
 		ShowSwingFX( skillid , TarIdent , 0 , 0 );
 
+		// check need show tail fx
+		ShowTailFX( 1 );
 
 		// fly item
 		if (MyTool.IsSkillTag (skillid, _SKILLTAG._FLY)) {
@@ -920,6 +924,9 @@ public class Panel_unit : MonoBehaviour {
 
 		// swing fx
 		ShowSwingFX( skillid , TarIdent ,GridX ,GridY );
+
+		// check need show tail fx
+		ShowTailFX( 1 );
 
 		// attack perform
 		if (MyTool.IsSkillTag (skillid, _SKILLTAG._FLY)) {
@@ -1668,6 +1675,37 @@ public class Panel_unit : MonoBehaviour {
 			}
 		}
 	}
+
+	public void ShowTailFX( int nType , bool bClose = false)
+	{
+		if( TailObj != null ){
+			NGUITools.Destroy( TailObj );
+			TailObj = null;
+		}
+		if( bClose == true ){
+			return;
+		}
+
+		// add tail
+		string sFileName = "";
+		switch( nType ){
+			case 0: sFileName = "TAIL_BLACK"  ; break;
+			case 1: sFileName = "TAIL_CHAOS"  ; break;
+			case 2: sFileName = "TAIL_FLAME"  ; break;
+			case 3: sFileName = "TAIL_ICE"  ; break;
+			case 4: sFileName = "TAIL_LIFE"  ; break;
+		default:
+			return;
+		}
+
+
+		string path = "FX/Tail/" + sFileName;		
+		GameObject instance = ResourcesManager.CreatePrefabGameObj ( this.gameObject , path );
+		if( instance != null ){
+			TailObj = instance;
+		}
+	}
+
 //	public void AddBuff( int nBuffID )
 //	{
 //		pUnitData.Buffs.AddBuff (nBuffID);

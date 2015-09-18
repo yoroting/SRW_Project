@@ -233,7 +233,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3003
+  startingRenderQueue: 3000
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 0
@@ -513,7 +513,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3003
+  startingRenderQueue: 3000
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 0
@@ -2499,7 +2499,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 156318, guid: cfa057b5163a60741bb67ec2db63f91c, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 147746, guid: cfa057b5163a60741bb67ec2db63f91c, type: 2}
       propertyPath: m_IsActive
@@ -2507,11 +2507,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11491810, guid: cfa057b5163a60741bb67ec2db63f91c, type: 2}
       propertyPath: mWidth
-      value: 108
+      value: 104
       objectReference: {fileID: 0}
     - target: {fileID: 11491810, guid: cfa057b5163a60741bb67ec2db63f91c, type: 2}
       propertyPath: aspectRatio
-      value: 2.25
+      value: 2.16666675
       objectReference: {fileID: 0}
     - target: {fileID: 497798, guid: cfa057b5163a60741bb67ec2db63f91c, type: 2}
       propertyPath: m_RootOrder
