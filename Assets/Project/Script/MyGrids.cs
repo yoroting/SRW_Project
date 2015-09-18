@@ -1340,11 +1340,11 @@ namespace MYGRIDS
                             ThingPool.Add(thingList[0].Cell.GetKey(), thingList);
                     }
 
-					if (version >= 2){
-						// if is new ver
-						sBackGround = reader.ReadString();
-					}
-
+                    if (version >= 2)
+                    {
+                        // if is new ver
+                        sBackGround = reader.ReadString();
+                    }
                 }
             }
             finally

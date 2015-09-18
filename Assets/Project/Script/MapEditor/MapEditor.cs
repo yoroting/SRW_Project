@@ -51,7 +51,7 @@ public class MapEditor : MonoBehaviour
     /// <summary>
     /// 背景圖片物件
     /// </summary>
-    private GameObject _backGroundObject;
+    private static GameObject _backGroundObject;
 
 
     /// <summary>
@@ -144,6 +144,7 @@ public class MapEditor : MonoBehaviour
 
         Debug.Log("load scn file on:" + path);
 
+        Grids = new MyGrids();
         if (Grids.Load(www.bytes) == true)
         {
             if (_backGroundObject == null)
@@ -158,8 +159,11 @@ public class MapEditor : MonoBehaviour
     {
         MyTool.DestoryImmediateAllChildren(TilePlaneObj);
 
-        UITexture backgroundTexture = _backGroundObject.GetComponent<UITexture>();
-        backgroundTexture.mainTexture = null;
+        if (_backGroundObject != null)
+        {
+            UITexture backgroundTexture = _backGroundObject.GetComponent<UITexture>();
+            backgroundTexture.mainTexture = null;
+        }
     }
 
     public void ChangeBackground(string name)
