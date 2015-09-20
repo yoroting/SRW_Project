@@ -38,7 +38,7 @@ public class cHitResult		//
 		_HITBACK	,
 
 		_DODGE		,		// 迴避
-
+		_GUARD		,		// guard some 
 
 	};
 
@@ -638,7 +638,8 @@ public partial class BattleManager
 			return;
 		}
 		// check change target pos
-
+		// get affectpool
+		AffectPool.Clear();
 //
 //		// check if self cast
 //		SKILL skill = ConstDataManager.Instance.GetRow<SKILL> ( Atker.FightAttr.SkillID );
@@ -666,21 +667,44 @@ public partial class BattleManager
 
 		// check is damage 
 		bool bIsDamage =  MyTool.IsDamageSkill( Atker.FightAttr.SkillID );
-
+		int nGuarderID   = 0;
 		// single atk
 		if( Defer != null ){
 			gridX = Defer.n_X;
 			gridY = Defer.n_Y;
+			int 	  nRealTarId   = def;
+			cUnitData cRealTarData = Defer;
 
 			if( bIsDamage ){
-				action.AddHitResult(  CalAttackResult( atk , def , IsDefMode() ) ) ;
+				// 
+				nGuarderID = Defer.Buffs.GetGuarder();
+				//if( Defer.IsStates( _FIGHTSTATE._GUARD ) )
+				if( nGuarderID != 0)
+				{
+					// change atk target to guard
+					cUnitData Guarder = GameDataManager.Instance.GetUnitDateByIdent( nGuarderID );
+					if(	Guarder!= null  ){
+						Guarder.SetFightAttr( atk , 0 ); // maybe change to def skill
+
+						action.AddHitResult(  new cHitResult( cHitResult._TYPE._GUARD , Guarder.n_Ident , def ) ) ;
+
+						if( !AffectPool.Contains( Guarder ) ){
+							AffectPool.Add( Guarder );
+						}
+
+						cRealTarData = Guarder;		// change defer
+						nRealTarId   = Guarder.n_Ident;
+					}
+
+				}
+
+				action.AddHitResult(  CalAttackResult( atk , nRealTarId , IsDefMode() ) ) ;
 			}
-			action.AddHitResult( CalSkillHitResult(  Atker , Defer  , Atker.FightAttr.SkillID ) );
+			action.AddHitResult( CalSkillHitResult(  Atker , cRealTarData  , Atker.FightAttr.SkillID ) );
 		}
 
 		// aoe attack
-		// get affectpool
-		AffectPool.Clear();
+
 
 		if (Atker.IsStates( _FIGHTSTATE._THROUGH ) ) {
 			GetThroughPool( Atker , Defer ,Atker.FightAttr.SkillID , gridX , gridY , ref AffectPool );
@@ -697,12 +721,31 @@ public partial class BattleManager
 			if( Defer == unit ){
 				continue;
 			}
+			int 	  nRealTarId   = unit.n_Ident;
+			cUnitData cRealTarData = unit;
+
 			if( bIsDamage ){
+				// change atk target to guard
+				nGuarderID = 0;
+				cUnitData Guarder = GameDataManager.Instance.GetUnitDateByIdent( nGuarderID );
+				if(	Guarder!= null  ){
+					Guarder.SetFightAttr( atk , 0 ); // maybe change to def skill
+					
+					action.AddHitResult(  new cHitResult( cHitResult._TYPE._GUARD , Guarder.n_Ident , def ) ) ;
+					
+					if( !AffectPool.Contains( Guarder ) ){
+						AffectPool.Add( Guarder );
+					}
+					
+					cRealTarData = Guarder;		// change defer
+					nRealTarId   = Guarder.n_Ident;
+				}
+
 				unit.SetFightAttr( Atker.n_Ident , 0 );
 				ShowDefAssist( unit.n_Ident , false );
-				action.AddHitResult(  CalAttackResult( atk , unit.n_Ident , true) ) ;// always def at this time
+				action.AddHitResult(  CalAttackResult( atk , nRealTarId , true) ) ;// always def at this time
 			}
-			action.AddHitResult( CalSkillHitResult(  Atker , unit  , Atker.FightAttr.SkillID ) );		
+			action.AddHitResult( CalSkillHitResult(  Atker , cRealTarData  , Atker.FightAttr.SkillID ) );		
 		}
 	}
 
@@ -1218,7 +1261,7 @@ public partial class BattleManager
 					continue;
 				
 			if(  CanPK( Atker.eCampID , pUnit.eCampID ) == true ){
-				if( pool.IndexOf( pUnit )< 0 ){
+				if( pool.Contains( pUnit ) == false ){
 					pool.Add( pUnit );
 				}
 			}
@@ -1285,14 +1328,14 @@ public partial class BattleManager
 					continue;
 				 
 				if( bAll == true ){ // all is no need check
-					if( pool.IndexOf( pUnit )< 0 ){
+					if( pool.Contains( pUnit ) == false ){
 						pool.Add( pUnit );
 					}
 					continue;
 				}
 
 				if(  CanPK( Atker.eCampID , pUnit.eCampID ) == bCanPK ){
-					if( pool.IndexOf( pUnit )< 0 ){
+					if( pool.Contains( pUnit ) == false ){
 						pool.Add( pUnit );
 					}
 				}
@@ -1464,6 +1507,11 @@ public partial class BattleManager
 		float DefAC = 0.0f; // armor
 
 		float fAtkDmg 	= (HitRate*Atk) - DefAC  ; 
+		float fDefReduce = pDefer.GetMulDamage ();  //守方減免
+		if (pAtker.IsStates (_FIGHTSTATE._BROKEN)) {
+			fDefReduce = 1.0f;						// 破防 
+		}
+
 
 		fAtkDmg = (fAtkDmg<0)? 0: fAtkDmg;
 		if( bDefMode )
@@ -1471,8 +1519,12 @@ public partial class BattleManager
 			fAtkDmg = (fAtkDmg*Config.DefReduce /100.0f);
 		}
 
-		// 加成
-		fAtkDmg = fAtkDmg * pAtker.GetMulBurst () * pDefer.GetMulDamage ();
+
+		// 攻方加成
+		fAtkDmg = fAtkDmg * pAtker.GetMulBurst () ;
+
+		//守方減免
+		fAtkDmg *= fDefReduce;
 
 		//玩家秒殺模式- cheat
 		if (Config.KILL_MODE ) {

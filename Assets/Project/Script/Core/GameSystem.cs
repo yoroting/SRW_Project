@@ -112,7 +112,7 @@ public class GameSystem : MonoBehaviour {
 		}
 
 #if DEBUG && UNITY_EDITOR
-		GameDataManager.Instance.nStageID  =1;
+		GameDataManager.Instance.nStageID  =5;
 #endif
 		bFXPlayMode = true;
 	}
@@ -193,7 +193,7 @@ public class GameSystem : MonoBehaviour {
 	}
 
 
-	public static GameObject PlayFX( GameObject go , string name , string sortLayer="FX")
+	public static GameObject PlayFX( GameObject go , string name , string sortLayer="FX")//
 	{
 		if (go == null)
 			return null;
@@ -225,7 +225,7 @@ public class GameSystem : MonoBehaviour {
 //			psr2.sortingLayerName = sortLayer;
 //		}
 
-		AutoParticleQueue q = instance.AddComponent <AutoParticleQueue>();
+		//AutoParticleQueue q = instance.AddComponent <AutoParticleQueue>();
 		//q.se
 
 		//check auto destory
@@ -309,9 +309,15 @@ public class GameSystem : MonoBehaviour {
 
 	public static void TalkEvent( int nTalkID )
 	{
-		GameDataManager.Instance.nTalkID = nTalkID;
+		GameDataManager.Instance.nTalkID = 0; // set to 0 first to avoid panel_talk awake->enable set script
+
 		// start talk UI
-		PanelManager.Instance.OpenUI( Panel_Talk.Name );
+		Panel_Talk pTalk = MyTool.GetPanel<Panel_Talk>(  PanelManager.Instance.OpenUI( Panel_Talk.Name ) );
+		if (pTalk != null) {
+			pTalk.SetScript( nTalkID ); 
+		}
+		GameDataManager.Instance.nTalkID = nTalkID;
+
 	}
 //	public static GameObject CreatePrefabGameObj( GameObject parent , string sPrefabPath )
 //	{

@@ -140,7 +140,9 @@ public class cBuffs
 		if (buff.n_BUFF_FXS > 0) {
 
 			Panel_unit unit = Panel_StageUI.Instance.GetUnitByIdent( Owner.n_Ident );
-			GameSystem.PlayFX( unit.gameObject ,buff.n_BUFF_FXS);
+			if( unit != null ){
+				GameSystem.PlayFX( unit.gameObject ,buff.n_BUFF_FXS);
+			}
 		}
 
 		return data;
@@ -248,6 +250,27 @@ public class cBuffs
 			}
 		}
 		return nSkillID;
+	}
+
+	//
+	public int GetGuarder(){
+		int nGuarder = 0;
+		foreach( KeyValuePair<int , cBuffData>  pair in Pool )
+		{
+			foreach( cEffect eft in pair.Value.EffectPool )
+			{
+				if( eft != null )
+				{
+					if( eft._IsStatus( _FIGHTSTATE._GUARD ) ){
+						if( pair.Value.nCastIdent != 0 ){
+							return pair.Value.nCastIdent;
+						}
+						
+					}
+				}
+			}
+		}
+		return 0;
 	}
 
 	// run 1 round .  buff time-1 with all >= 1 . remove buff if time become 0
@@ -461,7 +484,7 @@ public class cBuffs
 			{
 				if( eft != null )
 				{
-					eft._Hit( Owner , unit_e , ref resPool );
+					eft._Cast( Owner , unit_e , ref resPool );
 				}
 			}
 			// condition
@@ -482,13 +505,14 @@ public class cBuffs
 				{
 					if( eft != null )
 					{
-						eft._Hit( Owner , unit , ref resPool );
+						eft._Cast( Owner , unit , ref resPool );
 					}
 				}
 			}
 		}
 	}
 
+	// hit
 	public void OnHit(  cUnitData unit_e , ref List< cHitResult > resPool )
 	{
 		if (Pool.Count == 0)

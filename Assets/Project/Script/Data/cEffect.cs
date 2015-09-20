@@ -41,7 +41,7 @@ public class cEffect
 	public virtual void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ }				//  casr/ hit event will run this
 
 
-	public virtual void _Cast( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list){ }		// hit a target
+	public virtual void _Cast( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list){ }		// cast a skill
 	public virtual void _Hit( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ }			// BUFF 專用.命中後　額外效果
 	public virtual void _BeHit( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ }			// BUFF 專用.受擊後　額外效果 
 

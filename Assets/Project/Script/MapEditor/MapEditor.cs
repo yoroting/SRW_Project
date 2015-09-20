@@ -148,9 +148,9 @@ public class MapEditor : MonoBehaviour
         if (Grids.Load(www.bytes) == true)
         {
             if (_backGroundObject == null)
-                _backGroundObject = Panel_StageUI.CreateBackgroundTexture(gameObject, Grids.TotalW, Grids.TotalH, Grids.sBackGround);
+                _backGroundObject = CreateBackgroundTexture(gameObject, Grids.TotalW, Grids.TotalH, Grids.sBackGround);
             else
-                Panel_StageUI.ChangeBackgroundTexture(_backGroundObject, Grids.TotalW, Grids.TotalH, Grids.sBackGround);
+                ChangeBackgroundTexture(_backGroundObject, Grids.TotalW, Grids.TotalH, Grids.sBackGround);
             CreateSprite();
         }
     }
@@ -166,10 +166,39 @@ public class MapEditor : MonoBehaviour
         }
     }
 
+	public GameObject CreateBackgroundTexture(GameObject parent, int width, int height, string name)
+	{
+		GameObject obj = ResourcesManager.CreatePrefabGameObj(parent, "Prefab/BGTexture");
+		return obj;
+	}
+
+	public void ChangeBackgroundTexture(GameObject gameObject, int width, int height, string name)
+	{
+		UITexture uitex = gameObject.GetComponent<UITexture>();
+		if (uitex != null)
+		{
+			//string url = "Art/map/" + grid.sBackGround;
+			//string url = "Art/MAP/" + "20738-1";
+			//Texture2D tex = Resources.LoadAssetAtPath(url, typeof(Texture2D)) as Texture2D;
+			Texture t = Resources.Load(name, typeof(Texture)) as Texture; ;
+			uitex.mainTexture = t;
+			
+			uitex.width = width;
+			uitex.height = height;
+			uitex.depth = -1; // < 0 
+			
+		}
+		UIDragObject drag = gameObject.GetComponent<UIDragObject>();
+		if (drag != null)
+		{
+			drag.target = gameObject.transform.parent.transform;
+		}
+	}
+
     public void ChangeBackground(string name)
     {
         Grids.sBackGround = name;
-        Panel_StageUI.ChangeBackgroundTexture(_backGroundObject, Grids.TotalW, Grids.TotalH, name);
+        ChangeBackgroundTexture(_backGroundObject, Grids.TotalW, Grids.TotalH, name);
         NGUITools.SetDirty(_backGroundObject);
     }
 
@@ -249,7 +278,16 @@ public class MapEditor : MonoBehaviour
         if (sprite != null)
         {
             sprite.spriteName = tileSpriteName;
-
+			if( sprite.spriteName == "border" ){ //針對 border 變形 來方便 編輯時的辯識
+				sprite.width  = 80;
+				sprite.height = 80;
+				sprite.color = new Color( 1.0f , 0.0f, 0.0f );
+			}
+			else{
+				sprite.width  = 100;
+				sprite.height = 100;
+				sprite.color = new Color( 1.0f , 1.0f, 1.0f );
+			}
         }
         UIDragObject drag = cell.GetComponent<UIDragObject>();
         if (drag != null)
@@ -283,9 +321,13 @@ public class MapEditor : MonoBehaviour
         Grids.SetPixelWH(Config.TileW, Config.TileH);  // re size
 
         fMaxOffX = (Grids.TotalW - Screen.width) / 2;
+		if (fMaxOffX < 0)
+			fMaxOffX = 0;
         fMinOffX = -1 * fMaxOffX;
 
         fMaxOffY = (Grids.TotalH - Screen.height) / 2;
+		if (fMaxOffY < 0)
+			fMaxOffY = 0;
         fMinOffY = -1 * fMaxOffY;
 
     }
@@ -316,6 +358,19 @@ public class MapEditor : MonoBehaviour
                     sprite.spriteName = "";
                 else
                     sprite.spriteName = tile.s_FILE_NAME;
+
+				//
+				if( sprite.spriteName == "border" ){ //針對 border 變形 來方便 編輯時的辯識
+					sprite.width  = 80;
+					sprite.height = 80;
+					sprite.color = new Color( 1.0f , 0.0f, 0.0f );
+				}
+				else{
+					sprite.width  = 100;
+					sprite.height = 100;
+					sprite.color = new Color( 1.0f , 1.0f, 1.0f );
+				}
+
 
                 NGUITools.SetDirty(sprite.gameObject);
             }

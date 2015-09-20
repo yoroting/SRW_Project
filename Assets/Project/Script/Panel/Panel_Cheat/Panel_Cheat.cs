@@ -13,7 +13,7 @@ public class Panel_Cheat : MonoBehaviour {
 
 	public GameObject IvValueobj;
 	public GameObject ExpAddobj;
-
+	public GameObject LvBtn;           // lv btn
 
 	public GameObject IntValueobj;
 	public GameObject IntAddobj;
@@ -58,11 +58,17 @@ public class Panel_Cheat : MonoBehaviour {
 		UIEventListener.Get(CloseBtn).onClick += OnCloseClick; 
 		UIEventListener.Get(OkBtn).onClick += OnOkClick; 
 
+		UIEventListener.Get(LvBtn).onClick += OnSetLvClick; 
+
+
 		UIEventListener.Get(IntAddobj).onClick += OnAddIntClick; 
 		UIEventListener.Get(IntDelobj).onClick += OnDelIntClick; 
 
 		UIEventListener.Get(ExtAddobj).onClick += OnAddExtClick; 
 		UIEventListener.Get(EXtDelobj).onClick += OnDelExtClick; 
+
+		UIEventListener.Get(HpAddobj).onClick += OnAddHpClick; 
+		UIEventListener.Get(HpDelobj).onClick += OnDelHpClick; 
 
 		UIEventListener.Get(MpAddobj).onClick += OnAddMpClick; 
 		UIEventListener.Get(MpDelobj).onClick += OnDelMpClick; 
@@ -149,6 +155,31 @@ public class Panel_Cheat : MonoBehaviour {
 	{
 
 	}
+
+	void OnSetLvClick(GameObject go)
+	{
+		int nLv = pData.n_Lv;
+		int nExp = pData.n_EXP;
+		UIInput LvInput = IvValueobj.GetComponent<UIInput>();
+		if( LvInput != null ){
+			if( int.TryParse(  LvInput.value , out nLv ) ){
+
+
+			}
+		}
+		UIInput ExpInput = ExpAddobj.GetComponent<UIInput>();
+		if( ExpInput != null ){		
+			if( int.TryParse(  ExpInput.value , out nExp ) ){
+				
+				
+			}
+		}
+		///===============
+		/// 
+		pData.SetLevel ( nLv  );
+		pData.n_EXP = nExp;
+	}
+	
 
 	void OnAddIntClick(GameObject go)
 	{
@@ -292,7 +323,7 @@ public class Panel_Cheat : MonoBehaviour {
 		if( buffInput != null ){
 			int id = 0;
 			if( int.TryParse(  buffInput.value , out id ) ){
-				pData.Buffs.DelBuffBySkillID( id  ); 
+				pData.Buffs.DelBuff ( id ); 
 			}
 		}		
 	}

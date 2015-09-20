@@ -24,7 +24,9 @@ public class Panel_Tip : MonoBehaviour {
 
 	static public void CloseUI(  )
 	{
-		PanelManager.Instance.CloseUI (Name);
+		if (PanelManager.Instance != null) {
+			PanelManager.Instance.CloseUI (Name);
+		}
 	}
 
 	static public void OpenUI( string str )
@@ -58,6 +60,11 @@ public class Panel_Tip : MonoBehaviour {
 		{				
 			sTip = row.Field<string>( "s_TIP");		
 		}
+		if (Config.GOD) {
+
+			sTip += "\n(ID:"+nBuffID.ToString() +")";
+		}
+
 		Panel_Tip.OpenUI( nBuffName , sTip );
 
 	}
@@ -75,6 +82,10 @@ public class Panel_Tip : MonoBehaviour {
 		{				
 			sTip = row.Field<string>( "s_TIP");		
 		}
+		if (Config.GOD) {
+			
+			sTip += "\n(ID:"+nSkillID.ToString() +")";
+		}
 		Panel_Tip.OpenUI( nSkillName , sTip );
 	}
 	static public void OpenItemTip( int nItemID )
@@ -91,6 +102,11 @@ public class Panel_Tip : MonoBehaviour {
 		{				
 			sTip = row.Field<string>( "s_COMMON");		
 		}
+		if (Config.GOD) {
+			
+			sTip += "\n(ID:"+nItemID.ToString() +")";
+		}
+
 		Panel_Tip.OpenUI( nItemName , sTip );
 	}
 	// close

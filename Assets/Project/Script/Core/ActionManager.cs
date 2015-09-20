@@ -187,6 +187,10 @@ public partial class ActionManager
 		return false;
 	}
 
+	public bool HaveAction()
+	{
+		return (ActionPool.Count > 0);
+	}
 //	public void Run()
 //	{
 
@@ -422,8 +426,14 @@ public partial class ActionManager
 						case cHitResult._TYPE._DODGE: // show miss
 						{
 							// it should have fx
-							BattleManager.Instance.ShowBattleResValue( pUnit.gameObject , "迴避" , 0 );
+							pUnit.SetDodge();
+							
 						}break;	
+						case cHitResult._TYPE._GUARD:
+						{
+							pUnit.SetGuardTo( res.Value1 );
+						}
+						break;
 					}
 				}
 

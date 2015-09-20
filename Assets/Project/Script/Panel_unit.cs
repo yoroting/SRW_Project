@@ -63,6 +63,8 @@ public class Panel_unit : MonoBehaviour {
 	public bool bIsBorning = false;
 	public bool bIsDeading = false;
 	public bool bIsLeaving = false;
+	public bool bIsDodgeing = false;
+	public bool bIsGuarding = false;
 
 	public int  Ident() 
 	{
@@ -255,9 +257,7 @@ public class Panel_unit : MonoBehaviour {
 	void OnDisable () 
 	{
 		// bad place.. move to on dead dead 
-		// don't del unit during stage
-
-
+		// don't del unit during stage	
 	}
 	public void SetUnitData( cUnitData data )
 	{
@@ -449,7 +449,7 @@ public class Panel_unit : MonoBehaviour {
 //		if( nTweenMoveCount != 0 )
 //			return true;
 
-		if( bIsAtking || bIsShaking || bIsCasting || bIsBorning || bIsDeading || bIsLeaving )
+		if( bIsAtking || bIsShaking || bIsCasting || bIsBorning || bIsDeading || bIsLeaving || bIsDodgeing || bIsGuarding )
 			return true;
 		if (IsMoving ())
 			return true;
@@ -616,6 +616,19 @@ public class Panel_unit : MonoBehaviour {
 
 		return false;
 	}
+	public void MoveToTop( bool bTop = true){
+		UIPanel p = this.GetComponent<UIPanel> ();
+		if (p != null) {
+				if( bTop ){
+					p.depth += 10;
+				}
+				else{
+					p.depth -= 10;
+				}
+
+		}
+
+	}
 
 	public bool SetAction( uAction act )
 	{
@@ -626,16 +639,15 @@ public class Panel_unit : MonoBehaviour {
 		nSubActFlow = 0;
 
 		// plane 
-		UIPanel p = this.GetComponent<UIPanel> ();
-		p.depth += 10;
+		MoveToTop (true);
+		
 		//RunAction (); // don't first run. it will broke unit update flow
 		return true;
 	}
 	public bool ActionFinished(  )
 	{
 		// plane 
-		UIPanel p = this.GetComponent<UIPanel> ();
-		p.depth -= 10;
+		MoveToTop (false );
 
 		//need a pool for multi act
 		CurAction = null;
@@ -830,8 +842,7 @@ public class Panel_unit : MonoBehaviour {
 		// swing fx
 		ShowSwingFX( skillid , TarIdent , 0 , 0 );
 
-		// check need show tail fx
-		ShowTailFX( 1 );
+
 
 		// fly item
 		if (MyTool.IsSkillTag (skillid, _SKILLTAG._FLY)) {
@@ -890,6 +901,13 @@ public class Panel_unit : MonoBehaviour {
 			NoActAttack( nTarX ,nTarY );
 			return ;		
 		}
+		else if (MyTool.IsSkillTag (skillid, _SKILLTAG._CROSS)) {
+			//_CROSS
+			int nTarX = defer.Loc.X;
+			int nTarY = defer.Loc.Y;
+			CrossAttack( nTarX ,nTarY );
+			return;
+		}
 		//  非攻擊型技能，跳過攻擊動作
 		else if( MyTool.IsSkillTag (skillid, _SKILLTAG._DAMAGE)== false ){
 			OnTwAtkHit();
@@ -925,8 +943,6 @@ public class Panel_unit : MonoBehaviour {
 		// swing fx
 		ShowSwingFX( skillid , TarIdent ,GridX ,GridY );
 
-		// check need show tail fx
-		ShowTailFX( 1 );
 
 		// attack perform
 		if (MyTool.IsSkillTag (skillid, _SKILLTAG._FLY)) {
@@ -970,6 +986,11 @@ public class Panel_unit : MonoBehaviour {
 		else if (MyTool.IsSkillTag (skillid, _SKILLTAG._NOACT)) {
 			NoActAttack( GridX ,GridY );
 			return ;		
+		}
+		else if (MyTool.IsSkillTag (skillid, _SKILLTAG._CROSS)) {
+			//_CROSS	
+			CrossAttack( GridX ,GridY );
+			return;
 		}
 		// exec result directly
 		ActionManager.Instance.ExecActionHitResult ( CurAction );
@@ -1083,7 +1104,69 @@ public class Panel_unit : MonoBehaviour {
 		MoveNextPoint();	// set to target pos
 
 	}
+	// dodge
+	public void SetDodge(  )
+	{
 
+		TweenRotation twr = TweenRotation.Begin< TweenRotation >( gameObject , 0.5f );
+		if( twr != null )
+		{
+			twr.SetStartToCurrentValue();
+			twr.to	= new Vector3( 0.0f , 360.0f , 0.0f );//Math.PI
+			MyTool.TweenSetOneShotOnFinish( twr , OnTwDodgeRotateEnd ); // for once only
+			bIsDodgeing = true;
+		}
+		BattleManager.Instance.ShowBattleResValue( this.gameObject , "迴避" , 0 );
+	}
+	public void OnTwDodgeRotateEnd( )
+	{		
+		// clear all move tw
+		TweenRotation[] tws = gameObject.GetComponents<TweenRotation> (); 
+		foreach (TweenRotation tw in tws) {
+			Destroy( tw );
+		}
+		// reset pos
+		gameObject.transform.localRotation = Quaternion.identity;			
+		bIsDodgeing = false;
+	}
+
+	// guard a target
+	public void SetGuardTo( int TarId )
+	{
+		Panel_unit Tar = Panel_StageUI.Instance.GetUnitByIdent (TarId);
+		if (Tar != null) {
+		
+			Vector3 vTar = Tar.gameObject.transform.localPosition;
+			Vector3 v = MyTool.SnyGridtoLocalPos ( Loc.X , Loc.Y ,ref GameScene.Instance.Grids  );
+
+			this.gameObject.transform.localPosition = vTar;
+			TweenPosition tw = TweenPosition.Begin< TweenPosition >( this.gameObject , 0.35f ); // always move back to start pos
+			if (tw != null) {
+				tw.delay = 0.2f;
+				tw.from = vTar;
+				tw.to = v;
+				MyTool.TweenSetOneShotOnFinish( tw , OnTwGuardEnd ); // for once only
+
+				MoveToTop();
+			}
+			bIsGuarding = true ;
+		}
+	}
+	public void OnTwGuardEnd( )
+	{		
+		// clear all move tw
+		TweenRotation[] tws = gameObject.GetComponents<TweenRotation> (); 
+		foreach (TweenRotation tw in tws) {
+			Destroy( tw );
+		}
+		// reset pos
+		gameObject.transform.localRotation = Quaternion.identity;		
+
+		MoveToTop( false );
+		bIsGuarding = false;
+	}
+
+	// Attack action animate
 	public void FlashAttack( List< iVec2> lst  )
 	{
 		bIsAtking = true;
@@ -1234,6 +1317,39 @@ public class Panel_unit : MonoBehaviour {
 		bIsAtking = true;
 		ActionManager.Instance.ExecActionHitResult ( CurAction );	 // perform sm hit action
 		bIsAtking = false;
+	}
+
+	public void CrossAttack( int GridX , int GridY )
+	{
+		bIsAtking = true;
+		Vector3 vTar = MyTool.SnyGridtoLocalPos (GridX, GridY ,ref GameScene.Instance.Grids  );
+		
+		Vector3 diff =  vTar - this.transform.localPosition; 
+		float mag = diff.magnitude;
+		if( mag > 100.0f ){
+			diff.x *= ( 100.0f / mag );  
+			diff.y *= ( 100.0f / mag );  
+		}
+		Vector3 v = vTar - diff; // back
+		
+		TweenPosition tw = TweenPosition.Begin< TweenPosition >( this.gameObject , 0.35f ); // always move back to start pos
+		if (tw != null) {
+			tw.SetStartToCurrentValue();
+			tw.to = v;
+		}
+
+		Vector3 v2 = this.transform.localPosition + diff*2; // corss atk pos
+		TweenPosition tw2 = gameObject.AddComponent <TweenPosition>();
+		if (tw2 != null) {
+			tw2.duration = 0.15f;
+			tw2.delay = 0.35f;
+			tw2.from = v;
+			tw2.to = v2;
+			MyTool.TweenSetOneShotOnFinish(tw2, OnTwAtkHit );
+			tw2.Play();
+		}
+
+
 	}
 
 
@@ -1617,15 +1733,19 @@ public class Panel_unit : MonoBehaviour {
 		SKILL skl = ConstDataManager.Instance.GetRow< SKILL > ( nSkillID ); 
 		if (skl == null)
 			return;
+		FX fxData = ConstDataManager.Instance.GetRow< FX > ( skl.n_SWING_FX ); 
+		if (fxData == null)
+			return;
+
+		if (fxData.n_TAG == 5) {			// tail effect
+			ShowTailFX( fxData.s_FILENAME );
+			return;
+		}
 
 		GameObject go = GameSystem.PlayFX ( this.gameObject , skl.n_SWING_FX );
 		if (go == null) {
 			return;
 		}
-
-		FX fxData = ConstDataManager.Instance.GetRow< FX > ( skl.n_SWING_FX ); 
-		if (fxData == null)
-			return;
 
 		// rotate have 2 type to rotate
 		if (fxData.n_TAG == 1) {			// 處理旋轉
@@ -1658,11 +1778,12 @@ public class Panel_unit : MonoBehaviour {
 
 		// AOE fx 
 		if (fxData.n_TAG == 2) {
-			Panel_StageUI.Instance.PlayAOEFX( this, skl.n_CASTOUT_FX ,  nX, nY , skl.n_AREA  );
+			Panel_StageUI.Instance.PlayAOEFX (this, skl.n_CASTOUT_FX, nX, nY, skl.n_AREA);
 
-		}
-		else if (fxData.n_TAG == 4) { // play in place
-			Panel_StageUI.Instance.PlayFX(  skl.n_CASTOUT_FX ,  nX, nY  );
+		} else if (fxData.n_TAG == 4) { // play in place
+			Panel_StageUI.Instance.PlayFX (skl.n_CASTOUT_FX, nX, nY);
+		} else if (fxData.n_TAG == 5) { // tail fx
+			ShowTailFX( fxData.s_FILENAME );
 		}
 		else {
 			GameObject go = GameSystem.PlayFX ( this.gameObject , skl.n_CASTOUT_FX );
@@ -1676,7 +1797,7 @@ public class Panel_unit : MonoBehaviour {
 		}
 	}
 
-	public void ShowTailFX( int nType , bool bClose = false)
+	public void ShowTailFX( string sFileName , bool bClose = false)
 	{
 		if( TailObj != null ){
 			NGUITools.Destroy( TailObj );
@@ -1687,16 +1808,16 @@ public class Panel_unit : MonoBehaviour {
 		}
 
 		// add tail
-		string sFileName = "";
-		switch( nType ){
-			case 0: sFileName = "TAIL_BLACK"  ; break;
-			case 1: sFileName = "TAIL_CHAOS"  ; break;
-			case 2: sFileName = "TAIL_FLAME"  ; break;
-			case 3: sFileName = "TAIL_ICE"  ; break;
-			case 4: sFileName = "TAIL_LIFE"  ; break;
-		default:
-			return;
-		}
+//		string sFileName = "";
+//		switch( nType ){
+//			case 0: sFileName = "TAIL_BLACK"  ; break;
+//			case 1: sFileName = "TAIL_CHAOS"  ; break;
+//			case 2: sFileName = "TAIL_FLAME"  ; break;
+//			case 3: sFileName = "TAIL_ICE"  ; break;
+//			case 4: sFileName = "TAIL_LIFE"  ; break;
+//		default:
+//			return;
+//		}
 
 
 		string path = "FX/Tail/" + sFileName;		

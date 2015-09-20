@@ -7,6 +7,7 @@ public class Missile : ConstDataRow<Missile>
 	public string s_HEIGHT;
 	public string s_MISSILE;
 	public string s_FX_LAUNCH;
+	public int n_TYPE;
 	public float f_SCALE;
 	public string s_FX_MISSILEHIT;
 	public string s_FX_MISSILECRUSH;

@@ -941,7 +941,10 @@ public class Panel_StageUI : MonoBehaviour
 				NGUITools.Destroy( go );
 			}
 
-            CreateBackgroundTexture(TilePlaneObj, Grids.TotalW, Grids.TotalH, "Art/MAP/" + "20738-1");
+            //CreateBackgroundTexture(TilePlaneObj, Grids.TotalW, Grids.TotalH, "Art/MAP/20738-1");
+			if( string.IsNullOrEmpty( Grids.sBackGround ) == false ){
+				CreateBackgroundTexture(TilePlaneObj, Grids.TotalW, Grids.TotalH, Grids.sBackGround );
+			}
             //GameObject background =  GetBackGroundPrefab( Grids );
             //if( background != null ){
 
@@ -1015,9 +1018,18 @@ public class Panel_StageUI : MonoBehaviour
 		Grids.SetPixelWH (Config.TileW, Config.TileH);  // re size
 
 		fMaxOffX  =  (Grids.TotalW - Screen.width )/2; 
+		if (fMaxOffX < 0)
+			//fMaxOffX = 0;
+			fMaxOffX = Screen.width/2;
+
 		fMinOffX  =  -1*fMaxOffX;		
-		
+
+		//===============
 		fMaxOffY  =  (Grids.TotalH - Screen.height )/2; 
+		if (fMaxOffY < 0)
+			//fMaxOffY = 0;
+			fMaxOffY = Screen.height/2;
+
 		fMinOffY  =  -1*fMaxOffY;		
 		
 	}
@@ -2787,7 +2799,7 @@ public class Panel_StageUI : MonoBehaviour
 	}
 
 	public void OnStageDelUnitByIdentEvent(GameEvent evt)
-	{
+	{		
 		StageDelUnitByIdentEvent Evt = evt as StageDelUnitByIdentEvent;
 		if (Evt == null)
 			return;
@@ -2798,6 +2810,11 @@ public class Panel_StageUI : MonoBehaviour
 
 	public void OnStageDelUnitEvent(GameEvent evt)
 	{
+		// auto close all say window
+		TalkSayEndEvent sayevt = new TalkSayEndEvent();
+		sayevt.nChar = 0;		
+		GameEventManager.DispatchEvent ( sayevt  );
+
 		//Debug.Log ("OnStagePopCharEvent");
 		StageDelUnitEvent Evt = evt as StageDelUnitEvent;
 		if (Evt == null)
@@ -2820,6 +2837,11 @@ public class Panel_StageUI : MonoBehaviour
 
 	public void OnStageUnitCampEvent( int nCharid , _CAMP nCampid )
 	{
+		// auto close all say window
+		TalkSayEndEvent sayevt = new TalkSayEndEvent();
+		sayevt.nChar = 0;		
+		GameEventManager.DispatchEvent ( sayevt  );
+
 		foreach (KeyValuePair< int , Panel_unit> pair in this.IdentToUnit) {
 			if( pair.Value.CharID == nCharid )
 			{
@@ -2981,15 +3003,17 @@ public class Panel_StageUI : MonoBehaviour
 
 	public void OnStageBattleAttackEvent(GameEvent evt)
 	{
+		// auto close all say window
+		TalkSayEndEvent sayevt = new TalkSayEndEvent();
+		sayevt.nChar = 0;		
+		GameEventManager.DispatchEvent ( sayevt  );
+
 		//Debug.Log ("OnStagePopCharEvent");
 		StageBattleAttackEvent Evt = evt as StageBattleAttackEvent;
 		if (Evt == null)
 			return;
 
-		// auto close all say window
-		TalkSayEndEvent sayevt = new TalkSayEndEvent();
-		sayevt.nChar = 0;		
-		GameEventManager.DispatchEvent ( sayevt  );
+	
 		// attack 
 
 		Panel_unit pAtkUnit = GetUnitByCharID ( Evt.nAtkCharID );
@@ -3088,16 +3112,15 @@ public class Panel_StageUI : MonoBehaviour
 
 	public void OnStageMoveToUnitEvent(GameEvent evt)
 	{
-		//Debug.Log ("OnStagePopCharEvent");
-		StageMoveToUnitEvent Evt = evt as StageMoveToUnitEvent;
-		if (Evt == null)
-			return;
-
-
 		// auto close all say window
 		TalkSayEndEvent sayevt = new TalkSayEndEvent();
 		sayevt.nChar = 0;		
 		GameEventManager.DispatchEvent ( sayevt  );
+
+		//Debug.Log ("OnStagePopCharEvent");
+		StageMoveToUnitEvent Evt = evt as StageMoveToUnitEvent;
+		if (Evt == null)
+			return;
 
 
 		// force close 
@@ -3256,6 +3279,11 @@ public class Panel_StageUI : MonoBehaviour
 
 	public void OnStagePopMarkEvent( int x1 ,int y1 , int x2  , int y2  )
 	{
+		// auto close all say window
+		TalkSayEndEvent sayevt = new TalkSayEndEvent();
+		sayevt.nChar = 0;		
+		GameEventManager.DispatchEvent ( sayevt  );
+
 		int sx = x1 < x2 ? x1 : x2;
 		int sy = y1 < y2 ? y1 : y2;
 		int ex = x1 > x2 ? x1 : x2; 
@@ -3319,6 +3347,11 @@ public class Panel_StageUI : MonoBehaviour
 	// 單位死亡
 	public void OnStageUnitDeadEvent( int nCharID )
 	{
+		// auto close all say window
+		TalkSayEndEvent sayevt = new TalkSayEndEvent();
+		sayevt.nChar = 0;		
+		GameEventManager.DispatchEvent ( sayevt  );
+
 		if( m_bIsSkipMode )
 		{
 			DelUnit( nCharID );

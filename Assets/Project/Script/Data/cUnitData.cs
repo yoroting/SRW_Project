@@ -1613,6 +1613,9 @@ public class cUnitData{
 		}	
 		return Buffs.CheckStatus (st);
 	}
+
+
+
 //	public bool GetStateValue( _FIGHTSTATE st , out float f , out int i )
 //	{
 //		bool bFind = false;

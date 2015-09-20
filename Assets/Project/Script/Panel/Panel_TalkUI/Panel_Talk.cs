@@ -86,7 +86,9 @@ public class Panel_Talk : MonoBehaviour {
 		if(AVG_Obj != null ) {
 			AVG_Obj.SetActive( false );
 		}
-		GameDataManager.Instance.nTalkID = 1;
+#if DEBUG && UNITY_EDITOR
+		//GameDataManager.Instance.nTalkID = 1; // set here this will cause some issue
+#endif
 	}
 	// Use this for initialization
 	void Start () {
@@ -112,16 +114,23 @@ public class Panel_Talk : MonoBehaviour {
 			}
 			m_idToFace.Clear();
 		}
+		if (Tex_BackGround != null) {
+			Tex_BackGround.SetActive( false );
+		}
+
+		TalkWindow_new.SetActive( false );
+		NameObj.SetActive ( false );
 	}
 
 
 	void OnEnable () {
 		// clear all
 		Clear ();
-		if (Tex_BackGround != null) {
-			Tex_BackGround.SetActive( false );
+
+		int nTalkID = GameDataManager.Instance.nTalkID;
+		if (nTalkID > 0) {
+			SetScript (GameDataManager.Instance.nTalkID); 
 		}
-		SetScript ( GameDataManager.Instance.nTalkID ); 
 
 		TweenAlpha tw = TweenAlpha.Begin<TweenAlpha>( this.gameObject , 0.2f );
 		if (tw != null) {
@@ -151,6 +160,14 @@ public class Panel_Talk : MonoBehaviour {
 
 		if (IsAllEnd () == false)
 			return;
+
+		// if text window is close . auto click
+		if( TalkWindow_new != null ){
+			if( TalkWindow_new.activeSelf == false  ){
+				m_bClickScript = true;
+			}
+		}
+
 		// prcess script
 		if (m_bClickScript) {
 			NextLine ();
@@ -372,6 +389,8 @@ public class Panel_Talk : MonoBehaviour {
 
 	public void SetScript( int nScriptID )
 	{
+		Clear ();
+
 		m_nScriptIdx = 0; // current execute script
 
 		 m_cStageTalk = ConstDataManager.Instance.GetRow<STAGE_TALK> ( nScriptID );
@@ -502,8 +521,10 @@ public class Panel_Talk : MonoBehaviour {
 			if( Panel_StageUI.Instance.IsAnyActionRunning() ){
 				return false;
 			}
-		
 		}
+		// Any Action in waiting to run
+		if (ActionManager.Instance.HaveAction () == true)
+			return false;
 
 		return true;
 	}
@@ -536,7 +557,9 @@ public class Panel_Talk : MonoBehaviour {
 		if (obj == null)
 			return;
 
-		obj.gameObject.SetActive( true );
+		TalkWindow_new.SetActive( true );
+		NameObj.SetActive (true);
+
 		obj.ClearText(); // clear text first
 		string s = GameSystem.GetTalkText ( nSayTextID );
 		string sText = "";
@@ -564,7 +587,8 @@ public class Panel_Talk : MonoBehaviour {
 				}
 			}
 			m_idToFace.Clear();
-
+			TalkWindow_new.SetActive (false); // close all
+			NameObj.SetActive( false );
 			return;
 		}
 
@@ -580,6 +604,10 @@ public class Panel_Talk : MonoBehaviour {
 				}
 			}
 		}
+		// Close text window
+
+
+
 	}
 
 	public void SetChar( int nType , int nCharID )
@@ -627,6 +655,9 @@ public class Panel_Talk : MonoBehaviour {
 		{
 			NGUITools.Destroy( m_idToFace[nType].gameObject );
 			m_idToFace.Remove( nType );
+
+			TalkWindow_new.SetActive (false);
+			NameObj.SetActive( false );
 		}
 
 	}

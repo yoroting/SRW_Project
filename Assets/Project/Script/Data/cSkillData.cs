@@ -16,7 +16,8 @@ public enum _SKILLTAG
 	_JUMP		= 7,	// 跳躍攻擊
 	_FLASH		= 8,	// AOE閃擊
 	_BOW		= 9,	// 拉弓攻擊
-	_NOACT			= 10,	// 無表演直接算傷害
+	_NOACT		= 10,	// 無表演直接算傷害
+	_CROSS		= 11,	// 穿過
 	// TAG for mob ai check
 	_TIEUP 		= 100,	//牽制
 };
