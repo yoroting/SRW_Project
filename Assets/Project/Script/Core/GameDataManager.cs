@@ -453,7 +453,6 @@ public partial class GameDataManager
 		unit.n_BornY = save.n_BornY;
 		unit.n_LeaderIdent	= save.n_LeaderIdent;
 
-		unit.nActSch = save.nActSch;
 		unit.Items 	 = save.Items;
 		// school
 		unit.SchoolPool = MyTool.ConvetToIntInt ( save.School );
@@ -466,6 +465,15 @@ public partial class GameDataManager
 		unit.n_AITarget = save.nAITarget;
 		unit.n_AIX = save.nAIX;
 		unit.n_AIY = save.nAIY;
+
+		// reactive school for skill data. take care old school must const data default school
+		foreach ( int nSchID in save.nActSch) {
+			unit.ActiveSchool ( nSchID );					
+		}
+		//unit.nActSch = save.nActSch;
+		//unit.ActiveSchool ( unit.GetExtSchID() );
+		//unit.ActiveSchool ( unit.GetIntSchID() );
+
 
 		unit.UpdateAllAttr ();
 		unit.UpdateAttr ();

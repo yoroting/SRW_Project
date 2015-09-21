@@ -56,7 +56,7 @@ public class Panel_SysCheat : MonoBehaviour {
 			DataTable storyTable = ConstDataManager.Instance.GetTable ("STAGE_STORY");
 			if (storyTable != null) {
 				foreach (STAGE_STORY s in  storyTable) {
-					popList.AddItem ( MyTool.GetStoryName (s.n_ID), s );	
+					popList.AddItem ( MyTool.GetStoryName (s.n_ID), s );
 				}
 			}
 		}

@@ -743,7 +743,7 @@ public partial class BattleManager
 
 				unit.SetFightAttr( Atker.n_Ident , 0 );
 				ShowDefAssist( unit.n_Ident , false );
-				action.AddHitResult(  CalAttackResult( atk , nRealTarId , true) ) ;// always def at this time
+				action.AddHitResult(  CalAttackResult( atk , nRealTarId , true , true ) ) ;// always def at this time
 			}
 			action.AddHitResult( CalSkillHitResult(  Atker , cRealTarData  , Atker.FightAttr.SkillID ) );		
 		}
@@ -1397,7 +1397,7 @@ public partial class BattleManager
 	}
 
 
-	public List<cHitResult> CalAttackResult( int nAtker , int nDefer , bool bDefMode = false )
+	public List<cHitResult> CalAttackResult( int nAtker , int nDefer , bool bDefMode = false , bool bAffect = false )
 	{
 		cUnitData pAtker = GameDataManager.Instance.GetUnitDateByIdent( nAtker ); 	//Panel_StageUI.Instance.GetUnitByIdent( nAtker ); 
 		cUnitData pDefer = GameDataManager.Instance.GetUnitDateByIdent( nDefer );	//Panel_StageUI.Instance.GetUnitByIdent( nDefer ); 
@@ -1486,19 +1486,25 @@ public partial class BattleManager
 			nDefHp -= (int)(PowDmg * pAtker.GetMulBurst() * pDefer.GetMulDamage() );
 	
 		}
-		else if( PowDmg < 0 ){
-			nAtkHp += (int)(PowDmg * pDefer.GetMulBurst() * pAtker.GetMulDamage() ); // it is neg value already
-			if (nAtkHp != 0) {
-				if (nAtkHp < 0 && ((pAtker.n_HP + pAtker.n_DEF) < Math.Abs (nAtkHp))) {
-					if (pDefer.IsStates (_FIGHTSTATE._MERCY)) {
-						nAtkHp = -(pAtker.n_HP + pAtker.n_DEF-1);
+		else if( PowDmg < 0 ){ // 氣進傷害反彈
+			if ( pAtker.FightAttr.SkillData.IsTag( _SKILLTAG._FLY )  || bAffect )
+			{
+				//暗器不造成反彈，AOE坡及的也不造成反彈
+			}
+			else {
+				nAtkHp += (int)(PowDmg * pDefer.GetMulBurst() * pAtker.GetMulDamage() ); // it is neg value already
+				if (nAtkHp != 0) {
+					if (nAtkHp < 0 && ((pAtker.n_HP + pAtker.n_DEF) < Math.Abs (nAtkHp))) {
+						if (pDefer.IsStates (_FIGHTSTATE._MERCY)) {
+							nAtkHp = -(pAtker.n_HP + pAtker.n_DEF-1);
+						}
+						else {
+							pDefer.AddStates (_FIGHTSTATE._KILL);
+							pAtker.AddStates (_FIGHTSTATE._DEAD);
+						}
 					}
-					else {
-						pDefer.AddStates (_FIGHTSTATE._KILL);
-						pAtker.AddStates (_FIGHTSTATE._DEAD);
-					}
+					resPool.Add (new cHitResult (cHitResult._TYPE._HP, nAtker, nAtkHp));
 				}
-				resPool.Add (new cHitResult (cHitResult._TYPE._HP, nAtker, nAtkHp));
 			}
 		}
 

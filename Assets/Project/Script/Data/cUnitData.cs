@@ -424,19 +424,27 @@ public class cUnitData{
 			// if forget active school
 			if( nIdx >= 0 ){
 				// find school to active
-				foreach( KeyValuePair<int , int > pair in SchoolPool ){
-					SCHOOL school = ConstDataManager.Instance.GetRow<SCHOOL>( pair.Key );
-					if( school == null )
-						continue;
-					if( school.n_TYPE ==  nIdx ){
-						ActiveSchool( pair.Key  );
-						break;
-					}
-				}
+				int nNextSch = GetNextSchoolID( nIdx );
+				ActiveSchool( nNextSch );
 			}
 		}
 	}
-	
+
+	public int GetNextSchoolID( int nIdx )
+	{
+		if( nIdx >= 0 ){
+			// find school to active
+			foreach( KeyValuePair<int , int > pair in SchoolPool ){
+				SCHOOL school = ConstDataManager.Instance.GetRow<SCHOOL>( pair.Key );
+				if( school == null )
+					continue;
+				if( school.n_TYPE ==  nIdx ){
+					return pair.Key;
+				}
+			}
+		}
+		return 0;
+	}
 	//
 	public void ActiveSchool( int SchID )
 	{
@@ -692,8 +700,16 @@ public class cUnitData{
 		} 
 
 		// active school
-		ActiveSchool( cData.n_INT_SCHOOL );
-		ActiveSchool( cData.n_EXT_SCHOOL );
+		int nIntSchool = cData.n_INT_SCHOOL;
+		int nExtSchool = cData.n_EXT_SCHOOL;
+		if (nIntSchool == 0) {
+			nIntSchool = GetNextSchoolID( cAttrData._INTSCH ); // find default value
+		}
+		if (nExtSchool == 0) {
+			nExtSchool = GetNextSchoolID( cAttrData._EXTSCH );
+		}
+		ActiveSchool( nIntSchool );
+		ActiveSchool( nExtSchool );
 
 		//AvtiveSchool (0, cData.n_INT_SCHOOL);
 		//AvtiveSchool (1, cData.n_EXT_SCHOOL);
@@ -1643,7 +1659,7 @@ public class cUnitData{
 			
 			cSkillData skilldata = FightAttr.SkillData ;
 			if (skilldata != null) {
-				if( skilldata.CheckStatus( this ,unit_e , st , FightAttr.SkillData.CastPool , FightAttr.SkillData.CastCond , FightAttr.SkillData.CastCondEffectPool  ) ){
+				if( skilldata.CheckStatus( this ,unit_e , st    ) ){
 					return true;
 				}
 			}
