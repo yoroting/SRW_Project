@@ -582,7 +582,13 @@ public class  cEffectCondition
 	//	public _CON eType;
 	
 	List<  List<cTextFunc> > CondLst;		// multi array.
-	
+	public void Clear()
+	{
+		if( CondLst != null ){
+			CondLst.Clear();
+		}
+	}
+
 	public void Add( CTextLine line )
 	{
 		if (CondLst == null)
@@ -736,10 +742,40 @@ public class  cEffectCondition
 						return   false;		// always fail
 					}		
 
-				}else{
+				}
+				else{
 					return false;
 				}
 			}
+			else if( func.sFunc == "GENDER_I"  )
+			{
+				int gender = func.I(0);
+				if( data_I!= null ){
+					CHARS charData = ConstDataManager.Instance.GetRow<CHARS> ( data_I.n_CharID );
+					if( gender != charData.n_GENDER   )
+					{
+						return false;
+					}
+				}
+				else {
+					return false;
+				}
+			}
+			else if( func.sFunc == "GENDER_E"  )
+			{
+				int gender = func.I(0);
+				if( data_E!= null ){
+					CHARS charData = ConstDataManager.Instance.GetRow<CHARS> ( data_E.n_CharID );
+					if( gender != charData.n_GENDER   )
+					{
+						return false;
+					}
+				}
+				else {
+					return false;
+				}
+			}
+
 			//雙方內外功星等比較
 			else if( func.sFunc == "INTRANK_I"  )
 			{

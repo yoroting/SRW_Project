@@ -699,7 +699,7 @@ public class cBuffs
 	public bool CheckStatus( _FIGHTSTATE status ){
 		cUnitData unit_e = null ;
 		if( Owner.FightAttr.TarIdent > 0 ){
-			GameDataManager.Instance.GetUnitDateByIdent ( Owner.FightAttr.TarIdent );
+			unit_e = GameDataManager.Instance.GetUnitDateByIdent ( Owner.FightAttr.TarIdent );
 		}
 		foreach( KeyValuePair< int , cBuffData > pair in Pool )
 		{

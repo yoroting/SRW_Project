@@ -118,10 +118,13 @@ public class cSkillData
 	}
 
 	public void DoHitEffect( cUnitData atker , cUnitData defer , ref List<cHitResult>  pool  ){
-		AttrEffect ( atker , defer , HitPool ,HitCond , HitCondEffectPool );
-		DoEffect ( atker , defer , HitPool , HitCond , HitCondEffectPool ,ref  pool );
+	//	AttrEffect ( atker , defer , HitPool ,HitCond , HitCondEffectPool );
+		HitEffect ( atker , defer , HitPool , HitCond , HitCondEffectPool ,ref  pool );
 	}
 
+	public void DoBeHitEffect( cUnitData atker , cUnitData defer , ref List<cHitResult>  pool  ){
+		BeHitEffect( atker , defer , HitPool , HitCond , HitCondEffectPool ,ref  pool );
+	}
 
 	// utility func
 	public void DoEffect( cUnitData atker , cUnitData defer , List< cEffect > effPool , cEffectCondition EffCond, List< cEffect > CondEffPool , ref List<cHitResult>  pool  )
@@ -150,6 +153,59 @@ public class cSkillData
 			}
 		}
 	}
+	public void HitEffect( cUnitData atker , cUnitData defer , List< cEffect > effPool , cEffectCondition EffCond, List< cEffect > CondEffPool , ref List<cHitResult>  pool  )
+	{
+		if (atker == null || effPool == null )
+			return;
+		
+		//cUnitData defer = GameDataManager.Instance.GetUnitDateByIdent ( atker.FightAttr.TarIdent );
+		
+		// normal eff
+		foreach( cEffect eft  in effPool )
+		{
+			eft._Hit ( atker , defer , ref  pool );
+		}
+		if ( EffCond == null || CondEffPool == null)
+			return;
+		
+		//cond eff
+		//if (MyScript.Instance.CheckSkillCond (strCond, atker, defer) == true)
+		if( EffCond.Check( atker , defer ,nID , 0  ) == true )
+		{
+			
+			foreach( cEffect eft  in CondEffPool )
+			{
+				eft._Hit( atker , defer , ref pool );
+			}
+		}
+	}
+
+	public void BeHitEffect( cUnitData atker , cUnitData defer , List< cEffect > effPool , cEffectCondition EffCond, List< cEffect > CondEffPool , ref List<cHitResult>  pool  )
+	{
+		if (atker == null || effPool == null )
+			return;
+		
+		//cUnitData defer = GameDataManager.Instance.GetUnitDateByIdent ( atker.FightAttr.TarIdent );
+		
+		// normal eff
+		foreach( cEffect eft  in effPool )
+		{
+			eft._BeHit( atker , defer , ref  pool );
+		}
+		if ( EffCond == null || CondEffPool == null)
+			return;
+		
+		//cond eff
+		//if (MyScript.Instance.CheckSkillCond (strCond, atker, defer) == true)
+		if( EffCond.Check( atker , defer ,nID , 0  ) == true )
+		{
+			
+			foreach( cEffect eft  in CondEffPool )
+			{
+				eft._BeHit( atker , defer , ref pool );
+			}
+		}
+	}
 
 	public void AttrEffect( cUnitData atker , cUnitData defer  ,  List< cEffect > effPool , cEffectCondition EffCond, List< cEffect > CondEffPool )
 	{
@@ -164,18 +220,18 @@ public class cSkillData
 		{
 			eft._Attr(atker , defer , ref attr  )  ;
 			//================================================
-			if( eft._IsStatus( _FIGHTSTATE._DODGE ) == true ){
-				atker.AddStates( _FIGHTSTATE._DODGE );
-			}
-			if( eft._IsStatus( _FIGHTSTATE._CIRIT ) == true ){
-				atker.AddStates( _FIGHTSTATE._CIRIT );
-			}
-			if( eft._IsStatus( _FIGHTSTATE._MERCY ) == true ){
-				atker.AddStates( _FIGHTSTATE._MERCY );
-			}
-			if( eft._IsStatus( _FIGHTSTATE._GUARD ) == true ){
-				atker.AddStates( _FIGHTSTATE._GUARD );
-			}
+//			if( eft._IsStatus( _FIGHTSTATE._DODGE ) == true ){
+//				atker.AddStates( _FIGHTSTATE._DODGE );
+//			}
+//			if( eft._IsStatus( _FIGHTSTATE._CIRIT ) == true ){
+//				atker.AddStates( _FIGHTSTATE._CIRIT );
+//			}
+//			if( eft._IsStatus( _FIGHTSTATE._MERCY ) == true ){
+//				atker.AddStates( _FIGHTSTATE._MERCY );
+//			}
+//			if( eft._IsStatus( _FIGHTSTATE._GUARD ) == true ){
+//				atker.AddStates( _FIGHTSTATE._GUARD );
+//			}
 		}
 		if ( EffCond == null || CondEffPool == null)
 			return;
@@ -188,22 +244,52 @@ public class cSkillData
 			{
 				eft._Attr(atker , defer ,ref attr  );
 
-				//================================================
-				if( eft._IsStatus( _FIGHTSTATE._DODGE ) == true ){
-					atker.AddStates( _FIGHTSTATE._DODGE );
-				}
-				if( eft._IsStatus( _FIGHTSTATE._CIRIT ) == true ){
-					atker.AddStates( _FIGHTSTATE._CIRIT );
-				}
-				if( eft._IsStatus( _FIGHTSTATE._MERCY ) == true ){
-					atker.AddStates( _FIGHTSTATE._MERCY );
-				}
-				if( eft._IsStatus( _FIGHTSTATE._GUARD ) == true ){
-					atker.AddStates( _FIGHTSTATE._GUARD );
-				}			
+//				//================================================
+//				if( eft._IsStatus( _FIGHTSTATE._DODGE ) == true ){
+//					atker.AddStates( _FIGHTSTATE._DODGE );
+//				}
+//				if( eft._IsStatus( _FIGHTSTATE._CIRIT ) == true ){
+//					atker.AddStates( _FIGHTSTATE._CIRIT );
+//				}
+//				if( eft._IsStatus( _FIGHTSTATE._MERCY ) == true ){
+//					atker.AddStates( _FIGHTSTATE._MERCY );
+//				}
+//				if( eft._IsStatus( _FIGHTSTATE._GUARD ) == true ){
+//					atker.AddStates( _FIGHTSTATE._GUARD );
+//				}			
 			}
 		}
 		
+	}
+
+	// check status
+	public bool CheckStatus( cUnitData atker , cUnitData defer ,_FIGHTSTATE status ,  List< cEffect > effPool , cEffectCondition EffCond, List< cEffect > CondEffPool ){
+		cUnitData unit_e = defer ;
+
+		
+		// normal effect
+		foreach( cEffect eft in effPool )
+		{
+			if( eft != null && eft._IsStatus( status ) )
+			{
+				return true	;
+			}
+		}
+		// condition
+
+		
+		//if( MyScript.Instance.CheckSkillCond( pair.Value.tableData.s_BUFF_CONDITON , this.Owner , unit_e ) == true )
+		if( EffCond.Check( atker , defer , nID ,0 ) )
+		{
+			foreach( cEffect eft in CondEffPool )
+			{
+				if( eft != null && eft._IsStatus( status ) )
+				{
+					return true	;
+				}
+			}
+		}
+		return false;
 	}
 
 }

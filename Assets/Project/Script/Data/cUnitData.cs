@@ -176,7 +176,9 @@ public class cFightAttr : cAttrData
 //	public List< cEffect > HitPool;
 //	public string		   HitCond;
 //	public List< cEffect > HitEffPool;
-
+//	public List< cEffect > 	  EffectPool;				// normal effect
+//	public cEffectCondition   Condition;				// check condition	
+//	public List< cEffect > 	  ConditionEffectPool;		// condition effect
 
 
 	//
@@ -197,7 +199,20 @@ public class cFightAttr : cAttrData
 //		CastEffPool = null;
 //		HitPool 	= null;
 //		HitEffPool 	= null;
+
+		// Effect~ for state check
+//		if( EffectPool != null ){
+//			EffectPool.Clear();
+//		}
+//		if( Condition != null ){
+//			Condition.Clear();
+//		}
+//		if( ConditionEffectPool != null ){
+//			ConditionEffectPool.Clear();
+//		}
 	}
+
+
 };
 
 
@@ -1412,7 +1427,10 @@ public class cUnitData{
 
 		FightAttr.SkillData = GameDataManager.Instance.GetSkillData(SkillID) ;   //new cSkillData ( ConstDataManager.Instance.GetRow< SKILL> ( SkillID ) );
 
-
+//		if( FightAttr.SkillData != null ){
+//			FightAttr.EffectPool = MyScript.Instance.CreateEffectPool ( FightAttr.SkillData.CastPool );
+//
+//		}
 		//// GET buff status 
 		//GetBuffStatus ();
 
@@ -1483,17 +1501,18 @@ public class cUnitData{
 		}
 
 		Buffs.OnHit (tarunit, ref resPool);
-//		MyTool.DoSkillEffect ( this , tarunit , FightAttr.SkillData.HitPool , FightAttr.SkillData.HitCond ,  FightAttr.SkillData.CastCondEffectPool , ref resPool  );
-
-//		if (FightAttr.Skill == null)
-//			return;
-//		
-//		MyTool.DoSkillEffect ( this , FightAttr.HitPool , FightAttr.Skill.s_HIT_TRIG ,  FightAttr.HitEffPool , ref resPool  );
 
 	}
 
 	public void DoBeHitEffect( cUnitData tarunit , ref List< cHitResult > resPool )
-	{		
+	{	
+		if( FightAttr != null && (FightAttr.SkillData!= null)  ){
+			cSkillData skilldata = FightAttr.SkillData ;
+			if (skilldata != null) {
+				skilldata.DoBeHitEffect (this, tarunit, ref resPool);  
+			}
+		}
+
 		Buffs.OnBeHit (tarunit, ref resPool);
 
 	}
@@ -1504,8 +1523,10 @@ public class cUnitData{
 		//AddActionTime (1);
 		
 		// restore full def
-		AddDef ( GetMaxDef()/2 , true );
+		AddDef ( GetMaxDef()/2 , false ); // re 50% DEF
 
+		// add mp 
+		AddMp( GetMaxMP() / 10 , false ); // re 10% MP
 		// 
 		AddCp (1);			
 //		uAction act =  ActionManager.Instance.CreateWeakUpAction ( this.n_Ident );
@@ -1608,9 +1629,26 @@ public class cUnitData{
 	}
 
 	public bool IsStates( _FIGHTSTATE st ){ 
+		// char status
 		if (GetStates ().IndexOf (st) >= 0) {
 			return true;
 		}	
+
+		// fight skill effect status
+		if( (FightAttr != null) && (FightAttr.SkillData!=null) ){
+			cUnitData unit_e = null ;
+			if( FightAttr.TarIdent > 0 ){
+				unit_e = GameDataManager.Instance.GetUnitDateByIdent ( FightAttr.TarIdent );
+			}
+			
+			cSkillData skilldata = FightAttr.SkillData ;
+			if (skilldata != null) {
+				if( skilldata.CheckStatus( this ,unit_e , st , FightAttr.SkillData.CastPool , FightAttr.SkillData.CastCond , FightAttr.SkillData.CastCondEffectPool  ) ){
+					return true;
+				}
+			}
+		}
+		// buff status
 		return Buffs.CheckStatus (st);
 	}
 
