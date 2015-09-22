@@ -115,6 +115,87 @@ public class HITBUFF_E: cEffect
 		}
 	}
 }
+
+public class HITHP_I: cEffect
+{
+	public HITHP_I( float f , int i ){	fValue = f;	iValue = i; }
+	
+	override public void _Hit( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 
+		float fHp = Atker.GetMaxHP() * fValue ;
+		//	list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF ,Defer.n_Ident , nBuffID ) );
+		list.Add( new cHitResult( cHitResult._TYPE._HP , Atker.n_Ident , (int)fHp + iValue , Atker.n_Ident, nSkillID , nBuffID   ) );
+	}
+}
+public class HITMP_I: cEffect
+{
+	public HITMP_I( float f , int i ){	fValue = f;	iValue = i;	}
+	
+	override public void _Hit( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 	
+		float fMp = Atker.GetMaxMP() * fValue ;
+		list.Add( new cHitResult( cHitResult._TYPE._MP , Atker.n_Ident , (int)fMp +iValue  , Atker.n_Ident, nSkillID , nBuffID   ) );
+	}
+}
+public class HITSP_I: cEffect
+{
+	public HITSP_I( int i ){	iValue = i;	}
+	
+	override public void _Hit( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 
+		
+		list.Add( new cHitResult( cHitResult._TYPE._SP , Atker.n_Ident , iValue  , Atker.n_Ident, nSkillID , nBuffID   ) );
+	}
+}
+public class HITCP_I: cEffect
+{
+	public HITCP_I( int i ){	iValue = i;	}
+	
+	override public void _Hit( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 
+		
+		list.Add( new cHitResult( cHitResult._TYPE._CP , Atker.n_Ident , iValue  , Atker.n_Ident, nSkillID , nBuffID   ) );
+	}
+}
+public class HITHP_E: cEffect
+{
+	public HITHP_E(float f , int i ){	fValue = f;	iValue = i;	}
+	
+	override public void _Hit( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 
+		if (Defer != null) {
+			float fHp = Defer.GetMaxHP() * fValue ;
+			list.Add( new cHitResult( cHitResult._TYPE._HP , Defer.n_Ident , (int)fHp +iValue , Atker.n_Ident, nSkillID , nBuffID   ) );
+		}
+	}
+}
+public class HITMP_E: cEffect
+{
+	public HITMP_E(float f , int i ){	fValue = f;	iValue = i;	}
+	
+	override public void _Hit( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 	
+		if (Defer != null) {
+			float fMp = Defer.GetMaxMP() * fValue ;
+			list.Add( new cHitResult( cHitResult._TYPE._MP , Defer.n_Ident , (int)fMp +iValue , Atker.n_Ident, nSkillID , nBuffID   ) );
+		}
+	}
+}
+public class HITSP_E: cEffect
+{
+	public HITSP_E( int i ){	iValue = i;	}
+	
+	override public void _Hit( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 
+		if (Defer != null) {			
+			list.Add( new cHitResult( cHitResult._TYPE._SP , Defer.n_Ident , iValue , Atker.n_Ident, nSkillID , nBuffID   ) );
+		}
+		
+	}
+}
+public class HITCP_E: cEffect
+{
+	public HITCP_E( int i ){	iValue = i;	}
+	
+	override public void _Hit( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 
+		
+		list.Add( new cHitResult( cHitResult._TYPE._CP , Defer.n_Ident , iValue  , Atker.n_Ident, nSkillID , nBuffID   ) );
+	}
+}
+
 // upgrade skill
 public class UP_SKILL: cEffect
 {
@@ -565,8 +646,22 @@ public class IS_BROKEN: cEffect
 		return (st == _FIGHTSTATE._BROKEN);
 	}				// check user in one status		
 }
-
-
+public class IS_RETURN: cEffect
+{
+	public IS_RETURN( ){	}	
+	
+	override public bool _IsStatus(  _FIGHTSTATE st ){
+		return (st == _FIGHTSTATE._RETURN);
+	}				// check user in one status		
+}
+public class IS_COPY: cEffect
+{
+	public IS_COPY( ){	}	
+	
+	override public bool _IsStatus(  _FIGHTSTATE st ){
+		return (st == _FIGHTSTATE._COPY);
+	}				// check user in one status		
+}
 //==========================================================================
 // use to cache condition sctipr parser result
 public class  cEffectCondition

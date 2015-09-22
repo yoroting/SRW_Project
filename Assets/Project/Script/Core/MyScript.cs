@@ -887,6 +887,33 @@ public class MyScript {
 				{
 					pool.Add( new HITBUFF_E( func.I(0) ) );
 				}
+				else if( func.sFunc  == "HITHP_I") {
+					pool.Add( new HITHP_I( func.F(0), func.I(1) ) );
+				}
+				else if( func.sFunc  == "HITHP_E") {
+					pool.Add( new HITHP_E( func.F(0), func.I(1) ) );
+				}
+				else if( func.sFunc  == "HITMP_I") {
+					pool.Add( new HITMP_I( func.F(0), func.I(1) ) );
+				}
+				else if( func.sFunc  == "HITMP_E") {
+					pool.Add( new HITMP_E( func.F(0), func.I(1) ) );
+				}
+				else if( func.sFunc  == "HITSP_I") {
+					pool.Add( new HITSP_I( func.I(0)) );
+				}
+				else if( func.sFunc  == "HITCP_I") {
+					pool.Add( new HITCP_I( func.I(0) ) );
+				}
+				else if( func.sFunc  == "HITSP_E") {
+					pool.Add( new HITSP_E( func.I(0) ) );
+				}
+				else if( func.sFunc  == "HITCP_E") {
+					pool.Add( new HITCP_I( func.I(0) ) );
+				}
+
+
+
 				// skill upgrade
 				else if( func.sFunc  == "UP_SKILL") 
 				{
@@ -1032,7 +1059,12 @@ public class MyScript {
 				else if( func.sFunc  == "IS_BROKEN") { // 破防
 					pool.Add( new IS_BROKEN( ) );
 				}
-
+				else if( func.sFunc  == "IS_RETURN") { // 傷害轉彈
+					pool.Add( new IS_RETURN( ) );
+				}
+				else if( func.sFunc  == "IS_COPY") { // 
+					pool.Add( new IS_COPY( ) );
+				}
 				//===
 
 			

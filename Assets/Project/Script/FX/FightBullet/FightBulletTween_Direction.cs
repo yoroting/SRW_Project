@@ -16,7 +16,7 @@ public class FightBulletTween_Direction : MonoBehaviour {
 	public bool IsTweenEnd{ get{ return isTweenEnd; } }
 
 	/// <summary>移動速度值</summary>
-	private float moveSpeed = 3f; // 30.0f
+	private float moveSpeed = 30f; // 30.0f
 	/// <summary>目標移動速度值</summary>
 	private float targetMoveSpeed = 20f;
 	/// <summary>移動加速度</summary>

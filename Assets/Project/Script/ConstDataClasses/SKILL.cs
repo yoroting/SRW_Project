@@ -27,7 +27,7 @@ public class SKILL : ConstDataRow<SKILL>
 	public string s_TAG;
 	public string s_CONDITION;
 	public string s_CAST;
-	public string s_CAST_TRIG;
+	public string s_CAST_COND;
 	public string s_CAST_EFFECT;
 	public float f_ATK;
 	public float f_DEF;

@@ -661,6 +661,11 @@ public class Panel_CMDUnitUI : MonoBehaviour
 				// always Self AOE 
 				case 6:
 				case 7:
+				case 8:
+				// all unit 
+				case 9:
+				case 10:
+				case 11:
 				{
 					// show AOE direct
 					CMD.eCMDSTATUS = _CMD_STATUS._WAIT_TARGET;

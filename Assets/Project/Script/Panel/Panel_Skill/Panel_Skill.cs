@@ -380,10 +380,12 @@ public class Panel_Skill : MonoBehaviour {
 		}
 		//====反擊時不能使用 點地 技能===============
 		if (cmdType == _CMD_TYPE._COUNTER) {
-			if( skl.n_TARGET >= 3 ){
+			//if( skl.n_TARGET >= 3 )
+			//if( MyTool.GetSkillTarget( skl ) != 1 )
+//			{
 				// AOE skill can't use
-				return false;
-			}
+//				return false;
+//			}
 		}
 		// check condition
 		return true;

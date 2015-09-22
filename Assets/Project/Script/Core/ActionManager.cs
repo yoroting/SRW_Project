@@ -423,12 +423,19 @@ public partial class ActionManager
 							// it should have fx
 						
 						}break;	
-						case cHitResult._TYPE._DODGE: // show miss
+						case cHitResult._TYPE._DODGE: // show dodge
 						{
 							// it should have fx
 							pUnit.SetDodge();
 							
 						}break;	
+						case cHitResult._TYPE._MISS: // show miss
+						{
+						// it should have fx
+							pUnit.SetMiss();
+						
+						}break;	
+
 						case cHitResult._TYPE._GUARD:
 						{
 							pUnit.SetGuardTo( res.Value1 );

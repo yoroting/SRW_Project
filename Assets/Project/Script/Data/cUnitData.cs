@@ -24,11 +24,10 @@ public enum _FIGHTSTATE
 	_MISS		,	// 失誤
 	_COMBO	,		// 攻擊後強制原地再次攻擊
 	_BROKEN,		// 破防
+	_RETURN		,	// 傷害轉彈
+	_COPY		,	// 複製目標的招式
 	// 
 	_KILL		,  //本次戰鬥有殺人
-
-
-
 }
 //
 public enum _UNITTAG

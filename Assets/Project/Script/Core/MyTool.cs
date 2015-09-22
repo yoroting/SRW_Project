@@ -155,6 +155,20 @@ public class MyTool {
 		return "Error- No Leran School" + nSchool.ToString();
 	}
 
+
+	public static string GetUIText( int nID )
+	{
+
+		return "null";
+	}
+
+	public static string GetSYSText( int nID )
+	{
+		
+		return "null";
+	}
+
+
 	public static bool CheckInPosPool( List < iVec2 > lst , iVec2 v )
 	{
 		if (lst == null || v == null)
@@ -292,10 +306,10 @@ public class MyTool {
 		if (skl == null )
 			return _PK_MODE._ENEMY;
 
-		if ( skl.n_TARGET == 5 || skl.n_TARGET == 8 ) {// 5→MAPALL , 8→自我AOEALL
+		if ( skl.n_TARGET == 5 || skl.n_TARGET == 8 || skl.n_TARGET == 11 ) {// 5→MAPALL , 8→自我AOEALL , 11→ALL
 			return _PK_MODE._ALL;
 		}
-		else if (skl.n_TARGET == 2 || skl.n_TARGET == 4 || skl.n_TARGET ==6 ) {			//2→需要友方目標 , 4→MAP我方 , 6→自我AOE我方
+		else if (skl.n_TARGET == 2 || skl.n_TARGET == 4 || skl.n_TARGET ==6 || skl.n_TARGET == 9 ) {			//2→需要友方目標 , 4→MAP我方 , 6→自我AOE我方 ,9→我ALL
 			return _PK_MODE._PLAYER;
 		}
 
@@ -311,6 +325,9 @@ public class MyTool {
 			case 6:	//6→自我AOE我方
 			case 7:	//7→自我AOE敵方
 			case 8:	//8→自我AOEALL
+			case 9:	//9→我ALL
+			case 10:	//10→敵ALL
+			case 11:	//11→ALL
 				return 0;
 				break;
 			case 1:	//→需要敵方目標

@@ -39,8 +39,8 @@ public class cSkillData
 		UseCond = MyScript.Instance.CreateEffectCondition ( skill.s_CONDITION );
 
 		EffPool = MyScript.Instance.CreateEffectPool ( skill.s_CAST );
-		EffCond = MyScript.Instance.CreateEffectCondition ( skill.s_CAST_TRIG);
-		CondEffPool  = MyScript.Instance.CreateEffectPool ( skill.s_CAST_EFFECT );
+		EffCond = MyScript.Instance.CreateEffectCondition ( skill.s_CAST_COND);
+		CondEffPool  = MyScript.Instance.CreateEffectPool ( skill.s_CAST_EFFECT);
 
 
 //		CastPool = MyScript.Instance.CreateEffectPool ( skill.s_CAST );

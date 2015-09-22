@@ -38,6 +38,7 @@ public class cHitResult		//
 		_HITBACK	,
 
 		_DODGE		,		// 迴避
+		_MISS		, 		// fail
 		_GUARD		,		// guard some 
 
 	};
@@ -287,36 +288,8 @@ public partial class BattleManager
 						//						MyTool.DoSkillEffect( Atker , Atker.FightAttr.HitPool , Atker.FightAttr.Skill.s_CAST_TRIG ,  Atker.FightAttr.HitEffPool , ref pCastingAction.HitResult  );
 					}
 					
-					//				if ( Atker.FightAttr.Skill != null ) {
-					//					//Atker.FightAttr.Skill = ConstDataManager.Instance.GetRow< SKILL > (nAtkerSkillID);
-					//					if( MyScript.Instance.CheckSkillEffect( Atker , Atker.FightAttr.Skill.s_CAST_TRIG ) == true ) {
-					//						
-					//						MyScript.Instance.RunSkillEffect( Atker , Defer , Atker.FightAttr.Skill.s_CAST_EFFECT , ref pCastingAction.HitResult );
-					//					}
-					//				}
-					
-					
-					
-					
 					nPhase++;
 				}
-
-
-			//}
-			//else
-	//	{
-//				// check to reopen counter CMD UI
-//				if( PanelManager.Instance.CheckUIIsOpening(  Panel_CMDUnitUI.Name )== false ){
-//
-//					if( PanelManager.Instance.CheckUIIsOpening(  Panel_Skill.Name  )== false  ){ // don't pop if skill ui is opening
-//						Panel_CMDUnitUI.OpenCMDUI( _CMD_TYPE._COUNTER , nDeferID  );
-//					}
-//				}
-		//	}
-
-
-
-
 			break;
 		case 2:			// def casting
 			uAction pCastingAction = ActionManager.Instance.CreateCastAction( nDeferID , nDeferSkillID , nAtkerID  );
@@ -325,6 +298,20 @@ public partial class BattleManager
 //				Defer.DoSkillCastEffect( ref pCastingAction.HitResult  );
 //				if(  Defer.FightAttr.Skill != null )
 //					MyTool.DoSkillEffect( Defer , Defer.FightAttr.HitPool , Defer.FightAttr.Skill.s_CAST_TRIG ,  Defer.FightAttr.HitEffPool , ref pCastingAction.HitResult  );
+
+				if( Defer != null ){
+					if( Defer.IsStates( _FIGHTSTATE._COPY ) ){
+						// if target have skill copy target 's skill to cast
+						if( nAtkerSkillID > 0 ){
+							nDeferSkillID = nAtkerSkillID;
+							Defer.SetFightAttr( nAtkerID , nDeferSkillID );
+							// cast sceond skill
+							ActionManager.Instance.CreateCastAction( nDeferID , nDeferSkillID , nAtkerID  );
+						}
+					}
+				}
+
+
 			}
 
 			//ShowBattleMsg( nDeferID , "counter" );
@@ -1277,8 +1264,7 @@ public partial class BattleManager
 		if (skl == null) {
 			return;
 		}
-		if (skl.n_AREA == 0)
-			return;
+
 		if( Defer != null ){
 			nDefer = Defer.n_Ident;
 		}
@@ -1289,11 +1275,17 @@ public partial class BattleManager
 		//		3→MAP敵方
 		//		4→MAP我方
 		//      5-MAP-all 
+		//		6→自我AOE我方
+		//		7→自我AOE敵方
+		//		8→自我AOEALL
+		//      9→我方全員
+		//     10→敵方全員
+		//     11-all unit  
 		bool bCanPK = false;
 		bool bAll = false;
-		if ((skl.n_TARGET == 1) || (skl.n_TARGET == 3) || (skl.n_TARGET == 7)) {
+		if ((skl.n_TARGET == 1) || (skl.n_TARGET == 3) || (skl.n_TARGET == 7) || (skl.n_TARGET == 10) ) {
 			bCanPK = true;
-		} else if( skl.n_TARGET == 5 ){
+		} else if( (skl.n_TARGET == 5)||(skl.n_TARGET == 8) ){
 			bAll = true;
 		}
 		// fix  pos
@@ -1308,17 +1300,47 @@ public partial class BattleManager
 				nTarY = Defer.n_Y;
 			}
 		}
-
-
-
-		List < iVec2 > lst = MyTool.GetAOEPool ( nTarX ,nTarY,skl.n_AREA ,Atker.n_X , Atker.n_Y  );
-
+		// start push to pool
 		if( pool == null ){
 			pool = new List< cUnitData > ();
 		}
 
+		//==============
+		//  get all
+		if( (skl.n_TARGET == 9) || (skl.n_TARGET == 10) )
+		{
+			foreach( KeyValuePair<int , cUnitData > pair in GameDataManager.Instance.UnitPool )
+			{
+				cUnitData pUnit = pair.Value;
+				if( pUnit.n_Ident == nDefer )  
+					continue;				
+				if( pUnit.IsDead() )
+					continue;
+				if( bAll == true ){ // all is no need check
+					if( pUnit == Atker )  
+						continue;				
+
+					if( pool.Contains( pUnit ) == false ){
+						pool.Add( pUnit );
+					}				
+				}
+				else if(  CanPK( Atker.eCampID , pUnit.eCampID ) == bCanPK ){
+					if( pool.Contains( pUnit ) == false ){
+						pool.Add( pUnit );
+					}
+				}
+			}
+			return ;
+		}
 
 
+		// get AOE affect
+		if (skl.n_AREA == 0)
+			return;
+
+		List < iVec2 > lst = MyTool.GetAOEPool ( nTarX ,nTarY,skl.n_AREA ,Atker.n_X , Atker.n_Y  );
+
+	
 		// check  if have affect
 		foreach (iVec2 v in lst) {
 			cUnitData pUnit = GameDataManager.Instance.GetUnitDateByPos( v.X , v.Y );
@@ -1326,15 +1348,18 @@ public partial class BattleManager
 				// defer don't add . he have a spec process
 				if( pUnit.n_Ident == nDefer )  
 					continue;
+
+				if( pUnit.IsDead() )
+					continue;
 				 
 				if( bAll == true ){ // all is no need check
+					if( pUnit == Atker )  
+						continue;				
 					if( pool.Contains( pUnit ) == false ){
 						pool.Add( pUnit );
 					}
-					continue;
 				}
-
-				if(  CanPK( Atker.eCampID , pUnit.eCampID ) == bCanPK ){
+				else if(  CanPK( Atker.eCampID , pUnit.eCampID ) == bCanPK ){
 					if( pool.Contains( pUnit ) == false ){
 						pool.Add( pUnit );
 					}
@@ -1423,7 +1448,11 @@ public partial class BattleManager
 			resPool.Add (new cHitResult (cHitResult._TYPE._DODGE, nDefer, 0 ));	
 			return resPool;
 		}
-
+		// atk方強制 Fail
+		if (pAtker.IsStates (_FIGHTSTATE._MISS )) {
+			resPool.Add (new cHitResult (cHitResult._TYPE._MISS, nAtker, 0 ));	
+			return resPool;
+		}
 
 		// buff effect
 		float AtkMarPlus = pAtker.FightAttr.fAtkAssist;   // assist is base pils
@@ -1493,8 +1522,8 @@ public partial class BattleManager
 			}
 			else {
 				nAtkHp += (int)(PowDmg * pDefer.GetMulBurst() * pAtker.GetMulDamage() ); // it is neg value already
-				if (nAtkHp != 0) {
-					if (nAtkHp < 0 && ((pAtker.n_HP + pAtker.n_DEF) < Math.Abs (nAtkHp))) {
+				if (nAtkHp < 0) {
+					if ( ((pAtker.n_HP + pAtker.n_DEF) < Math.Abs (nAtkHp))) {
 						if (pDefer.IsStates (_FIGHTSTATE._MERCY)) {
 							nAtkHp = -(pAtker.n_HP + pAtker.n_DEF-1);
 						}
@@ -1531,6 +1560,23 @@ public partial class BattleManager
 
 		//守方減免
 		fAtkDmg *= fDefReduce;
+
+		//守方反彈傷害 1/2
+		if( pDefer.IsStates( _FIGHTSTATE._RETURN ) ){
+			nAtkHp = (int)( -0.5f*fAtkDmg );
+			if (nAtkHp < 0) {
+				if (((pAtker.n_HP + pAtker.n_DEF) < Math.Abs (nAtkHp))) {
+					if (pDefer.IsStates (_FIGHTSTATE._MERCY)) {
+						nAtkHp = -(pAtker.n_HP + pAtker.n_DEF-1);
+					}
+					else {
+						pDefer.AddStates (_FIGHTSTATE._KILL);
+						pAtker.AddStates (_FIGHTSTATE._DEAD);
+					}
+				}
+				resPool.Add (new cHitResult (cHitResult._TYPE._HP, nAtker, nAtkHp));
+			}
+		} 
 
 		//玩家秒殺模式- cheat
 		if (Config.KILL_MODE ) {

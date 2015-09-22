@@ -64,6 +64,7 @@ public class Panel_unit : MonoBehaviour {
 	public bool bIsDeading = false;
 	public bool bIsLeaving = false;
 	public bool bIsDodgeing = false;
+	public bool bIsMissing = false;
 	public bool bIsGuarding = false;
 
 	public int  Ident() 
@@ -449,7 +450,7 @@ public class Panel_unit : MonoBehaviour {
 //		if( nTweenMoveCount != 0 )
 //			return true;
 
-		if( bIsAtking || bIsShaking || bIsCasting || bIsBorning || bIsDeading || bIsLeaving || bIsDodgeing || bIsGuarding )
+		if( bIsAtking || bIsShaking || bIsCasting || bIsBorning || bIsDeading || bIsLeaving || bIsDodgeing || bIsMissing || bIsGuarding )
 			return true;
 		if (IsMoving ())
 			return true;
@@ -1128,6 +1129,31 @@ public class Panel_unit : MonoBehaviour {
 		// reset pos
 		gameObject.transform.localRotation = Quaternion.identity;			
 		bIsDodgeing = false;
+	}
+	// miss
+	public void SetMiss(  )
+	{
+		TweenRotation twr = TweenRotation.Begin< TweenRotation >( gameObject , 0.25f );
+		if( twr != null )
+		{
+			twr.SetStartToCurrentValue();
+			twr.to	= new Vector3( 0.0f , 0.0f , -90.0f );//Math.PI
+			MyTool.TweenSetOneShotOnFinish( twr , OnTwMissRotateEnd ); // for once only
+			bIsMissing = true;
+		}
+		BattleManager.Instance.ShowBattleResValue( this.gameObject , "失誤" , 0 );
+
+	}
+	public void OnTwMissRotateEnd( )
+	{		
+		// clear all move tw
+		TweenRotation[] tws = gameObject.GetComponents<TweenRotation> (); 
+		foreach (TweenRotation tw in tws) {
+			Destroy( tw );
+		}
+		// reset pos
+		gameObject.transform.localRotation = Quaternion.identity;			
+		bIsMissing = false;
 	}
 
 	// guard a target
