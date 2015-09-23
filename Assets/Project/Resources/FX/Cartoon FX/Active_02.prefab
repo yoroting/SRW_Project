@@ -48,18 +48,18 @@ ParticleSystem:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 180218}
-  lengthInSec: .5
+  lengthInSec: 2
   startDelay: 0
-  speed: 1
+  speed: 2
   randomSeed: 0
   looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   moveWithTransform: 1
   InitialModule:
     enabled: 1
     startLifetime:
-      scalar: .5
+      scalar: 1
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -219,7 +219,7 @@ ParticleSystem:
         rgba: 4278207999
       minMaxState: 0
     startSize:
-      scalar: .25
+      scalar: .200000003
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -284,19 +284,19 @@ ParticleSystem:
         m_PreInfinity: 2
         m_PostInfinity: 2
       minMaxState: 0
-    gravityModifier: -.5
+    gravityModifier: -.256000012
     inheritVelocity: 0
-    maxNumParticles: 30
+    maxNumParticles: 10
   ShapeModule:
     serializedVersion: 2
     enabled: 1
     type: 4
-    radius: 50
+    radius: 40.9600029
     angle: 25
     length: 5
-    boxX: 1
-    boxY: 1
-    boxZ: 1
+    boxX: .512000024
+    boxY: .512000024
+    boxZ: .512000024
     arc: 360
     placementMode: 0
     m_Mesh: {fileID: 0}
@@ -1187,23 +1187,7 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 0}
-      propertyPath: lengthInSec
-      value: .5
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: InitialModule.startLifetime.scalar
-      value: .5
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: InitialModule.startSize.scalar
-      value: .25
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: ShapeModule.radius
-      value: 50
-      objectReference: {fileID: 0}
+    m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 180218}

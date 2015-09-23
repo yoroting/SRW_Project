@@ -50,7 +50,7 @@ ParticleSystem:
   m_GameObject: {fileID: 171030}
   lengthInSec: 3
   startDelay: 0
-  speed: 1
+  speed: .666666687
   randomSeed: 0
   looping: 0
   prewarm: 0
@@ -219,7 +219,7 @@ ParticleSystem:
         rgba: 4294967295
       minMaxState: 0
     startSize:
-      scalar: 2
+      scalar: .300000012
       maxCurve:
         serializedVersion: 2
         m_Curve:

@@ -1065,6 +1065,11 @@ public class MyScript {
 				else if( func.sFunc  == "IS_COPY") { // 
 					pool.Add( new IS_COPY( ) );
 				}
+				else if( func.sFunc  == "IS_TWICE") { // 
+					pool.Add( new IS_TWICE( ) );
+				}
+
+
 				//===
 
 			

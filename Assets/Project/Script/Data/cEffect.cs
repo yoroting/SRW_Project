@@ -662,6 +662,18 @@ public class IS_COPY: cEffect
 		return (st == _FIGHTSTATE._COPY);
 	}				// check user in one status		
 }
+
+public class IS_TWICE: cEffect
+{
+	public IS_TWICE( ){	}	
+	
+	override public bool _IsStatus(  _FIGHTSTATE st ){
+		return (st == _FIGHTSTATE._TWICE);
+	}				// check user in one status		
+}
+
+
+
 //==========================================================================
 // use to cache condition sctipr parser result
 public class  cEffectCondition

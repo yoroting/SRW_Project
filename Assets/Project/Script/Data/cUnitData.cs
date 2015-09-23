@@ -26,6 +26,7 @@ public enum _FIGHTSTATE
 	_BROKEN,		// 破防
 	_RETURN		,	// 傷害轉彈
 	_COPY		,	// 複製目標的招式
+	_TWICE		,  // 打兩下
 	// 
 	_KILL		,  //本次戰鬥有殺人
 }
@@ -267,8 +268,8 @@ public class cUnitData{
 	public Dictionary< int , int >		AbilityPool;		// all ability school < ability id , lv can use >
 
 	// current skill data pool
-	public Dictionary< int , cSkillData >SkillPool;						// all skill from school < skill id  >
-
+	//public Dictionary< int , cSkillData >SkillPool;						// all skill from school < skill id  >
+	public List< int >				SkillPool;						// all skill from school < skill id  >
 	// Buff list
 
 //	public Dictionary< int , int >		CDPool;				// all study school < cd type , round >
@@ -324,7 +325,7 @@ public class cUnitData{
 		bEnable = false;
 		SchoolPool  = new Dictionary< int , int > ();
 		AbilityPool = new Dictionary< int , int > ();
-		SkillPool 	= new Dictionary< int , cSkillData > ();
+		SkillPool 	= new List< int > ();
 
 		Buffs = new cBuffs( this ); 
 	//	CDPool = new Dictionary< int , int > ();
@@ -487,16 +488,16 @@ public class cUnitData{
 				SetUpdate( cAttrData._BUFF );
 			}
 
-			if( SkillPool.ContainsKey( nSkillID ) == false )
+			if( SkillPool.Contains( nSkillID ) == false )
 			{
-				SkillPool.Add( nSkillID , GameDataManager.Instance.GetSkillData(nSkillID)  );
+				SkillPool.Add( nSkillID  );
 			}
 		}
 	}
 
 	public void RemoveSkill( int nSkillID )
 	{
-		if( SkillPool.ContainsKey( nSkillID ) )
+		if( SkillPool.Contains( nSkillID ) )
 		{
 			Buffs.DelBuffBySkillID( nSkillID );
 
@@ -542,7 +543,7 @@ public class cUnitData{
 				//					nSklID = skl.n_UPGRADE_SKILL;
 				//				}
 				//
-				if( SkillPool.ContainsKey( nSklID ) == false )
+				if( SkillPool.Contains( nSklID ) == false )
 				{
 					AddSkill( nSklID );
 				}
@@ -564,12 +565,12 @@ public class cUnitData{
 			return;
 
 		List< int > tmp = new List< int > ();
-		foreach (KeyValuePair< int , cSkillData >  pair in SkillPool) {
-			SKILL skl = pair.Value.skill; //ConstDataManager.Instance.GetRow< SKILL >( pair.Key );
+		foreach ( int  nID in SkillPool) {
+			SKILL skl =  ConstDataManager.Instance.GetRow< SKILL >( nID );
 			if( skl != null && skl.n_SCHOOL == schid )
 			{
 				// remove skill'd buff
-				tmp.Add( pair.Key );
+				tmp.Add( nID );
 			}
 		}
 		//
@@ -784,6 +785,14 @@ public class cUnitData{
 //		SetUpdate (index);
 //		//UpdateSchoolAttr (index , School ); 
 //	}
+	public int Dist( cUnitData p )
+	{
+		if (p == null) {
+			return 0; 
+		}
+		return MYGRIDS.iVec2.Dist ( n_X , n_Y , p.n_X , p.n_Y );
+	}
+
 
 	public void SetLevel( int lv )
 	{
@@ -930,6 +939,14 @@ public class cUnitData{
 		attr.n_SP = Config.CharBaseSp + nLV * Config.CharSpLVUp;
 		attr.f_MAR = Config.CharMarLVUp * nLV;
 
+		//float fGrow = (float)nLV;//Mathf.Pow( 1.2f , nLV );
+
+		attr.n_HP  = (int)(Config.CharAtkLVUp*nLV * 2) ;
+		attr.n_ATK = (int)( Config.CharAtkLVUp*nLV) ;
+		attr.n_DEF = (int) (Config.CharAtkLVUp*nLV / 2.0f) ;
+
+
+
 		// For Ability attr
 		foreach( KeyValuePair< int , int > pair in  AbilityPool)
 		{
@@ -946,11 +963,11 @@ public class cUnitData{
 		}
 
 		// update passiv skill attr
-		foreach( KeyValuePair< int , cSkillData >  pair in SkillPool )
-		{
-		//	if( pair.Value. )
-
-		}
+//		foreach( KeyValuePair< int , cSkillData >  pair in SkillPool )
+//		{
+//		//	if( pair.Value. )
+//
+//		}
 
 	}
 

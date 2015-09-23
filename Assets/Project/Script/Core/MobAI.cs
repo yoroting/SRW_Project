@@ -602,8 +602,8 @@ public class MobAI  {
 
 		//sklPool.Add( 0 , (pData.GetMaxCP() - pData.n_CP) +1 ); // 普攻永遠有機會 ,CP 越高，普攻機會越低
 
-		foreach(  KeyValuePair< int , cSkillData > pair in pData.SkillPool ){
-				int nSkillID = pair.Value.nID;
+		foreach(  int  nID in pData.SkillPool ){
+				int nSkillID = nID;
 				nSkillID = pData.Buffs.GetUpgradeSkill( nSkillID ); // Get upgrade skill
 				if( nSkillID ==0 )
 					continue;

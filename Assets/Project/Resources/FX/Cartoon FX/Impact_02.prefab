@@ -429,7 +429,7 @@ ParticleSystem:
   SizeModule:
     enabled: 1
     curve:
-      scalar: 1.5
+      scalar: 3
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2505,7 +2505,7 @@ ParticleSystem:
   SizeModule:
     enabled: 1
     curve:
-      scalar: 4
+      scalar: 8
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -3480,17 +3480,17 @@ ParticleSystem:
       minMaxState: 0
     gravityModifier: 0
     inheritVelocity: 0
-    maxNumParticles: 40
+    maxNumParticles: 200
   ShapeModule:
     serializedVersion: 2
     enabled: 1
     type: 0
-    radius: .100000001
+    radius: .0200000014
     angle: 0
     length: 0
-    boxX: 1
-    boxY: 1
-    boxZ: 1
+    boxX: .200000003
+    boxY: .200000003
+    boxZ: .200000003
     arc: 360
     placementMode: 0
     m_Mesh: {fileID: 0}
@@ -4404,7 +4404,35 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: ShapeModule.radius
+      value: .0200000014
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ShapeModule.boxX
+      value: .200000003
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ShapeModule.boxY
+      value: .200000003
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ShapeModule.boxZ
+      value: .200000003
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: VelocityModule.x.scalar
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: VelocityModule.y.scalar
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: VelocityModule.z.scalar
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 115422}

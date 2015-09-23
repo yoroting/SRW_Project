@@ -110,7 +110,7 @@ ParticleSystem:
   m_GameObject: {fileID: 155582}
   lengthInSec: .300000012
   startDelay: 0
-  speed: 1
+  speed: .5
   randomSeed: 0
   looping: 0
   prewarm: 0
@@ -1158,7 +1158,7 @@ ParticleSystem:
   m_GameObject: {fileID: 156414}
   lengthInSec: .400000006
   startDelay: 0
-  speed: 1
+  speed: .5
   randomSeed: 0
   looping: 0
   prewarm: 0
@@ -1200,7 +1200,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 0
     startSpeed:
-      scalar: 1
+      scalar: 1.25
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1389,12 +1389,12 @@ ParticleSystem:
     serializedVersion: 2
     enabled: 1
     type: 0
-    radius: .100000001
+    radius: .0250000004
     angle: 0
     length: 0
-    boxX: 1
-    boxY: 1
-    boxZ: 1
+    boxX: .25
+    boxY: .25
+    boxZ: .25
     arc: 360
     placementMode: 0
     m_Mesh: {fileID: 0}
@@ -2166,7 +2166,7 @@ ParticleSystem:
   m_GameObject: {fileID: 190626}
   lengthInSec: .200000003
   startDelay: 0
-  speed: 1
+  speed: .5
   randomSeed: 0
   looping: 0
   prewarm: 0
@@ -3320,15 +3320,7 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 0}
-      propertyPath: InitialModule.startSize.scalar
-      value: .25
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: InitialModule.startSpeed.scalar
-      value: 1
-      objectReference: {fileID: 0}
+    m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 190626}

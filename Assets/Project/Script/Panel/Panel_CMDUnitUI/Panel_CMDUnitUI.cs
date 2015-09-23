@@ -69,6 +69,10 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
 	void Start () {
 		//Clear ();  This line will cause first open Ui clear data with setuped. don't clear here
+		// update
+//		UIGrid grid = NGuiGrids.GetComponent<UIGrid>(); 
+//		grid.repositionNow = true;		// need this for second pop to re pos
+//		grid.Reposition ();
 	}
 	
 	// Update is called once per frame, but it don't called when disable. can't become a trigger
@@ -148,7 +152,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		List< Transform > lst = grid.GetChildList ();
 		//List< GameObject > CmdBtnList = MyTool.GetChildPool( NGuiGrids );
 
-		if (lst == null)
+		if (lst == null || lst.Count <= 0 )
 			return;
 
 		foreach ( Transform t in lst) {
@@ -176,9 +180,11 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		foreach( _CMD_ID id in cmdList )
 		{	
 			//GameObject obj = ResourcesManager.CreatePrefabGameObj( this.NGuiGrids , "Prefab/CMD_BTN" ); // create cmd and add to grid
-			GameObject obj = CmdButton.Spawn( NGuiGrids.transform );
+			GameObject obj = CmdButton.Spawn(  NGuiGrids.transform );
 			if( obj != null )
 			{
+				//NGUITools.AddChild( NGuiGrids.transform , obj );
+
 				obj.name = MyTool.GetCMDNameByID( id );
 				UILabel lbl = obj.GetComponentInChildren<UILabel> ();
 				if( lbl != null )
@@ -187,12 +193,15 @@ public class Panel_CMDUnitUI : MonoBehaviour
 					// Load Label by const data
 				}
 				UIEventListener.Get(obj).onClick += OnCMDButtonClick;
+
+
+				
 			}
 		}
 		// update
-		UIGrid grid = NGuiGrids.GetComponent<UIGrid>(); 
+		UIGrid grid = NGuiGrids.GetComponent<UIGrid>(); 	
 		grid.repositionNow = true;		// need this for second pop to re pos
-
+//			grid.Reposition ();
 	
 		if( _CMD_TYPE._WAITATK == CMD.eCMDTYPE )
 		{
@@ -911,8 +920,9 @@ public class Panel_CMDUnitUI : MonoBehaviour
 	public static void CloseCMDUI()
 	{
 		Panel_CMDUnitUI panel = MyTool.GetPanel<Panel_CMDUnitUI>( PanelManager.Instance.JustGetUI(Panel_CMDUnitUI.Name)) ;
-		if( panel != null )
+		if( panel == null )
 		{
+			return;
 			//panel.CancelCmd(); // cancel will restore some time. can't call it here
 		}
 		if (panel.pCmder != null) {

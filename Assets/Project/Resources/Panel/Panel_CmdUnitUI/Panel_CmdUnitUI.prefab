@@ -33,7 +33,7 @@ GameObject:
   m_IsActive: 1
 --- !u!1 &128370
 GameObject:
-  m_ObjectHideFlags: 1
+  m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 4
@@ -135,10 +135,9 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 445042}
+  m_Children: []
   m_Father: {fileID: 441654}
-  m_RootOrder: 0
+  m_RootOrder: 1
 --- !u!4 &441654
 Transform:
   m_ObjectHideFlags: 1
@@ -149,6 +148,7 @@ Transform:
   m_LocalPosition: {x: -250, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 445042}
   - {fileID: 428182}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -159,13 +159,13 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 128370}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 423410}
   - {fileID: 456610}
   - {fileID: 402728}
-  m_Father: {fileID: 428182}
+  m_Father: {fileID: 441654}
   m_RootOrder: 0
 --- !u!4 &456610
 Transform:
@@ -423,7 +423,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3003
+  startingRenderQueue: 3000
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 0

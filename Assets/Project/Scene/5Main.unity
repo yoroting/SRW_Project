@@ -1188,7 +1188,7 @@ Prefab:
 --- !u!4 &745047567 stripped
 Transform:
   m_PrefabParentObject: {fileID: 441654, guid: 92106737e36d4784db4cb53d2dd39879, type: 2}
-  m_PrefabInternal: {fileID: 2110773375}
+  m_PrefabInternal: {fileID: 874392944}
 --- !u!1 &790467087
 GameObject:
   m_ObjectHideFlags: 0
@@ -1371,6 +1371,56 @@ MonoBehaviour:
   mFixedAspect: 0
   mPixelSize: 1
   nextSprite: {fileID: 0}
+--- !u!1001 &874392944
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 161096790}
+    m_Modifications:
+    - target: {fileID: 441654, guid: 92106737e36d4784db4cb53d2dd39879, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: -250
+      objectReference: {fileID: 0}
+    - target: {fileID: 441654, guid: 92106737e36d4784db4cb53d2dd39879, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 441654, guid: 92106737e36d4784db4cb53d2dd39879, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 441654, guid: 92106737e36d4784db4cb53d2dd39879, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 441654, guid: 92106737e36d4784db4cb53d2dd39879, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 441654, guid: 92106737e36d4784db4cb53d2dd39879, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 441654, guid: 92106737e36d4784db4cb53d2dd39879, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 441654, guid: 92106737e36d4784db4cb53d2dd39879, type: 2}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 162070, guid: 92106737e36d4784db4cb53d2dd39879, type: 2}
+      propertyPath: m_Name
+      value: Panel - CmdUnitUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 162070, guid: 92106737e36d4784db4cb53d2dd39879, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 92106737e36d4784db4cb53d2dd39879, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1 &916965767
 GameObject:
   m_ObjectHideFlags: 0
@@ -3319,56 +3369,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!1001 &2110773375
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 161096790}
-    m_Modifications:
-    - target: {fileID: 441654, guid: 92106737e36d4784db4cb53d2dd39879, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: -250
-      objectReference: {fileID: 0}
-    - target: {fileID: 441654, guid: 92106737e36d4784db4cb53d2dd39879, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 441654, guid: 92106737e36d4784db4cb53d2dd39879, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 441654, guid: 92106737e36d4784db4cb53d2dd39879, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 441654, guid: 92106737e36d4784db4cb53d2dd39879, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 441654, guid: 92106737e36d4784db4cb53d2dd39879, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 441654, guid: 92106737e36d4784db4cb53d2dd39879, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 441654, guid: 92106737e36d4784db4cb53d2dd39879, type: 2}
-      propertyPath: m_RootOrder
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 162070, guid: 92106737e36d4784db4cb53d2dd39879, type: 2}
-      propertyPath: m_Name
-      value: Panel - CmdUnitUI
-      objectReference: {fileID: 0}
-    - target: {fileID: 162070, guid: 92106737e36d4784db4cb53d2dd39879, type: 2}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: 92106737e36d4784db4cb53d2dd39879, type: 2}
-  m_IsPrefabParent: 0
 --- !u!1 &2141563827
 GameObject:
   m_ObjectHideFlags: 0

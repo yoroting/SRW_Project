@@ -140,7 +140,7 @@ ParticleSystem:
   m_GameObject: {fileID: 130832}
   lengthInSec: .200000003
   startDelay: 0
-  speed: 1
+  speed: .5
   randomSeed: 0
   looping: 0
   prewarm: 0
@@ -1178,7 +1178,7 @@ ParticleSystem:
   m_GameObject: {fileID: 164464}
   lengthInSec: .400000006
   startDelay: 0
-  speed: 1
+  speed: .5
   randomSeed: 0
   looping: 0
   prewarm: 0
@@ -1220,7 +1220,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 0
     startSpeed:
-      scalar: 6
+      scalar: 1.5
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1409,12 +1409,12 @@ ParticleSystem:
     serializedVersion: 2
     enabled: 1
     type: 2
-    radius: .300000012
+    radius: .075000003
     angle: 0
     length: 0
-    boxX: 1
-    boxY: 1
-    boxZ: 1
+    boxX: .25
+    boxY: .25
+    boxZ: .25
     arc: 360
     placementMode: 0
     m_Mesh: {fileID: 0}
@@ -1669,7 +1669,7 @@ ParticleSystem:
   VelocityModule:
     enabled: 1
     x:
-      scalar: 8
+      scalar: 2
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1692,7 +1692,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 2
     y:
-      scalar: 10
+      scalar: 2.5
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1715,7 +1715,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 2
     z:
-      scalar: 10
+      scalar: 2.5
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2196,7 +2196,7 @@ ParticleSystem:
   m_GameObject: {fileID: 180484}
   lengthInSec: .200000003
   startDelay: 0
-  speed: 1
+  speed: .5
   randomSeed: 0
   looping: 0
   prewarm: 0
@@ -3244,7 +3244,7 @@ ParticleSystem:
   m_GameObject: {fileID: 155944}
   lengthInSec: .200000003
   startDelay: 0
-  speed: 1
+  speed: .5
   randomSeed: 0
   looping: 0
   prewarm: 0
@@ -4434,11 +4434,7 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 0}
-      propertyPath: InitialModule.startSize.scalar
-      value: .25
-      objectReference: {fileID: 0}
+    m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 155944}

@@ -431,12 +431,12 @@ ParticleSystem:
     serializedVersion: 2
     enabled: 1
     type: 0
-    radius: .100000001
+    radius: .0200000014
     angle: 0
     length: 0
-    boxX: 1
-    boxY: 1
-    boxZ: 1
+    boxX: .200000003
+    boxY: .200000003
+    boxZ: .200000003
     arc: 360
     placementMode: 0
     m_Mesh: {fileID: 0}
@@ -3583,7 +3583,7 @@ ParticleSystem:
   SizeModule:
     enabled: 1
     curve:
-      scalar: 4
+      scalar: 8
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -4563,12 +4563,12 @@ ParticleSystem:
     serializedVersion: 2
     enabled: 1
     type: 2
-    radius: .300000012
+    radius: .0600000024
     angle: 0
     length: 0
-    boxX: 1
-    boxY: 1
-    boxZ: 1
+    boxX: .200000003
+    boxY: .200000003
+    boxZ: .200000003
     arc: 360
     placementMode: 0
     m_Mesh: {fileID: 0}
@@ -4823,7 +4823,7 @@ ParticleSystem:
   VelocityModule:
     enabled: 1
     x:
-      scalar: 4
+      scalar: 1.60000002
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -4846,7 +4846,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 2
     y:
-      scalar: 5
+      scalar: 2
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -4869,7 +4869,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 2
     z:
-      scalar: 5
+      scalar: 2
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -6612,7 +6612,35 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: ShapeModule.radius
+      value: .0600000024
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ShapeModule.boxX
+      value: .200000003
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ShapeModule.boxY
+      value: .200000003
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ShapeModule.boxZ
+      value: .200000003
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: VelocityModule.x.scalar
+      value: 1.60000002
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: VelocityModule.y.scalar
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: VelocityModule.z.scalar
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 161940}

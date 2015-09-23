@@ -76,7 +76,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 157696}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: .499999911, z: -.100000262}
+  m_LocalPosition: {x: 0, y: .124999978, z: -.0250000656}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 466730}
@@ -100,7 +100,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 175020}
   m_LocalRotation: {x: -.382683486, y: 0, z: 0, w: .923879564}
-  m_LocalPosition: {x: 0, y: 0, z: -0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 477476}
@@ -115,7 +115,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 141014}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: .0500000007}
+  m_LocalPosition: {x: 0, y: 0, z: .0125000002}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 466730}
@@ -140,7 +140,7 @@ ParticleSystem:
   m_GameObject: {fileID: 141014}
   lengthInSec: 1
   startDelay: 0
-  speed: 1
+  speed: .5
   randomSeed: 0
   looping: 0
   prewarm: 0
@@ -306,10 +306,10 @@ ParticleSystem:
         rgba: 4294967295
       maxColor:
         serializedVersion: 2
-        rgba: 4278255474
+        rgba: 4278255615
       minMaxState: 0
     startSize:
-      scalar: .200000003
+      scalar: .25
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1178,7 +1178,7 @@ ParticleSystem:
   m_GameObject: {fileID: 132530}
   lengthInSec: .800000012
   startDelay: .200000003
-  speed: 1
+  speed: .5
   randomSeed: 0
   looping: 0
   prewarm: 0
@@ -1187,7 +1187,7 @@ ParticleSystem:
   InitialModule:
     enabled: 1
     startLifetime:
-      scalar: .200000003
+      scalar: .800000012
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1220,7 +1220,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 0
     startSpeed:
-      scalar: 5
+      scalar: 1.25
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1344,10 +1344,10 @@ ParticleSystem:
         rgba: 4294967295
       maxColor:
         serializedVersion: 2
-        rgba: 4278255474
+        rgba: 4278255615
       minMaxState: 0
     startSize:
-      scalar: 1
+      scalar: .25
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1414,17 +1414,17 @@ ParticleSystem:
       minMaxState: 0
     gravityModifier: 0
     inheritVelocity: 0
-    maxNumParticles: 10
+    maxNumParticles: 800
   ShapeModule:
     serializedVersion: 2
     enabled: 1
     type: 4
-    radius: 1.5
+    radius: .375
     angle: 30
     length: 5
-    boxX: 1
-    boxY: 1
-    boxZ: 1
+    boxX: .25
+    boxY: .25
+    boxZ: .25
     arc: 360
     placementMode: 0
     m_Mesh: {fileID: 0}
@@ -1699,7 +1699,7 @@ ParticleSystem:
   VelocityModule:
     enabled: 1
     x:
-      scalar: 5
+      scalar: 1.25
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1752,7 +1752,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 2
     y:
-      scalar: 5
+      scalar: 1.25
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1805,7 +1805,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 2
     z:
-      scalar: 5
+      scalar: 1.25
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2296,7 +2296,7 @@ ParticleSystem:
   m_GameObject: {fileID: 157696}
   lengthInSec: .699999988
   startDelay: 0
-  speed: 1
+  speed: .5
   randomSeed: 0
   looping: 0
   prewarm: 0
@@ -2465,7 +2465,7 @@ ParticleSystem:
         rgba: 4284612352
       minMaxState: 0
     startSize:
-      scalar: .200000003
+      scalar: .25
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -3334,7 +3334,7 @@ ParticleSystem:
   m_GameObject: {fileID: 175020}
   lengthInSec: 1
   startDelay: 0
-  speed: 1
+  speed: .5
   randomSeed: 0
   looping: 0
   prewarm: 0
@@ -3500,10 +3500,10 @@ ParticleSystem:
         rgba: 4294967295
       maxColor:
         serializedVersion: 2
-        rgba: 4284809215
+        rgba: 4278255615
       minMaxState: 0
     startSize:
-      scalar: .200000003
+      scalar: .25
       maxCurve:
         serializedVersion: 2
         m_Curve:

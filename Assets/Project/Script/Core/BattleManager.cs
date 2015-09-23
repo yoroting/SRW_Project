@@ -41,6 +41,7 @@ public class cHitResult		//
 		_MISS		, 		// fail
 		_GUARD		,		// guard some 
 
+
 	};
 
 
@@ -283,9 +284,6 @@ public partial class BattleManager
 					// skill attr
 					if( pCastingAction != null )
 					{
-						//					Atker.DoSkillCastEffect( ref pCastingAction.HitResult  );
-						//					if(  Atker.FightAttr.Skill != null )
-						//						MyTool.DoSkillEffect( Atker , Atker.FightAttr.HitPool , Atker.FightAttr.Skill.s_CAST_TRIG ,  Atker.FightAttr.HitEffPool , ref pCastingAction.HitResult  );
 					}
 					
 					nPhase++;
@@ -332,7 +330,7 @@ public partial class BattleManager
 			uAction pAtkAction = ActionManager.Instance.CreateAttackAction(nAtkerID,nDeferID,nAtkerSkillID  );
 			if( pAtkAction != null )
 			{
-				GetAtkHitResult( nAtkerID , nDeferID , Atker , Defer ,  nTarGridX , nTarGridY , ref pAtkAction , ref AtkAffectPool );
+				GetAtkHitResult( nAtkerID , nDeferID , Atker , Defer ,nAtkerSkillID,  nTarGridX , nTarGridY , ref pAtkAction , ref AtkAffectPool );
 
 //
 //				pAtkAction.AddHitResult(  CalAttackResult( nAtkerID , nDeferID , IsDefMode() ) ) ;
@@ -406,9 +404,8 @@ public partial class BattleManager
 		case 8:			//  def -> atk
 			Panel_StageUI.Instance.FadeOutAVGObj();
 			if ( bCanCounter ) {
-
 				uAction pCountAct = ActionManager.Instance.CreateAttackAction (nDeferID,nAtkerID, nDeferSkillID );
-				GetAtkHitResult( nDeferID , nAtkerID ,  Defer , Atker ,  nTarGridX , nTarGridY , ref pCountAct , ref DefAffectPool );
+				GetAtkHitResult( nDeferID , nAtkerID ,  Defer , Atker , nDeferSkillID ,  nTarGridX , nTarGridY , ref pCountAct , ref DefAffectPool );
 
 //				bool bIsDamage =  MyTool.IsDamageSkill( nDeferSkillID );
 //				if (pCountAct != null) {
@@ -445,16 +442,32 @@ public partial class BattleManager
 			}
 			nPhase++;
 			break;
-		case 9: 	// 結算獎勵
+		case 9: 	{// atker twice atk
+			//if( Atker.Dist( Defer  )<=2 ){ // need range 2
+				if( Atker.IsDead() == false && Atker.IsStates( _FIGHTSTATE._TWICE)  ){
 
-
+					uAction pAtkTwice = ActionManager.Instance.CreateAttackAction(nAtkerID,nDeferID, nAtkerSkillID ); // always normal atk
+					if( pAtkTwice != null ){		
+						Atker.FightAttr.fBurstRate -= 0.5f;		// 第二下 傷害降低
+						GetAtkHitResult( nAtkerID , nDeferID , Atker , Defer ,  nAtkerSkillID , nTarGridX , nTarGridY , ref pAtkTwice , ref AtkAffectPool );
+					}
+				}
+				// check defer can twice
+				if( Defer.IsDead()==false && (bCanCounter==true) && Defer.IsStates( _FIGHTSTATE._TWICE)  ){
+					uAction pDefTwice = ActionManager.Instance.CreateAttackAction(nDeferID ,nAtkerID, nDeferSkillID  );// always normal atk
+					if( pDefTwice != null ){
+						Defer.FightAttr.fBurstRate -= 0.5f;		// 第二下 傷害降低
+						GetAtkHitResult( nDeferID , nAtkerID ,  Defer , Atker , nDeferSkillID  , nTarGridX , nTarGridY , ref pDefTwice , ref DefAffectPool );
+					}
+				}
+			//}
 			nPhase++;
-			break;
+		}break;
 		case 10:			// close all 
 			nPhase++;
 			// add Exp / Money  action
 
-			// Fight Finish
+			// Fight Finish	
 
 			foreach( cUnitData unit in AtkAffectPool )
 			{
@@ -473,8 +486,9 @@ public partial class BattleManager
 			}
 
 			// atker clear at last
-			if( Atker != null )
+			if( Atker != null ){
 				Atker.FightEnd( true );
+			}
 
 
 			// cmd finish
@@ -533,7 +547,7 @@ public partial class BattleManager
 					}
 				}
 
-				GetAtkHitResult( nAtkerID , nDeferID , Atker , Defer ,  nTarGridX , nTarGridY , ref pAct , ref AtkAffectPool );
+				GetAtkHitResult( nAtkerID , nDeferID , Atker , Defer , Atker.FightAttr.SkillID ,  nTarGridX , nTarGridY , ref pAct , ref AtkAffectPool );
 
 
 //				//必須先取得影響人數
@@ -618,7 +632,7 @@ public partial class BattleManager
 
 	}
 
-	public void GetAtkHitResult( int atk , int def , cUnitData Atker, cUnitData Defer, int gridX ,int gridY ,ref uAction action , ref List< cUnitData > AffectPool )
+	public void GetAtkHitResult( int atk , int def , cUnitData Atker, cUnitData Defer, int nSkillID  , int gridX ,int gridY ,ref uAction action , ref List< cUnitData > AffectPool )
 	{
 		if( (Atker == null) ||  (Atker.FightAttr == null) ){
 			Debug.LogErrorFormat( "GetAtkHitResult with null atker {0}" , atk );
@@ -653,7 +667,7 @@ public partial class BattleManager
 
 
 		// check is damage 
-		bool bIsDamage =  MyTool.IsDamageSkill( Atker.FightAttr.SkillID );
+		bool bIsDamage =  MyTool.IsDamageSkill( nSkillID );
 		int nGuarderID   = 0;
 		// single atk
 		if( Defer != null ){
@@ -687,17 +701,17 @@ public partial class BattleManager
 
 				action.AddHitResult(  CalAttackResult( atk , nRealTarId , IsDefMode() ) ) ;
 			}
-			action.AddHitResult( CalSkillHitResult(  Atker , cRealTarData  , Atker.FightAttr.SkillID ) );
+			action.AddHitResult( CalSkillHitResult(  Atker , cRealTarData  , nSkillID ) );
 		}
 
 		// aoe attack
 
 
 		if (Atker.IsStates( _FIGHTSTATE._THROUGH ) ) {
-			GetThroughPool( Atker , Defer ,Atker.FightAttr.SkillID , gridX , gridY , ref AffectPool );
+			GetThroughPool( Atker , Defer ,nSkillID , gridX , gridY , ref AffectPool );
 		}
 		
-		GetAffectPool( Atker , Defer , Atker.FightAttr.SkillID ,gridX , gridY , ref AffectPool );
+		GetAffectPool( Atker , Defer , nSkillID ,gridX , gridY , ref AffectPool );
 		foreach( cUnitData unit in AffectPool )
 		{
 			//=====================
@@ -730,9 +744,9 @@ public partial class BattleManager
 
 				unit.SetFightAttr( Atker.n_Ident , 0 );
 				ShowDefAssist( unit.n_Ident , false );
-				action.AddHitResult(  CalAttackResult( atk , nRealTarId , true , true ) ) ;// always def at this time
+				action.AddHitResult(  CalAttackResult( atk , nRealTarId ,true , true ) ) ;// always def at this time
 			}
-			action.AddHitResult( CalSkillHitResult(  Atker , cRealTarData  , Atker.FightAttr.SkillID ) );		
+			action.AddHitResult( CalSkillHitResult(  Atker , cRealTarData  ,nSkillID ) );		
 		}
 	}
 

@@ -204,19 +204,21 @@ public class Panel_UnitInfo : MonoBehaviour {
 		MyTool.DestoryGridItem ( SkillGrid );
 
 
-		foreach ( KeyValuePair< int , cSkillData > pair in pUnitData.SkillPool ) {
+		foreach ( int nID in pUnitData.SkillPool ) {
+			int nSkillID = nID;
+			nSkillID = pUnitData.Buffs.GetUpgradeSkill( nSkillID ); // Get upgrade skill
 
-			if(pair.Value.skill.n_SCHOOL == 0 )
+			SKILL skl = ConstDataManager.Instance.GetRow< SKILL > ( nSkillID );
+
+			if(skl.n_SCHOOL == 0 )
 				continue;
 
 			GameObject go = ResourcesManager.CreatePrefabGameObj( SkillGrid , "Prefab/Skill_simple" ); 
 			if( go == null )
 				continue;
 			
-			UIEventListener.Get(go).onClick += OnSkillClick; // 
-			
-			int nSkillID = pair.Key;
-			nSkillID = pUnitData.Buffs.GetUpgradeSkill( nSkillID ); // Get upgrade skill
+			UIEventListener.Get(go).onClick += OnSkillClick; // 		
+
 
 			Skill_Simple obj = go.GetComponent<Skill_Simple >();
 			if( obj != null ){

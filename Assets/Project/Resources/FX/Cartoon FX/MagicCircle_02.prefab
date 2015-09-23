@@ -71,7 +71,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 113532}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: .0500000007}
+  m_LocalPosition: {x: 0, y: 0, z: .0100000007}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 494022}
@@ -82,7 +82,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 153248}
-  m_LocalRotation: {x: -.5, y: 0, z: 0, w: .866025388}
+  m_LocalRotation: {x: -.382683486, y: 0, z: 0, w: .923879564}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -279,7 +279,7 @@ ParticleSystem:
         rgba: 4292697161
       minMaxState: 0
     startSize:
-      scalar: .404000014
+      scalar: .430000037
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1220,7 +1220,7 @@ ParticleSystem:
         serializedVersion: 2
         m_Curve:
         - time: 0
-          value: .399999976
+          value: .400000006
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -1384,12 +1384,12 @@ ParticleSystem:
     serializedVersion: 2
     enabled: 1
     type: 4
-    radius: 200
+    radius: 210
     angle: 25
     length: 5
-    boxX: 1
-    boxY: 1
-    boxZ: 1
+    boxX: .200000003
+    boxY: .200000003
+    boxZ: .200000003
     arc: 360
     placementMode: 0
     m_Mesh: {fileID: 0}
@@ -2380,7 +2380,7 @@ ParticleSystem:
         rgba: 4294967295
       minMaxState: 0
     startSize:
-      scalar: .404000014
+      scalar: .430000037
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -3372,28 +3372,28 @@ Prefab:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 0}
-      propertyPath: InitialModule.startSize.scalar
-      value: .404000014
+      propertyPath: ShapeModule.radius
+      value: .699999988
       objectReference: {fileID: 0}
     - target: {fileID: 0}
-      propertyPath: InitialModule.startSpeed.minCurve.m_Curve.Array.data[0].value
-      value: .399999976
+      propertyPath: ShapeModule.boxX
+      value: .200000003
       objectReference: {fileID: 0}
     - target: {fileID: 0}
-      propertyPath: InitialModule.startSpeed.scalar
-      value: 1
+      propertyPath: ShapeModule.boxY
+      value: .200000003
       objectReference: {fileID: 0}
     - target: {fileID: 0}
-      propertyPath: InitialModule.startSize.maxCurve.m_Curve.Array.data[0].value
-      value: 1
+      propertyPath: ShapeModule.boxZ
+      value: .200000003
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_LocalRotation.x
-      value: -.5
+      value: -.382683486
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_LocalRotation.w
-      value: .866025388
+      value: .923879564
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

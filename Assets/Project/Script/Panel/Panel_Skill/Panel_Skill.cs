@@ -101,15 +101,15 @@ public class Panel_Skill : MonoBehaviour {
 				}
 			}
 			else {
-				foreach(  KeyValuePair< int , cSkillData > pair in pData.SkillPool ){
-					SKILL skl = pair.Value.skill;
+				foreach(   int  nID in pData.SkillPool ){
+					int nSkillID = nID;
+					nSkillID = pData.Buffs.GetUpgradeSkill( nSkillID ); // Get upgrade skill
+					SKILL skl =  ConstDataManager.Instance.GetRow<SKILL> ( nSkillID );
 					if( skl.n_SCHOOL == 0 )	// == 0 is ability
 						continue;				
 					if( skl.n_PASSIVE == 1 )
 						continue;
 
-					int nSkillID = skl.n_ID;
-					nSkillID = pData.Buffs.GetUpgradeSkill( nSkillID ); // Get upgrade skill
 					sklLst.Add(  ConstDataManager.Instance.GetRow<SKILL>(nSkillID) );
 				}
 			}
@@ -218,7 +218,7 @@ public class Panel_Skill : MonoBehaviour {
 		// for grid re pos
 		UIGrid grid = SkillGrid.GetComponent<UIGrid>(); 
 		grid.repositionNow = true;		// need this for second pop to re pos
-
+		grid.Reposition ();
 		//CastNote.SetActive( false ); 
 	}
 

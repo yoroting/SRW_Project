@@ -1467,7 +1467,7 @@ ParticleSystem:
   SizeModule:
     enabled: 1
     curve:
-      scalar: .5
+      scalar: 3
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2505,7 +2505,7 @@ ParticleSystem:
   SizeModule:
     enabled: 1
     curve:
-      scalar: 4
+      scalar: 8
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -3485,12 +3485,12 @@ ParticleSystem:
     serializedVersion: 2
     enabled: 1
     type: 2
-    radius: .300000012
+    radius: .0600000024
     angle: 0
     length: 0
-    boxX: 1
-    boxY: 1
-    boxZ: 1
+    boxX: .200000003
+    boxY: .200000003
+    boxZ: .200000003
     arc: 360
     placementMode: 0
     m_Mesh: {fileID: 0}
