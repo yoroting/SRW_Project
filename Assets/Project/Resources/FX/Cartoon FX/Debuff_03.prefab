@@ -82,7 +82,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 180994}
-  m_LocalRotation: {x: -.707106888, y: 0, z: 0, w: .707106769}
+  m_LocalRotation: {x: -.707106829, y: 0, z: 0, w: .707106829}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -96,7 +96,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 180994}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b11907cc8c1ba9349af74c7c9bdc3e79, type: 3}
   m_Name: 
@@ -152,7 +152,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 0
     startSpeed:
-      scalar: .5
+      scalar: .375
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -279,7 +279,7 @@ ParticleSystem:
         rgba: 4289614185
       minMaxState: 0
     startSize:
-      scalar: .200000003
+      scalar: .150000006
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -326,17 +326,17 @@ ParticleSystem:
       minMaxState: 3
     gravityModifier: 0
     inheritVelocity: 0
-    maxNumParticles: 90
+    maxNumParticles: 5
   ShapeModule:
     serializedVersion: 2
     enabled: 1
     type: 4
-    radius: .200000003
+    radius: .150000006
     angle: 0
     length: 5
-    boxX: .100000001
-    boxY: .100000001
-    boxZ: .100000001
+    boxX: .075000003
+    boxY: .075000003
+    boxZ: .075000003
     arc: 360
     placementMode: 0
     m_Mesh: {fileID: 0}
@@ -596,7 +596,7 @@ ParticleSystem:
   VelocityModule:
     enabled: 1
     x:
-      scalar: .200000003
+      scalar: .150000006
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -619,7 +619,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 3
     y:
-      scalar: .200000003
+      scalar: .150000006
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -3305,7 +3305,31 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: m_LocalRotation.x
+      value: -.707106829
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_LocalRotation.w
+      value: .707106829
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: InitialModule.maxNumParticles
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: VelocityModule.z.scalar
+      value: .200000003
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 180994}

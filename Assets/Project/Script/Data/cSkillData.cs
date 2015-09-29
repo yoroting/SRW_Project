@@ -18,6 +18,10 @@ public enum _SKILLTAG
 	_BOW		= 9,	// 拉弓攻擊
 	_NOACT		= 10,	// 無表演直接算傷害
 	_CROSS		= 11,	// 穿過
+	_AOEMISSILE = 12,   // 擴散飛彈
+	_DANCEKILL  = 13,   // 亂舞殺
+	_GHOSTKILL  = 14,   // 瞬獄殺
+
 	// TAG for mob ai check
 	_TIEUP 		= 100,	//牽制
 };

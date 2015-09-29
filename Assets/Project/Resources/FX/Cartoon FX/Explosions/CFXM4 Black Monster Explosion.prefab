@@ -189,7 +189,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 3
     startSpeed:
-      scalar: 10
+      scalar: 5
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -306,7 +306,7 @@ ParticleSystem:
         rgba: 4278190080
       minMaxState: 0
     startSize:
-      scalar: .200000003
+      scalar: .100000001
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -351,19 +351,19 @@ ParticleSystem:
         m_PreInfinity: 2
         m_PostInfinity: 2
       minMaxState: 3
-    gravityModifier: 2.5
+    gravityModifier: 1.25
     inheritVelocity: 0
     maxNumParticles: 70
   ShapeModule:
     serializedVersion: 2
     enabled: 1
     type: 4
-    radius: .200000003
+    radius: .100000001
     angle: 50
     length: 5
-    boxX: 1
-    boxY: 1
-    boxZ: 1
+    boxX: .5
+    boxY: .5
+    boxZ: .5
     arc: 360
     placementMode: 2
     m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
@@ -626,7 +626,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 3
     y:
-      scalar: 2
+      scalar: 1
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1152,7 +1152,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 3
     startSpeed:
-      scalar: 6
+      scalar: 3
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1269,7 +1269,7 @@ ParticleSystem:
         rgba: 4278190080
       minMaxState: 0
     startSize:
-      scalar: .800000012
+      scalar: .400000006
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1314,19 +1314,19 @@ ParticleSystem:
         m_PreInfinity: 2
         m_PostInfinity: 2
       minMaxState: 3
-    gravityModifier: 2
+    gravityModifier: 1
     inheritVelocity: 0
     maxNumParticles: 40
   ShapeModule:
     serializedVersion: 2
     enabled: 1
     type: 4
-    radius: .200000003
+    radius: .100000001
     angle: 50
     length: 5
-    boxX: 1
-    boxY: 1
-    boxZ: 1
+    boxX: .5
+    boxY: .5
+    boxZ: .5
     arc: 360
     placementMode: 2
     m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
@@ -1589,7 +1589,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 3
     y:
-      scalar: 2
+      scalar: 1
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2115,7 +2115,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 3
     startSpeed:
-      scalar: 12
+      scalar: 6
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2232,7 +2232,7 @@ ParticleSystem:
         rgba: 1174405120
       minMaxState: 2
     startSize:
-      scalar: .100000001
+      scalar: .0500000007
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2284,12 +2284,12 @@ ParticleSystem:
     serializedVersion: 2
     enabled: 1
     type: 3
-    radius: .200000003
+    radius: .100000001
     angle: 1
     length: 5
-    boxX: 1
-    boxY: 1
-    boxZ: 1
+    boxX: .5
+    boxY: .5
+    boxZ: .5
     arc: 360
     placementMode: 2
     m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
@@ -2717,7 +2717,7 @@ ParticleSystem:
   ClampVelocityModule:
     enabled: 1
     x:
-      scalar: 1
+      scalar: .5
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2750,7 +2750,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 0
     y:
-      scalar: 1
+      scalar: .5
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2783,7 +2783,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 0
     z:
-      scalar: 1
+      scalar: .5
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2816,7 +2816,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 0
     magnitude:
-      scalar: 15
+      scalar: 7.5
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -3088,7 +3088,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 3
     startSpeed:
-      scalar: 1
+      scalar: .5
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -3205,7 +3205,7 @@ ParticleSystem:
         rgba: 2360389808
       minMaxState: 1
     startSize:
-      scalar: 1
+      scalar: .5
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -3257,12 +3257,12 @@ ParticleSystem:
     serializedVersion: 2
     enabled: 1
     type: 2
-    radius: .300000012
+    radius: .150000006
     angle: 55
     length: 5
-    boxX: 1
-    boxY: 1
-    boxZ: 1
+    boxX: .5
+    boxY: .5
+    boxZ: .5
     arc: 360
     placementMode: 0
     m_Mesh: {fileID: 0}
@@ -3700,7 +3700,7 @@ ParticleSystem:
   ClampVelocityModule:
     enabled: 1
     x:
-      scalar: 20
+      scalar: 10
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -3733,7 +3733,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 1
     y:
-      scalar: 2
+      scalar: 1
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -3766,7 +3766,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 1
     z:
-      scalar: 20
+      scalar: 10
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -3799,7 +3799,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 1
     magnitude:
-      scalar: 20
+      scalar: 10
       maxCurve:
         serializedVersion: 2
         m_Curve:

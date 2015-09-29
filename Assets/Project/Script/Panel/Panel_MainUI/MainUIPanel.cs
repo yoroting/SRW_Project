@@ -51,7 +51,6 @@ public class MainUIPanel : BasicPanel {
 			MyTool.fScnRatio = (float)mRoot.activeHeight / Screen.height;
 		}
 
-
 	}
 
 	// set up startup 

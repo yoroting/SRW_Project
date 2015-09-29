@@ -139,14 +139,14 @@ public class Panel_StageUI : MonoBehaviour
     void Start()
     {
 
-        long tick = System.DateTime.Now.Ticks;
+  //      long tick = System.DateTime.Now.Ticks;
 
         System.GC.Collect();			// Free memory resource here
 
         // create pool
         CreateAllDataPool();
 
-        Debug.Log("stage srart loding");
+   //     Debug.Log("stage srart loding");
 
         // loading panel
         //	PanelManager.Instance.OpenUI( "Panel_Loading");
@@ -156,7 +156,7 @@ public class Panel_StageUI : MonoBehaviour
         // clear data
         Clear();
 
-        Debug.Log("stageloding:clearall");
+ //       Debug.Log("stageloding:clearall");
         // load const data
         StageData = ConstDataManager.Instance.GetRow<STAGE_DATA>(GameDataManager.Instance.nStageID);
         if (StageData == null)
@@ -189,7 +189,7 @@ public class Panel_StageUI : MonoBehaviour
 			}
 		}
 		
-		Debug.Log("stageloding:create event Pool complete");
+//		Debug.Log("stageloding:create event Pool complete");
 		
 		GameDataManager.Instance.SetBGMPhase( 0 );
 		//GameDataManager.Instance.nPlayerBGM = StageData.n_PLAYER_BGM ;   //我方
@@ -216,8 +216,8 @@ public class Panel_StageUI : MonoBehaviour
 
         bIsLoading = false;		// debug mode no coror to close loading
 
-        long during = System.DateTime.Now.Ticks - tick;
-        Debug.Log("stage srart loding complete. total ticket:" + during);
+  //      long during = System.DateTime.Now.Ticks - tick;
+  //      Debug.Log("stage srart loding complete. total ticket:" + during);
     }
 
 
@@ -591,9 +591,9 @@ public class Panel_StageUI : MonoBehaviour
 		UnitCell unit = go.GetComponent<UnitCell>() ;
 		if( unit != null ){
 		
-			string str = string.Format( "CellOnClick( {0},{1}) " , unit.X() , unit.Y() );
+	//		string str = string.Format( "CellOnClick( {0},{1}) " , unit.X() , unit.Y() );
+	//		Debug.Log(str);
 			string sKey =	unit.Loc.GetKey();
-			Debug.Log(str);
 			bool bIsAtkCell = OverCellAtkPool.ContainsKey( sKey );
 			bool bIsOverCell = OverCellPool.ContainsKey( sKey );
 
@@ -691,20 +691,7 @@ public class Panel_StageUI : MonoBehaviour
 		}
 	}
 
-	// give up this month now
-	void OnCellPress(GameObject go ,bool pressed)
-	{
-		if (pressed == false) {
-			Debug.Log( "cell gree press");
-			// if cast skill
-			if (cCMD.Instance.nSkillID > 0) {
-				//do cast cmd
-				Debug.LogFormat ("cast out skill {0}", cCMD.Instance.nSkillID);
-			}
-		} else {
-			Debug.Log( "cell  press");
-		}
-	}
+
 
 	void OnUnitClick(GameObject go)
 	{
@@ -756,8 +743,12 @@ public class Panel_StageUI : MonoBehaviour
 		if (cCMD.Instance.eCMDSTATUS == _CMD_STATUS._NONE  ) {
 			//GameObject obj = PanelManager.Instance.OpenUI (Panel_CMDUnitUI.Name);
 			//CloseCMDUI();
-
-			Panel_CMDUnitUI panel = Panel_CMDUnitUI.OpenCMDUI( _CMD_TYPE._ALLY , unit );
+			if( unit.CanDoCmd()  ){
+				Panel_CMDUnitUI panel = Panel_CMDUnitUI.OpenCMDUI( _CMD_TYPE._ALLY , unit ); // player
+			}
+			else{
+				Panel_CMDUnitUI panel = Panel_CMDUnitUI.OpenCMDUI( _CMD_TYPE._ENEMY , unit );
+			}
 			CreateMoveOverEffect (unit);
 			return;
 		}
@@ -769,7 +760,12 @@ public class Panel_StageUI : MonoBehaviour
 			}
 			else{
 				Panel_CMDUnitUI.CloseCMDUI();
-				Panel_CMDUnitUI panel = Panel_CMDUnitUI.OpenCMDUI( _CMD_TYPE._ALLY , unit );			
+				if( unit.CanDoCmd()  ){
+					Panel_CMDUnitUI panel = Panel_CMDUnitUI.OpenCMDUI( _CMD_TYPE._ALLY , unit ); // player
+				}
+				else{
+					Panel_CMDUnitUI panel = Panel_CMDUnitUI.OpenCMDUI( _CMD_TYPE._ENEMY , unit );
+				}		
 				CreateMoveOverEffect (unit);
 			}
 			return ;
@@ -780,7 +776,7 @@ public class Panel_StageUI : MonoBehaviour
 		//		panel.CancelCmd();
 			//GameObject obj = PanelManager.Instance.OpenUI (Panel_CMDUnitUI.Name);
 			string sKey = unit.Loc.GetKey ();
-			Debug.Log( "OnCharClick" + sKey + ";Ident"+unit.Ident() ); 
+	//		Debug.Log( "OnCharClick" + sKey + ";Ident"+unit.Ident() ); 
 
 			// check target is vaild
 			bool bInAtkCell = OverCellAtkPool.ContainsKey (sKey);
@@ -817,7 +813,7 @@ public class Panel_StageUI : MonoBehaviour
 		if( unit == null )
 			return ;
 		string sKey = unit.Loc.GetKey ();
-		Debug.Log( "OnMobClick" + sKey + ";Ident"+unit.Ident() ); 
+//		Debug.Log( "OnMobClick" + sKey + ";Ident"+unit.Ident() ); 
 
 		bool bInAtkCell = OverCellAtkPool.ContainsKey (sKey);
 
@@ -1216,7 +1212,7 @@ public class Panel_StageUI : MonoBehaviour
 	//	List<iVec2> final = Panel_StageUI.Instance.Grids.FilterZocPool (unit.Loc, ref moveList, ref posList);
 	//	moveList = final;
 
-		long  tick =  System.DateTime.Now.Ticks; 
+//		long  tick =  System.DateTime.Now.Ticks; 
 
 		// start create over eff
 		foreach( iVec2 v in moveList )
@@ -1248,9 +1244,9 @@ public class Panel_StageUI : MonoBehaviour
 			}
 		}
 
-		long  during =  System.DateTime.Now.Ticks - tick ; 
+//		long  during =  System.DateTime.Now.Ticks - tick ; 
 
-		Debug.Log( "create moveeffect cell with ticket:" + during );
+//		Debug.Log( "create moveeffect cell with ticket:" + during );
 	}
 
 	public void CreateAttackOverEffect( Panel_unit unit , int nRange=1)
@@ -2103,12 +2099,8 @@ public class Panel_StageUI : MonoBehaviour
 		if (cCMD.Instance.eNEXTCMDTYPE == _CMD_TYPE._WAITATK || 
 		    cCMD.Instance.eNEXTCMDTYPE == _CMD_TYPE._WAITMOVE )
 		{
-
-			cCMD.Instance.eCMDTYPE = cCMD.Instance.eNEXTCMDTYPE;
-			cCMD.Instance.eNEXTCMDTYPE = _CMD_TYPE._SYS;
-
-			Panel_CMDUnitUI.OpenCMDUI( cCMD.Instance.eCMDTYPE , null );
-			//GameObject go = PanelManager.Instance.OpenUI( Panel_CMDUnitUI.Name ); // only open UI. don't change other param
+			Panel_CMDUnitUI.NextCMDUI(  );// only open UI. don't change other param
+			//GameObject go = PanelManager.Instance.OpenUI( Panel_CMDUnitUI.Name ); 
 
 			return  true;
 		}	
@@ -2260,7 +2252,7 @@ public class Panel_StageUI : MonoBehaviour
 			// pull		
 			vDir *= -1;
 		}
-
+		//nDist += 3; // for debug
 		int d = Mathf.Abs( nDist  ) ;
 		iVec2 vFinal = new iVec2( Defer.Loc );
 		for( int i= 0 ; i < d ; i++ )
@@ -2586,7 +2578,7 @@ public class Panel_StageUI : MonoBehaviour
 
 		// clear data
 		Clear();						// 
-		Debug.Log("stagerestore :clearall");
+//		Debug.Log("stagerestore :clearall");
 		
 		if (save.ePhase == _SAVE_PHASE._MAINTEN) {
 			// restore to mainten ui
@@ -2645,7 +2637,7 @@ public class Panel_StageUI : MonoBehaviour
 			}
 		}
 		
-		Debug.Log("stageloding:create event Pool complete");
+//		Debug.Log("stageloding:create event Pool complete");
 
 
 		GameDataManager.Instance.SetBGMPhase( 0 );
@@ -2671,7 +2663,7 @@ public class Panel_StageUI : MonoBehaviour
 			if (obj != null) {		
 				// normal create
 			} else {
-				Debug.Log (string.Format ("RestoreBySaveData PopUnit Fail with char({0}) )",pair.Value.n_CharID  )  );			
+				Debug.LogErrorFormat ("RestoreBySaveData PopUnit Fail with char({0}) )",pair.Value.n_CharID  )  ;			
 			}
 		}
 //		foreach( cUnitSaveData s in save.CharPool )

@@ -405,7 +405,7 @@ public partial class ActionManager
 						case cHitResult._TYPE._CASTOUT: // cast out
 						{
 							// Add FX effect 
-							pUnit.ShowSkillFX( res.Value1 , res.Value2, res.Value3 , res.Value4   );
+							pUnit.ShowSkillCastOutFX( res.Value1 , res.Value2, res.Value3 , res.Value4   );
 						//	BattleManager.Instance.ShowBattleFX( res.Ident , "CFXM4 Hit B (Orange, CFX Blend)"  );
 						
 						}break;		
@@ -498,6 +498,14 @@ public partial class ActionManager
 								pUnit.pUnitData.AddCp (res.Value1   );
 							}							
 						}break;
+						case cHitResult._TYPE._ACTTIME:{
+							//pUnit.ShowValueEffect( res.Value1 , 0 ); // SP
+							if( res.Value1 != 0 ) // maybe change data in  battle manage
+							{
+								pUnit.pUnitData.AddActionTime (res.Value1   );
+							}							
+						}break;
+
 						case cHitResult._TYPE._ADDBUFF: // add buff
 						{
 							if( res.Value1 != 0 ) // maybe change data in  battle manage

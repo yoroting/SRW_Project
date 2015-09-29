@@ -76,7 +76,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 157696}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: .124999978, z: -.0250000656}
+  m_LocalPosition: {x: 0, y: .0624999888, z: -.0125000328}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 466730}
@@ -115,7 +115,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 141014}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: .0125000002}
+  m_LocalPosition: {x: 0, y: 0, z: .00625000009}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 466730}
@@ -126,7 +126,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 175020}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b11907cc8c1ba9349af74c7c9bdc3e79, type: 3}
   m_Name: 
@@ -309,7 +309,7 @@ ParticleSystem:
         rgba: 4278255615
       minMaxState: 0
     startSize:
-      scalar: .25
+      scalar: .125
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2465,7 +2465,7 @@ ParticleSystem:
         rgba: 4284612352
       minMaxState: 0
     startSize:
-      scalar: .25
+      scalar: .125
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -3503,7 +3503,7 @@ ParticleSystem:
         rgba: 4278255615
       minMaxState: 0
     startSize:
-      scalar: .25
+      scalar: .125
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -4536,6 +4536,10 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: InitialModule.startColor.maxColor.rgba
       value: 4284809215
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

@@ -156,7 +156,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 119696}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b11907cc8c1ba9349af74c7c9bdc3e79, type: 3}
   m_Name: 
@@ -212,7 +212,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 0
     startSpeed:
-      scalar: .125
+      scalar: .140625
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -339,7 +339,7 @@ ParticleSystem:
         rgba: 4278237695
       minMaxState: 0
     startSize:
-      scalar: .25
+      scalar: .28125
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -411,12 +411,12 @@ ParticleSystem:
     serializedVersion: 2
     enabled: 1
     type: 0
-    radius: .5
+    radius: .5625
     angle: 25
     length: 5
-    boxX: .25
-    boxY: .25
-    boxZ: .25
+    boxX: .28125
+    boxY: .28125
+    boxZ: .28125
     arc: 360
     placementMode: 0
     m_Mesh: {fileID: 0}
@@ -691,7 +691,7 @@ ParticleSystem:
   VelocityModule:
     enabled: 1
     x:
-      scalar: 1.75
+      scalar: 1.96875
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -724,7 +724,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 2
     y:
-      scalar: 1.75
+      scalar: 1.96875
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -757,7 +757,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 2
     z:
-      scalar: 1.75
+      scalar: 1.96875
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1280,7 +1280,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 0
     startSpeed:
-      scalar: .125
+      scalar: .140625
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1407,7 +1407,7 @@ ParticleSystem:
         rgba: 4278237695
       minMaxState: 0
     startSize:
-      scalar: .25
+      scalar: .28125
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1479,12 +1479,12 @@ ParticleSystem:
     serializedVersion: 2
     enabled: 1
     type: 0
-    radius: .25
+    radius: .28125
     angle: 25
     length: 5
-    boxX: .25
-    boxY: .25
-    boxZ: .25
+    boxX: .28125
+    boxY: .28125
+    boxZ: .28125
     arc: 360
     placementMode: 0
     m_Mesh: {fileID: 0}
@@ -1759,7 +1759,7 @@ ParticleSystem:
   VelocityModule:
     enabled: 1
     x:
-      scalar: 1.25
+      scalar: 1.40625
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1792,7 +1792,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 2
     y:
-      scalar: 1.25
+      scalar: 1.40625
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1825,7 +1825,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 2
     z:
-      scalar: 1.25
+      scalar: 1.40625
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2475,7 +2475,7 @@ ParticleSystem:
         rgba: 4278255474
       minMaxState: 0
     startSize:
-      scalar: .25
+      scalar: .28125
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -3523,7 +3523,7 @@ ParticleSystem:
         rgba: 4278237695
       minMaxState: 0
     startSize:
-      scalar: .25
+      scalar: .28125
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -4561,7 +4561,7 @@ ParticleSystem:
         rgba: 4278255474
       minMaxState: 0
     startSize:
-      scalar: .25
+      scalar: .28125
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -5618,7 +5618,51 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 8a1873e9c3208ba4f81721a3a5ae2958, type: 3}
+    - target: {fileID: 0}
+      propertyPath: Mute
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: spreadCustomCurve.m_Curve.Array.data[0].value
+      value: .483333319
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ShapeModule.radius
+      value: .5625
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ShapeModule.boxX
+      value: .28125
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ShapeModule.boxY
+      value: .28125
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ShapeModule.boxZ
+      value: .28125
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: VelocityModule.x.scalar
+      value: 1.96875
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: VelocityModule.y.scalar
+      value: 1.96875
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: VelocityModule.z.scalar
+      value: 1.96875
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 119696}

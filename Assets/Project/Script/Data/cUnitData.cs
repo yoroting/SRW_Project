@@ -860,6 +860,16 @@ public class cUnitData{
 
 		return nOldItemID;
 	}
+	public bool CheckItemEquiped( int nItemID ){
+
+		foreach (int id in Items) {
+			if( id == nItemID ){
+				return true;
+			}
+		}
+		return false;
+	}
+
 
 	public void AddExp( int nExp )
 	{

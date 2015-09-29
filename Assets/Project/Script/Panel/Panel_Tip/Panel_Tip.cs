@@ -4,9 +4,21 @@ using System.Collections;
 public class Panel_Tip : MonoBehaviour {
 
 	public const string Name = "Panel_Tip";
-	public int nTipType;
 
-	public int nTipID;
+	public enum _TIPTYPE{
+		_NONE,
+		_SYS,
+		_UI,
+		_SKILL,
+		_BUFF,
+		_ITEM
+
+	};
+
+
+	public static  _TIPTYPE nTipType = _TIPTYPE._NONE;
+
+	public static int nTipID=0;
 
 	public GameObject spBG;
 	public GameObject lblTitle;
@@ -24,6 +36,8 @@ public class Panel_Tip : MonoBehaviour {
 
 	static public void CloseUI(  )
 	{
+		nTipType = _TIPTYPE._NONE;
+		nTipID = 0;
 		if (PanelManager.Instance != null) {
 			PanelManager.Instance.CloseUI (Name);
 		}
@@ -51,6 +65,12 @@ public class Panel_Tip : MonoBehaviour {
 
 	static public void OpenBuffTip( int nBuffID )
 	{
+		if (nBuffID == nTipID  && nTipType == _TIPTYPE._BUFF ) {
+			CloseUI();
+			return ;
+		}
+
+
 		string nBuffName = MyTool.GetBuffName ( nBuffID );
 		
 		string sTip = "";
@@ -65,13 +85,19 @@ public class Panel_Tip : MonoBehaviour {
 			sTip += "\n(ID:"+nBuffID.ToString() +")";
 		}
 
+		nTipType = _TIPTYPE._BUFF;
+		nTipID = nBuffID ;
+
 		Panel_Tip.OpenUI( nBuffName , sTip );
 
 	}
 	static public void OpenSkillTip( int nSkillID )
 	{
 		//Panel_Tip.OpenUI( MyTool.GetSkillName( obj.nID )   ); 
-
+		if (nSkillID == nTipID  && nTipType == _TIPTYPE._SKILL ) {
+			CloseUI();
+			return ;
+		}
 
 		string nSkillName = MyTool.GetSkillName( nSkillID );
 		
@@ -86,12 +112,18 @@ public class Panel_Tip : MonoBehaviour {
 			
 			sTip += "\n(ID:"+nSkillID.ToString() +")";
 		}
+		nTipType = _TIPTYPE._SKILL;
+		nTipID   = nSkillID;
+
 		Panel_Tip.OpenUI( nSkillName , sTip );
 	}
 	static public void OpenItemTip( int nItemID )
 	{
 		//Panel_Tip.OpenUI( MyTool.GetSkillName( obj.nID )   ); 
-		
+		if (nItemID == nTipID  && nTipType == _TIPTYPE._ITEM ) {
+			CloseUI();
+			return ;
+		}
 		
 		string nItemName = MyTool.GetItemName ( nItemID ); 
 		
@@ -107,13 +139,16 @@ public class Panel_Tip : MonoBehaviour {
 			sTip += "\n(ID:"+nItemID.ToString() +")";
 		}
 
+		nTipType = _TIPTYPE._ITEM;
+		nTipID   = nItemID;
+
 		Panel_Tip.OpenUI( nItemName , sTip );
 	}
 	// close
 	void OnClick( GameObject go )
 	{
-
-		PanelManager.Instance.CloseUI ( Name );
+		CloseUI ();
+		//PanelManager.Instance.CloseUI ( Name );
 	}
 
 }

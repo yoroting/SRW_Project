@@ -59,7 +59,7 @@ public class cEffect
 public class ADDBUFF_I: cEffect
 {
 	public ADDBUFF_I( int buffid ){		iValue = buffid;	}
-	public int iValue ;
+	//public int iValue ;
 	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){
 		if (Atker != null) {
 		
@@ -71,7 +71,7 @@ public class ADDBUFF_I: cEffect
 public class ADDBUFF_E: cEffect
 {
 	public ADDBUFF_E( int buffid ){		iValue = buffid;;	}
-	public int iValue ;
+//	public int iValue ;
 	
 	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 
 		if (Defer != null) {
@@ -85,11 +85,40 @@ public class ADDBUFF_E: cEffect
 	}
 }
 
+public class ADDACTTIME_I: cEffect
+{
+	public ADDACTTIME_I( int time ){		iValue = time;	}
+	//public int iValue ;
+	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){
+		if (Atker != null) {
+			
+			int nDefId = 0;			if( Defer != null )nDefId = Defer.n_Ident;
+			list.Add( new cHitResult( cHitResult._TYPE._ACTTIME , Atker.n_Ident , iValue , Atker.n_Ident, nSkillID ,nDefId  ) );
+		}
+	}
+}
+public class ADDACTTIME_E: cEffect
+{
+	public ADDACTTIME_E( int time ){		iValue = time;;	}
+	//public int iValue ;
+	
+	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 
+		if (Defer != null) {
+			if( Defer.IsStates( _FIGHTSTATE._DODGE ) )
+				return ;
+			
+			//	list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF ,Defer.n_Ident , nBuffID ) );
+			int nAtkId = 0;			if( Atker != null )nAtkId = Atker.n_Ident;
+			list.Add( new cHitResult( cHitResult._TYPE._ACTTIME , Defer.n_Ident , iValue, nAtkId , nSkillID , Defer.n_Ident  ) );
+		}
+	}
+}
+
 // Hit effect
 public class HITBUFF_I: cEffect
 {
 	public HITBUFF_I( int buffid ){		iValue = buffid;	}
-	public int iValue ;
+	//public int iValue ;
 	override public void _Hit( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){
 		if (Atker != null) {
 			// ( int nBuffID , int nCastIdent , int nSkillID  , int nTargetId )
@@ -753,6 +782,66 @@ public class  cEffectCondition
 					return   false;		//  fail
 				}
 			}
+			if( func.sFunc == "POW_I"  )
+			{
+				int i1 = data_I.GetPow();
+				int i2 = 0;
+
+
+				string s1 = func.S( 1 );  // s1 
+				if( s1 == "E" ){
+					if( data_E != null ){
+						i2 = data_E.GetPow();
+					}else{
+						return false; // no enemy is false
+					}
+				}
+				else if( s1 == "I" ){
+					if( data_I != null ){
+						i2 = data_I.GetPow();
+					}else{
+						return false; // no enemy is false
+					}
+				}
+				else{
+					i2 = func.I( 1 );
+				}
+				//
+				if( MyScript.Instance.ConditionInt( i1 , func.S(0) ,i2  ) == false  ){
+					return   false;		// always fail
+				}
+
+			}
+			else if( func.sFunc == "POW_E"  )
+			{
+				int i1 = data_E.GetPow();
+				int i2 = 0;
+				
+				
+				string s1 = func.S( 1 );  // s1 
+				if( s1 == "E" ){
+					if( data_E != null ){
+						i2 = data_E.GetPow();
+					}else{
+						return false; // no enemy is false
+					}
+				}
+				else if( s1 == "I" ){
+					if( data_I != null ){
+						i2 = data_I.GetPow();
+					}else{
+						return false; // no enemy is false
+					}
+				}
+				else{
+					i2 = func.I( 1 );
+				}
+				//
+				if( MyScript.Instance.ConditionInt( i1 , func.S(0) ,i2  ) == false  ){
+					return   false;		// always fail
+				}
+
+			}
 			else if( func.sFunc == "MAR_I"  )
 			{
 				float f1 = data_I.GetMar();
@@ -937,8 +1026,14 @@ public class  cEffectCondition
 				//
 				if( MyScript.Instance.ConditionInt( i1 , func.S(0) ,i2  ) == false  ){
 					return   false;		// always fail
+				}				
+			}
+			else if( func.sFunc == "ITEM_I"  )
+			{
+				int nItemID = func.I(0);
+				if( data_I.CheckItemEquiped( nItemID ) == false ){
+					return false;
 				}
-				
 			}
 			// Fight stat check
 			else if( func.sFunc == "FST_ATKER"  )

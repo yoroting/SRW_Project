@@ -185,11 +185,11 @@ public class Panel_CMDUnitUI : MonoBehaviour
 			{
 				//NGUITools.AddChild( NGuiGrids.transform , obj );
 
-				obj.name = MyTool.GetCMDNameByID( id );
+				obj.name = id.ToString();
 				UILabel lbl = obj.GetComponentInChildren<UILabel> ();
 				if( lbl != null )
 				{
-					lbl.text = obj.name ;
+					lbl.text =  MyTool.GetCMDNameByID( id );
 					// Load Label by const data
 				}
 				UIEventListener.Get(obj).onClick += OnCMDButtonClick;
@@ -213,7 +213,10 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
 		// show sample info
 		if (pCmder != null) {
-			Panel_MiniUnitInfo.OpenUI (pCmder.pUnitData );
+			Panel_MiniUnitInfo.OpenUI (pCmder.pUnitData);
+		}
+		else {
+			Panel_MiniUnitInfo.CloseUI();
 		}
 	}
 
@@ -430,20 +433,32 @@ public class Panel_CMDUnitUI : MonoBehaviour
 			//Panel_StageUI.Instance.SynGridToLocalPos( pCmder.gameObject , CMD.nOrgGridX , CMD.nOrgGridY );
 			pCmder.SetXY(  CMD.nOrgGridX , CMD.nOrgGridY  );
 			Panel_StageUI.Instance.CreateMoveOverEffect ( pCmder );
+			Panel_StageUI.Instance.MoveToGameObj (pCmder.gameObject ,false , 0.2f );
 		}
 		CMD.eCMDSTATUS  = _CMD_STATUS._WAIT_CMDID;
 		CMD.eCMDTYPE 	= _CMD_TYPE._ALLY; // only ally can restore
 		CMD.eCMDID = _CMD_ID._NONE;
 		CMD.eCMDTARGET = _CMD_TARGET._ALL;
 
-		// reopen for build cmd list
-		OpenCMDUI ( CMD.eCMDTYPE , null );
+		// reopen for build cmd list .// don't change param
+		ReOpenCMDUI ( CMD.eCMDTYPE );
 
 		//PanelManager.Instance.CloseUI( Name );
 		//PanelManager.Instance.OpenUI( Name );
 		//CreateCMDList ( cCMD.Instance.eCMDTYPE );
-		Panel_StageUI.Instance.MoveToGameObj (pCmder.gameObject ,false , 0.2f );
+
 	}
+
+
+	static public void NextCMDUI()
+	{
+		cCMD.Instance.eCMDTYPE = cCMD.Instance.eNEXTCMDTYPE;
+		cCMD.Instance.eNEXTCMDTYPE = _CMD_TYPE._SYS;
+		// only open UI. don't change other param
+		ReOpenCMDUI ( cCMD.Instance.eCMDTYPE );
+
+	}
+
 	// pre
 	public void SetCmder( Panel_unit unit )
 	{
@@ -887,16 +902,14 @@ public class Panel_CMDUnitUI : MonoBehaviour
 			return panel;
 		}
 
+		panel.SetCmder (cmder);
 		// if cmder is change
 		if (cmder != null) {
-			panel.SetCmder (cmder);
-
 			Panel_StageUI.Instance.MoveToGameObj( cmder.gameObject );
 
-			// show sample info
-			if (cmder != null) {
-				Panel_MiniUnitInfo.OpenUI ( cmder.pUnitData );
-			}
+			// show sample info // create cmd list will pop mini info
+			//Panel_MiniUnitInfo.OpenUI ( cmder.pUnitData );
+
 			//Panel_StageUI.Instance.TraceUnit( cmder );
 		}
 		panel.SetAttacker (TarIdent);
@@ -908,6 +921,22 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		//}
 
 
+		return panel;
+	}
+	// open ui only and keep original param
+	public static Panel_CMDUnitUI ReOpenCMDUI( _CMD_TYPE type )
+	{
+		cCMD.Instance.eCMDTYPE = type; 
+		Panel_CMDUnitUI panel = MyTool.GetPanel<Panel_CMDUnitUI> ( PanelManager.Instance.OpenUI (Panel_CMDUnitUI.Name) );
+		if( panel == null )
+		{
+			return panel;
+		}
+		
+		cCMD.Instance.eCMDSTATUS = _CMD_STATUS._WAIT_CMDID;
+		
+		panel.CreateCMDList (type);	
+		
 		return panel;
 	}
 

@@ -52,6 +52,7 @@ public class Panel_Cheat : MonoBehaviour {
 	public GameObject Item1Addobj;
 	public GameObject Item1Delobj;
 
+	public GameObject ReactBtn;           // God Mode
 	// Use this for initialization
 	void Start () {
 	
@@ -88,7 +89,12 @@ public class Panel_Cheat : MonoBehaviour {
 
 		UIEventListener.Get(Item1Addobj).onClick += OnAddItem1Click; 
 		UIEventListener.Get(Item1Delobj).onClick += OnDelItem1Click; 
+
+
+		UIEventListener.Get(ReactBtn).onClick += OnReActClick; 
+
 	}
+
 	
 	// Update is called once per frame
 	void Update () {
@@ -351,6 +357,10 @@ public class Panel_Cheat : MonoBehaviour {
 		}
 	}
 
+	void OnReActClick(GameObject go)
+	{
+		pData.AddActionTime (1);
+	}
 
 }
 

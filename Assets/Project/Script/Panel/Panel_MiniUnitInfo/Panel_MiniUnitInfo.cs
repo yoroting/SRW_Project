@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Panel_MiniUnitInfo : MonoBehaviour {
 
@@ -8,6 +9,8 @@ public class Panel_MiniUnitInfo : MonoBehaviour {
 	public GameObject lblMar;
 	public GameObject lblCP;
 	public GameObject lblHP;
+
+	public GameObject BuffGrid;
 	// Buff List
 
 	// open info by identify
@@ -59,5 +62,34 @@ public class Panel_MiniUnitInfo : MonoBehaviour {
 		MyTool.SetLabelInt (lblMar, (int)pUnitData.GetMar ());
 		MyTool.SetLabelInt (lblCP, pUnitData.n_CP );
 		MyTool.SetLabelInt (lblHP, pUnitData.n_HP );
+
+		// set buff 
+		MyTool.DestoryGridItem ( BuffGrid );
+		
+		foreach ( KeyValuePair< int , cBuffData > pair in pUnitData.Buffs.Pool ) {
+			if( pair.Value.nTime == 0 ) // never 0  ( 被動能力 buff)
+				continue;
+			if( pair.Value.tableData.n_HIDE > 0 )
+				continue;
+			
+			GameObject go = ResourcesManager.CreatePrefabGameObj( BuffGrid , "Prefab/Bufficon" ); 
+			if( go == null )
+				continue;		
+			
+			BuffIcon icon = go.GetComponent< BuffIcon >();
+			if( icon != null )
+				icon.SetBuffData( pair.Value.nID , pair.Value.nNum  );
+			//	UIEventListener.Get(go).onClick += OnBuffClick; // 
+		}
+		//==============
+		UIGrid grid = BuffGrid.GetComponent<UIGrid > ();
+		if (grid != null) {
+			grid.repositionNow = true ;
+			grid.Reposition();
+		}
+
+
 	}
+
+
 }

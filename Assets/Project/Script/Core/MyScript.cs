@@ -902,14 +902,14 @@ public class MyScript {
 				else if( func.sFunc  == "HITSP_I") {
 					pool.Add( new HITSP_I( func.I(0)) );
 				}
-				else if( func.sFunc  == "HITCP_I") {
-					pool.Add( new HITCP_I( func.I(0) ) );
-				}
 				else if( func.sFunc  == "HITSP_E") {
 					pool.Add( new HITSP_E( func.I(0) ) );
 				}
-				else if( func.sFunc  == "HITCP_E") {
+				else if( func.sFunc  == "HITCP_I") {
 					pool.Add( new HITCP_I( func.I(0) ) );
+				}
+				else if( func.sFunc  == "HITCP_E") {
+					pool.Add( new HITCP_E( func.I(0) ) );
 				}
 
 
@@ -944,6 +944,12 @@ public class MyScript {
 				}
 				else if( func.sFunc  == "ADDCP_E") {
 					pool.Add( new ADDCP_I( func.I(0) ) );
+				}
+				else if( func.sFunc  == "ADDACTTIME_I") {
+					pool.Add( new ADDACTTIME_I( func.I(0) ) );
+				}
+				else if( func.sFunc  == "ADDACTTIME_E") {
+					pool.Add( new ADDACTTIME_E( func.I(0) ) );
 				}
 
 				// Attr

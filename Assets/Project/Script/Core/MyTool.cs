@@ -558,6 +558,20 @@ public class MyTool {
 	// Get CmdID key name
 	public static string GetCMDNameByID( _CMD_ID eID )
 	{
+		int nID = (int)eID;
+	//	if (ConstDataManager.Instance != null ) {
+			DataRow row = ConstDataManager.Instance.GetRow("UI_MESSAGE", nID); 	
+			/// if(row != null)	
+			///		Debug.Log(row.Field<string>("s_UI_WORDS"));
+			/// 
+		//	DataRow row = ConstDataManager.Instance.GetRow<DataRow> ("UI_MESSAGE", nID);
+			if (row != null) {
+				string s = row.Field< string > ("s_UI_WORDS");
+				if (s != null) {
+					return s;
+				}
+			}
+	//	}
 		return eID.ToString ();
 	}
 	public static _CMD_ID GetCMDIDByName( string name )

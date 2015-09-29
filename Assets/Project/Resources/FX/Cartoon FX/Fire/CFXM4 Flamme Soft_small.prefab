@@ -10,7 +10,7 @@ GameObject:
   - 4: {fileID: 400002}
   - 198: {fileID: 19800000}
   - 199: {fileID: 19900000}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: CFXM4 Sparkles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -25,10 +25,11 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 400004}
+  - 114: {fileID: 11400002}
   - 198: {fileID: 19800002}
   - 199: {fileID: 19900002}
-  - 114: {fileID: 11471684}
-  m_Layer: 8
+  - 114: {fileID: 11490198}
+  m_Layer: 0
   m_Name: CFXM4 Flamme Soft_small
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -42,7 +43,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: .400000006}
+  m_LocalPosition: {x: 0, y: 0, z: .200000003}
   m_LocalScale: {x: 1, y: 1, z: .5}
   m_Children: []
   m_Father: {fileID: 400004}
@@ -53,14 +54,30 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100004}
-  m_LocalRotation: {x: -.382683486, y: 0, z: 0, w: .923879564}
+  m_LocalRotation: {x: -.707106829, y: 0, z: 0, w: .707106829}
   m_LocalPosition: {x: 0, y: .5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400002}
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!114 &11471684
+--- !u!114 &11400002
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100004}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79c859f5f7a87c8438b7a5e91d7f499e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Locked: 1
+  Title: 'Cartoon FX 4 : Special Shader'
+  HelpText: This effect uses Cartoon FX 4's special shader to make it look great over
+    any kind of background color, including very bright backgrounds!
+  MsgType: 1
+--- !u!114 &11490198
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -229,7 +246,7 @@ ParticleSystem:
         rgba: 2365608191
       minMaxState: 2
     startSize:
-      scalar: .300000012
+      scalar: .150000006
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -281,12 +298,12 @@ ParticleSystem:
     serializedVersion: 2
     enabled: 1
     type: 0
-    radius: .449999988
+    radius: .224999994
     angle: 1
     length: 5
-    boxX: 1
-    boxY: 1
-    boxZ: 1
+    boxX: .5
+    boxY: .5
+    boxZ: .5
     arc: 360
     placementMode: 2
     m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
@@ -536,7 +553,7 @@ ParticleSystem:
   VelocityModule:
     enabled: 1
     x:
-      scalar: .200000003
+      scalar: .100000001
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -559,7 +576,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 3
     y:
-      scalar: .200000003
+      scalar: .100000001
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -582,7 +599,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 3
     z:
-      scalar: 2
+      scalar: 1
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1085,7 +1102,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 0
     startSpeed:
-      scalar: 1.5
+      scalar: .75
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1199,7 +1216,7 @@ ParticleSystem:
         rgba: 4278930686
       maxColor:
         serializedVersion: 2
-        rgba: 4279919103
+        rgba: 4281892863
       minMaxState: 0
     startSize:
       scalar: .5
@@ -1519,7 +1536,7 @@ ParticleSystem:
   VelocityModule:
     enabled: 1
     x:
-      scalar: .200000003
+      scalar: .100000001
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1542,7 +1559,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 3
     y:
-      scalar: .200000003
+      scalar: .100000001
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2038,7 +2055,7 @@ ParticleSystemRenderer:
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_Materials:
-  - {fileID: 2100000, guid: 669d970db875a3f49ab0cb51c5b6dd42, type: 2}
+  - {fileID: 2100000, guid: be3c7e267f4830542a4e698fb2ac4fbf, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -2074,7 +2091,7 @@ ParticleSystemRenderer:
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_Materials:
-  - {fileID: 2100000, guid: 669d970db875a3f49ab0cb51c5b6dd42, type: 2}
+  - {fileID: 2100000, guid: be3c7e267f4830542a4e698fb2ac4fbf, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -2110,14 +2127,6 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: looping
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: InitialModule.startSize.scalar
-      value: .5
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: m_Layer
-      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

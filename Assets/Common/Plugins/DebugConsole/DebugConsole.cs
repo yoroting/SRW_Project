@@ -89,6 +89,10 @@ public class DebugConsole : MonoBehaviour
 		if(Application.isEditor)
 			return;
 
+		// don't pop this is release mode
+		if( Debug.isDebugBuild  == false )
+			return;
+
 		if (textStyle == null)
 		{
 			textStyle = new GUIStyle(GUI.skin.GetStyle("Label"));

@@ -143,7 +143,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 133376}
-  m_LocalRotation: {x: .382683486, y: 0, z: 0, w: .923879564}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -163,7 +163,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 193410}
   m_LocalRotation: {x: 1, y: 0, z: 0, w: 8.94069672e-08}
-  m_LocalPosition: {x: 0, y: 0, z: -.37499994}
+  m_LocalPosition: {x: 0, y: 0, z: -.18749997}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 410822}
@@ -199,7 +199,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 171892}
   m_LocalRotation: {x: 1, y: 0, z: 0, w: 8.94069672e-08}
-  m_LocalPosition: {x: 0, y: 0, z: -.25}
+  m_LocalPosition: {x: 0, y: 0, z: -.125}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 410822}
@@ -211,7 +211,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 142978}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0, z: -.37499997}
+  m_LocalPosition: {x: 0, y: -0, z: -.187499985}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 410822}
@@ -223,7 +223,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 178250}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0, z: -.124999993}
+  m_LocalPosition: {x: 0, y: -0, z: -.0624999963}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 410822}
@@ -235,7 +235,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 160250}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0, z: -.25}
+  m_LocalPosition: {x: 0, y: -0, z: -.125}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 410822}
@@ -246,7 +246,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 133376}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b11907cc8c1ba9349af74c7c9bdc3e79, type: 3}
   m_Name: 
@@ -429,7 +429,7 @@ ParticleSystem:
         rgba: 4285988608
       minMaxState: 0
     startSize:
-      scalar: .25
+      scalar: .125
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1497,7 +1497,7 @@ ParticleSystem:
         rgba: 4278255474
       minMaxState: 0
     startSize:
-      scalar: .25
+      scalar: .125
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2565,7 +2565,7 @@ ParticleSystem:
         rgba: 4278255474
       minMaxState: 0
     startSize:
-      scalar: .25
+      scalar: .125
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -3613,7 +3613,7 @@ ParticleSystem:
         rgba: 4278255474
       minMaxState: 0
     startSize:
-      scalar: .25
+      scalar: .125
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -4681,7 +4681,7 @@ ParticleSystem:
         rgba: 4278255474
       minMaxState: 0
     startSize:
-      scalar: .25
+      scalar: .125
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -5719,7 +5719,7 @@ ParticleSystem:
         rgba: 4278255474
       minMaxState: 0
     startSize:
-      scalar: .25
+      scalar: .125
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -6767,7 +6767,7 @@ ParticleSystem:
         rgba: 4285988608
       minMaxState: 0
     startSize:
-      scalar: .25
+      scalar: .125
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -7835,7 +7835,7 @@ ParticleSystem:
         rgba: 4278255474
       minMaxState: 0
     startSize:
-      scalar: .25
+      scalar: .125
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -9000,7 +9000,11 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 133376}

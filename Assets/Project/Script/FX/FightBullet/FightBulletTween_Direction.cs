@@ -16,7 +16,7 @@ public class FightBulletTween_Direction : MonoBehaviour {
 	public bool IsTweenEnd{ get{ return isTweenEnd; } }
 
 	/// <summary>移動速度值</summary>
-	private float moveSpeed = 30f; // 30.0f
+	private float moveSpeed = 8f; // 30.0f
 	/// <summary>目標移動速度值</summary>
 	private float targetMoveSpeed = 20f;
 	/// <summary>移動加速度</summary>
@@ -143,11 +143,14 @@ public class FightBulletTween_Direction : MonoBehaviour {
 		}
 	}
 
-	public static FightBulletTween_Direction Begin(GameObject bullet, Vector3 targetPos, Action endFunc = null){
+	public static FightBulletTween_Direction Begin(GameObject bullet, Vector3 targetPos, Action endFunc = null,bool bRandom=false ){
 		float toTargetAngle = GetAngle(bullet.transform.localPosition, targetPos);
-		float randomAngle = ((float)UnityEngine.Random.Range(0, 2) -0.5f) * 50f;
-		randomAngle += (randomAngle > 0) ? UnityEngine.Random.Range(0, 25f)*2f : UnityEngine.Random.Range(-25f, 0)*2f;
-		toTargetAngle+= randomAngle;
+
+		if (bRandom) {
+			float randomAngle = ((float)UnityEngine.Random.Range (0, 2) - 0.5f) * 50f;
+			randomAngle += (randomAngle > 0) ? UnityEngine.Random.Range (0, 25f) * 2f : UnityEngine.Random.Range (-25f, 0) * 2f;
+			toTargetAngle+= randomAngle; // no random will direct move
+		}
 
 		FightBulletTween_Direction tween = bullet.AddComponent<FightBulletTween_Direction>();
 		tween.targetPos = targetPos;

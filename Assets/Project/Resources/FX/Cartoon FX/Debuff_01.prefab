@@ -88,7 +88,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 173658}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: .0100000007}
+  m_LocalPosition: {x: 0, y: 0, z: .0075000003}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 481160}
@@ -111,7 +111,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 155184}
-  m_LocalRotation: {x: -.608761489, y: 0, z: 0, w: .793353379}
+  m_LocalRotation: {x: -.382683486, y: 0, z: 0, w: .923879564}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -126,7 +126,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 155184}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b11907cc8c1ba9349af74c7c9bdc3e79, type: 3}
   m_Name: 
@@ -309,7 +309,7 @@ ParticleSystem:
         rgba: 4284612352
       minMaxState: 0
     startSize:
-      scalar: .100000001
+      scalar: .075000003
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1347,7 +1347,7 @@ ParticleSystem:
         rgba: 4279075636
       minMaxState: 0
     startSize:
-      scalar: .100000001
+      scalar: .075000003
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2268,7 +2268,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 0
     startSpeed:
-      scalar: .5
+      scalar: .375
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2395,7 +2395,7 @@ ParticleSystem:
         rgba: 4279075636
       minMaxState: 0
     startSize:
-      scalar: .100000001
+      scalar: .075000003
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2447,12 +2447,12 @@ ParticleSystem:
     serializedVersion: 2
     enabled: 1
     type: 4
-    radius: 75
+    radius: 56.25
     angle: 0
     length: 5
-    boxX: .100000001
-    boxY: .100000001
-    boxZ: .100000001
+    boxX: .075000003
+    boxY: .075000003
+    boxZ: .075000003
     arc: 360
     placementMode: 0
     m_Mesh: {fileID: 0}
@@ -3366,7 +3366,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 0
     startSpeed:
-      scalar: .5
+      scalar: .375
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -3493,7 +3493,7 @@ ParticleSystem:
         rgba: 4279075636
       minMaxState: 0
     startSize:
-      scalar: .100000001
+      scalar: .075000003
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -3555,12 +3555,12 @@ ParticleSystem:
     serializedVersion: 2
     enabled: 1
     type: 4
-    radius: .200000003
+    radius: .150000006
     angle: 0
     length: 5
-    boxX: .100000001
-    boxY: .100000001
-    boxZ: .100000001
+    boxX: .075000003
+    boxY: .075000003
+    boxZ: .075000003
     arc: 360
     placementMode: 0
     m_Mesh: {fileID: 0}
@@ -4559,7 +4559,11 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 155184}

@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
 using Playcoo.Common;
-using System.Reflection;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
+
+
 
 public class GameSystem : MonoBehaviour {
 
@@ -112,7 +114,7 @@ public class GameSystem : MonoBehaviour {
 		}
 
 #if DEBUG && UNITY_EDITOR
-		GameDataManager.Instance.nStageID  =5;
+		GameDataManager.Instance.nStageID  =3;
 #endif
 		bFXPlayMode = true;
 	}
@@ -141,6 +143,13 @@ public class GameSystem : MonoBehaviour {
 	}
 
 	// 目前操作
+	public static void ShakeCamera( ){
+		if (UICamera.currentCamera != null) {
+			TweenShake tw = TweenShake.Begin(UICamera.currentCamera.gameObject, 0.2f , 100 );
+		}
+	}
+
+
 	public static GameObject PlayFX( GameObject go , int nFxid )
 	{
 		if (go == null || nFxid ==0 )
@@ -151,6 +160,19 @@ public class GameSystem : MonoBehaviour {
 
 		FX fx =  ConstDataManager.Instance.GetRow<FX>( nFxid );
 		if (fx != null) {
+			// play wav sound
+			if( fx.s_SOUND !="0" && fx.s_SOUND !="null" ){
+				PlaySound( fx.s_SOUND );
+			}
+			// shake camera
+			if( fx.n_SHAKECAMERA != 0 ){
+				//UICamera.
+				//Camera.mainCamera;
+				ShakeCamera();
+
+			}
+
+			// FX obj
 			GameObject obj = null ;
 			// play on tile
 			if( fx.n_TAG == 3 )
@@ -182,11 +204,15 @@ public class GameSystem : MonoBehaviour {
 						ps2.startSize *=  fx.f_SACLE;
 					}
 				}
+				if( fx.f_OFFSETY != 0.0f ){
+					Vector3 v = obj.transform.localPosition;
+					v.y += fx.f_OFFSETY;
+					obj.transform.localPosition = v;
+				}
+
+
 			}
-			// play wav sound
-			if( fx.s_SOUND !="0" && fx.s_SOUND !="null" ){
-				PlaySound( fx.s_SOUND );
-			}
+
 			return obj;
 		}
 		return null;
@@ -201,6 +227,10 @@ public class GameSystem : MonoBehaviour {
 		if (bFXPlayMode == false)
 			return null;
 			 
+		if (string.IsNullOrEmpty (name)) {
+			return null;
+		}
+
 		string path = "FX/Cartoon FX/" + name;
 
 		GameObject instance = ResourcesManager.CreatePrefabGameObj ( go ,path );
@@ -212,7 +242,6 @@ public class GameSystem : MonoBehaviour {
 
 		ParticleSystem ps =instance.GetComponent< ParticleSystem>();
 		if (ps!= null) {
-			
 		}
 		SetParticleRenderLayer ( instance ,sortLayer  );
 //		ParticleSystemRenderer psr =instance.GetComponent< ParticleSystemRenderer>();
@@ -230,10 +259,21 @@ public class GameSystem : MonoBehaviour {
 
 		//check auto destory
 		CFX_AutoDestructShuriken des = instance.GetComponent< CFX_AutoDestructShuriken > ();
-		killParticle kill = instance.GetComponent< killParticle > ();
-		if( des == null && kill == null ){
-			Debug.LogErrorFormat( " particle won't auto destory at {0}",name );
+
+		if( des == null  ){
+			//Debug.LogErrorFormat( " particle won't auto destory at {0}",name );
+			instance.AddComponent< CFX_AutoDestructShuriken >(); // auto destory
 		}
+
+		// MAKE SURE not double del
+		killParticle kill = instance.GetComponent< killParticle > ();
+		if (kill != null && (kill.enabled==true) ) {
+			Debug.LogErrorFormat( " particle have killParticle component with enabled {0}",name );
+
+			//kill.gameObject.SetActive( false );
+			kill.enabled = false;
+		}
+
 
 		return instance;
 	}
@@ -245,6 +285,8 @@ public class GameSystem : MonoBehaviour {
 		ParticleSystemRenderer psr =instance.GetComponent< ParticleSystemRenderer>();
 		if (psr != null) {
 			psr.sortingLayerName =sortLayer;
+
+
 		}
 		// for child
 		ParticleSystemRenderer[] psrs = instance.GetComponentsInChildren<ParticleSystemRenderer>();

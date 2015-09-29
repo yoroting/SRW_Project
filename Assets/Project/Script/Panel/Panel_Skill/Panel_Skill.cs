@@ -82,25 +82,33 @@ public class Panel_Skill : MonoBehaviour {
 
 		List< SKILL > sklLst = new List< SKILL > ();
 
-		if (eType == _SKILL_TYPE._SKILL) {
-
-			//神模式的主角 全招式都能放
-			if( Config.GOD == true && data.n_CharID== 1   )
+		//神模式的主角 全招式都能放
+		if( Config.GOD == true && data.n_CharID== 1   )
+		{
+			DataTable pTable = ConstDataManager.Instance.GetTable < SKILL > ();
+			if (pTable == null) 
+				return;
+			
+			foreach( SKILL skl in pTable )
 			{
-				DataTable pTable = ConstDataManager.Instance.GetTable < SKILL > ();
-				if (pTable == null) 
-					return;
-
-				foreach( SKILL skl in pTable )
-				{
+				if( skl.n_PASSIVE == 1 )
+					continue;
+				if (eType == _SKILL_TYPE._SKILL) {
 					if( skl.n_SCHOOL == 0 )	// == 0 is ability
 						continue;
-					if( skl.n_PASSIVE == 1 )
-						continue;
-					sklLst.Add( skl );
 				}
+				else{
+					if( skl.n_SCHOOL != 0 )	// == 0 is ability
+						continue;
+				}
+
+				sklLst.Add( skl );
 			}
-			else {
+		}
+		else { // normal
+
+			if (eType == _SKILL_TYPE._SKILL) {
+
 				foreach(   int  nID in pData.SkillPool ){
 					int nSkillID = nID;
 					nSkillID = pData.Buffs.GetUpgradeSkill( nSkillID ); // Get upgrade skill
@@ -113,78 +121,28 @@ public class Panel_Skill : MonoBehaviour {
 					sklLst.Add(  ConstDataManager.Instance.GetRow<SKILL>(nSkillID) );
 				}
 			}
-//			int ISch = pData.nActSch [0];
-//			int ESch = pData.nActSch [1];
-//			int ELv = pData.GetSchoolLv (ESch);
-//
-//			foreach( SKILL skl in pTable )
-//			{
-//				if( skl.n_SCHOOL == 0 )	// == 0 is ability
-//					continue;
-//
-//				if( skl.n_PASSIVE == 1 )
-//					continue;
-//
-//				// normal 
-//				if( skl.n_SCHOOL != ESch )
-//					continue;
-//
-//				// cheat code for god
-//				if( Config.GOD ){
-//					sklLst.Add( skl );
-//					continue;
-//				}
-//
-//				if( skl.n_LEVEL_LEARN > ELv )
-//					continue;
-//
-//				sklLst.Add( skl );
-//			}
-		}
-		else if (eType == _SKILL_TYPE._ABILITY ) 		
-		{
-			int CLv = pData.n_Lv;
-
-			foreach( KeyValuePair< int , int > pair in pData.AbilityPool )
+			else if (eType == _SKILL_TYPE._ABILITY ) 		
 			{
-				SKILL skl = ConstDataManager.Instance.GetRow< SKILL >( pair.Key ) ;
-				if( skl == null )
-					continue;
-				if( skl.n_SCHOOL > 0 ) // > 0 is school
-					continue;
-				if( skl.n_PASSIVE == 1 )
-					continue;
-				if( Config.GOD ){
-					sklLst.Add( skl );
-					continue;
-				}
-				if( CLv < pair.Value )
-					continue;
-				sklLst.Add( skl );
-			}
+				int CLv = pData.n_Lv;
 
-//			foreach( SKILL skl in pTable )
-//			{
-//				if( skl.n_SCHOOL > 0 ) // > 0 is school
-//					continue;
-//				if( skl.n_PASSIVE == 1 )
-//					continue;
-//
-//				if( Config.GOD ){
-//					sklLst.Add( skl );
-//					continue;
-//				}
-//				// check char have this ability
-//
-//				if( pData.AbilityPool.ContainsKey( skl.n_ID  ) == false ){
-//					continue;
-//				}
-//
-//				if( skl.n_LEVEL_LEARN > CLv )
-//					continue;
-//				
-//				sklLst.Add( skl );
-//			}
+				foreach( KeyValuePair< int , int > pair in pData.AbilityPool )
+				{
+					SKILL skl = ConstDataManager.Instance.GetRow< SKILL >( pair.Key ) ;
+					if( skl == null )
+						continue;
+					if( skl.n_SCHOOL > 0 ) // > 0 is school
+						continue;
+					if( skl.n_PASSIVE == 1 )
+						continue;
+					if( Config.GOD ){
+						sklLst.Add( skl );
+						continue;
+					}
+					if( CLv < pair.Value )
+						continue;
+					sklLst.Add( skl );
+				}
+			}
 		}
 
 

@@ -26,6 +26,7 @@ public class cHitResult		//
 		_DEF		,		// 增減 DEF
 		_SP			,		// 增減 SP
 		_CP			,		// 增減 CP
+		_ACTTIME	,		// actime
 
 		_ADDBUFF	,
 		_DELBUFF	,
@@ -927,7 +928,10 @@ public partial class BattleManager
 			if( skl == null )
 				return;
 
-			pAct.AddHitResult(  CalSkillHitResult( Caster, Target , nSkillID ) ) ;
+			 GetAtkHitResult( nCastIdent , nTarIdent , Caster , Target ,nSkillID ,  nTarX , nTarY , ref pAct , ref AtkAffectPool );
+
+
+			//pAct.AddHitResult(  CalSkillHitResult( Caster, Target , nSkillID ) ) ;
 
 		}
 
@@ -1663,7 +1667,8 @@ public partial class BattleManager
 
 		List<cHitResult> resPool = new List<cHitResult> ();
 		if (pDefer != null) {
-			resPool.Add (new cHitResult (cHitResult._TYPE._BEHIT, pDefer.n_Ident, pAtker.FightAttr.SkillID)); // for play fx
+			resPool.Add (new cHitResult (cHitResult._TYPE._BEHIT, pDefer.n_Ident, nSkillID )); // for play fx
+
 		}
 
 	

@@ -36,7 +36,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 180218}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b11907cc8c1ba9349af74c7c9bdc3e79, type: 3}
   m_Name: 
@@ -48,13 +48,13 @@ ParticleSystem:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 180218}
-  lengthInSec: 2
+  lengthInSec: 1
   startDelay: 0
-  speed: 2
+  speed: 1.33333337
   randomSeed: 0
   looping: 0
   prewarm: 0
-  playOnAwake: 0
+  playOnAwake: 1
   moveWithTransform: 1
   InitialModule:
     enabled: 1
@@ -219,7 +219,7 @@ ParticleSystem:
         rgba: 4278207999
       minMaxState: 0
     startSize:
-      scalar: .200000003
+      scalar: .5
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -284,19 +284,19 @@ ParticleSystem:
         m_PreInfinity: 2
         m_PostInfinity: 2
       minMaxState: 0
-    gravityModifier: -.256000012
+    gravityModifier: -.25
     inheritVelocity: 0
-    maxNumParticles: 10
+    maxNumParticles: 30
   ShapeModule:
     serializedVersion: 2
     enabled: 1
     type: 4
-    radius: 40.9600029
+    radius: 50
     angle: 25
     length: 5
-    boxX: .512000024
-    boxY: .512000024
-    boxZ: .512000024
+    boxX: .5
+    boxY: .5
+    boxZ: .5
     arc: 360
     placementMode: 0
     m_Mesh: {fileID: 0}
@@ -1187,7 +1187,11 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 180218}

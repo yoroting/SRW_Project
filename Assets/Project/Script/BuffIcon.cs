@@ -6,6 +6,7 @@ public class BuffIcon : MonoBehaviour {
 //	public GameObject IconObj;
 	
 	public GameObject NumObj;
+	public GameObject NameObj;
 	
 	public int 	nBuffID;
 	
@@ -41,6 +42,9 @@ public class BuffIcon : MonoBehaviour {
 			NumObj.SetActive( true );
 			MyTool.SetLabelInt( NumObj , nNum );
 		}
+
+		MyTool.SetLabelText (NameObj, MyTool.GetBuffName (nBuffID));
+
 	}
 	
 	

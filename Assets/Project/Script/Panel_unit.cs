@@ -36,6 +36,7 @@ public class Panel_unit : MonoBehaviour {
 	public GameObject BGObj;
 
 	public GameObject TailObj;		// 尾巴特效
+	public GameObject FxObj;		// fx
 
 	public _CAMP 	eCampID;
 	public int  	CharID;			// not identift
@@ -53,7 +54,9 @@ public class Panel_unit : MonoBehaviour {
 //	public int  Identify;		avoid double 
 	bool bOnSelected;
 
-	//int nActionTime=1;			
+	//int nActionTime=1;	
+	public int  	MissileCount = 0 ;			//Missile Count
+
 
 	public bool bIsDead = false;
 	public bool bIsAtking  = false;
@@ -76,8 +79,14 @@ public class Panel_unit : MonoBehaviour {
 	}
 	public bool CanDoCmd()
 	{
-		if( pUnitData!= null )
-			return pUnitData.nActionTime>0;
+		if (pUnitData != null) {
+//			if( Config.GOD ){
+//				if( eCampID == _CAMP._PLAYER ){
+//					return true;
+//				}
+//			}
+			return pUnitData.nActionTime > 0;
+		}
 		return false;
 	}
 
@@ -190,6 +199,17 @@ public class Panel_unit : MonoBehaviour {
 		// stop update when msg 
 		if (BattleMsg.nMsgCount > 0)
 			return ;
+
+		if (FxObj != null) { // detect obj is end
+			ParticleSystem ps = FxObj.GetComponent< ParticleSystem > ();
+			if( ps.IsAlive() == false  )
+			{
+				Debug.Log( " ps end ");
+
+			}
+
+
+		}
 
 		// check if need to move
 		//if (IsMoveing () == false ) {			// check have null point
@@ -847,72 +867,92 @@ public class Panel_unit : MonoBehaviour {
 
 		// fly item
 		if (MyTool.IsSkillTag (skillid, _SKILLTAG._FLY)) {
-			string missile= "ACT_FLAME";
+			string missile = "ACT_FLAME";
 			Missile missdata = null;
-			if( skillid > 0 ){
-				SKILL skl = ConstDataManager.Instance.GetRow<SKILL>( skillid ); 
-				if( skl!= null ){
-					if( skl.n_MISSILE_ID > 0  ){
-						missdata = ConstDataManager.Instance.GetRow<Missile>( skl.n_MISSILE_ID ); 
-						if( missdata != null ){
+			if (skillid > 0) {
+				SKILL skl = ConstDataManager.Instance.GetRow<SKILL> (skillid); 
+				if (skl != null) {
+					if (skl.n_MISSILE_ID > 0) {
+						missdata = ConstDataManager.Instance.GetRow<Missile> (skl.n_MISSILE_ID); 
+						if (missdata != null) {
 							missile = missdata.s_MISSILE;
 						}
 					}
 				}
 			}
 			// attach on parent
-			FightBulletFX fbFx = FightBulletFX.CreatFX (missile, transform.parent , this.transform.localPosition, defer.transform.localPosition, OnTwAtkFlyHit);
-
+			FightBulletFX fbFx = FightBulletFX.CreatFX (missile, transform.parent, this.transform.localPosition, defer.transform.localPosition, OnTwAtkFlyHit);
+			if( fbFx != null ){
+				MissileCount ++;
+			}
 			// create a fly item
 			return;
 		} else if (MyTool.IsSkillTag (skillid, _SKILLTAG._ROTATE)) {
 
-			RotateAttack();
-			return ;
-		}
-		else if (MyTool.IsSkillTag (skillid, _SKILLTAG._FLASH)) {
-			SKILL skl = ConstDataManager.Instance.GetRow<SKILL>( skillid ); 
-			if( skl!= null && skl.n_AREA > 0 ){
+			RotateAttack ();
+			return;
+		} else if (MyTool.IsSkillTag (skillid, _SKILLTAG._FLASH)) {
+			SKILL skl = ConstDataManager.Instance.GetRow<SKILL> (skillid); 
+			if (skl != null && skl.n_AREA > 0) {
 				// get aoe pool
 				int nTarX = defer.Loc.X;
 				int nTarY = defer.Loc.Y;
-				List < iVec2 > lst = MyTool.GetAOEPool ( nTarX ,nTarY,skl.n_AREA ,Loc.X , Loc.Y  );
-				FlashAttack( lst );
-				return ;
+				List < iVec2 > lst = MyTool.GetAOEPool (nTarX, nTarY, skl.n_AREA, Loc.X, Loc.Y);
+				FlashAttack (lst);
+				return;
 			}
 
-		}
-		else if (MyTool.IsSkillTag (skillid, _SKILLTAG._JUMP )) {
+		} else if (MyTool.IsSkillTag (skillid, _SKILLTAG._JUMP)) {
 			int nTarX = defer.Loc.X;
 			int nTarY = defer.Loc.Y;
-			JumpAttack( nTarX , nTarY );
-			return ;
-		}
-		else if (MyTool.IsSkillTag (skillid, _SKILLTAG._BOW)) {
+			JumpAttack (nTarX, nTarY);
+			return;
+		} else if (MyTool.IsSkillTag (skillid, _SKILLTAG._BOW)) {
 		
 			int nTarX = defer.Loc.X;
 			int nTarY = defer.Loc.Y;
-			BowAttack( nTarX ,nTarY );
-			return ;		
-		}
-		else if (MyTool.IsSkillTag (skillid, _SKILLTAG._NOACT)) {
+			BowAttack (nTarX, nTarY);
+			return;		
+		} else if (MyTool.IsSkillTag (skillid, _SKILLTAG._NOACT)) { //無動作
 			
 			int nTarX = defer.Loc.X;
 			int nTarY = defer.Loc.Y;
-			NoActAttack( nTarX ,nTarY );
-			return ;		
-		}
-		else if (MyTool.IsSkillTag (skillid, _SKILLTAG._CROSS)) {
+			NoActAttack (nTarX, nTarY);
+			return;		
+		} else if (MyTool.IsSkillTag (skillid, _SKILLTAG._CROSS)) {
 			//_CROSS
 			int nTarX = defer.Loc.X;
 			int nTarY = defer.Loc.Y;
-			CrossAttack( nTarX ,nTarY );
+			CrossAttack (nTarX, nTarY);
 			return;
 		}
+		else if (MyTool.IsSkillTag (skillid, _SKILLTAG._AOEMISSILE)) { // 
+			int nTarX = defer.Loc.X;
+			int nTarY = defer.Loc.Y;
+			AOEMissileAttack(  skillid , nTarX , nTarY );
+
+
+			// attach on parent
+			//RotateAttack(); 
+//			TweenRotation twr = TweenRotation.Begin< TweenRotation >( gameObject , 0.5f );
+//			if( twr != null )
+//			{
+//				twr.SetStartToCurrentValue();
+//				twr.to	= new Vector3( 0.0f , 0.0f , 360.0f );//Math.PI
+//				//MyTool.TweenSetOneShotOnFinish( twr , OnTwAtkRotateEnd ); // for once only
+//			}
+
+
+		}
+		else if (MyTool.IsSkillTag (skillid, _SKILLTAG._DANCEKILL) ) { // 
+			int nTarX = defer.Loc.X;
+			int nTarY = defer.Loc.Y;
+			//List < iVec2 > lst = MyTool.GetAOEPool (nTarX, nTarY, skl.n_AREA, Loc.X, Loc.Y);
+		}
 		//  非攻擊型技能，跳過攻擊動作
-		else if( MyTool.IsSkillTag (skillid, _SKILLTAG._DAMAGE)== false ){
-			OnTwAtkHit();
-			return ;
+		else if (MyTool.IsSkillTag (skillid, _SKILLTAG._DAMAGE)==false) {
+			OnTwAtkHit ();
+			return;
 		}
 
 		//Vector3 vOrg = this.transform.localPosition;
@@ -964,7 +1004,7 @@ public class Panel_unit : MonoBehaviour {
 			// create a fly item
 			return;
 		} else if (MyTool.IsSkillTag (skillid, _SKILLTAG._ROTATE)) {
-			RotateAttack();
+			RotateAttack ();
 			return;
 		} else if (MyTool.IsSkillTag (skillid, _SKILLTAG._FLASH)) {		
 			if (skl != null && skl.n_AREA > 0) {
@@ -976,22 +1016,21 @@ public class Panel_unit : MonoBehaviour {
 				return;
 			}
 			
-		} else if (MyTool.IsSkillTag (skillid, _SKILLTAG._JUMP )) {
-			JumpAttack( GridX , GridY );
-			return ;
-		}
-		else if (MyTool.IsSkillTag (skillid, _SKILLTAG._BOW)) {
-			BowAttack( GridX ,GridY );
-			return ;
-		}
-		else if (MyTool.IsSkillTag (skillid, _SKILLTAG._NOACT)) {
-			NoActAttack( GridX ,GridY );
-			return ;		
-		}
-		else if (MyTool.IsSkillTag (skillid, _SKILLTAG._CROSS)) {
-			//_CROSS	
-			CrossAttack( GridX ,GridY );
+		} else if (MyTool.IsSkillTag (skillid, _SKILLTAG._JUMP)) {
+			JumpAttack (GridX, GridY);
 			return;
+		} else if (MyTool.IsSkillTag (skillid, _SKILLTAG._BOW)) {
+			BowAttack (GridX, GridY);
+			return;
+		} else if (MyTool.IsSkillTag (skillid, _SKILLTAG._NOACT)) {
+			NoActAttack (GridX, GridY);
+			return;		
+		} else if (MyTool.IsSkillTag (skillid, _SKILLTAG._CROSS)) {
+			//_CROSS	
+			CrossAttack (GridX, GridY);
+			return;
+		} else if (MyTool.IsSkillTag (skillid, _SKILLTAG._AOEMISSILE))  { // 
+			AOEMissileAttack (skillid, GridX, GridY);
 		}
 		// exec result directly
 		ActionManager.Instance.ExecActionHitResult ( CurAction );
@@ -1055,6 +1094,14 @@ public class Panel_unit : MonoBehaviour {
 				{
 					Panel_StageUI.Instance.CreateAOEOverEffect( this , nTarGridX , nTarGridY ,skl.n_AREA );
 				}
+				if( skl.n_TAIL_FX > 0 ){
+
+					FX fx = ConstDataManager.Instance.GetRow< FX >( skl.n_TAIL_FX ); 
+					if( fx != null ){
+						ShowTailFX( fx.s_FILENAME );
+					}
+				}
+
 			}
 		}
 	//	ActionManager.Instance.ExecActionEndResult ( CurAction  );
@@ -1356,7 +1403,8 @@ public class Panel_unit : MonoBehaviour {
 			diff.x *= ( 100.0f / mag );  
 			diff.y *= ( 100.0f / mag );  
 		}
-		Vector3 v = vTar - diff; // back
+		Vector3 v = this.transform.localPosition - diff; // back
+
 		
 		TweenPosition tw = TweenPosition.Begin< TweenPosition >( this.gameObject , 0.35f ); // always move back to start pos
 		if (tw != null) {
@@ -1364,7 +1412,7 @@ public class Panel_unit : MonoBehaviour {
 			tw.to = v;
 		}
 
-		Vector3 v2 = this.transform.localPosition + diff*2; // corss atk pos
+		Vector3 v2 = vTar + diff; // corss atk pos
 		TweenPosition tw2 = gameObject.AddComponent <TweenPosition>();
 		if (tw2 != null) {
 			tw2.duration = 0.15f;
@@ -1378,7 +1426,45 @@ public class Panel_unit : MonoBehaviour {
 
 	}
 
+	public void AOEMissileAttack( int nSkillID ,   int GridX , int GridY )
+	{
+		bIsAtking = true;
+		string missile = "ACT_FLAME";
+		Missile missdata = null;
+		if (nSkillID > 0) {
+			SKILL skl = ConstDataManager.Instance.GetRow<SKILL> (nSkillID); 
+			if (skl != null) {
+				if (skl.n_MISSILE_ID > 0) {
+					missdata = ConstDataManager.Instance.GetRow<Missile> (skl.n_MISSILE_ID); 
+					if (missdata != null) {
+						missile = missdata.s_MISSILE;
+					}
+				}
+				List < iVec2 > lst = MyTool.GetAOEPool (GridX, GridY, skl.n_AREA, Loc.X, Loc.Y);
+				
+				foreach( iVec2 v in lst ){
+					FightBulletFX fbFx = FightBulletFX.CreatFX (missile, transform.parent, this.transform.localPosition, MyTool.SnyGridtoLocalPos(v.X , v.Y ,  ref GameScene.Instance.Grids  ), OnTwAtkFlyHit  );
+					if( fbFx != null ){
+						MissileCount ++;
 
+					}
+				}
+			}
+		}
+		if( MissileCount <= 0  ){
+			ActionManager.Instance.ExecActionHitResult ( CurAction );	 // perform sm hit action
+			bIsAtking = false;
+		}
+
+		TweenRotation twr = TweenRotation.Begin< TweenRotation >( gameObject , 0.5f );
+		if( twr != null )
+		{
+			twr.SetStartToCurrentValue();
+			twr.to	= new Vector3( 0.0f , 0.0f , 360.0f );//Math.PI
+//			MyTool.TweenSetOneShotOnFinish( twr , OnTwAtkRotateEnd ); // for once only
+		}
+
+	}
 	//==============Tween CAll back
 	public void OnTwAtkHit( )
 	{
@@ -1405,6 +1491,12 @@ public class Panel_unit : MonoBehaviour {
 	}
 	public void OnTwAtkFlyHit( )
 	{
+		--MissileCount;
+		// wait all missile fly end
+		if (MissileCount > 0) {
+			return ;
+		}
+
 		ActionManager.Instance.ExecActionHitResult ( CurAction );	 // perform sm hit action
 
 		OnTwAtkEnd(); // Hit is end
@@ -1428,11 +1520,17 @@ public class Panel_unit : MonoBehaviour {
 	{
 		//nMode : 0 - hp , 1- def , 2 - mp , 3 -sp
 		if (nValue < 0) {
-			// shake
+			// 由於 shake結束 會重置 座標點。 造成 移動結果被還原。所以與到移動中的shake 應該要delay 一下
+			float fDelay = 0;
+			if( IsMoving() ){
+				fDelay = (PathList.Count+1) *0.2f+0.05f ;
+			}
+
 			TweenShake tw = TweenShake.Begin(gameObject, 0.2f , 10 );
 			if (tw) {
 				//tw.OriginPosSet = false; // Important!
 				//tw.style = UITweener.Style.Once;
+				tw.delay = fDelay;
 				tw.shakeY = false;
 				MyTool.TweenSetOneShotOnFinish( tw , OnTwShakeEnd );
 
@@ -1490,6 +1588,9 @@ public class Panel_unit : MonoBehaviour {
 //			tw.SetOnFinished( OnDead );
 
 		}
+
+		// 死亡音效
+		GameSystem.PlaySound ( "Se16");
 
 		// free data here
 		//FreeUnitData ();
@@ -1779,9 +1880,9 @@ public class Panel_unit : MonoBehaviour {
 		}
 	}
 
-	public void ShowSkillFX( int nSkillID , int nTarIdent , int nX , int nY )
+	public void ShowSkillCastOutFX( int nSkillID , int nTarIdent , int nX , int nY )
 	{
-		Debug.Log ("show skillfx");
+		//Debug.Log ("show skillfx");
 		if (nSkillID == 0) {
 			return ;
 		}
@@ -1797,30 +1898,54 @@ public class Panel_unit : MonoBehaviour {
 		SKILL skl = ConstDataManager.Instance.GetRow< SKILL > ( nSkillID ); 
 		if (skl == null)
 			return;
-
 		FX fxData = ConstDataManager.Instance.GetRow< FX > ( skl.n_CASTOUT_FX ); 
 		if (fxData == null)
 			return;
-
-		// AOE fx 
-		if (fxData.n_TAG == 2) {
-			Panel_StageUI.Instance.PlayAOEFX (this, skl.n_CASTOUT_FX, nX, nY, skl.n_AREA);
-
-		} else if (fxData.n_TAG == 4) { // play in place
-			Panel_StageUI.Instance.PlayFX (skl.n_CASTOUT_FX, nX, nY);
-		} else if (fxData.n_TAG == 5) { // tail fx
-			ShowTailFX( fxData.s_FILENAME );
-		}
-		else {
+		switch ( skl.n_CASTOUT_TYPE ) {
+		case 1:// 處理旋轉
 			GameObject go = GameSystem.PlayFX ( this.gameObject , skl.n_CASTOUT_FX );
-			if (go == null) {
-				return;
-			}
+			if (go != null) {
 
-			if (fxData.n_TAG == 1) {	// 處理旋轉
 				MyTool.RotateGameObjToGridXY( go , Loc.X , Loc.Y , nX, nY , fxData.n_ROT_TYPE  );
 			}
+			break;
+		case 2:// AOE fx 
+			Panel_StageUI.Instance.PlayAOEFX (this, skl.n_CASTOUT_FX, nX, nY, skl.n_AREA);
+			break;
+		case 4:// play in terrain place
+			Panel_StageUI.Instance.PlayFX (skl.n_CASTOUT_FX, nX, nY);
+			break;
+//		case 5: // change to skilldata
+//			ShowTailFX( fxData.s_FILENAME );
+		default:
+			GameSystem.PlayFX ( this.gameObject , skl.n_CASTOUT_FX );
+			break;
 		}
+
+
+//		FX fxData = ConstDataManager.Instance.GetRow< FX > ( skl.n_CASTOUT_FX ); 
+//		if (fxData == null)
+//			return;
+//
+//		// AOE fx 
+//		if (fxData.n_TAG == 2) {
+//			Panel_StageUI.Instance.PlayAOEFX (this, skl.n_CASTOUT_FX, nX, nY, skl.n_AREA);
+//
+//		} else if (fxData.n_TAG == 4) { // play in place
+//			Panel_StageUI.Instance.PlayFX (skl.n_CASTOUT_FX, nX, nY);
+//		} else if (fxData.n_TAG == 5) { // tail fx
+//			ShowTailFX( fxData.s_FILENAME );
+//		}
+//		else {
+//			GameObject go = GameSystem.PlayFX ( this.gameObject , skl.n_CASTOUT_FX );
+//			if (go == null) {
+//				return;
+//			}
+//
+//			if (fxData.n_TAG == 1) {	// 處理旋轉
+//				MyTool.RotateGameObjToGridXY( go , Loc.X , Loc.Y , nX, nY , fxData.n_ROT_TYPE  );
+//			}
+//		}
 	}
 
 	public void ShowTailFX( string sFileName , bool bClose = false)
@@ -1851,6 +1976,13 @@ public class Panel_unit : MonoBehaviour {
 		if( instance != null ){
 			TailObj = instance;
 		}
+	}
+
+	public void PlayFX( int nFXID )
+	{
+		GameObject obj  = GameSystem.PlayFX( this.gameObject , nFXID );
+		FxObj = obj;
+
 	}
 
 //	public void AddBuff( int nBuffID )

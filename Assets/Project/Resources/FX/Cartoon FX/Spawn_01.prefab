@@ -10,7 +10,7 @@ GameObject:
   - 4: {fileID: 446600}
   - 198: {fileID: 19881444}
   - 199: {fileID: 19986990}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Distort_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28,7 +28,7 @@ GameObject:
   - 198: {fileID: 19855582}
   - 199: {fileID: 19933548}
   - 114: {fileID: 11493342}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Spawn_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -45,7 +45,7 @@ GameObject:
   - 4: {fileID: 418640}
   - 198: {fileID: 19831492}
   - 199: {fileID: 19984376}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Stomp_01_ColorA
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -62,7 +62,7 @@ GameObject:
   - 4: {fileID: 421578}
   - 198: {fileID: 19834216}
   - 199: {fileID: 19927372}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Small_Particle_01_ColorA
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -76,7 +76,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 170230}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -.5}
+  m_LocalPosition: {x: 0, y: 0, z: -.09375}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 446856}
@@ -88,7 +88,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 173694}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: .100000001}
+  m_LocalPosition: {x: 0, y: 0, z: .0187500007}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 446856}
@@ -100,7 +100,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 104438}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -1}
+  m_LocalPosition: {x: 0, y: 0, z: -.1875}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 446856}
@@ -111,7 +111,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 169696}
-  m_LocalRotation: {x: .70710665, y: 0, z: 0, w: -.707107008}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -126,7 +126,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 169696}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b11907cc8c1ba9349af74c7c9bdc3e79, type: 3}
   m_Name: 
@@ -309,7 +309,7 @@ ParticleSystem:
         rgba: 4294934528
       minMaxState: 0
     startSize:
-      scalar: 1
+      scalar: .09375
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1357,7 +1357,7 @@ ParticleSystem:
         rgba: 4294950656
       minMaxState: 0
     startSize:
-      scalar: 1
+      scalar: .09375
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2278,7 +2278,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 0
     startSpeed:
-      scalar: 3
+      scalar: .5625
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2395,7 +2395,7 @@ ParticleSystem:
         rgba: 4294934528
       minMaxState: 0
     startSize:
-      scalar: 1
+      scalar: .1875
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2460,19 +2460,19 @@ ParticleSystem:
         m_PreInfinity: 2
         m_PostInfinity: 2
       minMaxState: 0
-    gravityModifier: -1.5
+    gravityModifier: -.28125
     inheritVelocity: 0
     maxNumParticles: 40
   ShapeModule:
     serializedVersion: 2
     enabled: 1
     type: 4
-    radius: 1
+    radius: 37.5
     angle: 0
     length: 0
-    boxX: 1
-    boxY: 1
-    boxZ: 1
+    boxX: .1875
+    boxY: .1875
+    boxZ: .1875
     arc: 360
     placementMode: 1
     m_Mesh: {fileID: 4300000, guid: 82d63fa07963e5b45b5dea36e8336d70, type: 3}
@@ -2773,7 +2773,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 0
     z:
-      scalar: 10
+      scalar: 1.875
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -3413,7 +3413,7 @@ ParticleSystem:
         rgba: 4278224639
       minMaxState: 0
     startSize:
-      scalar: 1
+      scalar: .09375
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -4296,7 +4296,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: .5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
+  m_SortingLayerID: -69234519
   m_SortingOrder: 0
   m_RenderMode: 4
   m_MaxParticleSize: 1
@@ -4332,7 +4332,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: .5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
+  m_SortingLayerID: -69234519
   m_SortingOrder: 0
   m_RenderMode: 0
   m_MaxParticleSize: 1
@@ -4368,7 +4368,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: .5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
+  m_SortingLayerID: -69234519
   m_SortingOrder: 0
   m_RenderMode: 4
   m_MaxParticleSize: 1
@@ -4404,7 +4404,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: .5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
+  m_SortingLayerID: -69234519
   m_SortingOrder: 0
   m_RenderMode: 4
   m_MaxParticleSize: 3
@@ -4424,7 +4424,39 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_SortingLayerID
+      value: -69234519
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ShapeModule.radius
+      value: 37.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ShapeModule.boxX
+      value: .1875
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ShapeModule.boxY
+      value: .1875
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ShapeModule.boxZ
+      value: .1875
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: VelocityModule.z.scalar
+      value: 1.875
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 169696}

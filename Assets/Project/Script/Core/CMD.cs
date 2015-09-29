@@ -103,8 +103,8 @@ public class cCMD{
 		CmdlistArray [idx].Add ( _CMD_ID._OPTION ); 
 		CmdlistArray [idx].Add ( _CMD_ID._GAMEEND ); 
 		CmdlistArray [idx].Add ( _CMD_ID._CANCEL ); 
-		
-		if (Config.GOD == true) {
+
+		if (Debug.isDebugBuild) {
 			CmdlistArray [idx].Add (_CMD_ID._SYSCHEAT);
 //			CmdlistArray [idx].Add (_CMD_ID._WIN);
 //			CmdlistArray [idx].Add (_CMD_ID._LOST);
@@ -126,7 +126,7 @@ public class cCMD{
 		//CmdlistArray [idx].Add ( _CMD_ID._WAIT );  // no need wait here
 		CmdlistArray [idx].Add ( _CMD_ID._CANCEL ); 
 
-		if (Config.GOD == true) {
+		if (Debug.isDebugBuild ) {
 			CmdlistArray [idx].Add (_CMD_ID._SUICIDE);
 			CmdlistArray [idx].Add (_CMD_ID._CHEAT);
 		}
@@ -137,7 +137,7 @@ public class cCMD{
 		CmdlistArray [idx].Add (  _CMD_ID._INFO  );
 		CmdlistArray [idx].Add ( _CMD_ID._CANCEL );
 
-		if (Config.GOD == true) {
+		if (Debug.isDebugBuild) {
 			CmdlistArray [idx].Add (_CMD_ID._SUICIDE);
 			CmdlistArray [idx].Add (_CMD_ID._CHEAT);
 			CmdlistArray [idx].Add (_CMD_ID._ATK);
@@ -157,7 +157,7 @@ public class cCMD{
 		CmdlistArray [idx].Add ( _CMD_ID._WAIT ); 
 		CmdlistArray [idx].Add ( _CMD_ID._CANCEL ); 
 
-		if (Config.GOD == true) {
+		if (Debug.isDebugBuild) {
 			CmdlistArray [idx].Add ( _CMD_ID._ABILITY );  // god for debug
 		}
 		// wait sel a pos
