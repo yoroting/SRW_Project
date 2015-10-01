@@ -867,21 +867,23 @@ public class Panel_unit : MonoBehaviour {
 
 		// fly item
 		if (MyTool.IsSkillTag (skillid, _SKILLTAG._FLY)) {
-			string missile = "ACT_FLAME";
+			int nMissileID = 0;
+			//string missile = "ACT_FLAME";
 			Missile missdata = null;
 			if (skillid > 0) {
 				SKILL skl = ConstDataManager.Instance.GetRow<SKILL> (skillid); 
 				if (skl != null) {
 					if (skl.n_MISSILE_ID > 0) {
-						missdata = ConstDataManager.Instance.GetRow<Missile> (skl.n_MISSILE_ID); 
-						if (missdata != null) {
-							missile = missdata.s_MISSILE;
-						}
+						nMissileID = skl.n_MISSILE_ID ;
+//						missdata = ConstDataManager.Instance.GetRow<Missile> (skl.n_MISSILE_ID); 
+//						if (missdata != null) {
+//							missile = missdata.s_MISSILE;
+//						}
 					}
 				}
 			}
 			// attach on parent
-			FightBulletFX fbFx = FightBulletFX.CreatFX (missile, transform.parent, this.transform.localPosition, defer.transform.localPosition, OnTwAtkFlyHit);
+			FightBulletFX fbFx = FightBulletFX.CreatFX (nMissileID, transform.parent, this.transform.localPosition, defer.transform.localPosition, OnTwAtkFlyHit);
 			if( fbFx != null ){
 				MissileCount ++;
 			}
@@ -987,19 +989,21 @@ public class Panel_unit : MonoBehaviour {
 
 		// attack perform
 		if (MyTool.IsSkillTag (skillid, _SKILLTAG._FLY)) {
-			string missile = "ACT_FLAME";
+			int nMissileID = 0 ;
+			//string missile = "ACT_FLAME";
 			Missile missdata = null;
 			if (skl != null) {
 				if (skl.n_MISSILE_ID > 0) {
-					missdata = ConstDataManager.Instance.GetRow<Missile> (skl.n_MISSILE_ID); 
-					if (missdata != null) {
-						missile = missdata.s_MISSILE;
-					}
+					nMissileID = skl.n_MISSILE_ID;
+			//		missdata = ConstDataManager.Instance.GetRow<Missile> (skl.n_MISSILE_ID); 
+			//		if (missdata != null) {
+			//			missile = missdata.s_MISSILE;
+			//		}
 				}
 			}
 			Vector3 vTar = new Vector3 (MyTool.ScreenToLocX (GridX), MyTool.ScreenToLocX (GridY));
 
-			FightBulletFX fbFx = FightBulletFX.CreatFX (missile, this.transform, this.transform.localPosition, vTar, OnTwAtkFlyHit);
+			FightBulletFX fbFx = FightBulletFX.CreatFX (nMissileID, this.transform, this.transform.localPosition, vTar, OnTwAtkFlyHit);
 			
 			// create a fly item
 			return;
@@ -1429,21 +1433,23 @@ public class Panel_unit : MonoBehaviour {
 	public void AOEMissileAttack( int nSkillID ,   int GridX , int GridY )
 	{
 		bIsAtking = true;
-		string missile = "ACT_FLAME";
-		Missile missdata = null;
+//		string missile = "ACT_FLAME";
+//		Missile missdata = null;
 		if (nSkillID > 0) {
+			int nMissileID = 0;
 			SKILL skl = ConstDataManager.Instance.GetRow<SKILL> (nSkillID); 
 			if (skl != null) {
 				if (skl.n_MISSILE_ID > 0) {
-					missdata = ConstDataManager.Instance.GetRow<Missile> (skl.n_MISSILE_ID); 
-					if (missdata != null) {
-						missile = missdata.s_MISSILE;
-					}
+					nMissileID = skl.n_MISSILE_ID;
+//					missdata = ConstDataManager.Instance.GetRow<Missile> (skl.n_MISSILE_ID); 
+//					if (missdata != null) {
+//						missile = missdata.s_MISSILE;
+//					}
 				}
 				List < iVec2 > lst = MyTool.GetAOEPool (GridX, GridY, skl.n_AREA, Loc.X, Loc.Y);
 				
 				foreach( iVec2 v in lst ){
-					FightBulletFX fbFx = FightBulletFX.CreatFX (missile, transform.parent, this.transform.localPosition, MyTool.SnyGridtoLocalPos(v.X , v.Y ,  ref GameScene.Instance.Grids  ), OnTwAtkFlyHit  );
+					FightBulletFX fbFx = FightBulletFX.CreatFX (nMissileID, transform.parent, this.transform.localPosition, MyTool.SnyGridtoLocalPos(v.X , v.Y ,  ref GameScene.Instance.Grids  ), OnTwAtkFlyHit  );
 					if( fbFx != null ){
 						MissileCount ++;
 

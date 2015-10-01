@@ -30,7 +30,7 @@ public class Config
 	public static string DefaultPlayerName = "人公";
 
 
-	public static int	MaxCharLevel = 20;
+	public static int	MaxCharLevel = 99;
 	public static int	MaxCP = 5;
 	public static float CharMarLVUp = 1.0f;
 	public static int 	CharBaseSp = 40;

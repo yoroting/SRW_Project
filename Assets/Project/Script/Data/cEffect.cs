@@ -766,7 +766,7 @@ public class  cEffectCondition
 				return ( Rate > nRoll );
 
 			}
-			if( func.sFunc == "HP_I"  )
+			else if( func.sFunc == "HP_I"  )
 			{
 				float f1 = data_I.n_HP /data_I.GetMaxHP() ;
 				float f2 =  func.F( 1 ) ;
@@ -782,7 +782,7 @@ public class  cEffectCondition
 					return   false;		//  fail
 				}
 			}
-			if( func.sFunc == "POW_I"  )
+			else if( func.sFunc == "POW_I"  )
 			{
 				int i1 = data_I.GetPow();
 				int i2 = 0;
