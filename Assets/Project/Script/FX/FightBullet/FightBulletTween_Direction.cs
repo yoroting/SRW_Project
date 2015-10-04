@@ -16,7 +16,7 @@ public class FightBulletTween_Direction : MonoBehaviour {
 	public bool IsTweenEnd{ get{ return isTweenEnd; } }
 
 	/// <summary>移動速度值</summary>
-	private float moveSpeed = 8f; // 30.0f
+	private float moveSpeed = 8.0f; // 30.0f
 	/// <summary>目標移動速度值</summary>
 	private float targetMoveSpeed = 20f;
 	/// <summary>移動加速度</summary>
@@ -87,6 +87,23 @@ public class FightBulletTween_Direction : MonoBehaviour {
 
 		if(atTargetPos){
 			isTweenEnd = true;
+
+			// show Explosion FX
+			FightBulletFX bFx = GetComponent<FightBulletFX> ();
+			if( bFx != null ){
+				int nMissiID = bFx.nMissileID;
+				Missile ms = ConstDataManager.Instance.GetRow<Missile> ( nMissiID );
+				if( ms != null ){
+					if(  ms.n_FX_MISSILECRUSH  > 0 ){
+						GameObject go = GameSystem.PlayFX( cachedTransForm.parent.gameObject , ms.n_FX_MISSILECRUSH  );
+						if( go != null ){
+							go.transform.localPosition = nowPos;
+						}
+					}
+				}
+			}
+
+
 			if(OnEndFunc != null){
 				OnEndFunc();
 				OnEndFunc = null;

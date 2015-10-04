@@ -9,12 +9,12 @@ public class Missile : ConstDataRow<Missile>
 	public string s_FX_LAUNCH;
 	public int n_TYPE;
 	public float f_SCALE;
-	public string s_FX_MISSILEHIT;
-	public string s_FX_MISSILECRUSH;
+	public int n_FX_MISSILEHIT;
+	public int n_FX_MISSILECRUSH;
 	public string s_PATH;
 	public int n_SPEED;
 	public int n_BUFF;
-	public string s_HITEFFECT;
+	public int n_HITEFFECT;
 	public string s_CONDITION;
 	public string s_FISSION;
 }

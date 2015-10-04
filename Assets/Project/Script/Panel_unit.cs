@@ -1001,9 +1001,9 @@ public class Panel_unit : MonoBehaviour {
 			//		}
 				}
 			}
-			Vector3 vTar = new Vector3 (MyTool.ScreenToLocX (GridX), MyTool.ScreenToLocX (GridY));
+			Vector3 vTar = MyTool.SnyGridtoLocalPos( GridX , GridY  , ref GameScene.Instance.Grids );
 
-			FightBulletFX fbFx = FightBulletFX.CreatFX (nMissileID, this.transform, this.transform.localPosition, vTar, OnTwAtkFlyHit);
+			FightBulletFX fbFx = FightBulletFX.CreatFX (nMissileID, transform.parent , this.transform.localPosition, vTar, OnTwAtkFlyHit);
 			
 			// create a fly item
 			return;

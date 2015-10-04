@@ -159,7 +159,7 @@ public class Panel_Skill : MonoBehaviour {
 			item.SetItemData( MyTool.GetSkillName( skl.n_ID )  , skl.n_RANGE , skl.n_MP );
 			item.SetScrollView( ScrollView );
 
-			item.SetEnable(  pData.CheckSkillCanUse( skl ) && CheckSkillCanUse( skl , target , cmdType ) );
+			item.SetEnable(  CheckSkillCanUse( pData , skl , target , cmdType ) );
 		//	UIEventListener.Get(go).onClick += OnSkillClick; // for trig next line
 			UIEventListener.Get(go).onPress += OnSkillPress; // 
 
@@ -229,8 +229,16 @@ public class Panel_Skill : MonoBehaviour {
 	//	CastNote.SetActive (true);
 	}
 
-	void CastSkill(  )
+	void CastSkill( GameObject go  )
 	{
+		Item_Skill  item = go.GetComponent<Item_Skill>();
+		if(item != null) {
+			if( item.bEnable == false ){
+				return ;
+			}
+		}
+
+
 		Panel_CMDUnitUI panel = MyTool.GetPanel<Panel_CMDUnitUI> ( PanelManager.Instance.OpenUI (Panel_CMDUnitUI.Name) );
 		if (panel != null) {
 			panel.SetSkillID( nOpSkillID );
@@ -245,7 +253,7 @@ public class Panel_Skill : MonoBehaviour {
 		// use skill to atk
 		//GameDataManager.Instance
 		// send skill ok command
-		CastSkill ();
+		CastSkill ( go );
 
 
 		//PanelManager.Instance.CloseUI ( Name ); // close SKILL UI
@@ -317,7 +325,7 @@ public class Panel_Skill : MonoBehaviour {
 				//	OnOkClick (go);
 				//}
 				//_lastPress = -1.0f;		// reset key
-				CastSkill();
+				CastSkill( go );
 			}
 
 			_lastPress = -1.0f;		// reset key
@@ -325,26 +333,73 @@ public class Panel_Skill : MonoBehaviour {
 	}
 
 
-	public bool CheckSkillCanUse( SKILL skl , cUnitData tarunit , _CMD_TYPE cmdType )
+	static public bool CheckSkillCanUse( cUnitData pCast , SKILL skl , cUnitData tarunit , _CMD_TYPE cmdType )
 	{
-		//cCMD.Instance.
-		int nDist = 0;
-		if (tarunit != null) {
-			nDist =  MYGRIDS.iVec2.Dist( tarunit.n_X , tarunit.n_Y , pData.n_X , pData.n_Y );
-		}
-		int nRange = skl.n_RANGE > 0 ? skl.n_RANGE : 1 ;
-		if (nDist > nRange) {
+		if (skl == null) {
 			return false;
 		}
-		//====反擊時不能使用 點地 技能===============
+		if (pCast == null)
+			return false;
+
+		if (pCast.CheckSkillCanUse (skl) == false)
+			return false;
+
+		//cCMD.Instance.
+		cSkillData sklData = GameDataManager.Instance.GetSkillData ( skl.n_ID );
+		if (sklData == null) {
+			return false;
+		}
+		//====反擊時不能使用 MAP AOE 技能===============
 		if (cmdType == _CMD_TYPE._COUNTER) {
 			//if( skl.n_TARGET >= 3 )
 			//if( MyTool.GetSkillTarget( skl ) != 1 )
 //			{
-				// AOE skill can't use
+			// AOE skill can't use
 //				return false;
 //			}
+
+			if( (skl.n_TARGET==3) || (skl.n_TARGET==4) || (skl.n_TARGET==5) ){
+				//			case 6:	//6→自我AOE我方
+				//			case 7:	//7→自我AOE敵方
+				//			case 8:	//8→自我AOEALL
+				//	//		case 3:	//→MAP敵方
+				//	//		case 4: //→MAP我方
+				//	//		case 5:	//→MAPALL		
+
+				return false;
+			}
+
+
+			if (sklData.IsTag (_SKILLTAG._BANDEF )) {
+				return false;
+			}
+
+			// self cast can cast every time
+			if( (skl.n_TARGET!=0) ){
+				int nDist = 0;
+				if (tarunit != null) {
+					nDist = MYGRIDS.iVec2.Dist (tarunit.n_X, tarunit.n_Y, pCast.n_X, pCast.n_Y);
+				}
+				int nRange = skl.n_RANGE > 0 ? skl.n_RANGE : 1;
+				if (nDist > nRange) {
+					return false;
+				}
+			}
+
+
+		} else if (cmdType == _CMD_TYPE._WAITATK) { // move and atk mode 
+			if (sklData.IsTag (_SKILLTAG._NOMOVE)) {
+				return false;
+			}
+
+		} else { // normal atk
+			if (sklData.IsTag (_SKILLTAG._BANATK)) {
+				return false;
+			}
+
 		}
+
+
 		// check condition
 		return true;
 	}

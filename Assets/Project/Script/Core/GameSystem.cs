@@ -219,7 +219,7 @@ public class GameSystem : MonoBehaviour {
 	}
 
 
-	public static GameObject PlayFX( GameObject go , string name , string sortLayer="FX")//
+	public static GameObject PlayFX( GameObject go , string name  , string sortLayer="FX"  )//
 	{
 		if (go == null)
 			return null;
