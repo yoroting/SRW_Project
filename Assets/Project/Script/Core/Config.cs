@@ -41,6 +41,11 @@ public class Config
 	public static float DefReduce	=50.0f;			// 純防禦的減傷
 	public static float AssistRate = 8.0f;
 
+	public static float BaseDodge	=5.0f;
+	public static float BaseCirit	=50.0f;
+	public static float CiritRatio	=1.5f;			// 150 %
+
+
 	public static bool GOD = true;
 	public static bool MOBAI = true;				// all mob no atk 
 	public static bool DRAWGRID = false;

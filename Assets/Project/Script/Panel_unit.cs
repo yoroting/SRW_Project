@@ -1156,6 +1156,12 @@ public class Panel_unit : MonoBehaviour {
 		MoveNextPoint();	// set to target pos
 
 	}
+	// cirit
+	public void SetBeCirit(  )
+	{
+		BattleManager.Instance.ShowBattleResValue( this.gameObject , "爆擊" , 0 );
+	}
+
 	// dodge
 	public void SetDodge(  )
 	{
@@ -1168,7 +1174,7 @@ public class Panel_unit : MonoBehaviour {
 			MyTool.TweenSetOneShotOnFinish( twr , OnTwDodgeRotateEnd ); // for once only
 			bIsDodgeing = true;
 		}
-		BattleManager.Instance.ShowBattleResValue( this.gameObject , "迴避" , 0 );
+		BattleManager.Instance.ShowBattleResValue( this.gameObject , "迴避" , 1 );
 	}
 	public void OnTwDodgeRotateEnd( )
 	{		

@@ -19,7 +19,6 @@ public enum _ACTION
 	_HIT,			// atk a pos or AOE
 
 
-
 	_HITED,
 	_ASSIST_ATK,
 	_ASSIST_DEF,
@@ -423,12 +422,19 @@ public partial class ActionManager
 							// it should have fx
 						
 						}break;	
-						case cHitResult._TYPE._DODGE: // show dodge
+						case cHitResult._TYPE._BECIRIT: // show dodge
 						{
 							// it should have fx
-							pUnit.SetDodge();
+							pUnit.SetBeCirit(); // be cirit 
 							
 						}break;	
+						case cHitResult._TYPE._DODGE: // show dodge
+						{
+						// it should have fx
+							pUnit.SetDodge();
+						
+						}break;	
+
 						case cHitResult._TYPE._MISS: // show miss
 						{
 						// it should have fx

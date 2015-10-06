@@ -1,10 +1,20 @@
-﻿using UnityEngine;
-using System;
+﻿//using UnityEngine;
+//using System;
+//using System.Collections;
+//using System.Collections.Generic;
+//using Enum = System.Enum;
+//using MyClassLibrary;
+////using _SRW;
+//using MYGRIDS;
+
+
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using Enum = System.Enum;
-//using _SRW;
 using MYGRIDS;
+using MyClassLibrary;
+
 // All SRW enum list
 /// <summary>預設存在的 Channel Type</summary>
 
@@ -37,11 +47,11 @@ public class cHitResult		//
 		_BEHIT		,		// 被
 
 		_HITBACK	,
-
+		_BECIRIT		,
 		_DODGE		,		// 迴避
 		_MISS		, 		// fail
 		_GUARD		,		// guard some 
-
+		//_BLOCK		
 
 	};
 
@@ -628,10 +638,41 @@ public partial class BattleManager
 			break;
 		}
 	}
+
 	public void RunScript()
 	{
 
 	}
+
+	public void RollBaseCirit( cUnitData Atker, cUnitData Defer )
+	{
+		if (Atker == null || Defer == null) {
+			return;
+		}
+		
+		float fRate = Config.BaseCirit + ( ( Atker.GetMar()-Defer.GetMar() ) / Config.BaseDodge );
+		float  fRoll = Random.Range (0.0f, 100.0f );	
+		if( fRoll < fRate ){
+			Atker.AddStates( _FIGHTSTATE._CIRIT );
+		}
+
+
+	}
+
+	public void RollBaseDodge( cUnitData Atker, cUnitData Defer )
+	{
+		if (Atker == null || Defer == null) {
+			return;
+		}
+
+		float fRate = Config.BaseDodge + ( (Defer.GetMar() - Atker.GetMar() ) / Config.BaseDodge );
+		float  fRoll = Random.Range (0.0f, 100.0f );	
+		if( fRoll < fRate ){
+			Defer.AddStates( _FIGHTSTATE._DODGE );
+		}
+
+	}
+
 
 	public void GetAtkHitResult( int atk , int def , cUnitData Atker, cUnitData Defer, int nSkillID  , int gridX ,int gridY ,ref uAction action , ref List< cUnitData > AffectPool )
 	{
@@ -1129,7 +1170,7 @@ public partial class BattleManager
 		}
 	}
 
-	public void ShowBattleResValue( GameObject obj , string sMsg , int nMode )
+	public void ShowBattleResValue( GameObject obj , string sMsg , int nColorMode )
 	{	
 		Vector3 v = new Vector3 (0, 0, 0);
 		if ( obj != null) {
@@ -1148,6 +1189,15 @@ public partial class BattleManager
 			//	lbl.gradientTop = new Color( 1.0f, 0.0f , 0.0f );
 
 				lbl.text = sMsg;
+				switch( nColorMode ){
+				case 1:			// light blue
+					lbl.gradientTop = new Color( 0.0f, 1.0f , 1.0f );  // light blue 
+					break;
+				default:		// red
+					lbl.gradientTop = new Color( 1.0f, 0.0f , 0.0f );	// red
+					break;
+				}
+
 			}
 		}
 	}
@@ -1452,6 +1502,13 @@ public partial class BattleManager
 		pDefer.AddStates (_FIGHTSTATE._BEDAMAGE);// 被使用傷害姓技能
 
 
+		// check if base cirit happen
+		RollBaseCirit ( pAtker , pDefer );
+
+		// check if base dodge happen
+		RollBaseDodge ( pAtker , pDefer );
+
+
 		if (bDefMode == true) {
 			pDefer.AddStates( _FIGHTSTATE._DEFMODE );
 		}
@@ -1541,7 +1598,7 @@ public partial class BattleManager
 			else {
 				nAtkHp += (int)(PowDmg * pDefer.GetMulBurst() * pAtker.GetMulDamage() ); // it is neg value already
 				if (nAtkHp < 0) {
-					if ( ((pAtker.n_HP + pAtker.n_DEF) < Math.Abs (nAtkHp))) {
+					if ( ((pAtker.n_HP + pAtker.n_DEF) < Mathf.Abs(nAtkHp))) {
 						if (pDefer.IsStates (_FIGHTSTATE._MERCY)) {
 							nAtkHp = -(pAtker.n_HP + pAtker.n_DEF-1);
 						}
@@ -1576,14 +1633,22 @@ public partial class BattleManager
 		// 攻方加成
 		fAtkDmg = fAtkDmg * pAtker.GetMulBurst () ;
 
+		// cirit happpen
+		if (pAtker.IsStates (_FIGHTSTATE._CIRIT)) {
+
+			fAtkDmg *= Config.CiritRatio;
+			resPool.Add (new cHitResult (cHitResult._TYPE._BECIRIT , nDefer, 0 ));	
+		}
+
 		//守方減免
 		fAtkDmg *= fDefReduce;
+
 
 		//守方反彈傷害 1/2
 		if( pDefer.IsStates( _FIGHTSTATE._RETURN ) ){
 			nAtkHp = (int)( -0.5f*fAtkDmg );
 			if (nAtkHp < 0) {
-				if (((pAtker.n_HP + pAtker.n_DEF) < Math.Abs (nAtkHp))) {
+				if (((pAtker.n_HP + pAtker.n_DEF) < Mathf.Abs (nAtkHp))) {
 					if (pDefer.IsStates (_FIGHTSTATE._MERCY)) {
 						nAtkHp = -(pAtker.n_HP + pAtker.n_DEF-1);
 					}
@@ -1613,7 +1678,7 @@ public partial class BattleManager
 
 		// normal attack
 
-		if( nDefHp < 0 && ( (pDefer.n_HP+pDefer.n_DEF) < Math.Abs(nDefHp) ) ){
+		if( nDefHp < 0 && ( (pDefer.n_HP+pDefer.n_DEF) < Mathf.Abs(nDefHp) ) ){
 			if (pAtker.IsStates (_FIGHTSTATE._MERCY) || pDefer.IsTag( _UNITTAG._NODIE ) ) {		// 手加減 或 defer is 不死身
 				nDefHp = -(pDefer.n_HP+pDefer.n_DEF-1);
 			}

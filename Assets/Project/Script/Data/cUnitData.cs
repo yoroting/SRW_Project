@@ -1003,9 +1003,11 @@ public class cUnitData{
 
 		attr.f_MAR 	 = rank * ( sch.f_MAR+ (sch.f_MAR_LVUP * nLv) );
 
+		float fHpGrow = Mathf.Pow( 1.3f , nLv );
+		attr.n_HP    = rank * ( sch.n_HP + (int)(sch.n_HP_LVUP * fHpGrow ) );  // HP 成長率較高
+
 		float fGrow = Mathf.Pow( 1.2f , nLv );
 
-		attr.n_HP    = rank * ( sch.n_HP + (int)(sch.n_HP_LVUP * fGrow ) );
 		attr.n_MP 	 = rank * ( sch.n_MP + (int)(sch.n_MP_LVUP * fGrow ) );
 		attr.n_ATK 	 = rank * ( sch.n_ATK+ (int)(sch.n_ATK_LVUP * fGrow ) );
 		attr.n_DEF 	 = rank * ( sch.n_DEF+ (int)(sch.n_DEF_LVUP * fGrow ) );
@@ -1017,8 +1019,6 @@ public class cUnitData{
 //		attr.n_ATK 	 = rank * ( sch.n_ATK+ (sch.n_ATK_LVUP * nLv) );
 //		attr.n_DEF 	 = rank * ( sch.n_DEF+ (sch.n_DEF_LVUP * nLv) );
 //		attr.n_POW 	 = rank * ( sch.n_POW+ (sch.n_POW_LVUP * nLv) );
-
-		Mathf.Pow( 1.2f , 1 );//
 
 		attr.n_SP = 0;
 		attr.n_MOV = sch.n_MOV;
