@@ -156,7 +156,7 @@ public class Panel_Skill : MonoBehaviour {
 				continue;
 
 			Item_Skill item = go.GetComponent<Item_Skill> ();
-			item.SetItemData( MyTool.GetSkillName( skl.n_ID )  , skl.n_RANGE , skl.n_MP );
+			item.SetItemData( MyTool.GetSkillName( skl.n_ID )  , skl.n_MINRANGE , skl.n_RANGE , skl.n_MP );
 			item.SetScrollView( ScrollView );
 
 			item.SetEnable(  CheckSkillCanUse( pData , skl , target , cmdType ) );
@@ -380,8 +380,11 @@ public class Panel_Skill : MonoBehaviour {
 				if (tarunit != null) {
 					nDist = MYGRIDS.iVec2.Dist (tarunit.n_X, tarunit.n_Y, pCast.n_X, pCast.n_Y);
 				}
-				int nRange = skl.n_RANGE > 0 ? skl.n_RANGE : 1;
-				if (nDist > nRange) {
+
+				int nMinRange ;
+				int nRange ;
+				MyTool.GetSkillRange( skl.n_ID ,out nRange,out nMinRange);
+				if( (nDist > nRange) || (nDist < nMinRange) ) {
 					return false;
 				}
 			}

@@ -1324,7 +1324,7 @@ public partial class BattleManager
 		}
 	}
 
-	public void GetAffectPool( cUnitData Atker , cUnitData Defer , int SkillID , int nTarX , int nTarY , ref List< cUnitData> pool  )
+	static public void GetAffectPool( cUnitData Atker , cUnitData Defer , int SkillID , int nTarX , int nTarY , ref List< cUnitData> pool  )
 	{
 		// don't push defer to affect pool
 		int nDefer = 0;
@@ -1392,7 +1392,7 @@ public partial class BattleManager
 						pool.Add( pUnit );
 					}				
 				}
-				else if(  CanPK( Atker.eCampID , pUnit.eCampID ) == bCanPK ){
+				else if(  MyTool.CanPK( Atker.eCampID , pUnit.eCampID ) == bCanPK ){
 					if( pool.Contains( pUnit ) == false ){
 						pool.Add( pUnit );
 					}
@@ -1427,7 +1427,7 @@ public partial class BattleManager
 						pool.Add( pUnit );
 					}
 				}
-				else if(  CanPK( Atker.eCampID , pUnit.eCampID ) == bCanPK ){
+				else if(  MyTool.CanPK( Atker.eCampID , pUnit.eCampID ) == bCanPK ){
 					if( pool.Contains( pUnit ) == false ){
 						pool.Add( pUnit );
 					}

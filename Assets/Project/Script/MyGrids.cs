@@ -969,8 +969,14 @@ namespace MYGRIDS
                     for (int j = 0; j <= max; j++) // 0 不用計算
                     {
                         int tmp = i + j;
-                        if (tmp > max || tmp < min)
+                        if (tmp > max || tmp < min){
+							if( tmp < min ){
+								continue;
+
+							}
+
                             continue;
+						}
 
 
                         int y1 = v.Y + j;           // 正

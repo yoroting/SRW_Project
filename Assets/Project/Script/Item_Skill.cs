@@ -18,10 +18,18 @@ public class Item_Skill : MonoBehaviour {
 	
 	}
 
-	public void SetItemData( string name , int nRange , int nCost )
+	public void SetItemData( string name , int nMinRange , int nRange , int nCost )
 	{
 		MyTool.SetLabelText ( NameObj , name );
-		MyTool.SetLabelInt ( RangeObj , nRange );
+
+		if( (nMinRange == 0) || (nMinRange==nRange) ){
+
+			MyTool.SetLabelInt ( RangeObj , nRange  );
+		}
+		else{
+			MyTool.SetLabelText ( RangeObj , string.Format("{0}-{1} ", nMinRange ,nRange  ) );
+		}
+
 		MyTool.SetLabelInt ( CostObj , nCost );
 
 	}

@@ -580,11 +580,14 @@ public class Panel_CMDUnitUI : MonoBehaviour
 			Panel_Skill.OpenUI (pCmder.Ident (), _SKILL_TYPE._LAST ,0 , cCMD.Instance.eCMDTYPE );
 		} else {
 			int nRange = 1;
-			if (CMD.nSkillID > 0) {
-				SKILL skl = ConstDataManager.Instance.GetRow<SKILL> (CMD.nSkillID);
-				nRange = skl.n_RANGE;
-			}
-			Panel_StageUI.Instance.CreateAttackOverEffect (pCmder, nRange);
+			int nMinRange = 0;
+			MyTool.GetSkillRange(CMD.nSkillID ,out nRange , out nMinRange );
+
+//			if (CMD.nSkillID > 0) {
+//				SKILL skl = ConstDataManager.Instance.GetRow<SKILL> (CMD.nSkillID);
+//				nRange = skl.n_RANGE;
+//			}
+			Panel_StageUI.Instance.CreateAttackOverEffect (pCmder, nRange,nMinRange );
 
 		}
 		if (CMD.eCMDTYPE == _CMD_TYPE._WAITATK) {
@@ -615,6 +618,12 @@ public class Panel_CMDUnitUI : MonoBehaviour
 			SKILL skl = ConstDataManager.Instance.GetRow<SKILL>( nSkillID ); 
 			CMD.nSkillID = nSkillID;
 			CMD.nAOEID = skl.n_AREA;
+
+			// skill range
+			int nRange=1;
+			int nMinRange = 0;
+			
+			MyTool.GetSkillRange( nSkillID , out nRange , out nMinRange );
 
 			// need take care counter
 			if( CMD.eCMDTYPE == _CMD_TYPE._COUNTER )
@@ -655,9 +664,10 @@ public class Panel_CMDUnitUI : MonoBehaviour
 				{	// if skill need a target. go to target mode
 					CMD.eCMDSTATUS = _CMD_STATUS._WAIT_TARGET;
 					CMD.eCMDID 	   = _CMD_ID._ATK;			// enter atk mode
-					
+
+
 					Panel_StageUI.Instance.ClearOverCellEffect ();
-					Panel_StageUI.Instance.CreateAttackOverEffect (pCmder , skl.n_RANGE );
+					Panel_StageUI.Instance.CreateAttackOverEffect (pCmder , nRange , nMinRange );
 					
 					CMD.eCMDTARGET = _CMD_TARGET._UNIT;
 
@@ -675,7 +685,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 					CMD.eCMDID 	   = _CMD_ID._ATK;			// enter atk mode
 					
 					Panel_StageUI.Instance.ClearOverCellEffect ();
-					Panel_StageUI.Instance.CreateAttackOverEffect (pCmder , skl.n_RANGE );
+					Panel_StageUI.Instance.CreateAttackOverEffect (pCmder , skl.n_RANGE, skl.n_MINRANGE );
 					
 					CMD.eCMDTARGET = _CMD_TARGET._POS;
 

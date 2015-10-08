@@ -284,14 +284,25 @@ public class MyTool {
 	}
 
 
-	public static int GetSkillRange( int nID )
+	public static int GetSkillRange( int nID  , out int nMax,out int nMin  )
 	{
-		if (nID == 0)
+		// default value
+		nMin =0;
+		nMax = 1;
+		if (nID == 0){
+			nMin = 1; // normal atk can't atk self
 			return 1;
+		}
 
 		SKILL skl = ConstDataManager.Instance.GetRow< SKILL > ( nID );
 		if (skl == null)
 			return 0;
+		// get const value
+		nMin = skl.n_MINRANGE;
+		nMax = skl.n_RANGE;
+		if( nMax == 0 ){
+			nMax =1;
+		}
 
 		return skl.n_RANGE;
 	}

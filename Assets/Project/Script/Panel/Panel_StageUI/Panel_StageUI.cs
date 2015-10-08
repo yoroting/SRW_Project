@@ -1249,7 +1249,7 @@ public class Panel_StageUI : MonoBehaviour
 //		Debug.Log( "create moveeffect cell with ticket:" + during );
 	}
 
-	public void CreateAttackOverEffect( Panel_unit unit , int nRange=1)
+	public void CreateAttackOverEffect( Panel_unit unit , int nRange=1 ,  int nMinRange=0)
 	{
 		foreach( KeyValuePair< string , GameObject> pair in OverCellAtkPool )
 		{
@@ -1266,8 +1266,8 @@ public class Panel_StageUI : MonoBehaviour
 		if (nRange < 1)
 			nRange = 1;
 
-		List<iVec2> AtkList =  Grids.GetRangePool ( unit.Loc, nRange );
-		AtkList.RemoveAt (0); // remove self pos
+		List<iVec2> AtkList =  Grids.GetRangePool ( unit.Loc, nRange ,nMinRange );
+		//AtkList.RemoveAt (0); // remove self pos
 
 		foreach( iVec2 v in AtkList )
 		{

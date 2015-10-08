@@ -156,7 +156,10 @@ public class MobAI  {
 	static  bool _AI_LowstAttack( Panel_unit mob , int nSkillID , int nMove , int nLimit = 0 )
 	{
 		int ident = mob.Ident ();
-		int nSkillRange = MyTool.GetSkillRange ( nSkillID );
+		int nMinRange ;
+		int nSkillRange ;
+		MyTool.GetSkillRange ( nSkillID , out nSkillRange , out nMinRange);
+
 		Dictionary< Panel_unit , int > pool = Panel_StageUI.Instance.GetUnitHpPool(mob, true , (nMove+nSkillRange) );
 		// Sort HP
 		var items = from pair in pool orderby pair.Value ascending select pair;
@@ -176,8 +179,16 @@ public class MobAI  {
 				{
 					iVec2 last = path[ path.Count -1 ];
 					if( last != null  ){
-						if( last.Dist( pair.Key.Loc ) > nSkillRange ){
-							continue; // 太遠了~放棄不打
+						int nDist2 = last.Dist( pair.Key.Loc );
+						if( (nDist2 > nSkillRange) || (nDist2 < nMinRange) ){// 檢查 too far/too near 要不要換skill打
+							SKILL newSkill = FindSkillByDist( mob ,nDist2 );
+							if( newSkill == null ){
+								continue; // 太遠了~放棄不打
+							}
+							else{
+								// change skill
+								nSkillID = newSkill.n_ID ;
+							}
 						}
 						
 						// send a move event					
@@ -194,6 +205,16 @@ public class MobAI  {
 					
 				}
 
+			}
+			else if( nDist < nMinRange ){ // check if need change skill
+				SKILL newSkill = FindSkillByDist( mob ,nDist );
+				if( newSkill != null ){	// change skill
+					nSkillID = newSkill.n_ID ;
+					bCanAtk = true;
+				}else if( nDist <= 1 ){
+					nSkillID = 0;
+					bCanAtk = true;
+				}
 			}
 			else{
 				bCanAtk = true ; // atk directly
@@ -218,7 +239,9 @@ public class MobAI  {
 		int ident = mob.Ident ();
 		
 		// get skill range
-		int nSkillRange = MyTool.GetSkillRange ( nSkillID );
+		int nMinRange ;
+		int nSkillRange ;
+		MyTool.GetSkillRange ( nSkillID , out nSkillRange , out nMinRange);
 		
 		// Sort dist
 		var items = from pair in pool orderby pair.Value ascending select pair;
@@ -238,9 +261,17 @@ public class MobAI  {
 				{
 					iVec2 last = path[ path.Count -1 ];
 					if( last != null  ){
-						if( last.Dist( pair.Key.Loc ) > nSkillRange ){
-							continue ; // too far
-
+						int nDist2 = last.Dist( pair.Key.Loc );
+						if( (nDist2 > nSkillRange) || (nDist2 < nMinRange) ){
+							// 檢查要不要換skill打
+							SKILL newSkill = FindSkillByDist( mob ,nDist2 );
+							if( newSkill == null ){
+								continue; // 太遠了~放棄不打
+							}
+							else{
+								// change skill
+								nSkillID = newSkill.n_ID ;
+							}
 						}
 
 						// send a move event					
@@ -259,6 +290,16 @@ public class MobAI  {
 
 				}
 
+			}
+			else if( nDist < nMinRange ){ // check if need change skill
+				SKILL newSkill = FindSkillByDist( mob ,nDist );
+				if( newSkill != null ){	// change skill
+					nSkillID = newSkill.n_ID ;
+					bCanAtk = true;
+				}else if( nDist <= 1 ){
+					nSkillID = 0;
+					bCanAtk = true;
+				}
 			}
 			else{
 				bCanAtk = true ; // atk directly
@@ -289,9 +330,19 @@ public class MobAI  {
 				{
 					iVec2 last = path[ path.Count -1 ];
 					if( last != null  ){
-						if( last.Dist( pair.Key.Loc ) > nSkillRange ){
+						int nDist2 = last.Dist( pair.Key.Loc );
+						if( (nDist2 > nSkillRange) || (nDist2 < nMinRange) ){
 							// too far .. no attack
-							
+							// 檢查要不要換skill打
+							SKILL newSkill = FindSkillByDist( mob ,nDist2 );
+							if( newSkill == null ){
+								continue; // 太遠了~放棄不打
+							}
+							else{
+								// change skill
+								nSkillID = newSkill.n_ID ;
+								bCanAtk = true;
+							}
 						}
 						else {
 							bCanAtk = true;
@@ -310,6 +361,16 @@ public class MobAI  {
 					
 				}
 				
+			}
+			else if( nDist < nMinRange ){ // check if need change skill
+				SKILL newSkill = FindSkillByDist( mob ,nDist );
+				if( newSkill != null ){	// change skill
+					nSkillID = newSkill.n_ID ;
+					bCanAtk = true;
+				}else if( nDist <= 1 ){
+					nSkillID = 0;
+					bCanAtk = true;
+				}
 			}
 			else{
 				bCanAtk = true ; // atk directly
@@ -343,8 +404,9 @@ public class MobAI  {
 		int ident = mob.Ident ();
 		
 		// get skill range
-		int nSkillRange = MyTool.GetSkillRange ( nSkillID );
-
+		int nMinRange =0;
+		int nSkillRange =0;
+		MyTool.GetSkillRange ( nSkillID , out nSkillRange , out nMinRange);
 		// Sort dist
 		var items = from pair in pool orderby pair.Value ascending select pair;
 		
@@ -355,8 +417,19 @@ public class MobAI  {
 			if( nDist > nSkillRange  ) // pathfind if need
 			{
 				// 距離太遠，怎樣都不可能到的 先放棄
-				if( (nSkillRange+nMove) < nDist )
-					continue;
+				if( (nSkillRange+nMove) < nDist ){
+					// 檢查要不要換skill打
+					SKILL newSkill = FindSkillByDist( mob , (nDist-nMove) );
+					if( newSkill == null ){
+						continue; // 太遠了~放棄不打
+					}
+					else{
+						// change skill
+						nSkillID 	= newSkill.n_ID ;
+						nSkillRange = newSkill.n_RANGE;
+						//bCanAtk = true;
+					}
+				}
 
 				List< iVec2> path = FindPathToTarget( mob , pair.Key , nMove , nSkillRange );
 				if( path == null || (path.Count ==0) )
@@ -367,8 +440,18 @@ public class MobAI  {
 				{
 					iVec2 last = path[ path.Count -1 ];
 					if( last != null  ){
-						if( last.Dist( pair.Key.Loc ) > nSkillRange ){
-							continue; // 太遠了~放棄不打
+						int nDist2 = last.Dist( pair.Key.Loc );
+
+						if( nDist2 > nSkillRange ){
+							SKILL newSkill = FindSkillByDist( mob , (nDist-nMove) );
+							if( newSkill == null ){
+								continue; // 太遠了~放棄不打
+							}
+							else{
+								// change skill
+								nSkillID 	= newSkill.n_ID ;
+
+							}
 						}
 
 						// send a move event					
@@ -385,9 +468,18 @@ public class MobAI  {
 				}
 
 			}
+			else if( nDist < nMinRange ){ // check if need change skill
+				SKILL newSkill = FindSkillByDist( mob ,nDist );
+				if( newSkill != null ){	// change skill
+					nSkillID = newSkill.n_ID ;
+					bCanAtk = true;
+				}else if( nDist <= 1 ){
+					nSkillID = 0;
+					bCanAtk = true;
+				}
+			}
 			else{
-				bCanAtk = true ; // atk directly
-				
+				bCanAtk = true ; // atk directly				
 			}
 			
 			if( bCanAtk )
@@ -423,8 +515,9 @@ public class MobAI  {
 		}
 		//=========================
 		bool bCanAtk = false;
-		int nSkillRange = MyTool.GetSkillRange ( nSkillID );
-
+		int nMinRange =0;
+		int nSkillRange =0;
+		MyTool.GetSkillRange ( nSkillID , out nSkillRange , out nMinRange);
 		int nDist = mob.Loc.Dist( target.Loc )   ; // value is dist
 		if( nDist > nSkillRange  ) // pathfind if need
 		{
@@ -455,6 +548,16 @@ public class MobAI  {
 				}			
 			}
 
+		}
+		else if( nDist < nMinRange ){ // check if need change skill
+			SKILL newSkill = FindSkillByDist( mob ,nDist );
+			if( newSkill != null ){	// change skill
+				nSkillID = newSkill.n_ID ;
+				bCanAtk = true;
+			}else if( nDist <= 1 ){
+				nSkillID = 0;
+				bCanAtk = true;
+			}
 		}
 		else{
 			bCanAtk = true ; // atk directly
@@ -502,7 +605,7 @@ public class MobAI  {
 		ActionManager.Instance.CreateWaitingAction (ident);
 	}
 
-
+	// tool finc
 	public static List<iVec2> FindPathToTarget( Panel_unit Mob , Panel_unit Target  , int nMove , int nRange =1 )
 	{
 		if( Mob == null || Target == null ){
@@ -568,10 +671,8 @@ public class MobAI  {
 
 	static public int SelSkill( cUnitData pMob , cUnitData pTarget = null , bool bCounterMode = false  )
 	{
-		//return 11702; // debug
+		return 11701; // debug
 		//nDeferSkillID = 11704;  //天羅地網
-
-
 		cUnitData pData = pMob;
 		if( pData == null ){
 			return 0;  // no attack
@@ -582,7 +683,11 @@ public class MobAI  {
 		}
 
 		int nDist = 0;
+		int nTarX =pMob.n_X;
+		int nTarY =pMob.n_Y;
 		if( pTarget != null ){
+			nTarX = pTarget.n_X;
+			nTarY = pTarget.n_Y;
 			nDist = iVec2.Dist(pMob.n_X , pMob.n_Y ,pTarget.n_X , pTarget.n_Y );
 		}
 
@@ -619,8 +724,10 @@ public class MobAI  {
 					continue;
 				}
 				if( (pData.n_MP < skl.n_MP) ){
-				//	continue;
-				}
+					if( Config.FREE_MP == false ){
+						continue;
+					}
+				}			
 
 
 				// 防招只在破防時使用
@@ -633,34 +740,64 @@ public class MobAI  {
 				{
 					if( pTarget == null )
 						continue;
-					if( (pMob.GetMar() - pTarget.GetMar()) < 20.0f )
+					if( (pMob.GetMar() - pTarget.GetMar()) > 20.0f )
 						continue;
 				}
 
 
 				// check range when counter mode
 				if( bCounterMode){
-					//// 點地技能不能放	
-					if( skl.n_RANGE < nDist )
+					// range cheeck
+					int nRange ;
+					int nMinRange;
+					MyTool.GetSkillRange( nSkillID , out nRange , out nMinRange );
+				
+					if( nMinRange > nDist )
+						continue; // too near can't cast
+
+					// counter can't move
+					if( nRange < nDist )
 						continue;
+
+					// 點地技能不能放	
+					if (skldata.IsTag (_SKILLTAG._BANDEF )) {
+						continue;
+					}
+
+					if( (skl.n_TARGET==3) || (skl.n_TARGET==4) || (skl.n_TARGET==5) ){
+					//			case 6:	//6→自我AOE我方
+					//			case 7:	//7→自我AOE敵方
+					//			case 8:	//8→自我AOEALL
+					//	//		case 3:	//→MAP敵方
+					//	//		case 4: //→MAP我方
+					//	//		case 5:	//→MAPALL							
+						continue;
+					}
+				}
+				else{// normal atk
+					if (skldata.IsTag (_SKILLTAG._BANATK )) {
+						continue;
+					}
 				}
 				// 
 
-				int widget = skl.n_CP; // cp is base widget
+				int widget = (skl.n_CP + skl.n_LEVEL_LEARN) ; // cp is base widget
 
 				// 	MODIFY widget 
 				if( skl.n_AREA != 0 ){
-					widget +=3; // aoe first
+					List< cUnitData > AffectPool = new List< cUnitData >(); //影響人數
+
+					BattleManager.GetAffectPool( pMob , pTarget, skl.n_ID, nTarX ,nTarY , ref  AffectPool  );
+					widget += (4*AffectPool.Count); //  影響人越多，權重越大
+
+					AffectPool.Clear();
 				}
 
 				sklPool.Add( nSkillID , widget );
 				//sklLst.Add(  skl );
 		}
-		// 
-		if (nDist > 1) {
-			int a =0;
-		}
 
+		// 
 		if( (sklPool.Count > 0) )
 		{
 			// random a skill
@@ -677,4 +814,37 @@ public class MobAI  {
 		return 0; // normal attack
 	}
 
+
+	static public SKILL FindSkillByDist( Panel_unit mob  , int nDist  )
+	{	
+		cUnitData pData = mob.pUnitData;
+		if( pData == null )
+			return null;
+
+		foreach(  int  nID in pData.SkillPool ){
+			int nSkillID = nID;
+			nSkillID = pData.Buffs.GetUpgradeSkill( nSkillID ); // Get upgrade skill
+			if( nSkillID ==0 )
+				continue;
+			SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(nSkillID);			
+			if( skl.n_SCHOOL == 0 )	// == 0 is ability
+				continue;				
+			if( skl.n_PASSIVE == 1 )
+				continue;
+			
+			// check cp && MP
+			if( (pData.n_CP < skl.n_CP) ){
+				continue;
+			}
+			if( (pData.n_MP < skl.n_MP) ){
+				if( Config.FREE_MP == false ){
+					continue;
+				}
+			}
+			if( (skl.n_RANGE >= nDist) && (skl.n_MINRANGE<=nDist) ){
+				return skl ;
+			}
+		}
+		return null;
+	}
 }

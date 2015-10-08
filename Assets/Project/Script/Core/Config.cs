@@ -51,6 +51,8 @@ public class Config
 	public static bool DRAWGRID = false;
 	public static bool KILL_MODE = false;
 	public static bool DebugInfo = true;			// 
+	public static bool FREE_MP = false;
+
 
 	public static int  WIDTH = 960;
 	public static int  HEIGHT = 640;

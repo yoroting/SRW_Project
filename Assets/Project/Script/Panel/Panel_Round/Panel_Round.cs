@@ -68,6 +68,8 @@ public class Panel_Round : MonoBehaviour {
 		// close UI
 		//PanelManager.Instance.CloseUI( Name );
 		PanelManager.Instance.DestoryUI( Name );
+
+		System.GC.Collect();			// Free memory each round end
 	}
 
 }
