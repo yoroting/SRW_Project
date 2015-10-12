@@ -242,9 +242,6 @@ public class Panel_unit : MonoBehaviour {
 			float nTotal =  nMaxdef+nMaxhp;
 			if( nTotal == 0) nTotal = 1;
 
-
-
-
 			if( pUnitData.n_HP <= 0 ){				 
 				pUnitData.n_HP =0;
 			}
@@ -472,7 +469,20 @@ public class Panel_unit : MonoBehaviour {
 
 		if( bIsAtking || bIsShaking || bIsCasting || bIsBorning || bIsDeading || bIsLeaving || bIsDodgeing || bIsMissing || bIsGuarding )
 			return true;
+
 		if (IsMoving ())
+			return true;
+
+		if( MissileCount > 0 )
+			return true; 
+
+		if( BattleMsg.nMsgCount > 0 )
+			return true;
+
+		if( CFX_AutoDestructShuriken.nFXCount>0 )
+			return true;
+
+		if( FxObj != null )
 			return true;
 
 		return false;
@@ -674,6 +684,16 @@ public class Panel_unit : MonoBehaviour {
 		CurAction = null;
 		nSubActFlow ++;
 
+		// check auto pop round end
+		if( false == CanDoCmd() )
+		{
+			// check need round end or not 
+			if( eCampID == _CAMP._PLAYER ){				
+				Panel_StageUI.Instance.CheckPlayerRoundEnd();
+			}
+		}
+
+
 		return true;
 	}
 	public void RunAction()
@@ -691,6 +711,11 @@ public class Panel_unit : MonoBehaviour {
 				nSubActFlow++;
 				break;
 			case 1:
+				if( IsAnimate() == false ){
+					nSubActFlow++;
+				}
+				break;
+			case 2:
 				ActionFinished ();			
 				break;
 			}
@@ -778,7 +803,7 @@ public class Panel_unit : MonoBehaviour {
 				//ActionMove( CurAction.nTarGridX , CurAction.nTarGridY  );
 				break;
 			case 1:
-				if( BattleMsg.nMsgCount == 0 ){// wait all msg complete
+				if( !IsAnimate() && BattleMsg.nMsgCount == 0 ){// wait all msg complete
 					// clear effect cell
 					Panel_StageUI.Instance.ClearAOECellEffect();
 					// play effect
@@ -833,6 +858,11 @@ public class Panel_unit : MonoBehaviour {
 				//ActionMove( CurAction.nTarGridX , CurAction.nTarGridY  );
 				break;
 			case 1:
+				if( IsAnimate() == false ){
+					nSubActFlow++;
+				}
+				break;
+			case 2:
 				ActionFinished();
 				break;
 			}

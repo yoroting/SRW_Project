@@ -610,6 +610,17 @@ public class IMMUNE: cEffect
 }
 
 //==== is status ==
+public class IS_HIT: cEffect
+{
+	public IS_HIT(  ){ }	
+	
+	override public bool _IsStatus(  _FIGHTSTATE st ){
+		return (_FIGHTSTATE._HIT == st );
+	}				// check user in one status		
+}
+
+
+
 public class IS_DODGE: cEffect
 {
 	public IS_DODGE(  ){ }	

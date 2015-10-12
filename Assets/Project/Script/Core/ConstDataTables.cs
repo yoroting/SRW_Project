@@ -10,7 +10,7 @@
 
 	SCHOOL=11, 
 	SKILL=12,
-
+	Missile = 14,
 	AI_TACTIC = 16,
 	AI_COMBAT = 17,
 	MOBS	 = 18,

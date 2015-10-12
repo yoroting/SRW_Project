@@ -262,7 +262,7 @@ public class GameSystem : MonoBehaviour {
 
 		if( des == null  ){
 			//Debug.LogErrorFormat( " particle won't auto destory at {0}",name );
-			instance.AddComponent< CFX_AutoDestructShuriken >(); // auto destory
+			des = instance.AddComponent< CFX_AutoDestructShuriken >(); // auto destory
 		}
 
 		// MAKE SURE not double del
@@ -304,8 +304,9 @@ public class GameSystem : MonoBehaviour {
 
 	public static void PlayBGM( int nBGMIdx )
 	{
-		if( nBGMIdx <=0 )
+		if( nBGMIdx <=0 ){
 			AudioManager.Instance.Stop(AudioChannelType.BGM);
+		}
 
 		if (m_nCurBGMIdx == nBGMIdx)
 			return;

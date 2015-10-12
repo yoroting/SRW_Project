@@ -671,7 +671,7 @@ public class MobAI  {
 
 	static public int SelSkill( cUnitData pMob , cUnitData pTarget = null , bool bCounterMode = false  )
 	{
-		return 11701; // debug
+	//	return 11701; // debug
 		//nDeferSkillID = 11704;  //天羅地網
 		cUnitData pData = pMob;
 		if( pData == null ){

@@ -262,7 +262,7 @@ public partial class BattleManager
 
 				if( PanelManager.Instance.CheckUIIsOpening( Panel_CMDUnitUI.Name ) == false )
 				{
-					// special process for def is player
+					// special process for def is player+
 					if ( Defer.eCampID  == _CAMP._PLAYER  ) {
 
 						// check to reopen counter CMD UI	
@@ -610,7 +610,12 @@ public partial class BattleManager
 			nPhase++;
 			break;
 		case 2:			
-			nPhase++;
+			// wait all action complete
+			//if( Panel_StageUI.Instance.IsAnyActionRunning() == false ){
+
+				nPhase++;	
+			//}
+
 			break;
 		case 3:			// close all 
 			nPhase++;
@@ -667,7 +672,7 @@ public partial class BattleManager
 
 		float fRate = Config.BaseDodge + ( (Defer.GetMar() - Atker.GetMar() ) / Config.BaseDodge );
 		float  fRoll = Random.Range (0.0f, 100.0f );	
-		if( fRoll < fRate ){
+		if( Atker.IsStates( _FIGHTSTATE._HIT ) || fRoll < fRate ){
 			Defer.AddStates( _FIGHTSTATE._DODGE );
 		}
 
@@ -719,6 +724,14 @@ public partial class BattleManager
 			cUnitData cRealTarData = Defer;
 
 			if( bIsDamage ){
+
+				// check if base cirit happen
+				RollBaseCirit ( Atker , Defer );
+				
+				// check if base dodge happen
+				RollBaseDodge ( Atker , Defer );
+
+
 				// 
 				nGuarderID = Defer.Buffs.GetGuarder();
 				//if( Defer.IsStates( _FIGHTSTATE._GUARD ) )
@@ -1503,11 +1516,10 @@ public partial class BattleManager
 
 
 		// check if base cirit happen
-		RollBaseCirit ( pAtker , pDefer );
+//		RollBaseCirit ( pAtker , pDefer );
 
 		// check if base dodge happen
-		RollBaseDodge ( pAtker , pDefer );
-
+//		RollBaseDodge ( pAtker , pDefer );
 
 		if (bDefMode == true) {
 			pDefer.AddStates( _FIGHTSTATE._DEFMODE );
@@ -1517,6 +1529,7 @@ public partial class BattleManager
 		List<cHitResult> resPool = new List<cHitResult> ();
 	//	resPool.Add ( new cHitResult( cHitResult._TYPE._HIT ,nAtker , nDefer  ) );
 
+		// Atk must hit
 
 		// 守方強制迴避
 		if (pDefer.IsStates (_FIGHTSTATE._DODGE)) {
@@ -1619,7 +1632,10 @@ public partial class BattleManager
 		float fAtkDmg 	= (HitRate*Atk) - DefAC  ; 
 		float fDefReduce = pDefer.GetMulDamage ();  //守方減免
 		if (pAtker.IsStates (_FIGHTSTATE._BROKEN)) {
-			fDefReduce = 1.0f;						// 破防 
+			fDefReduce += 0.5f;
+			//if( fDefReduce > 1.0f ){
+				fDefReduce = 1.0f;						// 破防 
+			//}
 		}
 
 

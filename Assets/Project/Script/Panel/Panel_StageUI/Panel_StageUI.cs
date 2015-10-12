@@ -1468,20 +1468,6 @@ public class Panel_StageUI : MonoBehaviour
 				}
 			}
 		}
-
-
-//		cCamp camp = GameDataManager.Instance.GetCamp( nCamp );
-//		if (camp != null) {
-//			foreach( int ident in camp.memLst )
-//			{
-//				Panel_unit unit = GetUnitByIdent( ident ); 
-//				if( unit != null )
-//				{
-//					lst.Add( unit );
-//				}
-//			}
-//		}
-
 		return lst;
 	}
 
@@ -1540,6 +1526,40 @@ public class Panel_StageUI : MonoBehaviour
 		}
 		return false;
 	}
+
+	// return true
+	public bool CheckPlayerRoundEnd()
+	{
+		//==================
+		if( GameDataManager.Instance.nActiveCamp != _CAMP._PLAYER ){
+			return false;  // don't check in enemy round
+
+		}
+
+
+		// change faction if all unit moved or dead.
+		List<Panel_unit> lst = GetUnitListByCamp (_CAMP._PLAYER);
+
+		foreach (Panel_unit unit in lst ) {
+			if( bIsStageEnd == true ){  // 每個敵方單位行動後都可能觸發，關卡結束 要避免AI 繼續運算
+				return true; // block all ai here
+			}
+			
+			if( unit.CanDoCmd() )
+			{
+				return false;
+			}
+		}
+
+		// pop cmd end ui
+		Panel_CheckBox panel = GameSystem.OpenCheckBox();
+		if (panel) {
+			panel.SetRoundEndCheck();
+		}
+
+		return true;
+	}
+
 
 	// Check event
 	bool CheckEventCanRun( STAGE_EVENT evt )

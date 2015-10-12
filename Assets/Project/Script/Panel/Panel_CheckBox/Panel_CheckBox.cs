@@ -31,6 +31,12 @@ public class Panel_CheckBox : MonoBehaviour {
 
 
 	}
+	public void SetRoundEndCheck()
+	{
+		nCheckType = 2;
+		SetMsg ( "直接結束本回合？" );
+	}
+
 
 	public void SetMsg( string msg ){
 		MyTool.SetLabelText ( lblText , msg );
@@ -39,11 +45,12 @@ public class Panel_CheckBox : MonoBehaviour {
 
 	void OnOkClick( GameObject go )
 	{
-		// 
-		if (nCheckType == 1) {
+		if (nCheckType == 1) {		// check type
 			MyTool.CMDUI().AOE_OK();
 		}
-
+		else if (nCheckType == 2) { //round end
+			MyTool.CMDUI().RoundEndCmd();
+		}
 		PanelManager.Instance.CloseUI (Name );
 	}
 
@@ -52,7 +59,8 @@ public class Panel_CheckBox : MonoBehaviour {
 		if (nCheckType == 1) {			
 			MyTool.CMDUI().AOE_Cancel();
 		}
-
+		else if (nCheckType == 2) { //round end
+		}
 
 		PanelManager.Instance.CloseUI (Name );
 	}

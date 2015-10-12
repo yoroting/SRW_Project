@@ -305,7 +305,7 @@ public class Panel_UnitInfo : MonoBehaviour {
 
 			Skill_Simple obj = go.GetComponent<Skill_Simple >();
 			if( obj != null ){
-				obj.nID = pair.Key;
+				obj.nID = pair.Value.nID;
 				obj.nType = 0; // 0 is ability
 				MyTool.SetLabelText( obj.lblName , MyTool.GetBuffName (obj.nID ) ); // this is buff name
 			}

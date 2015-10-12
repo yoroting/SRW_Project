@@ -16,8 +16,9 @@ public enum _FIGHTSTATE
 	_DEAD	 ,		// 已死亡
 
 	//status
+	_HIT,			// 必中
 	_DODGE	 ,		// 迴避
-	_CIRIT	 ,		// 報擊
+	_CIRIT	 ,		// 爆擊
 	_MERCY	 ,		// 留情
 	_GUARD   ,		// 防衛	
 	_THROUGH  ,		// 穿透
@@ -314,6 +315,7 @@ public class cUnitData{
 
 	public void ActionFinished(  ){
 		nActionTime--;		
+
 	}
 	
 	public void AddActionTime( int nTime ){

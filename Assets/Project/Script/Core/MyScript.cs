@@ -1040,6 +1040,10 @@ public class MyScript {
 					pool.Add( new TAG_SILENCE( ) );
 				}
 				//=============== fight status
+				else if( func.sFunc  == "IS_HIT") { // 必HIT
+					pool.Add( new IS_HIT( ) );
+					//pool.Add( new IS_UNIT_STATUS( _FIGHTSTATE._DODGE ) );
+				}
 				else if( func.sFunc  == "IS_DODGE") { // 必閃
 					pool.Add( new IS_DODGE( ) );
 					//pool.Add( new IS_UNIT_STATUS( _FIGHTSTATE._DODGE ) );
