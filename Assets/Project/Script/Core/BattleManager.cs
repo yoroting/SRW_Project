@@ -474,7 +474,11 @@ public partial class BattleManager
 			//}
 			nPhase++;
 		}break;
-		case 10:			// close all 
+		case 10:
+			nPhase++;			// wait all action complete
+			break;
+
+		case 11:			// close all 
 			nPhase++;
 			// add Exp / Money  action
 
@@ -560,50 +564,6 @@ public partial class BattleManager
 
 				GetAtkHitResult( nAtkerID , nDeferID , Atker , Defer , Atker.FightAttr.SkillID ,  nTarGridX , nTarGridY , ref pAct , ref AtkAffectPool );
 
-
-//				//必須先取得影響人數
-//				int nTarX = this.nTarGridX;
-//				int nTarY = this.nTarGridY;
-//
-//				// get affectpool
-//				bool bIsDamage =  MyTool.IsDamageSkill( nAtkerSkillID );
-//				//IsDamageSkill
-//				if( Defer != null )
-//				{
-//					if( bIsDamage ){
-//						Defer.SetFightAttr(  nAtkerID  , 0 );
-//						ShowDefAssist( Defer.n_Ident , false );
-//						pAct.AddHitResult( CalAttackResult( nAtkerID , Defer.n_Ident , true ) ); // always def at this time
-//
-//					}
-//					pAct.AddHitResult(  CalSkillHitResult( Atker, Defer , nAtkerSkillID ) ) ;
-//				}
-//
-//				// Affect pool
-//				if (Atker.IsStates( _FIGHTSTATE._THROUGH ) ) {
-//					if( bIsDamage ){
-//						GetThroughPool( Atker , Defer ,Atker.FightAttr.SkillID , nTarX , nTarY , ref AtkAffectPool );
-//					}
-//				}
-//
-//				GetAffectPool( Atker , Defer , Atker.FightAttr.SkillID , nTarX , nTarY , ref AtkAffectPool );
-//				foreach( cUnitData unit in AtkAffectPool )
-//				{
-//
-//					if( unit == Defer  )
-//						continue;
-//					//=====================
-//					// checked if this cUnitData can Atk
-//					//if( CanPK( Atker.eCampID , unit.eCampID ) == false )
-//					//	continue;
-//					if( bIsDamage ){
-//						unit.SetFightAttr(  nAtkerID  , 0 );
-//						ShowDefAssist( unit.n_Ident , false );
-//						pAct.AddHitResult( CalAttackResult( nAtkerID , unit.n_Ident , true ) );
-//					}
-//					pAct.AddHitResult(  CalSkillHitResult( Atker, unit , nAtkerSkillID ) ) ;
-//					//Atker.Buffs.OnHit( unit , ref pAct.HitResult );
-//				}
 
 			
 			}
@@ -806,9 +766,14 @@ public partial class BattleManager
 	}
 
 	//drop after dead event complete
+	public bool HaveDrop()
+	{
+		return ( nDropExpPool.Count > 0 ) ;
+	}
+
 	public bool ProcessDrop()
 	{
-		if (nDropMoney == 0 && nDropExpPool.Count == 0) {
+		if ( HaveDrop() ) {
 			// drop item
 			if( nDropItemPool.Count > 0 )
 			{
@@ -1458,6 +1423,8 @@ public partial class BattleManager
 
 	public void CalDropResult( cUnitData Atker , cUnitData Defer )
 	{
+		//return;
+
 		if( Atker == null || Defer == null ) return ;
 		if( Atker.eCampID != _CAMP._PLAYER  ) return;
 

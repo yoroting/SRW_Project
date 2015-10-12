@@ -313,8 +313,19 @@ public class cUnitData{
 	// no need save
 	bool [] bUpdateFlag;
 
-	public void ActionFinished(  ){
+	public void ActionDone(  ){
 		nActionTime--;		
+		Debug.Log ( "ActionDone" );
+
+		// check auto pop round end
+		if( eCampID == _CAMP._PLAYER )
+		{
+			// check need round end or not 
+			if( nActionTime <= 0 ){				
+				Panel_StageUI.Instance.CheckPlayerRoundEnd();
+			}
+		}
+
 
 	}
 	
@@ -1489,7 +1500,7 @@ public class cUnitData{
 	{
 		if (bIsAtker) {
 			if( FightAttr.SkillID == 0 || (FightAttr.SkillData.skill.n_FINISH !=0) ){
-				this.ActionFinished();
+				ActionDone();
 			}
 		}
 		
@@ -1563,7 +1574,7 @@ public class cUnitData{
 
 	public void Waiting( )
 	{
-		ActionFinished ();
+		ActionDone ();
 		//AddActionTime (1);
 		
 		// restore full def

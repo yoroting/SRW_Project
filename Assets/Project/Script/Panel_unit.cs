@@ -479,8 +479,8 @@ public class Panel_unit : MonoBehaviour {
 		if( BattleMsg.nMsgCount > 0 )
 			return true;
 
-		if( CFX_AutoDestructShuriken.nFXCount>0 )
-			return true;
+//		if( CFX_AutoDestructShuriken.nFXCount>0 )
+//			return true;
 
 		if( FxObj != null )
 			return true;
@@ -677,6 +677,7 @@ public class Panel_unit : MonoBehaviour {
 	}
 	public bool ActionFinished(  )
 	{
+		Debug.Log ( "ActionFinished" );
 		// plane 
 		MoveToTop (false );
 
@@ -684,14 +685,14 @@ public class Panel_unit : MonoBehaviour {
 		CurAction = null;
 		nSubActFlow ++;
 
-		// check auto pop round end
-		if( false == CanDoCmd() )
-		{
-			// check need round end or not 
-			if( eCampID == _CAMP._PLAYER ){				
-				Panel_StageUI.Instance.CheckPlayerRoundEnd();
-			}
-		}
+//		// check auto pop round end
+//		if( false == CanDoCmd() )
+//		{
+//			// check need round end or not 
+//			if( eCampID == _CAMP._PLAYER ){				
+//				Panel_StageUI.Instance.CheckPlayerRoundEnd();
+//			}
+//		}
 
 
 		return true;
@@ -830,6 +831,16 @@ public class Panel_unit : MonoBehaviour {
 				break;
 			case 1:
 				ActionFinished();
+
+				// check auto pop round end
+				if( eCampID == _CAMP._PLAYER )
+				{
+					// check need round end or not 
+					if(  false == CanDoCmd() ){				
+						Panel_StageUI.Instance.CheckPlayerRoundEnd();
+					}
+				}
+
 				break;
 			}
 			break;

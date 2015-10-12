@@ -1398,6 +1398,10 @@ public class Panel_StageUI : MonoBehaviour
 
 		if (bIsMoveToObj)
 			return true;
+
+		if( CFX_AutoDestructShuriken.nFXCount>0 )
+			return true;
+
 		// this is very slow for play
 //		if(ValueEftObj.CountSpawned () > 0)
 //			return true; 
@@ -1508,8 +1512,10 @@ public class Panel_StageUI : MonoBehaviour
 	bool RunCampAI( _CAMP nCamp )
 	{
 		// our faction don't need AI process
-		if( nCamp == _CAMP._PLAYER )
+		if (nCamp == _CAMP._PLAYER) {
+
 			return true; // player is playing 
+		}
 
 		// change faction if all unit moved or dead.
 		List<Panel_unit> lst = GetUnitListByCamp (nCamp);
@@ -1534,6 +1540,10 @@ public class Panel_StageUI : MonoBehaviour
 		if( GameDataManager.Instance.nActiveCamp != _CAMP._PLAYER ){
 			return false;  // don't check in enemy round
 
+		}
+
+		if (BattleManager.Instance.HaveDrop ()) {
+			return false;
 		}
 
 
