@@ -266,25 +266,24 @@ public class MobAI  {
 							// 檢查要不要換skill打
 							SKILL newSkill = FindSkillByDist( mob ,nDist2 );
 							if( newSkill == null ){
-								continue; // 太遠了~放棄不打
+								//	continue; // can't find skill. use original skill
 							}
 							else{
-								// change skill
+								// change skill to atk
 								nSkillID = newSkill.n_ID ;
+								bCanAtk = true;		// can atk
+
+								// send a move event					
+								mob.SetPath (path); 
+								// check if last pos is attack able pos
+								ActionManager.Instance.CreateMoveAction (ident, last.X, last.Y);	
+								
+								if (Config.GOD == true) {
+									Panel_StageUI.Instance.CreatePathOverEffect (path); // draw path
+								}
 							}
 						}
-
-						// send a move event					
-						mob.SetPath (path); 
-						// check if last pos is attack able pos
-						ActionManager.Instance.CreateMoveAction (ident, last.X, last.Y);	
-						
-						if (Config.GOD == true) {
-							Panel_StageUI.Instance.CreatePathOverEffect (path); // draw path
-						}
 						// check range can atk
-
-						bCanAtk = true;
 
 					}
 
@@ -295,11 +294,10 @@ public class MobAI  {
 				SKILL newSkill = FindSkillByDist( mob ,nDist );
 				if( newSkill != null ){	// change skill
 					nSkillID = newSkill.n_ID ;
-					bCanAtk = true;
 				}else if( nDist <= 1 ){
 					nSkillID = 0;
-					bCanAtk = true;
 				}
+				bCanAtk = true;
 			}
 			else{
 				bCanAtk = true ; // atk directly
@@ -336,7 +334,7 @@ public class MobAI  {
 							// 檢查要不要換skill打
 							SKILL newSkill = FindSkillByDist( mob ,nDist2 );
 							if( newSkill == null ){
-								continue; // 太遠了~放棄不打
+								//continue; //  don't continue . set cmd for this loop
 							}
 							else{
 								// change skill
@@ -713,73 +711,77 @@ public class MobAI  {
 				if( nSkillID ==0 )
 					continue;
 
+				if( CheckSkillCanCast( pMob , pTarget , nSkillID, nDist , bCounterMode ) == false ){	
+					continue;
+				}
+
 				SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(nSkillID);				
-				if( skl.n_SCHOOL == 0 )	// == 0 is ability
-					continue;				
-				if( skl.n_PASSIVE == 1 )
-					continue;
+//				if( skl.n_SCHOOL == 0 )	// == 0 is ability
+//					continue;				
+//				if( skl.n_PASSIVE == 1 )
+//					continue;
+//
+//				// check cp && MP
+//				if( (pData.n_CP < skl.n_CP) ){
+//					continue;
+//				}
+//				if( (pData.n_MP < skl.n_MP) ){
+//					if( Config.FREE_MP == false ){
+//						continue;
+//					}
+//				}			
+//
+//
+//				// 防招只在破防時使用
+//				if( skl.f_DEF > 0.0f && pData.n_DEF>0)
+//					continue;
+//
+//				//牽制招不對小怪物用
+//				cSkillData skldata = GameDataManager.Instance.GetSkillData( nSkillID );
+//				if( skldata.IsTag( _SKILLTAG._TIEUP ) )
+//				{
+//					if( pTarget == null )
+//						continue;
+//					if( (pMob.GetMar() - pTarget.GetMar()) > 20.0f )
+//						continue;
+//				}
 
-				// check cp && MP
-				if( (pData.n_CP < skl.n_CP) ){
-					continue;
-				}
-				if( (pData.n_MP < skl.n_MP) ){
-					if( Config.FREE_MP == false ){
-						continue;
-					}
-				}			
 
-
-				// 防招只在破防時使用
-				if( skl.f_DEF > 0.0f && pData.n_DEF>0)
-					continue;
-
-				//牽制招不對小怪物用
-				cSkillData skldata = GameDataManager.Instance.GetSkillData( nSkillID );
-				if( skldata.IsTag( _SKILLTAG._TIEUP ) )
-				{
-					if( pTarget == null )
-						continue;
-					if( (pMob.GetMar() - pTarget.GetMar()) > 20.0f )
-						continue;
-				}
-
-
-				// check range when counter mode
-				if( bCounterMode){
-					// range cheeck
-					int nRange ;
-					int nMinRange;
-					MyTool.GetSkillRange( nSkillID , out nRange , out nMinRange );
-				
-					if( nMinRange > nDist )
-						continue; // too near can't cast
-
-					// counter can't move
-					if( nRange < nDist )
-						continue;
-
-					// 點地技能不能放	
-					if (skldata.IsTag (_SKILLTAG._BANDEF )) {
-						continue;
-					}
-
-					if( (skl.n_TARGET==3) || (skl.n_TARGET==4) || (skl.n_TARGET==5) ){
-					//			case 6:	//6→自我AOE我方
-					//			case 7:	//7→自我AOE敵方
-					//			case 8:	//8→自我AOEALL
-					//	//		case 3:	//→MAP敵方
-					//	//		case 4: //→MAP我方
-					//	//		case 5:	//→MAPALL							
-						continue;
-					}
-				}
-				else{// normal atk
-					if (skldata.IsTag (_SKILLTAG._BANATK )) {
-						continue;
-					}
-				}
-				// 
+//				// check range when counter mode
+//				if( bCounterMode){
+//					// range cheeck
+//					int nRange ;
+//					int nMinRange;
+//					MyTool.GetSkillRange( nSkillID , out nRange , out nMinRange );
+//				
+//					if( nMinRange > nDist )
+//						continue; // too near can't cast
+//
+//					// counter can't move
+//					if( nRange < nDist )
+//						continue;
+//
+//					// 點地技能不能放	
+//					//if (skldata.IsTag (_SKILLTAG._BANDEF )) {
+//					//	continue;
+//					//}
+//
+//					if( (skl.n_TARGET==3) || (skl.n_TARGET==4) || (skl.n_TARGET==5) ){
+//					//			case 6:	//6→自我AOE我方
+//					//			case 7:	//7→自我AOE敵方
+//					//			case 8:	//8→自我AOEALL
+//					//	//		case 3:	//→MAP敵方
+//					//	//		case 4: //→MAP我方
+//					//	//		case 5:	//→MAPALL							
+//						continue;
+//					}
+//				}
+//				else{// normal atk
+//					//if (skldata.IsTag (_SKILLTAG._BANATK )) {
+//					//	continue;
+//					//}
+//				}
+//				// 
 
 				int widget = (skl.n_CP + skl.n_LEVEL_LEARN) ; // cp is base widget
 
@@ -806,8 +808,9 @@ public class MobAI  {
 		}
 		else{
 			if( bCounterMode ){
-				if( nDist > 1 )
+				if( nDist > 1 ){
 					return -1;
+				}
 			}
 		}
 
@@ -815,7 +818,7 @@ public class MobAI  {
 	}
 
 
-	static public SKILL FindSkillByDist( Panel_unit mob  , int nDist  )
+	static public SKILL FindSkillByDist( Panel_unit mob  , int nDist  , bool bCounterMode = false )
 	{	
 		cUnitData pData = mob.pUnitData;
 		if( pData == null )
@@ -824,27 +827,97 @@ public class MobAI  {
 		foreach(  int  nID in pData.SkillPool ){
 			int nSkillID = nID;
 			nSkillID = pData.Buffs.GetUpgradeSkill( nSkillID ); // Get upgrade skill
-			if( nSkillID ==0 )
-				continue;
-			SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(nSkillID);			
-			if( skl.n_SCHOOL == 0 )	// == 0 is ability
-				continue;				
-			if( skl.n_PASSIVE == 1 )
-				continue;
-			
-			// check cp && MP
-			if( (pData.n_CP < skl.n_CP) ){
+			if( nSkillID ==0 ){
 				continue;
 			}
-			if( (pData.n_MP < skl.n_MP) ){
-				if( Config.FREE_MP == false ){
-					continue;
-				}
+
+			if( CheckSkillCanCast( pData , null ,  nSkillID , nDist , bCounterMode ) == false  ){
+				continue;
 			}
-			if( (skl.n_RANGE >= nDist) && (skl.n_MINRANGE<=nDist) ){
-				return skl ;
-			}
+
+			SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(nSkillID);
+			return skl ;
 		}
 		return null;
 	}
+
+	// tool func to check skill can use
+	static public bool CheckSkillCanCast( cUnitData pData , cUnitData pTarget , int nSkillID  , int nDist , bool bCounterMode = false){
+		if( pData == null ){
+			return false;  // no attack
+		}
+
+		SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(nSkillID);			
+		if( skl.n_SCHOOL == 0 )	// == 0 is ability
+			return false;
+		if( skl.n_PASSIVE == 1 )
+			return false;
+
+		// check cp && MP
+		if( (pData.n_CP < skl.n_CP) ){
+			return false;
+		}
+		if( (pData.n_MP < skl.n_MP) ){
+			if( Config.FREE_MP == false ){
+				return false;
+			}
+		}		
+		// 防招只在破防時使用
+		if( skl.f_DEF > 0.0f && pData.n_DEF>0)
+			return false;
+
+		//牽制招不對小怪物用
+		cSkillData skldata = GameDataManager.Instance.GetSkillData( nSkillID );
+		if( skldata.IsTag( _SKILLTAG._TIEUP ) )
+		{
+			if( pTarget != null ){
+				if( (pData.GetMar() - pTarget.GetMar()) > 20.0f ){
+					return false;
+				}
+			}
+		}
+		//=======
+		// counter mode
+		if( bCounterMode){
+			if (skldata.IsTag (_SKILLTAG._BANDEF )) { // 反擊禁用
+				return false;
+			}
+
+			int nRange ;
+			int nMinRange;
+			MyTool.GetSkillRange( nSkillID , out nRange , out nMinRange );
+			
+			if( nMinRange > nDist )
+				return false; // too near can't cast
+			
+			// counter can't move
+			if( nRange < nDist )
+				return false;
+
+			//反擊禁用點地
+			if( (skl.n_TARGET==3) || (skl.n_TARGET==4) || (skl.n_TARGET==5) ){
+				//			case 6:	//6→自我AOE我方
+				//			case 7:	//7→自我AOE敵方
+				//			case 8:	//8→自我AOEALL
+				//	//		case 3:	//→MAP敵方
+				//	//		case 4: //→MAP我方
+				//	//		case 5:	//→MAPALL							
+				return false;
+			}
+
+		}
+		else{
+			if (skldata.IsTag (_SKILLTAG._BANATK )) {
+				return false;
+			}
+		}
+	
+		// range check
+		if( (skl.n_RANGE < nDist) || ( skl.n_MINRANGE > nDist ) ){
+			return false;
+		}
+
+		return true;
+	}
+
 }

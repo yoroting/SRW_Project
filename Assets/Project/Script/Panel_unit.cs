@@ -530,7 +530,7 @@ public class Panel_unit : MonoBehaviour {
 		float during = iDist * (0.2f);
 
 		if (Config.GOD == true) {
-			during = 0.2f; // always 0.2f
+			during = 0.1f; // always 0.2f
 		}
 		// cal target location position
 
@@ -1119,8 +1119,8 @@ public class Panel_unit : MonoBehaviour {
 
 
 		if( CurAction.nSkillID == 0 ){
-
-			BattleManager.Instance.ShowBattleMsg( this  , MyTool.GetUnitSchoolFullName(Ident(), pUnitData.nActSch[1] ) );  // Get school name
+			// too long.. skip this
+			//BattleManager.Instance.ShowBattleMsg( this  , MyTool.GetUnitSchoolFullName(Ident(), pUnitData.nActSch[1] ) );  // Get school name
 		}
 		else{
 			// Get Skill
