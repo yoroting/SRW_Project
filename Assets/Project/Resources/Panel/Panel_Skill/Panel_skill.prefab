@@ -1549,6 +1549,7 @@ MonoBehaviour:
   NameObj: {fileID: 101450}
   RangeObj: {fileID: 165558}
   CostObj: {fileID: 158730}
+  bEnable: 1
 --- !u!114 &11470738
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1817,7 +1818,7 @@ MonoBehaviour:
   verticalScrollBar: {fileID: 11471314}
   showScrollBars: 0
   customMovement: {x: 1, y: 0}
-  contentPivot: 1
+  contentPivot: 7
   scale: {x: 0, y: 0, z: 0}
   relativePositionOnReset: {x: 0, y: 0}
   centerOnChild: {fileID: 0}
@@ -2031,13 +2032,13 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 360
+  mWidth: 356
   mHeight: 30
   mDepth: 7
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 6
+  aspectRatio: 11.8666668
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   mFont: {fileID: 0}

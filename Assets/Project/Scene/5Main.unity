@@ -698,14 +698,6 @@ Prefab:
       propertyPath: m_Name
       value: Panel - StageInfo
       objectReference: {fileID: 0}
-    - target: {fileID: 439306, guid: b536f03426df9444693484ca79ba2467, type: 2}
-      propertyPath: m_RootOrder
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 413792, guid: b536f03426df9444693484ca79ba2467, type: 2}
-      propertyPath: m_RootOrder
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 178100, guid: b536f03426df9444693484ca79ba2467, type: 2}
       propertyPath: m_IsActive
       value: 0
@@ -717,25 +709,6 @@ Prefab:
 Transform:
   m_PrefabParentObject: {fileID: 422986, guid: b536f03426df9444693484ca79ba2467, type: 2}
   m_PrefabInternal: {fileID: 408131951}
---- !u!1 &408131953 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 178100, guid: b536f03426df9444693484ca79ba2467, type: 2}
-  m_PrefabInternal: {fileID: 408131951}
---- !u!54 &408131954
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 408131953}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: .0500000007
-  m_UseGravity: 0
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!1001 &479773132
 Prefab:
   m_ObjectHideFlags: 0
@@ -930,10 +903,6 @@ Prefab:
       propertyPath: m_Name
       value: Panel - Skill
       objectReference: {fileID: 0}
-    - target: {fileID: 11498610, guid: 109913b346d2e96478c369ab6be7a50c, type: 2}
-      propertyPath: aspectRatio
-      value: 12
-      objectReference: {fileID: 0}
     - target: {fileID: 110006, guid: 109913b346d2e96478c369ab6be7a50c, type: 2}
       propertyPath: m_IsActive
       value: 0
@@ -1081,52 +1050,6 @@ MonoBehaviour:
   mShader: {fileID: 4800000, guid: e75727d9555d9d14ca51d91908c681bc, type: 3}
   mBorder: {x: 0, y: 0, z: 0, w: 0}
   mFixedAspect: 0
---- !u!1001 &701029552
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 408131952}
-    m_Modifications:
-    - target: {fileID: 493660, guid: cc8086d50827d7b4e8977cb0e8dbd0fc, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 210
-      objectReference: {fileID: 0}
-    - target: {fileID: 493660, guid: cc8086d50827d7b4e8977cb0e8dbd0fc, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: -167
-      objectReference: {fileID: 0}
-    - target: {fileID: 493660, guid: cc8086d50827d7b4e8977cb0e8dbd0fc, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 493660, guid: cc8086d50827d7b4e8977cb0e8dbd0fc, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 493660, guid: cc8086d50827d7b4e8977cb0e8dbd0fc, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 493660, guid: cc8086d50827d7b4e8977cb0e8dbd0fc, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 493660, guid: cc8086d50827d7b4e8977cb0e8dbd0fc, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 493660, guid: cc8086d50827d7b4e8977cb0e8dbd0fc, type: 2}
-      propertyPath: m_RootOrder
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 11417708, guid: cc8086d50827d7b4e8977cb0e8dbd0fc, type: 2}
-      propertyPath: mText
-      value: "\u95DC\u9589"
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: cc8086d50827d7b4e8977cb0e8dbd0fc, type: 2}
-  m_IsPrefabParent: 0
 --- !u!4 &717951943 stripped
 Transform:
   m_PrefabParentObject: {fileID: 400688, guid: ccf0632d1162ac441b5ee6b6f2eaf406, type: 2}
@@ -3064,10 +2987,6 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 156938, guid: d8ae4f9a2399a454abe3655a10920221, type: 2}
       propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 11471224, guid: d8ae4f9a2399a454abe3655a10920221, type: 2}
-      propertyPath: style
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

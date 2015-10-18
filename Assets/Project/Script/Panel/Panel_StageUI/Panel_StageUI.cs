@@ -74,6 +74,10 @@ public class Panel_StageUI : MonoBehaviour
 
 	// widget
 	Dictionary< int , STAGE_EVENT > EvtPool;			// add event id 
+	//List< STAGE_EVENT > EvtPool;			// add event id 
+	// change to evt list for custom order by list 
+	//List< STAGE_EVENT > EvtPool;			// add event id 
+
 	List< STAGE_EVENT >				WaitPool;			// wait to exec pool
 //	Dictionary< int , int > EvtCompletePool;			// record event complete round 
 
@@ -177,7 +181,25 @@ public class Panel_StageUI : MonoBehaviour
 
         //Record All Event to execute
         EvtPool.Clear();
-		char[] split = { ';' };
+		char[] split = { ';',' ',',' };
+
+		string[] strMission = StageData.s_MISSION.Split(split);
+		for (int i = 0; i < strMission.Length; i++)
+		{
+			int nMissionID = 0;
+			if( int.TryParse( strMission[i],  out nMissionID ) ){
+				STAGE_EVENT evt = ConstDataManager.Instance.GetRow<STAGE_EVENT>(nMissionID);
+				if (evt != null)
+				{
+					if( EvtPool.ContainsKey( nMissionID ) == false )
+					{
+						EvtPool.Add(nMissionID, evt);
+					}
+				}
+			}
+		}
+
+		// mission
 		string[] strEvent = StageData.s_EVENT.Split(split);
 		for (int i = 0; i < strEvent.Length; i++)
 		{
@@ -185,10 +207,13 @@ public class Panel_StageUI : MonoBehaviour
 			STAGE_EVENT evt = ConstDataManager.Instance.GetRow<STAGE_EVENT>(nEventID);
 			if (evt != null)
 			{
-				EvtPool.Add(nEventID, evt);
+				if( EvtPool.ContainsKey( nEventID ) == false )
+				{
+					EvtPool.Add(nEventID, evt);
+				}
 			}
 		}
-		
+
 //		Debug.Log("stageloding:create event Pool complete");
 		
 		GameDataManager.Instance.SetBGMPhase( 0 );
@@ -452,6 +477,8 @@ public class Panel_StageUI : MonoBehaviour
 
 		//GameDataManager.Instance.nRound = 0;		// many mob pop in talk ui. we need a 0 round to avoid issue
 		//GameDataManager.Instance.nActiveCamp  = _CAMP._PLAYER;
+
+		//CFX_AutoDestructShuriken.nFXCount = 0;  // clear all fx count
 
 		NextEvent = null;
 
@@ -1656,7 +1683,7 @@ public class Panel_StageUI : MonoBehaviour
 	public bool IsLoopEvent( STAGE_EVENT evt )
 	{
 		if (evt != null) {
-			if ( (evt.n_TYPE & 1) > 0  )  // 1 is loop event
+			if ( (evt.n_TYPE & 1) == 1  )  // 1 is loop event
 			{
 				return true;
 			}
@@ -1694,6 +1721,7 @@ public class Panel_StageUI : MonoBehaviour
 				}
 			}
 		}
+
 		// remove key , never check it again
 		foreach( int key in removeLst )
 		{
@@ -1777,8 +1805,39 @@ public class Panel_StageUI : MonoBehaviour
 		return true ;
 	}
 
-	// Widget func	 
+//	// Widget func	 
+	public void CheckMissionComplete()
+	{
+		return;
 
+//		foreach (KeyValuePair< int ,STAGE_EVENT > pair in EvtPool) {
+//			if( (pair.Value.n_TYPE & 2) != 2  ){
+//				continue;
+//			}
+//			//=====================================================
+//			if(	CheckEventCanRun( pair.Value ) )
+//			{
+//				// skip run event
+//				cTextArray Ta = new cTextArray( );
+//				Ta.SetText( pair.Value.s_BEHAVIOR );
+//
+//				// 
+//				int nMax = Ta.GetMaxCol();
+//				for( int i = 0 ; i <nMax ; i++ )
+//				{
+//					CTextLine line = m_cScript.GetTextLine( i );
+//					if( line != null )
+//					{						
+//						MyScript.Instance.ParserScript( line );
+//					}
+//				}
+//
+//			}
+//		}
+		//====================================
+
+
+	}
 
 
 
@@ -2647,7 +2706,30 @@ public class Panel_StageUI : MonoBehaviour
 		
 		// re build evt pool
 		EvtPool.Clear ();
-		char[] split = { ';' };
+		char[] split = { ';',' ' , ',' };
+
+		// mission
+		string[] strMission = StageData.s_MISSION.Split(split);
+		for (int i = 0; i < strMission.Length; i++)
+		{
+			int nMissionID = 0;
+			if( int.TryParse( strMission[i],  out nMissionID ) ){
+				STAGE_EVENT evt = ConstDataManager.Instance.GetRow<STAGE_EVENT>(nMissionID);
+				if (evt != null)
+				{
+					if( EvtPool.ContainsKey( nMissionID ) == false )
+					{
+						if( GameDataManager.Instance.EvtDonePool.ContainsKey( nMissionID ) == true ){
+							continue;
+						}
+						
+						EvtPool.Add(nMissionID, evt);
+					}
+				}
+			}
+		}
+
+		//event
 		string[] strEvent = StageData.s_EVENT.Split(split);
 		for (int i = 0; i < strEvent.Length; i++)
 		{
@@ -2666,7 +2748,8 @@ public class Panel_StageUI : MonoBehaviour
 				EvtPool.Add(nEventID, evt);
 			}
 		}
-		
+
+
 //		Debug.Log("stageloding:create event Pool complete");
 
 
@@ -2759,7 +2842,7 @@ public class Panel_StageUI : MonoBehaviour
 			nPopNum = Evt.nValue1;
 
 		for (int i=0; i < nPopNum; i++) {
-			cUnitData cData = GameDataManager.Instance.StagePopUnit( Evt.nCharID,Evt.eCamp, Evt.nX, Evt.nY ); 
+			cUnitData cData = GameDataManager.Instance.StagePopUnit( Evt.nCharID,Evt.eCamp, Evt.nX, Evt.nY , StageData.n_MOB_LV ); 
 
 			GameObject obj = CreateUnitByUnitData (  cData );
 			if (obj != null) {		
@@ -2802,7 +2885,7 @@ public class Panel_StageUI : MonoBehaviour
 			for( int i = sx ; i <= ex ; i++  ){
 				for( int j = sy ; j <= ey ; j++  ){
 					//cUnitData cData =  GameDataManager.Instance.StagePopUnit( Evt.nCharID,Evt.eCamp, i , j ,nLeaderIdent  ); 
-					cUnitData cData = GameDataManager.Instance.CreateChar( Evt.nCharID  , pLeader.eCampID , i , j  , nLeaderIdent );
+					cUnitData cData = GameDataManager.Instance.StagePopUnit( Evt.nCharID  , pLeader.eCampID , i , j  , StageData.n_MOB_LV , nLeaderIdent );
 					if( cData == null ){
 						continue ;
 					}
@@ -3392,7 +3475,16 @@ public class Panel_StageUI : MonoBehaviour
 				}
 			}
 		}
-
-	
 	}
+	// add star
+	public void AddStar( int nStar=1 )
+	{
+		if (nStar == 0) {
+			nStar = 1;
+		}
+		GameDataManager.Instance.nStars +=nStar;
+		string sMsg = string.Format( "星星+ {0}" , nStar );
+		BattleManager.Instance.ShowBattleMsg( null , sMsg );
+	}
+
 }

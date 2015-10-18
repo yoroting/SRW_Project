@@ -368,6 +368,13 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		PanelManager.Instance.OpenUI( MainUIPanel.Name );
 	}
 
+	public void StageInfoCmd()
+	{
+		PanelManager.Instance.CloseUI ( Panel_StageInfo.Name );
+		PanelManager.Instance.OpenUI ( Panel_StageInfo.Name );
+
+	}
+
 	public void  RunSuicide(  )
 	{
 		PanelManager.Instance.CloseUI( Name );
@@ -823,6 +830,9 @@ public class Panel_CMDUnitUI : MonoBehaviour
 			LoadCmd ();
 		}	else if (name == _CMD_ID._GAMEEND.ToString ()) {
 			GameEndCmd ();
+		}
+		else if (name == _CMD_ID._STAGEINFO.ToString ()) {
+			StageInfoCmd();
 		}
 
 // cheat code

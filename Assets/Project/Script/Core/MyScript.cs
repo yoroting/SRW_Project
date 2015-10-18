@@ -88,6 +88,13 @@ public class MyScript {
 						return false;
 					}				
 				}
+				else if( func.sFunc == "DONE"  )
+				{
+					if( ConditionDone( func.I(0),func.I(1) ) == false )
+					{
+						return false;
+					}				
+				}
 				else if( (func.sFunc  == "NODONE") || (func.sFunc=="NO") )  //檢查的事件沒有完成
 				{
 					if( ConditionNotDone( func.I(0) ) == false )
@@ -271,6 +278,19 @@ public class MyScript {
 		}
 		return false;
 	}
+
+	bool ConditionDone( int nID , int nRound )
+	{
+		if( GameDataManager.Instance.EvtDonePool.ContainsKey( nID )  ){
+			if( nRound == 0 )
+				return true;
+			//========================
+			int nCompleteRound = GameDataManager.Instance.EvtDonePool[ nID ];			
+			return ( nCompleteRound <= ( nRound ) );
+		}
+		return false;
+	}
+
 	bool ConditionNotDone( int nID  )
 	{
 		if( !GameDataManager.Instance.EvtDonePool.ContainsKey (nID) ) {
@@ -705,7 +725,18 @@ public class MyScript {
 				PanelManager.Instance.OpenUI(  Panel_Lost.Name );
 				//Panel_StageUI.Instance.bIsStageEnd = true;
 			}
+			else if( func.sFunc  == "ADDSTAR")  // add star
+			{
+				int nStar = func.I(0);
+//				if( nStar == 0 )
+//					nStar += 1 ;
+//				GameDataManager.Instance.nStars +=nStar;
+//				string sMsg = string.Format( "星星+ {0}" , nStar );
+//				BattleManager.Instance.ShowBattleMsg( null , sMsg );
+				//ShowBattleMsg.
+				Panel_StageUI.Instance.AddStar( nStar );
 
+			}
 			else 
 			{
 				Debug.LogError( string.Format( "Error-Can't find script func '{0}'" , func.sFunc ) );

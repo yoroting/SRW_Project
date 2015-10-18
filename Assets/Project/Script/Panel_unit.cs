@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -1611,6 +1611,9 @@ public class Panel_unit : MonoBehaviour {
 		// avoid double run
 		if (bIsDead == true)
 			return;
+
+
+
 
 		// check if ant event need to run?
 		//

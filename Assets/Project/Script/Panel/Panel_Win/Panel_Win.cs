@@ -37,6 +37,9 @@ public class Panel_Win : MonoBehaviour {
 	
 	void OnCloseBtnClick(GameObject go)
 	{	
+		// check mission complete
+		Panel_StageUI.Instance.CheckMissionComplete (); // last check for mission complete
+
 
 		// if it have talk event. play it
 		Panel_StageUI.Instance.ShowStage (false);

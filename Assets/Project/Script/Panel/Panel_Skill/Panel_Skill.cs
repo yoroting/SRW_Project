@@ -12,6 +12,7 @@ public class Panel_Skill : MonoBehaviour {
 	public GameObject SkillGrid;
 	public GameObject ScrollView;
 	public GameObject SkillContent;
+	//public GameObject SkillGridScrollBar;
 
 	public GameObject SkillSprite;
 	public GameObject CastNote;
@@ -178,6 +179,14 @@ public class Panel_Skill : MonoBehaviour {
 		grid.repositionNow = true;		// need this for second pop to re pos
 		grid.Reposition ();
 		//CastNote.SetActive( false ); 
+
+		UIScrollView uiScrollView = ScrollView.GetComponent<UIScrollView> ();
+		if (uiScrollView != null) {
+			uiScrollView.ResetPosition();
+
+		}
+
+
 	}
 
 	void ClearData()

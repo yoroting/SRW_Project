@@ -390,17 +390,25 @@ public class MyTool {
 		if (grid == null) {
 			return ;
 		}
-		
-		List< Transform > lst = grid.GetChildList ();
-		//List< GameObject > CmdBtnList = MyTool.GetChildPool( NGuiGrids );
-		
-		if (lst != null) {
-			foreach (Transform t in lst) {
-				
-				///UIEventListener.Get(obj).onClick -= OnCMDButtonClick;;  // no need.. destory soon
-				NGUITools.Destroy (t.gameObject);
-			}
+
+		// 销毁现有元素
+		while (grid.transform.childCount > 0)
+		{
+			NGUITools.DestroyImmediate(grid.transform.GetChild(0).gameObject);
 		}
+
+
+		
+//		List< Transform > lst = grid.GetChildList ();
+//		//List< GameObject > CmdBtnList = MyTool.GetChildPool( NGuiGrids );
+//		
+//		if (lst != null) {
+//			foreach (Transform t in lst) {
+//				
+//				///UIEventListener.Get(obj).onClick -= OnCMDButtonClick;;  // no need.. destory soon
+//				NGUITools.Destroy (t.gameObject);
+//			}
+//		}
 
 		grid.repositionNow = true;		// need this for second pop to re pos
 		grid.Reposition ();

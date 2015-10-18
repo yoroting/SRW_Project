@@ -390,7 +390,7 @@ public partial class GameDataManager
 	// public  unit data
 	public Dictionary< int , cUnitData > UnitPool;			// add  < ident , unit >  event id  
 
-	public cUnitData CreateChar( int nCharID , _CAMP camp , int bornx , int borny , int nLeaderId )
+	public cUnitData CreateChar( int nCharID , _CAMP camp , int bornx , int borny , int nLv , int nLeaderId )
 	{
 		cUnitData data = new cUnitData();
 		data.n_Ident = GenerSerialNO( );
@@ -401,8 +401,10 @@ public partial class GameDataManager
 			Debug.LogErrorFormat( "CreateChar with null data {0}" , nCharID );
 
 		}
+		data.n_Lv = nLv;
 		data.SetContData( cdata  );
 		data.eCampID = camp;
+
 		data.n_X = data.n_BornX = bornx;
 		data.n_Y = data.n_BornY = borny;
 		data.n_LeaderIdent = nLeaderId;
@@ -515,7 +517,7 @@ public partial class GameDataManager
 		return true;
 	}
 	// for stage pop unit
-	public cUnitData StagePopUnit ( int nCharID, _CAMP eCamp,  int nBX, int nBY , int nLeaderID =0 )
+	public cUnitData StagePopUnit ( int nCharID, _CAMP eCamp,  int nBX, int nBY , int nLv = 1, int nLeaderID =0 )
 	{
 		if (eCamp == _CAMP._PLAYER) {
 			cUnitData data = null;
@@ -537,7 +539,7 @@ public partial class GameDataManager
 			}
 		} 
 
-		return  CreateChar( nCharID , eCamp, nBX , nBY , nLeaderID ); // already add to pool
+		return  CreateChar( nCharID , eCamp, nBX , nBY , nLv , nLeaderID ); // already add to pool
 
 	}
 

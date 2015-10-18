@@ -118,7 +118,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &156938
 GameObject:
   m_ObjectHideFlags: 0
@@ -706,6 +706,8 @@ MonoBehaviour:
   m_lstsContextWait: []
   m_sPopText: 
   m_sShowText: 
+  bIsShaking: 0
+  bIsDeading: 0
 --- !u!114 &11444844
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -824,7 +826,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   textLabel: {fileID: 11482444}
   scrollBar: {fileID: 0}
-  style: 1
+  style: 0
   paragraphHistory: 50
 --- !u!114 &11474732
 MonoBehaviour:
@@ -890,6 +892,7 @@ MonoBehaviour:
   BackGroundTex: {fileID: 166370}
   PanelStoryText: {fileID: 148314}
   SkipButton: {fileID: 128472}
+  GridObj: {fileID: 0}
 --- !u!114 &11476658
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1153,7 +1156,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3003
+  startingRenderQueue: 3000
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 0

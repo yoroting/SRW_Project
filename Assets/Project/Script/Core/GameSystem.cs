@@ -240,9 +240,8 @@ public class GameSystem : MonoBehaviour {
 		}
 
 
-		ParticleSystem ps =instance.GetComponent< ParticleSystem>();
-		if (ps!= null) {
-		}
+
+
 		SetParticleRenderLayer ( instance ,sortLayer  );
 //		ParticleSystemRenderer psr =instance.GetComponent< ParticleSystemRenderer>();
 //		if (psr != null) {
@@ -281,13 +280,23 @@ public class GameSystem : MonoBehaviour {
 	{
 		if (instance == null)
 			return;
+
+//		ParticleSystem ps =instance.GetComponent< ParticleSystem>();
+//		if (ps!= null) {
+//			ps.simulationSpace = ParticleSystemSimulationSpace.World;
+//		}		
+		// for child
+//		ParticleSystem[] pss = instance.GetComponentsInChildren<ParticleSystem>();
+//		foreach (ParticleSystem ps2 in pss) {
+//			ps2.simulationSpace = ParticleSystemSimulationSpace.World;
+//		}
+
 		// change layer
 		ParticleSystemRenderer psr =instance.GetComponent< ParticleSystemRenderer>();
 		if (psr != null) {
 			psr.sortingLayerName =sortLayer;
-
-
 		}
+
 		// for child
 		ParticleSystemRenderer[] psrs = instance.GetComponentsInChildren<ParticleSystemRenderer>();
 		foreach (ParticleSystemRenderer psr2 in psrs) {

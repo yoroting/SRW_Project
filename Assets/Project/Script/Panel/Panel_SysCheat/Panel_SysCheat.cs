@@ -22,6 +22,10 @@ public class Panel_SysCheat : MonoBehaviour {
 //	public GameObject StoryInput;           // Kill mode
 //	public GameObject StoryBtn;           // Set money
 
+	// star
+	public GameObject StarInput;           // star input
+	public GameObject StarBtn;           	// star input
+
 	// pop mob
 	public GameObject CharIdInput;           // pop char id
 	public GameObject CampPoplist;           // sel camp
@@ -45,6 +49,8 @@ public class Panel_SysCheat : MonoBehaviour {
 		//UIEventListener.Get(StoryPoplist).onSubmit += OnJumpStory; 
 		UIEventListener.Get(PopMobBtn).onClick += OnPopMobClick; 
 
+
+		UIEventListener.Get(StarBtn).onClick += OnSetStarClick; 
 		///
 		UIPopupList popList = StoryPoplist.GetComponent<UIPopupList>();
 		if (popList != null) {		
@@ -94,6 +100,8 @@ public class Panel_SysCheat : MonoBehaviour {
 		UIInput min = MoneyInput.GetComponent<UIInput> ();
 		min.value = GameDataManager.Instance.nMoney.ToString();
 
+		UIInput star = StarInput.GetComponent< UIInput> ();
+		star.value = GameDataManager.Instance.nStars.ToString();
 
 		// switch story in mainten only
 		if (GameDataManager.Instance.ePhase == _SAVE_PHASE._MAINTEN) {
@@ -167,6 +175,17 @@ public class Panel_SysCheat : MonoBehaviour {
 
 		PanelManager.Instance.CloseUI ( Name ); 
 	}
+
+	public void OnSetStarClick(GameObject go)
+	{
+		int nStar = 0;
+		UIInput input = StarInput.GetComponent< UIInput> ();
+		if (int.TryParse (input.value, out  nStar)) {
+			GameDataManager.Instance.nStars = nStar;
+		}
+	}
+	
+
 
 	public void OnPopMobClick(GameObject go)
 	{

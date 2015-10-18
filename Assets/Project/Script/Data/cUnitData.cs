@@ -1166,7 +1166,8 @@ public class cUnitData{
 	public void AddMp( int mp , bool bShow= false )
 	{
 
-		n_SP =  MyTool.ClampInt(n_MP+mp , 0 , GetMaxMP () ); 
+		n_MP =  MyTool.ClampInt(n_MP+mp , 0 , GetMaxMP () ); 
+
 	}
 
 	public void AddSp( int sp , bool bShow= false )
