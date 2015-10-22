@@ -3295,6 +3295,10 @@ public class Panel_StageUI : MonoBehaviour
 		if (nFXID == 0) {
 			return ;
 		}
+		TalkSayEndEvent sayevt = new TalkSayEndEvent();
+		sayevt.nChar = 0;		
+		GameEventManager.DispatchEvent ( sayevt  );
+
 		int nTot = 0;
 		foreach (KeyValuePair< int ,Panel_unit> pair in IdentToUnit) {
 			Panel_unit unit = pair.Value;
@@ -3316,6 +3320,10 @@ public class Panel_StageUI : MonoBehaviour
 		if (nBuffID == 0) {
 			return ;
 		}
+		TalkSayEndEvent sayevt = new TalkSayEndEvent();
+		sayevt.nChar = 0;		
+		GameEventManager.DispatchEvent ( sayevt  );
+
 		int nTot = 0;
 		foreach (KeyValuePair< int ,Panel_unit> pair in IdentToUnit) {
 			Panel_unit unit = pair.Value;
@@ -3335,6 +3343,39 @@ public class Panel_StageUI : MonoBehaviour
 		}
 		if (nTot == 0) {
 			Debug.LogErrorFormat ("OnStageAddBuff {0} on null unit with char {1} , type{2}", nBuffID, nCharID,nDel);
+		}
+	}
+
+	public void OnStageCampAddBuff( int nCampID , int nBuffID , int nDel = 0 )
+	{
+		if (nBuffID == 0) {
+			return ;
+		}
+		// close say ui
+		TalkSayEndEvent sayevt = new TalkSayEndEvent();
+		sayevt.nChar = 0;		
+		GameEventManager.DispatchEvent ( sayevt  );
+		// add , del buff
+		int nTot = 0;
+		_CAMP camp = (_CAMP)nCampID;
+		foreach (KeyValuePair< int ,Panel_unit> pair in IdentToUnit) {
+			Panel_unit unit = pair.Value;
+			if (unit.eCampID !=  camp)
+				continue;
+			//
+			if (unit.pUnitData == null)
+				continue;
+			nTot++;
+			if( nDel == 0 ){
+				unit.pUnitData.Buffs.AddBuff (nBuffID, 0, 0, 0);
+			}
+			else{
+				unit.pUnitData.Buffs.DelBuff( nBuffID, true );
+				
+			}
+		}
+		if (nTot == 0) {
+			Debug.LogErrorFormat ("OnStageCampAddBuff {0} on null unit with camp {1} , type{2}", nBuffID, nCampID,nDel);
 		}
 	}
 

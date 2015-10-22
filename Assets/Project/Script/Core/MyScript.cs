@@ -627,11 +627,19 @@ public class MyScript {
 			}	
 			else if( func.sFunc  == "ADDBUFF")  // Add buff
 			{
-				Panel_StageUI.Instance.OnStageAddBuff( func.I(0) , func.I(1) , func.I(2) );
+				Panel_StageUI.Instance.OnStageAddBuff( func.I(0) , func.I(1) , 0 );
 			}	
 			else if( func.sFunc  == "DELBUFF")  // Add buff
 			{
-				Panel_StageUI.Instance.OnStageAddBuff( func.I(0) , func.I(1) , func.I(2) );
+				Panel_StageUI.Instance.OnStageAddBuff( func.I(0) , func.I(1) , 1 );
+			}
+			else if( func.sFunc  == "ADDCAMPBUFF")  // Add buff
+			{
+				Panel_StageUI.Instance.OnStageCampAddBuff( func.I(0) , func.I(1) , 0 );
+			}	
+			else if( func.sFunc  == "DELCAMPBUFF")  // Add buff
+			{
+				Panel_StageUI.Instance.OnStageCampAddBuff( func.I(0) , func.I(1) , 1 );
 			}
 			else if( func.sFunc  == "ADDHP")  // Add HP
 			{
