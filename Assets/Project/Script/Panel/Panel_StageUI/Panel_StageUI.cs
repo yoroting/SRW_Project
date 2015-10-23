@@ -3290,6 +3290,12 @@ public class Panel_StageUI : MonoBehaviour
 //
 //	}
 
+	public void OnStagePlaySound( string  SoundFile  )
+	{
+		GameSystem.PlaySound( SoundFile );
+	}
+	
+
 	public void OnStagePlayFX(int nCharID , int nFXID  )
 	{
 		if (nFXID == 0) {

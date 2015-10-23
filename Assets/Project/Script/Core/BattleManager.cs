@@ -899,7 +899,34 @@ public partial class BattleManager
 //		}		
 //	}
 
+	static void PlayCharFightBGMbyIdent( int nIdent )
+	{
+		if( nIdent == 0 )
+			return;
 
+		cUnitData pData = GameDataManager.Instance.GetUnitDateByIdent( nIdent );
+		if( pData == null ){
+			return ;
+		}
+		if( pData.eCampID != _CAMP._ENEMY ){
+			return;
+		}
+
+		PlayCharFightBGM( pData.n_CharID ); 
+	}
+
+	static void PlayCharFightBGM( int nCharID )
+	{
+		if( nCharID == 0 )
+			return;
+		CHARS pData = ConstDataManager.Instance.GetRow< CHARS >( nCharID ); 
+		if( pData == null ){
+			return ;
+		}
+		if( pData.n_FIGHTBGM > 0  ){
+			GameSystem.PlayBGM( pData.n_FIGHTBGM );
+		}
+	}
 
 	public void PlayAttack (int nAtkIdent, int nDefIdent, int nSkillID)
 	{
@@ -907,17 +934,26 @@ public partial class BattleManager
 		nDeferID = nDefIdent;
 		nAtkerSkillID = nSkillID ;
 
+
+		PlayCharFightBGMbyIdent( nAtkIdent );
+		PlayCharFightBGMbyIdent( nDefIdent );
+
+
+
 		eBattleType = _BATTLE._ATTACK;
 	}
-	public void PlayCast (int nAtkIdent, int nTarIdent , int nGridX , int nGridY , int nSkillID)
+	public void PlayCast (int nAtkIdent, int nDefIdent , int nGridX , int nGridY , int nSkillID)
 	{
 		nAtkerID = nAtkIdent;
-		nDeferID = nTarIdent;
+		nDeferID = nDefIdent;
 		nTarGridX = nGridX;
 		nTarGridY = nGridY;
 
 		nAtkerSkillID = nSkillID;
-		
+
+		PlayCharFightBGMbyIdent( nAtkIdent );
+		PlayCharFightBGMbyIdent( nDefIdent );
+
 		eBattleType = _BATTLE._CAST ;
 	}
 

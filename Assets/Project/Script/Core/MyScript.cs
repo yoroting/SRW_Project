@@ -532,7 +532,16 @@ public class MyScript {
 				int nID = 150 + func.I( 0 ); // from 150-159
 				GameSystem.PlayBGM ( nID );
 			}
-
+			else if( func.sFunc == "CHARBGM"  ) // 1i z;4
+			{
+				int nCharID = func.I( 0 ); 
+				CHARS pData = ConstDataManager.Instance.GetRow<CHARS>( nCharID ); 
+				if( pData != null ){
+					if( pData.n_BGM != 0 ){
+						GameSystem.PlayBGM ( pData.n_BGM );
+					}
+				}
+			}
 			else if( func.sFunc == "SAY" )
 			{
 				TalkSayEvent evt = new TalkSayEvent();
@@ -621,7 +630,11 @@ public class MyScript {
 				//GameEventManager.DispatchEvent ( evt  );
 
 			}
-			else if( func.sFunc  == "FX")  // Add buff
+			else if( func.sFunc  == "SOUND")  // PLAY SOUND
+			{
+				GameSystem.PlaySound( func.S(0) );
+			}	
+			else if( func.sFunc  == "FX")  // PLAY FX
 			{
 				Panel_StageUI.Instance.OnStagePlayFX( func.I(0) , func.I(1));
 			}	
@@ -698,14 +711,14 @@ public class MyScript {
 //			{
 //				Panel_StageUI.Instance.OnStageDelEventEvent( func.I( 0 ) );			
 //			}
-			else if( func.sFunc  == "UNITCAMP") 
+			else if( func.sFunc  == "UNITCAMP") //改變單位 陣營
 			{			
 				int nCharid =  func.I(0);
 				int nCampid = func.I(1);
 
 				Panel_StageUI.Instance.OnStageUnitCampEvent( nCharid , (_CAMP)nCampid );
 			}
-			else if( func.sFunc  == "POPMARK") 
+			else if( func.sFunc  == "POPMARK") //stage地圖上顯示 mark
 			{
 				Panel_StageUI.Instance.OnStagePopMarkEvent( func.I(0),func.I(1),func.I(2),func.I(3) );
 			}
@@ -713,14 +726,12 @@ public class MyScript {
 			{
 				Panel_StageUI.Instance.OnStageCameraCenterEvent( func.I(0),func.I(1) );
 			}
-			else if( func.sFunc  == "SAI") 
+			else if( func.sFunc  == "SAI") //設定索敵AI
 			{
-				// 改變單位索迪AI
 				GameDataManager.Instance.SetUnitSearchAI( func.I(0),(_AI_SEARCH)func.I(1),func.I(2),func.I(3) ); 
 			}
-			else if( func.sFunc  == "CAI") 
+			else if( func.sFunc  == "CAI") // 改變單位攻擊AI
 			{
-				// 改變單位攻擊AI
 				GameDataManager.Instance.SetUnitComboAI( func.I(0),(_AI_COMBO)func.I(1) ); 
 			}
 			else if( func.sFunc  == "WIN") 
