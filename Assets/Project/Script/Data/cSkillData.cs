@@ -168,7 +168,7 @@ public class cSkillData
 		
 		//cond eff
 		//if (MyScript.Instance.CheckSkillCond (strCond, atker, defer) == true)
-		if( EffCond.Check( atker , defer ,nID , 0  ) == true )
+		if( EffCond.Check( null , atker , defer ,nID , 0  ) == true )
 		{
 			
 			foreach( cEffect eft  in CondEffPool )
@@ -194,7 +194,7 @@ public class cSkillData
 		
 		//cond eff
 		//if (MyScript.Instance.CheckSkillCond (strCond, atker, defer) == true)
-		if( EffCond.Check( atker , defer ,nID , 0  ) == true )
+		if( EffCond.Check( null , atker , defer ,nID , 0  ) == true )
 		{
 			
 			foreach( cEffect eft  in CondEffPool )
@@ -221,7 +221,7 @@ public class cSkillData
 		
 		//cond eff
 		//if (MyScript.Instance.CheckSkillCond (strCond, atker, defer) == true)
-		if( EffCond.Check( atker , defer ,nID , 0  ) == true )
+		if( EffCond.Check( null ,atker , defer ,nID , 0  ) == true )
 		{
 			
 			foreach( cEffect eft  in CondEffPool )
@@ -262,7 +262,7 @@ public class cSkillData
 		
 		//cond eff
 		//if (MyScript.Instance.CheckSkillCond (strCond, atker, defer) == true)
-		if( EffCond.Check( atker , defer , nID, 0 ) == true )
+		if( EffCond.Check( null ,atker , defer , nID, 0 ) == true )
 		{			
 			foreach( cEffect eft  in CondEffPool )
 			{
@@ -307,7 +307,7 @@ public class cSkillData
 			return false;
 		
 		//if( MyScript.Instance.CheckSkillCond( pair.Value.tableData.s_BUFF_CONDITON , this.Owner , unit_e ) == true )
-		if( EffCond.Check( atker , defer , nID ,0 ) )
+		if( EffCond.Check( null ,atker , defer , nID ,0 ) )
 		{
 			foreach( cEffect eft in CondEffPool )
 			{

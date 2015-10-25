@@ -745,7 +745,7 @@ public class  cEffectCondition
 		CondLst.Add (line.GetFuncList ());
 	}
 	
-	private bool CheckCond( cUnitData data_I , cUnitData data_E , List<cTextFunc> funcList, int nSkillID, int  nBuffID   )
+	private bool CheckCond( cBuffData buff , cUnitData data_I , cUnitData data_E , List<cTextFunc> funcList, int nSkillID, int  nBuffID   )
 	{
 		if (funcList == null)
 			return false;
@@ -939,7 +939,7 @@ public class  cEffectCondition
 					return false;	
 				}
 			}
-			else if( func.sFunc == "RANGE"  )
+			else if( func.sFunc == "RANGE" || func.sFunc == "DIST" )
 			{
 				if( (data_I!= null) && (data_E != null) )	
 				{
@@ -954,6 +954,22 @@ public class  cEffectCondition
 					return false;
 				}
 			}
+			else if( func.sFunc == "DIST_C" )
+			{
+				cUnitData pCast = buff.GetCastUnit();
+				if( pCast != null )
+				{
+					int Range =  func.I(1);
+					int nDist = iVec2.Dist( data_I.n_X , data_I.n_Y ,  pCast.n_X , pCast.n_Y );
+					if( MyScript.Instance.ConditionInt( nDist , func.S(0) ,Range  ) == false  ){
+						return   false;		// always fail
+					}		
+				}
+				else{
+					return false;
+				}
+			}
+
 			else if( func.sFunc == "GENDER_I"  )
 			{
 				int gender = func.I(0);
@@ -1096,14 +1112,14 @@ public class  cEffectCondition
 	}
 	
 	
-	public bool Check( cUnitData data_I , cUnitData data_E , int nSkillID  , int nBuffID  ){
+	public bool Check( cBuffData buff , cUnitData data_I , cUnitData data_E , int nSkillID  , int nBuffID  ){
 		
 		if (CondLst == null)
 			return false;
 		
 		foreach( List<cTextFunc> funcList in CondLst )
 		{
-			if(CheckCond( data_I ,data_E ,funcList ,nSkillID,nBuffID ) == true ){
+			if(CheckCond( buff , data_I ,data_E ,funcList ,nSkillID,nBuffID ) == true ){
 				return true;			// any one passed. all passed
 			}
 		}

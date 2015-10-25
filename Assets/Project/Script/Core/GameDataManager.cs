@@ -574,6 +574,22 @@ public partial class GameDataManager
 		//Debug.LogFormat( "gamedata manager.GetUnitDateByCharID with no char {0}" ,  nCharID  );
 		return null;
 	}
+
+	public int GetIdentByCharID( int nCharID )
+	{
+		if( nCharID == 0 )			return 0;
+		
+		foreach (KeyValuePair< int ,cUnitData > pair in UnitPool) {
+			if( pair.Value != null && pair.Value.n_CharID == nCharID )
+			{
+				return pair.Value.n_Ident;
+			}
+		}
+		// event check will keep get unit by char
+		//Debug.LogFormat( "gamedata manager.GetUnitDateByCharID with no char {0}" ,  nCharID  );
+		return 0;
+	}
+
 	public cUnitData GetUnitDateByPos( int nX , int nY )
 	{
 		foreach (KeyValuePair< int ,cUnitData > pair in UnitPool) {

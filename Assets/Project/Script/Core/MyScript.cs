@@ -23,7 +23,7 @@ public class MyScript {
 	}
 
 	//List<cHitResult> CacheHitResultPool;
-
+	public static bool bParsing = false;
 
 	public bool CheckEventCondition( CTextLine line  )
 	{
@@ -70,6 +70,13 @@ public class MyScript {
 				else if( func.sFunc == "DEAD"  )
 				{
 					if( ConditionUnitDead( (_CAMP)func.I(0), func.I(1) ) == false )
+					{
+						return false;
+					}				
+				}
+				else if( func.sFunc == "ALIVE"  )
+				{
+					if( ConditionUnitAlive( (_CAMP)func.I(0), func.I(1) ) == false )
 					{
 						return false;
 					}				
@@ -257,7 +264,37 @@ public class MyScript {
 		}  
 		return true;
 	}
+
 	
+	bool ConditionUnitAlive( _CAMP nCampID ,int nCharID )
+	{
+		// assign id
+		//		cCamp camp = GameDataManager.Instance.GetCamp( (_CAMP)nCampID );
+		//		if( camp != null )
+		//		{
+		//			foreach( int no in  camp.memLst )
+		//			{
+		//				Panel_unit unit =  Panel_StageUI.Instance.GetUnitByIdent( no ); //this.IdentToUnit[ no ];
+		//				if( unit != null )
+		//				{
+		//					if( unit.CharID ==  nCharID )
+		//					{
+		//						return false;
+		//					}
+		//				}
+		//			}
+		//		}
+		foreach( KeyValuePair< int , cUnitData > pair in GameDataManager.Instance.UnitPool ){
+			if( pair.Value.eCampID != nCampID )
+				continue;
+			if( pair.Value.n_CharID != nCharID )
+				continue;
+			
+			return true;
+		}  
+		return false;
+	}
+
 	bool ConditionRound( int nID , int nCamp =0)
 	{
 		//	if( GameDataManager.Instance.nRoundStatus != 0 )
@@ -415,10 +452,11 @@ public class MyScript {
 	//-----------------
 	public void ParserScript( CTextLine line   )
 	{
+		bParsing = true;
 		List<cTextFunc> funcList =line.GetFuncList();
 		foreach( cTextFunc func in funcList )
 		{
-			if( func.sFunc == "POPCHAR" )
+			if( func.sFunc == "POPCHAR" || func.sFunc == "POPC" )
 			{
 				StagePopUnitEvent evt = new StagePopUnitEvent ();
 				evt.eCamp   = _CAMP._PLAYER;
@@ -429,10 +467,22 @@ public class MyScript {
 				Panel_StageUI.Instance.OnStagePopUnitEvent( evt ); 
 				//GameEventManager.DispatchEvent ( evt );
 			}
-			else if( func.sFunc == "POPMOB" )
+			else if( func.sFunc == "POPMOB" || func.sFunc == "POPM" )
 			{
 				StagePopUnitEvent evt = new StagePopUnitEvent ();
 				evt.eCamp   = _CAMP._ENEMY;
+				evt.nCharID = func.I( 0 );
+				evt.nX		= func.I( 1 );
+				evt.nY		= func.I( 2 );
+				evt.nValue1 = func.I( 3 ); // pop num
+				//test code 
+				Panel_StageUI.Instance.OnStagePopUnitEvent( evt ); 
+				//GameEventManager.DispatchEvent ( evt );
+			}
+			else if( func.sFunc == "POPFRIEND" || func.sFunc == "POPF" )
+			{
+				StagePopUnitEvent evt = new StagePopUnitEvent ();
+				evt.eCamp   = _CAMP._FRIEND;
 				evt.nCharID = func.I( 0 );
 				evt.nX		= func.I( 1 );
 				evt.nY		= func.I( 2 );
@@ -453,7 +503,7 @@ public class MyScript {
 				//GameEventManager.DispatchEvent ( evt );
 
 			}
-			else if( func.sFunc == "POPGROUP" )
+			else if( func.sFunc == "POPGROUP" || func.sFunc == "POPG" )
 			{
 				StagePopGroupEvent evt = new StagePopGroupEvent ();
 				//evt.eCamp 	= (_CAMP)func.I( 0 );
@@ -609,6 +659,33 @@ public class MyScript {
 					//GameEventManager.DispatchEvent ( evt  );
 			
 			}
+//			else if( func.sFunc  == "CAST")  //  pop a group of mob
+//			{
+//				// this is bad idea
+//				
+//				StageBattleCastEvent evt = new StageBattleCastEvent();
+//				evt.nAtkCharID = func.I(0);
+//				evt.nDefCharID = func.I(1);
+//				evt.nAtkSkillID = func.I(2);
+//				Panel_StageUI.Instance.OnStageBattleCastEvent( evt  ); 
+//				//GameEventManager.DispatchEvent ( evt  );
+//				
+//			}
+
+			else if( func.sFunc  == "CAST")  //  pop a group of mob
+			{
+				// this is bad idea
+				
+				StageBattleCastEvent evt = new StageBattleCastEvent();
+				evt.nAtkCharID = func.I(0);
+				evt.nDefCharID = func.I(1);
+				evt.nAtkSkillID = func.I(2);
+
+				Panel_StageUI.Instance.OnStageBattleCastEvent( evt  ); 
+				//GameEventManager.DispatchEvent ( evt  );
+				
+			}
+
 			else if( func.sFunc  == "MOVETOUNIT")  //  pop a group of mob
 			{
 				StageMoveToUnitEvent evt = new StageMoveToUnitEvent();
@@ -636,23 +713,23 @@ public class MyScript {
 			}	
 			else if( func.sFunc  == "FX")  // PLAY FX
 			{
-				Panel_StageUI.Instance.OnStagePlayFX( func.I(0) , func.I(1));
+				Panel_StageUI.Instance.OnStagePlayFX( func.I(0) , func.I(1)  );
 			}	
 			else if( func.sFunc  == "ADDBUFF")  // Add buff
 			{
-				Panel_StageUI.Instance.OnStageAddBuff( func.I(0) , func.I(1) , 0 );
+				Panel_StageUI.Instance.OnStageAddBuff( func.I(0) , func.I(1) , func.I(2) , 0 );
 			}	
 			else if( func.sFunc  == "DELBUFF")  // Add buff
 			{
-				Panel_StageUI.Instance.OnStageAddBuff( func.I(0) , func.I(1) , 1 );
+				Panel_StageUI.Instance.OnStageAddBuff( func.I(0) , func.I(1) , func.I(2) , 1 );
 			}
 			else if( func.sFunc  == "ADDCAMPBUFF")  // Add buff
 			{
-				Panel_StageUI.Instance.OnStageCampAddBuff( func.I(0) , func.I(1) , 0 );
+				Panel_StageUI.Instance.OnStageCampAddBuff( func.I(0) , func.I(1), func.I(2)  , 0 );
 			}	
 			else if( func.sFunc  == "DELCAMPBUFF")  // Add buff
 			{
-				Panel_StageUI.Instance.OnStageCampAddBuff( func.I(0) , func.I(1) , 1 );
+				Panel_StageUI.Instance.OnStageCampAddBuff( func.I(0) , func.I(1) , func.I(2) , 1 );
 			}
 			else if( func.sFunc  == "ADDHP")  // Add HP
 			{
@@ -718,7 +795,7 @@ public class MyScript {
 
 				Panel_StageUI.Instance.OnStageUnitCampEvent( nCharid , (_CAMP)nCampid );
 			}
-			else if( func.sFunc  == "POPMARK") //stage地圖上顯示 mark
+			else if( func.sFunc  == "POPMARK" ) //stage地圖上顯示 mark
 			{
 				Panel_StageUI.Instance.OnStagePopMarkEvent( func.I(0),func.I(1),func.I(2),func.I(3) );
 			}
@@ -761,6 +838,7 @@ public class MyScript {
 				Debug.LogError( string.Format( "Error-Can't find script func '{0}'" , func.sFunc ) );
 			}
 		}
+		bParsing = false;
 	}
 
 	public void ParserStoryScript( CTextLine line )

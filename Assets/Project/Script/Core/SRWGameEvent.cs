@@ -237,5 +237,30 @@ public class StageBattleAttackEvent: GameEvent {
 	}
 }
 
+public class StageBattleCastEvent: GameEvent {
+	public const string Name = "StageBattleCastEvent";
+	public int nAtkCharID = 0;
+	public int nDefCharID = 0;
+	public int nAtkSkillID = 0;
+	public int nTargetX = 0;
+	public int nTargetY = 0;
+
+	
+	public StageBattleCastEvent(){
+		name = Name;		// important.  must have this line as key
+	}
+}
+
+// cast buff on unit
+//public class StageBattleCastBuffEvent: GameEvent {
+//	public const string Name = "StageBattleCastBuffEvent";
+//	public int nAtkCharID = 0;
+//	public int nDefCharID = 0;
+//	public int nAtkBuffID = 0;
+//
+//	public StageBattleCastBuffEvent(){
+//		name = Name;		// important.  must have this line as key
+//	}
+//}
 
 

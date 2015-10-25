@@ -73,7 +73,7 @@ namespace SimpleAStarExample
 			this.startNode.IsWalkable = true;
 
 			this.endNode   = this.nodes[End.X, End.Y];
-			this.endNode.IsWalkable = true;
+	//		this.endNode.IsWalkable = true;
 
 			return FindPath ();
 		}

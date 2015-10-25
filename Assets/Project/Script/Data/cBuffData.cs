@@ -73,6 +73,17 @@ public class cBuffData
 		}
 		return null;
 	}
+	public cUnitData GetCastUnit(){
+		if (nCastIdent != 0) {
+			cUnitData p = GameDataManager.Instance.GetUnitDateByIdent( nCastIdent );
+			if( p == null ){
+				Debug.LogFormat( "buff{0}'s cast{1} is null" ,nID , nCastIdent);
+				nCastIdent = 0; 
+			}
+			return p;
+		}
+		return null;
+	}
 }
 
 // for unit to manage buff
@@ -287,6 +298,23 @@ public class cBuffs
 					}
 				}
 			}
+			//condition
+			if( pair.Value.Condition.Check( pair.Value , this.Owner , null , pair.Value.nSkillID , pair.Value.nID ) )
+			{				
+				//RemoveList.Add( pair.Key );
+				foreach( cEffect eft in pair.Value.ConditionEffectPool )
+				{
+					if( eft != null )
+					{
+						if( eft._IsStatus( _FIGHTSTATE._GUARD ) ){
+							if( pair.Value.nCastIdent != 0 ){
+								return pair.Value.nCastIdent;
+							}							
+						}
+					}
+				}
+			}
+
 		}
 		return 0;
 	}
@@ -341,7 +369,7 @@ public class cBuffs
 					unit = unit_e;
 				}
 				// check buff end
-				if( pair.Value.CancelCondition.Check( this.Owner , unit , pair.Value.nSkillID , pair.Value.nID ) )
+				if( pair.Value.CancelCondition.Check( pair.Value , this.Owner , unit , pair.Value.nSkillID , pair.Value.nID ) )
 				{				
 					RemoveList.Add( pair.Key );
 				}
@@ -437,7 +465,7 @@ public class cBuffs
 				unit = unit_e;
 			}
 			//if( MyScript.Instance.CheckSkillCond( pair.Value.tableData.s_BUFF_CONDITON , this.Owner , unit_e ) == true )
-			if( pair.Value.Condition.Check( this.Owner , unit , pair.Value.nSkillID , pair.Value.nID ) )
+			if( pair.Value.Condition.Check( pair.Value , this.Owner , unit , pair.Value.nSkillID , pair.Value.nID ) )
 			{
 				foreach( cEffect eft in pair.Value.ConditionEffectPool )
 				{
@@ -476,7 +504,7 @@ public class cBuffs
 			}
 
 			// condition
-			if( pair.Value.Condition.Check( Owner , unit , pair.Value.nSkillID , pair.Value.nID ) )
+			if( pair.Value.Condition.Check( pair.Value , Owner , unit , pair.Value.nSkillID , pair.Value.nID ) )
 			{
 				foreach( cEffect eft in pair.Value.ConditionEffectPool )
 				{
@@ -517,7 +545,7 @@ public class cBuffs
 				unit = unit_e;
 			}
 
-			if( pair.Value.Condition.Check( Owner , unit , pair.Value.nSkillID , pair.Value.nID ) )
+			if( pair.Value.Condition.Check( pair.Value , Owner , unit , pair.Value.nSkillID , pair.Value.nID ) )
 			{
 				foreach( cEffect eft in pair.Value.ConditionEffectPool )
 				{
@@ -570,7 +598,7 @@ public class cBuffs
 				unit = unit_e;
 			}
 
-			if( pair.Value.Condition.Check( Owner , unit , pair.Value.nSkillID , pair.Value.nID ) )
+			if( pair.Value.Condition.Check( pair.Value, Owner , unit , pair.Value.nSkillID , pair.Value.nID ) )
 			{
 				foreach( cEffect eft in pair.Value.ConditionEffectPool )
 				{
@@ -611,7 +639,7 @@ public class cBuffs
 				unit = unit_e;
 			}
 
-			if( pair.Value.Condition.Check( Owner , unit , pair.Value.nSkillID , pair.Value.nID ) )
+			if( pair.Value.Condition.Check( pair.Value , Owner , unit , pair.Value.nSkillID , pair.Value.nID ) )
 			{
 				foreach( cEffect eft in pair.Value.ConditionEffectPool )
 				{
@@ -655,7 +683,7 @@ public class cBuffs
 			}
 			
 			//if( MyScript.Instance.CheckSkillCond( pair.Value.tableData.s_BUFF_CONDITON , this.Owner , unit_e ) == true )
-			if( pair.Value.Condition.Check( this.Owner , unit , pair.Value.nSkillID , pair.Value.nID ) )
+			if( pair.Value.Condition.Check( pair.Value , this.Owner , unit , pair.Value.nSkillID , pair.Value.nID ) )
 			{
 				foreach( cEffect eft in pair.Value.ConditionEffectPool )
 				{
@@ -698,7 +726,7 @@ public class cBuffs
 			}
 			
 			//if( MyScript.Instance.CheckSkillCond( pair.Value.tableData.s_BUFF_CONDITON , this.Owner , unit_e ) == true )
-			if( pair.Value.Condition.Check( this.Owner , unit , pair.Value.nSkillID , pair.Value.nID ) )
+			if( pair.Value.Condition.Check( pair.Value , this.Owner , unit , pair.Value.nSkillID , pair.Value.nID ) )
 			{
 				foreach( cEffect eft in pair.Value.ConditionEffectPool )
 				{
@@ -742,7 +770,7 @@ public class cBuffs
 			}
 
 			//if( MyScript.Instance.CheckSkillCond( pair.Value.tableData.s_BUFF_CONDITON , this.Owner , unit_e ) == true )
-			if( pair.Value.Condition.Check( this.Owner , unit , pair.Value.nSkillID , pair.Value.nID ) )
+			if( pair.Value.Condition.Check( pair.Value , this.Owner , unit , pair.Value.nSkillID , pair.Value.nID ) )
 			{
 				foreach( cEffect eft in pair.Value.ConditionEffectPool )
 				{

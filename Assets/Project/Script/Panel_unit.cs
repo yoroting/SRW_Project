@@ -1263,7 +1263,8 @@ public class Panel_unit : MonoBehaviour {
 			Vector3 vTar = Tar.gameObject.transform.localPosition;
 			Vector3 v = MyTool.SnyGridtoLocalPos ( Loc.X , Loc.Y ,ref GameScene.Instance.Grids  );
 
-			this.gameObject.transform.localPosition = vTar;
+			this.gameObject.transform.localPosition = vTar; // guard
+			// move back later
 			TweenPosition tw = TweenPosition.Begin< TweenPosition >( this.gameObject , 0.35f ); // always move back to start pos
 			if (tw != null) {
 				tw.delay = 0.2f;
@@ -1278,6 +1279,8 @@ public class Panel_unit : MonoBehaviour {
 	}
 	public void OnTwGuardEnd( )
 	{		
+
+
 		// clear all move tw
 		TweenRotation[] tws = gameObject.GetComponents<TweenRotation> (); 
 		foreach (TweenRotation tw in tws) {
@@ -1573,23 +1576,9 @@ public class Panel_unit : MonoBehaviour {
 	{
 		//nMode : 0 - hp , 1- def , 2 - mp , 3 -sp
 		if (nValue < 0) {
-			// 由於 shake結束 會重置 座標點。 造成 移動結果被還原。所以與到移動中的shake 應該要delay 一下
-			float fDelay = 0;
-			if( IsMoving() ){
-				fDelay = (PathList.Count+1) *0.2f+0.05f ;
-			}
 
-			TweenShake tw = TweenShake.Begin(gameObject, 0.2f , 10 );
-			if (tw) {
-				//tw.OriginPosSet = false; // Important!
-				//tw.style = UITweener.Style.Once;
-				tw.delay = fDelay;
-				tw.shakeY = false;
-				MyTool.TweenSetOneShotOnFinish( tw , OnTwShakeEnd );
 
-				//tw.SetOnFinished (OnTwShakeEnd);
-				bIsShaking = true;
-			}
+			SetShake();
 
 			BattleManager.Instance.ShowBattleResValue( this.gameObject , nValue , nMode );
 		} else if (nValue > 0) {
@@ -1600,8 +1589,38 @@ public class Panel_unit : MonoBehaviour {
 		// show dmg effect
 
 	}
+
+	public void SetShake()
+	{
+		// guard will not shake , 
+		if (bIsGuarding)
+			return;
+
+		// 由於 shake結束 會重置 座標點。 造成 移動結果被還原。所以與到移動中的shake 應該要delay 一下
+		float fDelay = 0;
+		if( IsMoving() ){
+			fDelay = (PathList.Count+1) *0.2f+0.05f ;
+		}
+
+
+
+		TweenShake tw = TweenShake.Begin(FaceObj, 0.2f , 10 ); // shake face only to avoid loc modify
+		if (tw) {
+			//tw.OriginPosSet = false; // Important!
+			//tw.style = UITweener.Style.Once;
+			tw.delay = fDelay;
+			tw.shakeY = false;
+
+
+			MyTool.TweenSetOneShotOnFinish( tw , OnTwShakeEnd );
+			
+			//tw.SetOnFinished (OnTwShakeEnd);
+			bIsShaking = true;
+		}
+	}
 	public void OnTwShakeEnd( )
 	{
+		FaceObj.transform.localPosition = Vector3.zero;
 		bIsShaking = false;
 	}
 
@@ -1622,7 +1641,7 @@ public class Panel_unit : MonoBehaviour {
 		bIsDead = true; // set dead
 		bIsDeading = true;
 		// shake
-		TweenShake tws = TweenShake.Begin(gameObject, 1.0f , 15 );
+		TweenShake tws = TweenShake.Begin( FaceObj , 1.0f , 15 );
 		if( tws )
 		{
 			tws.shakeX = true;

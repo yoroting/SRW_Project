@@ -61,6 +61,7 @@ public class Panel_StageUI : MonoBehaviour
 	// For flag
 	bool	bIsLoading	;
 	bool	bIsReady;
+
 	public bool	bIsStageEnd;								// this stage is end
 	bool 							bIsMoveToObj;		// is move camera to obj
 //	public bool	bIsRestoreData;								// this stage is need restore data
@@ -97,6 +98,8 @@ public class Panel_StageUI : MonoBehaviour
 
 	Dictionary< string , GameObject > OverCellPathPool;
 	Dictionary< string , GameObject > OverCellAOEPool;
+
+	Dictionary< string , GameObject >	OverCellZocPool;
 	//List< GameObject >				OverCellPool;
 	Dictionary< string , GameObject > OverCellMarkPool;		// mark cell
 
@@ -104,12 +107,16 @@ public class Panel_StageUI : MonoBehaviour
 
 
 	Dictionary< int , Panel_unit > IdentToUnit;			// allyPool
+
+	List< iVec2 >	tmpScriptMoveEnd;					// script 用的單位移動 mrak pool 防止 script 讓不同單位移動到 同樣座標
+
 	//Dictionary< int , UNIT_DATA > UnitDataPool;			// ConstData pool
 
     void Awake()
     {
         instance = this; 		// special singleton
         bIsReady = false;
+
         bIsStageEnd = false;
 		m_bIsSkipMode = false;
         //UIRoot mRoot = NGUITools.FindInParents<UIRoot>(gameObject);	
@@ -380,9 +387,14 @@ public class Panel_StageUI : MonoBehaviour
 		OverCellAtkPool = new Dictionary< string , GameObject >();					
 		OverCellPathPool= new Dictionary< string , GameObject >();
 
+		OverCellZocPool = new Dictionary< string , GameObject >(); // ZOC
+
 		OverCellAOEPool= new Dictionary< string , GameObject >();
 
 		OverCellMarkPool = new Dictionary< string , GameObject >();		// mark cell
+
+		tmpScriptMoveEnd = new List< iVec2 >();					// script 用的單位移動 mrak pool 防止 script 讓不同單位移動到 同樣座標
+
 		//List < iVec2 >
 		UnitPanelObj.CreatePool( 1);//st_CellObjPoolSize / 2 
 
@@ -1343,6 +1355,40 @@ public class Panel_StageUI : MonoBehaviour
 
 	}
 
+	public void CreateZocOverEffect( List<iVec2> path )
+	{
+		foreach( KeyValuePair< string , GameObject> pair in OverCellZocPool )
+		{
+			if( pair.Value != null )
+			{
+				NGUITools.Destroy( pair.Value );
+				//pair.Value = null;
+			}
+		}
+		OverCellZocPool.Clear ();
+		if (path == null)
+			return;
+		
+		foreach( iVec2 v in path )
+		{
+			if( OverCellZocPool.ContainsKey( v.GetKey() ) )
+				continue;
+
+			GameObject over = ResourcesManager.CreatePrefabGameObj(TilePlaneObj, "Prefab/ZocOverEffect");
+			if( over != null )
+			{
+				over.name = string.Format("ZocOVER({0},{1},{2})", v.X , v.Y , 0 );
+				SynGridToLocalPos( over , v.X , v.Y) ;
+				
+				//UIEventListener.Get(over).onClick += OnOverClick;
+				
+				OverCellZocPool.Add( v.GetKey() , over );
+				over.SetActive( true );
+			}
+		}
+		
+	}
+
 	public void CreateAOEOverEffect( Panel_unit CastUnit  ,int nX , int nY , int nAOE )
 	{
 		AoeEftObj.RecycleAll();
@@ -1787,8 +1833,10 @@ public class Panel_StageUI : MonoBehaviour
 		CTextLine line = m_cScript.GetTextLine( m_nFlowIdx++ );
 		if( line != null )
 		{
-
+			tmpScriptMoveEnd.Clear();					// script 用的單位移動 mrak pool 防止 script 讓不同單位移動到 同樣座標
+		
 			MyScript.Instance.ParserScript( line );
+			tmpScriptMoveEnd.Clear();					// script 用的單位移動 mrak pool 防止 script 讓不同單位移動到 同樣座標
 		}
 	}
 
@@ -2382,7 +2430,14 @@ public class Panel_StageUI : MonoBehaviour
 				return false;
 			}
 		}
-		
+
+		// script 用的單位移動 mrak pool 防止 script 讓不同單位移動到 同樣座標
+		foreach (iVec2 v in tmpScriptMoveEnd) {
+			if( v.Collision( pos ) ){					
+				return false;
+			}
+		}
+
 		return true;
 	}
 	
@@ -2456,7 +2511,7 @@ public class Panel_StageUI : MonoBehaviour
 
 			Dictionary< iVec2 , int > distpool = new Dictionary< iVec2 , int > ();
 			foreach (iVec2 v in pool) {
-				if (Panel_StageUI.Instance.CheckIsEmptyPos (v) == true) {// 目標 pos 不可以站人
+				if (CheckIsEmptyPos (v) == true) {// 目標 pos 不可以站人
 					int d =v.Dist (from);
 					distpool.Add (v, d );
 				}
@@ -2519,14 +2574,24 @@ public class Panel_StageUI : MonoBehaviour
 		// nStep = 999; // debug
 		
 		List< iVec2 > path = null;
+		List< iVec2 > zocPool = null;
 		Grids.ClearIgnorePool();
 
 		cUnitData pData = unit.pUnitData;
 
-		if( !pData.IsTag( _UNITTAG._CHARGE ) ) {
+		if( !pData.IsTag( _UNITTAG._CHARGE ) ) { 
 			List< iVec2 > pkPosPool = GetUnitPKPosPool( unit , true  );
 			Grids.AddIgnorePool (  pkPosPool );  // all is block in first find
-			Grids.AddIgnorePool( Grids.GetZocPool(unit.Loc , ref pkPosPool ) ); // APPLY ZOC	
+
+			if( false== MyScript.bParsing  ){// no zoc during script parse
+				zocPool = Grids.GetZocPool(unit.Loc , ref pkPosPool );
+				if( Config.GOD )
+				{
+					CreateZocOverEffect( zocPool );
+				}
+
+				Grids.AddIgnorePool( zocPool ); // APPLY ZOC	
+			}
 		}
 		
 		// avoid the end node have ally
@@ -2539,7 +2604,7 @@ public class Panel_StageUI : MonoBehaviour
 		if (Config.GOD == true) {
 			CreatePathOverEffect (path); // draw path
 		}
-		
+
 		return path;
 	}
 	
@@ -3004,7 +3069,7 @@ public class Panel_StageUI : MonoBehaviour
 			else {
 				unit.MoveTo( pos.X , pos.Y ); 
 			}
-
+			tmpScriptMoveEnd.Add( pos );				// script 用的單位移動 mrak pool 防止 script 讓不同單位移動到 同樣座標
 //			// check if need trace unit 
 //			Vector3 v = unit.transform.localPosition;
 //			Vector3 canv = TilePlaneObj.transform.localPosition; // shift
@@ -3215,6 +3280,116 @@ public class Panel_StageUI : MonoBehaviour
 		}
 	}
 
+
+
+	public void OnStageBattleCastEvent(GameEvent evt)
+	{
+		// auto close all say window
+		TalkSayEndEvent sayevt = new TalkSayEndEvent();
+		sayevt.nChar = 0;		
+		GameEventManager.DispatchEvent ( sayevt  );
+		
+		//Debug.Log ("OnStagePopCharEvent");
+		StageBattleCastEvent Evt = evt as StageBattleCastEvent;
+		if (Evt == null)
+			return;
+		
+		
+		// attack 
+		
+		Panel_unit pAtkUnit = GetUnitByCharID ( Evt.nAtkCharID );
+		Panel_unit pDefUnit = GetUnitByCharID ( Evt.nDefCharID );
+		if (pAtkUnit == null )
+			return;
+		int nAtkId = pAtkUnit.Ident ();
+		int nDefId = 0;
+		cUnitData pAtker = pAtkUnit.pUnitData;
+		cUnitData pDefer = null;
+
+		if (pDefUnit != null) {
+			nDefId = pDefUnit.Ident ();
+			pDefer = pDefUnit.pUnitData;
+		}
+		// skill param
+		int nSkillID = Evt.nAtkSkillID;
+		int nRange = 1;
+		int nHitBack = 0;
+		if (Evt.nAtkSkillID != 0) {
+			SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(Evt.nAtkSkillID); 
+			if( skl != null ){
+				nRange = skl.n_RANGE;
+				nHitBack = skl.n_HITBACK;
+			}
+		}
+
+		// cast directly
+		int nX = Evt.nTargetX ;
+		int nY = Evt.nTargetY ;
+		List< cUnitData> pool = new List< cUnitData> ();
+
+		BattleManager.GetAffectPool (pAtker ,pDefer ,nSkillID,nX ,nY, ref pool );
+
+		if(  (pDefer!=null) && pool.Contains (pDefer) == false) {
+			pool.Add( pDefer );
+		}
+
+		// attak perform 
+		if (m_bIsSkipMode) {
+			// perform pos directly
+			if (nHitBack != 0) {
+				foreach( cUnitData d in pool )
+				{
+					Panel_unit pUnit = GetUnitByIdent( d.n_Ident );
+					if( pUnit != null ){
+						iVec2 vFinal = SkillHitBack (pAtkUnit, pUnit, nHitBack);
+						if (vFinal != null) {
+							pDefUnit.SetXY( vFinal.X , vFinal.Y );
+						}
+					}
+				}
+
+			}
+			
+		} else {
+			ActionManager.Instance.CreateCastAction (nAtkId, Evt.nAtkSkillID, nDefId );
+
+			// send attack
+			//Panel_StageUI.Instance.MoveToGameObj(pDefUnit.gameObject , false );  // move to def 
+			uAction act = ActionManager.Instance.CreateHitAction (nAtkId, nX , nY ,nSkillID );
+			if (act != null) {
+				//act.AddHitResult (new cHitResult (cHitResult._TYPE._HIT, nAtkId, Evt.nAtkSkillID));
+				//act.AddHitResult (new cHitResult (cHitResult._TYPE._BEHIT, nDefId, Evt.nAtkSkillID));
+				
+				//add skill perform
+
+				foreach( cUnitData d in pool )
+				{
+
+					act.AddHitResult (new cHitResult (cHitResult._TYPE._BEHIT, d.n_Ident , nSkillID )); // for hit fx
+
+					if (nHitBack != 0) {
+						Panel_unit pUnit = GetUnitByIdent( d.n_Ident );
+						if( pUnit != null ){
+							iVec2 vFinal = SkillHitBack (pAtkUnit, pUnit, nHitBack);
+							if (vFinal != null) {
+								//pDefUnit.SetXY( vFinal.X , vFinal.Y );
+								act.AddHitResult (new cHitResult (cHitResult._TYPE._HITBACK, nDefId, vFinal.X, vFinal.Y));
+							}
+						}						
+					}
+				}
+
+//					iVec2 vFinal = SkillHitBack (pAtkUnit, pDefUnit, nHitBack);
+//					if (vFinal != null) {
+//						act.AddHitResult (new cHitResult (cHitResult._TYPE._HITBACK, nDefId, vFinal.X, vFinal.Y));
+//					}
+
+			}
+		}
+	}
+
+
+
 	public void OnStageMoveToUnitEvent(GameEvent evt)
 	{
 		// auto close all say window
@@ -3240,12 +3415,15 @@ public class Panel_StageUI : MonoBehaviour
 			{
 				// change pos directly 
 				pAtkUnit.SetXY( last.X , last.Y );
+
 			}
 			else{    
 				ActionManager.Instance.CreateMoveAction( pAtkUnit.Ident() , last.X , last.Y );	
 				MoveToGameObj( pAtkUnit.gameObject , false );
 				TraceUnit( pAtkUnit );
 			}
+
+			tmpScriptMoveEnd.Add( last );				// script 用的單位移動 mrak pool 防止 script 讓不同單位移動到 同樣座標
 
 //			List< iVec2> path = MobAI.FindPathToTarget( pAtkUnit , pDefUnit , 999 );
 //			//List< iVec2> path = PathFinding( pAtkUpDefUnitnit , pAtkUnit.Loc ,  pDefUnit.Loc , 0  ); // no any block
@@ -3321,7 +3499,7 @@ public class Panel_StageUI : MonoBehaviour
 	}
 
 
-	public void OnStageAddBuff(int nCharID , int nBuffID , int nDel = 0 )
+	public void OnStageAddBuff(int nCharID , int nBuffID , int nCastCharID , int nDel = 0 )
 	{
 		if (nBuffID == 0) {
 			return ;
@@ -3329,6 +3507,12 @@ public class Panel_StageUI : MonoBehaviour
 		TalkSayEndEvent sayevt = new TalkSayEndEvent();
 		sayevt.nChar = 0;		
 		GameEventManager.DispatchEvent ( sayevt  );
+
+		int nCastIdent = 0;
+		if (nCastCharID != 0) {
+			nCastIdent = GameDataManager.Instance.GetIdentByCharID( nCastCharID );
+		}
+
 
 		int nTot = 0;
 		foreach (KeyValuePair< int ,Panel_unit> pair in IdentToUnit) {
@@ -3340,7 +3524,7 @@ public class Panel_StageUI : MonoBehaviour
 				continue;
 			nTot++;
 			if( nDel == 0 ){
-				unit.pUnitData.Buffs.AddBuff (nBuffID, nCharID, 0, 0);
+				unit.pUnitData.Buffs.AddBuff (nBuffID, nCastIdent, 0, 0);
 			}
 			else{
 				unit.pUnitData.Buffs.DelBuff( nBuffID, true );
@@ -3352,7 +3536,7 @@ public class Panel_StageUI : MonoBehaviour
 		}
 	}
 
-	public void OnStageCampAddBuff( int nCampID , int nBuffID , int nDel = 0 )
+	public void OnStageCampAddBuff( int nCampID , int nBuffID , int nCastCharID , int nDel = 0 )
 	{
 		if (nBuffID == 0) {
 			return ;
@@ -3361,6 +3545,11 @@ public class Panel_StageUI : MonoBehaviour
 		TalkSayEndEvent sayevt = new TalkSayEndEvent();
 		sayevt.nChar = 0;		
 		GameEventManager.DispatchEvent ( sayevt  );
+		int nCastIdent = 0;
+		if (nCastCharID != 0) {
+			nCastIdent = GameDataManager.Instance.GetIdentByCharID( nCastCharID );
+		}
+
 		// add , del buff
 		int nTot = 0;
 		_CAMP camp = (_CAMP)nCampID;
@@ -3373,7 +3562,7 @@ public class Panel_StageUI : MonoBehaviour
 				continue;
 			nTot++;
 			if( nDel == 0 ){
-				unit.pUnitData.Buffs.AddBuff (nBuffID, 0, 0, 0);
+				unit.pUnitData.Buffs.AddBuff (nBuffID, nCastIdent , 0, 0);
 			}
 			else{
 				unit.pUnitData.Buffs.DelBuff( nBuffID, true );

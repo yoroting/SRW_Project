@@ -614,7 +614,7 @@ public class MobAI  {
 		List< iVec2 > nearList = Target.Loc.AdjacentList ( nRange ); // the 4 pos can't stand ally
 		Dictionary< iVec2 , int > distpool = new Dictionary< iVec2 , int > ();
 		foreach (iVec2 v in nearList) {
-			if (Panel_StageUI.Instance.CheckIsEmptyPos (v) == true) {// 目標 pos 不可以站人
+			if (Panel_StageUI.Instance.CheckIsEmptyPos (v) == true) {// 目標 pos 不可以站人 也不可以是ZOC
 				int d =v.Dist (Mob.Loc);
 				distpool.Add (v, d );
 			}
