@@ -105,6 +105,9 @@ public class Panel_unit : MonoBehaviour {
 	}
 
 	void OnEnable(){
+		if (FaceObj != null) {
+			FaceObj.transform.localPosition = Vector3.zero;
+		}
 		transform.localRotation = new Quaternion(); 
 		transform.localScale = new Vector3( 1.0f, 1.0f ,1.0f);
 
@@ -677,7 +680,7 @@ public class Panel_unit : MonoBehaviour {
 	}
 	public bool ActionFinished(  )
 	{
-		Debug.Log ( "ActionFinished" );
+		//Debug.Log ( "ActionFinished" );
 		// plane 
 		MoveToTop (false );
 
@@ -910,7 +913,7 @@ public class Panel_unit : MonoBehaviour {
 		if (MyTool.IsSkillTag (skillid, _SKILLTAG._FLY)) {
 			int nMissileID = 0;
 			//string missile = "ACT_FLAME";
-			Missile missdata = null;
+//			Missile missdata = null;
 			if (skillid > 0) {
 				SKILL skl = ConstDataManager.Instance.GetRow<SKILL> (skillid); 
 				if (skl != null) {
@@ -991,6 +994,9 @@ public class Panel_unit : MonoBehaviour {
 			int nTarX = defer.Loc.X;
 			int nTarY = defer.Loc.Y;
 			//List < iVec2 > lst = MyTool.GetAOEPool (nTarX, nTarY, skl.n_AREA, Loc.X, Loc.Y);
+			// need some code
+
+
 		}
 		//  非攻擊型技能，跳過攻擊動作
 		else if (MyTool.IsSkillTag (skillid, _SKILLTAG._DAMAGE)==false) {
@@ -1032,7 +1038,7 @@ public class Panel_unit : MonoBehaviour {
 		if (MyTool.IsSkillTag (skillid, _SKILLTAG._FLY)) {
 			int nMissileID = 0 ;
 			//string missile = "ACT_FLAME";
-			Missile missdata = null;
+			//Missile missdata = null;
 			if (skl != null) {
 				if (skl.n_MISSILE_ID > 0) {
 					nMissileID = skl.n_MISSILE_ID;
@@ -1044,7 +1050,8 @@ public class Panel_unit : MonoBehaviour {
 			}
 			Vector3 vTar = MyTool.SnyGridtoLocalPos( GridX , GridY  , ref GameScene.Instance.Grids );
 
-			FightBulletFX fbFx = FightBulletFX.CreatFX (nMissileID, transform.parent , this.transform.localPosition, vTar, OnTwAtkFlyHit);
+			//FightBulletFX fbFx = 
+			FightBulletFX.CreatFX (nMissileID, transform.parent , this.transform.localPosition, vTar, OnTwAtkFlyHit);
 			
 			// create a fly item
 			return;
@@ -1358,7 +1365,7 @@ public class Panel_unit : MonoBehaviour {
 				twj2.from = scale;
 				twj2.SetEndToCurrentValue();
 				twj2.style = UITweener.Style.Once;
-				twj2.Play();
+				twj2.PlayForward();
 			}
 
 			UIPanel p = this.gameObject.GetComponent<UIPanel> ();
@@ -1419,7 +1426,7 @@ public class Panel_unit : MonoBehaviour {
 			tw2.from = v;
 			tw2.SetEndToCurrentValue();
 			MyTool.TweenSetOneShotOnFinish(tw2, OnTwAtkBowEnd );
-			tw2.Play();
+			tw2.PlayForward();
 		}
 
 	}
@@ -1474,7 +1481,7 @@ public class Panel_unit : MonoBehaviour {
 			tw2.from = v;
 			tw2.to = v2;
 			MyTool.TweenSetOneShotOnFinish(tw2, OnTwAtkHit );
-			tw2.Play();
+			tw2.PlayForward();
 		}
 
 
@@ -1717,7 +1724,8 @@ public class Panel_unit : MonoBehaviour {
 		if (bIsLeaving == true)
 			return;
 		// play leave fx
-		GameObject fx =  GameSystem.PlayFX ( this.gameObject , 205  ); // need rot x  to -75
+		//GameObject fx = 
+			GameSystem.PlayFX ( this.gameObject , 205  ); // need rot x  to -75
 
 		bIsLeaving = true;
 		

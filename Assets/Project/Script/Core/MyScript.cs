@@ -745,7 +745,7 @@ public class MyScript {
 			}
 			else if( func.sFunc  == "UNITDEAD") 
 			{			
-				int nCharID = func.I( 0 );		
+				//int nCharID = func.I( 0 );		
 				Panel_StageUI.Instance.OnStageUnitDeadEvent( func.I(0));
 
 				// dont close auto.

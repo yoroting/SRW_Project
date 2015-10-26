@@ -100,6 +100,7 @@ public class Panel_Talk : MonoBehaviour {
 	void Clear()
 	{
 		if( TalkWindow != null ){
+			TalkWindow.ClearText();
 			TalkWindow.gameObject.SetActive( false );
 		}
 
@@ -614,9 +615,9 @@ public class Panel_Talk : MonoBehaviour {
 	{
 		//SetTextBoxActive ( nType , true ); // need active first to awake() to do some thing
 		SRW_AVGObj obj = SelAVGObjByType (nType , nCharID ) ;
-//		if (obj) {	
+		if (obj) {	
 //			obj.ChangeFace (nCharID);
-//		}
+		}
 
 	}
 	public void CharShake( int nCharID  )

@@ -237,8 +237,8 @@ namespace SimpleAStarExample
 			Node parentnode;
 			// open list
 			bool bFind = false;
-			bool bStop = false;
-			int  nNewG = 0;
+//			bool bStop = false;
+//			int  nNewG = 0;
 		//	List<Node> openlst = new List<Node>();
 		//	List<Node> closelst = new List<Node>();
 		//	List<Node> maxsteplst = new List<Node>();  // record  the max step node
@@ -401,9 +401,9 @@ namespace SimpleAStarExample
 
 			Node parentnode;
 			// open list
-			bool bFind = false;
-			bool bStop = false;
-			int  nNewG = 0;
+//			bool bFind = false;
+//			bool bStop = false;
+//			int  nNewG = 0;
 			openlst.Clear();
 			movelst.Clear();
 

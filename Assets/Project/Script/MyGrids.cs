@@ -932,7 +932,7 @@ namespace MYGRIDS
         {
             List<iVec2> lst = new List<iVec2>();
 
-            int Diffx = ed.X - st.X;
+           // int Diffx = ed.X - st.X;
             int Diffy = ed.Y - st.Y;
             iVec2 p1 = new iVec2();
             if (Diffy == 0)
@@ -945,9 +945,7 @@ namespace MYGRIDS
                 p1.X = st.X;
                 p1.Y = ed.Y;
             }
-            lst.Add(p1);
-
-
+            lst.Add(p1); // center point
             lst.Add(ed);
 
             return lst;

@@ -315,7 +315,7 @@ public class cUnitData{
 
 	public void ActionDone(  ){
 		nActionTime--;		
-		Debug.Log ( "ActionDone" );
+//		Debug.Log ( "ActionDone" );
 
 		// check auto pop round end
 		if( eCampID == _CAMP._PLAYER )
@@ -1042,7 +1042,9 @@ public class cUnitData{
 
 	void UpdateItemAttr( )
 	{
-		cAttrData attr =GetAttrData( cAttrData._ITEM ) ;
+		//cAttrData attr =GetAttrData( cAttrData._ITEM ) ;
+		// no more item attr. it become buffattr inside
+
 	}
 	void UpdateBuffAttr( )
 	{

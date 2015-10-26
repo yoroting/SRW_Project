@@ -283,7 +283,7 @@ public class cBuffs
 
 	//
 	public int GetGuarder(){
-		int nGuarder = 0;
+//		int nGuarder = 0;
 		foreach( KeyValuePair<int , cBuffData>  pair in Pool )
 		{
 			foreach( cEffect eft in pair.Value.EffectPool )
@@ -351,7 +351,7 @@ public class cBuffs
 	public bool BuffFightEnd(  )
 	{
 		// del buff when fight end
-		List< int > lst = new List< int >();
+		//List< int > lst = new List< int >();
 		cUnitData unit_e = GameDataManager.Instance.GetUnitDateByIdent ( Owner.FightAttr.TarIdent );
 		foreach( KeyValuePair<int , cBuffData>  pair in Pool )
 		{
@@ -398,7 +398,7 @@ public class cBuffs
 	public bool BuffRelive()
 	{
 		// del buff when fight end
-		List< int > lst = new List< int >();
+//		List< int > lst = new List< int >();
 		foreach( KeyValuePair<int , cBuffData>  pair in Pool )
 		{
 			//if( pair.Value.nCastIdent == castid )
@@ -414,7 +414,6 @@ public class cBuffs
 		bool bUpdate = RemoveList.Count > 0;
 		RemoveList.Clear ();
 		return bUpdate;
-		return true;
 	}
 
 	public void UpdateAttr( ref cAttrData attr  )

@@ -51,9 +51,7 @@ public class Panel_SysCheat : MonoBehaviour {
 		UIEventListener.Get(MoneyBtn).onClick += OnMoneyClick; 
 
 		//UIEventListener.Get(StoryPoplist).onSubmit += OnJumpStory; 
-		UIEventListener.Get(PopMobBtn).onClick += OnPopMobClick; 
-
-		UIEventListener.Get(PopMobBtn).onClick += OnPopMobClick; 
+		UIEventListener.Get(PopMobBtn).onClick += OnPopMobClick; 	
 		//
 		UIEventListener.Get(TrigEventBtn).onClick += OnTrigEventClick; 
 		///
@@ -289,7 +287,7 @@ public class Panel_SysCheat : MonoBehaviour {
 	{
 		UIPopupList popList = StoryPoplist.GetComponent<UIPopupList>();
 		if (popList != null) {	
-			string s = popList.value;
+//			string s = popList.value;
 			STAGE_STORY st = popList.data as STAGE_STORY;
 			if( st != null ){
 				GameDataManager.Instance.nStoryID = st.n_ID;

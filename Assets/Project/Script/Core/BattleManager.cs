@@ -956,10 +956,10 @@ public partial class BattleManager
 
 		eBattleType = _BATTLE._CAST ;
 	}
-
-	public void PlayBattleID (int nBattleID )
+	// no used
+	public void PlayBattleID (int battleid )
 	{
-		nBattleID = nBattleID;
+		nBattleID = battleid;
 	}
 
 	// 針對 counter 的立即處理
@@ -1567,7 +1567,7 @@ public partial class BattleManager
 		int AtkPowPlus = 0;
 		int DefPowPlus = 0;
 		int AtkPlus = 0;
-		int DedfPlus = 0;
+//		int DedfPlus = 0;
 
 		// default 倍率
 	//	float fAtkMarFactor = 0.0f;
@@ -1575,14 +1575,14 @@ public partial class BattleManager
 		float fAtkPowFactor = 1.0f;
 		float fDefPowFactor = 1.0f;
 		float fAtkFactor = 1.0f;
-		float fDedFactor = 1.0f;
+//		float fDefFactor = 1.0f;
 
 		//float fAtkBurst  = 1.0f + pAtker.GetMulBurst ();
 		//float fDefDamage = 1.0f + pDefer.GetMulDamage ();
 		//resPool.Add ( new cHitResult( cHitResult._TYPE._BEHIT , nDefer , pAtker.FightAttr.SkillID ) );
 
 		SKILL AtkerSkill = pAtker.FightAttr.SkillData.skill;
-		SKILL DeferSkill = pDefer.FightAttr.SkillData.skill;
+//		SKILL DeferSkill = pDefer.FightAttr.SkillData.skill;
 
 		// skill effect
 		if ( AtkerSkill != null ) {
@@ -1865,7 +1865,9 @@ public partial class BattleManager
 					nTarY = Target.n_Y;
 				}else{
 					// bug
-					Debug.LogErrorFormat( "ConvertSkillTargetXY on null target{0},skill{1},x{2},y{3} " ,nTargetID,nSkillID, nTarX , nTarY );	
+					if( nTargetID > 0 ){
+						Debug.LogErrorFormat( "ConvertSkillTargetXY on null target{0},skill{1},x{2},y{3} " ,nTargetID,nSkillID, nTarX , nTarY );	
+					}
 				}
 			}
 				break;

@@ -496,7 +496,7 @@ public class ADDCP_E: cEffect
 public class MUL_DROP: cEffect
 {
 	public MUL_DROP( float v ){ fValue = v;}
-	public float fValue ;	
+//	public float fValue ;	
 	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
 		attr.fDropRate += fValue;
 	}
@@ -505,7 +505,7 @@ public class MUL_DROP: cEffect
 public class MUL_BRUST: cEffect
 {
 	public MUL_BRUST( float v ){ fValue = v;}
-	public float fValue ;	
+//	public float fValue ;	
 	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
 		attr.fBurstRate += fValue;
 	}
@@ -514,7 +514,7 @@ public class MUL_BRUST: cEffect
 public class MUL_DAMAGE: cEffect
 {
 	public MUL_DAMAGE( float v ){fValue = v;}
-	public float fValue ;	
+//	public float fValue ;	
 	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
 		attr.fDamageRate += fValue;
 	}
@@ -523,7 +523,7 @@ public class MUL_DAMAGE: cEffect
 public class MUL_ATTACK: cEffect
 {
 	public MUL_ATTACK( float v ){fValue = v;}
-	public float fValue ;	
+//	public float fValue ;	
 	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
 		attr.fAtkRate += fValue;
 	}
@@ -532,7 +532,7 @@ public class MUL_ATTACK: cEffect
 public class MUL_DEF: cEffect
 {
 	public MUL_DEF( float v ){fValue = v;}
-	public float fValue ;	
+//	public float fValue ;	
 	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
 		attr.fDefRate += fValue;
 	}
@@ -541,7 +541,7 @@ public class MUL_DEF: cEffect
 public class MUL_POWER: cEffect
 {
 	public MUL_POWER( float v ){fValue = v;}
-	public float fValue ;	
+//	public float fValue ;	
 	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
 		attr.fPowRate += fValue;
 	}
@@ -581,7 +581,7 @@ public class MUL_MAXSP: cEffect
 public class MUL_DRAINHP: cEffect
 {
 	public MUL_DRAINHP( float v ){ fValue = v;}
-	public float fValue ;	
+//	public float fValue ;	
 	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
 		attr.fDrainHpRate += fValue;
 	}
@@ -590,7 +590,7 @@ public class MUL_DRAINHP: cEffect
 public class MUL_DRAINMP: cEffect
 {
 	public MUL_DRAINMP( float v ){ fValue = v;}
-	public float fValue ;	
+//	public float fValue ;	
 	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
 		attr.fDrainMpRate += fValue;
 	}
@@ -601,21 +601,21 @@ public class MUL_DRAINMP: cEffect
 public class MUL_MPCOST: cEffect
 {
 	public MUL_MPCOST( float v ){ fValue = v;}
-	public float fValue ;
+//	public float fValue ;
 	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
 		attr.fMpCostRate += fValue;
 	}
 }
 
 
-public class RECOVER_SP: cEffect
-{
-	public RECOVER_SP( float v ){ fValue = v;}
-	public float fValue ;
-//	override public void _Mul_SpCost( ref float value ){ 
-//		value += F;
-//	}
-}
+//public class RECOVER_SP: cEffect
+//{
+//	public RECOVER_SP( float v ){ fValue = v;}
+////	public float fValue ;
+////	override public void _Mul_SpCost( ref float value ){ 
+////		value += F;
+////	}
+//}
 
 //==== tag status ==
 public class TAG_CHARGE: cEffect

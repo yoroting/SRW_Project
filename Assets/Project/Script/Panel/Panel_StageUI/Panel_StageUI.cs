@@ -791,10 +791,10 @@ public class Panel_StageUI : MonoBehaviour
 			//GameObject obj = PanelManager.Instance.OpenUI (Panel_CMDUnitUI.Name);
 			//CloseCMDUI();
 			if( unit.CanDoCmd()  ){
-				Panel_CMDUnitUI panel = Panel_CMDUnitUI.OpenCMDUI( _CMD_TYPE._ALLY , unit ); // player
+				Panel_CMDUnitUI.OpenCMDUI( _CMD_TYPE._ALLY , unit ); // player
 			}
 			else{
-				Panel_CMDUnitUI panel = Panel_CMDUnitUI.OpenCMDUI( _CMD_TYPE._ENEMY , unit );
+				Panel_CMDUnitUI.OpenCMDUI( _CMD_TYPE._ENEMY , unit );
 			}
 			CreateMoveOverEffect (unit);
 			return;
@@ -808,10 +808,10 @@ public class Panel_StageUI : MonoBehaviour
 			else{
 				Panel_CMDUnitUI.CloseCMDUI();
 				if( unit.CanDoCmd()  ){
-					Panel_CMDUnitUI panel = Panel_CMDUnitUI.OpenCMDUI( _CMD_TYPE._ALLY , unit ); // player
+					Panel_CMDUnitUI.OpenCMDUI( _CMD_TYPE._ALLY , unit ); // player
 				}
 				else{
-					Panel_CMDUnitUI panel = Panel_CMDUnitUI.OpenCMDUI( _CMD_TYPE._ENEMY , unit );
+					Panel_CMDUnitUI.OpenCMDUI( _CMD_TYPE._ENEMY , unit );
 				}		
 				CreateMoveOverEffect (unit);
 			}
@@ -2198,41 +2198,39 @@ public class Panel_StageUI : MonoBehaviour
 
 	public GameObject AddAVGObj( int nIdent , bool bAssist= false , bool batk = true )
 	{
-		return null;
 
-		int nIdx = 0;
-		if (bAssist) {
-			nIdx ++;
-		}
-
-
-		cUnitData pData = GameDataManager.Instance.GetUnitDateByIdent ( nIdent );
-		if (pData!= null) {
-			GameObject obj = AvgObj.Spawn( MaskPanelObj.transform , new Vector3( 0.0f , -640.0f , 0.0f )  );
-			if( obj != null ){
-				SRW_AVGObj avg = obj.GetComponent< SRW_AVGObj > ();
-				if( avg != null ){
-					avg.ChangeFace( pData.n_CharID );
-					Vector3 tarPos = new Vector3();
-					if( pData.eCampID == _CAMP._ENEMY ){ tarPos.x = -(240.0f+ nIdx*64);  }
-					else{ tarPos.x = (240.0f+ nIdx*64 ); }
-					//============================================
-					TweenPosition tw = TweenPosition.Begin<TweenPosition>( obj , 0.3f );
-					if( tw != null ){
-						tw.from =  new Vector3( 0.0f , -640.0f , 0.0f );
-						tw.to = tarPos;
-					}
-					// index
-					if(nIdx==0 ){
-						avg._FaceTexObj.depth = 2;
-					}
-					else{
-						avg._FaceTexObj.depth = 1;
-					}
-				}
-			}
-			return obj;
-		}
+		// no use avg now
+//		int nIdx = 0;
+//		if (bAssist) {
+//			nIdx ++;
+//		}
+//		cUnitData pData = GameDataManager.Instance.GetUnitDateByIdent ( nIdent );
+//		if (pData!= null) {
+//			GameObject obj = AvgObj.Spawn( MaskPanelObj.transform , new Vector3( 0.0f , -640.0f , 0.0f )  );
+//			if( obj != null ){
+//				SRW_AVGObj avg = obj.GetComponent< SRW_AVGObj > ();
+//				if( avg != null ){
+//					avg.ChangeFace( pData.n_CharID );
+//					Vector3 tarPos = new Vector3();
+//					if( pData.eCampID == _CAMP._ENEMY ){ tarPos.x = -(240.0f+ nIdx*64);  }
+//					else{ tarPos.x = (240.0f+ nIdx*64 ); }
+//					//============================================
+//					TweenPosition tw = TweenPosition.Begin<TweenPosition>( obj , 0.3f );
+//					if( tw != null ){
+//						tw.from =  new Vector3( 0.0f , -640.0f , 0.0f );
+//						tw.to = tarPos;
+//					}
+//					// index
+//					if(nIdx==0 ){
+//						avg._FaceTexObj.depth = 2;
+//					}
+//					else{
+//						avg._FaceTexObj.depth = 1;
+//					}
+//				}
+//			}
+//			return obj;
+//		}
 		return null;
 	}
 
@@ -3260,12 +3258,12 @@ public class Panel_StageUI : MonoBehaviour
 		int nDefId = pDefUnit.Ident ();
 		int nSkillID = Evt.nAtkSkillID;
 		int nRange = 1;
-		int nHitBack = 0;
+//		int nHitBack = 0;
 		if (Evt.nAtkSkillID != 0) {
 			SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(Evt.nAtkSkillID); 
 			if( skl != null ){
 				nRange = skl.n_RANGE;
-				nHitBack = skl.n_HITBACK;
+//				nHitBack = skl.n_HITBACK;
 			}
 		}
 		// show skill name
@@ -3418,15 +3416,15 @@ public class Panel_StageUI : MonoBehaviour
 		}
 		// skill param
 		int nSkillID = Evt.nAtkSkillID;
-		int nRange = 1;
-		int nHitBack = 0;
-		if (Evt.nAtkSkillID != 0) {
-			SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(Evt.nAtkSkillID); 
-			if( skl != null ){
-				nRange = skl.n_RANGE;
-				nHitBack = skl.n_HITBACK;
-			}
-		}
+//		int nRange = 1;
+//		int nHitBack = 0;
+//		if (Evt.nAtkSkillID != 0) {
+//			SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(Evt.nAtkSkillID); 
+//			if( skl != null ){
+//				nRange = skl.n_RANGE;
+//				nHitBack = skl.n_HITBACK;
+//			}
+//		}
 
 		// cast directly
 		int nX = Evt.nTargetX ;
@@ -3695,6 +3693,8 @@ public class Panel_StageUI : MonoBehaviour
 		int nTot = 0;
 		foreach (KeyValuePair< int ,Panel_unit> pair in IdentToUnit) {
 			Panel_unit unit = pair.Value;
+			if( unit == null )
+				continue;
 			if( unit.CharID != nCharID )
 				continue;
 			//

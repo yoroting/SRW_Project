@@ -237,7 +237,9 @@ public class Panel_Cheat : MonoBehaviour {
 	{
 		int nHp = (int)(pData.GetMaxHP() *0.1f);
 		pData.AddHp( -nHp );
-
+		if (pData.n_HP <= 0) {
+			pData.n_HP = 1;		// no kill unit
+		}
 		SetData( pData );
 		//MyTool.SetLabelText( HpValueobj , string.Format( "{0}%" , (int)(pData.GetHpPercent()*100 ) ) );
 	}

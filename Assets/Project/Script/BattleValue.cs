@@ -4,7 +4,7 @@ using System.Collections;
 public class BattleValue : MonoBehaviour {
 
 //	static public int nValueCount=0;  // no more need
-	float fOffset = 16.0f;
+//	float fOffset = 16.0f;
 	float fOriginY = 0.0f;
 
 	void OnEnable()
@@ -13,7 +13,7 @@ public class BattleValue : MonoBehaviour {
 		transform.localScale = new Vector3( 1.5f, 1.5f , 1.5f);
 		// clear all twr
 
-		float x = transform.localPosition.x;
+		//float x = transform.localPosition.x;
 		float y = transform.localPosition.y;
 		fOriginY = y;
 

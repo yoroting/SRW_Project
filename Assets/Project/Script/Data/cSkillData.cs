@@ -291,7 +291,7 @@ public class cSkillData
 		if (atker == null || EffPool == null )
 			return false;
 
-		cUnitData unit_e = defer ;
+	//	cUnitData unit_e = defer ;
 
 		
 		// normal effect

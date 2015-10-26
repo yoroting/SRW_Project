@@ -609,7 +609,7 @@ public class MobAI  {
 		if( Mob == null || Target == null ){
 			return null;
 		}
-		int ident = Mob.Ident();
+		//int ident = Mob.Ident();
 
 		List< iVec2 > nearList = Target.Loc.AdjacentList ( nRange ); // the 4 pos can't stand ally
 		Dictionary< iVec2 , int > distpool = new Dictionary< iVec2 , int > ();

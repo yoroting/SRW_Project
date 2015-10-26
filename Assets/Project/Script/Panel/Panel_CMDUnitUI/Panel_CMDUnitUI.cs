@@ -894,8 +894,8 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		if (Evt == null)
 			return;
 		int nIdent = Evt.nIdent;
-		int nX =  Evt.nX;
-		int nY =  Evt.nY;
+//		int nX =  Evt.nX;
+//		int nY =  Evt.nY;
 		if (nIdent != CMD.nCmderIdent)
 			return;
 		// entry next phase
