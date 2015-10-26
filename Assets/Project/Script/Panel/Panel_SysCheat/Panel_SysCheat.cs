@@ -32,6 +32,10 @@ public class Panel_SysCheat : MonoBehaviour {
 	public GameObject PopMobBtn;           // Set money
 	public int nPopCharID;
 
+	// event trig
+	public GameObject EventPoplist;           // sel Event
+	public GameObject TrigEventBtn;           // trig Event
+
 
 	// Use this for initialization
 	void Start () {
@@ -49,8 +53,9 @@ public class Panel_SysCheat : MonoBehaviour {
 		//UIEventListener.Get(StoryPoplist).onSubmit += OnJumpStory; 
 		UIEventListener.Get(PopMobBtn).onClick += OnPopMobClick; 
 
-
-		UIEventListener.Get(StarBtn).onClick += OnSetStarClick; 
+		UIEventListener.Get(PopMobBtn).onClick += OnPopMobClick; 
+		//
+		UIEventListener.Get(TrigEventBtn).onClick += OnTrigEventClick; 
 		///
 		UIPopupList popList = StoryPoplist.GetComponent<UIPopupList>();
 		if (popList != null) {		
@@ -109,6 +114,46 @@ public class Panel_SysCheat : MonoBehaviour {
 		} else {
 			StoryPoplist.SetActive( false );
 		}
+		// Event list
+		UIPopupList EvtList = EventPoplist.GetComponent<UIPopupList>();
+		if (EvtList != null) {		
+			EvtList.Clear();
+
+			//int nStageID = GameDataManager.Instance.nStageID;
+			STAGE_DATA StageData = ConstDataManager.Instance.GetRow<STAGE_DATA>(GameDataManager.Instance.nStageID);
+			if (StageData == null)
+			{
+				Debug.LogFormat("stageloding:StageData fail with ID {0}  ", GameDataManager.Instance.nStageID);
+				return;
+			}
+
+			//===
+			char[] split = { ';',' ',',' };		
+			// mission
+			string[] strMission = StageData.s_MISSION.Split(split);
+			for (int i = 0; i < strMission.Length; i++)
+			{
+				int nMissionID ;
+				if( int.TryParse( strMission[i],  out nMissionID ) ){
+					if( nMissionID ==0 )
+						continue;
+					EvtList.AddItem(  nMissionID.ToString(), nMissionID);
+				}
+			}
+			
+			// event
+			string[] strEvent = StageData.s_EVENT.Split(split);
+			for (int i = 0; i < strEvent.Length; i++)
+			{
+				int nEventID;
+				if( int.TryParse( strEvent[i],  out nEventID ) ){
+					if( nEventID ==0 )
+						continue;
+					EvtList.AddItem(  nEventID.ToString(), nEventID);
+				}
+			}
+		}
+
 
 	}
 
@@ -224,6 +269,20 @@ public class Panel_SysCheat : MonoBehaviour {
 
 	}
 
+	// trig event
+	public void OnTrigEventClick(GameObject go)
+	{
+		UIPopupList popList = EventPoplist.GetComponent<UIPopupList>();
+		if (popList != null) {	
+			string s = popList.value;
+			int nEventID ;
+			if( int.TryParse( s , out nEventID ) )
+			{
+				Panel_StageUI.Instance.TrigEventToRun(nEventID);
+			}
+		}
+		PanelManager.Instance.CloseUI( Name );
+	}
 
 	//跳關
 	public void StoryComboboxChange()

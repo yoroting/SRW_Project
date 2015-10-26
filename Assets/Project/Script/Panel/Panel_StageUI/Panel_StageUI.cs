@@ -195,6 +195,9 @@ public class Panel_StageUI : MonoBehaviour
 		{
 			int nMissionID = 0;
 			if( int.TryParse( strMission[i],  out nMissionID ) ){
+				if( 0 == nMissionID )
+					continue;
+
 				STAGE_EVENT evt = ConstDataManager.Instance.GetRow<STAGE_EVENT>(nMissionID);
 				if (evt != null)
 				{
@@ -210,13 +213,18 @@ public class Panel_StageUI : MonoBehaviour
 		string[] strEvent = StageData.s_EVENT.Split(split);
 		for (int i = 0; i < strEvent.Length; i++)
 		{
-			int nEventID = int.Parse(strEvent[i]);
-			STAGE_EVENT evt = ConstDataManager.Instance.GetRow<STAGE_EVENT>(nEventID);
-			if (evt != null)
+			int nEventID;
+			if( int.TryParse( strEvent[i] , out nEventID ))
 			{
-				if( EvtPool.ContainsKey( nEventID ) == false )
+				if( 0 == nEventID )
+					continue;
+				STAGE_EVENT evt = ConstDataManager.Instance.GetRow<STAGE_EVENT>(nEventID);
+				if (evt != null)
 				{
-					EvtPool.Add(nEventID, evt);
+					if( EvtPool.ContainsKey( nEventID ) == false )
+					{
+						EvtPool.Add(nEventID, evt);
+					}
 				}
 			}
 		}
@@ -1736,6 +1744,53 @@ public class Panel_StageUI : MonoBehaviour
 		}
 		return false;
 	}
+	// this is debug tool func
+	public void TrigEventToRun( int nEventID )
+	{
+		if( NextEvent != null )		// avoid double run
+		{
+			Debug.LogError( " TrigEventToRun Err!! nextevent exist");
+			return ;
+		}
+		if( (EvtPool==null) || (EvtPool.Count<=0)){
+			Debug.LogError( " TrigEventToRun Err!! EvtPool is null");
+			return  ;
+		}
+		
+		if (bIsStageEnd) {
+			Debug.LogError( " TrigEventToRun Err!! stage is end");
+			return;
+		}
+		if (bIsLoading) {
+			Debug.LogError( " TrigEventToRun Err!! stage is loading");
+			return;
+		}
+		//======================================
+		STAGE_EVENT evt;
+		if( EvtPool.TryGetValue( nEventID , out evt ) )
+		{
+			//WaitPool.Add( evt );
+			// check is loop event?
+			if( IsLoopEvent( evt )== false  )
+			{
+				if( EvtPool.ContainsKey( nEventID ) )
+				{
+					EvtPool.Remove( nEventID );
+				}
+
+				//removeLst.Add( pair.Key );
+			}
+			// run event directly
+			NextEvent = evt;
+			PreEcecuteEvent();					// parser next event to run
+			Debug.LogFormat( " TrigEventToRun ok!! event {0}  " , nEventID );
+		}
+		else{
+			Debug.LogErrorFormat( " TrigEventToRun Err!! event{0} not exist " , nEventID );
+		}
+
+	}
+	//
 	void GetEventToRun()
 	{
 		//if( IsRunningEvent() )
@@ -2609,54 +2664,54 @@ public class Panel_StageUI : MonoBehaviour
 	}
 	
 	// tool func to get aoe affect pool
-	public List < iVec2 > GetAOEPool( int nX , int nY , int nAoe )
-	{
-		iVec2 st = new iVec2 ( nX , nY );
-		Dictionary< string , iVec2 > tmp = new Dictionary< string , iVec2 >();
-		tmp.Add ( st.GetKey() , st );
-		//			pool.Add ( st );
-		
-		AOE aoe = ConstDataManager.Instance.GetRow<AOE> ( nAoe ) ;
-		if (aoe != null) {
-			// add extra first
-			cTextArray TA = new cTextArray();
-			TA.SetText ( aoe.s_EXTRA );
-			for( int i = 0 ; i < TA.GetMaxCol(); i++ )
-			{
-				CTextLine line  = TA.GetTextLine( i );
-				for( int j = 0 ; j < line.GetRowNum() ; j++ )
-				{
-					string s = line.m_kTextPool[ j ];
-					
-					string [] arg = s.Split( ",".ToCharArray() );
-					if( arg.Length < 2 )
-						continue;
-					if( arg[0] != null && arg[1] != null )
-					{
-						int x = int.Parse( arg[0] );
-						int y = int.Parse( arg[1] );
-						iVec2 v = st.MoveXY( x , y );
-						
-						if( Grids.Contain( v ) == false )
-							continue;
-						
-						string key = v.GetKey();
-						if( tmp.ContainsKey( key ) == false ){
-							tmp.Add( key , v );
-						}
-					}
-				}
-			}
-			// get range pool	
-			List<iVec2> r = Grids.GetRangePool( st , aoe.n_MAX , aoe.n_MIN );
-			
-			
-			
-		}
-		
-		List < iVec2 > pool = new List < iVec2 > ();
-		return pool;
-	}
+//	public List < iVec2 > GetAOEPool( int nX , int nY , int nAoe )
+//	{
+//		iVec2 st = new iVec2 ( nX , nY );
+//		Dictionary< string , iVec2 > tmp = new Dictionary< string , iVec2 >();
+//		tmp.Add ( st.GetKey() , st );
+//		//			pool.Add ( st );
+//		
+//		AOE aoe = ConstDataManager.Instance.GetRow<AOE> ( nAoe ) ;
+//		if (aoe != null) {
+//			// add extra first
+//			cTextArray TA = new cTextArray();
+//			TA.SetText ( aoe.s_EXTRA );
+//			for( int i = 0 ; i < TA.GetMaxCol(); i++ )
+//			{
+//				CTextLine line  = TA.GetTextLine( i );
+//				for( int j = 0 ; j < line.GetRowNum() ; j++ )
+//				{
+//					string s = line.m_kTextPool[ j ];
+//					
+//					string [] arg = s.Split( ",".ToCharArray() );
+//					if( arg.Length < 2 )
+//						continue;
+//					if( arg[0] != null && arg[1] != null )
+//					{
+//						int x = int.Parse( arg[0] );
+//						int y = int.Parse( arg[1] );
+//						iVec2 v = st.MoveXY( x , y );
+//						
+//						if( Grids.Contain( v ) == false )
+//							continue;
+//						
+//						string key = v.GetKey();
+//						if( tmp.ContainsKey( key ) == false ){
+//							tmp.Add( key , v );
+//						}
+//					}
+//				}
+//			}
+//			// get range pool	
+//			List<iVec2> r = Grids.GetRangePool( st , aoe.n_MAX , aoe.n_MIN );
+//			
+//			
+//			
+//		}
+//		
+//		List < iVec2 > pool = new List < iVec2 > ();
+//		return pool;
+//	}
 	
 	
 	
@@ -2779,6 +2834,8 @@ public class Panel_StageUI : MonoBehaviour
 		{
 			int nMissionID = 0;
 			if( int.TryParse( strMission[i],  out nMissionID ) ){
+				if( 0 == nMissionID )
+					continue;
 				STAGE_EVENT evt = ConstDataManager.Instance.GetRow<STAGE_EVENT>(nMissionID);
 				if (evt != null)
 				{
@@ -2798,19 +2855,24 @@ public class Panel_StageUI : MonoBehaviour
 		string[] strEvent = StageData.s_EVENT.Split(split);
 		for (int i = 0; i < strEvent.Length; i++)
 		{
-			int nEventID = int.Parse(strEvent[i]);
-			STAGE_EVENT evt = ConstDataManager.Instance.GetRow<STAGE_EVENT>(nEventID);
-			if (evt != null)
-			{
-				// check if not loop event
-				if( (evt.n_TYPE&1) != 1 ){
-					if( GameDataManager.Instance.EvtDonePool.ContainsKey( nEventID ) == true )
-					{
-						continue;
+			int nEventID ;
+			if( int.TryParse( strEvent[i],  out nEventID ) ){
+				if( 0 == nEventID )
+					continue;
+
+				STAGE_EVENT evt = ConstDataManager.Instance.GetRow<STAGE_EVENT>(nEventID);
+				if (evt != null)
+				{
+					// check if not loop event
+					if( (evt.n_TYPE&1) != 1 ){
+						if( GameDataManager.Instance.EvtDonePool.ContainsKey( nEventID ) == true )
+						{
+							continue;
+						}
 					}
+					
+					EvtPool.Add(nEventID, evt);
 				}
-				
-				EvtPool.Add(nEventID, evt);
 			}
 		}
 
@@ -3190,9 +3252,13 @@ public class Panel_StageUI : MonoBehaviour
 		Panel_unit pDefUnit = GetUnitByCharID ( Evt.nDefCharID );
 		if (pAtkUnit == null || pDefUnit == null)
 			return;
+
+		cUnitData pAtker = pAtkUnit.pUnitData;
+		cUnitData pDefer = pDefUnit.pUnitData;
+
 		int nAtkId = pAtkUnit.Ident ();
 		int nDefId = pDefUnit.Ident ();
-
+		int nSkillID = Evt.nAtkSkillID;
 		int nRange = 1;
 		int nHitBack = 0;
 		if (Evt.nAtkSkillID != 0) {
@@ -3249,14 +3315,35 @@ public class Panel_StageUI : MonoBehaviour
 
 
 		}
+
+		List< cUnitData> pool = new List< cUnitData> ();
+		
+		//BattleManager.ConvertSkillTargetXY( pAtker , nSkillID , nDefId , ref nX , ref nY );
+		BattleManager.GetAffectPool (pAtker ,pDefer ,nSkillID, 0 ,0, ref pool ); // will convert inside
+		
+		if(  (pDefer!=null) && pool.Contains (pDefer) == false) {
+			pool.Add( pDefer );
+		}
+
+
 		// attak perform 
 		if (m_bIsSkipMode) {
 			 // perform pos directly
-			if (nHitBack != 0) {
-				iVec2 vFinal = SkillHitBack (pAtkUnit, pDefUnit, nHitBack);
-				if (vFinal != null) {
-					pDefUnit.SetXY( vFinal.X , vFinal.Y );
-				}
+			// perform pos directly		
+			foreach( cUnitData d in pool )
+			{
+				List<cHitResult> HitResult = BattleManager.CalSkillHitResult(pAtker , d , nSkillID  );
+
+				ActionManager.Instance.ExecActionHitResult(HitResult ,m_bIsSkipMode );  // play directly without action to avoid 1 frame error
+				ActionManager.Instance.ExecActionEndResult(HitResult ,m_bIsSkipMode );
+				
+				//					Panel_unit pUnit = GetUnitByIdent( d.n_Ident );
+				//					if( pUnit != null ){
+				//						iVec2 vFinal = SkillHitBack (pAtkUnit, pUnit, nHitBack);
+				//						if (vFinal != null) {
+				//							pDefUnit.SetXY( vFinal.X , vFinal.Y );
+				//						}
+				//					}
 			}
 
 		} else {
@@ -3267,15 +3354,34 @@ public class Panel_StageUI : MonoBehaviour
 			uAction act = ActionManager.Instance.CreateAttackAction (nAtkId, nDefId, Evt.nAtkSkillID);
 			if (act != null) {
 				//act.AddHitResult (new cHitResult (cHitResult._TYPE._HIT, nAtkId, Evt.nAtkSkillID));
-				act.AddHitResult (new cHitResult (cHitResult._TYPE._BEHIT, nDefId, Evt.nAtkSkillID));
 
-				//add skill perform
-				if (nHitBack != 0) {
-					iVec2 vFinal = SkillHitBack (pAtkUnit, pDefUnit, nHitBack);
-					if (vFinal != null) {
-						act.AddHitResult (new cHitResult (cHitResult._TYPE._HITBACK, nDefId, vFinal.X, vFinal.Y));
-					}
+				foreach( cUnitData d in pool )
+				{
+				
+					act.AddHitResult (new cHitResult (cHitResult._TYPE._BEHIT, d.n_Ident , nSkillID )); // for hit fx
+					
+					
+					act.AddHitResult( BattleManager.CalSkillHitResult(pAtker , d , nSkillID  ) );
+					
+					//					Panel_unit pUnit = GetUnitByIdent( d.n_Ident );
+					//					if( pUnit != null ){
+					//						iVec2 vFinal = SkillHitBack (pAtkUnit, pUnit, nHitBack);
+					//						if (vFinal != null) {
+					//							pDefUnit.SetXY( vFinal.X , vFinal.Y );
+					//						}
+					//					}
 				}
+
+
+//				act.AddHitResult (new cHitResult (cHitResult._TYPE._BEHIT, nDefId, Evt.nAtkSkillID));
+//
+//				//add skill perform
+//				if (nHitBack != 0) {
+//					iVec2 vFinal = SkillHitBack (pAtkUnit, pDefUnit, nHitBack);
+//					if (vFinal != null) {
+//						act.AddHitResult (new cHitResult (cHitResult._TYPE._HITBACK, nDefId, vFinal.X, vFinal.Y));
+//					}
+//				}
 			}
 		}
 	}
@@ -3325,9 +3431,12 @@ public class Panel_StageUI : MonoBehaviour
 		// cast directly
 		int nX = Evt.nTargetX ;
 		int nY = Evt.nTargetY ;
+
+
 		List< cUnitData> pool = new List< cUnitData> ();
 
-		BattleManager.GetAffectPool (pAtker ,pDefer ,nSkillID,nX ,nY, ref pool );
+		BattleManager.ConvertSkillTargetXY( pAtker , nSkillID , nDefId , ref nX , ref nY );
+		BattleManager.GetAffectPool (pAtker ,pDefer ,nSkillID,nX ,nY, ref pool ); // will convert
 
 		if(  (pDefer!=null) && pool.Contains (pDefer) == false) {
 			pool.Add( pDefer );
@@ -3335,29 +3444,31 @@ public class Panel_StageUI : MonoBehaviour
 
 		// attak perform 
 		if (m_bIsSkipMode) {
-			// perform pos directly
-			if (nHitBack != 0) {
-				foreach( cUnitData d in pool )
-				{
-					Panel_unit pUnit = GetUnitByIdent( d.n_Ident );
-					if( pUnit != null ){
-						iVec2 vFinal = SkillHitBack (pAtkUnit, pUnit, nHitBack);
-						if (vFinal != null) {
-							pDefUnit.SetXY( vFinal.X , vFinal.Y );
-						}
-					}
-				}
+			// perform pos directly		
+			foreach( cUnitData d in pool )
+			{
+				List<cHitResult> HitResult = BattleManager.CalSkillHitResult(pAtker , d , nSkillID  );
 
+				ActionManager.Instance.ExecActionHitResult(HitResult ,m_bIsSkipMode );  // play directly without action to avoid 1 frame error
+				ActionManager.Instance.ExecActionEndResult(HitResult ,m_bIsSkipMode );
+
+//					Panel_unit pUnit = GetUnitByIdent( d.n_Ident );
+//					if( pUnit != null ){
+//						iVec2 vFinal = SkillHitBack (pAtkUnit, pUnit, nHitBack);
+//						if (vFinal != null) {
+//							pDefUnit.SetXY( vFinal.X , vFinal.Y );
+//						}
+//					}
 			}
 			
 		} else {
-			ActionManager.Instance.CreateCastAction (nAtkId, Evt.nAtkSkillID, nDefId );
+			ActionManager.Instance.CreateCastAction (nAtkId, Evt.nAtkSkillID, nDefId , nX , nY );
 
 			// send attack
 			//Panel_StageUI.Instance.MoveToGameObj(pDefUnit.gameObject , false );  // move to def 
 			uAction act = ActionManager.Instance.CreateHitAction (nAtkId, nX , nY ,nSkillID );
 			if (act != null) {
-				//act.AddHitResult (new cHitResult (cHitResult._TYPE._HIT, nAtkId, Evt.nAtkSkillID));
+				//act.AddHitResult (new cHitResult (cHitResult._TYPE. , nAtkId, Evt.nAtkSkillID));
 				//act.AddHitResult (new cHitResult (cHitResult._TYPE._BEHIT, nDefId, Evt.nAtkSkillID));
 				
 				//add skill perform
@@ -3367,16 +3478,18 @@ public class Panel_StageUI : MonoBehaviour
 
 					act.AddHitResult (new cHitResult (cHitResult._TYPE._BEHIT, d.n_Ident , nSkillID )); // for hit fx
 
-					if (nHitBack != 0) {
-						Panel_unit pUnit = GetUnitByIdent( d.n_Ident );
-						if( pUnit != null ){
-							iVec2 vFinal = SkillHitBack (pAtkUnit, pUnit, nHitBack);
-							if (vFinal != null) {
-								//pDefUnit.SetXY( vFinal.X , vFinal.Y );
-								act.AddHitResult (new cHitResult (cHitResult._TYPE._HITBACK, nDefId, vFinal.X, vFinal.Y));
-							}
-						}						
-					}
+
+					act.AddHitResult( BattleManager.CalSkillHitResult(pAtker , d , nSkillID  ) );
+//					if (nHitBack != 0) {
+//						Panel_unit pUnit = GetUnitByIdent( d.n_Ident );
+//						if( pUnit != null ){
+//							iVec2 vFinal = SkillHitBack (pAtkUnit, pUnit, nHitBack);
+//							if (vFinal != null) {
+//								//pDefUnit.SetXY( vFinal.X , vFinal.Y );
+//								act.AddHitResult (new cHitResult (cHitResult._TYPE._HITBACK, nDefId, vFinal.X, vFinal.Y));
+//							}
+//						}						
+//					}
 				}
 
 //					iVec2 vFinal = SkillHitBack (pAtkUnit, pDefUnit, nHitBack);

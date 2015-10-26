@@ -674,10 +674,12 @@ public class cUnitData{
 
 				string [] arg = s.Split (",".ToCharArray ());
 				if (arg [0] != null) {
-					int school = int.Parse (arg [0]);
+					int school = 0;
+					int.TryParse(arg[0] , out school );
 					int lv = 1;
 					if (arg [1] != null) {
-						lv = int.Parse (arg [1]);
+						int.TryParse( arg [1] , out lv );
+						//lv = int.Parse (arg [1]);
 					}
 					LearnSchool (school, lv);
 				}
@@ -692,10 +694,11 @@ public class cUnitData{
 				
 				string [] arg = s.Split (",".ToCharArray ());
 				if (arg [0] != null) {
-					int ability = int.Parse (arg [0]);
+					int ability = 0;
+					int.TryParse( arg [0] , out ability );
 					int lv = 1;
 					if (arg [1] != null) {
-						lv = int.Parse (arg [1]);
+						int.TryParse(arg [1] ,out lv );
 					}
 					SetAbility (ability, lv);
 					//SetSchool( school , lv  );

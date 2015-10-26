@@ -1006,6 +1006,14 @@ public class MyScript {
 				else if( func.sFunc  == "ADDBUFF_I") 				{
 					pool.Add( new ADDBUFF_I( func.I(0) ) );
 				}
+
+				else if( func.sFunc  == "AURABUFF_E") 				{
+					pool.Add( new AURABUFF_E( func.I(0) , func.I(1)) );
+				}
+				else if( func.sFunc  == "AURABUFF_I") 				{
+					pool.Add( new AURABUFF_I( func.I(0) , func.I(1) ) );
+				}
+
 				// Hit effect
 				if( func.sFunc  == "HITBUFF_I") 
 				{

@@ -276,7 +276,9 @@ namespace MyClassLibrary
             {
                 if (string.IsNullOrEmpty(s2) == false)
                 {
-                    ary[c++] = int.Parse( s2.Trim() );                    
+					int arg;
+					int.TryParse( s2.Trim() , out arg );
+					ary[c++] = arg;                    
                 }
             }
             return ary;

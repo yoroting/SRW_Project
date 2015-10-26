@@ -269,48 +269,57 @@ public partial class ActionManager
 				// 有 cost
 				if( nSkillID > 0 )
 				{
-					SKILL skill = ConstDataManager.Instance.GetRow<SKILL>(nSkillID); 
-					switch( skill.n_TARGET ){
-						case 0:	//0→對自己施展
-							act.nTarGridX = caster.n_X;
-							act.nTarGridY = caster.n_Y;
-						//	nTargetIdent = nAtkIdent; // will cause ( atker == defer )
-							break;
-						case 6:	//6→自我AOE我方
-						case 7:	//7→自我AOE敵方
-						case 8:	//8→自我AOEALL
-							act.nTarGridX = caster.n_X;
-							act.nTarGridY = caster.n_Y;
-							break;
-						case 1:	//→需要敵方目標
-						case 2:	//→需要友方目標
-						{
-							cUnitData Target = GameDataManager.Instance.GetUnitDateByIdent( nTargetIdent );
-							if( Target != null ){
-								act.nTarGridX = Target.n_X;
-								act.nTarGridY = Target.n_Y;
-							}else{
-								// bug
-								Debug.LogErrorFormat( "CreateCastAction on null target{0},skill{1},x{2},y{3} " ,nTargetIdent,nSkillID, nGridX , nGridY );	
-							}
-						}
-							break;
-						case 3:	//→MAP敵方
-						case 4: //→MAP我方
-						case 5:	//→MAPALL
-						{
-							act.nTarGridX = nGridX;
-							act.nTarGridY = nGridY;
-							//  mob counter 防呆
-							cUnitData Target = GameDataManager.Instance.GetUnitDateByIdent( nTargetIdent );
-							if( Target != null ){
-								act.nTarGridX = Target.n_X;
-								act.nTarGridY = Target.n_Y;
-							}
-						}
-						break;
-					}
+					BattleManager.ConvertSkillTargetXY( caster , nSkillID , nTargetIdent , ref nGridX ,ref nGridY   );
+					act.nTarGridX = nGridX;
+					act.nTarGridY = nGridY;
 
+					SKILL skill = ConstDataManager.Instance.GetRow<SKILL>(nSkillID); 
+//					switch( skill.n_TARGET ){
+//						case 0:	//0→對自己施展
+//							act.nTarGridX = caster.n_X;
+//							act.nTarGridY = caster.n_Y;
+//						//	nTargetIdent = nAtkIdent; // will cause ( atker == defer )
+//							break;
+//						case 6:	//6→自我AOE我方
+//						case 7:	//7→自我AOE敵方
+//						case 8:	//8→自我AOEALL
+//							act.nTarGridX = caster.n_X;
+//							act.nTarGridY = caster.n_Y;
+//							break;
+//						case 1:	//→需要敵方目標
+//						case 2:	//→需要友方目標
+//						{
+//							cUnitData Target = GameDataManager.Instance.GetUnitDateByIdent( nTargetIdent );
+//							if( Target != null ){
+//								act.nTarGridX = Target.n_X;
+//								act.nTarGridY = Target.n_Y;
+//							}else{
+//								// bug
+//								Debug.LogErrorFormat( "CreateCastAction on null target{0},skill{1},x{2},y{3} " ,nTargetIdent,nSkillID, nGridX , nGridY );	
+//							}
+//						}
+//							break;
+//						case 3:	//→MAP敵方
+//						case 4: //→MAP我方
+//						case 5:	//→MAPALL
+//						{
+//							act.nTarGridX = nGridX;
+//							act.nTarGridY = nGridY;
+//							//  mob counter 防呆
+//							cUnitData Target = GameDataManager.Instance.GetUnitDateByIdent( nTargetIdent );
+//							if( Target != null ){
+//								act.nTarGridX = Target.n_X;
+//								act.nTarGridY = Target.n_Y;
+//							}
+//						}
+//						break;
+//					}
+
+					// avoid crash
+					if( skill == null ){
+						Debug.LogErrorFormat( "CreateCastAction with null skill cast{0},skill{1},x{2},y{3} " ,nAtkIdent,nSkillID, nGridX , nGridY );	
+						return act;
+					}
 
 
 					// don't use fightattr . counter will  cast without fightattr
@@ -378,15 +387,17 @@ public partial class ActionManager
 		return  act;
 	}
 
-
-
-	public void ExecActionHitResult(  uAction action )
+	public void ExecActionHitResult(  uAction action  )
 	{
 		if (action == null)
 			return;
 
+		ExecActionHitResult( action.HitResult  );
+	}
+
+	public void ExecActionHitResult(  List< cHitResult> resPool  , bool bSkipMode = false)
+	{
 		// some action play in hit task
-		List< cHitResult> resPool = action.HitResult;
 		if (resPool != null) {
 			foreach (cHitResult res in resPool) {
 				if (res == null) 
@@ -398,11 +409,24 @@ public partial class ActionManager
 						case cHitResult._TYPE._HITBACK: // HitBack
 						{
 							// don't
-							pUnit.HitBackTo( res.Value1 , res.Value2 );
+							if( bSkipMode ){
+								pUnit.SetXY( res.Value1 , res.Value2 );
+							}
+							else{
+								pUnit.HitBackTo( res.Value1 , res.Value2 );
+							}
+
+
+							
+
+							
 						
 						}break;
 						case cHitResult._TYPE._CASTOUT: // cast out
 						{
+							if( bSkipMode ){
+								continue;
+							}
 							// Add FX effect 
 							pUnit.ShowSkillCastOutFX( res.Value1 , res.Value2, res.Value3 , res.Value4   );
 						//	BattleManager.Instance.ShowBattleFX( res.Ident , "CFXM4 Hit B (Orange, CFX Blend)"  );
@@ -410,6 +434,10 @@ public partial class ActionManager
 						}break;		
 						case cHitResult._TYPE._BEHIT: // be Hit fX
 						{
+							if( bSkipMode ){
+								continue;
+							}
+
 							int nhitFX = 203;// default  
 							SKILL skl = ConstDataManager.Instance.GetRow<SKILL> (res.Value1);
 							if( skl != null ){								
@@ -424,12 +452,16 @@ public partial class ActionManager
 						}break;	
 						case cHitResult._TYPE._BECIRIT: // show dodge
 						{
+							if( bSkipMode ){
+								continue;
+							}	
 							// it should have fx
 							pUnit.SetBeCirit(); // be cirit 
 							
 						}break;	
 						case cHitResult._TYPE._DODGE: // show dodge
 						{
+							if( bSkipMode ){continue;}
 						// it should have fx
 							pUnit.SetDodge();
 						
@@ -437,6 +469,7 @@ public partial class ActionManager
 
 						case cHitResult._TYPE._MISS: // show miss
 						{
+							if( bSkipMode ){continue;}
 						// it should have fx
 							pUnit.SetMiss();
 						
@@ -444,6 +477,8 @@ public partial class ActionManager
 
 						case cHitResult._TYPE._GUARD:
 						{
+							if( bSkipMode ){continue;}
+
 							pUnit.SetGuardTo( res.Value1 );
 						}
 						break;
@@ -454,20 +489,27 @@ public partial class ActionManager
 		}
 	}
 
+
 	public void ExecActionEndResult(  uAction action )
 	{
 		if (action == null)
 			return;
-		List< cHitResult> resPool = action.HitResult;
+		ExecActionEndResult( action.HitResult );
+	}
+
+	public void ExecActionEndResult(  List< cHitResult> resPool  , bool bSkipMode = false )
+	{
 		if( resPool != null ){
 			foreach (cHitResult res in resPool) {
 				if (res != null) {
 					// show effect
 					Panel_unit pUnit = Panel_StageUI.Instance.GetUnitByIdent (res.Ident);
 					if (pUnit) {
+
 						switch( res.eHitType )
 						{
 						case cHitResult._TYPE._HP:{
+
 							pUnit.ShowValueEffect( res.Value1 , 0 ); // HP
 							if( res.Value1 != 0 ) // maybe change data in  battle manage
 							{
@@ -476,6 +518,7 @@ public partial class ActionManager
 							
 						}break;
 						case cHitResult._TYPE._DEF:{
+
 							pUnit.ShowValueEffect( res.Value1 , 1 ); // DEF
 							if( res.Value1 != 0 ) // maybe change data in  battle manage
 							{

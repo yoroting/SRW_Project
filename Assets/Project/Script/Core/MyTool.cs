@@ -223,8 +223,10 @@ public class MyTool {
 
 					if( arg[0] != null && arg[1] != null )
 					{
-						int x = int.Parse( arg[0] );
-						int y = int.Parse( arg[1] );
+						int x = 0;
+						int.TryParse( arg[0] , out x);
+						int y = 0;
+						int.TryParse( arg[1] , out y );
 						iVec2 t = new iVec2( x , y );
 						t.Rotate( dir );
 						iVec2 v = st + t; 
@@ -323,37 +325,36 @@ public class MyTool {
 		else if (skl.n_TARGET == 2 || skl.n_TARGET == 4 || skl.n_TARGET ==6 || skl.n_TARGET == 9 ) {			//2→需要友方目標 , 4→MAP我方 , 6→自我AOE我方 ,9→我ALL
 			return _PK_MODE._PLAYER;
 		}
-
 		return _PK_MODE._ENEMY;
 	}
 
-	public static int GetSkillTarget( SKILL skill )
-	{
-		if( skill == null )
-			return 1;
-		switch( skill.n_TARGET ){
-			case 0:	//0→對自己施展
-			case 6:	//6→自我AOE我方
-			case 7:	//7→自我AOE敵方
-			case 8:	//8→自我AOEALL
-			case 9:	//9→我ALL
-			case 10:	//10→敵ALL
-			case 11:	//11→ALL
-				return 0;
-				break;
-			case 1:	//→需要敵方目標
-			case 2:	//→需要友方目標
-				return 1;
-			break;
-			case 3:	//→MAP敵方
-			case 4: //→MAP我方
-			case 5:	//→MAPALL		
-				return -1;
-			break;
-		}
-
-		return -1;
-	}
+//	public static int GetSkillTarget( SKILL skill )
+//	{
+//		if( skill == null )
+//			return 1;
+//		switch( skill.n_TARGET ){
+//			case 0:	//0→對自己施展
+//			case 6:	//6→自我AOE我方
+//			case 7:	//7→自我AOE敵方
+//			case 8:	//8→自我AOEALL
+//			case 9:	//9→我ALL
+//			case 10:	//10→敵ALL
+//			case 11:	//11→ALL
+//				return 0;
+//				break;
+//			case 1:	//→需要敵方目標
+//			case 2:	//→需要友方目標
+//				return 1;
+//			break;
+//			case 3:	//→MAP敵方
+//			case 4: //→MAP我方
+//			case 5:	//→MAPALL		
+//				return -1;
+//			break;
+//		}
+//
+//		return -1;
+//	}
 	//
 	public static List <GameObject > GetChildPool( GameObject obj)
 	{

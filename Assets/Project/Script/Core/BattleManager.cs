@@ -1365,23 +1365,38 @@ public partial class BattleManager
 		//     11-all unit  
 		bool bCanPK = false;
 		bool bAll = false;
-		if ((skl.n_TARGET == 1) || (skl.n_TARGET == 3) || (skl.n_TARGET == 7) || (skl.n_TARGET == 10) ) {
+
+		if( MyTool.GetSkillPKmode( skl ) == _PK_MODE._ENEMY  )
+		{
 			bCanPK = true;
-		} else if( (skl.n_TARGET == 5)||(skl.n_TARGET == 8) ){
+		}
+		else if( MyTool.GetSkillPKmode( skl ) == _PK_MODE._ALL  )
+		{
 			bAll = true;
 		}
+		else{
+			// help skill
+		}
+//		if ((skl.n_TARGET == 1) || (skl.n_TARGET == 3) || (skl.n_TARGET == 7) || (skl.n_TARGET == 10) ) {
+//			bCanPK = true;
+//		} else if( (skl.n_TARGET == 5)||(skl.n_TARGET == 8) ){
+//			bAll = true;
+//		}
 		// fix  pos
-		if( (skl.n_TARGET==0) || (skl.n_TARGET==6) || (skl.n_TARGET==7) || (skl.n_TARGET==8) ){ // self cast
-			nTarX = Atker.n_X;
-			nTarY = Atker.n_Y;
-		}
-		else if( (skl.n_TARGET==1) || (skl.n_TARGET==2) ) // target
-		{
-			if( Defer != null ){
-				nTarX = Defer.n_X;
-				nTarY = Defer.n_Y;
-			}
-		}
+
+		ConvertSkillTargetXY( Atker ,SkillID , nDefer , ref nTarX , ref nTarY );
+//		if( (skl.n_TARGET==0) || (skl.n_TARGET==6) || (skl.n_TARGET==7) || (skl.n_TARGET==8) ){ // self cast
+//			nTarX = Atker.n_X;
+//			nTarY = Atker.n_Y;
+//		}
+//		else if( (skl.n_TARGET==1) || (skl.n_TARGET==2) ) // target
+//		{
+//			if( Defer != null ){
+//				nTarX = Defer.n_X;
+//				nTarY = Defer.n_Y;
+//			}
+//		}
+
 		// start push to pool
 		if( pool == null ){
 			pool = new List< cUnitData > ();
@@ -1506,7 +1521,7 @@ public partial class BattleManager
 	}
 
 
-	public List<cHitResult> CalAttackResult( int nAtker , int nDefer , bool bDefMode = false , bool bAffect = false )
+	static public List<cHitResult> CalAttackResult( int nAtker , int nDefer , bool bDefMode = false , bool bAffect = false )
 	{
 		cUnitData pAtker = GameDataManager.Instance.GetUnitDateByIdent( nAtker ); 	//Panel_StageUI.Instance.GetUnitByIdent( nAtker ); 
 		cUnitData pDefer = GameDataManager.Instance.GetUnitDateByIdent( nDefer );	//Panel_StageUI.Instance.GetUnitByIdent( nDefer ); 
@@ -1730,12 +1745,14 @@ public partial class BattleManager
 		}
 
 		//有傷害的才會造成掉落
-		CalDropResult( pAtker , pDefer );
+		if( BattleManager.Instance != null ){
+			BattleManager.Instance.CalDropResult( pAtker , pDefer );
+		}
 
 		return resPool;
 	}
 	// cal result of castout hit
-	public List<cHitResult> CalSkillHitResult( cUnitData pAtker , cUnitData pDefer , int nSkillID  )
+	static public List<cHitResult> CalSkillHitResult( cUnitData pAtker , cUnitData pDefer , int nSkillID  )
 	{
 		//cUnitData pAtker = GameDataManager.Instance.GetUnitDateByIdent( nAtker ); 	//Panel_StageUI.Instance.GetUnitByIdent( nAtker ); 
 		if ( (pAtker == null) || (pDefer == null) )
@@ -1768,13 +1785,16 @@ public partial class BattleManager
 			return resPool;
 		}
 		//--- hit back 
-		if (pAtker.FightAttr.SkillID!= 0) {
-			int nBack = pAtker.FightAttr.SkillData.skill.n_HITBACK;
+		if ( nSkillID != 0 ) {
+			SKILL skl = ConstDataManager.Instance.GetRow<SKILL> ( nSkillID );
+			if( skl != null ){
+				int nBack = skl.n_HITBACK;
 			
-			iVec2 vFinal = Panel_StageUI.Instance.SkillHitBack(pAtker.n_Ident , pDefer.n_Ident , nBack  );
-			if( vFinal != null )
-			{
-				resPool.Add( new cHitResult( cHitResult._TYPE._HITBACK, pDefer.n_Ident , vFinal.X , vFinal.Y ) );
+				iVec2 vFinal = Panel_StageUI.Instance.SkillHitBack(pAtker.n_Ident , pDefer.n_Ident , nBack  );
+				if( vFinal != null )
+				{
+					resPool.Add( new cHitResult( cHitResult._TYPE._HITBACK, pDefer.n_Ident , vFinal.X , vFinal.Y ) );
+				}
 			}
 		} 
 		
@@ -1785,12 +1805,73 @@ public partial class BattleManager
 
 	// Operation Token ID 
 	//
-	public bool CanPK( _CAMP  camp1 , _CAMP  camp2 ) 	
+	static public bool CanPK( cUnitData  unit1 , cUnitData  unit2 ) 	
+	{
+		return MyTool.CanPK( unit1.eCampID , unit2.eCampID   );
+	}
+
+	static public bool CanPK( _CAMP  camp1 , _CAMP  camp2 ) 	
 	{
 		return MyTool.CanPK(camp1 , camp2   );
 	}
 
+	// 取得技能師法座標的工具 func
+	static public void ConvertSkillTargetXY( cUnitData caster , int nSkillID , int nTargetID , ref int nTarX , ref int nTarY )
+	{
+		if( 0 == nSkillID )
+			return ;
+		SKILL skill = ConstDataManager.Instance.GetRow<SKILL>(nSkillID); 
+		if( skill == null )
+			return ;
 
+
+
+		switch( skill.n_TARGET ){
+			case 0:	//0→對自己施展
+				{	
+				nTarX = caster.n_X;
+				nTarY = caster.n_Y;
+				//	nTargetIdent = nAtkIdent; // will cause ( atker == defer )
+				}				break;
+			case 6:	//6→自我AOE我方
+			case 7:	//7→自我AOE敵方
+			case 8:	//8→自我AOEALL
+				{
+				
+				nTarX = caster.n_X;
+				nTarY = caster.n_Y;
+				}				break;
+			case 1:	//→需要敵方目標
+			case 2:	//→需要友方目標
+			{
+				cUnitData Target = GameDataManager.Instance.GetUnitDateByIdent( nTargetID );
+				if( Target != null ){
+					nTarX = Target.n_X;
+					nTarY = Target.n_Y;
+				}else{
+					// bug
+				Debug.LogErrorFormat( "ConvertSkillTargetXY on null target{0},skill{1},x{2},y{3} " ,nTargetID,nSkillID, nTarX , nTarY );	
+				}
+			}
+				break;
+			case 3:	//→MAP敵方
+			case 4: //→MAP我方
+			case 5:	//→MAPALL
+			{
+				//  mob counter 防呆
+				cUnitData Target = GameDataManager.Instance.GetUnitDateByIdent( nTargetID );
+				if( Target != null ){
+					nTarX = Target.n_X;
+					nTarY = Target.n_Y;
+				}else{
+					// bug
+					Debug.LogErrorFormat( "ConvertSkillTargetXY on null target{0},skill{1},x{2},y{3} " ,nTargetID,nSkillID, nTarX , nTarY );	
+				}
+			}
+				break;
+		}
+		
+	}
 
 };
 

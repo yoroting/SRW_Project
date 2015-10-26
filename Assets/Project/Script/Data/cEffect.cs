@@ -113,6 +113,49 @@ public class ADDACTTIME_E: cEffect
 		}
 	}
 }
+//aura
+public class AURABUFF_I: cEffect
+{
+	public int nRange ;
+	public AURABUFF_I( int range , int buffid ){	nRange = range; 	iValue = buffid;	}
+	//public int iValue ;
+	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){
+		if (Atker != null) {
+			if( GameDataManager.Instance != null ){
+				foreach( KeyValuePair<int,cUnitData> pair in GameDataManager.Instance.UnitPool )
+				{
+					if( BattleManager.CanPK( Atker ,pair.Value ) == false ){
+						if( Atker.Dist( pair.Value ) <= nRange ){
+							list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF , pair.Key , iValue , Atker.n_Ident, nSkillID ,pair.Key  ) );
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+public class AURABUFF_E: cEffect
+{
+	public int nRange ;
+	public AURABUFF_E( int range , int buffid ){	nRange = range; 	iValue = buffid;	}
+	//public int iValue ;
+	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){
+		if (Atker != null) {
+			if( GameDataManager.Instance != null ){
+				foreach( KeyValuePair<int,cUnitData> pair in GameDataManager.Instance.UnitPool )
+				{
+					if( BattleManager.CanPK( Atker ,pair.Value ) == true ){
+						if( Atker.Dist( pair.Value ) <= nRange ){
+							list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF , pair.Key , iValue , Atker.n_Ident, nSkillID ,pair.Key  ) );
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
 
 // Hit effect
 public class HITBUFF_I: cEffect
