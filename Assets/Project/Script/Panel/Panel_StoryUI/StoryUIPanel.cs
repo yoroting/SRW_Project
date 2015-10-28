@@ -23,6 +23,8 @@ public class StoryUIPanel : MonoBehaviour {
 	public GameObject SkipButton;           	// 跳過
 	public GameObject GridObj;           		// grid obj
 
+	public SRW_TextBox  TalkWindow;           // 故事文字匡
+
 
 	bool 	bIsLoading;							// load story ui
 	private int nTweenObjCount;
@@ -41,6 +43,9 @@ public class StoryUIPanel : MonoBehaviour {
 		Debug.Log("StoryUIPanel:awake");
 		nTweenObjCount = 0;
 		m_idToCharObj = new Dictionary<int, GameObject>();
+
+		TalkWindow = PanelStoryText.GetComponent<SRW_TextBox>();
+
 
 		m_bIsEnd = false;
 		m_nFlowIdx = 0;
@@ -186,8 +191,10 @@ public class StoryUIPanel : MonoBehaviour {
 		if( m_cScript == null  )
 			return ;
 		// check all tween obj complete
-		if ( IsAllEnd () == false)
+		if (IsAllEnd () == false) {
+			TalkWindow.OnTextBoxClick( TalkWindow.gameObject  );
 			return; 
+		}
 	
 		// go to next script
 		if( m_nTargetIdx == m_nFlowIdx ){ // only set with curscript complete
@@ -439,14 +446,16 @@ public class StoryUIPanel : MonoBehaviour {
 			string sText = content.Replace ( "$F" , Config.PlayerFirst ); // replace player name
 					sText = sText.Replace ( "$N" , Config.PlayerName ); // replace player name
 
-			SRW_TextBox pBox = PanelStoryText.GetComponent<SRW_TextBox>();
-			if( pBox )
-			{
-				pBox.ClearText();
-
-				pBox.AddText( sText );
-
-			}
+			TalkWindow.ClearText();
+			TalkWindow.AddText( sText );
+//			SRW_TextBox pBox = PanelStoryText.GetComponent<SRW_TextBox>();
+//			if( pBox )
+//			{
+//				pBox.ClearText();
+//
+//				pBox.AddText( sText );
+//
+//			}
 
 //			cTextArray cTxt = new cTextArray( "\n".ToCharArray() , "".ToCharArray() );
 //			cTxt.SetText( content );
@@ -464,12 +473,13 @@ public class StoryUIPanel : MonoBehaviour {
 	}
 	void ClearText()
 	{
-		SRW_TextBox pBox = PanelStoryText.GetComponent<SRW_TextBox>();
-		if( pBox )
-		{
-			pBox.ClearText();
-			
-		}	
+		TalkWindow.ClearText ();
+//		SRW_TextBox pBox = PanelStoryText.GetComponent<SRW_TextBox>();
+//		if( pBox )
+//		{
+//			pBox.ClearText();
+//			
+//		}	
 	}
 
 	// this should be menthod  of text panel

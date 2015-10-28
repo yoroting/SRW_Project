@@ -143,9 +143,12 @@ public class GameSystem : MonoBehaviour {
 	}
 
 	// 目前操作
-	public static void ShakeCamera( ){
+	public static void ShakeCamera( float fDelay =0.2f ){
 		if (UICamera.currentCamera != null) {
-			TweenShake tw = TweenShake.Begin(UICamera.currentCamera.gameObject, 0.2f , 100 );
+			if( fDelay <= 0.0f ){
+				fDelay = 0.2f;
+			}
+			TweenShake.Begin(UICamera.currentCamera.gameObject, fDelay , 100 );
 		}
 	}
 

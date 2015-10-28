@@ -68,7 +68,8 @@ public class Panel_Talk : MonoBehaviour {
 //		TalkWindow_Down.SetActive( false );
 
 		// hide talk window
-		TalkWindow_new.SetActive( false );
+		TalkWindow.SetEnable ( false );
+
 		NameObj.SetActive ( false );
 		// for fast debug 
 		//ConstDataManager.Instance.isLazyMode = false;
@@ -87,7 +88,7 @@ public class Panel_Talk : MonoBehaviour {
 			AVG_Obj.SetActive( false );
 		}
 #if DEBUG && UNITY_EDITOR
-		//GameDataManager.Instance.nTalkID = 1; // set here this will cause some issue
+//		GameDataManager.Instance.nTalkID = 803; // set here this will cause some issue
 #endif
 	}
 	// Use this for initialization
@@ -118,8 +119,8 @@ public class Panel_Talk : MonoBehaviour {
 		if (Tex_BackGround != null) {
 			Tex_BackGround.SetActive( false );
 		}
-
-		TalkWindow_new.SetActive( false );
+		TalkWindow.SetEnable( false );
+		//TalkWindow_new.SetActive( false );
 		NameObj.SetActive ( false );
 	}
 
@@ -558,7 +559,8 @@ public class Panel_Talk : MonoBehaviour {
 		if (obj == null)
 			return;
 
-		TalkWindow_new.SetActive( true );
+		TalkWindow.SetEnable (true);
+//		TalkWindow_new.SetActive( true );
 		NameObj.SetActive (true);
 
 		obj.ClearText(); // clear text first
@@ -588,8 +590,12 @@ public class Panel_Talk : MonoBehaviour {
 				}
 			}
 			m_idToFace.Clear();
-			TalkWindow_new.SetActive (false); // close all
 			NameObj.SetActive( false );
+
+			// avoid 
+			TalkWindow.SetEnable (false);
+//			TalkWindow_new.SetActive (false); // close all
+
 			return;
 		}
 
@@ -657,7 +663,14 @@ public class Panel_Talk : MonoBehaviour {
 			NGUITools.Destroy( m_idToFace[nType].gameObject );
 			m_idToFace.Remove( nType );
 
-			TalkWindow_new.SetActive (false);
+
+			// dis talk window . if no more avg obj
+			if( m_idToFace.Count <= 0  ){
+				TalkWindow.SetEnable (false);
+			}
+
+
+//			TalkWindow_new.SetActive (false);
 			NameObj.SetActive( false );
 		}
 

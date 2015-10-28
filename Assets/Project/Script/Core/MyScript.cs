@@ -803,6 +803,12 @@ public class MyScript {
 			{
 				Panel_StageUI.Instance.OnStageCameraCenterEvent( func.I(0),func.I(1) );
 			}
+			else if( func.sFunc  == "SHAKECAMERA") 
+			{
+				//Panel_StageUI.Instance.OnStageCameraCenterEvent( func.I(0),func.I(1) );
+				GameSystem.ShakeCamera( func.F(0)  );
+
+			}
 			else if( func.sFunc  == "SAI") //設定索敵AI
 			{
 				GameDataManager.Instance.SetUnitSearchAI( func.I(0),(_AI_SEARCH)func.I(1),func.I(2),func.I(3) ); 

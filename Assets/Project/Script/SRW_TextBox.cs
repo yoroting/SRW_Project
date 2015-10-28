@@ -12,6 +12,7 @@ using MyClassLibrary;			// for parser string
 //還有個解決方案： 
 //純使佣 UILABEL。 並在const text 控制好顯示文字長度。。每行顯示時都會清掉前面文字。
 //如此可以兼顧到 平滑 ,文字變色, \n
+//10 :41 改用此方案
 
 public class SRW_TextBox : MonoBehaviour {
 
@@ -58,6 +59,14 @@ public class SRW_TextBox : MonoBehaviour {
 		//	m_lstsContextAll.Clear();
 		m_lstsContextWait.Clear();
 	}
+
+	public void SetEnable( bool bActive )
+	{
+		ClearText ();
+		this.gameObject.SetActive (bActive);
+
+	}
+
 	void Awake(){ // construct
 		Debug.Log ("TextBox:awake");
 
@@ -137,7 +146,11 @@ public class SRW_TextBox : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		Config.TextSpeed = 45;
+
+		// Config.TextSpeed = 45; // text line
+
+		Config.TextSpeed = 3; 	 // lable 
+
 		// text pop speed
 		if (++m_nTextSpeed < Config.TextSpeed ) {
 			return;
@@ -147,30 +160,34 @@ public class SRW_TextBox : MonoBehaviour {
 
 		m_nTextSpeed = 0;
 
-		// new method use text list
-		if (m_sPopText.Length > 0) {
-			//m_sPopText = ""; // clear here for last line have some delay time to read			
-			UITextList list = _TextLineObj.GetComponent<UITextList> (); 
-			list.Add ( m_sPopText );
-			//list.Add ( m_sPopText ); // for test scroll value
-
-			list.scrollValue = 1.0f;		// go to end line
-
-			m_sPopText = "";
-		} 
-
-		NextLine(); // go next line
-
-
-
-
-		// mark old
-		// start to pop text
+		// use text list
+// new method use text list
 //		if (m_sPopText.Length > 0) {
-//			ProcessText (1);
-//		}else {
-//			NextLine(); // go to next line
-//		}
+//			//m_sPopText = ""; // clear here for last line have some delay time to read			
+//			UITextList list = _TextLineObj.GetComponent<UITextList> (); 
+//			list.Clear();		// clear line
+//
+//			list.Add ( m_sPopText );
+//			//list.Add ( m_sPopText ); // for test scroll value
+//
+//			list.scrollValue = 1.0f;		// go to end line
+//
+//			m_sPopText = "";
+//		} 
+//		NextLine(); // go next line
+		// new method end
+
+
+
+// mark old
+		// start to pop text
+		if (m_sPopText.Length > 0) {
+			ProcessText (1);
+		}else {
+			// NextLine(); // go to next line
+			// close auto next line in 10/26
+		}
+// old end
 	}
 
 	// is all performance end
@@ -195,30 +212,35 @@ public class SRW_TextBox : MonoBehaviour {
 	public void OnTextBoxClick(GameObject go)
 	{
 		m_nTextSpeed = Config.TextSpeed;
-		NextLine();
-		return;
+// new method
+//		NextLine();
+//		return;
+// new end 
 
-		// mark old
-//		if( m_sPopText != null )
-//		{
-//			if( m_sPopText.Length > 0  )
-//			{
-//				NextLine();
-//			}
-//			else{
-//				if( m_nCurLineCount >= m_nMaxLineCount ){
-//					// change page
-//
-//					//m_sShowText = "";
-//					// manual remove first line
-//					int nPos = m_sShowText.IndexOf("\n");
-//					m_sShowText = m_sShowText.Substring( nPos +1 ); 
-//					m_nCurLineCount --; 
-//
-//					NextLine();
-//				}
-//			}
-//		}
+// mark old
+		if( m_sPopText != null )
+		{
+			if( m_sPopText.Length > 0  )
+			{
+				ProcessText( ); //  fast close current line
+
+			}
+
+			if( m_nCurLineCount >= m_nMaxLineCount ){
+					// change page
+
+					//m_sShowText = "";
+					// manual remove first line
+					int nPos = m_sShowText.IndexOf("\n");
+					m_sShowText = m_sShowText.Substring( nPos +1 ); 
+					m_nCurLineCount --; 
+
+			
+			}
+
+			NextLine();
+		}
+// old end
 	}
 
 	//目前無法處理跨行 變色的拆行處理。如與到變色關鍵字剛好在換行。直接整個關鍵字下移一行
@@ -236,21 +258,32 @@ public class SRW_TextBox : MonoBehaviour {
 		//check how many line in this text
 		string [] sary = sText.Split( "\n".ToCharArray() );
 
-		// new method to use text list
-		foreach (string s in sary) {
-			if (s == null || s == " " || s == "\t")
-				continue;
-			if (s.IndexOf ("//") >= 0) // have common
-				continue;			    // giveup this line
+// new method to use text list
+//		foreach (string s in sary) {
+//			if (s == null || s == " " || s == "\t")
+//				continue;
+//			if (s.IndexOf ("//") >= 0) // have common
+//				continue;			    // giveup this line
+//
+//			m_lstsContextWait.Add( s );
+//		}
+//		m_nTextSpeed = Config.TextSpeed;
+//		NextLine ();
+//		return;
+// new method end
 
+
+		// float text version 2
+		foreach (string s in sary) {
+			if( s == null || s == " " || s == "\t")
+				continue;
+			if( s.IndexOf("//") >= 0 ) // have common
+				continue;			    // giveup this line
 			m_lstsContextWait.Add( s );
 		}
-		m_nTextSpeed = Config.TextSpeed;
-		NextLine ();
-		return;
 
 
-		// old method to float text 
+//// old method to float text 
 //
 //		foreach (string s in sary) {
 //			if( s == null || s == " " || s == "\t")
@@ -321,9 +354,11 @@ public class SRW_TextBox : MonoBehaviour {
 //
 //			}//while( idx < s.Length )	
 //		}
-//
-//		NextLine ();
-//		//m_sPopText = sText;
+// float text ver 1 end
+
+		NextLine ();
+		// old method end
+		//m_sPopText = sText;
 	}
 
 
@@ -342,33 +377,39 @@ public class SRW_TextBox : MonoBehaviour {
 		m_nCurLineCount++;
 
 
+
 		// goto end line
-		return;
+//  new method start
+//		return;
+// new method end
 
 		// ensure all text poped
-		// mark old
-//		ProcessText ();
-//
-//		// stop when end
-//		if (m_nMaxLineCount > 0 && m_nCurLineCount >= m_nMaxLineCount)		
-//		{
-//			if( this.m_bOnClickMode )
-//				return;
-//
-//			// auto remove uppest line for match max line
-//			int nPos = m_sShowText.IndexOf("\n"); // remove first line
-//			m_sShowText = m_sShowText.Substring( nPos +1 ); 
-//			m_nCurLineCount --; 
-//		}
-//
-//		if (m_lstsContextWait.Count > 0) {
-//			if( m_sShowText.Length > 0 && (m_sShowText[m_sShowText.Length-1 ]!= '\n') )
-//				m_sShowText += "\n";  			// change line and avoid double '\n'
-//
-//			m_sPopText = m_lstsContextWait[0];
-//			m_lstsContextWait.RemoveAt( 0 );
-//			m_nCurLineCount++;
-//		}
+// mark old
+		m_sShowText = "";
+		ProcessText ( 1 );
+
+		// stop when end
+		if (m_nMaxLineCount > 0 && m_nCurLineCount >= m_nMaxLineCount)		
+		{
+			if( this.m_bOnClickMode )
+				return;
+
+			// auto remove uppest line for match max line
+			int nPos = m_sShowText.IndexOf("\n"); // remove first line
+			m_sShowText = m_sShowText.Substring( nPos +1 ); 
+			m_nCurLineCount --; 
+		}
+
+		if ( string.IsNullOrEmpty( m_sPopText) &&  m_lstsContextWait.Count > 0) {
+			if( m_sShowText.Length > 0 && (m_sShowText[m_sShowText.Length-1 ]!= '\n') )
+				m_sShowText += "\n";  			// change line and avoid double '\n'
+
+			m_sPopText = m_lstsContextWait[0];
+			m_lstsContextWait.RemoveAt( 0 );
+			m_nCurLineCount++;
+		}
+
+// old end
 	}
 
 	void ProcessText( int nByte=0 )
