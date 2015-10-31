@@ -160,8 +160,13 @@ public class Panel_Talk : MonoBehaviour {
 		//		return;
 
 
-		if (IsAllEnd () == false)
+		if (IsAllEnd () == false) {
+			// frame work issue . some time have action will dead lock here
+			if (ActionManager.Instance.HaveAction () == true){
+				Debug.LogError( "talk ui dead lock with some action in manager");
+			}
 			return;
+		}
 
 		// if text window is close . auto click
 		if( TalkWindow_new != null ){

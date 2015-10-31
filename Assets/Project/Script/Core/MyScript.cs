@@ -74,7 +74,7 @@ public class MyScript {
 						return false;
 					}				
 				}
-				else if( func.sFunc == "ALIVE"  )
+				else if( func.sFunc == "ALIVE" || func.sFunc == "NODEAD" )
 				{
 					if( ConditionUnitAlive( (_CAMP)func.I(0), func.I(1) ) == false )
 					{

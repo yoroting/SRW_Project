@@ -2172,6 +2172,14 @@ public class Panel_StageUI : MonoBehaviour
 
 	public void ShowStage( bool bShow )
 	{
+		// release action to avoid dead lock
+		// check keep action // 處理禪留事件
+		if( ActionManager.Instance.HaveAction() ){
+			Debug.LogError( "some action keep in stage clear . it need release");
+		}
+
+		ActionManager.Instance.ReleaseAction ();
+
 		if (TilePlaneObj != null) {
 //			TweenAlpha tw = TweenAlpha.Begin<TweenAlpha>( TilePlaneObj , 1.0f );
 //			if( tw != null )

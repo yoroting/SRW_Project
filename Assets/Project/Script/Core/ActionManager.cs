@@ -190,6 +190,18 @@ public partial class ActionManager
 	{
 		return (ActionPool.Count > 0);
 	}
+
+	public void ReleaseAction()
+	{
+		foreach( uAction act in ActionPool )
+		{
+
+
+		}
+
+
+		ActionPool.Clear ();
+	}
 //	public void Run()
 //	{
 
