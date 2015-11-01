@@ -506,6 +506,8 @@ public class Panel_StageUI : MonoBehaviour
 		EvtPool.Clear();
 
 		WaitPool.Clear ();
+
+		tmpScriptMoveEnd.Clear ();
 		//EvtCompletePool.Clear ();
 
 		IsEventEnd = false;
@@ -3137,7 +3139,10 @@ public class Panel_StageUI : MonoBehaviour
 			else {
 				unit.MoveTo( pos.X , pos.Y ); 
 			}
-			tmpScriptMoveEnd.Add( pos );				// script 用的單位移動 mrak pool 防止 script 讓不同單位移動到 同樣座標
+
+			if( MyScript.bParsing ){
+				tmpScriptMoveEnd.Add( pos );				// script 用的單位移動 mrak pool 防止 script 讓不同單位移動到 同樣座標
+			}
 //			// check if need trace unit 
 //			Vector3 v = unit.transform.localPosition;
 //			Vector3 canv = TilePlaneObj.transform.localPosition; // shift

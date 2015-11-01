@@ -273,13 +273,13 @@ public class Panel_Cheat : MonoBehaviour {
 
 	void OnAddCpClick(GameObject go)
 	{
-		pData.AddCp( pData.GetMaxCP()  );
+		pData.AddCp( 1  );
 		SetData( pData );
 	}
 	
 	void OnDelCpClick(GameObject go)
 	{
-		pData.AddCp( -pData.GetMaxCP()  );		
+		pData.AddCp( -1  );		
 		SetData( pData );
 	}
 

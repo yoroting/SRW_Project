@@ -667,7 +667,7 @@ public class MobAI  {
 	}
 
 
-	static public int SelSkill( cUnitData pMob , cUnitData pTarget = null , bool bCounterMode = false  )
+	static public int SelSkill( cUnitData pMob , cUnitData pTarget = null , bool bCounterMode = false  )// -1 is no attack
 	{
 	//	return 11701; // debug
 		//nDeferSkillID = 11704;  //天羅地網
@@ -704,6 +704,11 @@ public class MobAI  {
 		// normal attack
 
 		//sklPool.Add( 0 , (pData.GetMaxCP() - pData.n_CP) +1 ); // 普攻永遠有機會 ,CP 越高，普攻機會越低
+
+		// always use most widget skill
+		int nWidget = 0;
+		int nFinalSkillID = 0;
+
 
 		foreach(  int  nID in pData.SkillPool ){
 				int nSkillID = nID;
@@ -783,30 +788,36 @@ public class MobAI  {
 //				}
 //				// 
 
-				int widget = (skl.n_CP + skl.n_LEVEL_LEARN) ; // cp is base widget
+				int tmpWidget = (skl.n_CP + skl.n_LEVEL_LEARN) ; // cp is base widget
 
 				// 	MODIFY widget 
-				if( skl.n_AREA != 0 ){
-					List< cUnitData > AffectPool = new List< cUnitData >(); //影響人數
-
-					BattleManager.GetAffectPool( pMob , pTarget, skl.n_ID, nTarX ,nTarY , ref  AffectPool  );
-					widget += (4*AffectPool.Count); //  影響人越多，權重越大
-
-					AffectPool.Clear();
+//				if( skl.n_AREA != 0 ){
+//					List< cUnitData > AffectPool = new List< cUnitData >(); //影響人數
+//
+//					BattleManager.GetAffectPool( pMob , pTarget, skl.n_ID, nTarX ,nTarY , ref  AffectPool  );
+//					widget += (4*AffectPool.Count); //  fail method . the AI need a new solution 影響人越多，權重越大
+//
+//					AffectPool.Clear();
+//				}
+				if( tmpWidget > nWidget )
+				{
+					nWidget = tmpWidget;
+					nFinalSkillID = nSkillID;
 				}
 
-				sklPool.Add( nSkillID , widget );
+
+				//sklPool.Add( nSkillID , widget );
 				//sklLst.Add(  skl );
 		}
 
 		// 
-		if( (sklPool.Count > 0) )
+		if( (nFinalSkillID > 0) )
 		{
 			// random a skill
-			int id = MyTool.RollWidgetPool( sklPool );
-			return id;
+			//int id = MyTool.RollWidgetPool( sklPool );
+			return nFinalSkillID;
 		}
-		else{
+		else{ // if chose normal attack final
 			if( bCounterMode ){
 				if( nDist > 1 ){
 					return -1;

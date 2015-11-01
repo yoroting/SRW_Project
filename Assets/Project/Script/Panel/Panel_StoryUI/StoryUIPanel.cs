@@ -351,10 +351,14 @@ public class StoryUIPanel : MonoBehaviour {
 
 	public void MoveChar( int nCharId , float fPosX , float fPosY )
 	{
-		GameObject obj = m_idToCharObj[nCharId];
-		if( obj == null )
+
+		GameObject obj ;
+		if (m_idToCharObj.TryGetValue (nCharId, out obj) == false) {
+			Debug.LogErrorFormat( "store script : MoveChar({0}) to ({1},{2})is null " , nCharId ,fPosX , fPosY );
 			return;
-		TweenPosition t = TweenPosition.Begin ( obj , 3.0f , new Vector3( fPosX , fPosY , obj.transform.localPosition.z) ); //直接移動
+		}
+			
+		TweenPosition t = TweenPosition.Begin ( obj , 2.0f , new Vector3( fPosX , fPosY , obj.transform.localPosition.z) ); //直接移動
 		if( t != null )
 		{
 		   t.SetStartToCurrentValue();
@@ -489,15 +493,15 @@ public class StoryUIPanel : MonoBehaviour {
 		List<cTextFunc> funcList =line.GetFuncList();
 		foreach( cTextFunc func in funcList )
 		{
-			if( func.sFunc == "ADDCHAR" )
+			if( func.sFunc == "ADDCHAR" || func.sFunc == "ADDC" )
 			{
 				AddChar( func.I(0) , func.F(1)*Config.BigMapTileW , func.F(2)*Config.BigMapTileH );
 			}
-			else if( func.sFunc == "MOVECHAR" )
+			else if( func.sFunc == "MOVECHAR"|| func.sFunc == "MOVEC" )
 			{
 				MoveChar( func.I(0) , func.F(1)*Config.BigMapTileW , func.F(2)*Config.BigMapTileH );
 			}
-			else if( func.sFunc == "DELCHAR" )			
+			else if( func.sFunc == "DELCHAR" || func.sFunc == "DELC")			
 			{
 				DelChar(  func.I(0)  , func.I(1) );
 			}
