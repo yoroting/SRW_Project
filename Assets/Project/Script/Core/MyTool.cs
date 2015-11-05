@@ -412,7 +412,7 @@ public class MyTool {
 //		}
 
 		grid.repositionNow = true;		// need this for second pop to re pos
-		grid.Reposition ();
+		//grid.Reposition ();
 	}
 
 	public static void DestoryTweens( GameObject go )

@@ -1,4 +1,4 @@
-﻿//----------------------------------------------
+//----------------------------------------------
 //            NGUI: Next-Gen UI kit
 // Copyright © 2011-2015 Tasharen Entertainment
 //----------------------------------------------
@@ -71,6 +71,7 @@ public class UIButtonColorEditor : UIWidgetContainerEditor
 			NGUIEditorTools.DrawProperty("Hover", serializedObject, "hover");
 			NGUIEditorTools.DrawProperty("Pressed", serializedObject, "pressed");
 			NGUIEditorTools.DrawProperty("Disabled", serializedObject, "disabledColor");
+			if (Application.isPlaying) EditorGUILayout.ColorField("Default", (target as UIButtonColor).defaultColor);
 			NGUIEditorTools.EndContents();
 		}
 	}

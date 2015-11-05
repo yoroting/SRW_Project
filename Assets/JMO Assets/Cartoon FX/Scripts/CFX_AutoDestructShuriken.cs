@@ -4,14 +4,13 @@ using System.Collections;
 [RequireComponent(typeof(ParticleSystem))]
 public class CFX_AutoDestructShuriken : MonoBehaviour
 {
-	public static int nFXCount=0;
-	public bool OnlyDeactivate;
+    static public int nFXCount = 0;
+    public bool OnlyDeactivate;
 	
 	void OnEnable()
 	{
-		StartCoroutine("CheckIfAlive");
-
-		nFXCount ++;
+        nFXCount++;
+        StartCoroutine("CheckIfAlive");
 	}
 	
 	IEnumerator CheckIfAlive ()
@@ -21,17 +20,18 @@ public class CFX_AutoDestructShuriken : MonoBehaviour
 			yield return new WaitForSeconds(0.5f);
 			if(!GetComponent<ParticleSystem>().IsAlive(true))
 			{
-				nFXCount--;
-				if(OnlyDeactivate)
-				{
-					#if UNITY_3_5
+                nFXCount--;
+                if (OnlyDeactivate)
+                {
+#if UNITY_3_5
 						this.gameObject.SetActiveRecursively(false);
-					#else
-						this.gameObject.SetActive(false);
-					#endif
-				}
-				else
-					GameObject.Destroy(this.gameObject);
+#else
+                    this.gameObject.SetActive(false);
+#endif
+                }
+                else
+
+                    GameObject.Destroy(this.gameObject);
 				break;
 			}
 		}

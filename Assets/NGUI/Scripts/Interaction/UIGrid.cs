@@ -1,4 +1,4 @@
-﻿//----------------------------------------------
+//----------------------------------------------
 //            NGUI: Next-Gen UI kit
 // Copyright © 2011-2015 Tasharen Entertainment
 //----------------------------------------------
@@ -368,8 +368,9 @@ public class UIGrid : UIWidgetContainer
 				new Vector3(cellWidth * x, -cellHeight * y, depth) :
 				new Vector3(cellWidth * y, -cellHeight * x, depth);
 
-			if (animateSmoothly && Application.isPlaying)
-			{
+            //if (animateSmoothly && Application.isPlaying && Vector3.SqrMagnitude(t.localPosition - pos) >= 0.0001f)
+            if (animateSmoothly && Application.isPlaying )
+            {
 				SpringPosition sp = SpringPosition.Begin(t.gameObject, pos, 15f);
 				sp.updateScrollView = true;
 				sp.ignoreTimeScale = true;
@@ -411,7 +412,7 @@ public class UIGrid : UIWidgetContainer
 
 				if (sp != null)
 				{
-					sp.target.x -= fx;
+                    sp.target.x -= fx;
 					sp.target.y -= fy;
 				}
 				else

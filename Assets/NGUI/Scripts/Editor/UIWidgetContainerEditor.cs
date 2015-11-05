@@ -1,4 +1,4 @@
-﻿//----------------------------------------------
+//----------------------------------------------
 //            NGUI: Next-Gen UI kit
 // Copyright © 2011-2015 Tasharen Entertainment
 //----------------------------------------------
@@ -34,7 +34,6 @@ public class UIWidgetContainerEditor : Editor
 	{
 		//NGUIEditorTools.HideMoveTool(true);
 		if (!UIWidget.showHandles) return;
-		if (UnityEditor.Tools.current != Tool.Move) return;
 
 		MonoBehaviour mb = target as MonoBehaviour;
 		if (mb.GetComponent<UIWidget>() != null) return;

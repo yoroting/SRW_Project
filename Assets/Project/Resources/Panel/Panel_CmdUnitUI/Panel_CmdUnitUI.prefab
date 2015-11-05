@@ -492,6 +492,7 @@ MonoBehaviour:
   mUseFloatSpacing: 0
   mFloatSpacingX: 0
   mFloatSpacingY: 0
+  mOverflowEllipsis: 0
   mShrinkToFit: 0
   mMaxLineWidth: 0
   mMaxLineHeight: 0
@@ -516,7 +517,7 @@ MonoBehaviour:
   cellHeight: 75
   animateSmoothly: 1
   hideInactive: 0
-  keepWithinPanel: 1
+  keepWithinPanel: 0
   sorted: 0
 --- !u!1001 &100100000
 Prefab:
@@ -524,7 +525,11 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: keepWithinPanel
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 162070}

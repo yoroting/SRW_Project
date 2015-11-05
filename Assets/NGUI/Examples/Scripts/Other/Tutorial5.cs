@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 /// <summary>
 /// This simple example script is used in Tutorial 5 to show how custom events work.

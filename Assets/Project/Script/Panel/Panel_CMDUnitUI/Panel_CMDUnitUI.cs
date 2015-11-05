@@ -132,12 +132,13 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
 	void OnDisable()
 	{
-		// don't cleat in disable. this bug in close api
-	//	ClearCmdPool ();
-	//	if (pUnit != null) {
-	//		pUnit.OnSelected( false );
-	//	}
-		Panel_MiniUnitInfo.CloseUI ();
+        // don't cleat in disable. this bug in close api
+        //	ClearCmdPool ();
+        //	if (pUnit != null) {
+        //		pUnit.OnSelected( false );
+        //	}
+        ClearCmdPool();
+        Panel_MiniUnitInfo.CloseUI ();
 	}
 
 	void ClearCmdPool()
@@ -150,17 +151,26 @@ public class Panel_CMDUnitUI : MonoBehaviour
 			return ;
 		}
 		List< Transform > lst = grid.GetChildList ();
-		//List< GameObject > CmdBtnList = MyTool.GetChildPool( NGuiGrids );
+        //List< GameObject > CmdBtnList = MyTool.GetChildPool( NGuiGrids );
 
-		if (lst == null || lst.Count <= 0 )
-			return;
 
-		foreach ( Transform t in lst) {
+        // 销毁现有元素
+        while (grid.transform.childCount > 0)
+        {
+            DestroyImmediate(grid.transform.GetChild(0).gameObject);
+        }
 
-			UIEventListener.Get(t.gameObject).onClick -= OnCMDButtonClick;;  // need for objpool 
-		//	NGUITools.Destroy( t.gameObject );
-		}
-		CmdButton.RecycleAll ();
+
+  //      if (lst == null || lst.Count <= 0 )
+		//	return;
+
+		//foreach ( Transform t in lst) {
+
+		//	UIEventListener.Get(t.gameObject).onClick -= OnCMDButtonClick;;  // need for objpool 
+  //                                                                           //	NGUITools.Destroy( t.gameObject );
+  //          grid.RemoveChild(t);
+  //      }
+		//CmdButton.RecycleAll ();
 
 	}
 
@@ -177,15 +187,23 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		CMD.eLASTCMDTYPE = CMD.eCMDTYPE;
 		CMD.eCMDTYPE = eType;
 
-		foreach( _CMD_ID id in cmdList )
-		{	
-			//GameObject obj = ResourcesManager.CreatePrefabGameObj( this.NGuiGrids , "Prefab/CMD_BTN" ); // create cmd and add to grid
-			GameObject obj = CmdButton.Spawn(  NGuiGrids.transform );
-			if( obj != null )
-			{
-				//NGUITools.AddChild( NGuiGrids.transform , obj );
+      
 
-				obj.name = id.ToString();
+        UIGrid grid = NGuiGrids.GetComponent<UIGrid>();
+
+        foreach ( _CMD_ID id in cmdList )
+		{	
+			GameObject obj = ResourcesManager.CreatePrefabGameObj( this.NGuiGrids , "Prefab/CMD_BTN" ); // create cmd and add to grid
+
+            //GameObject obj = Resources.Load("Prefab/CMD_BTN") as GameObject;           
+
+            //GameObject obj = CmdButton.Spawn(  NGuiGrids.transform );
+            if ( obj != null )
+			{
+               // NGUITools.AddChild( NGuiGrids , obj );
+                //grid.AddChild( obj.transform );
+
+                obj.name = id.ToString();
 				UILabel lbl = obj.GetComponentInChildren<UILabel> ();
 				if( lbl != null )
 				{
@@ -198,11 +216,14 @@ public class Panel_CMDUnitUI : MonoBehaviour
 				
 			}
 		}
-		// update
-		UIGrid grid = NGuiGrids.GetComponent<UIGrid>(); 	
+        
+        // update
+       
+       
 		grid.repositionNow = true;		// need this for second pop to re pos
-//			grid.Reposition ();
-	
+	//	grid.Reposition ();             // this will called twice when start . don't use
+
+
 		if( _CMD_TYPE._WAITATK == CMD.eCMDTYPE )
 		{
 			// auto show atk cell
@@ -946,8 +967,8 @@ public class Panel_CMDUnitUI : MonoBehaviour
 	// open ui only and keep original param
 	public static Panel_CMDUnitUI ReOpenCMDUI( _CMD_TYPE type )
 	{
-		cCMD.Instance.eCMDTYPE = type; 
-		Panel_CMDUnitUI panel = MyTool.GetPanel<Panel_CMDUnitUI> ( PanelManager.Instance.OpenUI (Panel_CMDUnitUI.Name) );
+		cCMD.Instance.eCMDTYPE = type;
+        Panel_CMDUnitUI panel = MyTool.GetPanel<Panel_CMDUnitUI> ( PanelManager.Instance.OpenUI (Panel_CMDUnitUI.Name) );
 		if( panel == null )
 		{
 			return panel;

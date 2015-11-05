@@ -1,4 +1,4 @@
-﻿//----------------------------------------------
+//----------------------------------------------
 //            NGUI: Next-Gen UI kit
 // Copyright © 2011-2015 Tasharen Entertainment
 //----------------------------------------------
@@ -697,10 +697,10 @@ static public class NGUIMenu
 		return true;
 	}
 
-	[MenuItem("GameObject/Align View To Selected UI", false, 999)]
+	[MenuItem("GameObject/Align View To Selected UI &f", false, 999)]
 	static public void AlignSVWithSelectedUI () { AlignSVToUI(); }
 
-	[MenuItem("GameObject/Align View To Selected UI", true, 999)]
+	[MenuItem("GameObject/Align View To Selected UI &f", true, 999)]
 	static public bool AlignSVWithSelectedUICheck ()
 	{
 		GameObject go = Selection.activeGameObject;

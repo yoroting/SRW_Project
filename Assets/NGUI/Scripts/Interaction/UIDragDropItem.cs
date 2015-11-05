@@ -1,10 +1,11 @@
-﻿//----------------------------------------------
+//----------------------------------------------
 //            NGUI: Next-Gen UI kit
 // Copyright © 2011-2015 Tasharen Entertainment
 //----------------------------------------------
 
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 /// <summary>
 /// UIDragDropItem is a base script for your own Drag & Drop operations.
@@ -63,10 +64,12 @@ public class UIDragDropItem : MonoBehaviour
 	[System.NonSerialized] protected UICamera.MouseOrTouch mTouch;
 
 	/// <summary>
-	/// Cache the transform.
+	/// List of items that are currently being dragged.
 	/// </summary>
 
-	protected virtual void Start ()
+	static public List<UIDragDropItem> draggedItems = new List<UIDragDropItem>();
+
+	protected virtual void Awake ()
 	{
 		mTrans = transform;
 #if UNITY_4_3 || UNITY_4_5 || UNITY_4_6
@@ -76,6 +79,17 @@ public class UIDragDropItem : MonoBehaviour
 		mCollider = gameObject.GetComponent<Collider>();
 		mCollider2D = gameObject.GetComponent<Collider2D>();
 #endif
+	}
+
+	protected virtual void OnEnable () { }
+	protected virtual void OnDisable () { if (mDragging) StopDragging(UICamera.hoveredObject); }
+
+	/// <summary>
+	/// Cache the transform.
+	/// </summary>
+
+	protected virtual void Start ()
+	{
 		mButton = GetComponent<UIButton>();
 		mDragScrollView = GetComponent<UIDragScrollView>();
 	}
@@ -86,15 +100,18 @@ public class UIDragDropItem : MonoBehaviour
 
 	protected virtual void OnPress (bool isPressed)
 	{
-		if (!interactable) return;
+		if (!interactable || UICamera.currentTouchID == -2 || UICamera.currentTouchID == -3) return;
 
 		if (isPressed)
 		{
-			mTouch = UICamera.currentTouch;
-			mDragStartTime = RealTime.time + pressAndHoldDelay;
-			mPressed = true;
+			if (!mPressed)
+			{
+				mTouch = UICamera.currentTouch;
+				mDragStartTime = RealTime.time + pressAndHoldDelay;
+				mPressed = true;
+			}
 		}
-		else
+		else if (mPressed && mTouch == UICamera.currentTouch)
 		{
 			mPressed = false;
 			mTouch = null;
@@ -149,7 +166,7 @@ public class UIDragDropItem : MonoBehaviour
 	/// Start the dragging operation.
 	/// </summary>
 
-	protected virtual void StartDragging ()
+	public virtual void StartDragging ()
 	{
 		if (!interactable) return;
 
@@ -179,6 +196,7 @@ public class UIDragDropItem : MonoBehaviour
 				item.mPressed = true;
 				item.mDragging = true;
 				item.Start();
+				item.OnClone(gameObject);
 				item.OnDragDropStart();
 
 				if (UICamera.currentTouch == null)
@@ -196,6 +214,12 @@ public class UIDragDropItem : MonoBehaviour
 			}
 		}
 	}
+
+	/// <summary>
+	/// Called on the cloned object when it was duplicated.
+	/// </summary>
+
+	protected virtual void OnClone (GameObject original) { }
 
 	/// <summary>
 	/// Perform the dragging.
@@ -240,6 +264,9 @@ public class UIDragDropItem : MonoBehaviour
 
 	protected virtual void OnDragDropStart ()
 	{
+		if (!draggedItems.Contains(this))
+			draggedItems.Add(this);
+
 		// Automatically disable the scroll view
 		if (mDragScrollView != null) mDragScrollView.enabled = false;
 
@@ -328,18 +355,18 @@ public class UIDragDropItem : MonoBehaviour
 
 			if (mTable != null) mTable.repositionNow = true;
 			if (mGrid != null) mGrid.repositionNow = true;
-
-			// We're now done
-			OnDragDropEnd();
 		}
 		else NGUITools.Destroy(gameObject);
+
+		// We're now done
+		OnDragDropEnd();
 	}
 
 	/// <summary>
 	/// Function called when the object gets reparented after the drop operation finishes.
 	/// </summary>
 
-	protected virtual void OnDragDropEnd () { }
+	protected virtual void OnDragDropEnd () { draggedItems.Remove(this); }
 
 	/// <summary>
 	/// Re-enable the drag scroll view script at the end of the frame.

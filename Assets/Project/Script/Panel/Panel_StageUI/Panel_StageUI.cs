@@ -240,8 +240,10 @@ public class Panel_StageUI : MonoBehaviour
         RegeditGameEvent(true);
         // create sub panel?
 
-        Panel_CMDUnitUI.OpenCMDUI(_CMD_TYPE._SYS, 0);
+//        Panel_CMDUnitUI.OpenCMDUI(_CMD_TYPE._SYS, 0);
+
 		Panel_UnitInfo.OpenUI (0);
+        
         //PanelManager.Instance.OpenUI(Panel_UnitInfo.Name);
 		Panel_MiniUnitInfo.OpenUI (null);
         //PanelManager.Instance.OpenUI(Panel_MiniUnitInfo.Name);
@@ -605,7 +607,8 @@ public class Panel_StageUI : MonoBehaviour
 //		}
 
 
-		Panel_CMDUnitUI.CloseCMDUI();
+	//	Panel_CMDUnitUI.CloseCMDUI();
+
 		PanelManager.Instance.CloseUI( Panel_UnitInfo.Name );
 		PanelManager.Instance.CloseUI( Panel_MiniUnitInfo.Name );
 
