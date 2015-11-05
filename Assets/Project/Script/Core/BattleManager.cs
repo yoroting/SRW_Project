@@ -257,75 +257,86 @@ public partial class BattleManager
 			
 			nPhase++;
 			break;
-		case 1:			// Casting 
-			// have set a cmd and ui is closed
+		case 1:
+                {   // Casting 
+                    // have set a cmd and ui is closed
 
-				if( PanelManager.Instance.CheckUIIsOpening( Panel_CMDUnitUI.Name ) == false )
-				{
-					// special process for def is player+
-					if ( Defer.eCampID  == _CAMP._PLAYER  ) {
+                    if (PanelManager.Instance.CheckUIIsOpening(Panel_CMDUnitUI.Name) == false)
+                    {
+                        // special process for def is player+
+                        if (Defer.eCampID == _CAMP._PLAYER)
+                        {
 
-						// check to reopen counter CMD UI	
-						if( !IsCounterMode() && !IsDefMode() ){
-							if( PanelManager.Instance.CheckUIIsOpening(  Panel_Skill.Name  )== false  ){ // don't pop if skill ui is opening
-							Panel_CMDUnitUI.OpenCMDUI( _CMD_TYPE._COUNTER , nDeferID  , nAtkerID );
-							}
-							return; // break when counter don't start
-						}
-					}
-					//ShowBattleMsg( nAtkerID , "attack" );
-					// change defer skill if deence								 
-					
-					// init fight attr each time
-					Atker.SetFightAttr( nDeferID , nAtkerSkillID );
-					Defer.SetFightAttr( nAtkerID , nDeferSkillID );
+                            // check to reopen counter CMD UI	
+                            if (!IsCounterMode() && !IsDefMode())
+                            {
+                                if (PanelManager.Instance.CheckUIIsOpening(Panel_Skill.Name) == false)
+                                { // don't pop if skill ui is opening
+                                    Panel_CMDUnitUI.OpenCMDUI(_CMD_TYPE._COUNTER, nDeferID, nAtkerID);
+                                }
+                                return; // break when counter don't start
+                            }
+                        }
+                        //ShowBattleMsg( nAtkerID , "attack" );
+                        // change defer skill if deence								 
 
-					// set batle state
-					Atker.AddStates( _FIGHTSTATE._ATKER );
-					
-					//Defer.AddStates( _FIGHTSTATE._DEFER );
-					
-					if( IsDefMode() ){
-						Defer.AddStates( _FIGHTSTATE._DEFMODE );
-						nDeferSkillID = Config.sysDefSkillID;
-					}
-					
-					// atk start cast action
-					uAction pCastingAction = ActionManager.Instance.CreateCastAction( nAtkerID, nAtkerSkillID ,nDeferID , nTarGridX , nTarGridY );
-					// skill attr
-					if( pCastingAction != null )
-					{
-					}
-					
-					nPhase++;
-				}
-			break;
-		case 2:			// def casting
-			uAction pCastingAction = ActionManager.Instance.CreateCastAction( nDeferID , nDeferSkillID , nAtkerID  );
-			if( pCastingAction != null )
-			{
-//				Defer.DoSkillCastEffect( ref pCastingAction.HitResult  );
-//				if(  Defer.FightAttr.Skill != null )
-//					MyTool.DoSkillEffect( Defer , Defer.FightAttr.HitPool , Defer.FightAttr.Skill.s_CAST_TRIG ,  Defer.FightAttr.HitEffPool , ref pCastingAction.HitResult  );
+                        // init fight attr each time
+                        Atker.SetFightAttr(nDeferID, nAtkerSkillID);
+                        Defer.SetFightAttr(nAtkerID, nDeferSkillID);
 
-				if( Defer != null ){
-					if( Defer.IsStates( _FIGHTSTATE._COPY ) ){
-						// if target have skill copy target 's skill to cast
-						if( nAtkerSkillID > 0 ){
-							nDeferSkillID = nAtkerSkillID;
-							Defer.SetFightAttr( nAtkerID , nDeferSkillID );
-							// cast sceond skill
-							ActionManager.Instance.CreateCastAction( nDeferID , nDeferSkillID , nAtkerID  );
-						}
-					}
-				}
+                        // set batle state
+                        Atker.AddStates(_FIGHTSTATE._ATKER);
+
+                        //Defer.AddStates( _FIGHTSTATE._DEFER );
+
+                        if (IsDefMode())
+                        {
+                            Defer.AddStates(_FIGHTSTATE._DEFMODE);
+                            nDeferSkillID = Config.sysDefSkillID;
+                        }
+
+                        // atk start cast action
+                        uAction pCastingAction = ActionManager.Instance.CreateCastAction(nAtkerID, nAtkerSkillID, nDeferID, nTarGridX, nTarGridY);
+                        // skill attr
+                        if (pCastingAction != null)
+                        {
+                        }
+
+                        nPhase++;
+                    }
+                }
+                break;
+		case 2:
+                {   // def casting
+                    uAction pCastingAction = ActionManager.Instance.CreateCastAction(nDeferID, nDeferSkillID, nAtkerID);
+                    if (pCastingAction != null)
+                    {
+                        //				Defer.DoSkillCastEffect( ref pCastingAction.HitResult  );
+                        //				if(  Defer.FightAttr.Skill != null )
+                        //					MyTool.DoSkillEffect( Defer , Defer.FightAttr.HitPool , Defer.FightAttr.Skill.s_CAST_TRIG ,  Defer.FightAttr.HitEffPool , ref pCastingAction.HitResult  );
+
+                        if (Defer != null)
+                        {
+                            if (Defer.IsStates(_FIGHTSTATE._COPY))
+                            {
+                                // if target have skill copy target 's skill to cast
+                                if (nAtkerSkillID > 0)
+                                {
+                                    nDeferSkillID = nAtkerSkillID;
+                                    Defer.SetFightAttr(nAtkerID, nDeferSkillID);
+                                    // cast sceond skill
+                                    ActionManager.Instance.CreateCastAction(nDeferID, nDeferSkillID, nAtkerID);
+                                }
+                            }
+                        }
 
 
-			}
+                    }
 
-			//ShowBattleMsg( nDeferID , "counter" );
-			// show assist
-			nPhase++;
+                    //ShowBattleMsg( nDeferID , "counter" );
+                    // show assist
+                    nPhase++;
+                }
 			break;
 		case 3:			// atack assist pre show 
 			ShowAtkAssist( nAtkerID,nDeferID );
@@ -335,68 +346,75 @@ public partial class BattleManager
 			ShowDefAssist( nDeferID );
 			nPhase++;
 			break;
-		case 5:			// atk -> def 
-			Panel_StageUI.Instance.FadeOutAVGObj();
-			//
-			uAction pAtkAction = ActionManager.Instance.CreateAttackAction(nAtkerID,nDeferID,nAtkerSkillID  );
-			if( pAtkAction != null )
-			{
-				GetAtkHitResult( nAtkerID , nDeferID , Atker , Defer ,nAtkerSkillID,  nTarGridX , nTarGridY , ref pAtkAction , ref AtkAffectPool );
+		case 5:
+                {   // atk -> def 
+                    Panel_StageUI.Instance.FadeOutAVGObj();
+                    //
+                    uAction pAtkAction = ActionManager.Instance.CreateAttackAction(nAtkerID, nDeferID, nAtkerSkillID);
+                    if (pAtkAction != null)
+                    {
+                        GetAtkHitResult(nAtkerID, nDeferID, Atker, Defer, nAtkerSkillID, nTarGridX, nTarGridY, ref pAtkAction, ref AtkAffectPool);
 
-//
-//				pAtkAction.AddHitResult(  CalAttackResult( nAtkerID , nDeferID , IsDefMode() ) ) ;
-//				pAtkAction.AddHitResult( CalSkillHitResult(  Atker , Defer  , nAtkerSkillID ) );
-//
-//				// get affectpool
-//				if (Atker.IsStates( _FIGHTSTATE._THROUGH ) ) {
-//					GetThroughPool( Atker , Defer ,Atker.FightAttr.SkillID , 0 , 0 , ref AtkAffectPool );
-//				}
-//
-//				GetAffectPool( Atker , Defer , Atker.FightAttr.SkillID , 0 , 0 , ref AtkAffectPool );
-//				foreach( cUnitData unit in AtkAffectPool )
-//				{
-//					//=====================
-//					// checked if this cUnitData can Atk
-//					// already check in get affect pool
-//					if( Atker != unit ){
-//						unit.SetFightAttr( Atker.n_Ident , 0 );
-//					}
-//					ShowDefAssist( unit.n_Ident , false );
-//
-//					pAtkAction.AddHitResult(  CalAttackResult( nAtkerID , unit.n_Ident , true) ) ;
-//
-//					pAtkAction.AddHitResult( CalSkillHitResult(  Atker , unit  , nAtkerSkillID ) );
-//
-//				}
-//				//=========================
-//				//	Debug.LogFormat( "atk charid{0}, skill{1} , aff{2}", Atker.n_CharID  , nAtkerSkillID ,  AtkAffectPool.Count );
-			}
+                        //
+                        //				pAtkAction.AddHitResult(  CalAttackResult( nAtkerID , nDeferID , IsDefMode() ) ) ;
+                        //				pAtkAction.AddHitResult( CalSkillHitResult(  Atker , Defer  , nAtkerSkillID ) );
+                        //
+                        //				// get affectpool
+                        //				if (Atker.IsStates( _FIGHTSTATE._THROUGH ) ) {
+                        //					GetThroughPool( Atker , Defer ,Atker.FightAttr.SkillID , 0 , 0 , ref AtkAffectPool );
+                        //				}
+                        //
+                        //				GetAffectPool( Atker , Defer , Atker.FightAttr.SkillID , 0 , 0 , ref AtkAffectPool );
+                        //				foreach( cUnitData unit in AtkAffectPool )
+                        //				{
+                        //					//=====================
+                        //					// checked if this cUnitData can Atk
+                        //					// already check in get affect pool
+                        //					if( Atker != unit ){
+                        //						unit.SetFightAttr( Atker.n_Ident , 0 );
+                        //					}
+                        //					ShowDefAssist( unit.n_Ident , false );
+                        //
+                        //					pAtkAction.AddHitResult(  CalAttackResult( nAtkerID , unit.n_Ident , true) ) ;
+                        //
+                        //					pAtkAction.AddHitResult( CalSkillHitResult(  Atker , unit  , nAtkerSkillID ) );
+                        //
+                        //				}
+                        //				//=========================
+                        //				//	Debug.LogFormat( "atk charid{0}, skill{1} , aff{2}", Atker.n_CharID  , nAtkerSkillID ,  AtkAffectPool.Count );
+                    }
 
 
-			// check if can counter at this time
-			if (IsDefMode() == false ){	
-				// check range
-				int nRange =1; // default range
-				SKILL defskill = ConstDataManager.Instance.GetRow<SKILL>( nDeferSkillID );
-				if(  defskill != null ){
-					nRange = defskill.n_RANGE;
-				}
-				if( Defer.IsStates( _FIGHTSTATE._DEAD ) == false )
-				{
-					bool bIsDamage = MyTool.IsDamageSkill( nDeferSkillID ); // check damage skill 
-					if( bIsDamage == true ){
-						if( iVec2.Dist(Atker.n_X,Atker.n_Y,Defer.n_X,Defer.n_Y ) <= nRange ){
-							bCanCounter = true;
-						}
-					}
-				}
-			}
-			// 被打死不能反擊
-			if( Defer.IsStates(_FIGHTSTATE._DEAD)  ){
-				bCanCounter = false;
-			}
+                    // check if can counter at this time
+                    if (IsDefMode() == false)
+                    {
+                        // check range
+                        int nRange = 1; // default range
+                        SKILL defskill = ConstDataManager.Instance.GetRow<SKILL>(nDeferSkillID);
+                        if (defskill != null)
+                        {
+                            nRange = defskill.n_RANGE;
+                        }
+                        if (Defer.IsStates(_FIGHTSTATE._DEAD) == false)
+                        {
+                            bool bIsDamage = MyTool.IsDamageSkill(nDeferSkillID); // check damage skill 
+                            if (bIsDamage == true)
+                            {
+                                if (iVec2.Dist(Atker.n_X, Atker.n_Y, Defer.n_X, Defer.n_Y) <= nRange)
+                                {
+                                    bCanCounter = true;
+                                }
+                            }
+                        }
+                    }
+                    // 被打死不能反擊
+                    if (Defer.IsStates(_FIGHTSTATE._DEAD))
+                    {
+                        bCanCounter = false;
+                    }
 
-			nPhase++;
+                    nPhase++;
+                }
 			break;
 		case 6:
 			Panel_StageUI.Instance.ClearAVGObj();
