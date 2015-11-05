@@ -319,19 +319,19 @@ public class Panel_Talk_bak : MonoBehaviour {
 
 	}
 
-	public void SetBackground( int nSceneID )
+	public void SetBackground( int nBackID )
 	{
 		if (Tex_BackGround == null)
 			return;
 
-		SCENE_NAME scene = ConstDataManager.Instance.GetRow<SCENE_NAME> ( nSceneID );
-		if (scene == null)
-			return;
-
+//		SCENE_NAME scene = ConstDataManager.Instance.GetRow<SCENE_NAME> ( nSceneID );
+//		if (scene == null)
+//			return;
+		TALK_BACK back = ConstDataManager.Instance.GetRow<TALK_BACK> ( nBackID );
 
 		NGUITools.SetActive( Tex_BackGround ,  true );
 	
-		string url = "Art/BG/" + scene.s_SCNEN_BACK;
+		string url = "Art/BG/" + back.s_IMAGENAME;
 
 		Texture t= Resources.Load( url , typeof(Texture) ) as Texture; ;
 
@@ -366,9 +366,9 @@ public class Panel_Talk_bak : MonoBehaviour {
 			return;
 
 		// change Back Tex
-		if ( m_cStageTalk.n_SCENE_ID > 0 ) 
+		if ( m_cStageTalk.n_BACK_ID > 0 ) 
 		{
-			SetBackground( m_cStageTalk.n_SCENE_ID );
+			SetBackground( m_cStageTalk.n_BACK_ID );
 			// load texture of sceneID
 
 		}

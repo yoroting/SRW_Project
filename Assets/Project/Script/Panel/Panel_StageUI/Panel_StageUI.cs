@@ -3743,6 +3743,41 @@ public class Panel_StageUI : MonoBehaviour
 		//} 
 	}
 
+	public void OnStageAddSchool(int nCharID , int nSchool , int nLv  )
+	{
+		foreach (KeyValuePair< int ,Panel_unit> pair in IdentToUnit) {
+			Panel_unit unit = pair.Value;
+			if( unit == null )
+				continue;
+			if( unit.CharID != nCharID )
+				continue;
+			//
+			if( unit.pUnitData == null )
+				continue;
+
+			unit.pUnitData.LearnSchool( nSchool ,  nLv );
+			unit.pUnitData.ActiveSchool( nSchool );
+			unit.pUnitData.UpdateAllAttr();
+		}
+
+	}
+
+
+	public void OnStageRelive(int nCharID  )
+	{
+		foreach (KeyValuePair< int ,Panel_unit> pair in IdentToUnit) {
+			Panel_unit unit = pair.Value;
+			if( unit == null )
+				continue;
+			if( unit.CharID != nCharID )
+				continue;
+			//
+			if( unit.pUnitData == null )
+				continue;
+			unit.pUnitData.Relive();
+		}
+	}
+
 
 	public void OnStagePopMarkEvent( int x1 ,int y1 , int x2  , int y2  )
 	{

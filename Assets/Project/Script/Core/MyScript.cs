@@ -254,6 +254,11 @@ public class MyScript {
 //				}
 //			}
 //		}
+		if (nCharID == 0) {
+			Debug.LogErrorFormat( "script check dead err in char{0}", nCharID );
+			return false;
+		}
+
 		foreach( KeyValuePair< int , cUnitData > pair in GameDataManager.Instance.UnitPool ){
 			if( pair.Value.eCampID != nCampID )
 				continue;
@@ -742,6 +747,14 @@ public class MyScript {
 			else if( func.sFunc  == "ADDMP")  // Add HP
 			{
 				Panel_StageUI.Instance.OnStageAddUnitValue( func.I(0) , 2 , func.F(1) );
+			}
+			else if( func.sFunc  == "ADDSCHOOL")  // Add school
+			{
+				Panel_StageUI.Instance.OnStageAddSchool( func.I(0) , func.I(1), func.I(2) );
+			}
+			else if( func.sFunc  == "RELIVE")  // relive
+			{
+				Panel_StageUI.Instance.OnStageRelive( func.I(0) );
 			}
 			else if( func.sFunc  == "UNITDEAD") 
 			{			

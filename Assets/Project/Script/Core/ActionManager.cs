@@ -188,6 +188,12 @@ public partial class ActionManager
 
 	public bool HaveAction()
 	{
+		if (ActionPool.Count > 0) {
+			if( Panel_StageUI.Instance == null ){
+				Debug.LogError( "action manager dead lock with no Panel_StageUI");
+			}
+		}
+
 		return (ActionPool.Count > 0);
 	}
 
