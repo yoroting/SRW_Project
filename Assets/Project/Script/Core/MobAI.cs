@@ -522,8 +522,11 @@ public class MobAI  {
 			List<iVec2> path = FindPathToTarget( mob , target , nMove , nSkillRange );
 			if( path == null || (path.Count ==0) )
 			{
-				//continue; // can't find path try next target
-			}
+                //continue; // can't find correct path try nearest pos
+                // bug : need create a action to move closer target
+                // need filter zoc 
+               
+            }
 			else
 			{
 				iVec2 last = path[ path.Count -1 ];
@@ -596,11 +599,10 @@ public class MobAI  {
 				return;
 			}
 		}
-		// find target to atk
 
 
 
-		ActionManager.Instance.CreateWaitingAction (ident);
+            ActionManager.Instance.CreateWaitingAction (ident);
 	}
 
 	// tool finc
@@ -661,13 +663,70 @@ public class MobAI  {
 				}
 			}
 		}
-		// all path failed. return null
-		return null;
+        // all path failed. return null
+        //try method to find path move near to target
+        // find target to atk
+       
+        for (int i = 2; i < 999; i++)
+        {
+            // pool.Clear();
+            List<iVec2> pool = Panel_StageUI.Instance.Grids.GetRangePool(Target.Loc, i, i - 1);
+            if (pool == null)
+                continue;
+            foreach (iVec2 pos in pool)
+            {
+                iVec2 last = null;
+                if (Panel_StageUI.Instance.CheckIsEmptyPos(pos) == false)
+                {
+                    continue;
+                }
+
+                List<iVec2>  path = Panel_StageUI.Instance.PathFinding(Mob , Mob.Loc, pos, 999); // get a vaild path to run
+                                                                                                 //path = FindPathToPos(mob, pos, nMove, nSkillRange);
+                int nLimit = nMove;
+                if (path != null && (path.Count > 0))
+                {
+                    if (path != null && path.Count > 0)
+                    {
+                        iVec2 loc = path[0];
+                        if (Mob.Loc.Collision(loc))
+                        {
+                            nLimit++;
+                        }
+                        else
+                        {
+                            nLimit = nMove;  // this will happen?
+                        }
+                    }
+
+                    path = MyTool.CutList<iVec2>(path, nLimit);// mob movement; .. A-star 運算時自己原座標也算一個點所以這邊加給他
+
+                    // avoid stand on invalid pos
+                    while (path.Count > 0)
+                    {
+                        last = path[path.Count - 1];
+                        if (Panel_StageUI.Instance.CheckIsEmptyPos(last) == false)
+                        {
+                            path.RemoveAt(path.Count - 1); // then go again
+                        }
+                        else if (path.Count <= 0)
+                        {
+                            continue; // try next pos
+                        }
+                        else                   {                           
+                            return path;
+                        }
+                    }
+                }
+            }           
+        }
+        return null;
 
 	}
 
+    
 
-	static public int SelSkill( cUnitData pMob , cUnitData pTarget = null , bool bCounterMode = false  )// -1 is no attack
+    static public int SelSkill( cUnitData pMob , cUnitData pTarget = null , bool bCounterMode = false  )// -1 is no attack
 	{
 	//	return 11701; // debug
 		//nDeferSkillID = 11704;  //天羅地網

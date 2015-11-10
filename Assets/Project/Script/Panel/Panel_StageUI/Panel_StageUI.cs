@@ -44,8 +44,13 @@ public class Panel_StageUI : MonoBehaviour
 
 	public GameObject UnitPanelObj; // unit plane
 
-	//public GameObject TileObj; 	//  no need this
-	public GameObject MoveEftObj; 	// 
+
+    public GameObject MobActEffObj; // Mob action mask
+    GameObject ActEffFolObj;
+
+
+    //public GameObject TileObj; 	//  no need this
+    public GameObject MoveEftObj; 	// 
 	public GameObject AtkEftObj; 	// 
 	public GameObject AoeEftObj; 	// 
 	public GameObject ValueEftObj; 	// 
@@ -72,6 +77,8 @@ public class Panel_StageUI : MonoBehaviour
 	float fMaxOffX ;
 	float fMinOffY ;
 	float fMaxOffY ;
+
+    float fFxPlayTime;                      //特效播放時間強制解鎖用
 
 	// widget
 	Dictionary< int , STAGE_EVENT > EvtPool;			// add event id 
@@ -482,9 +489,12 @@ public class Panel_StageUI : MonoBehaviour
 	}
 
 	void Clear()  // public for gamedatamanage to load 
-	{	
-		//
-		ClearOverCellEffect ();
+	{
+        //
+        MobActEffObj.SetActive(false);
+
+        //
+        ClearOverCellEffect ();
 
 		// clear unit 
 		foreach (KeyValuePair<int , Panel_unit  > pair in IdentToUnit) {
@@ -494,8 +504,10 @@ public class Panel_StageUI : MonoBehaviour
 		}
 		IdentToUnit.Clear ();
 
-		// EVENT 
-		GameDataManager.Instance.ResetStage ();
+        fFxPlayTime = 0.0f;
+
+        // EVENT 
+        GameDataManager.Instance.ResetStage ();
 
 		//GameDataManager.Instance.nRound = 0;		// many mob pop in talk ui. we need a 0 round to avoid issue
 		//GameDataManager.Instance.nActiveCamp  = _CAMP._PLAYER;
@@ -587,6 +599,10 @@ public class Panel_StageUI : MonoBehaviour
 			}
 			TilePlaneObj.transform.localPosition = vOffset;
 		}
+
+        if (ActEffFolObj != null) {
+            MobActEffObj.transform.position = ActEffFolObj.transform.position;
+        }
 
 	}
 
@@ -1472,34 +1488,45 @@ public class Panel_StageUI : MonoBehaviour
 		}
 	}
 
-	public bool IsAnyActionRunning()
-	{
-		// for win event
-		if( (TilePlaneObj != null) && !TilePlaneObj.activeSelf ){
-			return false;
-		}
+    public bool IsAnyActionRunning()
+    {
+        // for win event
+        if ((TilePlaneObj != null) && !TilePlaneObj.activeSelf) {
+            return false;
+        }
 
-		if(BattleMsg.nMsgCount > 0)
-			return true;
+        if (BattleMsg.nMsgCount > 0)
+            return true;
 
-		if (bIsMoveToObj)
-			return true;
+        if (bIsMoveToObj)
+            return true;
 
-		if( CFX_AutoDestructShuriken.nFXCount>0 )
-			return true;
+        if (CFX_AutoDestructShuriken.nFXCount > 0)
+        {
+            
+            fFxPlayTime += Time.deltaTime;
+            if (fFxPlayTime >= 30.0f) {
+                Debug.LogError( "FX dead locked over 30sec . release it");
+                CFX_AutoDestructShuriken.nFXCount = 0;
+            }
 
-		// this is very slow for play
-//		if(ValueEftObj.CountSpawned () > 0)
-//			return true; 
+            return true;
+        }
+    
 
-		//IsAnyActionRunning
-	//	if( BattleValue.nValueCount > 0  ) // bug here!!
-	//		return true;
+        fFxPlayTime = 0.0f;
+        // this is very slow for play
+        //		if(ValueEftObj.CountSpawned () > 0)
+        //			return true; 
 
-//		if( PanelManager.Instance.CheckUIIsOpening( Panel_Talk.Name) == true )
-//			return true;
+        //IsAnyActionRunning
+        //	if( BattleValue.nValueCount > 0  ) // bug here!!
+        //		return true;
 
-		if( PanelManager.Instance.CheckUIIsOpening( Panel_Round.Name ) == true )
+        //		if( PanelManager.Instance.CheckUIIsOpening( Panel_Talk.Name) == true )
+        //			return true;
+
+        if ( PanelManager.Instance.CheckUIIsOpening( Panel_Round.Name ) == true )
 			return true;	
 
 		if( PanelManager.Instance.CheckUIIsOpening( Panel_Skill.Name ) == true )
@@ -2651,12 +2678,13 @@ public class Panel_StageUI : MonoBehaviour
 
 			if( false== MyScript.bParsing  ){// no zoc during script parse
 				zocPool = Grids.GetZocPool(unit.Loc , ref pkPosPool );
-				if( Config.GOD )
-				{
-					CreateZocOverEffect( zocPool );
+#if UNITY_EDITOR
+                //if( Config.GOD ) // always draw in edit
+                {
+                    CreateZocOverEffect( zocPool );
 				}
-
-				Grids.AddIgnorePool( zocPool ); // APPLY ZOC	
+#endif 
+                Grids.AddIgnorePool( zocPool ); // APPLY ZOC	
 			}
 		}
 		
@@ -2951,6 +2979,15 @@ public class Panel_StageUI : MonoBehaviour
 		return true;
 	}
 
+    public void OnStageUnitActMask( GameObject opObj , bool bEnable )
+    {
+        MobActEffObj.SetActive(bEnable);
+        if (opObj != null) {
+            ActEffFolObj = opObj;
+            MobActEffObj.transform.position = opObj.transform.position;
+        }
+    }
+    
 
 
 	// Game event func

@@ -83,14 +83,14 @@ public class MyScript {
 				}
 				else if( func.sFunc == "ROUND"  )
 				{
-					if( ConditionRound( func.I(0), func.I(1) ) == false )
+					if( ConditionRound( func.I(0), func.I(1)) == false )
 					{
 						return false;
 					}				
 				}		
 				else if( func.sFunc == "AFTER"  )
 				{
-					if( ConditionAfter( func.I(0),func.I(1)  ) == false )
+					if( ConditionAfter( func.I(0),func.I(1), func.I(2)) == false )
 					{
 						return false;
 					}				
@@ -311,12 +311,14 @@ public class MyScript {
 		}
 		return false ;
 	}
-	bool ConditionAfter( int nID , int nRound  )
+	bool ConditionAfter( int nID , int nRound, int nCamp = 0)
 	{
 		if( GameDataManager.Instance.EvtDonePool.ContainsKey( nID )  ){
 			int nCompleteRound = GameDataManager.Instance.EvtDonePool[ nID ];
-			
-			return ( GameDataManager.Instance.nRound >= ( nCompleteRound + nRound ) );
+            if (nCamp == (int)GameDataManager.Instance.nActiveCamp)
+            {
+                return (GameDataManager.Instance.nRound >= (nCompleteRound + nRound));
+            }
 		}
 		return false;
 	}
@@ -790,12 +792,14 @@ public class MyScript {
 			{		
 				int nCharID = func.I( 0 );
 				GameDataManager.Instance.EnableStorageUnit(nCharID, true );
-			}
+                GameDataManager.Instance.EnableStageUnit(nCharID, true);
+            }
 			else if( func.sFunc  == "LEAVE") 
 			{			
 				int nCharID = func.I( 0 );
 				GameDataManager.Instance.EnableStorageUnit(nCharID, false );
-			}
+                GameDataManager.Instance.EnableStageUnit(nCharID, false );
+            }
 			//不能刪除 等待執行 event. 會造成 讀檔上的麻煩
 //			else if( func.sFunc  == "DELEVENT") 
 //			{

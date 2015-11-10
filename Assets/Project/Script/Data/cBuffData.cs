@@ -98,9 +98,15 @@ public class cBuffs
 
 	public Dictionary< int , cBuffData > Pool;
 	List< int > RemoveList ;
+    
+    // clear all buff
+    public void Reset()
+    {
+        Pool.Clear();
+    }
 
-	//
-	public cBuffData CreateData( BUFF buff , int Ident , int nSkillID , int nTargetId  )
+    //
+    public cBuffData CreateData( BUFF buff , int Ident , int nSkillID , int nTargetId  )
 	{
 		cBuffData data = new cBuffData( buff , Ident , nSkillID , nTargetId );
 	

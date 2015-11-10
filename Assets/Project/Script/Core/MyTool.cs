@@ -115,12 +115,15 @@ public class MyTool {
 	}
 	public static string GetItemName( int nID )
 	{
+        if (nID == 0){
+            return "EMPTY";
+        }
 		//BUFF buff = ConstDataManager.Instance.GetRow< BUFF > ( nID );
 		//if (buff == null)
 		//	return "null";
 		ITEM_MISC item = ConstDataManager.Instance.GetRow< ITEM_MISC > ( nID );
 		if (item == null)
-			return "null";
+			return "";
 		return item.s_NAME;
 	}
 
@@ -138,25 +141,51 @@ public class MyTool {
 
 	}
 
-	public static string GetUnitSchoolFullName( int nIdent , int nSchool )
-	{
-		cUnitData data = GameDataManager.Instance.GetUnitDateByIdent (nIdent);
-		if (data == null)
-			return "Error-No Unit";
+    // 0-small , 1- Large
+    public static Texture GetCharTexture( int nCharID , int nSize=0)
+    {
+        CHARS cdata = ConstDataManager.Instance.GetRow<CHARS>(nCharID);
+        if (cdata == null)
+            return null ;
 
-		SCHOOL sch = ConstDataManager.Instance.GetRow<SCHOOL>(nSchool);   //GameDataManager.Instance.GetConstSchoolData ( nSchool );
-		if (sch == null)
-			return "Error-No Skill";
+        string url = "Art/char/" + cdata.s_FILENAME ;
+        switch (nSize)
+        {
+            case 1:   url += "_L"; break;
+            default:  url += "_S"; break;
+        }
+      
+        Texture t = Resources.Load(url, typeof(Texture)) as Texture;
+        return t;
+    }
 
-		int nLv = 0;
-		if (data.SchoolPool.TryGetValue (nSchool, out nLv) == true ) {
-			return sch.s_NAME + "(" +nLv.ToString() + ")";
-		}
-		return "Error- No Leran School" + nSchool.ToString();
-	}
+    public static string GetSchoolName( int nSchool)
+    {
+        SCHOOL sch = ConstDataManager.Instance.GetRow<SCHOOL>(nSchool);   //GameDataManager.Instance.GetConstSchoolData ( nSchool );
+        if (sch == null)
+            return "Error-No Skill";
+
+        return sch.s_NAME;             
+    }
+    //public static string GetUnitSchoolFullName( int nIdent , int nSchool )
+    //{
+    //	cUnitData data = GameDataManager.Instance.GetUnitDateByIdent (nIdent);
+    //	if (data == null)
+    //		return "Error-No Unit";
+
+    //	SCHOOL sch = ConstDataManager.Instance.GetRow<SCHOOL>(nSchool);   //GameDataManager.Instance.GetConstSchoolData ( nSchool );
+    //	if (sch == null)
+    //		return "Error-No Skill";
+
+    //	int nLv = 0;
+    //	if (data.SchoolPool.TryGetValue (nSchool, out nLv) == true ) {
+    //		return sch.s_NAME + "(" +nLv.ToString() + ")";
+    //	}
+    //	return "Error- No Leran School" + nSchool.ToString();
+    //}
 
 
-	public static string GetUIText( int nID )
+    public static string GetUIText( int nID )
 	{
 
 		return "null";
@@ -620,8 +649,18 @@ public class MyTool {
 			return default (T);
 		}
 	}
-
-	public static List<T> CutList<T>( List<T> lst , int Len )
+    public static T GetPanel<T>(string  name )
+    {
+        GameObject obj = PanelManager.Instance.OpenUI(name );
+        if (obj != null)
+            return obj.GetComponent<T>();
+        else
+        {
+            Debug.LogError("err GetPanel<T>");
+            return default(T);
+        }
+    }
+    public static List<T> CutList<T>( List<T> lst , int Len )
 	{
 		int c = lst.Count - Len;
 		if (c > 0) {

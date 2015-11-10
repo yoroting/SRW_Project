@@ -224,10 +224,10 @@ public class cUnitData{
 
 
 	public CHARS cCharData;
-	//public int n_Rank;		// max school lv
-	public bool bEnable;			// is join party
-// save data start
-	public int n_Ident;		// auto create by game system
+    //public int n_Rank;		// max school lv
+    // save data start
+    public bool bEnable;            // is join party
+    public int n_Ident;		// auto create by game system
 	public _CAMP eCampID;
 	public int n_CharID;
 	public int n_UpgradeFromCharID;			// 進階前的腳色ID
@@ -335,7 +335,7 @@ public class cUnitData{
 
 	public cUnitData()
 	{
-		bEnable = false;
+		bEnable = true;         // true as default
 		SchoolPool  = new Dictionary< int , int > ();
 		AbilityPool = new Dictionary< int , int > ();
 		SkillPool 	= new List< int > ();
@@ -364,8 +364,59 @@ public class cUnitData{
 		eComboAI  = _AI_COMBO._NORMAL;								// 選技能
 	}
 
-	// setup update flag
-	public void SetUpdate( int index  )
+    public void Copy( cUnitData src )
+    {
+        n_CharID = src.n_CharID;
+        cCharData = src.cCharData;
+        // copy data form other one
+        //SchoolPool = new Dictionary<int, int>();
+        //AbilityPool = new Dictionary<int, int>();
+        //SkillPool = new List<int>();
+        // item 
+        // active sch
+        // School 
+
+        Buffs.Pool.Clear();
+        foreach (var p in src.Buffs.Pool)
+        {
+            cBuffData data = p.Value;
+            Buffs.AddBuff(data.nID, data.nID, data.nSkillID, data.nTargetIdent);
+        }
+
+        SchoolPool.Clear();
+        foreach (var p in src.SchoolPool)
+        {          
+            SchoolPool.Add(p.Key, p.Value);
+        }
+
+        AbilityPool.Clear();
+        foreach (var p in src.AbilityPool)
+        {            
+            AbilityPool.Add(p.Key, p.Value);            
+        }
+
+        SkillPool.Clear();
+        foreach (var e in src.SkillPool)
+        {           
+            SkillPool.Add(e);
+        }
+
+        // item
+        src.Items.CopyTo(Items,0);
+        
+
+        n_Lv  = src.n_Lv;
+        n_EXP = src.n_EXP;
+
+        ActiveSchool( src.GetIntSchID() );
+        ActiveSchool( src.GetExtSchID() );
+
+        // update all 
+        UpdateAllAttr();
+    }
+
+    // setup update flag
+    public void SetUpdate( int index  )
 	{
 		bUpdateFlag [index] = true;
 	}
@@ -848,9 +899,10 @@ public class cUnitData{
 		return true;
 	}
 
-	public int EquipItem( _ITEMSLOT slot, int nItemID )
+    //
+	public int EquipItem( _ITEMSLOT slot, int nItemID , bool synbag = false )
 	{
-		if (slot >= _ITEMSLOT._SLOTMAX)
+		if (slot >= _ITEMSLOT._SLOTMAX )
 			return 0; 
 
 		int nOldItemID = Items [(int)slot];
@@ -863,6 +915,8 @@ public class cUnitData{
 		if ( olditem != null) {
 			Buffs.DelBuff( olditem.n_ID_BUFF );
 		}
+       
+
 
 
 		// replace 
@@ -874,7 +928,23 @@ public class cUnitData{
 
 		SetUpdate( cAttrData._BUFF );
 
-		return nOldItemID;
+        //============================================================
+        if (synbag)
+        {
+            if (GameDataManager.Instance != null)
+            {
+                if (nOldItemID > 0) {
+                    GameDataManager.Instance.AddItemtoBag(nOldItemID );
+                }
+                //===================
+                if (nItemID > 0) {
+                    GameDataManager.Instance.RemoveItemfromBag(nItemID );
+                }
+
+            }
+        }
+
+        return nOldItemID;
 	}
 	public bool CheckItemEquiped( int nItemID ){
 
@@ -1086,7 +1156,7 @@ public class cUnitData{
 
 
 
-	cAttrData GetAttrData( int idx )
+	public cAttrData GetAttrData( int idx )
 	{
 		cAttrData attr;
 		if (Attr.TryGetValue( idx , out attr ) == false ) {
@@ -1262,9 +1332,10 @@ public class cUnitData{
 		return (float)n_HP / GetMaxHP();
 	}
 
+ 
 
-	// only get school + char lv
-	public float GetBaseMar()
+    // only get school + char lv
+    public float GetBaseMar()
 	{
 		UpdateAttr(  );
 		float f = 0;
@@ -1476,6 +1547,18 @@ public class cUnitData{
 
 		return fDrainMpRate;
 	}
+
+    public string GetSchoolFullName( int nSchool)
+    {
+        string name = MyTool.GetSchoolName(nSchool);
+        int nLv = 0;
+        if (SchoolPool.TryGetValue(nSchool, out nLv) == true)
+        {
+            return name + "(" + nLv.ToString() + ")";
+        }
+        return "Error- No Leran School" + nSchool.ToString();
+       
+    }
 
 	// Fight Attr
 	public void SetFightAttr( int nTarId , int SkillID )

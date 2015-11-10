@@ -6,10 +6,13 @@ public class Panel_UnitInfo : MonoBehaviour {
 
 	public const string Name = "Panel_UnitInfo";
 
+    // char face image
 	public GameObject FaceObj;
 	public GameObject NameObj;
+    public GameObject btnStory;
 
-	public GameObject MarObj;
+    //data
+    public GameObject MarObj;
 	public GameObject HpObj;
 	public GameObject MpObj;
 	public GameObject SpObj;
@@ -33,57 +36,111 @@ public class Panel_UnitInfo : MonoBehaviour {
 	public GameObject BuffGrid;
 	public GameObject PassGrid; // 被動
 
+    // item obj
+    public GameObject[] ItemPool;
+    //public GameObject Item1Obj;
+    //public GameObject Item2Obj;
 
-	public GameObject CloseBtnObj;
+    // open switch
+    public GameObject btnBase;
+    public GameObject btnAbility;
+    public GameObject btnSkill;
+    public GameObject btnItem;
+
+
+    // open base
+    public GameObject sprBase;
+    public GameObject sprAbility;
+    public GameObject sprSkill;
+    public GameObject sprItem;
+
+    Dictionary<GameObject, GameObject> SwitchPairPool;
+
+    // close
+    public GameObject CloseBtnObj;
 
 	private cUnitData pUnitData;
 
 	// open info by identify
-	static public int nCharIdent;
+	//static public int nCharIdent;
 	static public GameObject OpenUI( int nIdent )
 	{
-		nCharIdent = nIdent;
-		//GameDataManager.Instance.nInfoIdent = pCmder.Ident ();
-		
-		GameObject go = PanelManager.Instance.OpenUI ( Panel_UnitInfo.Name ); // set data in onenable
-
-		return go;
+        return OpenUI(GameDataManager.Instance.GetUnitDateByIdent(nIdent) ) ;
 	}
+
+    static public GameObject OpenUI(cUnitData pData)
+    {
+        GameObject go = PanelManager.Instance.OpenUI(Panel_UnitInfo.Name); // set data in onenable
+
+        Panel_UnitInfo panel = MyTool.GetPanel<Panel_UnitInfo>(go);
+        if (panel != null)
+        {
+            panel.SetData(pData);
+        }
+
+        return go;
+    }
+  
+
 
 	void Awake()
 	{
-		UIEventListener.Get(CloseBtnObj).onClick += OnCloseClick; // for trig next line
+        SwitchPairPool = new Dictionary<GameObject, GameObject>();
+        SwitchPairPool.Add(btnBase, sprBase );
+        SwitchPairPool.Add(btnAbility, sprAbility);
+        SwitchPairPool.Add(btnSkill, sprSkill);
+        SwitchPairPool.Add(btnItem, sprItem);
 
-	}
+        foreach (var pair in SwitchPairPool)
+        {
+            UIEventListener.Get(pair.Key).onClick += OnSwitchSpriteClick; // for trig next line
+        }
 
 
+        UIEventListener.Get(CloseBtnObj).onClick += OnCloseClick; // for trig next line
 
+
+        UIEventListener.Get(FaceObj).onClick += OnCharImgClick; // for trig next line
+
+
+        
+    }
+
+
+    public void SetData(cUnitData pData)
+    {
+        pUnitData = pData;
+        if (pUnitData == null) {
+            OnCloseClick(this.gameObject);
+            return;
+        }
+        // set data
+        int nCharId = pUnitData.n_CharID;
+        //CHARS chars = data.cCharData;
+        // change face	
+        UITexture tex = FaceObj.GetComponent<UITexture>();
+        if (tex != null)
+        {
+            // string url = "Art/char/" + pUnitData.cCharData.s_FILENAME + "_L";
+            //Texture2D tex = Resources.LoadAssetAtPath(url, typeof(Texture2D)) as Texture2D;
+            //Texture t = Resources.Load(url, typeof(Texture)) as Texture;
+            tex.mainTexture = MyTool.GetCharTexture( nCharId , 1);
+        }
+
+
+        // name 
+        //string name = pUnitData.cCharData.s_NAME;
+        MyTool.SetLabelText(NameObj, MyTool.GetCharName(nCharId));
+
+        ReloadData();
+
+        // base as default 
+        OnSwitchSpriteClick(btnBase);
+
+    }
 	void OnEnable()
-	{
-		pUnitData = GameDataManager.Instance.GetUnitDateByIdent( nCharIdent );
-		if (pUnitData == null) {
-			OnCloseClick( this.gameObject );
-			return ;
-		}
-
-		int nCharId = pUnitData.n_CharID;
-		//CHARS chars = data.cCharData;
-		// change face	
-		UITexture tex = FaceObj.GetComponent<UITexture>();
-		if (tex != null) {
-			string url = "Art/char/" + pUnitData.cCharData.s_FILENAME + "_L";
-			//Texture2D tex = Resources.LoadAssetAtPath(url, typeof(Texture2D)) as Texture2D;
-			Texture t = Resources.Load(url, typeof(Texture)) as Texture;
-			tex.mainTexture = t;				
-		}
-
-
-		// name 
-		//string name = pUnitData.cCharData.s_NAME;
-		MyTool.SetLabelText( NameObj , MyTool.GetCharName( nCharId ) );
-
-
-		ReloadData();
+	{	
+		//ReloadData();
 	}
 
 	void OnDisable()
@@ -100,39 +157,10 @@ public class Panel_UnitInfo : MonoBehaviour {
 		pUnitData.UpdateAllAttr ();
 		pUnitData.UpdateAttr ();
 		pUnitData.UpdateBuffConditionAttr ();
-		// lv
-		MyTool.SetLabelInt( LvObj , pUnitData.n_Lv );
-		// exp 
-		MyTool.SetLabelInt( ExpObj , pUnitData.n_EXP);
-		// mar
-		MyTool.SetLabelFloat( MarObj , pUnitData.GetMar() );
-		// HP
-		int nMaxHp = pUnitData.GetMaxHP();
-		MyTool.SetLabelText( HpObj , string.Format( "{0}/{1}" , pUnitData.n_HP , nMaxHp ) );
-		// MP
-		int nMaxMp = pUnitData.GetMaxMP();
-		MyTool.SetLabelText( MpObj , string.Format( "{0}/{1}" , pUnitData.n_MP , nMaxMp ) );
-		// SP
-		int nMaxSp = pUnitData.GetMaxSP();
-		MyTool.SetLabelText( SpObj , string.Format( "{0}/{1}" , pUnitData.n_SP , nMaxSp ) );
-		// mov
-		MyTool.SetLabelInt( MovObj , pUnitData.GetMov() );
-		// atk 
-		MyTool.SetLabelInt( AtkObj , pUnitData.GetAtk() );
-		// def 
-		int nMaxDef = pUnitData.GetMaxDef();
-		MyTool.SetLabelText( DefObj , string.Format( "{0}/{1}" , pUnitData.n_DEF , nMaxDef ) );
-		
-		// pow
-		MyTool.SetLabelInt( PowObj , pUnitData.GetPow() );
-		
-		// school name
-		
-		//SCHOOL inSch = GameDataManager.Instance.GetConstSchoolData( data.nActSch[0] ); // int 
-		MyTool.SetLabelText( IntSchObj , MyTool.GetUnitSchoolFullName( nCharIdent , pUnitData.GetIntSchID() )  );
-		
-		//SCHOOL exSch = ConstDataManager.Instance.GetRow<SCHOOL>( pUnitData.nActSch[1] );//   GameDataManager.Instance.GetConstSchoolData( pUnitData.nActSch[1] ); // ext 
-		MyTool.SetLabelText( ExtSchObj , MyTool.GetUnitSchoolFullName( nCharIdent , pUnitData.GetExtSchID() ) );
+
+        UpdateBase();
+        // school name
+        UpdateSchool();
 
 
 		// Set ability
@@ -152,22 +180,111 @@ public class Panel_UnitInfo : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-	
 
-	}
+        // set item obj index on all ready .aet in awake()  will be  replace index
+        int idx = 0;
+        foreach (GameObject o in ItemPool)
+        {
+            UIEventListener.Get(o).onClick += OnItemClick;
+            Item_Unit item = o.GetComponent<Item_Unit>();
+            if (item == null)
+                continue;
+            item.nIndex = idx++;
+            UIEventListener.Get(item.btnEquip).onClick = OnEquipItemClick; // 
+        }
+    }
 	
 	// Update is called once per frame
 	void Update () {
 	
 	}
 
+    public Item_Unit GetItemObj (int nIdx) {
+        if (nIdx < 0 || nIdx >= ItemPool.Length )
+        {
+            return null;
+        }
+        GameObject obj = ItemPool[nIdx];
+    
+        if (obj == null)
+            return null;
+
+        return obj.GetComponent<Item_Unit>();
+    }
+     
+    public void EquipItem(int nIdx, int nItemID)
+    {
+        pUnitData.EquipItem( (_ITEMSLOT) nIdx, nItemID , true );
+
+        // update UI
+      //  GameObject obj = null;
+        Item_Unit item = GetItemObj(nIdx );
+        if (item != null) {
+            item.SetItemID(nItemID);
+        }
+
+        pUnitData.UpdateAllAttr();
+        UpdateBase();
+
+    }
+
 	void OnCloseClick( GameObject go )
 	{
 		PanelManager.Instance.CloseUI( Name );
 	}
 
+    void OnSwitchSpriteClick(GameObject go)
+    {
+        foreach (var pair in SwitchPairPool)
+        {
+            bool b = false;
+            if (pair.Key == go)
+            {
+                b = true;
+            }
+            pair.Value.SetActive(b);           
+        }
 
-	void UpdateAbility()
+    }
+    void UpdateBase()
+    {
+        // lv
+        MyTool.SetLabelInt(LvObj, pUnitData.n_Lv);
+        // exp 
+        MyTool.SetLabelInt(ExpObj, pUnitData.n_EXP);
+        // mar
+        MyTool.SetLabelFloat(MarObj, pUnitData.GetMar());
+        // HP
+        int nMaxHp = pUnitData.GetMaxHP();
+        MyTool.SetLabelText(HpObj, string.Format("{0}/{1}", pUnitData.n_HP, nMaxHp));
+        // MP
+        int nMaxMp = pUnitData.GetMaxMP();
+        MyTool.SetLabelText(MpObj, string.Format("{0}/{1}", pUnitData.n_MP, nMaxMp));
+        // SP
+        int nMaxSp = pUnitData.GetMaxSP();
+        MyTool.SetLabelText(SpObj, string.Format("{0}/{1}", pUnitData.n_SP, nMaxSp));
+        // mov
+        MyTool.SetLabelInt(MovObj, pUnitData.GetMov());
+        // atk 
+        MyTool.SetLabelInt(AtkObj, pUnitData.GetAtk());
+        // def 
+        int nMaxDef = pUnitData.GetMaxDef();
+        MyTool.SetLabelText(DefObj, string.Format("{0}/{1}", pUnitData.n_DEF, nMaxDef));
+
+        // pow
+        MyTool.SetLabelInt(PowObj, pUnitData.GetPow());
+
+    }
+    void UpdateSchool()
+    {
+        //SCHOOL inSch = GameDataManager.Instance.GetConstSchoolData( data.nActSch[0] ); // int 
+        MyTool.SetLabelText(IntSchObj, pUnitData.GetSchoolFullName(pUnitData.GetIntSchID()));
+
+        //SCHOOL exSch = ConstDataManager.Instance.GetRow<SCHOOL>( pUnitData.nActSch[1] );//   GameDataManager.Instance.GetConstSchoolData( pUnitData.nActSch[1] ); // ext 
+        MyTool.SetLabelText(ExtSchObj, pUnitData.GetSchoolFullName(pUnitData.GetExtSchID()));
+
+    }
+    void UpdateAbility()
 	{
 		int nCharlv = pUnitData.n_Lv;
 
@@ -235,39 +352,60 @@ public class Panel_UnitInfo : MonoBehaviour {
 	}
 	void UpdateItem()
 	{
-		MyTool.DestoryGridItem ( ItemGrid );
-		foreach (int itemid in pUnitData.Items) {
-			if( itemid <= 0 )
-				continue;
 
-			GameObject go = ResourcesManager.CreatePrefabGameObj( ItemGrid , "Prefab/Skill_simple" ); 
-			if( go == null )
-				continue;
-			
-			UIEventListener.Get(go).onClick += OnItemClick; // 
-			
-			
-			Skill_Simple obj = go.GetComponent<Skill_Simple >();
-			if( obj != null ){
-				obj.nID = itemid;
-				obj.nType = 2; // 2 is item
-				MyTool.SetLabelText( obj.lblName , MyTool.GetItemName( itemid ) );
-			}
-	
+        // item obj
+        int nIdx = 0;
+        foreach ( GameObject obj in ItemPool ) {
+            Item_Unit item = obj.GetComponent<Item_Unit>();
+            if (item == null)
+                continue;
 
-			//ITEM_MISC item = ConstDataManager.
+            item.SetItemID(pUnitData.Items[nIdx++]);
 
+        }
 
-		}
-//		int item0 = pUnitData.Items[ (int)_ITEMSLOT._SLOT0  ]; 
-//		int item1 = pUnitData.Items[ (int)_ITEMSLOT._SLOT1  ]; 
+      
+
+                                                                        //item1.nType = 2; // 2 is item
 
 
 
-	}
+        //      int nIdx = 0;
+        //MyTool.DestoryGridItem ( ItemGrid );
+        //foreach (int itemid in pUnitData.Items) {
+        //          // create contain for null item too
+        //	//if( itemid <= 0 )
+        //	//	continue;
+
+        //	GameObject go = ResourcesManager.CreatePrefabGameObj( ItemGrid , "Prefab/Skill_simple" ); 
+        //	if( go == null )
+        //		continue;
+
+        //	UIEventListener.Get(go).onClick = OnItemClick; // 
+
+
+        //	Skill_Simple obj = go.GetComponent<Skill_Simple >();
+        //	if( obj != null ){
+        //              obj.nIndex = nIdx++;
+        //              obj.nID = itemid;
+        //		obj.nType = 2; // 2 is item
+        //		MyTool.SetLabelText( obj.lblName , MyTool.GetItemName( itemid ) );
+        //	}
+        //	//ITEM_MISC item = ConstDataManager.
+        //}
+
+        //		int item0 = pUnitData.Items[ (int)_ITEMSLOT._SLOT0  ]; 
+        //		int item1 = pUnitData.Items[ (int)_ITEMSLOT._SLOT1  ]; 
+
+
+
+    }
 
 	void UpdateBuff()
 	{
+        if (BuffGrid == null)
+            return;
+
 		MyTool.DestoryGridItem ( BuffGrid );
 
 		foreach ( KeyValuePair< int , cBuffData > pair in pUnitData.Buffs.Pool ) {
@@ -335,14 +473,24 @@ public class Panel_UnitInfo : MonoBehaviour {
 
 	void OnItemClick( GameObject go )
 	{
-		Skill_Simple obj = go.GetComponent<Skill_Simple >();
+        Item_Unit obj = go.GetComponent<Item_Unit>();
 		if (obj != null) {
-			Panel_Tip.OpenItemTip( obj.nID );
-			//Panel_Tip.OpenUI( MyTool.GetSkillName( obj.nID )   ); 
+            Panel_Tip.OpenItemTip( obj.nID );
+            Panel_Tip.OpenUI( MyTool.GetSkillName( obj.nID )   ); 
+            // open item list
+           //Panel_ItemList.Open(1 , obj.nIndex );           
 		}
 	}
 
-	void OnBuffClick( GameObject go )
+    void OnEquipItemClick(GameObject go)
+    {
+        Item_Unit obj = go.GetComponentInParent<Item_Unit>();
+        if (obj != null) {
+            Panel_ItemList.Open(1, obj.nIndex);
+        }
+    }
+
+    void OnBuffClick( GameObject go )
 	{
 		Skill_Simple obj = go.GetComponent<Skill_Simple >();
 		if (obj != null) {
@@ -351,5 +499,16 @@ public class Panel_UnitInfo : MonoBehaviour {
 		}
 	}
 
+    void OnCharImgClick(GameObject go)
+    {
+        Panel_FullCharImage panel = MyTool.GetPanel< Panel_FullCharImage  >(PanelManager.Instance.OpenUI(Panel_FullCharImage.Name) );
+        if (panel != null)
+        {
+            panel.SetChar( this.pUnitData.n_CharID );
+        }
+    }
+    
+
 }
+
 

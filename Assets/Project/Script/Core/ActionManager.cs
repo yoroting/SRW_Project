@@ -201,7 +201,7 @@ public partial class ActionManager
 	{
 		foreach( uAction act in ActionPool )
 		{
-
+            Debug.LogFormat(" ActID-{0} , ident-{1},v1-{2}, v2-{3}", act.eAct.ToString(), act.nActIdent, act.nActVar1, act.nActVar2);
 
 		}
 

@@ -9,8 +9,10 @@ public class Panel_MiniUnitInfo : MonoBehaviour {
 	public GameObject lblMar;
 	public GameObject lblCP;
 	public GameObject lblHP;
+    public GameObject lblDef;
+    public GameObject [] sprCP;
 
-	public GameObject BuffGrid;
+    public GameObject BuffGrid;
 	// Buff List
 
 	// open info by identify
@@ -50,7 +52,7 @@ public class Panel_MiniUnitInfo : MonoBehaviour {
 
 	}
 
-	void SetData( cUnitData pUnitData )
+	public void SetData( cUnitData pUnitData )
 	{
 		if (pUnitData == null)
 			return;
@@ -62,6 +64,16 @@ public class Panel_MiniUnitInfo : MonoBehaviour {
 		MyTool.SetLabelInt (lblMar, (int)pUnitData.GetMar ());
 		MyTool.SetLabelInt (lblCP, pUnitData.n_CP );
 		MyTool.SetLabelInt (lblHP, pUnitData.n_HP );
+        MyTool.SetLabelInt( lblDef, pUnitData.n_DEF );
+        
+
+        // set cp 
+        int idx = 0;
+        foreach (GameObject o in sprCP)
+        {
+            o.SetActive(idx++ < pUnitData.n_CP);
+        }
+        
 
 		// set buff 
 		MyTool.DestoryGridItem ( BuffGrid );

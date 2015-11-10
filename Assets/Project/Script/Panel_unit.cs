@@ -303,17 +303,17 @@ public class Panel_unit : MonoBehaviour {
 		
 		SetXY( data.n_X , data.n_Y );
 
-		CHARS charData = ConstDataManager.Instance.GetRow<CHARS>( CharID );
-		if( charData == null)
-			return;
-		// change face
-		string url = "Art/char/" + charData.s_FILENAME +"_S";
+		//CHARS charData = ConstDataManager.Instance.GetRow<CHARS>( CharID );
+		//if( charData == null)
+		//	return;
+		//// change face
+		//string url = "Art/char/" + charData.s_FILENAME +"_S";
 		UITexture face = FaceObj.GetComponent<UITexture>();
 		if( face != null )
 		{
-			face.mainTexture = Resources.Load <Texture>( url  ) ;
-			
-		}
+			face.mainTexture = MyTool.GetCharTexture(CharID);
+
+        }
 		
 		// have assign data
 		//if (data != null) {

@@ -12,15 +12,22 @@ public class CFX_AutoDestructShuriken : MonoBehaviour
         nFXCount++;
         StartCoroutine("CheckIfAlive");
 	}
-	
-	IEnumerator CheckIfAlive ()
+
+    void OnDisable()
+    {
+        if (--nFXCount < 0) {
+            nFXCount = 0;       // over del by force release lock
+        }
+    }
+
+    IEnumerator CheckIfAlive ()
 	{
 		while(true)
 		{
 			yield return new WaitForSeconds(0.5f);
 			if(!GetComponent<ParticleSystem>().IsAlive(true))
 			{
-                nFXCount--;
+               
                 if (OnlyDeactivate)
                 {
 #if UNITY_3_5

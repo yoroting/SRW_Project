@@ -1,15 +1,28 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 public class Panel_Mainten : MonoBehaviour {
 	public const string Name = "Panel_Mainten";
-	public GameObject btnUnit;
+	//public GameObject btnUnit;
 	public GameObject btnSave;
 	public GameObject btnLoad;
-	public GameObject btnNextStage;
+    public GameObject btnItem;    
 	public GameObject btnGameEnd;
 
-	public GameObject btnCheat;
+    public GameObject btnNextStage;
+
+    public GameObject lblStars;
+    public GameObject lblMoney;
+
+    public GameObject GridUnitList;
+    public GameObject CharUnit;
+
+
+
+
+    public GameObject btnCheat;
 
 	public GameObject lblStoryName;
 
@@ -17,22 +30,40 @@ public class Panel_Mainten : MonoBehaviour {
 	void OnEnable()
 	{
 		GameSystem.PlayBGM ( 7 );
-	}
+
+       
+        SetStoryName();
+        // re list
+        ReloadUnitList();
+    }
 
 	void Start () {
 		UIEventListener.Get(btnNextStage).onClick += OnNextStageClick; // for trig next lineev
-		UIEventListener.Get(btnUnit).onClick += OnUnitClick; // for trig next lineev
+		//UIEventListener.Get(btnUnit).onClick += OnUnitClick; // for trig next lineev
 		UIEventListener.Get(btnSave).onClick += OnSaveClick; // for trig next lineev
 		UIEventListener.Get(btnLoad).onClick += OnLoadClick; // for trig next lineev
-		UIEventListener.Get(btnGameEnd).onClick += OnEndClick; // for trig next lineev
+        UIEventListener.Get(btnItem).onClick += OnItemClick; //
+        UIEventListener.Get(btnGameEnd).onClick += OnEndClick; // for trig next lineev
 
 		UIEventListener.Get(btnCheat).onClick += OnCheatClick; // cheat
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		SetStoryName ();
-	}
+
+        CharUnit.CreatePool(5);
+
+        if (CharUnit != null)
+        {
+            CharUnit.SetActive(false);
+        }
+
+    }
+
+    // Update is called once per frame
+    void Update () {
+        if (GameDataManager.Instance != null)
+        {
+            MyTool.SetLabelInt(lblStars, GameDataManager.Instance.nStars);
+            MyTool.SetLabelInt(lblMoney, GameDataManager.Instance.nMoney);
+        }
+    }
 
 	public void OnPopReady()
 	{
@@ -106,7 +137,14 @@ public class Panel_Mainten : MonoBehaviour {
 		//StartCoroutine ( SaveLoading( save) 
 
 	}
-	void OnEndClick( GameObject go )
+    void OnItemClick(GameObject go)
+    {
+        Panel_ItemList.Open(0);
+    }
+    
+
+
+    void OnEndClick( GameObject go )
 	{
 		PanelManager.Instance.OpenUI( MainUIPanel.Name );
 
@@ -131,6 +169,7 @@ public class Panel_Mainten : MonoBehaviour {
 		
 		if (save.ePhase == _SAVE_PHASE._MAINTEN) {
 			//PanelManager.Instance.OpenUI ( Panel_Mainten.Name );
+
 			RestoreBySaveData( save );
 
 		} else if (save.ePhase == _SAVE_PHASE._STAGE) {
@@ -164,8 +203,9 @@ public class Panel_Mainten : MonoBehaviour {
 
 	public bool RestoreBySaveData( cSaveData save  )
 	{
-	//	cSaveData save = GameDataManager.Instance.SaveData;
-		if (save == null)
+      
+        //	cSaveData save = GameDataManager.Instance.SaveData;
+        if (save == null)
 			return false;
 		
 		
@@ -177,9 +217,16 @@ public class Panel_Mainten : MonoBehaviour {
 		}	
 	
 	//	SetStoryName ();
-		GameDataManager.Instance.ePhase = _SAVE_PHASE._MAINTEN;		// save to stage phase
+		GameDataManager.Instance.ePhase = _SAVE_PHASE._MAINTEN;     // save to stage phase
 
-		return true;
+        GameSystem.PlayBGM(7);
+
+        SetStoryName();
+        // re list
+        ReloadUnitList();
+
+
+        return true;
 	}
 
 	public void SetStoryName( )
@@ -188,4 +235,61 @@ public class Panel_Mainten : MonoBehaviour {
 			MyTool.SetLabelText( lblStoryName , MyTool.GetStoryName(  GameDataManager.Instance.nStoryID ) );
 		}
 	}
+
+    public void ReloadUnitList( int nCharID = 0 ) // 0- all
+    {
+        //if (nCharID != 0) {
+
+
+        //    // sort grid resort
+
+        //    return;
+        //}
+
+        // clear all
+        CharUnit.RecycleAll();
+        UIGrid grid = GridUnitList.GetComponent<UIGrid>();
+        if (grid != null) {
+            while (grid.transform.childCount > 0)
+            {
+                DestroyImmediate(grid.transform.GetChild(0).gameObject);
+            }
+        }
+
+        // sort by mar
+     
+        var items = from pair in GameDataManager.Instance.StoragePool
+                    orderby pair.Value.GetMar() descending select pair;
+
+
+        // release all unit
+        //foreach (var pair in GameDataManager.Instance.StoragePool)
+        foreach (var pair in items)
+        {
+            if (pair.Value == null)
+                continue;
+
+
+            if (pair.Value.bEnable == false)
+            {
+                if (Config.SHOW_LEAVE == false) { 
+                    continue;
+                }
+            }
+
+            GameObject obj = CharUnit.Spawn(GridUnitList.transform);
+            if (obj != null)
+            {
+                Mainten_Unit unit = obj.GetComponent<Mainten_Unit>();
+                if (unit != null)
+                {
+                    unit.ReSize();
+                    unit.SetData(pair.Value );
+                }
+            }
+        }
+
+        grid.repositionNow = true;  // for re pos
+    }
+
 }

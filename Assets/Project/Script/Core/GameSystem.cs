@@ -42,8 +42,15 @@ public class GameSystem : MonoBehaviour {
 	//===============================
 	protected virtual void Awake () 
 	{
-		// for game sys run once only
-		if( isSystemAwaked == true )
+        // Cal cache value
+        UIRoot mRoot = NGUITools.FindInParents<UIRoot>(gameObject);
+        if (mRoot != null)
+        {
+            MyTool.fScnRatio = (float)mRoot.activeHeight / Screen.height;
+        }
+
+        // for game sys run once only
+        if ( isSystemAwaked == true )
 			return ;
 		isSystemAwaked = true;
 
@@ -107,11 +114,7 @@ public class GameSystem : MonoBehaviour {
 		GameScene.Instance.Initial ();
 
 		GameDataManager.Instance.nStageID = 1;	// first stage default
-		// Cal cache value
-		UIRoot mRoot = NGUITools.FindInParents<UIRoot>(gameObject);	
-		if (mRoot != null) {
-			MyTool.fScnRatio = (float)mRoot.activeHeight / Screen.height;
-		}
+		
 
 #if DEBUG && UNITY_EDITOR
 		GameDataManager.Instance.nStageID  =3;

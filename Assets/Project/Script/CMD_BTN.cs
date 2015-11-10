@@ -3,32 +3,24 @@ using System.Collections;
 
 public class CMD_BTN : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-	
-	}
+   // public UIWidget wiget;
+    // Use this for initialization
+    void Start () {
+        //    wiget = this.GetComponent<UIWidget>();
+      //  ReSize();
+    }
 
 
     void onEnable()
     {
-        UIWidget wi = this.GetComponent<UIWidget>();
-        if (wi != null)
-        {
-            wi.width = 150;  // size fix to correct wh
-            wi.height = 75;
-        }
-        //Vector3 v = this.transform.localScale;
-        //v = new Vector3(1.0f, 1.0f, 1.0f);
-        transform.localScale = Vector3.one;
-
-        transform.localRotation = Quaternion.identity;
+        ReSize();
     }
 
     void OnDisable()
     {
         //     UIEventListener.Get(obj).onClick = null;
-        transform.localScale = Vector3.one;
-        transform.localRotation = Quaternion.identity;
+       // transform.localScale = Vector3.one;
+       // transform.localRotation = Quaternion.identity;
 
     }
 
@@ -36,4 +28,19 @@ public class CMD_BTN : MonoBehaviour {
     void Update () {
 	
 	}
+
+    public void ReSize()
+    {
+        UIWidget wiget = GetComponent<UIWidget>();
+        if (wiget != null)
+        {
+            wiget.width = 150;  // size fix to correct wh
+            wiget.height = 75;
+        }
+        //Vector3 v = this.transform.localScale;
+        //v = new Vector3(1.0f, 1.0f, 1.0f);
+        transform.localScale = Vector3.one;
+
+        transform.localRotation = Quaternion.identity;
+    }
 }

@@ -12,9 +12,11 @@ public class Panel_Skill : MonoBehaviour {
 	public GameObject SkillGrid;
 	public GameObject ScrollView;
 	public GameObject SkillContent;
-	//public GameObject SkillGridScrollBar;
+    //public GameObject SkillGridScrollBar;
+    public GameObject SkillItemUnit;
 
-	public GameObject SkillSprite;
+
+    public GameObject SkillSprite;
 	public GameObject CastNote;
 
 
@@ -41,7 +43,9 @@ public class Panel_Skill : MonoBehaviour {
 
 		CastNote.SetActive( true );
 
-		nOpSkillID = 0;
+        SkillItemUnit.SetActive(false);
+
+        nOpSkillID = 0;
 	}
 
 	// Use this for initialization
@@ -158,8 +162,12 @@ public class Panel_Skill : MonoBehaviour {
 
 			Item_Skill item = go.GetComponent<Item_Skill> ();
 			item.SetItemData( MyTool.GetSkillName( skl.n_ID )  , skl.n_MINRANGE , skl.n_RANGE , skl.n_MP );
-			item.SetScrollView( ScrollView );
-
+            if (skl.n_SCHOOL != 0)  // == 0 is ability
+            {
+                item.SetItemDmgData( skl.f_ATK , skl.f_POW );
+            }
+            item.SetScrollView( ScrollView );
+            //check can use
 			item.SetEnable(  CheckSkillCanUse( pData , skl , target , cmdType ) );
 		//	UIEventListener.Get(go).onClick += OnSkillClick; // for trig next line
 			UIEventListener.Get(go).onPress += OnSkillPress; // 

@@ -37,9 +37,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
---- !u!127 &3
-LevelGameManager:
-  m_ObjectHideFlags: 0
 --- !u!157 &4
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -68,6 +65,7 @@ LightmapSettings:
     m_TextureCompression: 0
     m_FinalGather: 0
     m_FinalGatherRayCount: 1024
+    m_ReflectionCompression: 2
   m_LightmapSnapshot: {fileID: 0}
   m_RuntimeCPUUsage: 25
 --- !u!196 &5
@@ -87,15 +85,15 @@ NavMeshSettings:
     cellSize: .0246913601
     manualCellSize: 1
   m_NavMeshData: {fileID: 0}
---- !u!1 &1170759093
+--- !u!1 &490658669
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   serializedVersion: 4
   m_Component:
-  - 4: {fileID: 1170759095}
-  - 114: {fileID: 1170759094}
+  - 4: {fileID: 490658671}
+  - 114: {fileID: 490658670}
   m_Layer: 0
   m_Name: Startup
   m_TagString: Untagged
@@ -103,25 +101,25 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1170759094
+--- !u!114 &490658670
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1170759093}
+  m_GameObject: {fileID: 490658669}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a01e189692b731a4f96517b3918875fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &1170759095
+--- !u!4 &490658671
 Transform:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1170759093}
+  m_GameObject: {fileID: 490658669}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.06954336, y: 2.07848907, z: -10}
+  m_LocalPosition: {x: -.346875012, y: .675000012, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

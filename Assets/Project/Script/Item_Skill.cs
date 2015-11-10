@@ -5,8 +5,10 @@ public class Item_Skill : MonoBehaviour {
 	public GameObject NameObj;
 	public GameObject RangeObj;
 	public GameObject CostObj;
+    public GameObject DmgObj;
+    public GameObject PowObj;
 
-	public bool bEnable = true;
+    public bool bEnable = true;
 
 	// Use this for initialization
 	void Start () {
@@ -32,9 +34,20 @@ public class Item_Skill : MonoBehaviour {
 
 		MyTool.SetLabelInt ( CostObj , nCost );
 
-	}
+        //
+        DmgObj.SetActive( false );
+        PowObj.SetActive(false);
+    }
 
-	public void SetScrollView( GameObject go )
+    public void SetItemDmgData(float fDmg, float fPow)
+    {        
+        MyTool.SetLabelText(DmgObj, string.Format("{0}%", (int)(fDmg * 100.0f)));
+        MyTool.SetLabelText(PowObj, string.Format("{0}%", (int)(fPow * 100.0f)));
+        DmgObj.SetActive(true);
+        PowObj.SetActive(true);
+    }
+
+    public void SetScrollView( GameObject go )
 	{
 		UIDragScrollView dsv = this.GetComponent<UIDragScrollView> ();
 		if (dsv != null) {

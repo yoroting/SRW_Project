@@ -52,10 +52,14 @@ public class Config
 	public static bool KILL_MODE = false;
 	public static bool DebugInfo = true;			// 
 	public static bool FREE_MP = false;
+    public static bool SHOW_LEAVE = false;          // 顯示離隊成員
 
 
-	public static int  WIDTH = 960;
+    public static int  WIDTH = 960;
 	public static int  HEIGHT = 640;
 
 	public static int  sysDefSkillID = 499;
+
+    public static int  LevelUPMoney = 1000;
+    public static int  BaseMobMoney = 1000;
 }

@@ -13,8 +13,10 @@ public class Panel_SysCheat : MonoBehaviour {
 
 	public GameObject GodChk;           // God Mode
 	public GameObject KillChk;           // Kill mode
-	public GameObject MobAIChk;           // Kill mode
-	public GameObject MoneyInput;           // Kill mode
+	public GameObject MobAIChk;           // mob aI
+    public GameObject ShowLeaveChk;           // show leave aI
+
+    public GameObject MoneyInput;           // Kill mode
 	public GameObject MoneyBtn;           // Set money
 
 
@@ -36,26 +38,35 @@ public class Panel_SysCheat : MonoBehaviour {
 	public GameObject EventPoplist;           // sel Event
 	public GameObject TrigEventBtn;           // trig Event
 
+    // Item
+    public GameObject ItemPoplist;           // sel Event
+    public GameObject AddItemBtn;           // trig Event
 
-	// Use this for initialization
-	void Start () {
-		UIEventListener.Get(GodChk).onClick += OnGODClick; 
-		UIEventListener.Get(KillChk).onClick += OnKillClick; 
-		UIEventListener.Get(MobAIChk).onClick += OnMobAIClick; 
-		UIEventListener.Get(CloseBtn).onClick += OnCloseClick; 
-		UIEventListener.Get(WinBtn).onClick += OnWinClick; 
-		UIEventListener.Get(LostBtn).onClick += OnLostClick; 
+    // roundob
+    public GameObject RoundInput;
+    public GameObject RoundBtn;              // star input
+                                            // Use this for initialization
+    void Start () {
+		UIEventListener.Get(GodChk).onClick = OnGODClick; 
+		UIEventListener.Get(KillChk).onClick = OnKillClick; 
+		UIEventListener.Get(MobAIChk).onClick = OnMobAIClick;
+        UIEventListener.Get(ShowLeaveChk).onClick = OnShowLeaveClick;
+        UIEventListener.Get(CloseBtn).onClick = OnCloseClick; 
+		UIEventListener.Get(WinBtn).onClick = OnWinClick; 
+		UIEventListener.Get(LostBtn).onClick = OnLostClick; 
 
-		UIEventListener.Get(AllDieBtn).onClick += OnAllDieClick; 
+		UIEventListener.Get(AllDieBtn).onClick = OnAllDieClick; 
 		//UIEventListener.Get(MoneyInput).onSubmit += OnMoneySubmit; 
-		UIEventListener.Get(MoneyBtn).onClick += OnMoneyClick; 
+		UIEventListener.Get(MoneyBtn).onClick = OnMoneyClick; 
 
 		//UIEventListener.Get(StoryPoplist).onSubmit += OnJumpStory; 
-		UIEventListener.Get(PopMobBtn).onClick += OnPopMobClick; 	
+		UIEventListener.Get(PopMobBtn).onClick = OnPopMobClick; 	
 		//
-		UIEventListener.Get(TrigEventBtn).onClick += OnTrigEventClick; 
-		///
-		UIPopupList popList = StoryPoplist.GetComponent<UIPopupList>();
+		UIEventListener.Get(TrigEventBtn).onClick = OnTrigEventClick;
+        UIEventListener.Get(AddItemBtn).onClick = OnAddItemClick;
+
+        ///
+        UIPopupList popList = StoryPoplist.GetComponent<UIPopupList>();
 		if (popList != null) {		
 			//添加触发事件
 		//	EventDelegate.Add (popList.onChange, label.SetCurrentSelection);
@@ -85,29 +96,58 @@ public class Panel_SysCheat : MonoBehaviour {
 
 		}
 
-//		foreach(DataTable table in tableList)
-//		{
-//			popList.AddItem(table.Name);
-//		}; 
-	}
+        // Item List
+        UIPopupList itemList = ItemPoplist.GetComponent<UIPopupList>();
+        if (itemList != null)
+        {
+            //添加触发事件
+            //	EventDelegate.Add (popList.onChange, label.SetCurrentSelection);
+            //  EventDelegate.Add(popList.onChange, StoryComboboxChange);
+
+            itemList.Clear();
+            DataTable Table = ConstDataManager.Instance.GetTable("ITEM_MISC");
+            if (Table != null)
+            {
+                foreach ( ITEM_MISC item in Table)
+                {
+                    itemList.AddItem(MyTool.GetItemName(item.n_ID), item.n_ID);
+                }
+            }
+        }
+        // round 
+        UIEventListener.Get(RoundBtn).onClick = OnSetRoundClick;
+
+        //		foreach(DataTable table in tableList)
+        //		{
+        //			popList.AddItem(table.Name);
+        //		}; 
+    }
 
 	void OnEnable () {
 
 		UIToggle god = GodChk.GetComponent<UIToggle> ();
 		god.value =Config.GOD;
+
 		UIToggle kill = KillChk.GetComponent<UIToggle> ();
 		kill.value =Config.KILL_MODE;
+
 		UIToggle ai = MobAIChk.GetComponent<UIToggle> ();
 		ai.value =Config.MOBAI;
 
-		UIInput min = MoneyInput.GetComponent<UIInput> ();
+        UIToggle showleave = ShowLeaveChk.GetComponent<UIToggle>();
+        showleave.value = Config.SHOW_LEAVE;
+
+        UIInput min = MoneyInput.GetComponent<UIInput> ();
 		min.value = GameDataManager.Instance.nMoney.ToString();
 
 		UIInput star = StarInput.GetComponent< UIInput> ();
 		star.value = GameDataManager.Instance.nStars.ToString();
 
-		// switch story in mainten only
-		if (GameDataManager.Instance.ePhase == _SAVE_PHASE._MAINTEN) {
+        UIInput round = RoundInput.GetComponent<UIInput>();
+        round.value = GameDataManager.Instance.nRound.ToString();
+
+        // switch story in mainten only
+        if (GameDataManager.Instance.ePhase == _SAVE_PHASE._MAINTEN) {
 			StoryPoplist.SetActive( true );
 		} else {
 			StoryPoplist.SetActive( false );
@@ -184,6 +224,21 @@ public class Panel_SysCheat : MonoBehaviour {
 		Config.MOBAI =  ui.value ;
 	}
 
+    public void OnShowLeaveClick(GameObject go)
+    {
+        UIToggle ui = go.GetComponent<UIToggle>();
+        Config.SHOW_LEAVE = ui.value;
+
+
+        if ( PanelManager.Instance.CheckUIIsOpening( Panel_Mainten.Name ) ) {
+            Panel_Mainten panel = MyTool.GetPanel< Panel_Mainten >( PanelManager.Instance.OpenUI(Panel_Mainten.Name) );
+            if (panel != null)
+            {
+                panel.ReloadUnitList();
+            }
+        }
+    }
+
 	public void OnMoneyClick(GameObject go)
 	{
 		UIInput min = MoneyInput.GetComponent<UIInput> ();
@@ -227,10 +282,18 @@ public class Panel_SysCheat : MonoBehaviour {
 			GameDataManager.Instance.nStars = nStar;
 		}
 	}
-	
 
 
-	public void OnPopMobClick(GameObject go)
+    public void OnSetRoundClick(GameObject go)
+    {
+        int nRound = 0;
+        UIInput input = RoundInput.GetComponent<UIInput>();
+        if (int.TryParse(input.value, out nRound))
+        {
+            GameDataManager.Instance.nRound = nRound;
+        }
+    }
+    public void OnPopMobClick(GameObject go)
 	{
 		UIInput input = CharIdInput.GetComponent< UIInput> ();
 		int.TryParse (input.value , out  nPopCharID );
@@ -301,5 +364,19 @@ public class Panel_SysCheat : MonoBehaviour {
 //			GameDataManager.Instance.nMoney = money;
 //		}
 	}
+    // Add Item
+    public void OnAddItemClick(GameObject go)
+    {
+        UIPopupList popList = ItemPoplist.GetComponent<UIPopupList>();
+        if (popList != null)
+        {
+            int nItemID = (int)popList.data;
 
+             GameDataManager.Instance.AddItemtoBag(nItemID);
+            
+        }
+        //PanelManager.Instance.CloseUI(Name);
+    }
+
+    
 }

@@ -24,26 +24,31 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
 	public GameObject CmdButton;
 
-//	public GameObject InfoButton;
-//	public GameObject MoveButton;
-//	public GameObject AttackButton;
-//	public GameObject SkillButton;
-//	public GameObject SchoolButton;
-//	public GameObject CancelButton;
+    public GameObject pUnitObj;        // cmder
+    public GameObject pMobObj;         // Atker
+
+    Panel_MiniUnitInfo pUnitInfo;
+    Panel_MiniUnitInfo pMobInfo;
+    //	public GameObject InfoButton;
+    //	public GameObject MoveButton;
+    //	public GameObject AttackButton;
+    //	public GameObject SkillButton;
+    //	public GameObject SchoolButton;
+    //	public GameObject CancelButton;
 
 
-//	bool bWaitMoveFinish ; 
-	// widget Data
+    //	bool bWaitMoveFinish ; 
+    // widget Data
 
-//	void Clear()
-//	{
-//		pCmder = null;
-//		CMD.Clear ();
+    //	void Clear()
+    //	{
+    //		pCmder = null;
+    //		CMD.Clear ();
 
-		//bWaitMoveFinish = false;
-//	}
-	// Use this for initialization
-	void Awake()
+    //bWaitMoveFinish = false;
+    //	}
+    // Use this for initialization
+    void Awake()
 	{
 		CMD = cCMD.Instance;
 
@@ -63,8 +68,14 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		CmdButton.CreatePool ( 10 );
 		CmdButton.SetActive (false);
 
-		//==============================		
-		ClearCmdPool ();
+
+        pUnitObj.SetActive(false);
+        pMobObj.SetActive( false );
+
+        pUnitInfo = pUnitObj.GetComponent<Panel_MiniUnitInfo>();
+        pMobInfo = pMobObj.GetComponent<Panel_MiniUnitInfo>();
+        //==============================		
+        ClearCmdPool ();
 	}
 
 	void Start () {
@@ -88,7 +99,23 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		if (CMD == null)
 			return; // this is error
 
-		if ( CMD.eCMDTARGET == _CMD_TARGET._UNIT ) {  // sel target only
+        //// check pos
+        //Vector3 v = MyTool.LocToScreenX( pCmder.gameObject );
+        //if (v.x < Config.WIDTH / 2)
+        //{
+        //    Vector3 vTar = this.transform.localPosition;
+        //    vTar.x = Config.WIDTH / 4 * 3 ;
+        //    vTar.x -= Config.WIDTH / 2;
+        //    transform.localPosition = vTar;
+        //}
+        //else {
+        //    Vector3 vTar = this.transform.localPosition;
+        //    vTar.x = Config.WIDTH / 4 ;
+        //    vTar.x -= Config.WIDTH / 2;
+        //    transform.localPosition = vTar;
+        //}
+
+        if ( CMD.eCMDTARGET == _CMD_TARGET._UNIT ) {  // sel target only
 			// check if move end.
 	//		if( pCmder.IsMoving() == false )
 			{
@@ -137,7 +164,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
         //	if (pUnit != null) {
         //		pUnit.OnSelected( false );
         //	}
-        ClearCmdPool();
+      //  ClearCmdPool();
         Panel_MiniUnitInfo.CloseUI ();
 	}
 
@@ -155,24 +182,26 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
 
         // 销毁现有元素
-        while (grid.transform.childCount > 0)
-        {
-            DestroyImmediate(grid.transform.GetChild(0).gameObject);
-        }
+        //while (grid.transform.childCount > 0)
+        //{
+        //    DestroyImmediate(grid.transform.GetChild(0).gameObject);
+        //}
 
 
   //      if (lst == null || lst.Count <= 0 )
 		//	return;
 
-		//foreach ( Transform t in lst) {
+		foreach ( Transform t in lst) {
 
-		//	UIEventListener.Get(t.gameObject).onClick -= OnCMDButtonClick;;  // need for objpool 
+			UIEventListener.Get(t.gameObject).onClick -= OnCMDButtonClick;;  // need for objpool 
   //                                                                           //	NGUITools.Destroy( t.gameObject );
   //          grid.RemoveChild(t);
-  //      }
-		//CmdButton.RecycleAll ();
+        }
 
-	}
+		CmdButton.RecycleAll ();
+
+       // pUnitInfo = null;
+    }
 
 	void CreateCMDList( _CMD_TYPE eType )
 	{
@@ -193,13 +222,18 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
         foreach ( _CMD_ID id in cmdList )
 		{	
-			GameObject obj = ResourcesManager.CreatePrefabGameObj( this.NGuiGrids , "Prefab/CMD_BTN" ); // create cmd and add to grid
-
+			//GameObject obj = ResourcesManager.CreatePrefabGameObj( this.NGuiGrids , "Prefab/CMD_BTN" ); // create cmd and add to grid
             //GameObject obj = Resources.Load("Prefab/CMD_BTN") as GameObject;           
 
-            //GameObject obj = CmdButton.Spawn(  NGuiGrids.transform );
+            GameObject obj = CmdButton.Spawn(  NGuiGrids.transform ) ;
             if ( obj != null )
 			{
+                CMD_BTN cmdBtn = obj.GetComponent<CMD_BTN>();
+                if (cmdBtn != null) {
+                    cmdBtn.ReSize();
+                }
+
+
                // NGUITools.AddChild( NGuiGrids , obj );
                 //grid.AddChild( obj.transform );
 
@@ -234,11 +268,28 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
 		// show sample info
 		if (pCmder != null) {
-			Panel_MiniUnitInfo.OpenUI (pCmder.pUnitData);
-		}
+            if (pCmder.pUnitData.eCampID == _CAMP._ENEMY)
+            {
+                pMobInfo.gameObject.SetActive(true);
+                pMobInfo.SetData(pCmder.pUnitData);
+            }
+            else {
+                pUnitInfo.gameObject.SetActive(true);
+                pUnitInfo.SetData(pCmder.pUnitData);
+            }
+            // pUnitInfo = Panel_MiniUnitInfo.OpenUI (pCmder.pUnitData);
+        }
 		else {
-			Panel_MiniUnitInfo.CloseUI();
-		}
+            pUnitInfo.gameObject.SetActive(false);
+            pMobInfo.gameObject.SetActive(false);
+            //pUnitInfo = null;
+            //Panel_MiniUnitInfo.CloseUI();            
+        }
+
+       
+        // fix pos
+        FixCmderPos();
+
 	}
 
 //	void NormalCloseCmdUI()
@@ -290,9 +341,9 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
 	public void CharInfoCmd( )
 	{
-		//GameDataManager.Instance.nInfoIdent = pCmder.Ident ();
-		//PanelManager.Instance.OpenUI ( Panel_UnitInfo.Name );
-		Panel_UnitInfo.OpenUI(  pCmder.Ident () );
+        //GameDataManager.Instance.nInfoIdent = pCmder.Ident ();
+        //PanelManager.Instance.OpenUI ( Panel_UnitInfo.Name );
+         Panel_UnitInfo.OpenUI(  pCmder.Ident () );
 
 		//Clear ();
 		//NormalCloseCmdUI ();.
@@ -506,6 +557,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		// who will disable
 		pCmder.OnSelected (true);
 
+
 		// CMD param
 		CMD.nCmderIdent = pCmder.Ident();
 		CMD.nOrgGridX = pCmder.X();
@@ -514,13 +566,86 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		// keep cmd type
 		CMD.eCMDSTATUS = _CMD_STATUS._WAIT_CMDID;
 		CMD.eCMDTARGET = _CMD_TARGET._ALL;
-		CMD.eCMDID 	   = _CMD_ID._NONE;	
+		CMD.eCMDID 	   = _CMD_ID._NONE;
 
-	}
-	// 攻擊來源
-	public void SetAttacker( int  atkerid )
+        //
+       
+       //  Panel_StageUI.Instance.OnStageUnitActMask(pCmder.gameObject, true);
+        //    FixCmderPos();
+
+    }
+
+ 
+    public void  FixCmderPos()
+    {
+        if (pCmder == null) {
+            return;
+        }
+        // check pos
+        Vector3 v = MyTool.LocToScreenX(pCmder.gameObject);
+        v *= MyTool.fScnRatio;
+        int fhW = Config.WIDTH / 2;
+        if (v.x < fhW )
+        {
+            Vector3 vTar = this.transform.localPosition;
+            vTar.x = (Config.WIDTH / 4 * 3) - fhW;
+            transform.localPosition = vTar;
+
+            if (pUnitInfo) {
+                Vector3 vPos = pUnitInfo.transform.localPosition;
+                vPos.x = -550;
+               // vPos.x = (340 / 2) - fhW;
+                pUnitInfo.transform.localPosition = vPos;
+            }
+            if (pMobInfo)
+            {
+                Vector3 vPos = pMobInfo.transform.localPosition;
+                vPos.x = -550;
+                // vPos.x = (340 / 2) - fhW;
+                pMobInfo.transform.localPosition = vPos;
+            }
+        }
+        else
+        {
+            Vector3 vTar = this.transform.localPosition;
+            vTar.x = (Config.WIDTH / 4) - fhW ;
+            transform.localPosition = vTar;
+
+            if (pUnitInfo)
+            {
+                Vector3 vPos = pUnitInfo.transform.localPosition;
+                vPos.x = 550;
+              //  vPos.x = fhW - (340/2) ;
+                pUnitInfo.transform.localPosition = vPos;
+            }
+            if (pMobInfo)
+            {
+                Vector3 vPos = pMobInfo.transform.localPosition;
+                vPos.x = 550;
+                // vPos.x = (340 / 2) - fhW;
+                pMobInfo.transform.localPosition = vPos;
+            }
+        }
+
+    }
+    // 攻擊來源
+    public void SetAttacker( int  atkerid )
 	{
 		nAtkerId = atkerid;
+        //
+        Panel_unit unit = Panel_StageUI.Instance.GetUnitByIdent(atkerid);
+        if (unit != null)
+        {
+            Panel_StageUI.Instance.OnStageUnitActMask(unit.gameObject, true);
+            // show sample info
+            pMobInfo.gameObject.SetActive(true);
+            pMobInfo.SetData(unit.pUnitData);
+            // pUnitInfo = Panel_MiniUnitInfo.OpenUI (pCmder.pUnitData);
+          
+        }
+        else {
+            pMobInfo.gameObject.SetActive(false);
+        }
 	}
 
 	//post
@@ -1042,8 +1167,10 @@ public class Panel_CMDUnitUI : MonoBehaviour
 	void EndCMDUI(  )
 	{
 		Panel_StageUI.Instance.ClearOverCellEffect();
-//		cCMD.Instance.eCMDSTATUS = _CMD_STATUS._NONE;
-		PanelManager.Instance.CloseUI( Name );
+        Panel_StageUI.Instance.OnStageUnitActMask(null, false);// close atker
+
+         //		cCMD.Instance.eCMDSTATUS = _CMD_STATUS._NONE;
+        PanelManager.Instance.CloseUI( Name );
 
 		if (pCmder != null) {
 			pCmder.OnSelected ( false );
@@ -1051,5 +1178,9 @@ public class Panel_CMDUnitUI : MonoBehaviour
 			pCmder = null;
 		}
 		CMD.Clear ();
-	}
+        //
+        pUnitInfo.gameObject.SetActive(false);
+        pMobInfo.gameObject.SetActive(false);
+
+    }
 }

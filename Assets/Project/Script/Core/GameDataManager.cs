@@ -445,7 +445,8 @@ public partial class GameDataManager
 		unit.n_HP  	 = save.n_HP;
 		unit.n_MP	 = save.n_MP;
 		unit.n_SP	 = save.n_SP;
-		unit.n_DEF   = save.n_DEF;
+        unit.n_CP    = save.n_CP;
+        unit.n_DEF   = save.n_DEF;
 		unit.nActionTime = save.nActionTime;
 
 		unit.n_X	 = save.n_X;
@@ -528,8 +529,11 @@ public partial class GameDataManager
 				data.n_X = data.n_BornX = nBX;
 				data.n_Y = data.n_BornY = nBY;
 				data.n_LeaderIdent = nLeaderID;
-				// Add to char pool
-				AddCharToPool( data );
+
+                data.bEnable = true;            // pop unit is true as default
+
+                // Add to char pool
+                AddCharToPool( data );
 
 				// remove from storage
 				RemoveStorageUnit( nCharID );
@@ -634,7 +638,7 @@ public partial class GameDataManager
 			StoragePool.Remove( data.n_CharID );
 		}
 		data.Relive ();
-		data.bEnable = true;
+	//	data.bEnable = true; // not always enable
 		StoragePool.Add( data.n_CharID , data );
 	}
 
@@ -672,9 +676,22 @@ public partial class GameDataManager
 			StoragePool[nCharID].bEnable = bEnable;
 		}
 	}
+    public void EnableStageUnit(int nCharID, bool bEnable = false)
+    {
+        foreach (var pair in UnitPool)
+        {
+            if (pair.Value == null)
+                continue;
+            if (pair.Value.eCampID != _CAMP._PLAYER)
+                continue;
+            if (pair.Value.n_CharID != nCharID)
+                continue;
+            pair.Value.bEnable = bEnable;
 
+        }
+    }
 
-	public void ClearStorageUnit(  )
+    public void ClearStorageUnit(  )
 	{
 		if (StoragePool != null) {
 			StoragePool.Clear();
@@ -700,39 +717,57 @@ public partial class GameDataManager
 	/// </summary>
 	public void SetUnitSearchAI( int nCharID , _AI_SEARCH nSearchAI , int nArg1=0 , int nArg2 =0 )
 	{
-		cUnitData unit = GetUnitDateByCharID (nCharID);
-		if (unit != null) {
-			//unit.n
-			if (nSearchAI != _AI_SEARCH._NOCHANGE) {
-				unit.eSearchAI = nSearchAI;
+        foreach (var pair in UnitPool)
+        {
+            cUnitData unit = pair.Value; //  GetUnitDateByCharID(nCharID);
+            if (unit != null)
+            {
+                if (unit.n_CharID != nCharID)
+                    continue;
+                //unit.n
+                if (nSearchAI != _AI_SEARCH._NOCHANGE)
+                {
+                    unit.eSearchAI = nSearchAI;
 
-				if (nSearchAI == _AI_SEARCH._TARGET) {
-					unit.n_AITarget = nArg1;
-				} else if (nSearchAI == _AI_SEARCH._POSITION) {
-					unit.n_AIX = nArg1;
-					unit.n_AIY = nArg2;
-				}
-			} 
-		} else {
-			Debug.LogErrorFormat( " Set SAI fail with {0} - {1} - {2}" , nCharID , nSearchAI  , nArg1 );
+                    if (nSearchAI == _AI_SEARCH._TARGET)
+                    {
+                        unit.n_AITarget = nArg1;
+                    }
+                    else if (nSearchAI == _AI_SEARCH._POSITION)
+                    {
+                        unit.n_AIX = nArg1;
+                        unit.n_AIY = nArg2;
+                    }
+                }
+            }
+            else
+            {
+                Debug.LogErrorFormat(" Set SAI fail with {0} - {1} - {2}", nCharID, nSearchAI, nArg1);
 
-		}
+            }
+        }
 	}
 	public void SetUnitComboAI( int nCharID ,  _AI_COMBO nComboAI=_AI_COMBO._NOCHANGE )
 	{
-		cUnitData unit = GetUnitDateByCharID (nCharID);
-		if(unit != null) {
-			//unit.n
+        foreach (KeyValuePair<int, cUnitData> pair in UnitPool)
+        {
+            cUnitData unit = pair.Value; //  GetUnitDateByCharID(nCharID);
+            if (unit != null)
+            {
+                if (unit.n_CharID != nCharID)
+                    continue;
 
-			
-			if( nComboAI != _AI_COMBO._NOCHANGE ){
-				unit.eComboAI	= nComboAI;
-			}
-		}
-		else {
-			Debug.LogErrorFormat( " Set CAI fail with {0} - {1} " , nCharID , nComboAI   );
-			
-		}
+                if (nComboAI != _AI_COMBO._NOCHANGE)
+                {
+                    unit.eComboAI = nComboAI;
+                }
+            }
+            else
+            {
+                Debug.LogErrorFormat(" Set CAI fail with {0} - {1} ", nCharID, nComboAI);
+
+            }
+        }
 	}
 	// Event Status
 	public Dictionary< int , int > EvtDonePool;			// record event complete round 

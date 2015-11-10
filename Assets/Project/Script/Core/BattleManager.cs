@@ -1511,10 +1511,18 @@ public partial class BattleManager
 			if( Defer.IsStates( _FIGHTSTATE._DEAD ) ){
 
 				exp = (exp*3) ;
-				money  = 1000 ;
+                money = Config.BaseMobMoney;
+                // 怪物 武功等級影響掉落資金
+                
+                int nIntLV = Defer.GetIntSchLv();
+                int nExtLV = Defer.GetExtSchLv();
+                int nMaxLv = nIntLV > nExtLV ? nIntLV : nExtLV;
+                if (nMaxLv < 1)                    nMaxLv = 1;
+                float fMoneyRatio = Mathf.Pow(1.5f, (nMaxLv-1));
+                money = (int)(money * fMoneyRatio);
 
-				// check drop item
-				if( Defer.cCharData.n_ITEM_DROP  > 0 ){
+                // check drop item
+                if ( Defer.cCharData.n_ITEM_DROP  > 0 ){
 					nDropItemPool.Add( Defer.cCharData.n_ITEM_DROP );
 				}
 			}

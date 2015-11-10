@@ -47,7 +47,8 @@ public class cUnitSaveData{
 	[JsonName("hp")][DefaultValue(0)]	public int n_HP;
 	[JsonName("mp")][DefaultValue(0)]	public int n_MP;
 	[JsonName("sp")][DefaultValue(0)]	public int n_SP;
-	[JsonName("def")][DefaultValue(0)]	public int n_DEF;
+    [JsonName("cp")][DefaultValue(0)]   public int n_CP;
+    [JsonName("def")][DefaultValue(0)]	public int n_DEF;
 
 	[JsonName("action")][DefaultValue(0)]	public int nActionTime;
 	[JsonName("leader")][DefaultValue(0)] public int n_LeaderIdent;	// follow leader
@@ -80,7 +81,8 @@ public class cUnitSaveData{
 		n_HP = data.n_HP;
 		n_MP = data.n_MP;
 		n_SP = data.n_SP;
-		n_DEF = data.n_DEF;
+        n_CP = data.n_CP;
+        n_DEF = data.n_DEF;
 		n_LeaderIdent = data.n_LeaderIdent;
 		n_BornX = data.n_BornX;
 		n_BornY = data.n_BornY;

@@ -45,11 +45,7 @@ public class MainUIPanel : BasicPanel {
 //			}
 //		}
 
-		// Cal cache value again to avoid gamesystem ceatate with no UI
-		UIRoot mRoot = NGUITools.FindInParents<UIRoot>(gameObject);	
-		if (mRoot != null) {
-			MyTool.fScnRatio = (float)mRoot.activeHeight / Screen.height;
-		}
+		
 
 	}
 
@@ -59,13 +55,21 @@ public class MainUIPanel : BasicPanel {
 		GameDataManager.Instance.ePhase = _SAVE_PHASE._STARTUP;		
 		// 播放  mian BGM
 		GameSystem.PlayBGM ( 1 );
-	
-	}
+
+       
+
+    }
 
 	// Use this for initialization
 	void Start () {
 
-	}
+        // Cal cache value again to avoid gamesystem ceatate with no UI
+        //UIRoot mRoot = NGUITools.FindInParents<UIRoot>(UICamera.currentCamera.gameObject);
+        //if (mRoot != null)
+        //{
+        //    MyTool.fScnRatio = (float)mRoot.activeHeight / Screen.height;
+        //}
+    }
 
 	// release game event 
 	void OnDestroy()

@@ -2,17 +2,16 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!1 &100070
 GameObject:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 468410}
   - 114: {fileID: 11421686}
-  - 114: {fileID: 11429300}
-  - 114: {fileID: 11475806}
+  - 114: {fileID: 11463260}
   m_Layer: 5
-  m_Name: AttackOverEffect
+  m_Name: MobActEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -135,6 +134,24 @@ GameObject:
   - 114: {fileID: 11482836}
   m_Layer: 5
   m_Name: BG - Stripes
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &125296
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 465316}
+  - 114: {fileID: 11454666}
+  - 114: {fileID: 11480560}
+  - 114: {fileID: 11423748}
+  m_Layer: 5
+  m_Name: AttackOverEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -573,7 +590,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 192426}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -279, y: -35, z: 0}
+  m_LocalPosition: {x: -300, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 485648}
@@ -655,7 +672,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 447770}
-  m_RootOrder: 6
+  m_RootOrder: 5
 --- !u!4 &445522
 Transform:
   m_ObjectHideFlags: 1
@@ -707,8 +724,8 @@ Transform:
   - {fileID: 445522}
   - {fileID: 447716}
   - {fileID: 497798}
-  - {fileID: 468410}
   - {fileID: 443444}
+  - {fileID: 465316}
   - {fileID: 460126}
   - {fileID: 449650}
   m_Father: {fileID: 0}
@@ -762,8 +779,21 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 420198}
+  - {fileID: 468410}
   m_Father: {fileID: 447770}
   m_RootOrder: 7
+--- !u!4 &465316
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 125296}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 447770}
+  m_RootOrder: 6
 --- !u!4 &466580
 Transform:
   m_ObjectHideFlags: 1
@@ -783,11 +813,11 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100070}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -300, y: 0, z: 0}
+  m_LocalScale: {x: 1.39999998, y: 1.39999998, z: 1.39999998}
   m_Children: []
-  m_Father: {fileID: 447770}
-  m_RootOrder: 5
+  m_Father: {fileID: 460126}
+  m_RootOrder: 1
 --- !u!4 &469248
 Transform:
   m_ObjectHideFlags: 1
@@ -985,8 +1015,9 @@ MonoBehaviour:
   TilePlaneObj: {fileID: 173382}
   MaskPanelObj: {fileID: 193006}
   UnitPanelObj: {fileID: 192426}
+  MobActEffObj: {fileID: 100070}
   MoveEftObj: {fileID: 118038}
-  AtkEftObj: {fileID: 100070}
+  AtkEftObj: {fileID: 125296}
   AoeEftObj: {fileID: 124640}
   ValueEftObj: {fileID: 103058}
   AvgObj: {fileID: 147746}
@@ -1197,6 +1228,7 @@ MonoBehaviour:
   mUseFloatSpacing: 0
   mFloatSpacingX: 0
   mFloatSpacingY: 0
+  mOverflowEllipsis: 0
   mShrinkToFit: 0
   mMaxLineWidth: 0
   mMaxLineHeight: 0
@@ -1286,28 +1318,39 @@ MonoBehaviour:
     relative: 1
     absolute: 0
   updateAnchors: 1
-  mColor: {r: 1, g: 0, b: 0, a: 1}
+  mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
   mWidth: 100
   mHeight: 100
-  mDepth: 1
+  mDepth: 50
   autoResizeBoxCollider: 1
   hideIfOffScreen: 0
   keepAspectRatio: 0
   aspectRatio: 1
-  mType: 0
+  mType: 1
   mFillDirection: 4
   mFillAmount: 1
   mInvert: 0
   mFlip: 0
-  centerType: 1
+  centerType: 0
   leftType: 1
   rightType: 1
   bottomType: 1
   topType: 1
   mAtlas: {fileID: 11400000, guid: 62adb30369acbf943a67cee0f69267a3, type: 2}
-  mSpriteName: Glow - Inner
+  mSpriteName: Window
   mFillCenter: 1
+--- !u!114 &11423748
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 125296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f31ec07959e3cd4497b4c017b7e53df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &11425344
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1400,44 +1443,6 @@ MonoBehaviour:
   callWhenFinished: 
   from: 1
   to: 0
---- !u!114 &11429300
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100070}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9e2747e3775af504da1a4d5a46c5a1ce, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  method: 0
-  style: 2
-  animationCurve:
-    serializedVersion: 2
-    m_Curve:
-    - time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    - time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-  ignoreTimeScale: 1
-  delay: 0
-  duration: 3
-  steeperCurves: 0
-  tweenGroup: 0
-  onFinished: []
-  eventReceiver: {fileID: 0}
-  callWhenFinished: 
-  from: 1
-  to: .200000003
 --- !u!114 &11429736
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1701,6 +1706,7 @@ MonoBehaviour:
   mUseFloatSpacing: 0
   mFloatSpacingX: 0
   mFloatSpacingY: 0
+  mOverflowEllipsis: 0
   mShrinkToFit: 0
   mMaxLineWidth: 0
   mMaxLineHeight: 0
@@ -1852,6 +1858,56 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 962e2c414382266468b6e025b0cc6b5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &11454666
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 125296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b3dc54f924693f41b5cbecb267e647a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leftAnchor:
+    target: {fileID: 0}
+    relative: 0
+    absolute: 0
+  rightAnchor:
+    target: {fileID: 0}
+    relative: 1
+    absolute: 0
+  bottomAnchor:
+    target: {fileID: 0}
+    relative: 0
+    absolute: 0
+  topAnchor:
+    target: {fileID: 0}
+    relative: 1
+    absolute: 0
+  updateAnchors: 1
+  mColor: {r: 1, g: 0, b: 0, a: 1}
+  mPivot: 4
+  mWidth: 100
+  mHeight: 100
+  mDepth: 1
+  autoResizeBoxCollider: 1
+  hideIfOffScreen: 0
+  keepAspectRatio: 0
+  aspectRatio: 1
+  mType: 0
+  mFillDirection: 4
+  mFillAmount: 1
+  mInvert: 0
+  mFlip: 0
+  centerType: 1
+  leftType: 1
+  rightType: 1
+  bottomType: 1
+  topType: 1
+  mAtlas: {fileID: 11400000, guid: 62adb30369acbf943a67cee0f69267a3, type: 2}
+  mSpriteName: Glow - Inner
+  mFillCenter: 1
 --- !u!114 &11456976
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1917,6 +1973,45 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2daf23230f158214d997b9df7539809e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &11463260
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75e7459110b9666449485c40f25362a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  method: 0
+  style: 2
+  animationCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 1
+      tangentMode: 0
+    - time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+  ignoreTimeScale: 1
+  delay: 0
+  duration: 1
+  steeperCurves: 0
+  tweenGroup: 0
+  onFinished: []
+  eventReceiver: {fileID: 0}
+  callWhenFinished: 
+  from: {x: 1.39999998, y: 1.39999998, z: 1}
+  to: {x: 1.79999995, y: 1.79999995, z: 1}
+  updateTable: 0
 --- !u!114 &11463910
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2049,17 +2144,6 @@ MonoBehaviour:
   mAtlas: {fileID: 11400000, guid: 62adb30369acbf943a67cee0f69267a3, type: 2}
   mSpriteName: Window
   mFillCenter: 1
---- !u!114 &11475806
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100070}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f31ec07959e3cd4497b4c017b7e53df, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &11476124
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2218,8 +2302,46 @@ MonoBehaviour:
   bottomType: 1
   topType: 1
   mAtlas: {fileID: 11400000, guid: 62adb30369acbf943a67cee0f69267a3, type: 2}
-  mSpriteName: Glow - Outer (Copy)
+  mSpriteName: Glow - Outer
   mFillCenter: 1
+--- !u!114 &11480560
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 125296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e2747e3775af504da1a4d5a46c5a1ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  method: 0
+  style: 2
+  animationCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+  ignoreTimeScale: 1
+  delay: 0
+  duration: 3
+  steeperCurves: 0
+  tweenGroup: 0
+  onFinished: []
+  eventReceiver: {fileID: 0}
+  callWhenFinished: 
+  from: 1
+  to: .200000003
 --- !u!114 &11480748
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2237,8 +2359,10 @@ MonoBehaviour:
   MaskObj: {fileID: 136800}
   BGObj: {fileID: 192744}
   TailObj: {fileID: 0}
+  FxObj: {fileID: 0}
   eCampID: 0
   CharID: 0
+  MissileCount: 0
   bIsDead: 0
   bIsAtking: 0
   bIsCasting: 0
@@ -2248,6 +2372,7 @@ MonoBehaviour:
   bIsDeading: 0
   bIsLeaving: 0
   bIsDodgeing: 0
+  bIsMissing: 0
   bIsGuarding: 0
 --- !u!114 &11481118
 MonoBehaviour:
@@ -2547,6 +2672,7 @@ MonoBehaviour:
   mUseFloatSpacing: 0
   mFloatSpacingX: 0
   mFloatSpacingY: 0
+  mOverflowEllipsis: 0
   mShrinkToFit: 0
   mMaxLineWidth: 0
   mMaxLineHeight: 0
@@ -2662,6 +2788,7 @@ MonoBehaviour:
   mUseFloatSpacing: 0
   mFloatSpacingX: 0
   mFloatSpacingY: 0
+  mOverflowEllipsis: 0
   mShrinkToFit: 0
   mMaxLineWidth: 0
   mMaxLineHeight: 0
