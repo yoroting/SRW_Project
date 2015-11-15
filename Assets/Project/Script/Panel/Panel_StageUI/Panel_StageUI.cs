@@ -3782,8 +3782,58 @@ public class Panel_StageUI : MonoBehaviour
 		//	Debug.LogErrorFormat("OnStageAddUnitValue on null unit with char {0} at type{1}= {2}% " , nCharID,nType, f );
 		//} 
 	}
+    public void OnStageSetUnitValue(int nCharID, int nType, float f , int i)
+    {      
+        int nTot = 0;
+        foreach (KeyValuePair<int, Panel_unit> pair in IdentToUnit)
+        {
+            Panel_unit unit = pair.Value;
+            if (unit == null)
+                continue;
+            if (unit.CharID != nCharID)
+                continue;
+            //
+            if (unit.pUnitData == null)
+                continue;
+            nTot++;
+            int nValue = 0;
+            switch (nType)
+            {
+                case 0:
+                    {
+                        nValue = (int)(unit.pUnitData.GetMaxHP() * f) + i;
+                        unit.pUnitData.n_HP = nValue;
+                    }
+                    break; // HP
+                case 1:
+                    {
+                        nValue = (int)(unit.pUnitData.GetMaxDef() * f) +i ;
+                        unit.pUnitData.n_DEF = nValue;
+                    }
+                    break; // DEF
+                case 2:
+                    {
+                        nValue = (int)(unit.pUnitData.GetMaxMP() * f)+i;
+                        unit.pUnitData.n_MP = nValue;
+                    }
+                    break; // MP
+            }
+            //====================================
+            if (nValue != 0)
+            {
+                unit.ShowValueEffect(nValue, nType); // MP
+            }
+        }
 
-	public void OnStageAddSchool(int nCharID , int nSchool , int nLv  )
+        if (nTot == 0)
+        {
+            Debug.LogErrorFormat("OnStageAddUnitValue on null unit with char {0} at type{1}= {2}% ", nCharID, nType, f);
+        }
+        //else {
+        //	Debug.LogErrorFormat("OnStageAddUnitValue on null unit with char {0} at type{1}= {2}% " , nCharID,nType, f );
+        //} 
+    }
+    public void OnStageAddSchool(int nCharID , int nSchool , int nLv  )
 	{
 		foreach (KeyValuePair< int ,Panel_unit> pair in IdentToUnit) {
 			Panel_unit unit = pair.Value;

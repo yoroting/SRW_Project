@@ -1286,8 +1286,6 @@ public class Panel_unit : MonoBehaviour {
 	}
 	public void OnTwGuardEnd( )
 	{		
-
-
 		// clear all move tw
 		TweenRotation[] tws = gameObject.GetComponents<TweenRotation> (); 
 		foreach (TweenRotation tw in tws) {
@@ -1300,8 +1298,12 @@ public class Panel_unit : MonoBehaviour {
 		bIsGuarding = false;
 	}
 
-	// Attack action animate
-	public void FlashAttack( List< iVec2> lst  )
+    public void SetImmune()
+    {
+        BattleManager.Instance.ShowBattleResValue(this.gameObject, "免疫", 1);
+    }
+    // Attack action animate
+    public void FlashAttack( List< iVec2> lst  )
 	{
 		bIsAtking = true;
 		lst.Add( new iVec2( Loc.X , Loc.Y  ) );

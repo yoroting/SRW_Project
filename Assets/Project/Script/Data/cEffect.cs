@@ -47,8 +47,10 @@ public class cEffect
 
 	// cost
 	public virtual bool _IsImmune(  int nBuffType ){		return false;	}				// check user in one status		
+    public virtual bool _IsCharImmune(int nCharID ) { return false; }				// check user in one status		
+    
 
-	public virtual bool _IsStatus( _FIGHTSTATE st  ){ return false; }				// check user in one status	
+    public virtual bool _IsStatus( _FIGHTSTATE st  ){ return false; }				// check user in one status	
 
 	public virtual bool _IsTag(  _UNITTAG tag ){ return false; }								// check unit extra tag
 
@@ -652,6 +654,8 @@ public class IMMUNE: cEffect
 	}				// check user in one status		
 }
 
+
+
 //==== is status ==
 public class IS_HIT: cEffect
 {
@@ -755,6 +759,15 @@ public class IS_TWICE: cEffect
 	}				// check user in one status		
 }
 
+public class IS_NODMG : cEffect
+{
+    public IS_NODMG() { }
+
+    override public bool _IsStatus(_FIGHTSTATE st)
+    {
+        return (_FIGHTSTATE._NODMG == st);
+    }				// check user in one status		
+}
 
 
 //==========================================================================

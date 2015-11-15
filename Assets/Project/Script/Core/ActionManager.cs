@@ -499,7 +499,16 @@ public partial class ActionManager
 
 							pUnit.SetGuardTo( res.Value1 );
 						}
-						break;
+                            break;
+
+                        case cHitResult._TYPE._IMMUNE: // show dodge
+                            {
+                                if (bSkipMode) { continue; }
+                                // it should have fx
+                                pUnit.SetImmune();
+
+                            }
+                        break;
 					}
 				}
 

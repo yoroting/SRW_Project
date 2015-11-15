@@ -51,9 +51,10 @@ public class cHitResult		//
 		_DODGE		,		// 迴避
 		_MISS		, 		// fail
 		_GUARD		,		// guard some 
-		//_BLOCK		
+        _IMMUNE     ,      //  immune
+                    //_BLOCK		
 
-	};
+    };
 
 
 	public cHitResult( _TYPE type , int ident ,int value1 =0,int value2=0,int value3=0,int value4=0 )
@@ -1585,6 +1586,14 @@ public partial class BattleManager
 			resPool.Add (new cHitResult (cHitResult._TYPE._MISS, nAtker, 0 ));	
 			return resPool;
 		}
+        // 守方免疫傷害
+        if(pDefer.IsStates(_FIGHTSTATE._NODMG))
+        {
+            resPool.Add(new cHitResult(cHitResult._TYPE._IMMUNE, nDefer, 0)); // no dmg
+            return resPool;
+        }
+
+
 
 		// buff effect
 		float AtkMarPlus = pAtker.FightAttr.fAtkAssist;   // assist is base pils

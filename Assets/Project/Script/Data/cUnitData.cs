@@ -28,6 +28,7 @@ public enum _FIGHTSTATE
 	_RETURN		,	// 傷害轉彈
 	_COPY		,	// 複製目標的招式
 	_TWICE		,  // 打兩下
+    _NODMG      ,  // no dmg
 	// 
 	_KILL		,  //本次戰鬥有殺人
 }
@@ -1588,7 +1589,7 @@ public class cUnitData{
 	public void FightEnd( bool bIsAtker = false )
 	{
 		if (bIsAtker) {
-			if( FightAttr.SkillID == 0 || (FightAttr.SkillData.skill.n_FINISH !=0) ){
+			if( FightAttr.SkillID <= 0 || (FightAttr.SkillData== null)  || (FightAttr.SkillData.skill.n_FINISH !=0) ){
 				ActionDone();
 			}
 		}

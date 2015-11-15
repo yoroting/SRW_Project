@@ -30,8 +30,10 @@ public class MobAI  {
 				_AI_PassiveAttack( mob , nSkillID ,  nMove ) ;
 			}break;
 			case _AI_SEARCH._DEFENCE:{ //堅守原地
-				_AI_Defence( mob , nSkillID ,  0 ) ;
-			}break;
+                                       //_AI_Defence( mob , nSkillID ,  0 ) ;
+                _AI_PassiveAttack(mob, nSkillID, 0 );
+            }
+                break;
 			case _AI_SEARCH._TARGET:{ //前往指定
 				_AI_TargetAttack( mob , nSkillID ,  nMove ) ;
 			}break;	

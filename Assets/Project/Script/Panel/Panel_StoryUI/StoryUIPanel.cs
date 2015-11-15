@@ -16,7 +16,7 @@ public class StoryUIPanel : MonoBehaviour {
 	// 
 	private bool m_bIsEnd;					// 是否已經演完了
 
-	private Dictionary<int, GameObject> m_idToCharObj; // 管理 產生的角色物件 
+	private Dictionary<int, Panel_char> m_idToCharObj; // 管理 產生的角色物件 
 
 	public GameObject BackGroundTex;            // 大地圖背景貼圖
 	public GameObject PanelStoryText;           // 故事文字匡
@@ -42,7 +42,7 @@ public class StoryUIPanel : MonoBehaviour {
 	void Awake(){
 		Debug.Log("StoryUIPanel:awake");
 		nTweenObjCount = 0;
-		m_idToCharObj = new Dictionary<int, GameObject>();
+		m_idToCharObj = new Dictionary<int, Panel_char>();
 
 		TalkWindow = PanelStoryText.GetComponent<SRW_TextBox>();
 
@@ -144,6 +144,13 @@ public class StoryUIPanel : MonoBehaviour {
 		if( nTweenObjCount>0 )
 			return false ;
 
+        foreach (KeyValuePair<int, Panel_char> pair in m_idToCharObj) {
+            if (pair.Value.IsIdle() == false) {
+                return false;
+            }
+        }
+
+
 		SRW_TextBox pBox = PanelStoryText.GetComponent<SRW_TextBox>();
 		if (pBox != null) {
 			if( pBox.IsEnd() == false ){
@@ -198,11 +205,19 @@ public class StoryUIPanel : MonoBehaviour {
 	
 		// go to next script
 		if( m_nTargetIdx == m_nFlowIdx ){ // only set with curscript complete
-			if( ++m_nTargetIdx >= m_cScript.GetMaxCol() )
-			{
-				m_nTargetIdx = m_cScript.GetMaxCol()-1; // change flow 
-				End();
-			}
+            ++m_nTargetIdx;
+            if (m_nTargetIdx > m_cScript.GetMaxCol()) // end check
+            {
+                m_nTargetIdx = m_cScript.GetMaxCol() - 1; // change flow 
+                End();
+            }
+            else {
+                
+            }
+//            else {
+//
+  //          }
+
 		}
 	}
 
@@ -294,14 +309,14 @@ public class StoryUIPanel : MonoBehaviour {
 		//PanelManager.Instance.DestoryUI (Name );
 	}
 
-	public GameObject AddChar( int nCharId , float fPosX , float fPosY )
+	public Panel_char AddChar( int nCharId , float fPosX , float fPosY )
 	{
 		// check or add
-		GameObject obj = null ;
-
-		if( m_idToCharObj.ContainsKey(nCharId) == false )
+		//GameObject obj = null ;
+        Panel_char pChar = null;
+        if ( m_idToCharObj.ContainsKey(nCharId) == false )
 		{
-			obj = ResourcesManager.CreatePrefabGameObj( this.gameObject , "Panel/Panel_StoryUI/Panel_char" );
+            GameObject obj = ResourcesManager.CreatePrefabGameObj( this.gameObject , "Panel/Panel_StoryUI/Panel_char" );
 			if( obj == null )return null;
 			CHARS charData = ConstDataManager.Instance.GetRow<CHARS>( nCharId );
 			if( charData != null)
@@ -325,26 +340,33 @@ public class StoryUIPanel : MonoBehaviour {
 			}		
 			NGUITools.SetActive( obj , true );
 
-			m_idToCharObj.Add( nCharId , obj );
+			
 
-			TweenAlpha tObj = TweenAlpha.Begin( obj , 1.5f, 1.0f );
-			if( tObj != null ){
-				tObj.from = 0.0f;
-				tObj.SetOnFinished( OnTweenNotifyEnd );
-				nTweenObjCount++;
-			}
+            pChar = obj.GetComponent<Panel_char>();
+            if (pChar != null) {
+                pChar.StartAlpha( 0.0f , 1.0f );
+
+                m_idToCharObj.Add(nCharId, pChar );
+            }
+
+   //         TweenAlpha tObj = TweenAlpha.Begin( obj , 1.5f, 1.0f );
+			//if( tObj != null ){
+			//	tObj.from = 0.0f;
+			//	tObj.SetOnFinished( OnTweenNotifyEnd );
+			//	nTweenObjCount++;
+			//}
 		}
 		else {
-			m_idToCharObj.TryGetValue( nCharId , out obj  );
+			m_idToCharObj.TryGetValue( nCharId , out pChar);
 
 		}
 
 		// pos
-		if( obj != null )
+		if(pChar != null )
 		{
 			Vector3 v = new Vector3( fPosX , fPosY ,0.0f );
-			obj.transform.localPosition = v;
-			return obj;
+            pChar.transform.localPosition = v;
+			return pChar;
 		}
 		return null;
 	}
@@ -352,19 +374,19 @@ public class StoryUIPanel : MonoBehaviour {
 	public void MoveChar( int nCharId , float fPosX , float fPosY )
 	{
 
-		GameObject obj ;
+		Panel_char obj ;
 		if (m_idToCharObj.TryGetValue (nCharId, out obj) == false) {
 			Debug.LogErrorFormat( "store script : MoveChar({0}) to ({1},{2})is null " , nCharId ,fPosX , fPosY );
 			return;
 		}
-			
-		TweenPosition t = TweenPosition.Begin ( obj , 2.0f , new Vector3( fPosX , fPosY , obj.transform.localPosition.z) ); //直接移動
-		if( t != null )
-		{
-		   t.SetStartToCurrentValue();
-		   t.SetOnFinished( OnTweenNotifyEnd);
-		   nTweenObjCount++;
-		}
+        obj.Moveto(fPosX , fPosY );
+  //      TweenPosition t = TweenPosition.Begin ( obj , 2.0f , new Vector3( fPosX , fPosY , obj.transform.localPosition.z) ); //直接移動
+		//if( t != null )
+		//{
+		//   t.SetStartToCurrentValue();
+		//   t.SetOnFinished( OnTweenNotifyEnd);
+		//   nTweenObjCount++;
+		//}
 		return;
 
 //		TweenPosition tp = null;
@@ -383,38 +405,48 @@ public class StoryUIPanel : MonoBehaviour {
 
 	public void DelChar( int nCharId , int nType)
 	{
-		GameObject obj = m_idToCharObj[nCharId];
-		if( obj == null )
-			return;
-		m_idToCharObj.Remove (nCharId);
-		TweenAlpha t = TweenAlpha.Begin(obj , 1.0f , 0.0f  );// close
-		if( t != null)
-		{
-			t.SetOnFinished( OnTweenNotifyEnd);
-			nTweenObjCount++;
-		}
-		//NGUITools.Destroy (obj);
-	}
+  //      pChar obj = m_idToCharObj[nCharId];
+		//if( obj == null )
+		//	return;
+        Panel_char pChar;
+
+        if (m_idToCharObj.TryGetValue(nCharId, out pChar) == false) {
+            return;
+        }
+
+        pChar.StartAlpha(1.0f, 0.0f);
+
+  //      TweenAlpha t = TweenAlpha.Begin(pChar, 1.0f , 0.0f  );// close
+		//if( t != null)
+		//{
+		//	t.SetOnFinished( OnTweenNotifyEnd);
+		//	nTweenObjCount++;
+		//}
+
+        m_idToCharObj.Remove(nCharId);
+        //NGUITools.Destroy (obj);
+    }
 
 	public void DelAll( int nType)
 	{
-		foreach( KeyValuePair<int , GameObject > pair  in m_idToCharObj )
+		foreach( KeyValuePair<int , Panel_char > pair  in m_idToCharObj )
 		{
-			TweenAlpha.Begin( pair.Value , 1.0f , 0.0f  );// close
-			//NGUITools.Destroy ( pair.Value );
-		}
+            pair.Value.StartAlpha(1.0f, 0.0f);
+            //TweenAlpha.Begin( pair.Value , 1.0f , 0.0f  );// close
+            //NGUITools.Destroy ( pair.Value );
+        }
 		m_idToCharObj.Clear();
 	}
 
 	public void GrayChar(  int nCharId  )
 	{
 		if (nCharId == 0) {
-			foreach( KeyValuePair<int , GameObject > pair  in m_idToCharObj )
+			foreach( KeyValuePair<int , Panel_char> pair  in m_idToCharObj )
 			{
-				Panel_char p = pair.Value.GetComponent< Panel_char > ();
-				if( p != null )
+				//Panel_char p = pair.Value.GetComponent< Panel_char > ();
+				if (pair.Value != null )
 				{
-					p.StartGray();
+                    pair.Value.StartGray();
 
 				}
 			}
@@ -423,15 +455,15 @@ public class StoryUIPanel : MonoBehaviour {
 		}
 
 
-		GameObject obj = m_idToCharObj[nCharId];
+        Panel_char obj = m_idToCharObj[nCharId];
 		if( obj == null )
 			return;
 
-		Panel_char p2 = obj.GetComponent< Panel_char > ();
-		if( p2 != null )
-		{
-			p2.StartGray();			
-		}
+        //Panel_char p2 = obj.GetComponent< Panel_char > ();
+        //if( p2 != null )
+        //{
+         obj.StartGray();			
+		//}
 
 	}
 

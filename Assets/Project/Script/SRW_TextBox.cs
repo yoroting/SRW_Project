@@ -275,7 +275,9 @@ public class SRW_TextBox : MonoBehaviour {
 
 		// float text version 2
 		foreach (string s in sary) {
-			if( s == null || s == " " || s == "\t")
+            if (string.IsNullOrEmpty(s))
+                continue;
+			if( s == " " || s == "\t")
 				continue;
 			if( s.IndexOf("//") >= 0 ) // have common
 				continue;			    // giveup this line

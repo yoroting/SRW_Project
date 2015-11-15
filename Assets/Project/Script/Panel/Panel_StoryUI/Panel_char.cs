@@ -4,13 +4,16 @@ using System.Collections;
 public class Panel_char : MonoBehaviour {
 
 	public GameObject FaceObj;
+    bool bIsAlphaing;
+    bool bIsGraying;
+    bool bIsMoveing;
 
-
-	public void OnEnable()
+    public void OnEnable()
 	{
-
-
-	}
+        bIsGraying = false;
+        bIsGraying = false;
+        bIsMoveing = false;
+    }
 	// Use this for initialization
 	void Start () {
 	
@@ -21,7 +24,42 @@ public class Panel_char : MonoBehaviour {
 	
 	}
 
-	public void StartGray()
+    public bool IsIdle()
+    {
+        if (bIsGraying  || bIsAlphaing || bIsMoveing  ) {
+            return false;
+        }
+
+
+        return true;
+    }
+
+    public void Moveto( float fX , float fY , float during = 1.5f)
+    {
+        TweenPosition t = TweenPosition.Begin(this.gameObject, during , new Vector3(fX, fY, transform.localPosition.z)); //直接移動
+        if (t != null)
+        {
+            bIsMoveing = true;
+            t.SetStartToCurrentValue();
+            t.SetOnFinished(OnTweenMoveEnd);
+          //  nTweenObjCount++;
+        }
+    }
+
+    public void StartAlpha( float from , float to , float during = 1.5f ) {
+
+        TweenAlpha tObj = TweenAlpha.Begin(this.gameObject, during, to);
+        if (tObj != null)
+        {
+            bIsAlphaing = true;
+            tObj.from = from;
+            tObj.SetOnFinished(OnTweenAlphaEnd);
+           // nTweenObjCount++;
+        }
+
+    }
+
+    public void StartGray()
 	{
 		if (FaceObj == null)
 			return;
@@ -31,8 +69,8 @@ public class Panel_char : MonoBehaviour {
 		//TweenGrayLevel.Begin <TweenGrayLevel>(  texture , 1.0f  );
 		TweenGrayLevel tw = TweenGrayLevel.Begin <TweenGrayLevel >( texture.gameObject, 1.0f);
 		if (tw) {
-			
-			tw.from = 0.0f;
+            bIsGraying = true;
+            tw.from = 0.0f;
 			tw.to   = 1.0f;
 			MyTool.TweenSetOneShotOnFinish( tw , OnDead );
 		}
@@ -41,8 +79,18 @@ public class Panel_char : MonoBehaviour {
 
 
 	public void OnDead( )
-	{	
-		
-		//GameEventManager.DispatchEvent ( evt );
-	}
+	{
+        bIsGraying = false;
+        //GameEventManager.DispatchEvent ( evt );
+    }
+
+    public void OnTweenAlphaEnd()
+    {
+        bIsAlphaing = false;
+    }
+    public void OnTweenMoveEnd()
+    {
+        bIsMoveing = false;
+    }
+    
 }

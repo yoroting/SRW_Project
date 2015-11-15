@@ -754,7 +754,12 @@ public class MyScript {
 			{
 				Panel_StageUI.Instance.OnStageAddSchool( func.I(0) , func.I(1), func.I(2) );
 			}
-			else if( func.sFunc  == "RELIVE")  // relive
+            else if (func.sFunc == "SETHP")  // Add HP
+            {
+                Panel_StageUI.Instance.OnStageSetUnitValue(func.I(0), 0 , func.F(1) , func.I(2));
+            }
+
+            else if( func.sFunc  == "RELIVE")  // relive
 			{
 				Panel_StageUI.Instance.OnStageRelive( func.I(0) );
 			}
@@ -1187,9 +1192,10 @@ public class MyScript {
 				else if( func.sFunc  == "IMMUNE") {
 					pool.Add( new IMMUNE( func.I(0) ) );
 				}
+                        
 
 				//=============== Tag 
-				else if( func.sFunc  == "TAG_CHARGE") {  // 
+				else if ( func.sFunc  == "TAG_CHARGE") {  // 
 					pool.Add( new TAG_CHARGE( ) );
 				}
 				else if( func.sFunc  == "TAG_NODIE") {  // 不死身
@@ -1237,12 +1243,15 @@ public class MyScript {
 				else if( func.sFunc  == "IS_TWICE") { // 
 					pool.Add( new IS_TWICE( ) );
 				}
+                else if (func.sFunc == "IS_NODMG")
+                {
+                    pool.Add(new IS_NODMG());
+                }
+
+                //===
 
 
-				//===
-
-			
-			}
+            }
 
 		}
 
