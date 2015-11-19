@@ -622,7 +622,10 @@ public partial class ActionManager
 		uAction act = CreateAction (nAtkIdent, _ACTION._CMD_ATK);
 		if( act != null )  {
 			act.nTarIdent = nDefIdent;
-			act.nSkillID = nSkillID;
+            if (nSkillID < 0)            {
+                nSkillID = 0;
+            }
+            act.nSkillID = nSkillID;
 			act.nActVar1 = nVar1;
 			act.nActVar2 = nVar2;
 		}
@@ -634,8 +637,11 @@ public partial class ActionManager
 		if( act != null )  {
 			act.nTarGridX = nX;
 			act.nTarGridY = nY;
-			//act.nTarIdent = nDefIdent;
-			act.nSkillID = nSkillID;
+            //act.nTarIdent = nDefIdent;
+            if (nSkillID < 0)            {
+                nSkillID = 0;
+            }
+            act.nSkillID = nSkillID;
 			act.nActVar1 = nVar1;
 			act.nActVar2 = nVar2;
 		}

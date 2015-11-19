@@ -14,7 +14,7 @@ public class MobAI  {
 	{
 		int ident = mob.Ident ();
 		cUnitData mobdata = GameDataManager.Instance.GetUnitDateByIdent ( ident );
-		int nSkillID = -1;		// 0 - no attack
+		int nSkillID = -1;		// -1 - no attack
 		// select a skill
 		if( mobdata.eComboAI == _AI_COMBO._NORMAL ){
 			nSkillID = SelSkill( mob.pUnitData );

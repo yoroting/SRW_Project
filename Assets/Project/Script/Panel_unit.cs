@@ -1223,6 +1223,8 @@ public class Panel_unit : MonoBehaviour {
 			bIsDodgeing = true;
 		}
 		BattleManager.Instance.ShowBattleResValue( this.gameObject , "迴避" , 1 );
+        GameSystem.PlaySound("Se07");
+
 	}
 	public void OnTwDodgeRotateEnd( )
 	{		
@@ -1247,8 +1249,9 @@ public class Panel_unit : MonoBehaviour {
 			bIsMissing = true;
 		}
 		BattleManager.Instance.ShowBattleResValue( this.gameObject , "失誤" , 0 );
+        GameSystem.PlaySound("Se38");
 
-	}
+    }
 	public void OnTwMissRotateEnd( )
 	{		
 		// clear all move tw
