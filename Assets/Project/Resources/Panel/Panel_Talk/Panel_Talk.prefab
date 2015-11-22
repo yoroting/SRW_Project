@@ -594,6 +594,8 @@ MonoBehaviour:
   m_sShowText: 
   bIsShaking: 0
   bIsDeading: 0
+  bIsTweenWidth: 0
+  bIsTweenFace: 0
 --- !u!114 &11416806
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -744,6 +746,7 @@ MonoBehaviour:
   mUseFloatSpacing: 0
   mFloatSpacingX: 0
   mFloatSpacingY: 0
+  mOverflowEllipsis: 0
   mShrinkToFit: 0
   mMaxLineWidth: 0
   mMaxLineHeight: 0
@@ -1008,6 +1011,7 @@ MonoBehaviour:
   mUseFloatSpacing: 0
   mFloatSpacingX: 0
   mFloatSpacingY: 0
+  mOverflowEllipsis: 0
   mShrinkToFit: 0
   mMaxLineWidth: 0
   mMaxLineHeight: 0
@@ -1073,6 +1077,7 @@ MonoBehaviour:
   mUseFloatSpacing: 0
   mFloatSpacingX: 0
   mFloatSpacingY: 0
+  mOverflowEllipsis: 0
   mShrinkToFit: 0
   mMaxLineWidth: 0
   mMaxLineHeight: 0

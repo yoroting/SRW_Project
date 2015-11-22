@@ -1694,10 +1694,12 @@ public class Panel_unit : MonoBehaviour {
 
 		GameEventManager.DispatchEvent ( evt );
 
-		// avoid shake tween
-
-
-	}
+        // avoid shake tween
+        // auto close talk window
+        TalkSayEndEvent sayevt = new TalkSayEndEvent();
+        sayevt.nChar = this.CharID;
+        GameEventManager.DispatchEvent(sayevt);
+    }
 
 	public void SetBorn()
 	{

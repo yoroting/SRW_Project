@@ -69,6 +69,10 @@ public class MyScript {
 				}
 				else if( func.sFunc == "DEAD"  )
 				{
+                    if (func.I(0) > 2) {
+                        Debug.LogErrorFormat("Script check error in {0} with param1 = {1}", func.sFunc , func.I(0) );
+                    }
+
 					if( ConditionUnitDead( (_CAMP)func.I(0), func.I(1) ) == false )
 					{
 						return false;
@@ -76,7 +80,11 @@ public class MyScript {
 				}
 				else if( func.sFunc == "ALIVE" || func.sFunc == "NODEAD" )
 				{
-					if( ConditionUnitAlive( (_CAMP)func.I(0), func.I(1) ) == false )
+                    if (func.I(0) > 2)
+                    {
+                        Debug.LogErrorFormat("Script check error in {0} with param1 = {1}", func.sFunc, func.I(0));
+                    }
+                    if ( ConditionUnitAlive( (_CAMP)func.I(0), func.I(1) ) == false )
 					{
 						return false;
 					}				

@@ -3939,10 +3939,11 @@ public class Panel_StageUI : MonoBehaviour
 	// 單位死亡
 	public void OnStageUnitDeadEvent( int nCharID )
 	{
-		// auto close all say window
-		TalkSayEndEvent sayevt = new TalkSayEndEvent();
-		sayevt.nChar = 0;		
-		GameEventManager.DispatchEvent ( sayevt  );
+		// auto close all say window. 
+        // bug .. auto close in dead end
+//		TalkSayEndEvent sayevt = new TalkSayEndEvent();
+//		sayevt.nChar = 0;		
+//		GameEventManager.DispatchEvent ( sayevt  );
 
 		if( m_bIsSkipMode )
 		{

@@ -547,40 +547,66 @@ public class Panel_Talk : MonoBehaviour {
 			}
 		}
 	}
-	
-	public void CharSay( int nCharID , int nSayTextID )
-	{
-		SpeakAll( false );
+
+    public void CharSay(int nCharID, int nSayTextID)
+    {
+        SpeakAll(false);
 
 
-		SRW_AVGObj avgobj = SelAVGObjByCharID( nCharID );// face 
-		if( avgobj!= null ){
-			avgobj.Speak( true );
-		}
+        SRW_AVGObj avgobj = SelAVGObjByCharID(nCharID);// face 
+        if (avgobj != null) {
+            avgobj.Speak(true);
+        }
 
-		SetName( nCharID , avgobj.gameObject ); // name 
+        SetName(nCharID, avgobj.gameObject); // name POS
 
-		//SRW_TextBox obj = SelTextBoxObjByCharID (nCharID) ;
-		SRW_TextBox obj =  TalkWindow;// SelTextBoxObjByCharID (nCharID) ;
-		if (obj == null)
-			return;
+        //SRW_TextBox obj = SelTextBoxObjByCharID (nCharID) ;
+        SRW_TextBox obj = TalkWindow;// SelTextBoxObjByCharID (nCharID) ;
+        if (obj == null)
+            return;
 
-		TalkWindow.SetEnable (true);
-//		TalkWindow_new.SetActive( true );
-		NameObj.SetActive (true);
+        TalkWindow.SetEnable(true);
+        //		TalkWindow_new.SetActive( true );
+        if (nCharID > 0) { 
+            NameObj.SetActive(true);
+        }
 
 		obj.ClearText(); // clear text first
-		string s = GameSystem.GetTalkText ( nSayTextID );
+
+        string s = "";
+        string name = "";
+        DataRow row = ConstDataManager.Instance.GetRow("TALK_TEXT", nSayTextID);
+        if (row != null)
+        {
+            s    = row.Field<string>("s_CONTENT");
+            name = row.Field<string>("s_TITLE");
+        }
+
+
+      //  string s = GameSystem.GetTalkText ( nSayTextID );
 		string sText = "";
 		if (string.IsNullOrEmpty (s)) {
 			sText = string.Format("CharSay null text in textid{0} ", nSayTextID);
 		} else {
-
 			sText = s.Replace ( "$F" , Config.PlayerFirst ); // replace player name
-			sText = sText.Replace ( "$N" , Config.PlayerName ); // replace player name			
-
+			sText = sText.Replace ( "$N" , Config.PlayerName ); // replace player name		
 		}
-		obj.ClearText();
+        // replace name
+        string sName = "";
+        if (string.IsNullOrEmpty(name) == false )
+        {
+            sName = name.Replace("$F", Config.PlayerFirst); // replace player name
+            sName = sName.Replace("$N", Config.PlayerName); // replace player name		
+        }
+        UILabel lbl = NameObj.GetComponentInChildren<UILabel>();
+        if (lbl != null)
+        {
+            lbl.text = sName;
+        }
+
+
+
+        obj.ClearText();
 		obj.AddText(sText);
 	}
 

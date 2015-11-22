@@ -131,18 +131,19 @@ public class StoryUIPanel : MonoBehaviour {
 		SRW_TextBox pBox = PanelStoryText.GetComponent<SRW_TextBox>();
 		if (pBox != null) {
 			pBox.ChangeFace( 0 );
-		}
+            PanelStoryText.SetActive(false);
+        }
 
 		bIsLoading = false;
 
 		// end
 		PanelManager.Instance.CloseUI( "Panel_Loading");
 	}
-	
-	public bool IsAllEnd ()
-	{
-		if( nTweenObjCount>0 )
-			return false ;
+
+    public bool IsAllEnd()
+    {
+        if (nTweenObjCount > 0)
+            return false;
 
         foreach (KeyValuePair<int, Panel_char> pair in m_idToCharObj) {
             if (pair.Value.IsIdle() == false) {
@@ -150,13 +151,14 @@ public class StoryUIPanel : MonoBehaviour {
             }
         }
 
-
-		SRW_TextBox pBox = PanelStoryText.GetComponent<SRW_TextBox>();
-		if (pBox != null) {
-			if( pBox.IsEnd() == false ){
-				return false;
-			}
-		}
+        if (PanelStoryText.activeSelf == true) { 
+            SRW_TextBox pBox = PanelStoryText.GetComponent<SRW_TextBox>();
+            if (pBox != null) {
+                if (pBox.IsEnd() == false) {
+                    return false;
+                }
+            }
+        }
 
 		return true;
 	}
@@ -311,39 +313,41 @@ public class StoryUIPanel : MonoBehaviour {
 
 	public Panel_char AddChar( int nCharId , float fPosX , float fPosY )
 	{
-		// check or add
-		//GameObject obj = null ;
+        PanelStoryText.SetActive(false);
+        // check or add
+        //GameObject obj = null ;
         Panel_char pChar = null;
         if ( m_idToCharObj.ContainsKey(nCharId) == false )
 		{
             GameObject obj = ResourcesManager.CreatePrefabGameObj( this.gameObject , "Panel/Panel_StoryUI/Panel_char" );
 			if( obj == null )return null;
-			CHARS charData = ConstDataManager.Instance.GetRow<CHARS>( nCharId );
-			if( charData != null)
-			{	
-				// charge face text				
-				UITexture tex = obj.GetComponentInChildren<UITexture>();
+			//CHARS charData = ConstDataManager.Instance.GetRow<CHARS>( nCharId );
+			//if( charData != null)
+			//{	
+			//	// charge face text				
+			//	UITexture tex = obj.GetComponentInChildren<UITexture>();
 			
-				if( tex )
-				{
-					if(tex != null){
-						//	DynamicAssetBundleLoader.LoadTexture(tex,DynamicAssetBundleLoader.SSAssetType.Card, "CARD_" + card.PicName);
-						//string texpath = "char/" +charData.s_FILENAME +"_S";
-						string url = "Art/char/" + charData.s_FILENAME +"_S";
-						//Texture2D tex = Resources.LoadAssetAtPath(url, typeof(Texture2D)) as Texture2D;
-						//Texture t= Resources.Load( url , typeof(Texture) ) as Texture; ;
-						tex.mainTexture = Resources.Load( url , typeof(Texture) ) as Texture; ;
-						//tex.mainTexture = Resources.Load( texpath) as Texture; 
-						//tex.MakePixelPerfect();
-					}
-				}
-			}		
-			NGUITools.SetActive( obj , true );
-
-			
+			//	if( tex )
+			//	{
+			//		if(tex != null){
+			//			//	DynamicAssetBundleLoader.LoadTexture(tex,DynamicAssetBundleLoader.SSAssetType.Card, "CARD_" + card.PicName);
+			//			//string texpath = "char/" +charData.s_FILENAME +"_S";
+			//			string url = "Art/char/" + charData.s_FILENAME +"_S";
+			//			//Texture2D tex = Resources.LoadAssetAtPath(url, typeof(Texture2D)) as Texture2D;
+			//			//Texture t= Resources.Load( url , typeof(Texture) ) as Texture; ;
+			//			tex.mainTexture = Resources.Load( url , typeof(Texture) ) as Texture; ;
+			//			//tex.mainTexture = Resources.Load( texpath) as Texture; 
+			//			//tex.MakePixelPerfect();
+			//		}
+			//	}
+			//}		
+			NGUITools.SetActive( obj , true );			
 
             pChar = obj.GetComponent<Panel_char>();
             if (pChar != null) {
+                pChar.SetFace( nCharId );
+
+
                 pChar.StartAlpha( 0.0f , 1.0f );
 
                 m_idToCharObj.Add(nCharId, pChar );
@@ -373,8 +377,8 @@ public class StoryUIPanel : MonoBehaviour {
 
 	public void MoveChar( int nCharId , float fPosX , float fPosY )
 	{
-
-		Panel_char obj ;
+        PanelStoryText.SetActive(false);
+        Panel_char obj ;
 		if (m_idToCharObj.TryGetValue (nCharId, out obj) == false) {
 			Debug.LogErrorFormat( "store script : MoveChar({0}) to ({1},{2})is null " , nCharId ,fPosX , fPosY );
 			return;
@@ -405,9 +409,10 @@ public class StoryUIPanel : MonoBehaviour {
 
 	public void DelChar( int nCharId , int nType)
 	{
-  //      pChar obj = m_idToCharObj[nCharId];
-		//if( obj == null )
-		//	return;
+        PanelStoryText.SetActive(false);
+        //      pChar obj = m_idToCharObj[nCharId];
+        //if( obj == null )
+        //	return;
         Panel_char pChar;
 
         if (m_idToCharObj.TryGetValue(nCharId, out pChar) == false) {
@@ -429,7 +434,8 @@ public class StoryUIPanel : MonoBehaviour {
 
 	public void DelAll( int nType)
 	{
-		foreach( KeyValuePair<int , Panel_char > pair  in m_idToCharObj )
+        PanelStoryText.SetActive(false);
+        foreach ( KeyValuePair<int , Panel_char > pair  in m_idToCharObj )
 		{
             pair.Value.StartAlpha(1.0f, 0.0f);
             //TweenAlpha.Begin( pair.Value , 1.0f , 0.0f  );// close
@@ -440,7 +446,9 @@ public class StoryUIPanel : MonoBehaviour {
 
 	public void GrayChar(  int nCharId  )
 	{
-		if (nCharId == 0) {
+        PanelStoryText.SetActive(false );
+
+        if (nCharId == 0) {
 			foreach( KeyValuePair<int , Panel_char> pair  in m_idToCharObj )
 			{
 				//Panel_char p = pair.Value.GetComponent< Panel_char > ();
@@ -525,40 +533,44 @@ public class StoryUIPanel : MonoBehaviour {
 		List<cTextFunc> funcList =line.GetFuncList();
 		foreach( cTextFunc func in funcList )
 		{
-			if( func.sFunc == "ADDCHAR" || func.sFunc == "ADDC" )
-			{
-				AddChar( func.I(0) , func.F(1)*Config.BigMapTileW , func.F(2)*Config.BigMapTileH );
-			}
-			else if( func.sFunc == "MOVECHAR"|| func.sFunc == "MOVEC" )
-			{
-				MoveChar( func.I(0) , func.F(1)*Config.BigMapTileW , func.F(2)*Config.BigMapTileH );
-			}
-			else if( func.sFunc == "DELCHAR" || func.sFunc == "DELC")			
-			{
-				DelChar(  func.I(0)  , func.I(1) );
-			}
-			else if( func.sFunc == "DELALL" )			
-			{
-				DelAll(  func.I(0)   );
-			}
-			else if( func.sFunc == "GRAYALL" )			
-			{
-				GrayChar( 0 );
-			}
-			else if( func.sFunc == "TEXT" )
-			{
-				AddStoryText(  func.I(0)  );
-			}
-			else if( func.sFunc == "BGM" )			
-			{
-				GameSystem.PlayBGM(  func.I(0)  ) ;				
-			}
-			else if( func.sFunc == "END" )			
-			{
-				// no need param
-				End();
-				return;
-			}
+            if (func.sFunc == "ADDCHAR" || func.sFunc == "ADDC")
+            {
+                AddChar(func.I(0), func.F(1) * Config.BigMapTileW, func.F(2) * Config.BigMapTileH);
+            }
+            else if (func.sFunc == "MOVECHAR" || func.sFunc == "MOVEC")
+            {
+                MoveChar(func.I(0), func.F(1) * Config.BigMapTileW, func.F(2) * Config.BigMapTileH);
+            }
+            else if (func.sFunc == "DELCHAR" || func.sFunc == "DELC")
+            {
+                DelChar(func.I(0), func.I(1));
+            }
+            else if (func.sFunc == "DELALL")
+            {
+                DelAll(func.I(0));
+            }
+            else if (func.sFunc == "GRAYALL")
+            {
+                GrayChar(0);
+            }
+            else if (func.sFunc == "DEADCHAR")
+            {
+                GrayChar( func.I(0) );
+            }
+            else if (func.sFunc == "TEXT")
+            {
+                AddStoryText(func.I(0));
+            }
+            else if (func.sFunc == "BGM")
+            {
+                GameSystem.PlayBGM(func.I(0));
+            }
+            else if (func.sFunc == "END")
+            {
+                // no need param
+                End();
+                return;
+            }
 		}
 	}
 
