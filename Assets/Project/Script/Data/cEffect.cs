@@ -808,361 +808,489 @@ public class  cEffectCondition
 		
 		foreach( cTextFunc func in funcList )
 		{
-			if( func.sFunc == "GO" )
-			{
-				return true;		// always true
-			}
-			else if( func.sFunc == "NULL" || func.sFunc == "0" )
-			{
-				return   false;		// always fail
-			}
-			else if( func.sFunc == "RATE"  )
-			{
-				int Rate = func.I (0);
-				int nRoll = Random.Range (0, 100);				
-				return ( Rate > nRoll );
-				//return data_I.IsStates( _FIGHTSTATE._DODGE );
-			}
-			else if( func.sFunc == "MRATE"  )  // 必須比兩者武功差值
-			{
-				if( data_E == null || data_I == null )
-					return false;
-				int Rate = func.I (0);
-				Rate += (int)(( data_I.GetMar() - data_E.GetMar() )* 0.5f);
-				int nRoll = Random.Range (0, 100);				
-				return ( Rate > nRoll );
+            if (func.sFunc == "GO")
+            {
+                return true;        // always true
+            }
+            else if (func.sFunc == "NULL" || func.sFunc == "0")
+            {
+                return false;       // always fail
+            }
+            else if (func.sFunc == "RATE")
+            {
+                int Rate = func.I(0);
+                int nRoll = Random.Range(0, 100);
+                return (Rate > nRoll);
+                //return data_I.IsStates( _FIGHTSTATE._DODGE );
+            }
+            else if (func.sFunc == "MRATE")  // 必須比兩者武功差值
+            {
+                if (data_E == null || data_I == null)
+                    return false;
+                int Rate = func.I(0);
+                Rate += (int)((data_I.GetMar() - data_E.GetMar()) * 0.5f);
+                int nRoll = Random.Range(0, 100);
+                return (Rate > nRoll);
 
-			}
-			else if( func.sFunc == "HP_I"  )
-			{
-				float f1 = data_I.n_HP /data_I.GetMaxHP() ;
-				float f2 =  func.F( 1 ) ;
-				if( MyScript.Instance.ConditionFloat( f1 , func.S(0) ,f2  ) == false  ){
-					return   false;		//  fail
-				}
-			}
-			else if( func.sFunc == "HP_E"  )
-			{
-				float f1 = data_E.n_HP /data_E.GetMaxHP() ;
-				float f2 =  func.F( 1 ) ;
-				if( MyScript.Instance.ConditionFloat( f1 , func.S(0) ,f2  ) == false  ){
-					return   false;		//  fail
-				}
-			}
-			else if( func.sFunc == "POW_I"  )
-			{
-				int i1 = data_I.GetPow();
-				int i2 = 0;
+            }
+            else if (func.sFunc == "HP_I")
+            {
+                float f1 = data_I.n_HP / data_I.GetMaxHP();
+                float f2 = func.F(1);
+                if (MyScript.Instance.ConditionFloat(f1, func.S(0), f2) == false)
+                {
+                    return false;       //  fail
+                }
+            }
+            else if (func.sFunc == "HP_E")
+            {
+                float f1 = data_E.n_HP / data_E.GetMaxHP();
+                float f2 = func.F(1);
+                if (MyScript.Instance.ConditionFloat(f1, func.S(0), f2) == false)
+                {
+                    return false;       //  fail
+                }
+            }
+            else if (func.sFunc == "POW_I")
+            {
+                int i1 = data_I.GetPow();
+                int i2 = 0;
 
 
-				string s1 = func.S( 1 );  // s1 
-				if( s1 == "E" ){
-					if( data_E != null ){
-						i2 = data_E.GetPow();
-					}else{
-						return false; // no enemy is false
-					}
-				}
-				else if( s1 == "I" ){
-					if( data_I != null ){
-						i2 = data_I.GetPow();
-					}else{
-						return false; // no enemy is false
-					}
-				}
-				else{
-					i2 = func.I( 1 );
-				}
-				//
-				if( MyScript.Instance.ConditionInt( i1 , func.S(0) ,i2  ) == false  ){
-					return   false;		// always fail
-				}
+                string s1 = func.S(1);  // s1 
+                if (s1 == "E")
+                {
+                    if (data_E != null)
+                    {
+                        i2 = data_E.GetPow();
+                    }
+                    else
+                    {
+                        return false; // no enemy is false
+                    }
+                }
+                else if (s1 == "I")
+                {
+                    if (data_I != null)
+                    {
+                        i2 = data_I.GetPow();
+                    }
+                    else
+                    {
+                        return false; // no enemy is false
+                    }
+                }
+                else
+                {
+                    i2 = func.I(1);
+                }
+                //
+                if (MyScript.Instance.ConditionInt(i1, func.S(0), i2) == false)
+                {
+                    return false;       // always fail
+                }
 
-			}
-			else if( func.sFunc == "POW_E"  )
-			{
-				int i1 = data_E.GetPow();
-				int i2 = 0;
-				
-				
-				string s1 = func.S( 1 );  // s1 
-				if( s1 == "E" ){
-					if( data_E != null ){
-						i2 = data_E.GetPow();
-					}else{
-						return false; // no enemy is false
-					}
-				}
-				else if( s1 == "I" ){
-					if( data_I != null ){
-						i2 = data_I.GetPow();
-					}else{
-						return false; // no enemy is false
-					}
-				}
-				else{
-					i2 = func.I( 1 );
-				}
-				//
-				if( MyScript.Instance.ConditionInt( i1 , func.S(0) ,i2  ) == false  ){
-					return   false;		// always fail
-				}
+            }
+            else if (func.sFunc == "POW_E")
+            {
+                int i1 = data_E.GetPow();
+                int i2 = 0;
 
-			}
-			else if( func.sFunc == "MAR_I"  )
-			{
-				float f1 = data_I.GetMar();
-				float f2 = 0.0f;
-				string s1 = func.S( 1 );  // s1 
-				if( s1 == "E" ){
-					if( data_E != null ){
-						f2 = data_E.GetMar();
-					}else{
-						return false; // no enemy is false
-					}
-				}
-				else if( s1 == "I" ){
-					if( data_I != null ){
-						f2 = data_I.GetMar();
-					}else{
-						return false; // no enemy is false
-					}
-				}
-				else{
-					f2 = func.F( 1 );
-				}
-				//
-				if( MyScript.Instance.ConditionFloat( f1 , func.S(0) ,f2  ) == false  ){
-					return   false;		// always fail
-				}
-			}
-			else if( func.sFunc == "MAR_E"  )
-			{		
-				float f1 = data_E.GetMar();
-				float f2 = 0.0f;
-				string s1 = func.S( 1 );  // s1 
-				if( s1 == "E" ){
-					if( data_E != null ){
-						f2 = data_E.GetMar();
-					}else{
-						return false; // no enemy is false
-					}
-				}
-				else if( s1 == "I" ){
-					if( data_I != null ){
-						f2 = data_I.GetMar();
-					}else{
-						return false; // no enemy is false
-					}
-				}
-				else{
-					f2 = func.F( 1 );
-				}
-				//
-				if( MyScript.Instance.ConditionFloat( f1 , func.S(0) ,f2  ) == false  ){
-					return   false;		// always fail
-				}			
-			}
-			else if( func.sFunc == "BUFF_I"  )
-			{
-				int buffid = func.I(0);
-				if( data_I!= null ){
-					if( !data_I.Buffs.HaveBuff( buffid ) )
-						return false;
-				}
-				return   false;		// always fail
-			}
-			else if( func.sFunc == "BUFF_E"  )
-			{
-				int buffid = func.I(0);
-				if( data_E != null ){
-					if( !data_E.Buffs.HaveBuff( buffid ) )
-						return false;
-				}
-				return   false;		// always fail
-			}
-			else if( func.sFunc == "SCHOOL_I"  )
-			{
-				int schoolid = func.I(0);
-				if( data_I.nActSch[0] != schoolid && data_I.nActSch[1] != schoolid   ){
-					return false;	
-				}
-			}
-			else if( func.sFunc == "SCHOOL_E"  )
-			{
-				int schoolid = func.I(0);
-				if( data_E.nActSch[0] != schoolid && data_E.nActSch[1] != schoolid   ){
-					return false;	
-				}
-			}
-			else if( func.sFunc == "RANGE" || func.sFunc == "DIST" )
-			{
-				if( (data_I!= null) && (data_E != null) )	
-				{
-					int Range =  func.I(1);
-					int nDist = iVec2.Dist( data_I.n_X , data_I.n_Y ,  data_E.n_X , data_E.n_Y );
-					if( MyScript.Instance.ConditionInt( nDist , func.S(0) ,Range  ) == false  ){
-						return   false;		// always fail
-					}		
 
-				}
-				else{
-					return false;
-				}
-			}
-			else if( func.sFunc == "DIST_C" )
-			{
-				cUnitData pCast = buff.GetCastUnit();
-				if( pCast != null )
-				{
-					int Range =  func.I(1);
-					int nDist = iVec2.Dist( data_I.n_X , data_I.n_Y ,  pCast.n_X , pCast.n_Y );
-					if( MyScript.Instance.ConditionInt( nDist , func.S(0) ,Range  ) == false  ){
-						return   false;		// always fail
-					}		
-				}
-				else{
-					return false;
-				}
-			}
+                string s1 = func.S(1);  // s1 
+                if (s1 == "E")
+                {
+                    if (data_E != null)
+                    {
+                        i2 = data_E.GetPow();
+                    }
+                    else
+                    {
+                        return false; // no enemy is false
+                    }
+                }
+                else if (s1 == "I")
+                {
+                    if (data_I != null)
+                    {
+                        i2 = data_I.GetPow();
+                    }
+                    else
+                    {
+                        return false; // no enemy is false
+                    }
+                }
+                else
+                {
+                    i2 = func.I(1);
+                }
+                //
+                if (MyScript.Instance.ConditionInt(i1, func.S(0), i2) == false)
+                {
+                    return false;       // always fail
+                }
 
-			else if( func.sFunc == "GENDER_I"  )
-			{
-				int gender = func.I(0);
-				if( data_I!= null ){
-					CHARS charData = ConstDataManager.Instance.GetRow<CHARS> ( data_I.n_CharID );
-					if( gender != charData.n_GENDER   )
-					{
-						return false;
-					}
-				}
-				else {
-					return false;
-				}
-			}
-			else if( func.sFunc == "GENDER_E"  )
-			{
-				int gender = func.I(0);
-				if( data_E!= null ){
-					CHARS charData = ConstDataManager.Instance.GetRow<CHARS> ( data_E.n_CharID );
-					if( gender != charData.n_GENDER   )
-					{
-						return false;
-					}
-				}
-				else {
-					return false;
-				}
-			}
+            }
+            else if (func.sFunc == "MAR_I")
+            {
+                float f1 = data_I.GetMar();
+                float f2 = 0.0f;
+                string s1 = func.S(1);  // s1 
+                if (s1 == "E")
+                {
+                    if (data_E != null)
+                    {
+                        f2 = data_E.GetMar();
+                    }
+                    else
+                    {
+                        return false; // no enemy is false
+                    }
+                }
+                else if (s1 == "I")
+                {
+                    if (data_I != null)
+                    {
+                        f2 = data_I.GetMar();
+                    }
+                    else
+                    {
+                        return false; // no enemy is false
+                    }
+                }
+                else
+                {
+                    f2 = func.F(1);
+                }
+                //
+                if (MyScript.Instance.ConditionFloat(f1, func.S(0), f2) == false)
+                {
+                    return false;       // always fail
+                }
+            }
+            else if (func.sFunc == "MAR_E")
+            {
+                float f1 = data_E.GetMar();
+                float f2 = 0.0f;
+                string s1 = func.S(1);  // s1 
+                if (s1 == "E")
+                {
+                    if (data_E != null)
+                    {
+                        f2 = data_E.GetMar();
+                    }
+                    else
+                    {
+                        return false; // no enemy is false
+                    }
+                }
+                else if (s1 == "I")
+                {
+                    if (data_I != null)
+                    {
+                        f2 = data_I.GetMar();
+                    }
+                    else
+                    {
+                        return false; // no enemy is false
+                    }
+                }
+                else
+                {
+                    f2 = func.F(1);
+                }
+                //
+                if (MyScript.Instance.ConditionFloat(f1, func.S(0), f2) == false)
+                {
+                    return false;       // always fail
+                }
+            }
+            else if (func.sFunc == "BUFF_I")
+            {
+                int buffid = func.I(0);
+                if (data_I != null)
+                {
+                    if (!data_I.Buffs.HaveBuff(buffid))
+                        return false;
+                }
+                return false;       // always fail
+            }
+            else if (func.sFunc == "BUFF_E")
+            {
+                int buffid = func.I(0);
+                if (data_E != null)
+                {
+                    if (!data_E.Buffs.HaveBuff(buffid))
+                        return false;
+                }
+                return false;       // always fail
+            }
+            else if (func.sFunc == "SCHOOL_I")
+            {
+                int schoolid = func.I(0);
+               // if (data_I.nActSch[0] != schoolid && data_I.nActSch[1] != schoolid)
+                if (!data_I.IsActiveSchool(schoolid))
+                    {
+                    return false;
+                }
+            }
+            else if (func.sFunc == "SCHOOL_E")
+            {
+                int schoolid = func.I(0);
+                if (!data_E.IsActiveSchool(schoolid) )
+                {
+                    return false;
+                }
+            }
+            else if (func.sFunc == "CHAR_CHECK") // combo check
+            {
+                bool bFind = false;
+                int charid = func.I(0);
+                int dist = func.I(1);
+                int schoolid = func.I(2);
+                int buffid = func.I(3);
+                foreach (KeyValuePair<int, cUnitData> pair in GameDataManager.Instance.UnitPool)
+                {
+                    cUnitData unit = pair.Value;
+                    if (unit == null) continue;
 
-			//雙方內外功星等比較
-			else if( func.sFunc == "INTRANK_I"  )
-			{
-				int i1 = data_I.GetIntSchRank();
-				int i2 = 0;
-				string s1 = func.S( 1 );  // s1 
-				if( s1 == "E" ){
-					if( data_E != null ){
-						i2 = data_E.GetIntSchRank();
-					}else{
-						return false; // no enemy is false
-					}
-				}
-				else if( s1 == "I" ){
-					if( data_I != null ){
-						i2 = data_I.GetIntSchRank();
-					}else{
-						return false; // no enemy is false
-					}
-				}
-				else{
-					i2 = func.I( 1 );
-				}
-				//
-				if( MyScript.Instance.ConditionInt( i1 , func.S(0) ,i2  ) == false  ){
-					return   false;		// always fail
-				}
+                    if (unit.n_CharID != charid)
+                        continue;
 
-			}
-			else if( func.sFunc == "EXTRANK_I"  )
-			{
-				int i1 = data_I.GetExtSchRank();
-				int i2 = 0;
-				string s1 = func.S( 1 );  // s1 
-				if( s1 == "E" ){
-					if( data_E != null ){
-						i2 = data_E.GetExtSchRank();
-					}else{
-						return false; // no enemy is false
-					}
-				}
-				else if( s1 == "I" ){
-					if( data_I != null ){
-						i2 = data_I.GetExtSchRank();
-					}else{
-						return false; // no enemy is false
-					}
-				}
-				else{
-					i2 = func.I( 1 );
-				}
-				//
-				if( MyScript.Instance.ConditionInt( i1 , func.S(0) ,i2  ) == false  ){
-					return   false;		// always fail
-				}				
-			}
-			else if( func.sFunc == "ITEM_I"  )
-			{
-				int nItemID = func.I(0);
-				if( data_I.CheckItemEquiped( nItemID ) == false ){
-					return false;
-				}
-			}
-			// Fight stat check
-			else if( func.sFunc == "FST_ATKER"  )
-			{				
-				return data_I.IsStates( _FIGHTSTATE._ATKER );
-			}
-			else if( func.sFunc == "FST_DEFER"  )
-			{				
-				return data_I.IsStates( _FIGHTSTATE._ATKER )==false;
-			}
-			else if( func.sFunc == "FST_DAMAGE"  )
-			{
-				return data_I.IsStates( _FIGHTSTATE._DAMAGE );
-			}
-			else if( func.sFunc == "FST_KILL"  )
-			{
-				return data_I.IsStates( _FIGHTSTATE._KILL );
-			}
-			else if( func.sFunc == "FST_DEAD"  )
-			{
-				return data_I.IsStates( _FIGHTSTATE._DEAD );
-			}
-			else if( func.sFunc == "FST_DODGE"  )
-			{
-				return data_I.IsStates( _FIGHTSTATE._DODGE );
-			}
-			else if( func.sFunc == "FST_THROUGH"  )
-			{
-				return data_I.IsStates( _FIGHTSTATE._THROUGH );
-			}
-			else if( func.sFunc == "FST_MISS"  )
-			{
-				return data_I.IsStates( _FIGHTSTATE._MISS );
-			}
-			else if( func.sFunc == "FST_COMBO"  )
-			{
-				return data_I.IsStates( _FIGHTSTATE._COMBO );
-			}
-			else if( func.sFunc == "FST_BROKEN"  )
-			{
-				return data_I.IsStates( _FIGHTSTATE._BROKEN );
-			}
+                    if (dist > 0 && (dist < iVec2.Dist(data_I.n_X, data_I.n_Y, unit.n_X, unit.n_Y)))
+                    {
+                        continue;
+                    }
 
-			else{
-				Debug.LogError( string.Format( "Error-Can't find script cond func '{0}'" , func.sFunc ) );
-			}
+                    if (schoolid > 0 && !unit.IsActiveSchool(schoolid) )
+                    {
+                        continue;
+                    }
+
+                    if (buffid > 0 && !data_I.Buffs.HaveBuff(buffid))
+                    {
+                        continue;
+                    }
+
+                    // break when find
+                    bFind = true;
+                    break;
+
+                }
+                if (bFind == false)
+                {
+                    return false;
+                }
+
+            }
+
+
+            else if (func.sFunc == "RANGE" || func.sFunc == "DIST")
+            {
+                if ((data_I != null) && (data_E != null))
+                {
+                    int Range = func.I(1);
+                    int nDist = iVec2.Dist(data_I.n_X, data_I.n_Y, data_E.n_X, data_E.n_Y);
+                    if (MyScript.Instance.ConditionInt(nDist, func.S(0), Range) == false)
+                    {
+                        return false;       // always fail
+                    }
+
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else if (func.sFunc == "DIST_C")
+            {
+                cUnitData pCast = buff.GetCastUnit();
+                if (pCast != null)
+                {
+                    int Range = func.I(1);
+                    int nDist = iVec2.Dist(data_I.n_X, data_I.n_Y, pCast.n_X, pCast.n_Y);
+                    if (MyScript.Instance.ConditionInt(nDist, func.S(0), Range) == false)
+                    {
+                        return false;       // always fail
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            else if (func.sFunc == "GENDER_I")
+            {
+                int gender = func.I(0);
+                if (data_I != null)
+                {
+                    CHARS charData = ConstDataManager.Instance.GetRow<CHARS>(data_I.n_CharID);
+                    if (gender != charData.n_GENDER)
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else if (func.sFunc == "GENDER_E")
+            {
+                int gender = func.I(0);
+                if (data_E != null)
+                {
+                    CHARS charData = ConstDataManager.Instance.GetRow<CHARS>(data_E.n_CharID);
+                    if (gender != charData.n_GENDER)
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            //雙方內外功星等比較
+            else if (func.sFunc == "INTRANK_I")
+            {
+                int i1 = data_I.GetIntSchRank();
+                int i2 = 0;
+                string s1 = func.S(1);  // s1 
+                if (s1 == "E")
+                {
+                    if (data_E != null)
+                    {
+                        i2 = data_E.GetIntSchRank();
+                    }
+                    else
+                    {
+                        return false; // no enemy is false
+                    }
+                }
+                else if (s1 == "I")
+                {
+                    if (data_I != null)
+                    {
+                        i2 = data_I.GetIntSchRank();
+                    }
+                    else
+                    {
+                        return false; // no enemy is false
+                    }
+                }
+                else
+                {
+                    i2 = func.I(1);
+                }
+                //
+                if (MyScript.Instance.ConditionInt(i1, func.S(0), i2) == false)
+                {
+                    return false;       // always fail
+                }
+
+            }
+            else if (func.sFunc == "EXTRANK_I")
+            {
+                int i1 = data_I.GetExtSchRank();
+                int i2 = 0;
+                string s1 = func.S(1);  // s1 
+                if (s1 == "E")
+                {
+                    if (data_E != null)
+                    {
+                        i2 = data_E.GetExtSchRank();
+                    }
+                    else
+                    {
+                        return false; // no enemy is false
+                    }
+                }
+                else if (s1 == "I")
+                {
+                    if (data_I != null)
+                    {
+                        i2 = data_I.GetExtSchRank();
+                    }
+                    else
+                    {
+                        return false; // no enemy is false
+                    }
+                }
+                else
+                {
+                    i2 = func.I(1);
+                }
+                //
+                if (MyScript.Instance.ConditionInt(i1, func.S(0), i2) == false)
+                {
+                    return false;       // always fail
+                }
+            }
+            else if (func.sFunc == "ITEM_I")
+            {
+                int nItemID = func.I(0);
+                if (data_I.CheckItemEquiped(nItemID) == false)
+                {
+                    return false;
+                }
+            }
+            else if (func.sFunc == "COUNT")
+            {
+                if (MyScript.Instance.ConditionCount(func.I(0), func.S(1), func.I(2)) == false)
+                {
+                    return false;
+                }
+            }
+
+            // Fight stat check
+            else if (func.sFunc == "FST_ATKER")
+            {
+                return data_I.IsStates(_FIGHTSTATE._ATKER);
+            }
+            else if (func.sFunc == "FST_DEFER")
+            {
+                return data_I.IsStates(_FIGHTSTATE._ATKER) == false;
+            }
+            else if (func.sFunc == "FST_DAMAGE")
+            {
+                return data_I.IsStates(_FIGHTSTATE._DAMAGE);
+            }
+            else if (func.sFunc == "FST_KILL")
+            {
+                return data_I.IsStates(_FIGHTSTATE._KILL);
+            }
+            else if (func.sFunc == "FST_DEAD")
+            {
+                return data_I.IsStates(_FIGHTSTATE._DEAD);
+            }
+            else if (func.sFunc == "FST_DODGE")
+            {
+                return data_I.IsStates(_FIGHTSTATE._DODGE);
+            }
+            else if (func.sFunc == "FST_THROUGH")
+            {
+                return data_I.IsStates(_FIGHTSTATE._THROUGH);
+            }
+            else if (func.sFunc == "FST_MISS")
+            {
+                return data_I.IsStates(_FIGHTSTATE._MISS);
+            }
+            else if (func.sFunc == "FST_COMBO")
+            {
+                return data_I.IsStates(_FIGHTSTATE._COMBO);
+            }
+            else if (func.sFunc == "FST_BROKEN")
+            {
+                return data_I.IsStates(_FIGHTSTATE._BROKEN);
+            }
+
+            else
+            {
+                Debug.LogError(string.Format("Error-Can't find script cond func '{0}'", func.sFunc));
+            }
 		}
 		return true;
 	}

@@ -799,6 +799,17 @@ public class cUnitData{
 		Relive();
 	}
 
+    public bool IsActiveSchool(int nSchool)
+    {
+        foreach (int id in nActSch) {
+            if (id == nSchool) {
+                return true;
+            }
+        }
+            
+        return false;
+    }
+
 	public int GetSchoolLv( int School )
 	{
 		int nLv = 0;

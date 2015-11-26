@@ -146,7 +146,19 @@ public class MyScript {
 						return false;
 					}	
 				}
-				else{
+                else if (func.sFunc == "COUNT")
+                {
+                    _CAMP campid = (_CAMP)func.I(0);
+                    int count = GameDataManager.Instance.GetCampNum(campid);
+                    int nNum = func.I(2);
+                    if (MyScript.Instance.ConditionInt(count, func.S(1), func.I(2)) == false)
+                    {
+                        return false;       // always fail
+                    }
+
+                }
+                else
+                {
 					Debug.LogError( string.Format( "Error-Can't find script cond func '{0}'" , func.sFunc ) );
 				}
 			}
@@ -177,13 +189,13 @@ public class MyScript {
 	}
 
 
-	// Condition
-	// condition check 
-	bool ConditionGO(  ) // always active
+    // Condition
+    // condition check 
+    public bool ConditionGO(  ) // always active
 	{
 		return true;
 	}
-	bool ConditionCombat( int nChar1 , int nChar2  )
+    public bool ConditionCombat( int nChar1 , int nChar2  )
 	{
 		if( BattleManager.Instance.IsBattlePhase() )
 		{
@@ -222,15 +234,15 @@ public class MyScript {
 	}
 
 
-	//====================================================
-	bool ConditionRate( int Rate )
+    //====================================================
+    public bool ConditionRate( int Rate )
 	{
 		int nRoll = Random.Range (0, 100);
 
 		return ( Rate > nRoll );
 	}
 
-	bool ConditionAllDead( int nCampID )
+    public bool ConditionAllDead( int nCampID )
 	{
 		// assign id
 //		cCamp unit = GameDataManager.Instance.GetCamp( (_CAMP)nCampID );
@@ -243,8 +255,8 @@ public class MyScript {
 
 //		return true;
 	}
-	
-	bool ConditionUnitDead( _CAMP nCampID ,int nCharID )
+
+    public bool ConditionUnitDead( _CAMP nCampID ,int nCharID )
 	{
 		// assign id
 //		cCamp camp = GameDataManager.Instance.GetCamp( (_CAMP)nCampID );
@@ -278,8 +290,8 @@ public class MyScript {
 		return true;
 	}
 
-	
-	bool ConditionUnitAlive( _CAMP nCampID ,int nCharID )
+
+    public bool ConditionUnitAlive( _CAMP nCampID ,int nCharID )
 	{
 		// assign id
 		//		cCamp camp = GameDataManager.Instance.GetCamp( (_CAMP)nCampID );
@@ -308,7 +320,7 @@ public class MyScript {
 		return false;
 	}
 
-	bool ConditionRound( int nID , int nCamp =0)
+    public bool ConditionRound( int nID , int nCamp =0)
 	{
 		//	if( GameDataManager.Instance.nRoundStatus != 0 )
 		//		return false;
@@ -319,7 +331,7 @@ public class MyScript {
 		}
 		return false ;
 	}
-	bool ConditionAfter( int nID , int nRound, int nCamp = 0)
+    public bool ConditionAfter( int nID , int nRound, int nCamp = 0)
 	{
 		if( GameDataManager.Instance.EvtDonePool.ContainsKey( nID )  ){
 			int nCompleteRound = GameDataManager.Instance.EvtDonePool[ nID ];
@@ -331,7 +343,7 @@ public class MyScript {
 		return false;
 	}
 
-	bool ConditionDone( int nID , int nRound )
+    public bool ConditionDone( int nID , int nRound )
 	{
 		if( GameDataManager.Instance.EvtDonePool.ContainsKey( nID )  ){
 			if( nRound == 0 )
@@ -343,7 +355,7 @@ public class MyScript {
 		return false;
 	}
 
-	bool ConditionNotDone( int nID  )
+    public bool ConditionNotDone( int nID  )
 	{
 		if( !GameDataManager.Instance.EvtDonePool.ContainsKey (nID) ) {
 			return true;
@@ -352,7 +364,7 @@ public class MyScript {
 	}
 
 
-	bool ConditionDist( int nChar1 , int nChar2 , int nDist )
+    public bool ConditionDist( int nChar1 , int nChar2 , int nDist )
 	{
 		//check range
 		Panel_unit unit1 = Panel_StageUI.Instance.GetUnitByCharID (nChar1);
@@ -367,7 +379,7 @@ public class MyScript {
 		return false;
 	}
 
-	bool ConditionHp( int nChar1 , string op , float fValue )
+    public bool ConditionHp( int nChar1 , string op , float fValue )
 	{
 		cUnitData unit = GameDataManager.Instance.GetUnitDateByCharID ( nChar1 );
 		if (unit != null) {
@@ -397,7 +409,7 @@ public class MyScript {
 		return false;
 	}
 
-	bool ConditionInRect( int nChar1 ,int x1 ,int y1 , int x2 , int y2  ) 
+    public bool ConditionInRect( int nChar1 ,int x1 ,int y1 , int x2 , int y2  ) 
 	{
 		cUnitData unit = GameDataManager.Instance.GetUnitDateByCharID ( nChar1 );
 		if (unit != null) {
@@ -406,7 +418,7 @@ public class MyScript {
 		return false;
 	}
 
-	bool ConditionNoRect( int nChar1 ,int x1 ,int y1 , int x2 , int y2  ) 
+    public bool ConditionNoRect( int nChar1 ,int x1 ,int y1 , int x2 , int y2  ) 
 	{
 		cUnitData unit = GameDataManager.Instance.GetUnitDateByCharID ( nChar1 );
 		if (unit != null) {
@@ -415,8 +427,19 @@ public class MyScript {
 		return false;
 	}
 
-	//============================================================
-	public bool ConditionFloat( float fVal_I , string op , float fVal_E )
+    public bool ConditionCount(int campid , string op , int nNum )
+    {       
+        int count = GameDataManager.Instance.GetCampNum((_CAMP)campid);     
+        if (MyScript.Instance.ConditionInt(count, op , nNum) == true)
+        {
+            return true;       
+        }
+        return false;// always fail
+    }
+
+
+    //============================================================
+    public bool ConditionFloat( float fVal_I , string op , float fVal_E )
 	{
 		if( op == "<"){
 			return (fVal_I < fVal_E);
