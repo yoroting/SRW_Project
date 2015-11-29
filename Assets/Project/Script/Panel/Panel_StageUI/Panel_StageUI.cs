@@ -3655,6 +3655,10 @@ public class Panel_StageUI : MonoBehaviour
 
 			nTot++;
 			GameSystem.PlayFX(unit.gameObject , nFXID );
+
+            // move camera
+            MoveToGameObj(unit.gameObject , true , 0.5f );
+
 		
 		}
 		if (nTot == 0) {

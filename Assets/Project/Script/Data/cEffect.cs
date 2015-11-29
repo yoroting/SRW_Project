@@ -644,6 +644,15 @@ public class TAG_SILENCE: cEffect
 		return (_UNITTAG._SILENCE == tag );
 	}				// check user in one status		
 }
+public class TAG_PEACE : cEffect
+{
+    public TAG_PEACE() { }
+
+    override public bool _IsTag(_UNITTAG tag)
+    {
+        return (_UNITTAG._PEACE == tag);
+    }				// check user in one status		
+}
 //==== immune buff==
 public class IMMUNE: cEffect
 {

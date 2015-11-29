@@ -40,6 +40,7 @@ public enum _UNITTAG
 	_CHARGE = 2 ,    // 突襲移動. no block
 	_NODIE	= 3 ,		// 不死身... 劇情NPC
 	_SILENCE = 4 ,    // can't  skill
+    _PEACE  = 5 ,     // 不能攻擊
 }
 //
 public enum _ITEMSLOT

@@ -1235,8 +1235,13 @@ public class MyScript {
 				else if( func.sFunc  == "TAG_SILENCE") {  // 被封言
 					pool.Add( new TAG_SILENCE( ) );
 				}
+                else if (func.sFunc == "TAG_PEACE")
+                {  // 中立
+                    pool.Add(new TAG_PEACE());
+                }
+                
 				//=============== fight status
-				else if( func.sFunc  == "IS_HIT") { // 必HIT
+				else if ( func.sFunc  == "IS_HIT") { // 必HIT
 					pool.Add( new IS_HIT( ) );
 					//pool.Add( new IS_UNIT_STATUS( _FIGHTSTATE._DODGE ) );
 				}

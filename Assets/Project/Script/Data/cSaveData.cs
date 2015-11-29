@@ -355,7 +355,7 @@ public class cSaveData{
 		JsonReader reader = new JsonReader(sJson, readerSettings);
 		
 		cSaveData save = (cSaveData)reader.Deserialize ( typeof(cSaveData) );
-		string sInfo = string.Format ( "Stage {0} " , save.n_StageID );
+		string sInfo = string.Format ( "STORY {0} " , save.n_StoryID );
 		return sInfo;
 
 	}

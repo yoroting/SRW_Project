@@ -30,8 +30,14 @@ public class MobAI  {
 				_AI_PassiveAttack( mob , nSkillID ,  nMove ) ;
 			}break;
 			case _AI_SEARCH._DEFENCE:{ //堅守原地
-                                       //_AI_Defence( mob , nSkillID ,  0 ) ;
-                _AI_PassiveAttack(mob, nSkillID, 0 );
+                    if (mobdata.eComboAI == _AI_COMBO._DEFENCE)
+                    {
+                        _AI_Defence( mob , nSkillID ,  0 ) ;
+                    }
+                    else
+                    {                                       
+                        _AI_PassiveAttack(mob, nSkillID, 0);
+                    }
             }
                 break;
 			case _AI_SEARCH._TARGET:{ //前往指定
@@ -169,6 +175,11 @@ public class MobAI  {
 		foreach (KeyValuePair<Panel_unit , int> pair in items) {
 			// try path to target
 			bool bCanAtk = false;
+            
+            if (pair.Key.pUnitData== null || pair.Key.pUnitData.IsTag( _UNITTAG._PEACE ) ) {
+                continue;
+            }
+
 			int nDist = mob.Loc.Dist( pair.Key.Loc );
 			if( nDist > nSkillRange  ) // pathfind if need
 			{
@@ -251,7 +262,17 @@ public class MobAI  {
 		foreach (KeyValuePair<Panel_unit , int> pair in items) {
 			// try path to target
 			bool bCanAtk = false;
-			int nDist = pair.Value; // value is dist
+            if (pair.Key.CharID == 108)
+            {
+                bCanAtk = false;
+            }
+
+            if (pair.Key.pUnitData == null || pair.Key.pUnitData.IsTag(_UNITTAG._PEACE))
+            {
+                continue;
+            }
+
+            int nDist = pair.Value; // value is dist
 			if( nDist > nSkillRange  ) // pathfind if need
 			{
 				List< iVec2> path = FindPathToTarget( mob , pair.Key , nMove , nSkillRange );
@@ -318,7 +339,12 @@ public class MobAI  {
 		foreach (KeyValuePair<Panel_unit , int> pair in items) {
 			// try path to target
 			bool bCanAtk = false;
-			int nDist = pair.Value; // value is dist
+            if (pair.Key.pUnitData == null || pair.Key.pUnitData.IsTag(_UNITTAG._PEACE))
+            {
+                continue;
+            }
+
+            int nDist = pair.Value; // value is dist
 			if( nDist > nSkillRange  ) // pathfind if need
 			{
 				List< iVec2> path = FindPathToTarget( mob , pair.Key , nMove );
@@ -413,7 +439,11 @@ public class MobAI  {
 		foreach (KeyValuePair<Panel_unit , int> pair in items) {
 			// try path to target
 			bool bCanAtk = false;
-			int nDist = pair.Value; // value is dist
+            if (pair.Key.pUnitData == null || pair.Key.pUnitData.IsTag(_UNITTAG._PEACE))
+            {
+                continue;
+            }
+            int nDist = pair.Value; // value is dist
 			if( nDist > nSkillRange  ) // pathfind if need
 			{
 				// 距離太遠，怎樣都不可能到的 先放棄
@@ -513,6 +543,7 @@ public class MobAI  {
 			_AI_NormalAttack( mob , nSkillID ,nMove  );
 			return ;
 		}
+        // 無視 中立效果
 		//=========================
 		bool bCanAtk = false;
 		int nMinRange =0;
