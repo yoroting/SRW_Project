@@ -146,6 +146,21 @@ public class MyScript {
 						return false;
 					}	
 				}
+                else if (func.sFunc == "INPOS")
+                {
+                    if (ConditionInPos(func.I(0), func.I(1), func.I(2) ) == false)
+                    {
+                        return false;
+                    }
+                }
+                else if (func.sFunc == "NOPOS")
+                {
+                    if (ConditionNoPos(func.I(0), func.I(1), func.I(2) ) == false)
+                    {
+                        return false;
+                    }
+                }
+
                 else if (func.sFunc == "COUNT")
                 {
                     _CAMP campid = (_CAMP)func.I(0);
@@ -411,21 +426,56 @@ public class MyScript {
 
     public bool ConditionInRect( int nChar1 ,int x1 ,int y1 , int x2 , int y2  ) 
 	{
-		cUnitData unit = GameDataManager.Instance.GetUnitDateByCharID ( nChar1 );
-		if (unit != null) {
-			return MyTool.CheckInRect( unit.n_X , unit.n_Y , x1 , y1 , x2-x1 , y2-y1 );
-		}
+        int sx = x1 < x2 ? x1 : x2;
+        int sy = y1 < y2 ? y1 : y2;
+        int ex = x1 > x2 ? x1 : x2;
+        int ey = y1 > y2 ? y1 : y2;
+        int w = x2 - x1;
+        int h = y2 - y1;
+
+        foreach (KeyValuePair<int, cUnitData> pair in GameDataManager.Instance.UnitPool)
+        {          
+            if (pair.Value.n_CharID != nChar1)
+                continue;
+            if (MyTool.CheckInRect(pair.Value.n_X, pair.Value.n_Y, sx, sy, w, h))
+            {
+                return true;
+            }
+        }
+
+  //      cUnitData unit = GameDataManager.Instance.GetUnitDateByCharID ( nChar1 );
+		//if (unit != null) {
+		//	return MyTool.CheckInRect( unit.n_X , unit.n_Y , x1 , y1 , x2-x1 , y2-y1 );
+		//}
 		return false;
 	}
 
     public bool ConditionNoRect( int nChar1 ,int x1 ,int y1 , int x2 , int y2  ) 
 	{
-		cUnitData unit = GameDataManager.Instance.GetUnitDateByCharID ( nChar1 );
-		if (unit != null) {
-			return (MyTool.CheckInRect( unit.n_X , unit.n_Y , x1 , y1 , x2 , y2 )== false);
-		}
-		return false;
+
+        return ConditionInRect(nChar1 ,x1 , y1 , x2 , y2 ) == false ;
+        //cUnitData unit = GameDataManager.Instance.GetUnitDateByCharID ( nChar1 );
+        //if (unit != null) {
+        //	return (MyTool.CheckInRect( unit.n_X , unit.n_Y , x1 , y1 , x2 , y2 )== false);
+        //}
+//        return false;
 	}
+
+    public bool ConditionInPos(int nChar1, int x1, int y1)
+    {
+        cUnitData unit = GameDataManager.Instance.GetUnitDateByCharID(nChar1);
+        if (unit != null)
+        {
+            return ((unit.n_X== x1)&&(unit.n_Y==y1));
+        }
+        return false;
+    }
+
+    public bool ConditionNoPos(int nChar1, int x1, int y1)
+    {
+        return ConditionInPos(nChar1,x1,y1) == false;         
+    }
+    
 
     public bool ConditionCount(int campid , string op , int nNum )
     {       
@@ -663,7 +713,7 @@ public class MyScript {
 				evt.nChar  = func.I(0);
 				GameEventManager.DispatchEvent ( evt  );
 			}		
-			else if( func.sFunc == "BACKBROUND") 
+			else if( func.sFunc == "BACKGROUND" || func.sFunc == "TALKBG" ) 
 			{
 				TalkBackGroundEvent evt = new TalkBackGroundEvent();
 				//evt.nType = func.I(0);
