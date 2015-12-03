@@ -1792,6 +1792,11 @@ public partial class BattleManager
 		//cUnitData pAtker = GameDataManager.Instance.GetUnitDateByIdent( nAtker ); 	//Panel_StageUI.Instance.GetUnitByIdent( nAtker ); 
 		if ( (pAtker == null) || (pDefer == null) )
 			return null;
+        // 中立 單位 不處理 
+        if (pDefer.IsTag(_UNITTAG._PEACE)) {
+            return null;
+        }
+
 
 		// 守方強制迴避- Yoro : 需過濾非攻擊性技能
 		bool bIsDamage =  MyTool.IsDamageSkill( nSkillID );
