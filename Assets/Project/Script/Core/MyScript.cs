@@ -98,7 +98,7 @@ public class MyScript {
 				}		
 				else if( func.sFunc == "AFTER"  )
 				{
-					if( ConditionAfter( func.I(0),func.I(1), func.I(2)) == false )
+                    if ( ConditionAfter( func.I(0),func.I(1), func.I(2)) == false )
 					{
 						return false;
 					}				
@@ -346,14 +346,20 @@ public class MyScript {
 		}
 		return false ;
 	}
-    public bool ConditionAfter( int nID , int nRound, int nCamp = 0)
+    public bool ConditionAfter( int nID , int nRound, int nCamp = 0 ) // -1 = any camp
 	{
 		if( GameDataManager.Instance.EvtDonePool.ContainsKey( nID )  ){
 			int nCompleteRound = GameDataManager.Instance.EvtDonePool[ nID ];
-            if (nCamp == (int)GameDataManager.Instance.nActiveCamp)
+            if (nCamp > 0)  // camp = 0 代表 兩方陣營都可觸發
             {
-                return (GameDataManager.Instance.nRound >= (nCompleteRound + nRound));
+                if (nCamp != (int)GameDataManager.Instance.nActiveCamp) {
+                    return false;
+                }
             }
+//            if (nCamp == (int)GameDataManager.Instance.nActiveCamp) // 這樣寫將導致怪物急殺 我方所觸發的事件不能觸發
+  //          {
+            return (GameDataManager.Instance.nRound >= (nCompleteRound + nRound));
+    //        }
 		}
 		return false;
 	}
@@ -847,7 +853,7 @@ public class MyScript {
 			else if( func.sFunc  == "UNITDEAD") 
 			{			
 				//int nCharID = func.I( 0 );		
-				Panel_StageUI.Instance.OnStageUnitDeadEvent( func.I(0));
+				Panel_StageUI.Instance.OnStageUnitDeadEvent( func.I(0), func.I(1));
 
 				// dont close auto.
 			//	TalkDeadEvent evt = new TalkDeadEvent();			

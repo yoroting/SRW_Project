@@ -2140,10 +2140,12 @@ public class Panel_StageUI : MonoBehaviour
 	}
 
 
-	void DelUnit(  int nCharid )
+	void DelUnit(  int nCharid , int nNum=0 )
 	{
-		//change to del all unit with char
-		List<int> mlist = new List<int>();
+        //change to del all unit with char
+
+        int nCount = 0;
+        List<int> mlist = new List<int>();
 		//Dictionary< _CAMP , cCamp > CampPool = GameDataManager.Instance.GetCamp;			// add Camp
 		foreach (KeyValuePair< int , Panel_unit > pair in IdentToUnit) {
 			if( pair.Value == null ){
@@ -2156,7 +2158,14 @@ public class Panel_StageUI : MonoBehaviour
 			pair.Value.FreeUnitData();
 			pair.Value.Recycle();
 			mlist.Add( pair.Key );
-		}
+
+            // num
+            nCount ++;
+            if (nNum > 0 && nCount >= nNum) {
+                break;
+            }
+
+        }
 
 
 		///
@@ -3941,7 +3950,7 @@ public class Panel_StageUI : MonoBehaviour
 		}
 	}
 	// 單位死亡
-	public void OnStageUnitDeadEvent( int nCharID )
+	public void OnStageUnitDeadEvent( int nCharID , int nNum = 0)
 	{
 		// auto close all say window. 
         // bug .. auto close in dead end
@@ -3951,10 +3960,11 @@ public class Panel_StageUI : MonoBehaviour
 
 		if( m_bIsSkipMode )
 		{
-			DelUnit( nCharID );
+			DelUnit( nCharID , nNum );
 			return;
 		}
 
+        int nCount = 0;
 		foreach (KeyValuePair< int ,Panel_unit > pair in IdentToUnit) {
 			if( pair.Value!= null )
 			{
@@ -3962,8 +3972,12 @@ public class Panel_StageUI : MonoBehaviour
 				{
 					if( pair.Value.bIsDead == false )
 					{
-							pair.Value.SetDead();
-					}
+						pair.Value.SetDead();
+                        nCount++;
+                    }
+                    if (nNum > 0 && nCount >= nNum) {
+                        break;
+                    }
 				}
 			}
 		}
