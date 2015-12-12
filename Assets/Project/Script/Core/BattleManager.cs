@@ -918,12 +918,14 @@ public partial class BattleManager
 //		}		
 //	}
 
-	static void PlayCharFightBGMbyIdent( int nIdent )
+	public void PlayCharFightBGMbyIdent( int nIdent )
 	{
 		if( nIdent == 0 )
 			return;
+        if (MyTool.IsDamageSkill(nAtkerSkillID) == false) // 干擾技能 不播放音樂
+            return;
 
-		cUnitData pData = GameDataManager.Instance.GetUnitDateByIdent( nIdent );
+        cUnitData pData = GameDataManager.Instance.GetUnitDateByIdent( nIdent );
 		if( pData == null ){
 			return ;
 		}
@@ -934,10 +936,14 @@ public partial class BattleManager
 		PlayCharFightBGM( pData.n_CharID ); 
 	}
 
-	static void PlayCharFightBGM( int nCharID )
+    public void PlayCharFightBGM( int nCharID )
 	{
 		if( nCharID == 0 )
 			return;
+
+        if (MyTool.IsDamageSkill(nAtkerSkillID) == false)
+            return;
+
 		CHARS pData = ConstDataManager.Instance.GetRow< CHARS >( nCharID ); 
 		if( pData == null ){
 			return ;
@@ -952,16 +958,14 @@ public partial class BattleManager
 		nAtkerID = nAtkIdent;
 		nDeferID = nDefIdent;
 		nAtkerSkillID = nSkillID ;
-
-
-		PlayCharFightBGMbyIdent( nAtkIdent );
-		PlayCharFightBGMbyIdent( nDefIdent );
-
-
-
 		eBattleType = _BATTLE._ATTACK;
-	}
-	public void PlayCast (int nAtkIdent, int nDefIdent , int nGridX , int nGridY , int nSkillID)
+
+        PlayCharFightBGMbyIdent(nAtkIdent);
+        PlayCharFightBGMbyIdent(nDefIdent);
+
+
+    }
+    public void PlayCast (int nAtkIdent, int nDefIdent , int nGridX , int nGridY , int nSkillID)
 	{
 		nAtkerID = nAtkIdent;
 		nDeferID = nDefIdent;
@@ -969,14 +973,14 @@ public partial class BattleManager
 		nTarGridY = nGridY;
 
 		nAtkerSkillID = nSkillID;
-
-		PlayCharFightBGMbyIdent( nAtkIdent );
-		PlayCharFightBGMbyIdent( nDefIdent );
-
 		eBattleType = _BATTLE._CAST ;
-	}
-	// no used
-	public void PlayBattleID (int battleid )
+        
+        PlayCharFightBGMbyIdent(nAtkIdent);
+        PlayCharFightBGMbyIdent(nDefIdent);
+
+    }
+    // no used
+    public void PlayBattleID (int battleid )
 	{
 		nBattleID = battleid;
 	}

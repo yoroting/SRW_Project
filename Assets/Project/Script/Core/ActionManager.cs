@@ -284,8 +284,13 @@ public partial class ActionManager
 
 			cUnitData caster = GameDataManager.Instance.GetUnitDateByIdent( nAtkIdent );
 			if( caster != null ){
-				// 有 cost
-				if( nSkillID > 0 )
+                // 檢查 有無攻擊時取消的 buff
+                if (caster.Buffs.BuffCheckCancel()) {
+                    caster.SetUpdate(cAttrData._BUFF);
+                }
+
+                // 有 cost
+                if ( nSkillID > 0 )
 				{
 					BattleManager.ConvertSkillTargetXY( caster , nSkillID , nTargetIdent , ref nGridX ,ref nGridY   );
 					act.nTarGridX = nGridX;

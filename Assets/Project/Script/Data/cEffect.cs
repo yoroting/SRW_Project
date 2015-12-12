@@ -781,42 +781,43 @@ public class IS_NODMG : cEffect
 
 //==========================================================================
 // use to cache condition sctipr parser result
-public class  cEffectCondition
+public class cEffectCondition
 {
-	//	public enum _CON
-	//	{
-	//		_NULL = 0,		// No cond
-	//		BUFF_I,
-	//		BUFF_E,
-	//		MAR_I,
-	//		MAR_E,
-	//	};
-	//	public _CON eType;
-	
-	List<  List<cTextFunc> > CondLst;		// multi array.
-	public void Clear()
-	{
-		if( CondLst != null ){
-			CondLst.Clear();
-		}
-	}
+    //	public enum _CON
+    //	{
+    //		_NULL = 0,		// No cond
+    //		BUFF_I,
+    //		BUFF_E,
+    //		MAR_I,
+    //		MAR_E,
+    //	};
+    //	public _CON eType;
 
-	public void Add( CTextLine line )
-	{
-		if (CondLst == null)
-			CondLst = new List<  List<cTextFunc> > ();
-		if (line == null)
-			return;
-		CondLst.Add (line.GetFuncList ());
-	}
-	
-	private bool CheckCond( cBuffData buff , cUnitData data_I , cUnitData data_E , List<cTextFunc> funcList, int nSkillID, int  nBuffID   )
-	{
-		if (funcList == null)
-			return false;
-		
-		foreach( cTextFunc func in funcList )
-		{
+    List<List<cTextFunc>> CondLst;      // multi array.
+    public void Clear()
+    {
+        if (CondLst != null)
+        {
+            CondLst.Clear();
+        }
+    }
+
+    public void Add(CTextLine line)
+    {
+        if (CondLst == null)
+            CondLst = new List<List<cTextFunc>>();
+        if (line == null)
+            return;
+        CondLst.Add(line.GetFuncList());
+    }
+
+    private bool CheckCond(cBuffData buff, cUnitData data_I, cUnitData data_E, List<cTextFunc> funcList, int nSkillID, int nBuffID)
+    {
+        if (funcList == null)
+            return false;
+
+        foreach (cTextFunc func in funcList)
+        {
             if (func.sFunc == "GO")
             {
                 return true;        // always true
@@ -1037,16 +1038,16 @@ public class  cEffectCondition
             else if (func.sFunc == "SCHOOL_I")
             {
                 int schoolid = func.I(0);
-               // if (data_I.nActSch[0] != schoolid && data_I.nActSch[1] != schoolid)
+                // if (data_I.nActSch[0] != schoolid && data_I.nActSch[1] != schoolid)
                 if (!data_I.IsActiveSchool(schoolid))
-                    {
+                {
                     return false;
                 }
             }
             else if (func.sFunc == "SCHOOL_E")
             {
                 int schoolid = func.I(0);
-                if (!data_E.IsActiveSchool(schoolid) )
+                if (!data_E.IsActiveSchool(schoolid))
                 {
                     return false;
                 }
@@ -1071,7 +1072,7 @@ public class  cEffectCondition
                         continue;
                     }
 
-                    if (schoolid > 0 && !unit.IsActiveSchool(schoolid) )
+                    if (schoolid > 0 && !unit.IsActiveSchool(schoolid))
                     {
                         continue;
                     }
@@ -1300,26 +1301,29 @@ public class  cEffectCondition
             {
                 Debug.LogError(string.Format("Error-Can't find script cond func '{0}'", func.sFunc));
             }
-		}
-		return true;
-	}
-	
-	
-	public bool Check( cBuffData buff , cUnitData data_I , cUnitData data_E , int nSkillID  , int nBuffID  ){
-		
-		if (CondLst == null)
-			return false;
-		
-		foreach( List<cTextFunc> funcList in CondLst )
-		{
-			if(CheckCond( buff , data_I ,data_E ,funcList ,nSkillID,nBuffID ) == true ){
-				return true;			// any one passed. all passed
-			}
-		}
-		return false;
-	}
-}
+        }
+        return true;
+    }
 
+
+    public bool Check(cBuffData buff, cUnitData data_I, cUnitData data_E, int nSkillID, int nBuffID)
+    {
+
+        if (CondLst == null)
+            return false;
+
+        foreach (List<cTextFunc> funcList in CondLst)
+        {
+            if (CheckCond(buff, data_I, data_E, funcList, nSkillID, nBuffID) == true)
+            {
+                return true;            // any one passed. all passed
+            }
+        }
+        return false;
+    }
+
+   
+}
 //public class BUFF_I: cEffectCondition
 //{
 //	public BUFF_I( int nBuffid ){

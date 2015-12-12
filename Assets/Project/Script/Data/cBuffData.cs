@@ -268,6 +268,43 @@ public class cBuffs
 		return null;
 	}
 
+    public bool BuffCheckCancel() {       
+        cUnitData unit_e = GameDataManager.Instance.GetUnitDateByIdent(Owner.FightAttr.TarIdent);
+
+        foreach (KeyValuePair<int, cBuffData> pair in Pool)
+        {
+            // condition
+            cUnitData unit = null;
+            if (pair.Value.nTargetIdent > 0)
+            {
+                unit = pair.Value.GetTargetUnit();
+                if (unit == null)
+                {
+                    Debug.LogFormat("Buff BuffCheckCancel CharID{0}-Buff{1} with null TargetIdent{2} ", Owner.n_CharID, pair.Value.nID, pair.Value.nTargetIdent);
+                }
+            }
+            else
+            {
+                unit = unit_e;
+            }
+
+            //if( MyScript.Instance.CheckSkillCond( pair.Value.tableData.s_BUFF_CONDITON , this.Owner , unit_e ) == true )
+            if (pair.Value.CancelCondition.Check(pair.Value, this.Owner, unit, pair.Value.nSkillID, pair.Value.nID))
+            {
+                RemoveList.Add( pair.Key );
+            }
+        }
+        // have buff need clear
+        foreach (int id in RemoveList)
+        {
+            Pool.Remove(id);
+        }
+
+        bool bUpdate = RemoveList.Count > 0;
+        RemoveList.Clear();
+        return bUpdate;
+    }
+
 	// 取得因BUFF而進階的技能
 	public int GetUpgradeSkill( int nSkillID )
 	{

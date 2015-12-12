@@ -378,9 +378,15 @@ public class Panel_CMDUnitUI : MonoBehaviour
 			Panel_Skill.OpenUI (pCmder.Ident () , _SKILL_TYPE._SKILL ,nAtkerId , cCMD.Instance.eCMDTYPE );
 		}
 	}
-	
+    public void SchoolCmd()
+    {
+        if (pCmder != null)
+        {
+            Panel_SchoolList.Open(1, pCmder.pUnitData );
+        }
+    }
 
-	public void CounterCmd( ) // counter atk
+    public void CounterCmd( ) // counter atk
 	{
 
 		BattleManager.Instance.nDeferSkillID = 0; // counter normaly
@@ -960,7 +966,9 @@ public class Panel_CMDUnitUI : MonoBehaviour
 			AbilityCmd ();
 		} else if (name == _CMD_ID._SKILL.ToString ()) {
 			SkillCmd ();
-		} else if (name == _CMD_ID._WAIT.ToString ()) {
+		} else if (name == _CMD_ID._SCHOOL.ToString())   {
+            SchoolCmd();
+        } else if (name == _CMD_ID._WAIT.ToString ()) {
 			WaitCmd ();
 		} else if (name == _CMD_ID._CANCEL.ToString ()) {
 			CancelCmd ();
