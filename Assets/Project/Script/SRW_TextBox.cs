@@ -18,7 +18,12 @@ public class SRW_TextBox : MonoBehaviour
 {
 
     public GameObject _FaceTexObj;  // Face Texture
-    public GameObject _TextLineObj; // text show
+    public GameObject _TalkBoxObj; // talk box
+    public GameObject _TextLineObj; // text  line show
+    public GameObject _TalkEndObj; // talk end
+
+    UISprite sptalkbox;
+
 
 
     public int CharID { set; get; }
@@ -37,6 +42,8 @@ public class SRW_TextBox : MonoBehaviour
     public bool bIsTweenWidth = false;
     public bool bIsTweenFace = false;
 
+
+    bool m_bAutoClose = false;
 
     bool m_bOnClickMode;        //
     public void SetClickMode()
@@ -60,6 +67,9 @@ public class SRW_TextBox : MonoBehaviour
             list.Clear();
         //	m_lstsContextAll.Clear();
         m_lstsContextWait.Clear();
+
+        if(_TalkEndObj)
+            _TalkEndObj.SetActive(false);
     }
 
     public void SetEnable(bool bActive)
@@ -96,10 +106,15 @@ public class SRW_TextBox : MonoBehaviour
         m_lstsContextWait = new List<string>();
         nTweenObjCount = 0;
         m_bOnClickMode = false;
+        m_bAutoClose = false;
         ClearText();
 
         //SetClickMode ();
-    }
+        if (_TalkBoxObj != null) {
+            sptalkbox = _TalkBoxObj.GetComponent<UISprite>();
+        }
+
+}
 
     // Use this for initialization
     void Start()
@@ -136,11 +151,11 @@ public class SRW_TextBox : MonoBehaviour
     //if( lbl ){
     //			lbl.text = "嗚～先解決那個敵人再說。先[ff0000]點擊[-]我的頭像看看。\n嗚～先解決那個敵人再說。先[ff0000]點擊[-]我的頭像看看\n嗚～先解決那個敵人再說。先[ff0000]點擊[-]我的頭像看看。\n嗚～先解決那個敵人再說。先[ff0000]點擊[-]我的頭像看看\n";
     //		}
-    //		AddText ("嗚～先解決那個敵人再說。先[ff0000]點擊[-]我的頭像看看。\n2嗚～先解決那個敵人再說。先[ff0000]點擊[-]我的頭像看看\n3嗚～先解決那個敵人再說。先[ff0000]點擊[-]我的頭像看看。\n4嗚～先解決那個敵人再說。先[ff0000]點擊[-]我的頭像看看\n");
-    //AddText ("嗚～先解決那個敵人再說。先[ff0000]點擊[-]我的頭像看看。");
-    //AddText ("[ff0000]問世間情是何物，直教人生死相許？[-]\n天南地北雙飛客，老翅幾回寒暑。\n歡樂趣，離別苦，是中更有痴兒女。\n君應有語，渺萬里層雲，\n千山暮雪，只影向誰去。");
-    //AddText ("哎呀你什麼都不知道，我師傅綽號[ff0000]赤練仙子[-]，殺人不扎眼。她把我全家都殺光了。總之就是很危險，傻蛋你快想辦法吧。");
-    //AddText("本遊戲的防禦系統較特別。每個角色身上都有防禦值，被攻擊時都會先扣除防禦值。\n當防禦值為零時才會真的扣除到生命值。生命值歸零則角色撤退不會真正死亡。\n防禦值的回復要靠同伴支援或防禦指令。同一回合內不受到任何攻擊則能全額回復。");
+    //AddText ("嗚～先解決那個敵人再說。先[ff0000]點擊[-]我的頭像看看。\n2嗚～先解決那個敵人再說。先[ff0000]點擊[-]我的頭像看看\n3嗚～先解決那個敵人再說。先[ff0000]點擊[-]我的頭像看看。\n4嗚～先解決那個敵人再說。先[ff0000]點擊[-]我的頭像看看\n");
+//    AddText ("嗚～先解決那個敵人再說。先[ff0000]點擊[-]我的頭像看看。" , 0 );
+    //AddText ("[ff0000]問世間情是何物，直教人生死相許？[-]\n天南地北雙飛客，老翅幾回寒暑。\n歡樂趣，離別苦，是中更有痴兒女。\n君應有語，渺萬里層雲，\n千山暮雪，只影向誰去。", 1);
+//    AddText ("哎呀你什麼都不知道，我師傅綽號[ff0000]赤練仙子[-]，殺人不扎眼。她把我全家都殺光了。總之就是很危險，傻蛋你快想辦法吧。", 2);
+//    AddText("本遊戲的防禦系統較特別。每個角色身上都有防禦值，被攻擊時都會先扣除防禦值。\n當防禦值為零時才會真的扣除到生命值。生命值歸零則角色撤退不會真正死亡。\n防禦值的回復要靠同伴支援或防禦指令。同一回合內不受到任何攻擊則能全額回復。",3);
     //ChangeFace (0);
     //m_sPopText = "[ff0000]012345678[-]901234567890123456789012345678901234567890123456789</color>";
 }
@@ -152,23 +167,27 @@ public class SRW_TextBox : MonoBehaviour
         bIsDeading = false;
         bIsTweenWidth = false;
         bIsTweenFace = false;
+
+
+        m_bAutoClose = false;
         ClearText();
 
 
-        UI2DSprite ui2d = this.gameObject.GetComponent<UI2DSprite>();
-        if (ui2d != null)
-        {
+        // bad effect
+        //UI2DSprite ui2d = this.gameObject.GetComponent<UI2DSprite>();
+        //if (ui2d != null)
+        //{
 
-            TweenWidth t = TweenWidth.Begin<TweenWidth>(this.gameObject, 0.5f);
-            if (t != null)
-            {
-                t.from = 0;
-                t.to = ui2d.width;
-                t.SetOnFinished(OnTweenNotifyEnd);
-                bIsTweenWidth = true;
-               // nTweenObjCount++;
-            }
-        }
+        //    TweenWidth t = TweenWidth.Begin<TweenWidth>(this.gameObject, 0.5f);
+        //    if (t != null)
+        //    {
+        //        t.from = 0;
+        //        t.to = ui2d.width;
+        //        t.SetOnFinished(OnTweenNotifyEnd);
+        //        bIsTweenWidth = true;
+        //       // nTweenObjCount++;
+        //    }
+        //}
     }
 
 
@@ -220,13 +239,24 @@ public class SRW_TextBox : MonoBehaviour
         if (m_sPopText.Length > 0)
         {
             ProcessText(1);
+
+            if (_TalkEndObj != null){
+                _TalkEndObj.SetActive(false);
+            }
         }
         else
         {
             // NextLine(); // go to next line
             // close auto next line in 10/26
+            if (_TalkEndObj != null){
+                _TalkEndObj.SetActive(true);
+            }
         }
         // old end
+        if (m_bAutoClose) {
+            m_bAutoClose = false;
+            SetEnable(false);
+        }
     }
 
     // is all performance end
@@ -287,8 +317,11 @@ public class SRW_TextBox : MonoBehaviour
     }
 
     //目前無法處理跨行 變色的拆行處理。如與到變色關鍵字剛好在換行。直接整個關鍵字下移一行
-    public void AddText(string sText)
+    public void AddText(string sText, int nMode=0 )
     {
+        // set enable auto
+        gameObject.SetActive(true);
+
         if (string.IsNullOrEmpty(sText))
             return;
         if (string.IsNullOrEmpty(m_sPopText) == false)
@@ -409,6 +442,53 @@ public class SRW_TextBox : MonoBehaviour
         }
         // old method end
         //m_sPopText = sText;
+        // change back ground by  mode
+
+        // size
+        if (sptalkbox == null)
+            return;
+
+        sptalkbox.width = 860;
+        if (2 == nMode)
+        {
+            sptalkbox.width = 960;                  // only this is more big
+        }
+
+        // background
+
+        switch (nMode)
+        {
+            case 0:
+                sptalkbox.spriteName = "talk_say";
+
+                break;
+            case 1:
+                sptalkbox.spriteName = "talk_think"; break;
+            case 2:
+
+                sptalkbox.spriteName = "talk_large";
+
+                break;
+            default: sptalkbox.spriteName = "talk_main"; break;
+        }
+
+        // font color
+        UILabel lbl = _TextLineObj.GetComponentInChildren<UILabel>();
+        if (lbl)
+        {
+            //   lbl.text = m_sShowText;
+            if (nMode == 0 || nMode == 2)
+            {
+                lbl.color = Color.black;
+                lbl.effectColor = Color.white;
+            }
+            else {
+                lbl.color = Color.white;
+                lbl.effectColor = Color.black;
+            }
+
+
+        }
     }
 
 
@@ -575,36 +655,45 @@ public class SRW_TextBox : MonoBehaviour
         }
     }
 
-    public void ChangeLayout(int layout = 0)
+    public void ChangeLayout(int layout = 0  )
     {
         //	UITexture tex = GetComponentInChildren<UITexture>();
         //	UILabel lbl = GetComponentInChildren <UILabel> ();
+        // layout 0= left , 1= right .
+        // mode 0- normal , 1-  思考 , 2- 大叫 , 3 - 旁白
+        if (sptalkbox == null)
+            return;
 
-
-        if (layout == 0)
-        {
-            // base pos
-            Vector3 vPos = new Vector3(94, 200, 0);
-            this.transform.localPosition = vPos;
-            if (_FaceTexObj)
-            {
-                Vector3 vTexPos = _FaceTexObj.transform.localPosition;
-                vTexPos.x = -450;
-                _FaceTexObj.transform.localPosition = vTexPos;
-            }
+        sptalkbox.flip = UIBasicSprite.Flip.Nothing;
+        if (1 == layout) {
+            sptalkbox.flip = UIBasicSprite.Flip.Horizontally;
         }
-        else
-        {
-            Vector3 vPos = new Vector3(-100, -200, 0);
-            this.transform.localPosition = vPos;
+        
 
-            if (_FaceTexObj)
-            {
-                Vector3 vTexPos = _FaceTexObj.transform.localPosition;
-                vTexPos.x = 450;
-                _FaceTexObj.transform.localPosition = vTexPos;
-            }
-        }
+        //if (layout == 0)
+        //{
+        //    // base pos
+        //    Vector3 vPos = new Vector3(94, 200, 0);
+        //    this.transform.localPosition = vPos;
+        //    if (_FaceTexObj)
+        //    {
+        //        Vector3 vTexPos = _FaceTexObj.transform.localPosition;
+        //        vTexPos.x = -450;
+        //        _FaceTexObj.transform.localPosition = vTexPos;
+        //    }
+        //}
+        //else
+        //{
+        //    Vector3 vPos = new Vector3(-100, -200, 0);
+        //    this.transform.localPosition = vPos;
+
+        //    if (_FaceTexObj)
+        //    {
+        //        Vector3 vTexPos = _FaceTexObj.transform.localPosition;
+        //        vTexPos.x = 450;
+        //        _FaceTexObj.transform.localPosition = vTexPos;
+        //    }
+        //}
     }
 
     public void SetShake()
@@ -633,6 +722,12 @@ public class SRW_TextBox : MonoBehaviour
             //			tw.SetOnFinished( OnDead );
 
         }
+    }
+
+    public void SetAutoClose()
+    {
+        m_bAutoClose = true;
+
     }
 
     public void OnShakeEnd()

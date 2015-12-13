@@ -34,9 +34,9 @@ public class Panel_Talk : MonoBehaviour {
 	// script pause;
 	bool m_bClickScript;
 	bool m_bIsClosing ;
-
-	// tween check
-	private int nTweenObjCount;
+			
+// tween check
+private int nTweenObjCount;
 	// Declare a delegate type for processing a book:
 	public  void OnTweenNotifyEnd( )
 	{
@@ -87,10 +87,11 @@ public class Panel_Talk : MonoBehaviour {
 		if(AVG_Obj != null ) {
 			AVG_Obj.SetActive( false );
 		}
+      
 #if DEBUG && UNITY_EDITOR
-//		GameDataManager.Instance.nTalkID = 803; // set here this will cause some issue
+        //		GameDataManager.Instance.nTalkID = 803; // set here this will cause some issue
 #endif
-	}
+    }
 	// Use this for initialization
 	void Start () {
 //		TalkWindow_Up.SetActive (false);
@@ -122,32 +123,67 @@ public class Panel_Talk : MonoBehaviour {
 		TalkWindow.SetEnable( false );
 		//TalkWindow_new.SetActive( false );
 		NameObj.SetActive ( false );
-	}
+      
+    }
 
 
 	void OnEnable () {
-		// clear all
-		Clear ();
-
-		int nTalkID = GameDataManager.Instance.nTalkID;
-		if (nTalkID > 0) {
-			SetScript (GameDataManager.Instance.nTalkID); 
-		}
-
-		TweenAlpha tw = TweenAlpha.Begin<TweenAlpha>( this.gameObject , 0.2f );
-		if (tw != null) {
-			//MyTool.SetAlpha (TilePlaneObj, 0.0f);
-			tw.from = 0.0f;
-			tw.to = 1.0f;
-			//tw.onFinished = null ;
-		}
-
-		m_bIsClosing = false;
-		//bSkipMode = false;
+	  // 
 	}
 
-	// Update is called once per frame
-	void Update () {
+    public void Initial()
+    {
+        // clear all
+        Clear();
+        // GameDataManager.Instance.nTalkID = 1512;
+        //int nTalkID = GameDataManager.Instance.nTalkID;
+        //if (nTalkID > 0)
+        //{
+        //    SetScript(GameDataManager.Instance.nTalkID);
+        //}
+
+        TweenAlpha tw = TweenAlpha.Begin<TweenAlpha>(this.gameObject, 0.2f);
+        if (tw != null)
+        {
+            //MyTool.SetAlpha (TilePlaneObj, 0.0f);
+            tw.from = 0.0f;
+            tw.to = 1.0f;
+            //tw.onFinished = null ;
+        }
+
+        m_bIsClosing = false;
+        //bSkipMode = false;
+    }
+
+    public void SetEnable(bool bActive)
+    {
+        foreach (KeyValuePair<int, SRW_AVGObj> pair in m_idToFace)
+        {
+            if (pair.Value != null)
+            {
+                //pair.Value.FadeOut();
+                pair.Value.gameObject.SetActive(bActive );
+                //NGUITools.Destroy( pair.Value.gameObject );
+            }
+        }
+        
+        NameObj.SetActive(bActive);
+
+        // avoid 
+        TalkWindow.SetEnable(bActive);
+
+    }
+    static public void Show(bool bActive )
+    {
+        Panel_Talk pTalk =  PanelManager.Instance.JustGetUI<Panel_Talk>(Panel_Talk.Name )  ;
+        if ( pTalk != null) {
+            pTalk.SetEnable(false);
+
+        }
+    }
+
+    // Update is called once per frame
+    void Update () {
 
 		if (m_bIsClosing)
 			return;
@@ -166,7 +202,8 @@ public class Panel_Talk : MonoBehaviour {
 //				Debug.LogError( "talk ui dead lock with some action in manager");
 //			}
 			return;
-		}
+		}      
+
 
 		// if text window is close . auto click
 		if( TalkWindow_new != null ){
@@ -246,6 +283,8 @@ public class Panel_Talk : MonoBehaviour {
 
 	void EndTalkFinish()
 	{
+        Clear();
+
 		if (m_bIsClosing) {
 			m_bIsClosing = false;
 			PanelManager.Instance.CloseUI (Panel_Talk.Name);
@@ -264,8 +303,8 @@ public class Panel_Talk : MonoBehaviour {
 				SRW_AVGObj boxobj =  obj.GetComponent<SRW_AVGObj>( );
 				if( boxobj )
 				{
-					boxobj.ChangeFace( nCharID );
-					boxobj.ChangeLayout( nType );
+                    boxobj.ChangeLayout(nType);
+                    boxobj.ChangeFace( nCharID );					
 				}
 				m_idToFace.Add( nType , boxobj );
 				nLastPopType = nType;
@@ -284,6 +323,8 @@ public class Panel_Talk : MonoBehaviour {
 	
 	public SRW_AVGObj  SelAVGObjByCharID( int nCharid )
 	{
+//        if (nCharid == 0)
+//            return null;
 		//
 		foreach( KeyValuePair < int ,SRW_AVGObj > pair in m_idToFace )
 		{
@@ -323,6 +364,11 @@ public class Panel_Talk : MonoBehaviour {
 			{
 				boxobj.ChangeFace( nCharid );
 				boxobj.ChangeLayout( nType );
+
+                // avoid create fail and dead lock
+                if (boxobj.gameObject.activeSelf == false) {
+                    return null;
+                }
 			}
 			m_idToFace.Add( nType , boxobj );			
 			return boxobj ;
@@ -332,6 +378,8 @@ public class Panel_Talk : MonoBehaviour {
 
 	public void OnTweenAlphaEnd()
 	{
+        // destory all avg obj
+
 
 	}
 
@@ -550,15 +598,20 @@ public class Panel_Talk : MonoBehaviour {
 
     public void CharSay(int nCharID, int nSayTextID)
     {
-        SpeakAll(false);
+
+        SetEnable(true);         // ensure ui re active
+
+        SpeakAll(false);          // small all  
 
 
         SRW_AVGObj avgobj = SelAVGObjByCharID(nCharID);// face 
         if (avgobj != null) {
             avgobj.Speak(true);
+            SetName(nCharID, avgobj.gameObject); // name POS
+
         }
 
-        SetName(nCharID, avgobj.gameObject); // name POS
+        
 
         //SRW_TextBox obj = SelTextBoxObjByCharID (nCharID) ;
         SRW_TextBox obj = TalkWindow;// SelTextBoxObjByCharID (nCharID) ;
@@ -566,20 +619,33 @@ public class Panel_Talk : MonoBehaviour {
             return;
 
         TalkWindow.SetEnable(true);
+
+        if (avgobj != null)
+        {
+            TalkWindow.ChangeLayout(avgobj.nLayout);
+        }
+        
         //		TalkWindow_new.SetActive( true );
-        if (nCharID > 0) { 
+        if (nCharID > 0)
+        {
             NameObj.SetActive(true);
+        }
+        else {
         }
 
 		obj.ClearText(); // clear text first
 
         string s = "";
         string name = "";
+        int mode = 0;
+        int emotion = 0;
         DataRow row = ConstDataManager.Instance.GetRow("TALK_TEXT", nSayTextID);
         if (row != null)
         {
             s    = row.Field<string>("s_CONTENT");
             name = row.Field<string>("s_TITLE");
+            mode = row.Field<int>("n_MODE");
+            emotion = row.Field<int>("n_EMOTION");
         }
 
 
@@ -591,6 +657,7 @@ public class Panel_Talk : MonoBehaviour {
 			sText = s.Replace ( "$F" , Config.PlayerFirst ); // replace player name
 			sText = sText.Replace ( "$N" , Config.PlayerName ); // replace player name		
 		}
+
         // replace name
         string sName = "";
         if (string.IsNullOrEmpty(name) == false )
@@ -607,7 +674,7 @@ public class Panel_Talk : MonoBehaviour {
 
 
         obj.ClearText();
-		obj.AddText(sText);
+		obj.AddText(sText , mode );
 	}
 
 	public void CharEnd( int nCharID  )
@@ -618,8 +685,10 @@ public class Panel_Talk : MonoBehaviour {
 			{
 				if( pair.Value != null )
 				{
-					NGUITools.Destroy( pair.Value.gameObject );
-				}
+                    //pair.Value.FadeOut();
+                    pair.Value.ZoomOut();
+                    //NGUITools.Destroy( pair.Value.gameObject );
+                }
 			}
 			m_idToFace.Clear();
 			NameObj.SetActive( false );
@@ -689,16 +758,23 @@ public class Panel_Talk : MonoBehaviour {
 
 	public void CloseBox( int nType , int nCloseType )
 	{
-		// this may create and destory
-		if( m_idToFace.ContainsKey( nType ) )
+        // this may create and destory
+        SRW_AVGObj obj;
+        if ( m_idToFace.TryGetValue( nType , out obj ) == true )
 		{
-			NGUITools.Destroy( m_idToFace[nType].gameObject );
-			m_idToFace.Remove( nType );
+            //NGUITools.Destroy( m_idToFace[nType].gameObject );
+            obj.ZoomOut();
+            //obj.FadeOut();
+
+           // m_idToFace[nType].gameObject.
+
+            m_idToFace.Remove( nType );
 
 
-			// dis talk window . if no more avg obj
+            // dis talk window . if no more avg obj
+            
 			if( m_idToFace.Count <= 0  ){
-				TalkWindow.SetEnable (false);
+                TalkWindow.SetAutoClose(); // don't disable soon.               
 			}
 
 

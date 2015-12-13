@@ -491,7 +491,7 @@ public class StoryUIPanel : MonoBehaviour {
 					sText = sText.Replace ( "$N" , Config.PlayerName ); // replace player name
 
 			TalkWindow.ClearText();
-			TalkWindow.AddText( sText );
+			TalkWindow.AddText( sText , 3  ); // always mode 3
 //			SRW_TextBox pBox = PanelStoryText.GetComponent<SRW_TextBox>();
 //			if( pBox )
 //			{

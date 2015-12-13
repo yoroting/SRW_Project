@@ -148,14 +148,15 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
 	void OnEnable() // before start
 	{
-		// create cmd by type
-	//	CreateCMDList ( cCMD.Instance.eCMDTYPE );
+        // create cmd by type
+        //	CreateCMDList ( cCMD.Instance.eCMDTYPE );
 
-	//	if (pUnit != null) {
-	//		pUnit.OnSelected( true );
-	//	}
-
-	}
+        //	if (pUnit != null) {
+        //		pUnit.OnSelected( true );
+        //	}
+        // ==================================
+        GameSystem.PlaySound("Se00");
+    }
 
 	void OnDisable()
 	{
@@ -212,8 +213,11 @@ public class Panel_CMDUnitUI : MonoBehaviour
 	
 		if (NGuiGrids == null)
 			return;
-		// record cmd type
-		CMD.eLASTCMDTYPE = CMD.eCMDTYPE;
+
+      
+
+        // record cmd type
+        CMD.eLASTCMDTYPE = CMD.eCMDTYPE;
 		CMD.eCMDTYPE = eType;
 
       

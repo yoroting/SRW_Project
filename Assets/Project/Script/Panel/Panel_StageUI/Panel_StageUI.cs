@@ -3011,14 +3011,15 @@ public class Panel_StageUI : MonoBehaviour
 	}
 
 	public void OnStagePopUnitEvent(GameEvent evt)
-	{	
-		// auto close all say window
-		TalkSayEndEvent sayevt = new TalkSayEndEvent();
-		sayevt.nChar = 0;		
-		GameEventManager.DispatchEvent ( sayevt  );
+	{
+        // auto close all say window
+        //		TalkSayEndEvent sayevt = new TalkSayEndEvent();
+        //		sayevt.nChar = 0;		
+        //		GameEventManager.DispatchEvent ( sayevt  );
+        Panel_Talk.Show(false);
 
-		//Debug.Log ("OnStagePopMobEvent");
-		StagePopUnitEvent Evt = evt as StagePopUnitEvent;
+        //Debug.Log ("OnStagePopMobEvent");
+        StagePopUnitEvent Evt = evt as StagePopUnitEvent;
 		if (Evt == null)
 			return;
 		int nPopNum = 1;
@@ -3039,12 +3040,13 @@ public class Panel_StageUI : MonoBehaviour
 
 	public void OnStagePopGroupEvent(GameEvent evt)
 	{
-		// auto close all say window
-		TalkSayEndEvent sayevt = new TalkSayEndEvent();
-		sayevt.nChar = 0;		
-		GameEventManager.DispatchEvent ( sayevt  );
+        // auto close all say window
+        //		TalkSayEndEvent sayevt = new TalkSayEndEvent();
+        //		sayevt.nChar = 0;		
+        //		GameEventManager.DispatchEvent ( sayevt  );
+        Panel_Talk.Show(false);
 
-		Debug.Log ("OnStagePopGroupEvent");
+        Debug.Log ("OnStagePopGroupEvent");
 		StagePopGroupEvent Evt = evt as StagePopGroupEvent;
 		if (Evt == null)
 			return;
@@ -3099,13 +3101,14 @@ public class Panel_StageUI : MonoBehaviour
 
 	public void OnStageDelUnitEvent(GameEvent evt)
 	{
-		// auto close all say window
-		TalkSayEndEvent sayevt = new TalkSayEndEvent();
-		sayevt.nChar = 0;		
-		GameEventManager.DispatchEvent ( sayevt  );
+        // auto close all say window
+        //		TalkSayEndEvent sayevt = new TalkSayEndEvent();
+        //		sayevt.nChar = 0;		
+        //		GameEventManager.DispatchEvent ( sayevt  );
+        Panel_Talk.Show(false);
 
-		//Debug.Log ("OnStagePopCharEvent");
-		StageDelUnitEvent Evt = evt as StageDelUnitEvent;
+        //Debug.Log ("OnStagePopCharEvent");
+        StageDelUnitEvent Evt = evt as StageDelUnitEvent;
 		if (Evt == null)
 			return;
 		int nCharid = Evt.nCharID;
@@ -3144,14 +3147,15 @@ public class Panel_StageUI : MonoBehaviour
 
 	public void OnStageCharMoveEvent(GameEvent evt)
 	{
-		// say end
-		TalkSayEndEvent sayevt = new TalkSayEndEvent();
-		sayevt.nChar = 0;		
-		GameEventManager.DispatchEvent ( sayevt  );
+        // say end
+        //		TalkSayEndEvent sayevt = new TalkSayEndEvent();
+        //		sayevt.nChar = 0;		
+        //		GameEventManager.DispatchEvent ( sayevt  );
+        Panel_Talk.Show(false);
 
 
-		//Debug.Log ("OnStagePopCharEvent");
-		StageCharMoveEvent Evt = evt as StageCharMoveEvent;
+        //Debug.Log ("OnStagePopCharEvent");
+        StageCharMoveEvent Evt = evt as StageCharMoveEvent;
 		if (Evt == null)
 			return;
 		int nIdent = Evt.nIdent;
@@ -3295,13 +3299,15 @@ public class Panel_StageUI : MonoBehaviour
 
 	public void OnStageBattleAttackEvent(GameEvent evt)
 	{
-		// auto close all say window
-		TalkSayEndEvent sayevt = new TalkSayEndEvent();
-		sayevt.nChar = 0;		
-		GameEventManager.DispatchEvent ( sayevt  );
+        // auto close all say window
+        //		TalkSayEndEvent sayevt = new TalkSayEndEvent();
+        //		sayevt.nChar = 0;		
+        //		GameEventManager.DispatchEvent ( sayevt  );
+        Panel_Talk.Show(false);
 
-		//Debug.Log ("OnStagePopCharEvent");
-		StageBattleAttackEvent Evt = evt as StageBattleAttackEvent;
+
+        //Debug.Log ("OnStagePopCharEvent");
+        StageBattleAttackEvent Evt = evt as StageBattleAttackEvent;
 		if (Evt == null)
 			return;
 
@@ -3450,13 +3456,14 @@ public class Panel_StageUI : MonoBehaviour
 
 	public void OnStageBattleCastEvent(GameEvent evt)
 	{
-		// auto close all say window
-		TalkSayEndEvent sayevt = new TalkSayEndEvent();
-		sayevt.nChar = 0;		
-		GameEventManager.DispatchEvent ( sayevt  );
-		
-		//Debug.Log ("OnStagePopCharEvent");
-		StageBattleCastEvent Evt = evt as StageBattleCastEvent;
+        // auto close all say window
+        //		TalkSayEndEvent sayevt = new TalkSayEndEvent();
+        //		sayevt.nChar = 0;		
+        //		GameEventManager.DispatchEvent ( sayevt  );
+        Panel_Talk.Show(false);
+
+        //Debug.Log ("OnStagePopCharEvent");
+        StageBattleCastEvent Evt = evt as StageBattleCastEvent;
 		if (Evt == null)
 			return;
 		
@@ -3565,13 +3572,14 @@ public class Panel_StageUI : MonoBehaviour
 
 	public void OnStageMoveToUnitEvent(GameEvent evt)
 	{
-		// auto close all say window
-		TalkSayEndEvent sayevt = new TalkSayEndEvent();
-		sayevt.nChar = 0;		
-		GameEventManager.DispatchEvent ( sayevt  );
+        // auto close all say window
+        //		TalkSayEndEvent sayevt = new TalkSayEndEvent();
+        //		sayevt.nChar = 0;		
+        //		GameEventManager.DispatchEvent ( sayevt  );
+        Panel_Talk.Show(false);
 
-		//Debug.Log ("OnStagePopCharEvent");
-		StageMoveToUnitEvent Evt = evt as StageMoveToUnitEvent;
+        //Debug.Log ("OnStagePopCharEvent");
+        StageMoveToUnitEvent Evt = evt as StageMoveToUnitEvent;
 		if (Evt == null)
 			return;
 
@@ -3652,11 +3660,12 @@ public class Panel_StageUI : MonoBehaviour
 		if (nFXID == 0) {
 			return ;
 		}
-		TalkSayEndEvent sayevt = new TalkSayEndEvent();
-		sayevt.nChar = 0;		
-		GameEventManager.DispatchEvent ( sayevt  );
+        //		TalkSayEndEvent sayevt = new TalkSayEndEvent();
+        //		sayevt.nChar = 0;		
+        //		GameEventManager.DispatchEvent ( sayevt  );
+        Panel_Talk.Show(false);
 
-		int nTot = 0;
+        int nTot = 0;
 		foreach (KeyValuePair< int ,Panel_unit> pair in IdentToUnit) {
 			Panel_unit unit = pair.Value;
 			if (unit.CharID != nCharID)
@@ -3681,11 +3690,12 @@ public class Panel_StageUI : MonoBehaviour
 		if (nBuffID == 0) {
 			return ;
 		}
-		TalkSayEndEvent sayevt = new TalkSayEndEvent();
-		sayevt.nChar = 0;		
-		GameEventManager.DispatchEvent ( sayevt  );
+        //		TalkSayEndEvent sayevt = new TalkSayEndEvent();
+        //		sayevt.nChar = 0;		
+        //		GameEventManager.DispatchEvent ( sayevt  );
+        Panel_Talk.Show(false);  // some buff is invisible
 
-		int nCastIdent = 0;
+        int nCastIdent = 0;
 		if (nCastCharID != 0) {
 			nCastIdent = GameDataManager.Instance.GetIdentByCharID( nCastCharID );
 		}
@@ -3718,11 +3728,14 @@ public class Panel_StageUI : MonoBehaviour
 		if (nBuffID == 0) {
 			return ;
 		}
-		// close say ui
-		TalkSayEndEvent sayevt = new TalkSayEndEvent();
-		sayevt.nChar = 0;		
-		GameEventManager.DispatchEvent ( sayevt  );
-		int nCastIdent = 0;
+        // close say ui
+        TalkSayEndEvent sayevt = new TalkSayEndEvent();
+        sayevt.nChar = 0;
+        GameEventManager.DispatchEvent(sayevt);
+
+
+
+        int nCastIdent = 0;
 		if (nCastCharID != 0) {
 			nCastIdent = GameDataManager.Instance.GetIdentByCharID( nCastCharID );
 		}
@@ -3884,12 +3897,13 @@ public class Panel_StageUI : MonoBehaviour
 
 	public void OnStagePopMarkEvent( int x1 ,int y1 , int x2  , int y2  )
 	{
-		// auto close all say window
-		TalkSayEndEvent sayevt = new TalkSayEndEvent();
-		sayevt.nChar = 0;		
-		GameEventManager.DispatchEvent ( sayevt  );
+        // auto close all say window
+        //		TalkSayEndEvent sayevt = new TalkSayEndEvent();
+        //		sayevt.nChar = 0;		
+        //		GameEventManager.DispatchEvent ( sayevt  );
+        Panel_Talk.Show(false);
 
-		int sx = x1 < x2 ? x1 : x2;
+        int sx = x1 < x2 ? x1 : x2;
 		int sy = y1 < y2 ? y1 : y2;
 		int ex = x1 > x2 ? x1 : x2; 
 		int ey = y1 > y2 ? y1 : y2 ;

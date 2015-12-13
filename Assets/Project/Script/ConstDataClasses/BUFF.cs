@@ -10,6 +10,7 @@ public class BUFF : ConstDataRow<BUFF>
 	public int n_DURATION;
 	public int n_LV;
 	public int n_HIDE;
+	public int n_SHADOW;
 	public string s_BUFF_CANCEL;
 	public string s_BUFF_CONDITON;
 	public string s_CONDITIONAL_BUFF;
