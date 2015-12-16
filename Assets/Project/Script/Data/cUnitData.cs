@@ -40,7 +40,9 @@ public enum _UNITTAG
 	_CHARGE = 2 ,    // 突襲移動. no block
 	_NODIE	= 3 ,		// 不死身... 劇情NPC
 	_SILENCE = 4 ,    // can't  skill
-    _PEACE  = 5 ,     // 不能攻擊
+    _PEACE  = 5 ,     // 不能被瞄準攻擊
+    _TRIGGER = 6 ,    // 是機關。不執行AI
+
 }
 //
 public enum _ITEMSLOT
@@ -64,7 +66,7 @@ public enum _AI_COMBO{
 	_NOCHANGE = -1,	// 
 
 	_NORMAL=0,  	// Normal attack
-	_DEFENCE=1,		// 
+	_DEFENCE=1,		// 防禦 不攻擊
 	
 	
 };
@@ -795,9 +797,9 @@ public class cUnitData{
 		}
 		// set up AI
 		eSearchAI = (_AI_SEARCH)cCharData.n_MOBAI; // 
-
-		// fill base data;
-		Relive();
+        eComboAI  = (_AI_COMBO)cCharData.n_COMBOAI; // 
+                                                  // fill base data;
+        Relive();
 	}
 
     public bool IsActiveSchool(int nSchool)
@@ -1720,7 +1722,12 @@ public class cUnitData{
 				SetUpdate( cAttrData._BUFF );
 			}
 		}
-		//Buffs.OnDo ( ref resPool );
+        //Buffs.OnDo ( ref resPool );
+
+        //機關直接歸零 行動力
+        if (IsTriggr()) {
+            nActionTime = 0;
+        }
 	}
 
 	// mark as undead to wait relive
@@ -1809,6 +1816,14 @@ public class cUnitData{
 		return Buffs.CheckStatus (st);
 	}
 
+
+    public bool IsTriggr() {
+        if(      IsTag( _UNITTAG._TRIGGER ))
+        {
+            return true;
+        }        
+        return false;
+    }
 
 
 //	public bool GetStateValue( _FIGHTSTATE st , out float f , out int i )

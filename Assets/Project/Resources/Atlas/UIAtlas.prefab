@@ -42,8 +42,8 @@ MonoBehaviour:
   material: {fileID: 2100000, guid: 6374d72801500d9488aaff85565b7c11, type: 2}
   mSprites:
   - name: btm_skip
-    x: 947
-    y: 977
+    x: 938
+    y: 2001
     width: 47
     height: 47
     borderLeft: 5
@@ -55,8 +55,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: btn_skip_press
-    x: 707
-    y: 885
+    x: 938
+    y: 1925
     width: 47
     height: 47
     borderLeft: 5
@@ -68,21 +68,60 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: button
-    x: 899
-    y: 977
+    x: 707
+    y: 1773
     width: 47
     height: 47
     borderLeft: 16
     borderRight: 16
     borderTop: 16
     borderBottom: 16
+    paddingLeft: 0
+    paddingRight: 0
+    paddingTop: 0
+    paddingBottom: 0
+  - name: Button_Blue
+    x: 707
+    y: 1973
+    width: 230
+    height: 75
+    borderLeft: 24
+    borderRight: 24
+    borderTop: 24
+    borderBottom: 24
+    paddingLeft: 0
+    paddingRight: 0
+    paddingTop: 0
+    paddingBottom: 0
+  - name: Button_Gray
+    x: 707
+    y: 1897
+    width: 230
+    height: 75
+    borderLeft: 24
+    borderRight: 24
+    borderTop: 24
+    borderBottom: 24
+    paddingLeft: 0
+    paddingRight: 0
+    paddingTop: 0
+    paddingBottom: 0
+  - name: Button_Green
+    x: 707
+    y: 1821
+    width: 230
+    height: 75
+    borderLeft: 24
+    borderRight: 24
+    borderTop: 24
+    borderBottom: 24
     paddingLeft: 0
     paddingRight: 0
     paddingTop: 0
     paddingBottom: 0
   - name: button_press
-    x: 851
-    y: 977
+    x: 755
+    y: 1773
     width: 47
     height: 47
     borderLeft: 16
@@ -93,9 +132,35 @@ MonoBehaviour:
     paddingRight: 0
     paddingTop: 0
     paddingBottom: 0
+  - name: Button_Red
+    x: 593
+    y: 1678
+    width: 230
+    height: 75
+    borderLeft: 24
+    borderRight: 24
+    borderTop: 24
+    borderBottom: 24
+    paddingLeft: 0
+    paddingRight: 0
+    paddingTop: 0
+    paddingBottom: 0
+  - name: Button_Yellow
+    x: 593
+    y: 1602
+    width: 230
+    height: 75
+    borderLeft: 24
+    borderRight: 24
+    borderTop: 24
+    borderBottom: 24
+    paddingLeft: 0
+    paddingRight: 0
+    paddingTop: 0
+    paddingBottom: 0
   - name: CG-1545
-    x: 707
-    y: 933
+    x: 824
+    y: 1662
     width: 143
     height: 91
     borderLeft: 0
@@ -108,7 +173,7 @@ MonoBehaviour:
     paddingBottom: 4
   - name: talk_large
     x: 0
-    y: 730
+    y: 1754
     width: 706
     height: 294
     borderLeft: 100
@@ -121,7 +186,7 @@ MonoBehaviour:
     paddingBottom: 0
   - name: talk_main
     x: 0
-    y: 309
+    y: 1091
     width: 640
     height: 205
     borderLeft: 60
@@ -134,7 +199,7 @@ MonoBehaviour:
     paddingBottom: 0
   - name: talk_say
     x: 0
-    y: 515
+    y: 1297
     width: 615
     height: 214
     borderLeft: 100
@@ -147,7 +212,7 @@ MonoBehaviour:
     paddingBottom: 0
   - name: talk_think
     x: 0
-    y: 96
+    y: 878
     width: 609
     height: 212
     borderLeft: 96
@@ -156,6 +221,19 @@ MonoBehaviour:
     borderBottom: 32
     paddingLeft: 0
     paddingRight: 1
+    paddingTop: 0
+    paddingBottom: 0
+  - name: UI_001
+    x: 0
+    y: 1512
+    width: 592
+    height: 241
+    borderLeft: 100
+    borderRight: 100
+    borderTop: 100
+    borderBottom: 100
+    paddingLeft: 0
+    paddingRight: 0
     paddingTop: 0
     paddingBottom: 0
   mPixelSize: 1
@@ -203,35 +281,35 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mSprites.Array.data[4].borderLeft
-      value: 40
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mSprites.Array.data[4].borderRight
-      value: 15
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mSprites.Array.data[4].borderBottom
-      value: 40
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mSprites.Array.data[4].borderTop
-      value: 15
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mSprites.Array.data[3].borderLeft
-      value: 16
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mSprites.Array.data[3].borderRight
-      value: 16
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mSprites.Array.data[3].borderTop
-      value: 16
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mSprites.Array.data[3].borderBottom
-      value: 16
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mSprites.Array.data[2].borderLeft
@@ -267,19 +345,19 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mSprites.Array.data[5].borderLeft
-      value: 100
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mSprites.Array.data[5].borderRight
-      value: 100
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mSprites.Array.data[5].borderBottom
-      value: 50
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mSprites.Array.data[5].borderTop
-      value: 100
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mSprites.Array.data[6].borderLeft
@@ -299,35 +377,51 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mSprites.Array.data[7].borderLeft
-      value: 100
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mSprites.Array.data[7].borderRight
-      value: 32
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mSprites.Array.data[7].borderBottom
-      value: 32
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mSprites.Array.data[7].borderTop
-      value: 48
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mSprites.Array.data[8].borderLeft
-      value: 96
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mSprites.Array.data[8].borderRight
-      value: 32
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mSprites.Array.data[8].borderBottom
-      value: 32
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mSprites.Array.data[8].borderTop
-      value: 48
+      value: 24
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: mSprites.Array.data[14].borderLeft
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: mSprites.Array.data[14].borderRight
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: mSprites.Array.data[14].borderBottom
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: mSprites.Array.data[14].borderTop
+      value: 100
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

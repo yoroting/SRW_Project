@@ -213,6 +213,10 @@ Prefab:
       propertyPath: m_Name
       value: Panel - StoryUI
       objectReference: {fileID: 0}
+    - target: {fileID: 156938, guid: d8ae4f9a2399a454abe3655a10920221, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d8ae4f9a2399a454abe3655a10920221, type: 2}
   m_IsPrefabParent: 0
@@ -695,6 +699,10 @@ Prefab:
     - target: {fileID: 193180, guid: 97f80b513111b3442949b8d2885a19f8, type: 2}
       propertyPath: m_Name
       value: Panel - Talk
+      objectReference: {fileID: 0}
+    - target: {fileID: 193180, guid: 97f80b513111b3442949b8d2885a19f8, type: 2}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 97f80b513111b3442949b8d2885a19f8, type: 2}
@@ -3210,41 +3218,13 @@ Prefab:
       propertyPath: m_Name
       value: Panel - StageUI
       objectReference: {fileID: 0}
+    - target: {fileID: 11491810, guid: cfa057b5163a60741bb67ec2db63f91c, type: 2}
+      propertyPath: aspectRatio
+      value: 3.1875
+      objectReference: {fileID: 0}
     - target: {fileID: 156318, guid: cfa057b5163a60741bb67ec2db63f91c, type: 2}
       propertyPath: m_IsActive
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 460126, guid: cfa057b5163a60741bb67ec2db63f91c, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 68.4000015
-      objectReference: {fileID: 0}
-    - target: {fileID: 460126, guid: cfa057b5163a60741bb67ec2db63f91c, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 111.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 497798, guid: cfa057b5163a60741bb67ec2db63f91c, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 137.300003
-      objectReference: {fileID: 0}
-    - target: {fileID: 497798, guid: cfa057b5163a60741bb67ec2db63f91c, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 164.399994
-      objectReference: {fileID: 0}
-    - target: {fileID: 465316, guid: cfa057b5163a60741bb67ec2db63f91c, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 165
-      objectReference: {fileID: 0}
-    - target: {fileID: 465316, guid: cfa057b5163a60741bb67ec2db63f91c, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 40.5999985
-      objectReference: {fileID: 0}
-    - target: {fileID: 445522, guid: cfa057b5163a60741bb67ec2db63f91c, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 160.399994
-      objectReference: {fileID: 0}
-    - target: {fileID: 445522, guid: cfa057b5163a60741bb67ec2db63f91c, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 196
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: cfa057b5163a60741bb67ec2db63f91c, type: 2}
@@ -3377,10 +3357,6 @@ Prefab:
     - target: {fileID: 162070, guid: 92106737e36d4784db4cb53d2dd39879, type: 2}
       propertyPath: m_Name
       value: Panel - CmdUnitUI
-      objectReference: {fileID: 0}
-    - target: {fileID: 162070, guid: 92106737e36d4784db4cb53d2dd39879, type: 2}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 92106737e36d4784db4cb53d2dd39879, type: 2}
