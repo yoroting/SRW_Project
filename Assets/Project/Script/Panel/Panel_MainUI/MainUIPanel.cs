@@ -15,8 +15,12 @@ public class MainUIPanel : BasicPanel {
 	public GameObject GameEndButton;
 	void Awake(){
 #if DEBUG && UNITY_EDITOR
-		// Avoid Const data null for debug
+        // Avoid Const data null for debug
 #endif
+        //screen size
+      //  Screen.SetResolution(Config.WIDTH, Config.HEIGHT, false);
+
+
 		// UI Event
 		UIEventListener.Get(StartButton).onClick += OnStartButtonClick;
 		UIEventListener.Get(LoadButton).onClick += OnLoadButtonClick;

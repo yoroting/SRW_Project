@@ -422,25 +422,26 @@ public class MyTool {
 		}
 
 		// 销毁现有元素
-		while (grid.transform.childCount > 0)
-		{
-			NGUITools.DestroyImmediate(grid.transform.GetChild(0).gameObject);
-		}
+		//while (grid.transform.childCount > 0)
+		//{
+		//	NGUITools.DestroyImmediate(grid.transform.GetChild(0).gameObject); // this func don't works in PC mode and cause infin loop crash
+		//}
 
 
 		
-//		List< Transform > lst = grid.GetChildList ();
-//		//List< GameObject > CmdBtnList = MyTool.GetChildPool( NGuiGrids );
-//		
-//		if (lst != null) {
-//			foreach (Transform t in lst) {
-//				
-//				///UIEventListener.Get(obj).onClick -= OnCMDButtonClick;;  // no need.. destory soon
-//				NGUITools.Destroy (t.gameObject);
-//			}
-//		}
+		List< Transform > lst = grid.GetChildList ();
+        //		//List< GameObject > CmdBtnList = MyTool.GetChildPool( NGuiGrids );
+        //		
+    if (lst != null) {
+        foreach (Transform t in lst)
+        {
 
-		grid.repositionNow = true;		// need this for second pop to re pos
+            ///UIEventListener.Get(obj).onClick -= OnCMDButtonClick;;  // no need.. destory soon
+            NGUITools.Destroy(t.gameObject);
+        }
+    }
+
+    grid.repositionNow = true;		// need this for second pop to re pos
 		//grid.Reposition ();
 	}
 

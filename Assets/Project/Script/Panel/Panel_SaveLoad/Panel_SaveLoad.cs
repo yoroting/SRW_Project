@@ -65,7 +65,7 @@ public class Panel_SaveLoad : MonoBehaviour {
 			if( go == null )
 				continue;
 
-			UIEventListener.Get(go).onClick += OnSaveClick; // 			
+			UIEventListener.Get(go).onClick = OnSaveClick; // 			
 			
 			Item_SaveData obj = go.GetComponent<Item_SaveData >();
 			if( obj != null ){
@@ -87,7 +87,7 @@ public class Panel_SaveLoad : MonoBehaviour {
 			if( go == null )
 				continue;
 
-			UIEventListener.Get(go).onClick += OnLoadClick; // 
+			UIEventListener.Get(go).onClick = OnLoadClick; // 
 			
 
 			Item_SaveData obj = go.GetComponent<Item_SaveData >();
