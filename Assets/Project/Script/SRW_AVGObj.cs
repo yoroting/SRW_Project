@@ -85,23 +85,10 @@ public class SRW_AVGObj : MonoBehaviour {
 			return ;
 		}
 		CharID = nCharId;
-		
-		// set face texture
-		
-//		CHARS charData = ConstDataManager.Instance.GetRow<CHARS>( nCharId );
-		//DataRow row = ConstDataManager.Instance.GetRow("CHARS", nCharId );
-		//if( row != null )
-//		if( charData != null)
-			//DataRow row = ConstDataManager.Instance.GetRow("CHARS", nCharId );
-			//if( row != null )
-		{	
-			//	CHAR_DATA charData = new CHAR_DATA();
-			//	charData.FillDatabyDataRow( row );
-			// charge face text
-			
-			//UITexture tex = _FaceTexObj.GetComponentInChildren<UITexture>();
-			//UITexture tex = this.gameObject.GetComponent<UITexture>();
-			if( _FaceTexObj != null  )
+
+        // set face texture
+        int nFaceID = GameDataManager.Instance.GetUnitFaceID(CharID);   
+       		if( _FaceTexObj != null  )
 			{
 				
 					NGUITools.SetActive( this.gameObject ,  true );
@@ -110,7 +97,7 @@ public class SRW_AVGObj : MonoBehaviour {
                 //					string url = "Art/char/" + charData.s_FILENAME +"_L";
                 //Texture2D tex = Resources.LoadAssetAtPath(url, typeof(Texture2D)) as Texture2D;
                 //					Texture t= Resources.Load( url , typeof(Texture) ) as Texture; ;
-                _FaceTexObj.mainTexture = MyTool.GetCharTexture(nCharId , 1 );			
+                _FaceTexObj.mainTexture = MyTool.GetCharTexture(nFaceID, 1 );			
 					//tex.MakePixelPerfect();
 					
 					TweenHeight twH = TweenHeight.Begin<TweenHeight>( this.gameObject , 0.2f );
@@ -122,7 +109,6 @@ public class SRW_AVGObj : MonoBehaviour {
 						nTweenObjCount++;
 					}
 			}
-		}
 	}
 	
 	public void ChangeLayout( int layout = 0 )

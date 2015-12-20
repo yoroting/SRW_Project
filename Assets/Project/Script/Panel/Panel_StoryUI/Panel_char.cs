@@ -36,9 +36,12 @@ public class Panel_char : MonoBehaviour {
 
     public void SetFace(int nCharId)
     {
-        CHARS charData = ConstDataManager.Instance.GetRow<CHARS>(nCharId);
-        if (charData != null)
-        {
+        //CHARS charData = ConstDataManager.Instance.GetRow<CHARS>(nCharId);
+        //if (charData != null)
+        //{
+        int nFaceID = GameDataManager.Instance.GetUnitFaceID(nCharId );
+
+
             // charge face text				
             UITexture tex =  FaceObj.GetComponent<UITexture>();
 
@@ -48,7 +51,7 @@ public class Panel_char : MonoBehaviour {
                 {
                     //	DynamicAssetBundleLoader.LoadTexture(tex,DynamicAssetBundleLoader.SSAssetType.Card, "CARD_" + card.PicName);
                     //string texpath = "char/" +charData.s_FILENAME +"_S";
-                    string url = "Art/char/" + charData.s_FILENAME + "_S";
+                    //string url = "Art/char/" + charData.s_FILENAME + "_S";
                     //Texture2D tex = Resources.LoadAssetAtPath(url, typeof(Texture2D)) as Texture2D;
                     //Texture t= Resources.Load( url , typeof(Texture) ) as Texture; ;
                     tex.mainTexture = MyTool.GetCharTexture( nCharId );  //Resources.Load(url, typeof(Texture)) as Texture; ;
@@ -56,7 +59,7 @@ public class Panel_char : MonoBehaviour {
                     //tex.MakePixelPerfect();
                 }
             }
-        }
+        //}
 
     }
 

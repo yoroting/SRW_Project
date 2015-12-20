@@ -247,23 +247,24 @@ public class GameSystem : MonoBehaviour {
 
 
 
+        //SetParticleRenderLayer(instance, "UI");
+        	SetParticleRenderLayer ( instance ,sortLayer  );
 
-		SetParticleRenderLayer ( instance ,sortLayer  );
-//		ParticleSystemRenderer psr =instance.GetComponent< ParticleSystemRenderer>();
-//		if (psr != null) {
-//			psr.sortingLayerName =sortLayer;
-//		}
-//		// for child
-//		ParticleSystemRenderer[] psrs = instance.GetComponentsInChildren<ParticleSystemRenderer>();
-//		foreach (ParticleSystemRenderer psr2 in psrs) {
-//			psr2.sortingLayerName = sortLayer;
-//		}
+        //		ParticleSystemRenderer psr =instance.GetComponent< ParticleSystemRenderer>();
+        //		if (psr != null) {
+        //			psr.sortingLayerName =sortLayer;
+        //		}
+        //		// for child
+        //		ParticleSystemRenderer[] psrs = instance.GetComponentsInChildren<ParticleSystemRenderer>();
+        //		foreach (ParticleSystemRenderer psr2 in psrs) {
+        //			psr2.sortingLayerName = sortLayer;
+        //		}
 
-		//AutoParticleQueue q = instance.AddComponent <AutoParticleQueue>();
-		//q.se
+        //AutoParticleQueue q = instance.AddComponent <AutoParticleQueue>();
+        //q.se
 
-		//check auto destory
-		CFX_AutoDestructShuriken des = instance.GetComponent< CFX_AutoDestructShuriken > ();
+        //check auto destory
+        CFX_AutoDestructShuriken des = instance.GetComponent< CFX_AutoDestructShuriken > ();
 
 		if( des == null  ){
 			//Debug.LogErrorFormat( " particle won't auto destory at {0}",name );

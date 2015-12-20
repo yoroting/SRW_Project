@@ -1104,7 +1104,9 @@ public partial class BattleManager
 			// show in screen center
 //			Vector3 vp = obj.transform.parent.localPosition;
 //			v = obj.transform.localPosition;
-			v = obj.transform.parent.localPosition+obj.transform.localPosition;
+
+//			v = obj.transform.parent.localPosition+obj.transform.localPosition;
+
 			//v = obj.transform.position ;
 		}
 		//Panel_StageUI.Instance.TilePlaneObj.transform.localPosition;
@@ -1123,7 +1125,7 @@ public partial class BattleManager
 			
 
 		//GameObject go = ResourcesManager.CreatePrefabGameObj ( Panel_StageUI.Instance.MaskPanelObj , "Prefab/BattleValue" );
-		GameObject go = Panel_StageUI.Instance.SpwanBattleValueObj ( v );
+		GameObject go = Panel_StageUI.Instance.SpwanBattleValueObj (obj, v );
 		if (go != null) {
 			//go.transform.position = v;
 			//go.transform.localPosition = v;
@@ -1210,10 +1212,10 @@ public partial class BattleManager
 	public void ShowBattleResValue( GameObject obj , string sMsg , int nColorMode )
 	{	
 		Vector3 v = new Vector3 (0, 0, 0);
-		if ( obj != null) {
-			v = obj.transform.parent.localPosition+obj.transform.localPosition;
-		}
-		GameObject go = Panel_StageUI.Instance.SpwanBattleValueObj ( v );
+//		if ( obj != null) {
+	//		v = obj.transform.parent.localPosition+obj.transform.localPosition;
+		//}
+		GameObject go = Panel_StageUI.Instance.SpwanBattleValueObj (obj ,  v );
 		
 		if (go != null) {
 			//go.transform.position = v;

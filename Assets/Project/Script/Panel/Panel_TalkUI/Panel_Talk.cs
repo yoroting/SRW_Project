@@ -7,9 +7,10 @@ public class Panel_Talk : MonoBehaviour {
 	public const string Name = "Panel_Talk";
 
 	public GameObject Tex_BackGround;
-//	public GameObject TalkWindow_Up;
-//	public GameObject TalkWindow_Down;
-	public GameObject Skip_Button;
+    public GameObject Tex_Flip;
+    //	public GameObject TalkWindow_Up;
+    //	public GameObject TalkWindow_Down;
+    public GameObject Skip_Button;
 
 	public GameObject AVG_Obj;			//右邊人像
 	public GameObject NameObj;				// 名稱物件
@@ -120,6 +121,11 @@ private int nTweenObjCount;
 		if (Tex_BackGround != null) {
 			Tex_BackGround.SetActive( false );
 		}
+        if (Tex_Flip != null) {
+            Tex_Flip.SetActive(false);
+        }
+
+
 		TalkWindow.SetEnable( false );
 		//TalkWindow_new.SetActive( false );
 		NameObj.SetActive ( false );
@@ -378,8 +384,14 @@ private int nTweenObjCount;
 
 	public void OnTweenAlphaEnd()
 	{
-        // destory all avg obj
+        if (  Tex_BackGround != null ) {
+      //      NGUITools.SetActive(Tex_BackGround , false);
+        }
 
+        // destory all avg obj
+        if (Tex_Flip != null) {
+            NGUITools.Destroy(Tex_Flip);
+        }
 
 	}
 
@@ -409,22 +421,58 @@ private int nTweenObjCount;
 	{
 		if (Tex_BackGround == null)
 			return;
+        UITexture tex = Tex_BackGround.GetComponent<UITexture>();
+        if (tex == null)
+            return;
 
-		GameSystem.bFXPlayMode = false; // no more play fx
 
-		//SCENE_NAME scene = ConstDataManager.Instance.GetRow<SCENE_NAME> ( nSceneID );
-		//if (scene == null)
-		//	return;
+        GameSystem.bFXPlayMode = false; // no more play fx
 
-		TALK_BACK back = ConstDataManager.Instance.GetRow<TALK_BACK> ( nBackID );
-		
-		NGUITools.SetActive( Tex_BackGround ,  true );
+        //SCENE_NAME scene = ConstDataManager.Instance.GetRow<SCENE_NAME> ( nSceneID );
+        //if (scene == null)
+        //	return;
+
+        // flip effect
+        if (Tex_BackGround.activeSelf)
+        {
+
+            Tex_Flip = Instantiate(Tex_BackGround );
+
+
+           // NGUITools.SetActive(Tex_Flip, true);
+
+            UITexture flip =  Tex_Flip.GetComponent<UITexture>();
+            if (flip != null) {
+                //flip.mainTexture = tex.mainTexture;
+                Tex_Flip.transform.SetParent(Tex_BackGround.transform.parent );
+                Tex_Flip.transform.localPosition = Tex_BackGround.transform.localPosition;
+                Tex_Flip.transform.localRotation = Tex_BackGround.transform.localRotation;
+                Tex_Flip.transform.transform.transform.localScale = Tex_BackGround.transform.localScale;
+
+
+                TweenAlpha tw = TweenAlpha.Begin<TweenAlpha>(Tex_Flip, 1.0f);
+                if (tw)
+                {
+                    tw.from = 1.0f;
+                    tw.to = 0.0f;
+                    //tw.SetOnFinished(OnTweenAlphaEnd);
+                }
+                
+
+                //NGUITools.
+            }
+        }
+
+        // current
+        NGUITools.SetActive(Tex_BackGround, true);
+
+        TALK_BACK back = ConstDataManager.Instance.GetRow<TALK_BACK> ( nBackID );
 		
 		string url = "Art/BG/" + back.s_IMAGENAME;
 
 		Texture t= Resources.Load( url , typeof(Texture) ) as Texture; ;
 
-		UITexture tex = Tex_BackGround.GetComponent<UITexture>();
+		
 		tex.mainTexture = t;				
 		//tex.MakePixelPerfect();
 

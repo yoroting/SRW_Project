@@ -37,7 +37,8 @@ public class cBuffSaveData{
 public class cUnitSaveData{
 	[JsonName("id")] [DefaultValue(0)]public int n_Ident;
 	[JsonName("cid")] [DefaultValue(0)] public int n_CharID;
-	[JsonName("enable")] [DefaultValue(false)] public bool b_Enable;
+    [JsonName("fid")] [DefaultValue(0)] public int n_FaceID;
+    [JsonName("enable")] [DefaultValue(false)] public bool b_Enable;
 	[JsonName("camp")] [DefaultValue(_CAMP._PLAYER )] public _CAMP eCampID;
 	[JsonName("lv")][DefaultValue(0)] 	public int n_Lv;
 	[JsonName("exp")][DefaultValue(0)] 	public int n_EXP;
@@ -72,6 +73,7 @@ public class cUnitSaveData{
 	public void SetData( cUnitData data ){
 		n_Ident 	= data.n_Ident;
 		n_CharID = data.n_CharID;
+        n_FaceID = data.n_FaceID;
 		b_Enable = data.bEnable;
 		eCampID = data.eCampID;
 		n_Lv = data.n_Lv;

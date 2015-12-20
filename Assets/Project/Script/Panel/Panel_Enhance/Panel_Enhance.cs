@@ -96,7 +96,7 @@ public class Panel_Enhance : MonoBehaviour {
         UITexture tex = FaceObj.GetComponent<UITexture>();
         if (tex != null)
         {
-            tex.mainTexture = MyTool.GetCharTexture(pOrgData.n_CharID);
+            tex.mainTexture = MyTool.GetCharTexture(pOrgData.n_FaceID);
         }
 
 

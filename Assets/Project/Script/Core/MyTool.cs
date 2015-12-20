@@ -142,13 +142,18 @@ public class MyTool {
 	}
 
     // 0-small , 1- Large
-    public static Texture GetCharTexture( int nCharID , int nSize=0)
+    public static Texture GetCharTexture( int nFaceID, int nSize=0)
     {
-        CHARS cdata = ConstDataManager.Instance.GetRow<CHARS>(nCharID);
-        if (cdata == null)
+        //CHARS cdata = ConstDataManager.Instance.GetRow<CHARS>(nCharID);
+        //if (cdata == null)
+        //    return null ;
+        //int nFaceID = nCharID;
+
+        FACES data = ConstDataManager.Instance.GetRow<FACES>(nFaceID);
+        if (data == null)
             return null ;
 
-        string url = "Art/char/" + cdata.s_FILENAME ;
+        string url = "Art/char/" + data.s_FILENAME ;
         switch (nSize)
         {
             case 1:   url += "_L"; break;

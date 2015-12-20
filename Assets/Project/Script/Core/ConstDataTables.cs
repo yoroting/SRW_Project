@@ -8,6 +8,7 @@
 	STAGE_TALK=6,
 	STAGE_EVENT=7,
 	TALK_BACK  = 8,
+    FACES = 9,    // 臉部圖檔
 
 	SCHOOL=11, 
 	SKILL=12,

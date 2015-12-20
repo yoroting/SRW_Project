@@ -20,19 +20,19 @@ public class Panel_FullCharImage : MonoBehaviour {
 	
 	}
 
-    public void SetChar(int nCharID)
+    public void SetFace(int nFaceID)
     {
         if (FaceObj == null)
             return;
 
-        CHARS cdata = ConstDataManager.Instance.GetRow<CHARS>(nCharID );
-        if (cdata == null)
-            return;
+        //CHARS cdata = ConstDataManager.Instance.GetRow<CHARS>(nCharID );
+        //if (cdata == null)
+        //    return;
 
         UITexture tex = FaceObj.GetComponent<UITexture>();
         if (tex != null)
         {
-            tex.mainTexture = MyTool.GetCharTexture( nCharID , 1 );
+            tex.mainTexture = MyTool.GetCharTexture( nFaceID , 1 );
         }
     }
 

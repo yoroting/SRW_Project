@@ -21,9 +21,12 @@ public class Config
 
 	public static int TextSpeed = 0;			// 0 is very fast
 	// Cache value
-	public static float fScnRatio = 1.0f;		// screen (active/ real ) ratio. for cal mouse in local pos
+	public static float fScnRatio = 1.0f;       // screen (active/ real ) ratio. for cal mouse in local pos
 
-	public static string PlayerFirst = "黃";
+    public static int UnitW = 100;
+    public static int UnitH = 100;
+
+    public static string PlayerFirst = "黃";
 	public static string PlayerName = "裳";
 
 	public static string DefaultPlayerFirst = "主";

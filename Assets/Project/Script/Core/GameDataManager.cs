@@ -352,10 +352,60 @@ public partial class GameDataManager
 		SkillDataCachePool.Add( nSkillId , skilldata );
 		return skilldata;		
 	}
-	// 目前的紀錄狀態
-	//public PLAYER_DATA			cPlayerData;
-//	public cSaveData				SaveData;		
-	public List<int>	ImportEventPool;   // 已完成的重要事件列表
+
+    public void SetCharFace(int nCharID, int nFaceID)
+    {
+
+    }
+    
+    // talk / story ui
+    public int GetUnitFaceID( int nCharID ) {
+        int nFaceID = 0;
+        // find in storage first
+        foreach (KeyValuePair<int, cUnitData> pair in StoragePool )
+        {
+            if (pair.Value == null)
+                continue;
+
+            if (nCharID == pair.Value.n_CharID) {
+                nFaceID = pair.Value.n_FaceID;
+                break;
+            }
+        }
+
+        // find in battle pool
+        if (0 == nFaceID)
+        {
+            foreach (KeyValuePair<int, cUnitData> pair in UnitPool)
+            {
+                if (pair.Value == null)
+                    continue;
+
+                if (nCharID == pair.Value.n_CharID)
+                {
+                    nFaceID = pair.Value.n_FaceID;
+                    break;
+                }
+            }
+        }
+        // use const data default
+        CHARS data = ConstDataManager.Instance.GetRow<CHARS>(nCharID);
+        if (data != null) {
+            nFaceID = data.n_FACEID;
+        }
+
+        if (0 == nFaceID) {
+            Debug.LogWarningFormat("no unit for GetUnitFaceID in {0} ", nCharID);
+            nFaceID = nCharID; // use charid as default
+        }
+        return nFaceID; // use charid as default
+
+    }
+
+    // 目前的紀錄狀態
+    //public PLAYER_DATA			cPlayerData;
+    //	public cSaveData				SaveData;		
+    public List<int>	ImportEventPool;   // 已完成的重要事件列表
 //	public List<int> 	GetImportEvent(){  
 //		if (ImportEventPool == null)
 //			ImportEventPool = new List<int> ();
@@ -438,8 +488,14 @@ public partial class GameDataManager
 		}
 		unit.SetContData( cdata  );
 
-		// 調整
+        // 調整
+        unit.n_FaceID = save.n_FaceID;
+      //  if (0 == unit.n_FaceID) {
+      //      unit.n_FaceID = unit.n_CharID; // default value
+      //  }
+
 		unit.eCampID = save.eCampID;
+
 		unit.n_Lv	 = save.n_Lv;
 		unit.n_EXP   = save.n_EXP;
 		unit.n_HP  	 = save.n_HP;

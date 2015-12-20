@@ -504,7 +504,7 @@ public class Panel_UnitInfo : MonoBehaviour {
         Panel_FullCharImage panel = MyTool.GetPanel< Panel_FullCharImage  >(PanelManager.Instance.OpenUI(Panel_FullCharImage.Name) );
         if (panel != null)
         {
-            panel.SetChar( this.pUnitData.n_CharID );
+            panel.SetFace( pUnitData.n_FaceID );
         }
     }
     

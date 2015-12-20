@@ -686,7 +686,14 @@ public class MyScript {
 					}
 				}
 			}
-			else if( func.sFunc == "SAY" )
+            else if (func.sFunc == "CHARFACE") //變更角色FACE
+            {
+                int nCharID = func.I(0); // old
+                int nFaceID = func.I(1); // new 
+                GameDataManager.Instance.SetCharFace(nCharID , nFaceID );
+            }
+
+            else if( func.sFunc == "SAY" )
 			{
 				TalkSayEvent evt = new TalkSayEvent();
 				//evt.nType  = func.I(0);

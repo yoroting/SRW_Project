@@ -46,6 +46,7 @@ public class Panel_StageUI : MonoBehaviour
 
 
     public GameObject MobActEffObj; // Mob action mask
+  
     GameObject ActEffFolObj;
 
 
@@ -419,7 +420,8 @@ public class Panel_StageUI : MonoBehaviour
 		AtkEftObj.CreatePool( st_CellObjPoolSize );
 		AoeEftObj.CreatePool( st_CellObjPoolSize /4 );
 
-		ValueEftObj.CreatePool( st_CellObjPoolSize / 10  );
+        ValueEftObj.transform.localPosition = Vector3.zero; 
+        ValueEftObj.CreatePool( st_CellObjPoolSize / 10  );
 
 		AvgObj.CreatePool ( st_CellObjPoolSize / 10 );
 
@@ -1011,7 +1013,8 @@ public class Panel_StageUI : MonoBehaviour
 			}
             //GameObject background =  GetBackGroundPrefab( Grids );
             //if( background != null ){
-
+            GameObject tiles = NGUITools.AddChild(TilePlaneObj);
+            tiles.name = "Tiles";
             //}
             // start to create sprite
             for ( int i = -Grids.hW ; i <= Grids.hW ; i++ ){
@@ -1021,7 +1024,7 @@ public class Panel_StageUI : MonoBehaviour
 					if( t== _TILE._NULL )	
 						continue;
 
-					GameObject cell = GetTileCellPrefab( i , j , t ); 
+					GameObject cell = GetTileCellPrefab( i , j , t , tiles ); 
 					if( cell == null )
 					{
 						// debug message
@@ -1098,12 +1101,12 @@ public class Panel_StageUI : MonoBehaviour
 		
 	}
 
-	GameObject GetTileCellPrefab( int x , int y , _TILE t )
+	GameObject GetTileCellPrefab( int x , int y , _TILE t , GameObject tiles )
 	{
 		SCENE_TILE tile = ConstDataManager.Instance.GetRow<SCENE_TILE> ((int)t);
 		if (tile != null) {
 			//tile.s_FILE_NAME;
-			GameObject cell = ResourcesManager.CreatePrefabGameObj(TilePlaneObj, "Prefab/TileCell");
+			GameObject cell = ResourcesManager.CreatePrefabGameObj(tiles, "Prefab/TileCell");
 			UISprite sprite = cell.GetComponent<UISprite>(); 
 			if( sprite != null )
 			{
@@ -1113,7 +1116,7 @@ public class Panel_StageUI : MonoBehaviour
 			UIDragObject drag = cell.GetComponent<UIDragObject>(); 
 			if( drag != null )
 			{
-				drag.target = TilePlaneObj.transform ;
+                drag.target = tiles.transform.parent;// TilePlaneObj.transform ;
 
 			}
 
@@ -1211,9 +1214,9 @@ public class Panel_StageUI : MonoBehaviour
     //    return obj;
     //}
 
-    public GameObject SpwanBattleValueObj( Vector3 vPos  )
+    public GameObject SpwanBattleValueObj(GameObject Obj ,  Vector3 vPos  )
 	{
-		GameObject go = ValueEftObj.Spawn( MaskPanelObj.transform  , vPos );
+		GameObject go = ValueEftObj.Spawn( Obj.transform  , vPos );
 		go.SetActive (true);
 		return go;
 	}

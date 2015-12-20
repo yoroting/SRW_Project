@@ -234,7 +234,7 @@ public class cUnitData{
     public int n_Ident;		// auto create by game system
 	public _CAMP eCampID;
 	public int n_CharID;
-	public int n_UpgradeFromCharID;			// 進階前的腳色ID
+	public int n_FaceID;			// 進階後的角色目前臉部ID ( 換臉圖用 )
 
 	public int n_Lv;
 	public int n_EXP;
@@ -702,9 +702,12 @@ public class cUnitData{
 		if (n_CharID != cData.n_ID) {
 			Debug.LogErrorFormat ("cUnitData{0} set wrong SetContData{1}", n_CharID, cData.n_ID);
 		}
-		//n_Rank = cData.n_RANK;
-		// set school;
-		SkillPool.Clear ();
+        // face ID
+        n_FaceID = cData.n_FACEID;
+
+        //n_Rank = cData.n_RANK;
+        // set school;
+        SkillPool.Clear ();
 		//被動能力先，因為會影響出生BUFF 與技能進階
 		//Set born Buff
 		if (cData.s_BUFF != "0" && cData.s_BUFF.ToUpper() != "NULL") {

@@ -67,7 +67,7 @@ public class Mainten_Unit : MonoBehaviour {
   //          string url = "Art/char/" + pUnitData.cCharData.s_FILENAME + "_S";
     //        //Texture2D tex = Resources.LoadAssetAtPath(url, typeof(Texture2D)) as Texture2D;
       //      Texture t = Resources.Load(url, typeof(Texture)) as Texture;
-            tex.mainTexture = MyTool.GetCharTexture(nCharId);
+            tex.mainTexture = MyTool.GetCharTexture(pUnitData.n_FaceID );
         }
 
 

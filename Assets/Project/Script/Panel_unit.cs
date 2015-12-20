@@ -105,9 +105,16 @@ public class Panel_unit : MonoBehaviour {
 	}
 
 	void OnEnable(){
+
 		if (FaceObj != null) {
 			FaceObj.transform.localPosition = Vector3.zero;
-		}
+            UITexture tex = FaceObj.GetComponent<UITexture>();
+            if (tex != null) {
+                tex.width  = Config.UnitW;
+                tex.height = Config.UnitH;
+            }
+        }
+
 		transform.localRotation = new Quaternion(); 
 		transform.localScale = new Vector3( 1.0f, 1.0f ,1.0f);
 
@@ -311,7 +318,7 @@ public class Panel_unit : MonoBehaviour {
 		UITexture face = FaceObj.GetComponent<UITexture>();
 		if( face != null )
 		{
-			face.mainTexture = MyTool.GetCharTexture(CharID);
+			face.mainTexture = MyTool.GetCharTexture(data.n_FaceID);
 
         }
 		
@@ -1214,7 +1221,7 @@ public class Panel_unit : MonoBehaviour {
 	public void SetDodge(  )
 	{
 
-		TweenRotation twr = TweenRotation.Begin< TweenRotation >( gameObject , 0.5f );
+		TweenRotation twr = TweenRotation.Begin< TweenRotation >( FaceObj, 0.5f );
 		if( twr != null )
 		{
 			twr.SetStartToCurrentValue();
@@ -1229,12 +1236,12 @@ public class Panel_unit : MonoBehaviour {
 	public void OnTwDodgeRotateEnd( )
 	{		
 		// clear all move tw
-		TweenRotation[] tws = gameObject.GetComponents<TweenRotation> (); 
+		TweenRotation[] tws = FaceObj.GetComponents<TweenRotation> (); 
 		foreach (TweenRotation tw in tws) {
 			Destroy( tw );
 		}
-		// reset pos
-		gameObject.transform.localRotation = Quaternion.identity;			
+        // reset pos
+        FaceObj.transform.localRotation = Quaternion.identity;			
 		bIsDodgeing = false;
 	}
 	// miss
@@ -1708,7 +1715,7 @@ public class Panel_unit : MonoBehaviour {
 			return;
 		bIsBorning = true;
 
-		TweenHeight tw = TweenHeight.Begin<TweenHeight>(  FaceObj , 0.5f );
+        TweenHeight tw = TweenHeight.Begin<TweenHeight>(  FaceObj , 0.5f );
 		if (tw != null) {
 			tw.from = 0;
 			tw.to = Config.TileH;
@@ -1736,7 +1743,7 @@ public class Panel_unit : MonoBehaviour {
 
 		bIsLeaving = true;
 		
-		TweenHeight tw = TweenHeight.Begin<TweenHeight>(  FaceObj , 1.0f );
+		TweenWidth tw = TweenHeight.Begin<TweenWidth>(  FaceObj , 1.0f );
 		if (tw != null) {
 			tw.SetStartToCurrentValue();
 			tw.to = 0;
