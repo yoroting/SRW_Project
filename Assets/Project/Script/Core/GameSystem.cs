@@ -368,15 +368,25 @@ public class GameSystem : MonoBehaviour {
 
 	public static void TalkEvent( int nTalkID )
 	{
-		//GameDataManager.Instance.nTalkID = 0; // set to 0 first to avoid panel_talk awake->enable set script
-        GameDataManager.Instance.nTalkID = nTalkID;
-        // start talk UI
-        Panel_Talk pTalk = MyTool.GetPanel<Panel_Talk>(  PanelManager.Instance.OpenUI( Panel_Talk.Name ) );
-		if (pTalk != null) {
+        //GameDataManager.Instance.nTalkID = 0; // set to 0 first to avoid panel_talk awake->enable set script
 
-            pTalk.Initial();
-            pTalk.SetScript( nTalkID ); 
-		}
+        Panel_Talk.OpenUI(nTalkID );
+
+  //      GameDataManager.Instance.nTalkID = nTalkID;
+  //      Panel_Talk pTalk = PanelManager.Instance.JustGetUI<Panel_Talk>(Panel_Talk.Name);
+  //      if (pTalk != null)
+  //      {
+            
+  //          return;
+  //      }
+
+  //      // start talk UI
+  //      pTalk = MyTool.GetPanel<Panel_Talk>(  PanelManager.Instance.OpenUI( Panel_Talk.Name ) );
+		//if (pTalk != null) {
+
+  //          pTalk.Initial();
+  //          pTalk.SetScript( nTalkID ); 
+		//}
        
 
     }

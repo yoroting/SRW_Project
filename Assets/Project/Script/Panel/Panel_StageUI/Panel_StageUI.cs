@@ -40,11 +40,11 @@ public class Panel_StageUI : MonoBehaviour
 	public GameObject BackGroundObj; // back ground
 	public GameObject TilePlaneObj; // plane of all tiles sprite
 	public GameObject MaskPanelObj; // plane mask
+  
+    public GameObject UnitPanelObj; // unit plane
 
 
-	public GameObject UnitPanelObj; // unit plane
-
-
+    public GameObject UnitObj; // unit obj
     public GameObject MobActEffObj; // Mob action mask
   
     GameObject ActEffFolObj;
@@ -600,6 +600,11 @@ public class Panel_StageUI : MonoBehaviour
 				vOffset.y = fMaxOffY;
 			}
 			TilePlaneObj.transform.localPosition = vOffset;
+
+            if (MaskPanelObj != null ) {
+
+                MaskPanelObj.transform.position = TilePlaneObj.transform.position;
+            }
 		}
 
         if (ActEffFolObj != null) {

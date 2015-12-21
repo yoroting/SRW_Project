@@ -1055,14 +1055,14 @@ public partial class BattleManager
 		Vector3 v = new Vector3 (0, 0, 0);
 		if (unit != null) {
 			// show in screen center
-			//v = unit.transform.position;
-			v = unit.transform.parent.localPosition+unit.transform.localPosition;
+			v = unit.transform.position;
+			//v = unit.transform.parent.localPosition+unit.transform.localPosition;
 		}
 
 		GameObject go = ResourcesManager.CreatePrefabGameObj ( Panel_StageUI.Instance.MaskPanelObj , "prefab/BattleMsg" );
 		if (go != null) {
-			//go.transform.position = v;
-			go.transform.localPosition = v;
+			go.transform.position = v;
+			//go.transform.localPosition = v;
 			UILabel lbl = go.GetComponentInChildren<UILabel>();
 			if( lbl != null )
 			{

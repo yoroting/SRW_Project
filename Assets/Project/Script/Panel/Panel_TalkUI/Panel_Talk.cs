@@ -6,6 +6,10 @@ using MyClassLibrary;			// for parser string
 public class Panel_Talk : MonoBehaviour {
 	public const string Name = "Panel_Talk";
 
+    public int m_nTalkID;               // current script id      
+
+    public List<int> m_WaitQueue;              // wait to execute queue
+                                                // 解決talk 後面取消前面的問題。同時可以提供 flip切換 talk 
 	public GameObject Tex_BackGround;
     public GameObject Tex_Flip;
     //	public GameObject TalkWindow_Up;
@@ -21,13 +25,11 @@ public class Panel_Talk : MonoBehaviour {
 	private Dictionary<int, SRW_AVGObj> m_idToFace; // 臉部管理
 	public SRW_TextBox  TalkWindow;
 
-	private int nLastPopType;			// for auto pop box
+	private int nLastPopType;			// for auto pop  ACG box type
 
 	STAGE_TALK m_cStageTalk;				// talk data class
 
 	private int m_nTalkIdx;					// 文字目前在哪一行
-
-
 
 	private int 	  m_nScriptIdx;			// cur script index
 	private cTextArray m_cScript;			// 腳本集合
@@ -37,7 +39,7 @@ public class Panel_Talk : MonoBehaviour {
 	bool m_bIsClosing ;
 			
 // tween check
-private int nTweenObjCount;
+    private int nTweenObjCount;
 	// Declare a delegate type for processing a book:
 	public  void OnTweenNotifyEnd( )
 	{
@@ -88,7 +90,9 @@ private int nTweenObjCount;
 		if(AVG_Obj != null ) {
 			AVG_Obj.SetActive( false );
 		}
-      
+
+
+        m_WaitQueue = new List<int>();              // wait to execute queue
 #if DEBUG && UNITY_EDITOR
         //		GameDataManager.Instance.nTalkID = 803; // set here this will cause some issue
 #endif
@@ -118,12 +122,12 @@ private int nTweenObjCount;
 			}
 			m_idToFace.Clear();
 		}
-		if (Tex_BackGround != null) {
-			Tex_BackGround.SetActive( false );
-		}
-        if (Tex_Flip != null) {
-            Tex_Flip.SetActive(false);
-        }
+//		if (Tex_BackGround != null) {
+//			Tex_BackGround.SetActive( false ); // not clear background for flip
+//		}
+//        if (Tex_Flip != null) {
+//            Tex_Flip.SetActive(false);
+//        }
 
 
 		TalkWindow.SetEnable( false );
@@ -134,13 +138,23 @@ private int nTweenObjCount;
 
 
 	void OnEnable () {
-	  // 
-	}
 
-    public void Initial()
+        // auto hide background when reopen
+        if (Tex_BackGround != null)
+        {
+            Tex_BackGround.SetActive(false); // not clear background for flip
+        }
+        if (Tex_Flip != null)
+        {
+            Tex_Flip.SetActive(false);
+        }
+
+    }
+
+    public void FadeIn()
     {
         // clear all
-        Clear();
+        //Clear();
         // GameDataManager.Instance.nTalkID = 1512;
         //int nTalkID = GameDataManager.Instance.nTalkID;
         //if (nTalkID > 0)
@@ -154,7 +168,7 @@ private int nTweenObjCount;
             //MyTool.SetAlpha (TilePlaneObj, 0.0f);
             tw.from = 0.0f;
             tw.to = 1.0f;
-            //tw.onFinished = null ;
+            tw.SetOnFinished(  OnFadeInFinished );
         }
 
         m_bIsClosing = false;
@@ -268,6 +282,18 @@ private int nTweenObjCount;
 	// close talk panel
 	void EndTalk()
 	{
+        // check if next talk event
+        if (m_WaitQueue.Count > 0) 
+        {
+            // change to next talk 
+            int nTalkID = m_WaitQueue[0];
+            m_WaitQueue.RemoveAt(0);
+            // set new script
+            SetScript( nTalkID );
+            return;
+        }
+
+
 		// if stage is end .. open main ten ui
 		if ( (Panel_StageUI.Instance!= null) && (Panel_StageUI.Instance.bIsStageEnd == true) ) {
 			PanelManager.Instance.OpenUI ( Panel_Mainten.Name );
@@ -280,12 +306,11 @@ private int nTweenObjCount;
 			tw.to = 0.0f;
 			MyTool.TweenSetOneShotOnFinish( tw , EndTalkFinish );
 		}
-
-		m_bIsClosing = true;
-
 		GameSystem.bFXPlayMode = true;
 
-	}
+
+        m_bIsClosing = true;
+    }
 
 	void EndTalkFinish()
 	{
@@ -295,8 +320,15 @@ private int nTweenObjCount;
 			m_bIsClosing = false;
 			PanelManager.Instance.CloseUI (Panel_Talk.Name);
 		}
+
 	}
-	public SRW_AVGObj SelAVGObjByType( int nType , int nCharID  )
+
+    void OnFadeInFinished()
+    {
+        NextLine(); // auto next line when fade in complete
+    }
+
+    public SRW_AVGObj SelAVGObjByType( int nType , int nCharID  )
 	{
 		if (m_idToFace.ContainsKey (nType) == false) {
 			GameObject obj = ResourcesManager.CreatePrefabGameObj (this.gameObject, "Prefab/SRW_AVGObj");
@@ -382,18 +414,7 @@ private int nTweenObjCount;
 		return null;
 	}
 
-	public void OnTweenAlphaEnd()
-	{
-        if (  Tex_BackGround != null ) {
-      //      NGUITools.SetActive(Tex_BackGround , false);
-        }
 
-        // destory all avg obj
-        if (Tex_Flip != null) {
-            NGUITools.Destroy(Tex_Flip);
-        }
-
-	}
 
 	public void SetName( int nCharID , GameObject go )
 	{
@@ -421,6 +442,14 @@ private int nTweenObjCount;
 	{
 		if (Tex_BackGround == null)
 			return;
+
+        // close origion
+        if (0 == nBackID) {
+            // find if need fadeout?
+            NGUITools.SetActive(Tex_BackGround, false );
+            return;
+        }
+
         UITexture tex = Tex_BackGround.GetComponent<UITexture>();
         if (tex == null)
             return;
@@ -431,6 +460,12 @@ private int nTweenObjCount;
         //SCENE_NAME scene = ConstDataManager.Instance.GetRow<SCENE_NAME> ( nSceneID );
         //if (scene == null)
         //	return;
+
+        TALK_BACK back = ConstDataManager.Instance.GetRow<TALK_BACK>(nBackID);
+
+        string url = "Art/BG/" + back.s_IMAGENAME;
+
+        Texture t = Resources.Load(url, typeof(Texture)) as Texture; ;
 
         // flip effect
         if (Tex_BackGround.activeSelf)
@@ -449,65 +484,85 @@ private int nTweenObjCount;
                 Tex_Flip.transform.localRotation = Tex_BackGround.transform.localRotation;
                 Tex_Flip.transform.transform.transform.localScale = Tex_BackGround.transform.localScale;
 
+                // flip.depth = tex.depth - 1; // flip as background
+        
+                tex.depth--;
 
-                TweenAlpha tw = TweenAlpha.Begin<TweenAlpha>(Tex_Flip, 1.0f);
-                if (tw)
-                {
-                    tw.from = 1.0f;
-                    tw.to = 0.0f;
-                    //tw.SetOnFinished(OnTweenAlphaEnd);
-                }
-                
+                //   TweenAlpha tw = TweenAlpha.Begin<TweenAlpha>(Tex_Flip, 1.0f);
+                //   if (tw)
+                //   {
+                //       tw.from = 1.0f;
+                //       tw.to = 0.0f;
+                //      //tw.SetOnFinished(OnTweenAlphaEnd);
+                //   }
+
+
+              
 
                 //NGUITools.
             }
         }
 
         // current
-        NGUITools.SetActive(Tex_BackGround, true);
-
-        TALK_BACK back = ConstDataManager.Instance.GetRow<TALK_BACK> ( nBackID );
+        if(Tex_BackGround.activeSelf == false )
+            NGUITools.SetActive(Tex_BackGround, true);
 		
-		string url = "Art/BG/" + back.s_IMAGENAME;
-
-		Texture t= Resources.Load( url , typeof(Texture) ) as Texture; ;
-
-		
-		tex.mainTexture = t;				
-		//tex.MakePixelPerfect();
-
-		TweenAlpha twA = TweenAlpha.Begin<TweenAlpha> (Tex_BackGround , 1.0f); 
-		
+		tex.mainTexture = t;	
+		TweenAlpha twA = TweenAlpha.Begin<TweenAlpha> (Tex_BackGround , 5.0f); 		
 	
 		if( twA )
 		{
-			twA.from = 0.0f;
+            tex.alpha = 0.0f;
+            twA.from = 0.0f;
 			twA.to =  1.0f;
-			twA.SetOnFinished( OnTweenAlphaEnd );
+			twA.SetOnFinished(OnTweenFlipEnd);
 
-		}
-
-		Tex_BackGround.SetActive( true );
+		}        
 	}
 
 
-	public void SetScript( int nScriptID )
+    public void OnTweenFlipEnd()
+    {
+        if (Tex_BackGround != null)
+        {
+            //      NGUITools.SetActive(Tex_BackGround , false);
+        }
+
+        // destory all avg obj
+        if (Tex_Flip != null)
+        {
+            // switch bg
+            if (Tex_BackGround != null)
+            {
+              //  NGUITools.Destroy(Tex_BackGround);
+            }
+//            Tex_BackGround = Tex_Flip;
+//            Tex_Flip = null;
+
+            
+        }
+
+    }
+
+    public void SetScript( int nScriptID )
 	{
 		Clear ();
 
-		m_nScriptIdx = 0; // current execute script
+        m_nTalkID = nScriptID;
+
+        m_nScriptIdx = 0; // current execute script
 
 		 m_cStageTalk = ConstDataManager.Instance.GetRow<STAGE_TALK> ( nScriptID );
 		if (m_cStageTalk == null)
 			return;
 
 		// change Back Tex
-		if ( m_cStageTalk.n_BACK_ID > 0 ) 
-		{
-			SetBackground( m_cStageTalk.n_BACK_ID );
+		//if ( m_cStageTalk.n_BACK_ID > 0 ) 
+		//{
+			SetBackground( m_cStageTalk.n_BACK_ID ); // auto hide  bg with id=0
 			// load texture of sceneID
 
-		}
+		//}
 
 		// change BGM
 		if (m_cStageTalk.n_TALK_BGM > 0) {
@@ -517,13 +572,16 @@ private int nTweenObjCount;
 		m_nScriptIdx = 0;
 
 		m_cScript.SetText ( m_cStageTalk.s_CONTEXT );
-		// for test
-		//m_cScript.SetText( "SETCHAR(0,2);SAY(0,1)\nSETCHAR(1,1);SAY(1,2)\nSAY(0,3)\nSAY(1,4)\nSAY(0,5)\nCLOSE(0,0)\nSAY(1,6)\nSETCHAR(0,20);SAY(0,7)\nSAY(1,8)\nSAY(1,9)");
-		//m_cScript.SetText( "SETCHAR(1,1);SAY(1,9)");
-		//m_cScript.SetText( "SAY(0,3)");
-		//m_cScript.SetText( "SAY(1,9)\nCLOSE(1,0)");
-		// need get script for const data
-		NextLine();
+        // for test
+        //m_cScript.SetText( "SETCHAR(0,2);SAY(0,1)\nSETCHAR(1,1);SAY(1,2)\nSAY(0,3)\nSAY(1,4)\nSAY(0,5)\nCLOSE(0,0)\nSAY(1,6)\nSETCHAR(0,20);SAY(0,7)\nSAY(1,8)\nSAY(1,9)");
+        //m_cScript.SetText( "SETCHAR(1,1);SAY(1,9)");
+        //m_cScript.SetText( "SAY(0,3)");
+        //m_cScript.SetText( "SAY(1,9)\nCLOSE(1,0)");
+        // need get script for const data
+
+        FadeIn();
+
+       // NextLine(); // next lin in fadein complete
 	}
 
 	// script go next line
@@ -831,6 +889,34 @@ private int nTweenObjCount;
 		}
 
 	}
+
+    static public void OpenUI(int nTalkID) {
+
+
+        //GameDataManager.Instance.nTalkID = 0; // set to 0 first to avoid panel_talk awake->enable set script
+        GameDataManager.Instance.nTalkID = nTalkID;
+
+        Panel_Talk pTalk = null;
+        // UI open already
+        if (PanelManager.Instance.CheckUIIsOpening(Panel_Talk.Name) ) {
+            pTalk = PanelManager.Instance.JustGetUI<Panel_Talk>(Panel_Talk.Name);
+            if (pTalk != null)
+            {
+                pTalk.m_WaitQueue.Add(nTalkID);
+                return;
+            }
+        }
+
+
+        // normal open talk UI
+        pTalk = MyTool.GetPanel<Panel_Talk>(PanelManager.Instance.OpenUI(Panel_Talk.Name));
+        if (pTalk != null)
+        {   
+            pTalk.SetScript(nTalkID);
+            // pTalk.FadeIn();
+        }
+        
+    }
 	// widget func
 
 
