@@ -28,6 +28,8 @@ public class Panel_StageUI : MonoBehaviour
 			{
 				GameObject go = PanelManager.Instance.JustGetUI( Name );
 				if( go ){
+                    go.layer = 0;
+
 					instance = go.GetComponent<Panel_StageUI>(); 
 					//return go.GetComponent<Panel_StageUI>(); 
 				}
@@ -39,12 +41,11 @@ public class Panel_StageUI : MonoBehaviour
 
 	public GameObject BackGroundObj; // back ground
 	public GameObject TilePlaneObj; // plane of all tiles sprite
-	public GameObject MaskPanelObj; // plane mask
-  
+	public GameObject MaskPanelObj; // plane mask  
     public GameObject UnitPanelObj; // unit plane
 
 
-    public GameObject UnitObj; // unit obj
+    public GameObject UnitSpiteObj; // unit sprite obj
     public GameObject MobActEffObj; // Mob action mask
   
     GameObject ActEffFolObj;
@@ -411,10 +412,10 @@ public class Panel_StageUI : MonoBehaviour
 
 		OverCellMarkPool = new Dictionary< string , GameObject >();		// mark cell
 
-		tmpScriptMoveEnd = new List< iVec2 >();					// script 用的單位移動 mrak pool 防止 script 讓不同單位移動到 同樣座標
+		tmpScriptMoveEnd = new List< iVec2 >();                 // script 用的單位移動 mrak pool 防止 script 讓不同單位移動到 同樣座標
 
-		//List < iVec2 >
-		UnitPanelObj.CreatePool( 1);//st_CellObjPoolSize / 2 
+        //List < iVec2 >
+        UnitSpiteObj.CreatePool( 1);//st_CellObjPoolSize / 2 
 
 		MoveEftObj.CreatePool( st_CellObjPoolSize );
 		AtkEftObj.CreatePool( st_CellObjPoolSize );
@@ -555,7 +556,7 @@ public class Panel_StageUI : MonoBehaviour
 	void FixPlanePosition()
 	{
 		// ensure canvrs in screen
-		if( TilePlaneObj != null )
+	//	if( TilePlaneObj != null )
 		{
 			if (TarceMoveingUnit != null ) {
 				if( TarceMoveingUnit.IsMoving()== false )
@@ -568,9 +569,9 @@ public class Panel_StageUI : MonoBehaviour
 					v.y *= -1;
 
 					//get time from speed 200pix /sec
-					Vector3 d = TilePlaneObj.transform.localPosition - v;
+					Vector3 d = this.transform.localPosition - v;
 					float time = d.magnitude  /1000 ;
-					TweenPosition tw = TweenPosition.Begin<TweenPosition>(TilePlaneObj , time );
+					TweenPosition tw = TweenPosition.Begin<TweenPosition>(this.gameObject , time );
 					if( tw ){
 						tw.SetStartToCurrentValue();
 						tw.to = v;
@@ -584,7 +585,7 @@ public class Panel_StageUI : MonoBehaviour
 			//float fMouseX = Input.mousePosition.x;
 			//float fMouseY = Input.mousePosition.y;
 			
-			Vector3 vOffset = TilePlaneObj.transform.localPosition;
+			Vector3 vOffset = gameObject.transform.localPosition;
 			// X 
 			if( vOffset.x < fMinOffX ){
 				vOffset.x = fMinOffX;
@@ -599,12 +600,11 @@ public class Panel_StageUI : MonoBehaviour
 			else if( vOffset.y > fMaxOffY ){
 				vOffset.y = fMaxOffY;
 			}
-			TilePlaneObj.transform.localPosition = vOffset;
+            gameObject.transform.localPosition = vOffset;
 
-            if (MaskPanelObj != null ) {
-
-                MaskPanelObj.transform.position = TilePlaneObj.transform.position;
-            }
+//            if (MaskPanelObj != null ) {
+//                MaskPanelObj.transform.position = TilePlaneObj.transform.position;
+//            }
 		}
 
         if (ActEffFolObj != null) {
@@ -615,8 +615,8 @@ public class Panel_StageUI : MonoBehaviour
 
 	void OnReady()
 	{
-		// close all other panel
-		UnitPanelObj.SetActive( false ); // unit plane
+        // close all other panel
+        UnitSpiteObj.SetActive( false ); // unit plane
 		
 		//public GameObject TileObj; 	//  no need this
 		MoveEftObj.SetActive( false ); 	// 
@@ -1018,8 +1018,8 @@ public class Panel_StageUI : MonoBehaviour
 			}
             //GameObject background =  GetBackGroundPrefab( Grids );
             //if( background != null ){
-            GameObject tiles = NGUITools.AddChild(TilePlaneObj);
-            tiles.name = "Tiles";
+          //  GameObject tiles = NGUITools.AddChild(TilePlaneObj);
+           // tiles.name = "Tiles";
             //}
             // start to create sprite
             for ( int i = -Grids.hW ; i <= Grids.hW ; i++ ){
@@ -1029,7 +1029,7 @@ public class Panel_StageUI : MonoBehaviour
 					if( t== _TILE._NULL )	
 						continue;
 
-					GameObject cell = GetTileCellPrefab( i , j , t , tiles ); 
+					GameObject cell = GetTileCellPrefab( i , j , t , TilePlaneObj); 
 					if( cell == null )
 					{
 						// debug message
@@ -1121,7 +1121,7 @@ public class Panel_StageUI : MonoBehaviour
 			UIDragObject drag = cell.GetComponent<UIDragObject>(); 
 			if( drag != null )
 			{
-                drag.target = tiles.transform.parent;// TilePlaneObj.transform ;
+                drag.target = this.transform; //tiles.transform.parent;// TilePlaneObj.transform ;
 
 			}
 
@@ -1306,7 +1306,7 @@ public class Panel_StageUI : MonoBehaviour
 
 			// create move over cell
 			//GameObject over = ResourcesManager.CreatePrefabGameObj(TilePlaneObj, "Prefab/MoveOverEffect");
-			GameObject over = MoveEftObj.Spawn(  TilePlaneObj.transform );
+			GameObject over = MoveEftObj.Spawn(  MaskPanelObj.transform );
 		
 			if( over != null )
 			{
@@ -1348,7 +1348,7 @@ public class Panel_StageUI : MonoBehaviour
 		foreach( iVec2 v in AtkList )
 		{
 			//GameObject over = ResourcesManager.CreatePrefabGameObj(TilePlaneObj, "Prefab/AttackOverEffect");
-			GameObject over = AtkEftObj.Spawn( TilePlaneObj.transform );
+			GameObject over = AtkEftObj.Spawn( MaskPanelObj.transform );
 			if( over != null )
 			{
 				over.name = string.Format("ATK Over({0},{1},{2})", v.X , v.Y , 0 );
@@ -1448,7 +1448,7 @@ public class Panel_StageUI : MonoBehaviour
 		{	
 			// create move over cell
 			//GameObject over = ResourcesManager.CreatePrefabGameObj(TilePlaneObj, "Prefab/MoveOverEffect");
-			GameObject over = AoeEftObj.Spawn(  TilePlaneObj.transform );
+			GameObject over = AoeEftObj.Spawn(  MaskPanelObj.transform );
 			
 			if( over != null )
 			{
@@ -2016,8 +2016,8 @@ public class Panel_StageUI : MonoBehaviour
 //		if( charData == null)
 //			return null;
 		// get data from Const data
-		if (TilePlaneObj == null) {
-			Debug.Log( "Stage Addunit to null TilePlane" );
+		if (UnitPanelObj == null) {
+			Debug.Log("Stage Addunit to null UnitPanel");
 			return null;
 		}
 		if (data == null) {
@@ -2028,7 +2028,7 @@ public class Panel_StageUI : MonoBehaviour
 
 		//GameObject obj = ResourcesManager.CreatePrefabGameObj( TilePlaneObj , "Prefab/Panel_Unit" );
 
-		GameObject obj = UnitPanelObj.Spawn( TilePlaneObj.transform );
+		GameObject obj = UnitSpiteObj.Spawn( UnitPanelObj.transform );
 		if( obj == null )return null;
 		obj.name = string.Format ("unit-{0}",nCharID );	
 
@@ -2250,6 +2250,10 @@ public class Panel_StageUI : MonoBehaviour
 //			}
 			TilePlaneObj.SetActive (bShow);
 		}
+        if (UnitPanelObj != null) {
+            UnitPanelObj.SetActive(bShow);
+        }
+
 
 	}
 
@@ -2399,7 +2403,7 @@ public class Panel_StageUI : MonoBehaviour
 		if (obj == null || bIsStageEnd)
 			return;
 		Vector3 v = obj.transform.localPosition;
-		Vector3 canv = TilePlaneObj.transform.localPosition; // shift
+		Vector3 canv = gameObject.transform.localPosition; // shift
 		Vector3 realpos = v + canv;
 		if (force == false)
 		{
@@ -2420,7 +2424,7 @@ public class Panel_StageUI : MonoBehaviour
 				during = time;		// 不管多遠都不要超過1 秒
 	//	}
 
-		TweenPosition tw = TweenPosition.Begin<TweenPosition> (TilePlaneObj, during);
+		TweenPosition tw = TweenPosition.Begin<TweenPosition> (gameObject, during);
 		if (tw != null) {
 			tw.SetStartToCurrentValue();
 			tw.to = -v;
@@ -3948,7 +3952,7 @@ public class Panel_StageUI : MonoBehaviour
 			return;
 
 		Vector3 v = new Vector3 (fx, fy);
-		Vector3 canv = TilePlaneObj.transform.localPosition; // shift
+		Vector3 canv = gameObject.transform.localPosition; // shift
 		Vector3 realpos = v + canv;
 		
 		
@@ -3962,7 +3966,7 @@ public class Panel_StageUI : MonoBehaviour
 			during = 1.0f;		// 不管多遠都不要超過1 秒
 		//	}
 		
-		TweenPosition tw = TweenPosition.Begin<TweenPosition> (TilePlaneObj, during);
+		TweenPosition tw = TweenPosition.Begin<TweenPosition> (gameObject, during);
 		if (tw != null) {
 			tw.SetStartToCurrentValue();
 			tw.to = -v;
