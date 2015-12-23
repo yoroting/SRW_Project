@@ -10,7 +10,7 @@ GameObject:
   - 4: {fileID: 446600}
   - 198: {fileID: 19881444}
   - 199: {fileID: 19986990}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Distort_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28,7 +28,7 @@ GameObject:
   - 198: {fileID: 19855582}
   - 199: {fileID: 19933548}
   - 114: {fileID: 11493342}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Spawn_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -45,7 +45,7 @@ GameObject:
   - 4: {fileID: 418640}
   - 198: {fileID: 19831492}
   - 199: {fileID: 19984376}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Stomp_01_ColorA
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -62,7 +62,7 @@ GameObject:
   - 4: {fileID: 421578}
   - 198: {fileID: 19834216}
   - 199: {fileID: 19927372}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Small_Particle_01_ColorA
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4431,7 +4431,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_Layer
-      value: 0
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_SortingLayerID

@@ -2252,6 +2252,20 @@ public class Panel_unit : MonoBehaviour {
 
                 }
                 break;
+            case cHitResult._TYPE._BEHIT: // be Hit fX
+                {
+                    int nhitFX = 203;// default  
+                    SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(res.Value1);
+                    if (skl != null)
+                    {
+                        nhitFX = skl.n_HIT_FX;  // skill data may cancel hit fx to 0
+                    }
+                    //if( nhitFX == 0)
+                    //	nhitFX = 203;
+                    PlayFX( nhitFX );
+
+                }
+                break;
             default:
                 break;
 

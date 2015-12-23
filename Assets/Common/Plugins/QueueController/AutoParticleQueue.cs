@@ -5,12 +5,15 @@ using System;
 /// 控制 Particle 的 Queue 值，以配合 NGUI 深度
 /// （ 3D 模型也可用 Queue 值）
 /// </summary>
+using System.Collections.Generic;
+
+
 public class AutoParticleQueue : MonoBehaviour
 {
 	[SerializeField] private int queueOffset = 0;
 	private UIPanel targetPanel;
 	private GameObject cacheGameObject;
-	private Renderer cacheRenderer;
+	private List<Renderer> cacheRendererList = new List<Renderer>();
 	private int nowRnederQueue = -1;
 
 	/// <summary>做初始設定，並傳回是否成功初始化</summary>
@@ -31,15 +34,17 @@ public class AutoParticleQueue : MonoBehaviour
 			}
 		}
 
-		if(cacheRenderer == null){
-			ParticleSystem cacheParticle = cacheGameObject.GetComponent<ParticleSystem>();
-			if(cacheParticle != null){
-				cacheRenderer = cacheParticle.GetComponent<Renderer>();
+		if(cacheRendererList.Count == 0){
+			ParticleSystem[] cacheParticleList = cacheGameObject.GetComponentsInChildren<ParticleSystem>();
+			if(cacheParticleList != null){
+				foreach(ParticleSystem ps in cacheParticleList)
+					cacheRendererList.Add(ps.GetComponent<Renderer>());
 			}else{
-				cacheRenderer = cacheGameObject.GetComponent<ParticleRenderer>();
+				foreach(ParticleSystem ps in cacheParticleList)
+					cacheRendererList.Add(ps.GetComponent<ParticleRenderer>());
 			}
 			
-			if(cacheRenderer == null){
+			if(cacheRendererList.Count == 0){
 				Debug.LogWarning("沒有 renderer 物件!");
 				return false;
 			}
@@ -47,7 +52,8 @@ public class AutoParticleQueue : MonoBehaviour
 		return true;
 	}
 
-	void Update(){
+	void Start(){
+	//void Update(){
 		if(!checkAndInit()){
 			enabled = false;
 			return;
@@ -59,7 +65,7 @@ public class AutoParticleQueue : MonoBehaviour
 
 	void OnDisable(){
 		cacheGameObject = null;
-		cacheRenderer = null;
+		cacheRendererList.Clear();
 	}
 
 	public void SetQueueOffset( int nOffset ){
@@ -69,9 +75,10 @@ public class AutoParticleQueue : MonoBehaviour
 	private void SetQueue(int queue){
 		if(cacheGameObject == null)
 			return;
-		if(cacheRenderer == null)
+		if(cacheRendererList == null)
 			return;
 
-		cacheRenderer.sharedMaterial.renderQueue = queue;
+		foreach(Renderer renderer in cacheRendererList)
+			renderer.sharedMaterial.renderQueue = queue;
 	}
 }

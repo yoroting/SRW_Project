@@ -259,9 +259,12 @@ public class GameSystem : MonoBehaviour {
         //		foreach (ParticleSystemRenderer psr2 in psrs) {
         //			psr2.sortingLayerName = sortLayer;
         //		}
-
-        AutoParticleQueue q = instance.AddComponent <AutoParticleQueue>();
-        q.SetQueueOffset(500);
+        AutoParticleQueue autoquene = instance.GetComponent<AutoParticleQueue>();
+        if (autoquene == null)
+        {
+            autoquene = instance.AddComponent<AutoParticleQueue>();
+            autoquene.SetQueueOffset(500);
+        }
 
         //check auto destory
         CFX_AutoDestructShuriken des = instance.GetComponent< CFX_AutoDestructShuriken > ();
