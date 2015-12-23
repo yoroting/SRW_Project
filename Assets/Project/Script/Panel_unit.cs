@@ -46,7 +46,7 @@ public class Panel_unit : MonoBehaviour {
 	int		nSubActFlow;			// index of action run
 
 	public List< iVec2 > PathList;
-	List< iVec2 > pathfind;				// if have findinf path
+	List< iVec2 > pathfind;				// if have assign finding path
 
 	iVec2	TarPos;					   //目標左標
 	public int TarIdent { set; get ;}  //攻擊對象
@@ -55,10 +55,15 @@ public class Panel_unit : MonoBehaviour {
 	bool bOnSelected;
 
 	//int nActionTime=1;	
-	public int  	MissileCount = 0 ;			//Missile Count
+	public int  	MissileCount = 0 ;          //Missile Count
 
 
-	public bool bIsDead = false;
+    List<cHitResult> WaitMsgPool;
+    List<int>        WaitFxPool;
+
+    float m_fNextMsgTime;    
+
+    public bool bIsDead = false;
 	public bool bIsAtking  = false;
 	public bool bIsCasting = false;
 	public bool bIsShaking = false;
@@ -96,7 +101,7 @@ public class Panel_unit : MonoBehaviour {
 		Loc 	= new iVec2( 0 , 0 );
 		TarPos  = new iVec2( 0 , 0 );
 
-		CharID = 0;
+        CharID = 0;
 	//	nActionTime = 1;
 		bOnSelected = true;
 		bIsDead = false;
@@ -154,45 +159,50 @@ public class Panel_unit : MonoBehaviour {
 		}
 
 
-		//UIEventListener.Get ( this.gameObject ).onClick
-//		GameObject instance = ResourcesManager.CreatePrefabGameObj ( this.gameObject ,"FX/Cartoon FX/CFXM4 SmokePuff Ground B" );
-//		
-//		ParticleSystem ps =instance.GetComponent< ParticleSystem>();
-//		if (ps!= null) {
-//			
-//		}
-//		ParticleSystemRenderer psr =instance.GetComponent< ParticleSystemRenderer>();
-//		if (psr != null) {
-//			psr.sortingLayerName = "FX";
-//		}
+        //UIEventListener.Get ( this.gameObject ).onClick
+        //		GameObject instance = ResourcesManager.CreatePrefabGameObj ( this.gameObject ,"FX/Cartoon FX/CFXM4 SmokePuff Ground B" );
+        //		
+        //		ParticleSystem ps =instance.GetComponent< ParticleSystem>();
+        //		if (ps!= null) {
+        //			
+        //		}
+        //		ParticleSystemRenderer psr =instance.GetComponent< ParticleSystemRenderer>();
+        //		if (psr != null) {
+        //			psr.sortingLayerName = "FX";
+        //		}
 
+        WaitFxPool.Clear();
+        WaitMsgPool.Clear();
+        m_fNextMsgTime = 0.0f;
 
 //		SetBorn (); // start born animate
-	}
+    }
 
 	// Awake
 	void Awake(){
 		bOnSelected = false;
-	//	nActionTime = 1;				// default is 1
+        //	nActionTime = 1;				// default is 1
+        WaitMsgPool = new List<cHitResult>();
+        WaitFxPool = new List<int>(); 
+        m_fNextMsgTime = 0.0f;
+        //ParticleSystemRenderer
 
-		//ParticleSystemRenderer
+        //		GameObject instance = ResourcesManager.CreatePrefabGameObj ( this.gameObject ,"FX/Cartoon FX/CFXM4 Splash" );
+        //
+        //		ParticleSystem ps =instance.GetComponent< ParticleSystem>();
+        //		if (ps!= null) {
+        //
+        //		}
+        //		ParticleSystemRenderer psr =instance.GetComponent< ParticleSystemRenderer>();
+        //		if (psr != null) {
+        //			psr.sortingLayerName = "FX";
+        //		}
+        //
+        //		SetBorn (); // start born animate
+        //GameObject instance = Resources.Load ( "/FX/Cartoon FX" );
+        //GameObject instance = CFX_SpawnSystem.GetNextObject ( CFX_SpawnSystem.instance.objectsToPreload[3] );
 
-//		GameObject instance = ResourcesManager.CreatePrefabGameObj ( this.gameObject ,"FX/Cartoon FX/CFXM4 Splash" );
-//
-//		ParticleSystem ps =instance.GetComponent< ParticleSystem>();
-//		if (ps!= null) {
-//
-//		}
-//		ParticleSystemRenderer psr =instance.GetComponent< ParticleSystemRenderer>();
-//		if (psr != null) {
-//			psr.sortingLayerName = "FX";
-//		}
-//
-//		SetBorn (); // start born animate
-		//GameObject instance = Resources.Load ( "/FX/Cartoon FX" );
-		//GameObject instance = CFX_SpawnSystem.GetNextObject ( CFX_SpawnSystem.instance.objectsToPreload[3] );
-		
-	}
+    }
 	// Use this for initialization
 	void Start () {
 		// change Texture
@@ -206,21 +216,45 @@ public class Panel_unit : MonoBehaviour {
 		if (IsAnimate () == true)
 			return;
 
-		// stop update when msg 
-		if (BattleMsg.nMsgCount > 0)
+
+        // process show value 
+        if (ProcessHitResult())
+            return;
+
+
+
+        //if (WaitMsgPool.Count > 0 && (Time.time> m_fNextMsgTime) )
+        //{
+        //    cHitResult hitres = WaitMsgPool[0];
+        //    if (hitres != null)
+        //    {
+        //        m_fNextMsgTime = Time.time + 0.5f;
+        //        //m_fNextMsgTime = 0.0f;
+        //        WaitMsgPool.RemoveAt(0);
+        //    }
+        //}
+
+        // stop update when msg 
+        if (BattleMsg.nMsgCount > 0)
 			return ;
 
-		if (FxObj != null) { // detect obj is end
-			ParticleSystem ps = FxObj.GetComponent< ParticleSystem > ();
-			if( ps.IsAlive() == false  )
-			{
-				Debug.Log( " ps end ");
+        // wait all fx played
+        if ( WaitFxPool.Count > 0 ) {
+            if (FxObj != null)
+            { // detect obj is end
+                // it will be null when fx playend and auto delete
+//                ParticleSystem ps = FxObj.GetComponent<ParticleSystem>();
+//                if (ps.IsAlive() == true)
+//                {
+                    //Debug.Log(" ps end ");
+//                }
+                return; // block
+            }
 
-			}
-
-
-		}
-
+            PlayFX( WaitFxPool[0] );
+            WaitFxPool.RemoveAt(0);
+            return;
+        }
 		// check if need to move
 		//if (IsMoveing () == false ) {			// check have null point
 		if ((PathList != null) && (PathList.Count > 0)) {
@@ -745,8 +779,8 @@ public class Panel_unit : MonoBehaviour {
 			case 2:
 				// wait all hit result preform
 				if( IsAnimate() == false ){
-					ActionManager.Instance.ExecActionEndResult ( CurAction  );
-					nSubActFlow++;
+					ActionManager.Instance.ExecActionEndResult ( CurAction  );                    
+                   nSubActFlow++;
 				}
 				break;
 
@@ -1212,7 +1246,7 @@ public class Panel_unit : MonoBehaviour {
 
 	}
 	// cirit
-	public void SetBeCirit(  )
+	public void SetCirit(  )
 	{
 		BattleManager.Instance.ShowBattleResValue( this.gameObject , "爆擊" , 0 );
 	}
@@ -1605,9 +1639,9 @@ public class Panel_unit : MonoBehaviour {
 
 			BattleManager.Instance.ShowBattleResValue( this.gameObject , nValue , nMode );
 		}
-		// show dmg effect
-
-	}
+        // show dmg effect
+        m_fNextMsgTime = Time.time + 0.7f; // next can play time
+    }
 
 	public void SetShake()
 	{
@@ -2077,20 +2111,161 @@ public class Panel_unit : MonoBehaviour {
 
 	public void PlayFX( int nFXID )
 	{
+        if (nFXID == 0)
+            return;
+
+        if (FxObj != null) {
+            WaitFxPool.Add(nFXID);
+            // push to 
+
+            return;
+        }
+
+
 		GameObject obj  = GameSystem.PlayFX( this.gameObject , nFXID );
 		FxObj = obj;
 
 	}
 
-//	public void AddBuff( int nBuffID )
-//	{
-//		pUnitData.Buffs.AddBuff (nBuffID);
-//
-//	}
+    public bool ProcessHitResult()
+    {
+        if (WaitMsgPool == null )
+            return false;
+        // show value 
+        if (WaitMsgPool.Count > 0 && (Time.time > m_fNextMsgTime) )
+        {
+            cHitResult hitres = WaitMsgPool[0];
+            if (hitres != null)
+            {
+                PlayHitResult(hitres);
+                //m_fNextMsgTime = 0.0f;
+                WaitMsgPool.RemoveAt(0);
+            }
+        }
 
-//	public void DelBuff( int nBuffID )
-//	{
-//		pUnitData.Buffs.DelBuff(nBuffID);
-//	}
+        return (WaitMsgPool.Count>0);
+    }
+
+    public void PlayHitResult(cHitResult res , bool bForce = false)
+    {
+        if (res == null)
+        {          
+            return;
+        }
+        // if some action playing .. queue it
+        if ( (bForce== false) && (m_fNextMsgTime > Time.time) )
+        {
+            WaitMsgPool.Add(res);
+            return;
+        }//
+
+        // next time can play
+        //m_fNextMsgTime = Time.time + 0.2f; // add in showvalueeff
+
+        // normal play
+        switch (res.eHitType)
+        {
+            case cHitResult._TYPE._HP:
+                {
+                    ShowValueEffect(res.Value1, 0); // HP
+                    if (res.Value1 != 0) // maybe change data in  battle manage
+                    {
+                        pUnitData.AddHp(res.Value1);
+                    }
+
+                }
+                break;
+            case cHitResult._TYPE._DEF:
+                {
+
+                    ShowValueEffect(res.Value1, 1); // DEF
+                    if (res.Value1 != 0) // maybe change data in  battle manage
+                    {
+                        pUnitData.AddDef(res.Value1);
+                    }
+
+                }
+                break;
+            case cHitResult._TYPE._MP:
+                {
+                    ShowValueEffect(res.Value1, 2); // MP
+                    if (res.Value1 != 0) // maybe change data in  battle manage
+                    {
+                        pUnitData.AddMp(res.Value1);
+                    }
+                }
+                break;
+            case cHitResult._TYPE._SP:
+                {
+                    ShowValueEffect(res.Value1, 3); // SP
+                    if (res.Value1 != 0) // maybe change data in  battle manage
+                    {
+                        pUnitData.AddSp(res.Value1);
+                    }
+                }
+                break;
+            case cHitResult._TYPE._CP:
+                {
+                    //pUnit.ShowValueEffect( res.Value1 , 0 ); // CP
+                    if (res.Value1 != 0) // maybe change data in  battle manage
+                    {
+                        pUnitData.AddCp(res.Value1);
+                    }
+                }
+                break;
+            case cHitResult._TYPE._ACTTIME:
+                {
+                    //pUnit.ShowValueEffect( res.Value1 , 0 ); // SP
+                    if (res.Value1 != 0) // maybe change data in  battle manage
+                    {
+                        pUnitData.AddActionTime(res.Value1);
+                    }
+                }
+                break;
+
+            case cHitResult._TYPE._ADDBUFF: // add buff
+                {
+                   
+                    if (res.Value1 != 0) // maybe change data in  battle manage
+                    {
+                        // cUnitData pData = GameDataManager.Instance.GetUnitDateByIdent(res.Ident);
+                        // if (pData != null)
+                        // {
+                        pUnitData.Buffs.AddBuff(res.Value1, res.Value2, res.Value3, res.Value4);
+                        // }
+
+                        m_fNextMsgTime = Time.time + 0.5f;
+                    }
+
+                }
+                break;
+            case cHitResult._TYPE._DELBUFF: // remove buff
+                {
+                    if (res.Value1 != 0) // maybe change data in  battle manage
+                    {
+                        //  cUnitData pData = GameDataManager.Instance.GetUnitDateByIdent(res.Ident);
+                        //  if (pData != null)
+                        {
+                            pUnitData.Buffs.DelBuff(res.Value1);
+                        }
+                    }
+
+                }
+                break;
+            default:
+                break;
+
+        }
+    }
+    //	public void AddBuff( int nBuffID )
+    //	{
+    //		pUnitData.Buffs.AddBuff (nBuffID);
+    //
+    //	}
+
+    //	public void DelBuff( int nBuffID )
+    //	{
+    //		pUnitData.Buffs.DelBuff(nBuffID);
+    //	}
 
 }

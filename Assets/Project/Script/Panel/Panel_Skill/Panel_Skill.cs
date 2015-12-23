@@ -88,29 +88,30 @@ public class Panel_Skill : MonoBehaviour {
 		List< SKILL > sklLst = new List< SKILL > ();
 
 		//神模式的主角 全招式都能放
-		if( Config.GOD == true && data.n_CharID== 1   )
-		{
-			DataTable pTable = ConstDataManager.Instance.GetTable < SKILL > ();
-			if (pTable == null) 
-				return;
+		//if( Config.GOD == true && data.n_CharID== 1    )
+		//{
+		//	DataTable pTable = ConstDataManager.Instance.GetTable < SKILL > ();
+		//	if (pTable == null) 
+		//		return;
 			
-			foreach( SKILL skl in pTable )
-			{
-				if( skl.n_PASSIVE == 1 )
-					continue;
-				if (eType == _SKILL_TYPE._SKILL) {
-					if( skl.n_SCHOOL == 0 )	// == 0 is ability
-						continue;
-				}
-				else{
-					if( skl.n_SCHOOL != 0 )	// == 0 is ability
-						continue;
-				}
+		//	foreach( SKILL skl in pTable )
+		//	{
+		//		if( skl.n_PASSIVE == 1 )
+		//			continue;
+		//		if (eType == _SKILL_TYPE._SKILL) {
+		//			if( skl.n_SCHOOL == 0 )	// == 0 is ability
+		//				continue;
+		//		}
+		//		else{
+		//			if( skl.n_SCHOOL != 0 )	// == 0 is ability
+		//				continue;
+		//		}
 
-				sklLst.Add( skl );
-			}
-		}
-		else { // normal
+		//		sklLst.Add( skl );
+		//	}
+		//}
+		//else
+        { // normal
 
 			if (eType == _SKILL_TYPE._SKILL) {
 

@@ -1189,7 +1189,7 @@ public class Panel_StageUI : MonoBehaviour
         UIDragObject drag = gameObject.GetComponent<UIDragObject>();
         if (drag != null)
         {
-            drag.target = gameObject.transform.parent.transform;
+            drag.target =  Panel_StageUI.instance.gameObject.transform ;// gameObject.transform.parent.transform;
         }
     }
 
@@ -1498,7 +1498,7 @@ public class Panel_StageUI : MonoBehaviour
 
     public bool IsAnyActionRunning()
     {
-        // for win event
+        // for detect win event
         if ((TilePlaneObj != null) && !TilePlaneObj.activeSelf) {
             return false;
         }

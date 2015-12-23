@@ -47,7 +47,8 @@ public class cHitResult		//
 		_BEHIT		,		// 被
 
 		_HITBACK	,
-		_BECIRIT		,
+        _CIRIT,             // 取消爆擊的設計。以維持平衡    
+       // _BECIRIT		,
 		_DODGE		,		// 迴避
 		_MISS		, 		// fail
 		_GUARD		,		// guard some 
@@ -705,7 +706,7 @@ public partial class BattleManager
 			if( bIsDamage ){
 
 				// check if base cirit happen
-				RollBaseCirit ( Atker , Defer );
+				//RollBaseCirit ( Atker , Defer ); // cancel cirit to avoid mob be overkill
 				
 				// check if base dodge happen
 				RollBaseDodge ( Atker , Defer );
@@ -1052,15 +1053,22 @@ public partial class BattleManager
 
 	public void ShowBattleMsg( Panel_unit unit , string msg )
 	{
-		Vector3 v = new Vector3 (0, 0, 0);
-		if (unit != null) {
-			// show in screen center
-			v = unit.transform.position;
-			//v = unit.transform.parent.localPosition+unit.transform.localPosition;
-		}
-
-		GameObject go = ResourcesManager.CreatePrefabGameObj ( Panel_StageUI.Instance.MaskPanelObj , "prefab/BattleMsg" );
-		if (go != null) {
+        GameObject go = null;
+        Vector3 v = Vector3.zero;
+        if (unit != null)
+        {
+            go = ResourcesManager.CreatePrefabGameObj(unit.gameObject, "prefab/BattleMsg");
+            // show in screen center
+            v = unit.transform.position;
+            //v = unit.transform.parent.localPosition+unit.transform.localPosition;
+        }
+        else {
+            //
+            go = ResourcesManager.CreatePrefabGameObj(Panel_StageUI.Instance.MaskPanelObj, "prefab/BattleMsg");
+        }
+        //GameObject go = ResourcesManager.CreatePrefabGameObj ( Panel_StageUI.Instance.MaskPanelObj , "prefab/BattleMsg" );
+        
+        if (go != null) {
 			go.transform.position = v;
 			//go.transform.localPosition = v;
 			UILabel lbl = go.GetComponentInChildren<UILabel>();
@@ -1098,13 +1106,12 @@ public partial class BattleManager
 	}
 	public void ShowBattleResValue( GameObject obj , int nValue , int nMode )
 	{	
-		//nMode : 0 - hp , 1- def , 2 - mp , 3 -sp
-		Vector3 v = new Vector3 (0, 0, 0);
+		//nMode : 0 - hp , 1- def , 2 - mp , 3 -sp , 4 
+		Vector3 v = Vector3.zero;
 		if ( obj != null) {
 			// show in screen center
 //			Vector3 vp = obj.transform.parent.localPosition;
 //			v = obj.transform.localPosition;
-
 //			v = obj.transform.parent.localPosition+obj.transform.localPosition;
 
 			//v = obj.transform.position ;
@@ -1115,36 +1122,39 @@ public partial class BattleManager
 //		case 0:  // hp 
 //			break;
 		case 1:  // def
-			v.y += 50;
+//			v.y += 50;
 			break;
 		case 2:  // mp
-			v.y -= 50;
+//			v.y -= 50;
 			break;
-		
-		}
+        case 3:  // sp
+            break;
+
+        }
 			
 
 		//GameObject go = ResourcesManager.CreatePrefabGameObj ( Panel_StageUI.Instance.MaskPanelObj , "Prefab/BattleValue" );
 		GameObject go = Panel_StageUI.Instance.SpwanBattleValueObj (obj, v );
 		if (go != null) {
-			//go.transform.position = v;
-			//go.transform.localPosition = v;
-			//Tween Y 將造成 成像上的偏移錯誤。徹底解決前～不開放
-			// tween Y here for correct pos value
-//			TweenY twnY = TweenY.Begin<TweenY>( go , 0.5f ); 
-//			if( twnY != null ){
-//				twnY.SetStartToCurrentValue();
-//				twnY.to = v.y +300;
-//				twnY.Play();
-//
-//			}
+            //go.transform.position = v;
+            //go.transform.localPosition = v;
+            //Tween Y 將造成 成像上的偏移錯誤。徹底解決前～不開放
+            // tween Y here for correct pos value
+            //			TweenY twnY = TweenY.Begin<TweenY>( go , 0.5f ); 
+            //			if( twnY != null ){
+            //				twnY.SetStartToCurrentValue();
+            //				twnY.to = v.y +300;
+            //				twnY.Play();
+            //
+            //			}
 
-			//nMode : 0 - hp , 1- def , 2 - mp , 3 -sp
-
-			UILabel lbl = go.GetComponent< UILabel >();
+            //nMode : 0 - hp , 1- def , 2 - mp , 3 -sp
+          
+            UILabel lbl = go.GetComponent< UILabel >();
 			if( lbl )
 			{
-				switch( nMode ){
+                lbl.text = "";
+                switch ( nMode ){
 				case 0:  // hp 
 					if( nValue > 0 ){								
 						lbl.gradientTop = new Color( 0.0f, 1.0f , 0.0f );	// green
@@ -1155,7 +1165,9 @@ public partial class BattleManager
 					break;
 
 				case 1:  // def 
-						if( nValue > 0 ){
+
+                     //   lbl.text = "防禦";
+                        if ( nValue > 0 ){
 							lbl.gradientTop = new Color( 1.0f, 1.0f , 0.0f );  // yellow
 						}
 						else{
@@ -1163,7 +1175,8 @@ public partial class BattleManager
 						}
 					break;
 					case 2:  // mp 
-						if( nValue > 0 ){
+                     //   lbl.text = "內力";
+                        if ( nValue > 0 ){
 						lbl.gradientTop = new Color( 0.0f, 0.0f , 1.0f );  // blue 
 						}
 						else{
@@ -1204,7 +1217,7 @@ public partial class BattleManager
 //
 //
 
-				lbl.text = nValue.ToString();
+				lbl.text += nValue.ToString();
 			}
 		}
 	}
@@ -1215,13 +1228,14 @@ public partial class BattleManager
 //		if ( obj != null) {
 	//		v = obj.transform.parent.localPosition+obj.transform.localPosition;
 		//}
-		GameObject go = Panel_StageUI.Instance.SpwanBattleValueObj (obj ,  v );
+		GameObject go = Panel_StageUI.Instance.SpwanBattleValueObj (Panel_StageUI.Instance.MaskPanelObj ,  v ); // show on mask 
 		
 		if (go != null) {
-			//go.transform.position = v;
-			//go.transform.localPosition = v;			
-			
-			UILabel lbl = go.GetComponent< UILabel >();
+            //go.transform.position = v;
+            //go.transform.localPosition = v;			
+            go.transform.position = obj.transform.position;
+
+            UILabel lbl = go.GetComponent< UILabel >();
 			if( lbl )
 			{
 
@@ -1708,11 +1722,11 @@ public partial class BattleManager
 		// 攻方加成
 		fAtkDmg = fAtkDmg * pAtker.GetMulBurst () ;
 
-		// cirit happpen
-		if (pAtker.IsStates (_FIGHTSTATE._CIRIT)) {
+        // cirit happpen       
+        if (pAtker.IsStates (_FIGHTSTATE._CIRIT)) {
 
 			fAtkDmg *= Config.CiritRatio;
-			resPool.Add (new cHitResult (cHitResult._TYPE._BECIRIT , nDefer, 0 ));	
+			resPool.Add (new cHitResult (cHitResult._TYPE._CIRIT , nAtker, 0 ));	
 		}
 
 		//守方減免

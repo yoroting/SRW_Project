@@ -367,9 +367,12 @@ public partial class ActionManager
 						float f = caster.GetMaxDef() * skill.f_DEF ;
 						act.HitResult.Add( new cHitResult( cHitResult._TYPE._DEF ,nAtkIdent , (int)f    ) ); 
 						//caster.AddDef( (int)f );
-
 					}
-				}
+
+                    // 攻擊技能，判斷 是否爆擊
+
+                   
+                }
 			}
 			else{ // bug
 				Debug.LogErrorFormat( "CreateCastAction with null caster{0},skill{1},x{2},y{3} " ,nAtkIdent,nSkillID, nGridX , nGridY );	
@@ -438,11 +441,6 @@ public partial class ActionManager
 							else{
 								pUnit.HitBackTo( res.Value1 , res.Value2 );
 							}
-
-
-							
-
-							
 						
 						}break;
 						case cHitResult._TYPE._CASTOUT: // cast out
@@ -473,13 +471,13 @@ public partial class ActionManager
 							// it should have fx
 						
 						}break;	
-						case cHitResult._TYPE._BECIRIT: // show dodge
+						case cHitResult._TYPE._CIRIT: // show dodge
 						{
 							if( bSkipMode ){
 								continue;
 							}	
 							// it should have fx
-							pUnit.SetBeCirit(); // be cirit 
+							pUnit.SetCirit(); // be cirit 
 							
 						}break;	
 						case cHitResult._TYPE._DODGE: // show dodge
@@ -537,84 +535,99 @@ public partial class ActionManager
 					// show effect
 					Panel_unit pUnit = Panel_StageUI.Instance.GetUnitByIdent (res.Ident);
 					if (pUnit) {
+                        switch (res.eHitType)
+                        {
+                            case cHitResult._TYPE._HP:
+                            case cHitResult._TYPE._DEF:
+                            case cHitResult._TYPE._MP:
+                            case cHitResult._TYPE._SP:
+                            case cHitResult._TYPE._CP:
+                            case cHitResult._TYPE._ACTTIME:                            
+                                pUnit.PlayHitResult(res);
+                                break;
 
-						switch( res.eHitType )
-						{
-						case cHitResult._TYPE._HP:{
-
-							pUnit.ShowValueEffect( res.Value1 , 0 ); // HP
-							if( res.Value1 != 0 ) // maybe change data in  battle manage
-							{
-								pUnit.pUnitData.AddHp (res.Value1   );
-							}
-							
-						}break;
-						case cHitResult._TYPE._DEF:{
-
-							pUnit.ShowValueEffect( res.Value1 , 1 ); // DEF
-							if( res.Value1 != 0 ) // maybe change data in  battle manage
-							{
-								pUnit.pUnitData.AddDef (res.Value1   );
-							}
-							
-						}break;
-						case cHitResult._TYPE._MP:{
-							pUnit.ShowValueEffect( res.Value1 , 2 ); // MP
-							if( res.Value1 != 0 ) // maybe change data in  battle manage
-							{
-								pUnit.pUnitData.AddMp (res.Value1   );
-							}							
-						}break;
-						case cHitResult._TYPE._SP:{
-							pUnit.ShowValueEffect( res.Value1 , 3 ); // SP
-							if( res.Value1 != 0 ) // maybe change data in  battle manage
-							{
-								pUnit.pUnitData.AddSp (res.Value1   );
-							}							
-						}break;
-						case cHitResult._TYPE._CP:{
-							//pUnit.ShowValueEffect( res.Value1 , 0 ); // SP
-							if( res.Value1 != 0 ) // maybe change data in  battle manage
-							{
-								pUnit.pUnitData.AddCp (res.Value1   );
-							}							
-						}break;
-						case cHitResult._TYPE._ACTTIME:{
-							//pUnit.ShowValueEffect( res.Value1 , 0 ); // SP
-							if( res.Value1 != 0 ) // maybe change data in  battle manage
-							{
-								pUnit.pUnitData.AddActionTime (res.Value1   );
-							}							
-						}break;
-
-						case cHitResult._TYPE._ADDBUFF: // add buff
-						{
-							if( res.Value1 != 0 ) // maybe change data in  battle manage
-							{
-								cUnitData pData = GameDataManager.Instance.GetUnitDateByIdent (res.Ident);
-								if (pData != null) {
-									pData.Buffs.AddBuff( res.Value1 , res.Value2, res.Value3 ,res.Value4);
-								}
-							}
-							
-						}break;
-						case cHitResult._TYPE._DELBUFF: // remove buff
-						{
-							if( res.Value1 != 0 ) // maybe change data in  battle manage
-							{
-								cUnitData pData = GameDataManager.Instance.GetUnitDateByIdent (res.Ident);
-								if (pData != null) {
-									pData.Buffs.DelBuff( res.Value1 );
-								}
-							}
-							
-						}break;
-						
+                            case cHitResult._TYPE._ADDBUFF:
+                            case cHitResult._TYPE._DELBUFF:
+                                pUnit.PlayHitResult(res , true );
+                                break;
+                        }
+                        
 
 
-						}
-					}
-				}
+                        //switch( res.eHitType )
+                        //{
+                        //case cHitResult._TYPE._HP:{
+
+                        //	pUnit.ShowValueEffect( res.Value1 , 0 ); // HP
+                        //	if( res.Value1 != 0 ) // maybe change data in  battle manage
+                        //	{
+                        //		pUnit.pUnitData.AddHp (res.Value1   );
+                        //	}
+
+                        //}break;
+                        //case cHitResult._TYPE._DEF:{
+
+                        //	pUnit.ShowValueEffect( res.Value1 , 1 ); // DEF
+                        //	if( res.Value1 != 0 ) // maybe change data in  battle manage
+                        //	{
+                        //		pUnit.pUnitData.AddDef (res.Value1   );
+                        //	}
+
+                        //}break;
+                        //case cHitResult._TYPE._MP:{
+                        //	pUnit.ShowValueEffect( res.Value1 , 2 ); // MP
+                        //	if( res.Value1 != 0 ) // maybe change data in  battle manage
+                        //	{
+                        //		pUnit.pUnitData.AddMp (res.Value1   );
+                        //	}							
+                        //}break;
+                        //case cHitResult._TYPE._SP:{
+                        //	pUnit.ShowValueEffect( res.Value1 , 3 ); // SP
+                        //	if( res.Value1 != 0 ) // maybe change data in  battle manage
+                        //	{
+                        //		pUnit.pUnitData.AddSp (res.Value1   );
+                        //	}							
+                        //}break;
+                        //case cHitResult._TYPE._CP:{
+                        //	//pUnit.ShowValueEffect( res.Value1 , 0 ); // CP
+                        //	if( res.Value1 != 0 ) // maybe change data in  battle manage
+                        //	{
+                        //		pUnit.pUnitData.AddCp (res.Value1   );
+                        //	}							
+                        //}break;
+                        //case cHitResult._TYPE._ACTTIME:{
+                        //	//pUnit.ShowValueEffect( res.Value1 , 0 ); // SP
+                        //	if( res.Value1 != 0 ) // maybe change data in  battle manage
+                        //	{
+                        //		pUnit.pUnitData.AddActionTime (res.Value1   );
+                        //	}							
+                        //}break;
+
+                        //case cHitResult._TYPE._ADDBUFF: // add buff
+                        //{
+                        //	if( res.Value1 != 0 ) // maybe change data in  battle manage
+                        //	{
+                        //		//cUnitData pData = GameDataManager.Instance.GetUnitDateByIdent (res.Ident);
+                        //		//if (pData != null) {
+                        //			pData.pUnit.Buffs.AddBuff( res.Value1 , res.Value2, res.Value3 ,res.Value4);
+                        //		//}
+                        //	}
+
+                        //}break;
+                        //case cHitResult._TYPE._DELBUFF: // remove buff
+                        //{
+                        //	if( res.Value1 != 0 ) // maybe change data in  battle manage
+                        //	{
+                        //		cUnitData pData = GameDataManager.Instance.GetUnitDateByIdent (res.Ident);
+                        //		if (pData != null) {
+                        //			pData.Buffs.DelBuff( res.Value1 );
+                        //		}
+                        //	}
+
+                        //}break;
+                        //}
+                    }
+                }
 			}
 		}
 	}

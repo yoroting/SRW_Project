@@ -1622,7 +1622,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3018
+  startingRenderQueue: 3005
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 0
@@ -2293,7 +2293,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b90fc8427bee38c478f5b2f6f0ae9580, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 449650}
+  target: {fileID: 447770}
   panelRegion: {fileID: 0}
   scrollMomentum: {x: 0, y: 0, z: 0}
   restrictWithinPanel: 0
@@ -2795,7 +2795,7 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 102
+  mWidth: 100
   mHeight: 32
   mDepth: 20
   autoResizeBoxCollider: 0
@@ -2887,7 +2887,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3005
+  startingRenderQueue: 3002
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 0
