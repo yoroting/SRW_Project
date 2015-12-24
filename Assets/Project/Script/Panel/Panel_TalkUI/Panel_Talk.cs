@@ -342,7 +342,7 @@ public class Panel_Talk : MonoBehaviour
             tw.to = 0.0f;
             MyTool.TweenSetOneShotOnFinish(tw, EndTalkFinish);
         }
-        GameSystem.bFXPlayMode = true;
+    //    GameSystem.bFXPlayMode = true;
 
 
         m_bIsClosing = true;
@@ -497,7 +497,7 @@ public class Panel_Talk : MonoBehaviour
             return;
 
 
-        GameSystem.bFXPlayMode = false; // no more play fx
+    //    GameSystem.bFXPlayMode = false; // no more play fx
 
         //SCENE_NAME scene = ConstDataManager.Instance.GetRow<SCENE_NAME> ( nSceneID );
         //if (scene == null)

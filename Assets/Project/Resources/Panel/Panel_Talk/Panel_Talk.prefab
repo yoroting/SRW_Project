@@ -872,8 +872,8 @@ MonoBehaviour:
   alwaysOnScreen: 0
   anchorOffset: 0
   softBorderPadding: 1
-  renderQueue: 0
-  startingRenderQueue: 3000
+  renderQueue: 1
+  startingRenderQueue: 5000
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 0
@@ -1040,7 +1040,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8592b80cb5379d49a9a95cbd93028a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_nTalkID: 0
+  m_WaitQueue: 
   Tex_BackGround: {fileID: 121740}
+  Tex_Flip: {fileID: 0}
   Skip_Button: {fileID: 141488}
   AVG_Obj: {fileID: 148306}
   NameObj: {fileID: 107052}
