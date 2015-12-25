@@ -7,7 +7,9 @@ using MyClassLibrary;
 
 public class MobAI  {
 
+    
 
+    public static List<SKILL> tmpSklList  =  new List<SKILL>();
 
 
 	public static void Run( Panel_unit mob )
@@ -142,31 +144,214 @@ public class MobAI  {
 
 	}
 
+    // Widget func .. find a skill to atk a target , -1 == can't atk
+    // return : true - can attack , false - cant attack
+    public static bool _FindToAttackTarget( Panel_unit mob, Panel_unit taget, int nMove , out int nSKillID , out List<iVec2> pathList , bool bCounterMode = false )
+    {
+        nSKillID = 0;
+        pathList = null;
 
-	//==================================
+        if (taget == null) return false;
+        if (taget.pUnitData == null || taget.pUnitData.IsTag(_UNITTAG._PEACE))
+        {
+            return false; 
+        }
+        // Find a skill to atk. the       
+        if (bCounterMode == true)
+        {
+            nMove = 0;
+        }
+         
+        int nDist = mob.Loc.Dist(taget.Loc);
+        if (CreateSkilTmpList(mob.pUnitData, nDist - nMove , bCounterMode)) // create skill pool to atl
+        {
 
-	static  void _AI_NormalAttack( Panel_unit mob , int nSkillID , int nMove )
-	{
-		if (_AI_LowstAttack (mob, nSkillID, nMove)) {
-			return ;
-		}
+            foreach (SKILL skl in tmpSklList)
+            {
+                int nMinRange = skl.n_MINRANGE;
+                int nSkillRange = skl.n_RANGE;
 
-		// 找距離近的攻擊
-		if (_AI_NearestAttack (mob, nSkillID, nMove))  {
-			return ;
-		}
+                if ((nDist <= nSkillRange) && (nDist >= nMinRange)) // 可以直接攻擊
+                {
+                    nSKillID = skl.n_ID;
+                    return true; // tmpSklList
+                }
 
-		ActionManager.Instance.CreateWaitingAction (mob.Ident ());
-		// all target faild.. waiting
+                // 在最短距離內，需要跑遠一點再攻擊
+                if (nDist < nMinRange)
+                {
+                    // 不處理本問題
+                }
 
-	}
-	// tool func hp lowest
-	static  bool _AI_LowstAttack( Panel_unit mob , int nSkillID , int nMove , int nLimit = 0 )
+                // 在技能範圍外，需要收尋一個位置
+                List<iVec2> path = FindPathToTarget(mob, taget, nMove, nSkillRange); // need a AI to move
+                if ((path != null) && (path.Count > 0))
+                {
+                    pathList = path;
+                    nSKillID = skl.n_ID; // assign skill id
+
+                    // 研原路徑找到一個 可以攻擊的位置 
+                    iVec2 last = path[path.Count - 1];
+                    if (last != null)
+                    {
+                        int nDist2 = last.Dist(taget.Loc);
+                        if ((nDist2 <= nSkillRange) && (nDist2 >= nMinRange)) // 可以攻擊
+                        {
+                            return true; // tmpSklList
+                        }
+                    }
+                }// if ((path != null) && (path.Count > 0))
+            }
+        }
+        else {//無技可用，只能普攻
+            // no skill , use melee , find pos to atk
+            if (nDist <= 1) {
+                nSKillID = 0;
+                return true; // tmpSklList
+            }
+
+            List<iVec2> path = FindPathToTarget(mob, taget , nMove, 1 ); // melee is 1
+            if ( (path != null) && (path.Count > 0) )
+            {
+                // out put to make cmd
+                pathList = path;
+                nSKillID = 0;
+
+
+                iVec2 last = path[path.Count - 1];
+                if (last != null)
+                {
+                    int nDist2 = last.Dist(taget.Loc);
+                    if (nDist2 <= 1) // 可以攻擊
+                    {                 
+                        return true; // tmpSklList
+                    }
+                    return false; // // can't atk directly
+                }
+            }
+        }
+        return false; 
+    }
+
+
+
+	
+
+    //
+    static void _AI_MakeCmd(Panel_unit mob, Panel_unit Tar , int nSkillID , ref List<iVec2> path )
+    {
+        int nMinRange = 0;
+        int nSkillRange = 0;
+        int nDist = 0;
+        MyTool.GetSkillRange(nSkillID, out nSkillRange, out nMinRange);
+        // should set path here
+        if (path != null && path.Count > 0)
+        {
+            // send move
+            iVec2 last = path[path.Count - 1];
+            if (last != null)
+            {
+                mob.SetPath(path);
+                //// check if last pos is attack able pos
+                ActionManager.Instance.CreateMoveAction(mob.Ident(), last.X, last.Y);
+                // check can atk
+                nDist = last.Dist(Tar.Loc);
+            }
+        }
+        else
+        {
+            nDist = mob.Loc.Dist(Tar.Loc); // 沒有路徑，則取兩生物之距離
+        }
+
+        // check send atk cmd
+        if ((nDist <= nSkillRange) && (nDist >= nMinRange)) // 可以攻擊
+        {
+            // check can atk or not 
+            ActionManager.Instance.CreateAttackCMD(mob.Ident(), Tar.Ident(), nSkillID); // create Attack CMD . need battle manage to run				
+          //  return true;
+        }
+        else
+        {
+            ActionManager.Instance.CreateWaitingAction(mob.Ident());
+        }       
+    }
+
+    // tool func hp lowest ver2
+    static bool _AI_LowstAttack2(Panel_unit mob, int nMove)
+    {
+        //int ident = mob.Ident();
+        int nMaxRange = _AI_GetMaxSkillRange( mob.pUnitData );
+
+        Dictionary<Panel_unit, int> pool = Panel_StageUI.Instance.GetUnitHpPool(mob, true, (nMove + nMaxRange)); // all unit in                                                                                                            
+        var items = from pair in pool orderby pair.Value ascending select pair;             // Sort HP
+        // 範圍內 低血量
+        foreach (KeyValuePair<Panel_unit, int> pair in items)
+        {
+            int nSkillID ;
+            List<iVec2> path ;            ;
+            if (_FindToAttackTarget(mob, pair.Key, nMove , out nSkillID , out path, false))
+            {
+                _AI_MakeCmd(mob, pair.Key, nSkillID, ref path );
+                // wait 
+                return true;
+            }
+            else {
+                // try next unit
+            }
+        }
+        return false;
+    }
+
+    static bool _AI_NearestAttack2(Panel_unit mob, int nMove, bool bForceMove = false )
+    {
+        Dictionary<Panel_unit, int> pool = Panel_StageUI.Instance.GetUnitDistPool(mob, true);
+      //  int ident = mob.Ident();
+        // Sort dist
+        var items = from pair in pool orderby pair.Value ascending select pair;
+        foreach (KeyValuePair<Panel_unit, int> pair in items)
+        {
+            int nSkillID = 0;
+            List<iVec2> path = null;
+            if (_FindToAttackTarget(mob, pair.Key, nMove , out nSkillID, out path, false) )
+            {
+                _AI_MakeCmd(mob, pair.Key, nSkillID, ref path);
+                // wait 
+                return true;
+            }
+            else {
+                // next target
+            }
+        }
+
+        // 決定是否需要主動移動
+        if (bForceMove) {
+            foreach (KeyValuePair<Panel_unit, int> pair in items)
+            {
+                int nSkillID = 0;
+                List<iVec2> path = null;
+                _FindToAttackTarget(mob, pair.Key, nMove , out nSkillID, out path, false); // 由於有些機關是中立單位，不會被攻擊。所以不能只找第一個資料
+                if (path != null)
+                {
+                    _AI_MakeCmd(mob, pair.Key, nSkillID, ref path); // 往最近的移動
+                    return true;
+                }
+            }
+        }
+
+
+        return false;
+    }
+
+
+
+
+    static  bool _AI_LowstAttack( Panel_unit mob , int nSkillID , int nMove , int nLimit = 0 )
 	{
 		int ident = mob.Ident ();
 		int nMinRange ;
 		int nSkillRange ;
-		MyTool.GetSkillRange ( nSkillID , out nSkillRange , out nMinRange);
+        
+        MyTool.GetSkillRange ( nSkillID , out nSkillRange , out nMinRange);
 
 		Dictionary< Panel_unit , int > pool = Panel_StageUI.Instance.GetUnitHpPool(mob, true , (nMove+nSkillRange) );
 		// Sort HP
@@ -262,11 +447,7 @@ public class MobAI  {
 		foreach (KeyValuePair<Panel_unit , int> pair in items) {
 			// try path to target
 			bool bCanAtk = false;
-            if (pair.Key.CharID == 108)
-            {
-                bCanAtk = false;
-            }
-
+            
             if (pair.Key.pUnitData == null || pair.Key.pUnitData.IsTag(_UNITTAG._PEACE))
             {
                 continue;
@@ -423,107 +604,144 @@ public class MobAI  {
 	}
 
 
+    //==================================
 
-	static  void _AI_PassiveAttack( Panel_unit mob , int nSkillID , int nMove )
+    static void _AI_NormalAttack(Panel_unit mob, int nSkillID, int nMove)
+    {
+        if (_AI_LowstAttack2(mob, nMove))
+        {
+            return;
+        }
+
+        // 找距離近的攻擊
+        if (_AI_NearestAttack2(mob, nMove, true))
+        {
+            return;
+        }
+
+
+        //都不行則待機
+        ActionManager.Instance.CreateWaitingAction(mob.Ident());
+        // all target faild.. waiting
+
+    }
+
+    static  void _AI_PassiveAttack( Panel_unit mob , int nSkillID , int nMove )
 	{
-		Dictionary< Panel_unit , int > pool = Panel_StageUI.Instance.GetUnitDistPool(mob, true);
-		int ident = mob.Ident ();
+        if (_AI_LowstAttack2(mob, nMove))
+        {
+            return;
+        }
+        // 找距離近的攻擊
+        if (_AI_NearestAttack2(mob, nMove, false )) // 不主動出擊
+        {
+            return;
+        }
+
+
+        //都不行則待機
+        ActionManager.Instance.CreateWaitingAction(mob.Ident());
+
+
+        return;
+
+		//Dictionary< Panel_unit , int > pool = Panel_StageUI.Instance.GetUnitDistPool(mob, true);
+		//int ident = mob.Ident ();
 		
-		// get skill range
-		int nMinRange =0;
-		int nSkillRange =0;
-		MyTool.GetSkillRange ( nSkillID , out nSkillRange , out nMinRange);
-		// Sort dist
-		var items = from pair in pool orderby pair.Value ascending select pair;
+		//// get skill range
+		//int nMinRange =0;
+		//int nSkillRange =0;
+		//MyTool.GetSkillRange ( nSkillID , out nSkillRange , out nMinRange);
+		//// Sort dist
+		//var items = from pair in pool orderby pair.Value ascending select pair;
 		
-		foreach (KeyValuePair<Panel_unit , int> pair in items) {
-			// try path to target
-			bool bCanAtk = false;
-            if (pair.Key.pUnitData == null || pair.Key.pUnitData.IsTag(_UNITTAG._PEACE))
-            {
-                continue;
-            }
-            int nDist = pair.Value; // value is dist
-			if( nDist > nSkillRange  ) // pathfind if need
-			{
-				// 距離太遠，怎樣都不可能到的 先放棄
-				if( (nSkillRange+nMove) < nDist ){
-					// 檢查要不要換skill打
-					SKILL newSkill = FindSkillByDist( mob , (nDist-nMove) );
-					if( newSkill == null ){
-						continue; // 太遠了~放棄不打
-					}
-					else{
-						// change skill
-						nSkillID 	= newSkill.n_ID ;
-						nSkillRange = newSkill.n_RANGE;
-						//bCanAtk = true;
-					}
-				}
+		//foreach (KeyValuePair<Panel_unit , int> pair in items) {
+		//	// try path to target
+		//	bool bCanAtk = false;
+  //          if (pair.Key.pUnitData == null || pair.Key.pUnitData.IsTag(_UNITTAG._PEACE))
+  //          {
+  //              continue;
+  //          }
+  //          int nDist = pair.Value; // value is dist
+		//	if( nDist > nSkillRange  ) // pathfind if need
+		//	{
+		//		// 距離太遠，怎樣都不可能到的 先放棄
+		//		if( (nSkillRange+nMove) < nDist ){
+		//			// 檢查要不要換skill打
+		//			SKILL newSkill = FindSkillByDist( mob , (nDist-nMove) );
+		//			if( newSkill == null ){
+		//				continue; // 太遠了~放棄不打
+		//			}
+		//			else{
+		//				// change skill
+		//				nSkillID 	= newSkill.n_ID ;
+		//				nSkillRange = newSkill.n_RANGE;
+		//				//bCanAtk = true;
+		//			}
+		//		}
 
-				List< iVec2> path = FindPathToTarget( mob , pair.Key , nMove , nSkillRange );
-				if( path == null || (path.Count ==0) )
-				{
-					continue; // can't find path try next target
-				}
-				else
-				{
-					iVec2 last = path[ path.Count -1 ];
-					if( last != null  ){
-						int nDist2 = last.Dist( pair.Key.Loc );
+		//		List< iVec2> path = FindPathToTarget( mob , pair.Key , nMove , nSkillRange );
+		//		if( path == null || (path.Count ==0) )
+		//		{
+		//			continue; // can't find path try next target
+		//		}
+		//		else
+		//		{
+		//			iVec2 last = path[ path.Count -1 ];
+		//			if( last != null  ){
+		//				int nDist2 = last.Dist( pair.Key.Loc );
 
-						if( nDist2 > nSkillRange ){
-							SKILL newSkill = FindSkillByDist( mob , (nDist-nMove) );
-							if( newSkill == null ){
-								continue; // 太遠了~放棄不打
-							}
-							else{
-								// change skill
-								nSkillID 	= newSkill.n_ID ;
+		//				if( nDist2 > nSkillRange ){
+		//					SKILL newSkill = FindSkillByDist( mob , (nDist-nMove) );
+		//					if( newSkill == null ){
+		//						continue; // 太遠了~放棄不打
+		//					}
+		//					else{
+		//						// change skill
+		//						nSkillID 	= newSkill.n_ID ;
 
-							}
-						}
+		//					}
+		//				}
 
-						// send a move event					
-						mob.SetPath (path); 
-						// check if last pos is attack able pos
-						ActionManager.Instance.CreateMoveAction (ident, last.X, last.Y);	
+		//				// send a move event					
+		//				mob.SetPath (path); 
+		//				// check if last pos is attack able pos
+		//				ActionManager.Instance.CreateMoveAction (ident, last.X, last.Y);	
 						
-						if (Config.GOD == true) {
-							Panel_StageUI.Instance.CreatePathOverEffect (path); // draw path
-						}
-						bCanAtk = true;
-					}
+		//				if (Config.GOD == true) {
+		//					Panel_StageUI.Instance.CreatePathOverEffect (path); // draw path
+		//				}
+		//				bCanAtk = true;
+		//			}
 
-				}
+		//		}
 
-			}
-			else if( nDist < nMinRange ){ // check if need change skill
-				SKILL newSkill = FindSkillByDist( mob ,nDist );
-				if( newSkill != null ){	// change skill
-					nSkillID = newSkill.n_ID ;
-					bCanAtk = true;
-				}else if( nDist <= 1 ){
-					nSkillID = 0;
-					bCanAtk = true;
-				}
-			}
-			else{
-				bCanAtk = true ; // atk directly				
-			}
+		//	}
+		//	else if( nDist < nMinRange ){ // check if need change skill
+		//		SKILL newSkill = FindSkillByDist( mob ,nDist );
+		//		if( newSkill != null ){	// change skill
+		//			nSkillID = newSkill.n_ID ;
+		//			bCanAtk = true;
+		//		}else if( nDist <= 1 ){
+		//			nSkillID = 0;
+		//			bCanAtk = true;
+		//		}
+		//	}
+		//	else{
+		//		bCanAtk = true ; // atk directly				
+		//	}
 			
-			if( bCanAtk )
-			{
-				ActionManager.Instance.CreateAttackCMD (ident, pair.Key.Ident (), nSkillID ); // create Attack CMD . need battle manage to run
+		//	if( bCanAtk )
+		//	{
+		//		ActionManager.Instance.CreateAttackCMD (ident, pair.Key.Ident (), nSkillID ); // create Attack CMD . need battle manage to run
 				
-				return ;
-			}
-			// for next target
-			
-		}
+		//		return ;
+		//	}
+		//	// for next target			
+		//}
 
-		// all target faild.. waiting
-		ActionManager.Instance.CreateWaitingAction (ident);
+		//// all target faild.. waiting
+		//ActionManager.Instance.CreateWaitingAction (ident);
 	}
 
 	static void _AI_Defence(Panel_unit mob , int nSkillID , int nMove ) 
@@ -532,6 +750,7 @@ public class MobAI  {
 		ActionManager.Instance.CreateWaitingAction (ident); // always wait in pos
 	}
 
+    // 攻擊指定目標
 	static void _AI_TargetAttack(Panel_unit mob , int nSkillID , int nMove ) 
 	{
 		int ident = mob.Ident();
@@ -921,6 +1140,41 @@ public class MobAI  {
 	}
 
 
+    static public bool CreateSkilTmpList( cUnitData pData , int nDist, bool bCounterMode = false )
+    {
+        if (pData == null)
+            return false;
+
+        int nRealDist = nDist;
+        if (nRealDist < 1)
+            nRealDist = 1;
+
+        tmpSklList.Clear();
+        foreach (int nID in pData.SkillPool)
+        {
+            int nSkillID = nID;
+            nSkillID = pData.Buffs.GetUpgradeSkill(nSkillID); // Get upgrade skill
+            if (nSkillID == 0)
+            {
+                continue;
+            }
+
+            if (CheckSkillCanCast(pData, null, nSkillID, nRealDist , bCounterMode) == false)
+            {
+                continue;
+            }
+
+            SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(nSkillID);
+
+            tmpSklList.Add(skl);
+            
+        }
+        // revert for high skill use fast
+        tmpSklList.Reverse();
+
+        return (tmpSklList.Count > 0 );
+    }
+
 	static public SKILL FindSkillByDist( Panel_unit mob  , int nDist  , bool bCounterMode = false )
 	{	
 		cUnitData pData = mob.pUnitData;
@@ -1022,5 +1276,27 @@ public class MobAI  {
 
 		return true;
 	}
+
+    static public int _AI_GetMaxSkillRange(cUnitData pData)
+    {        
+        if (pData == null)
+            return 0;
+
+        int nRange = 0;
+        foreach (int nID in pData.SkillPool)
+        {
+            int nSkillID = nID;
+            nSkillID = pData.Buffs.GetUpgradeSkill(nSkillID); // Get upgrade skill
+            if (nSkillID == 0)
+            {
+                continue;
+            }
+            SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(nSkillID);
+            if (skl.n_RANGE > nRange) {
+                nRange = skl.n_RANGE;
+            }            
+        }
+        return nRange;
+    }
 
 }

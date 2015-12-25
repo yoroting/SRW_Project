@@ -93,8 +93,9 @@ public class Panel_SysCheat : MonoBehaviour {
 			campList.AddItem(_CAMP._ENEMY.ToString() );
 			campList.AddItem(_CAMP._FRIEND.ToString());
 
-
-		}
+            // set select value
+            campList.value = _CAMP._PLAYER.ToString();
+        }
 
         // Item List
         UIPopupList itemList = ItemPoplist.GetComponent<UIPopupList>();
@@ -370,9 +371,12 @@ public class Panel_SysCheat : MonoBehaviour {
         UIPopupList popList = ItemPoplist.GetComponent<UIPopupList>();
         if (popList != null)
         {
-            int nItemID = (int)popList.data;
+            if (popList.data != null)
+            {
+                int nItemID = (int)popList.data;
 
-             GameDataManager.Instance.AddItemtoBag(nItemID);
+                GameDataManager.Instance.AddItemtoBag(nItemID);
+            }
             
         }
         //PanelManager.Instance.CloseUI(Name);

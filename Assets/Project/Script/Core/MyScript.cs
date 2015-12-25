@@ -815,8 +815,13 @@ public class MyScript {
 			else if( func.sFunc  == "FX")  // PLAY FX
 			{
 				Panel_StageUI.Instance.OnStagePlayFX( func.I(0) , func.I(1)  );
-			}	
-			else if( func.sFunc  == "ADDBUFF")  // Add buff
+			}
+            else if (func.sFunc == "POSFX")  // PLAY POSFX
+            {
+                Panel_StageUI.Instance.OnStagePosPlayFX(func.I(0), func.I(1) , func.I(2), func.I(3) );
+            }
+
+            else if( func.sFunc  == "ADDBUFF")  // Add buff
 			{
 				Panel_StageUI.Instance.OnStageAddBuff( func.I(0) , func.I(1) , func.I(2) , 0 );
 			}	
