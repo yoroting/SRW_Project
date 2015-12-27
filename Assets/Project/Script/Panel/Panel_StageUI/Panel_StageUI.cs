@@ -1462,7 +1462,7 @@ public class Panel_StageUI : MonoBehaviour
 		
 	}
 
-	public void CreateAOEOverEffect( Panel_unit CastUnit  ,int nX , int nY , int nAOE )
+	public void CreateAOEOverEffect( Panel_unit CastUnit  ,int nX , int nY , int nAOE , bool bCanPK = true)
 	{
 		AoeEftObj.RecycleAll();
 
@@ -1476,11 +1476,29 @@ public class Panel_StageUI : MonoBehaviour
 		int nOrgX = unit.X ();
 		int nOrgY = unit.Y ();
 
-		List<iVec2> aoeList = MyTool.GetAOEPool (nX, nY, nAOE ,nOrgX, nOrgY );
-		// 將來要處理 旋轉!
+        List<iVec2> aoeList = null;  
+        // 將來要處理 旋轉!
+        
 
-		// start create over eff
-		foreach( iVec2 v in aoeList )
+        if (nAOE == -1)
+        { // infinte
+
+            aoeList = GetUnitPKPosPool(unit, bCanPK );
+
+        }
+        else
+        { //
+            if (nAOE == 0)
+            {
+                nAOE = 1;  // avoid error aoe block cmd
+            }
+            aoeList =  MyTool.GetAOEPool(nX, nY, nAOE, nOrgX, nOrgY);            
+        }
+
+
+
+        // start create over eff
+        foreach ( iVec2 v in aoeList )
 		{	
 			// create move over cell
 			//GameObject over = ResourcesManager.CreatePrefabGameObj(TilePlaneObj, "Prefab/MoveOverEffect");

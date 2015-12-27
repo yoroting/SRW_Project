@@ -42,7 +42,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 133970}
   m_LocalRotation: {x: -.70710665, y: 0, z: 0, w: -.707107008}
-  m_LocalPosition: {x: 0, y: 0, z: .140625}
+  m_LocalPosition: {x: 0, y: 0, z: .150000006}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 474580}
@@ -85,7 +85,7 @@ ParticleSystem:
   looping: 0
   prewarm: 0
   playOnAwake: 1
-  moveWithTransform: 0
+  moveWithTransform: 1
   InitialModule:
     enabled: 1
     startLifetime:
@@ -249,7 +249,7 @@ ParticleSystem:
         rgba: 4280325618
       minMaxState: 0
     startSize:
-      scalar: .121874996
+      scalar: .129999995
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1123,7 +1123,7 @@ ParticleSystem:
   looping: 0
   prewarm: 0
   playOnAwake: 1
-  moveWithTransform: 0
+  moveWithTransform: 1
   InitialModule:
     enabled: 1
     startLifetime:
@@ -1287,7 +1287,7 @@ ParticleSystem:
         rgba: 4294967295
       minMaxState: 0
     startSize:
-      scalar: .09375
+      scalar: .100000001
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2258,11 +2258,19 @@ Prefab:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 0}
-      propertyPath: m_Enabled
+      propertyPath: m_LocalRotation.x
+      value: -.707106829
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_LocalRotation.w
+      value: .707106829
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: looping
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 0}
-      propertyPath: moveWithTransform
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

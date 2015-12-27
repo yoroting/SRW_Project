@@ -54,6 +54,58 @@ MonoBehaviour:
     paddingRight: 0
     paddingTop: 0
     paddingBottom: 0
+  - name: btn_close
+    x: 938
+    y: 1980
+    width: 24
+    height: 20
+    borderLeft: 2
+    borderRight: 2
+    borderTop: 2
+    borderBottom: 2
+    paddingLeft: 0
+    paddingRight: 0
+    paddingTop: 0
+    paddingBottom: 0
+  - name: btn_close_disable
+    x: 986
+    y: 2028
+    width: 24
+    height: 20
+    borderLeft: 2
+    borderRight: 2
+    borderTop: 2
+    borderBottom: 2
+    paddingLeft: 0
+    paddingRight: 0
+    paddingTop: 0
+    paddingBottom: 0
+  - name: btn_close_over
+    x: 986
+    y: 2007
+    width: 24
+    height: 20
+    borderLeft: 2
+    borderRight: 2
+    borderTop: 2
+    borderBottom: 2
+    paddingLeft: 0
+    paddingRight: 0
+    paddingTop: 0
+    paddingBottom: 0
+  - name: btn_close_press
+    x: 986
+    y: 1986
+    width: 24
+    height: 20
+    borderLeft: 2
+    borderRight: 2
+    borderTop: 2
+    borderBottom: 2
+    paddingLeft: 0
+    paddingRight: 0
+    paddingTop: 0
+    paddingBottom: 0
   - name: btn_skip_press
     x: 938
     y: 1925
@@ -281,67 +333,67 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mSprites.Array.data[4].borderLeft
-      value: 24
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mSprites.Array.data[4].borderRight
-      value: 24
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mSprites.Array.data[4].borderBottom
-      value: 24
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mSprites.Array.data[4].borderTop
-      value: 24
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mSprites.Array.data[3].borderLeft
-      value: 24
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mSprites.Array.data[3].borderRight
-      value: 24
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mSprites.Array.data[3].borderTop
-      value: 24
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mSprites.Array.data[3].borderBottom
-      value: 24
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mSprites.Array.data[2].borderLeft
-      value: 16
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mSprites.Array.data[2].borderBottom
-      value: 16
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mSprites.Array.data[2].borderRight
-      value: 16
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mSprites.Array.data[2].borderTop
-      value: 16
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mSprites.Array.data[1].borderLeft
-      value: 5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mSprites.Array.data[1].borderBottom
-      value: 5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mSprites.Array.data[1].borderRight
-      value: 5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mSprites.Array.data[1].borderTop
-      value: 5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mSprites.Array.data[5].borderLeft
@@ -422,6 +474,30 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: mSprites.Array.data[14].borderTop
       value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: mSprites.Array.data[19].borderLeft
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: mSprites.Array.data[19].borderRight
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: mSprites.Array.data[19].borderBottom
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: mSprites.Array.data[19].borderTop
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: mSprites.Array.data[2].paddingLeft
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: mSprites.Array.data[2].paddingBottom
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

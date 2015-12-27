@@ -1167,10 +1167,10 @@ public class MyScript {
 					pool.Add( new HITMP_E( func.F(0), func.I(1) ) );
 				}
 				else if( func.sFunc  == "HITSP_I") {
-					pool.Add( new HITSP_I( func.I(0)) );
+					pool.Add( new HITSP_I( func.F(0), func.I(1)) );
 				}
 				else if( func.sFunc  == "HITSP_E") {
-					pool.Add( new HITSP_E( func.I(0) ) );
+					pool.Add( new HITSP_E(func.F(0), func.I(1)) );
 				}
 				else if( func.sFunc  == "HITCP_I") {
 					pool.Add( new HITCP_I( func.I(0) ) );

@@ -250,11 +250,11 @@ public class HITMP_I: cEffect
 }
 public class HITSP_I: cEffect
 {
-	public HITSP_I( int i ){	iValue = i;	}
+	public HITSP_I(float f, int i ){ fValue = f; iValue = i; }
 	
-	override public void _Hit( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 
-		
-		list.Add( new cHitResult( cHitResult._TYPE._SP , Atker.n_Ident , iValue  , Atker.n_Ident, nSkillID , nBuffID   ) );
+	override public void _Hit( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){
+        float fSp = Defer.GetMaxSP() * fValue;
+        list.Add( new cHitResult( cHitResult._TYPE._SP , Atker.n_Ident , (int)fSp + iValue, Atker.n_Ident, nSkillID , nBuffID   ) );
 	}
 }
 public class HITCP_I: cEffect
@@ -290,11 +290,12 @@ public class HITMP_E: cEffect
 }
 public class HITSP_E: cEffect
 {
-	public HITSP_E( int i ){	iValue = i;	}
+	public HITSP_E(float f, int i ){ fValue = f; iValue = i; }
 	
 	override public void _Hit( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 
-		if (Defer != null) {			
-			list.Add( new cHitResult( cHitResult._TYPE._SP , Defer.n_Ident , iValue , Atker.n_Ident, nSkillID , nBuffID   ) );
+		if (Defer != null) {
+            float fSp = Defer.GetMaxSP() * fValue;
+            list.Add( new cHitResult( cHitResult._TYPE._SP , Defer.n_Ident , (int)fSp + iValue, Atker.n_Ident, nSkillID , nBuffID   ) );
 		}
 		
 	}

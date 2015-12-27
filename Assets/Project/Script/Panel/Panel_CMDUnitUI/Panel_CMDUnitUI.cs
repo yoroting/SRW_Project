@@ -871,12 +871,11 @@ public class Panel_CMDUnitUI : MonoBehaviour
 					CMD.eCMDTARGET = _CMD_TARGET._SELF;		// this is a mark  flag
 					CMD.nTarGridX = pCmder.X() ;
 					CMD.nTarGridY = pCmder.Y();
-					if(CMD.nAOEID==0)
-						CMD.nAOEID = 1;  // avoid error aoe block cmd
-					//if( CMD.nAOEID > 0 )
-					//{
-					CMD.eCMDAOETARGET = _CMD_TARGET._POS;
-					Panel_StageUI.Instance.CreateAOEOverEffect( pCmder ,  pCmder.X() , pCmder.Y() , CMD.nAOEID );
+                    CMD.eCMDAOETARGET = _CMD_TARGET._POS;
+                    Panel_StageUI.Instance.ClearOverCellEffect();
+            
+                    Panel_StageUI.Instance.CreateAOEOverEffect(pCmder, pCmder.X(), pCmder.Y(), CMD.nAOEID, MyTool.GetSkillCanPKmode(nSkillID) );
+                  
 					//}
 					Panel_CheckBox panel = GameSystem.OpenCheckBox();
 					if (panel) {
