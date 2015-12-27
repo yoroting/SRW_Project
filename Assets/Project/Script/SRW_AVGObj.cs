@@ -205,7 +205,7 @@ public class SRW_AVGObj : MonoBehaviour {
 	}
 	public void SetDead(  )
 	{
-        TweenGrayLevel tw = TweenGrayLevel.Begin <TweenGrayLevel >(_FaceTexObj.gameObject, 2.0f);
+		TweenGrayLevel tw = GrayLevelHelper.StartTweenGrayLevel(_FaceTexObj, 2.0f);
 		if (tw) {
 			bIsDeading = true;
 			tw.from = 0.0f;

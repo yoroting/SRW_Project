@@ -1706,7 +1706,7 @@ public class Panel_unit : MonoBehaviour {
 		//TweenGrayLevel
 		//Vector2 vfrom = new Vector3( 1.0f , 1.0f , 1.0f );
 		//Vector2 vto   = new Vector3( 0.0f , 10.0f, 1.0f );
-		TweenGrayLevel tw = TweenGrayLevel.Begin <TweenGrayLevel >( FaceObj, 1.0f);
+		TweenGrayLevel tw = GrayLevelHelper.StartTweenGrayLevel(FaceObj, 1.0f);
 		if (tw) {
 
 			tw.from = 0.0f;
