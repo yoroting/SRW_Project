@@ -156,7 +156,7 @@ public class GameSystem : MonoBehaviour {
 	}
 
 
-	public static GameObject PlayFX( GameObject go , int nFxid )
+	public static GameObject PlayFX( GameObject go , int nFxid , int nOffset =1 )
 	{
 		if (go == null || nFxid ==0 )
 			return null;
@@ -181,16 +181,16 @@ public class GameSystem : MonoBehaviour {
 			// FX obj
 			GameObject obj = null ;
 			// play on tile
-			if( fx.n_TAG == 3 )
-			{
-				obj = PlayFX( Panel_StageUI.Instance.TilePlaneObj , fx.s_FILENAME );
-				if( obj != null ){
-					obj.transform.localPosition = go.transform.localPosition;
-				}
-			}
-			else{
+			//if( fx.n_TAG == 3 )
+			//{
+			//	obj = PlayFX( Panel_StageUI.Instance.TilePlaneObj , fx.s_FILENAME   );
+			//	if( obj != null ){
+			//		obj.transform.position = go.transform.position;
+			//	}
+			//}
+			//else{
 				obj = PlayFX( go , fx.s_FILENAME );
-			}
+			//}
 
 
 			if( obj != null ){
@@ -210,13 +210,12 @@ public class GameSystem : MonoBehaviour {
 						ps2.startSize *=  fx.f_SACLE;
 					}
 				}
+                // 
 				if( fx.f_OFFSETY != 0.0f ){
-					Vector3 v = obj.transform.localPosition;
+					Vector3 v = obj.transform.position;
 					v.y += fx.f_OFFSETY;
-					obj.transform.localPosition = v;
+					obj.transform.position = v;
 				}
-
-
 			}
 
 			return obj;
@@ -225,7 +224,7 @@ public class GameSystem : MonoBehaviour {
 	}
 
 
-	public static GameObject PlayFX( GameObject go , string name  , string sortLayer="UI"  )//
+	public static GameObject PlayFX( GameObject go , string name   , int nOffset=1 )//
 	{
 		if (go == null)
 			return null;
@@ -263,7 +262,7 @@ public class GameSystem : MonoBehaviour {
         if (autoquene == null)
         {
             autoquene = instance.AddComponent<AutoParticleQueue>();
-            autoquene.SetQueueOffset(500);
+            autoquene.SetQueueOffset(nOffset);
         }
 
         //check auto destory

@@ -1470,9 +1470,16 @@ public class Panel_StageUI : MonoBehaviour
 	}
 	// Check any action is running
 
-	public void PlayFX( int nFxID , int nX , int nY  )
+	public void PlayFX( int nFxID , int nX , int nY , bool bOnMask= true )
 	{
-		GameObject go = GameSystem.PlayFX ( TilePlaneObj ,nFxID);
+        GameObject go;
+        if(bOnMask) {
+            go = GameSystem.PlayFX(MaskPanelObj, nFxID);
+        }
+        else     {
+            go = GameSystem.PlayFX(TilePlaneObj, nFxID);
+        }
+        // show effect fx        
 		if (go != null) {
 			go.transform.localPosition = MyTool.SnyGridtoLocalPos( nX , nY , ref Grids );
 		}
@@ -1485,14 +1492,13 @@ public class Panel_StageUI : MonoBehaviour
 			return ;
 		}
 
-
 		Panel_unit unit = CastUnit ; // MyTool.CMDUI().pCmder;
 		int nOrgX = unit.X ();
 		int nOrgY = unit.Y ();
 		
 		List<iVec2> aoeList = MyTool.GetAOEPool (nX, nY, nAOE ,nOrgX, nOrgY );
 		foreach (iVec2 v in aoeList) {
-			PlayFX( nFxID , v.X , v.Y);
+			PlayFX( nFxID , v.X , v.Y , true );
 		}
 	}
 
@@ -3684,20 +3690,36 @@ public class Panel_StageUI : MonoBehaviour
 				continue;
 
 			nTot++;
-			GameSystem.PlayFX(unit.gameObject , nFXID );
+            unit.PlayFX(nFXID);
+            //GameSystem.PlayFX(unit.gameObject , nFXID );
 
             // move camera
-            MoveToGameObj(unit.gameObject , true , 0.5f );
-
-		
+            MoveToGameObj(unit.gameObject , true , 0.5f );		
 		}
 		if (nTot == 0) {
 			Debug.LogErrorFormat ("OnStagePlayFX {0} on null unit with char {1} ", nFXID, nCharID);
 		}
 	}
 
+    public void OnStagePosPlayFX(int nX, int nY,  int nFXID , int nDown = 0 )
+    {
+        if (nFXID == 0)
+        {
+            return;
+        }
+        //		TalkSayEndEvent sayevt = new TalkSayEndEvent();
+        //		sayevt.nChar = 0;		
+        //		GameEventManager.DispatchEvent ( sayevt  );
+        Panel_Talk.Show(false);
 
-	public void OnStageAddBuff(int nCharID , int nBuffID , int nCastCharID , int nDel = 0 )
+        CameraMoveTo(nX, nY);
+
+        PlayFX( nFXID, nX, nY , (0== nDown) );
+    }
+
+
+
+    public void OnStageAddBuff(int nCharID , int nBuffID , int nCastCharID , int nDel = 0 )
 	{
 		if (nBuffID == 0) {
 			return ;

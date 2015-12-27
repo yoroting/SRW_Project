@@ -52,7 +52,10 @@ public class Panel_Cheat : MonoBehaviour {
 	public GameObject Item1Addobj;
 	public GameObject Item1Delobj;
 
-	public GameObject ReactBtn;           // God Mode
+    public GameObject SAIPoplist;           // sel Event
+    public GameObject CAIPoplist;           // sel Event
+
+    public GameObject ReactBtn;           // God Mode
 	// Use this for initialization
 	void Start () {
 	
@@ -91,9 +94,41 @@ public class Panel_Cheat : MonoBehaviour {
 		UIEventListener.Get(Item1Delobj).onClick += OnDelItem1Click; 
 
 
-		UIEventListener.Get(ReactBtn).onClick += OnReActClick; 
+		UIEventListener.Get(ReactBtn).onClick += OnReActClick;
 
-	}
+
+        UIPopupList popSAI = SAIPoplist.GetComponent<UIPopupList>();
+        if (popSAI != null)
+        {
+            //添加触发事件
+            //	EventDelegate.Add (popList.onChange, label.SetCurrentSelection);
+            EventDelegate.Add(popSAI.onChange, SAIComboboxChange);
+
+            var valuesAsArray = _AI_SEARCH.GetValues(typeof(_AI_SEARCH));
+            // _AI_SEARCH._NORMAL;
+            popSAI.Clear();
+            foreach (_AI_SEARCH sai in valuesAsArray )
+            {
+                popSAI.AddItem(sai.ToString() , sai );
+            }            
+        }
+
+        UIPopupList popCAI = CAIPoplist.GetComponent<UIPopupList>();
+        if (popCAI != null)
+        {
+            //添加触发事件
+            //	EventDelegate.Add (popList.onChange, label.SetCurrentSelection);
+            EventDelegate.Add(popCAI.onChange, CAIComboboxChange);
+
+            var valuesAsArray = _AI_COMBO.GetValues(typeof(_AI_COMBO));
+            // _AI_SEARCH._NORMAL;
+            popCAI.Clear();
+            foreach (_AI_COMBO cai in valuesAsArray)
+            {
+                popCAI.AddItem(cai.ToString(), cai);
+            }
+        }
+    }
 
 	
 	// Update is called once per frame
@@ -101,21 +136,21 @@ public class Panel_Cheat : MonoBehaviour {
 	
 	}
 
-	void OnEnable () {
-		
-//		UIToggle god = GodChk.GetComponent<UIToggle> ();
-//		god.value =Config.GOD;
-//		UIToggle kill = KillChk.GetComponent<UIToggle> ();
-//		kill.value =Config.KILL_MODE;
-//		UIToggle ai = KillChk.GetComponent<UIToggle> ();
-//		ai.value =Config.MOBAI;
-//		
-//		UIInput min = MoneyInput.GetComponent<UIInput> ();
-//		min.value = GameDataManager.Instance.nMoney.ToString();
-		
-		
-	}
+    void OnEnable()
+    {
 
+        //		UIToggle god = GodChk.GetComponent<UIToggle> ();
+        //		god.value =Config.GOD;
+        //		UIToggle kill = KillChk.GetComponent<UIToggle> ();
+        //		kill.value =Config.KILL_MODE;
+        //		UIToggle ai = KillChk.GetComponent<UIToggle> ();
+        //		ai.value =Config.MOBAI;
+        //		
+        //		UIInput min = MoneyInput.GetComponent<UIInput> ();
+        //		min.value = GameDataManager.Instance.nMoney.ToString();
+
+       
+    }
 	public void SetData( cUnitData data ){
 		pData = data;
 		if(  pData == null )
@@ -148,7 +183,21 @@ public class Panel_Cheat : MonoBehaviour {
 
 		// get ext lv
 		MyTool.SetLabelInt( ExtValueobj , pData.GetExtSchLv(  ) );
-	}
+
+        UIPopupList saiList = SAIPoplist.GetComponent<UIPopupList>();
+        if (saiList != null)
+        {
+            saiList.value = pData.eSearchAI.ToString();
+           // saiList.value = pData.eSearchAI;           
+        }
+
+        UIPopupList caiList = CAIPoplist.GetComponent<UIPopupList>();
+        if (caiList != null)
+        {
+            caiList.value = pData.eComboAI.ToString();
+            // saiList.value = pData.eSearchAI;           
+        }
+    }
 
 
 
@@ -363,6 +412,36 @@ public class Panel_Cheat : MonoBehaviour {
 	{
 		pData.AddActionTime (1);
 	}
+
+    //
+    void SAIComboboxChange()
+    {
+        UIPopupList popList = SAIPoplist.GetComponent<UIPopupList>();
+        if (popList != null)
+        {
+            //			string s = popList.value;
+            if (popList.data != null)
+            {
+                _AI_SEARCH sai = (_AI_SEARCH)popList.data;
+
+                pData.eSearchAI = sai;
+            }
+        }
+    }
+
+    void CAIComboboxChange()
+    {
+        UIPopupList popList = CAIPoplist.GetComponent<UIPopupList>();
+        if (popList != null)
+        {
+            //			string s = popList.value;
+            if (popList.data != null)
+            {
+                _AI_COMBO cai = (_AI_COMBO)popList.data;
+                pData.eComboAI = cai;
+            }
+        }
+    }
 
 }
 
