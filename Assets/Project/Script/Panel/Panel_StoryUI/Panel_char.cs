@@ -93,11 +93,8 @@ public class Panel_char : MonoBehaviour {
 	{
 		if (FaceObj == null)
 			return;
-
-		UITexture texture = FaceObj.GetComponent< UITexture >(); 
-		
 		//TweenGrayLevel.Begin <TweenGrayLevel>(  texture , 1.0f  );
-		TweenGrayLevel tw = TweenGrayLevel.Begin <TweenGrayLevel >( texture.gameObject, 1.0f);
+		TweenGrayLevel tw = GrayLevelHelper.StartTweenGrayLevel(FaceObj, 1.0f);
 		if (tw) {
             bIsGraying = true;
             tw.from = 0.0f;

@@ -711,7 +711,7 @@ public class SRW_TextBox : MonoBehaviour
     }
     public void SetDead()
     {
-        TweenGrayLevel tw = TweenGrayLevel.Begin<TweenGrayLevel>(this.gameObject, 2.0f);
+		TweenGrayLevel tw = GrayLevelHelper.StartTweenGrayLevel(this.gameObject, 2.0f);
         if (tw)
         {
             bIsDeading = true;
