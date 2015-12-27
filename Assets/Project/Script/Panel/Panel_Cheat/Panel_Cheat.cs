@@ -54,6 +54,7 @@ public class Panel_Cheat : MonoBehaviour {
 
     public GameObject SAIPoplist;           // sel Event
     public GameObject CAIPoplist;           // sel Event
+    public GameObject InputAiObj;
 
     public GameObject ReactBtn;           // God Mode
 	// Use this for initialization
@@ -127,7 +128,8 @@ public class Panel_Cheat : MonoBehaviour {
             {
                 popCAI.AddItem(cai.ToString(), cai);
             }
-        }
+        }    
+
     }
 
 	
@@ -197,6 +199,15 @@ public class Panel_Cheat : MonoBehaviour {
             caiList.value = pData.eComboAI.ToString();
             // saiList.value = pData.eSearchAI;           
         }
+
+        UIInput AiInput = InputAiObj.GetComponent<UIInput>();
+        if (AiInput != null)
+        {
+            AiInput.value = pData.n_AITarget.ToString();
+        }
+
+        InputAiObj.SetActive(pData.eSearchAI == _AI_SEARCH._TARGET);
+      
     }
 
 
@@ -208,8 +219,19 @@ public class Panel_Cheat : MonoBehaviour {
 
 	void OnOkClick(GameObject go)
 	{
+        // set AI target
+        UIInput AiInput = InputAiObj.GetComponent<UIInput>();
+        if (AiInput != null && AiInput.value != null )
+        {
+            int nAITar;
+            if( int.TryParse(AiInput.value, out nAITar ))
+            {
+                pData.n_AITarget = nAITar;
+            }
+             
+        }
 
-	}
+    }
 
 	void OnSetLvClick(GameObject go)
 	{
@@ -218,21 +240,21 @@ public class Panel_Cheat : MonoBehaviour {
 		UIInput LvInput = IvValueobj.GetComponent<UIInput>();
 		if( LvInput != null ){
 			if( int.TryParse(  LvInput.value , out nLv ) ){
+                pData.SetLevel(nLv);
 
-
-			}
+            }
 		}
 		UIInput ExpInput = ExpAddobj.GetComponent<UIInput>();
 		if( ExpInput != null ){		
 			if( int.TryParse(  ExpInput.value , out nExp ) ){
-				
-				
-			}
+
+                pData.n_EXP = nExp;
+            }
 		}
 		///===============
 		/// 
-		pData.SetLevel ( nLv  );
-		pData.n_EXP = nExp;
+		
+		
 	}
 	
 
@@ -423,8 +445,18 @@ public class Panel_Cheat : MonoBehaviour {
             if (popList.data != null)
             {
                 _AI_SEARCH sai = (_AI_SEARCH)popList.data;
-
                 pData.eSearchAI = sai;
+
+                if (sai == _AI_SEARCH._TARGET)
+                {
+                    InputAiObj.SetActive(true);
+                }
+                else
+                {
+                    InputAiObj.SetActive(false);
+                }
+
+
             }
         }
     }

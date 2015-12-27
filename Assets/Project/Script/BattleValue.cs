@@ -28,7 +28,7 @@ public class BattleValue : MonoBehaviour {
 //		}
 		TweenY twy = TweenY.Begin<TweenY> ( gameObject , 0.5f);
 		if (twy != null) {
-			twy.delay = 0.5f;
+			twy.delay = 1.5f;
 			twy.from = y ; 
 			twy.to = y + 64;
 			twy.style = UITweener.Style.Once;

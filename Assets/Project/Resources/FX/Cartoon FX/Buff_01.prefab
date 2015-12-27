@@ -62,6 +62,7 @@ GameObject:
   - 198: {fileID: 19863366}
   - 199: {fileID: 19967082}
   - 114: {fileID: 11459464}
+  - 114: {fileID: 11407944}
   m_Layer: 0
   m_Name: Buff_01
   m_TagString: Untagged
@@ -120,6 +121,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 466730}
   m_RootOrder: 0
+--- !u!114 &11407944
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 175020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb20a51313bb24d4fada1bf2e02792c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  queueOffset: 1
 --- !u!114 &11459464
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4535,6 +4548,10 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: queueOffset
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []

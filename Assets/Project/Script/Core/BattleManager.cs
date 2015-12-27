@@ -248,7 +248,7 @@ public partial class BattleManager
 			else{ 
 				// mob need a method to get skill
 				eDefCmdID = _CMD_ID._COUNTER; // mob select counter this time
-				int nSklId = MobAI.SelSkill( Defer , Atker ,true  );
+				int nSklId = MobAI.SelCountSkill( Defer , Atker  );
 				if( nSklId < 0 ){
 					eDefCmdID = _CMD_ID._DEF;  //select defence
 				}
@@ -1134,9 +1134,9 @@ public partial class BattleManager
 			
 
 		//GameObject go = ResourcesManager.CreatePrefabGameObj ( Panel_StageUI.Instance.MaskPanelObj , "Prefab/BattleValue" );
-		GameObject go = Panel_StageUI.Instance.SpwanBattleValueObj (obj, v );
+		GameObject go = Panel_StageUI.Instance.SpwanBattleValueObj (Panel_StageUI.Instance.MaskPanelObj , obj.transform.localPosition ); // this will affect initial pos in enable
 		if (go != null) {
-            //go.transform.position = v;
+            //go.transform.position = obj.transform.position ;
             //go.transform.localPosition = v;
             //Tween Y 將造成 成像上的偏移錯誤。徹底解決前～不開放
             // tween Y here for correct pos value

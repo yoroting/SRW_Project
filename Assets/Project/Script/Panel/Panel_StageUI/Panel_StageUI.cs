@@ -28,8 +28,7 @@ public class Panel_StageUI : MonoBehaviour
 			{
 				GameObject go = PanelManager.Instance.JustGetUI( Name );
 				if( go ){
-                    go.layer = 0;
-
+                  //  go.layer = 0;
 					instance = go.GetComponent<Panel_StageUI>(); 
 					//return go.GetComponent<Panel_StageUI>(); 
 				}
@@ -653,8 +652,10 @@ public class Panel_StageUI : MonoBehaviour
 		if( IsRunningEvent() == true  )
 			return; // block other action  
 
-		if (GameDataManager.Instance.nActiveCamp != _CAMP._PLAYER)
-			return;
+        if (GameDataManager.Instance.nActiveCamp != _CAMP._PLAYER)
+        {          
+            return;
+        }
 
 		if (this.bIsStageEnd == true)
 			return;
@@ -718,34 +719,52 @@ public class Panel_StageUI : MonoBehaviour
 			}
 			else if( cCMD.Instance.eCMDSTATUS == _CMD_STATUS._WAIT_CMDID ) // is waiting cmd id. this is moving act 
 			{
-				if( cCMD.Instance.eCMDTYPE == _CMD_TYPE._ALLY )
-				{
-					if( bIsOverCell == true || Config.GOD ) // god for cheat warp
-					{	
-						ClearOverCellEffect( );
-						cCMD.Instance.eNEXTCMDTYPE = _CMD_TYPE._WAITATK;
-						PanelManager.Instance.CloseUI( Panel_CMDUnitUI.Name ); //only colse ui to wait
+                if (cCMD.Instance.eCMDTYPE == _CMD_TYPE._ALLY) // 我方
+                {
+                    if (bIsOverCell == true || Config.GOD) // god for cheat warp
+                    {
+                        ClearOverCellEffect();
+                        cCMD.Instance.eNEXTCMDTYPE = _CMD_TYPE._WAITATK;
+                        PanelManager.Instance.CloseUI(Panel_CMDUnitUI.Name); //only colse ui to wait
 
-						StageCharMoveEvent evt = new StageCharMoveEvent ();
-						evt.nIdent =  cCMD.Instance.nCmderIdent; // current oper ident 
-						evt.nX = unit.X ();
-						evt.nY = unit.Y ();
-						GameEventManager.DispatchEvent (evt);		
-						return;
-					}
-					else if( cCMD.Instance.eCMDTARGET == _CMD_TARGET._UNIT )
-					{
-						Panel_CMDUnitUI.CloseCMDUI();
-						// need cancel cmd
-					
-					}
-					return ;
-				}
-				else 
-				{
-					// close 
-					Panel_CMDUnitUI.CloseCMDUI();
-				}
+                        StageCharMoveEvent evt = new StageCharMoveEvent();
+                        evt.nIdent = cCMD.Instance.nCmderIdent; // current oper ident 
+                        evt.nX = unit.X();
+                        evt.nY = unit.Y();
+                        GameEventManager.DispatchEvent(evt);
+                        return;
+                    }
+                    else if (cCMD.Instance.eCMDTARGET == _CMD_TARGET._UNIT)
+                    {
+                        Panel_CMDUnitUI.CloseCMDUI();
+                        // need cancel cmd
+
+                    }
+                    return;
+                }
+                else if (cCMD.Instance.eCMDTYPE == _CMD_TYPE._ENEMY )
+                {
+                    Panel_CMDUnitUI.CloseCMDUI();
+                    if (Config.GOD) // for cheat move mob
+                    {
+                        ClearOverCellEffect();
+                        cCMD.Instance.eNEXTCMDTYPE = _CMD_TYPE._WAITATK;
+                        PanelManager.Instance.CloseUI(Panel_CMDUnitUI.Name); //only colse ui to wait
+
+                        StageCharMoveEvent evt = new StageCharMoveEvent();
+                        evt.nIdent = cCMD.Instance.nCmderIdent; // current oper ident 
+                        evt.nX = unit.X();
+                        evt.nY = unit.Y();
+                        GameEventManager.DispatchEvent(evt);
+                        return;
+                    }
+                  
+                }
+                else
+                {
+                    // close 
+                    Panel_CMDUnitUI.CloseCMDUI();
+                }
 			}
 
 
@@ -1325,7 +1344,7 @@ public class Panel_StageUI : MonoBehaviour
 //		Debug.Log( "create moveeffect cell with ticket:" + during );
 	}
 
-	public void CreateAttackOverEffect( Panel_unit unit , int nRange=1 ,  int nMinRange=0)
+	public void CreateAttackOverEffect( Panel_unit unit , int nSkillID=0 )
 	{
 		foreach( KeyValuePair< string , GameObject> pair in OverCellAtkPool )
 		{
@@ -1339,10 +1358,27 @@ public class Panel_StageUI : MonoBehaviour
 		if (unit == null)
 			return;
 
-		if (nRange < 1)
-			nRange = 1;
+        int nRange = 1,  nMinRange = 0;
+        MyTool.GetSkillRange(nSkillID, out nRange, out nMinRange);
 
-		List<iVec2> AtkList =  Grids.GetRangePool ( unit.Loc, nRange ,nMinRange );
+
+        List<iVec2> AtkList = null;
+
+        if (nRange == -1 )  { // infinte
+
+            AtkList = GetUnitPKPosPool(unit ,  MyTool.GetSkillCanPKmode(nSkillID) );
+
+        }
+        else    { // 
+            if(nRange < 0) {
+                nRange = 1;
+            }
+
+            AtkList = Grids.GetRangePool(unit.Loc, nRange, nMinRange);
+        }
+
+
+		
 		//AtkList.RemoveAt (0); // remove self pos
 
 		foreach( iVec2 v in AtkList )

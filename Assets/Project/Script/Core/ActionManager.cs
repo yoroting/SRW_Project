@@ -164,13 +164,16 @@ public partial class ActionManager
 					{	
 						// Normal atk action
 						Panel_unit unit = Panel_StageUI.Instance.GetUnitByIdent( act.nActIdent );
-						if( (unit!= null) && unit.SetAction( act ) )
+						if( (unit!= null) )
 						{
-							ActionPool.RemoveAt( 0 ); // remove when setup success
-							return true;
+                           if (unit.SetAction(act))
+                           {
+                                ActionPool.RemoveAt(0); // remove when setup success
+                                return true;
+                           }
 						}
 						else {
-							ActionPool.RemoveAt( 0 ); // remove when setup success
+							ActionPool.RemoveAt( 0 ); // remove when unit is not exist
 							return true;
 						}
 					}

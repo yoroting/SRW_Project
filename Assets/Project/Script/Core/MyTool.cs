@@ -343,7 +343,16 @@ public class MyTool {
 		return skl.n_RANGE;
 	}
 
-	public static _PK_MODE GetSkillPKmode( int nSkillID )
+    public static bool GetSkillCanPKmode(int nSkillID)
+    {
+        _PK_MODE mode = GetSkillPKmode(nSkillID);
+        if( (mode == _PK_MODE._ENEMY) || (mode == _PK_MODE._ALL) )
+        {
+            return true;
+        }
+        return false;
+    }
+    public static _PK_MODE GetSkillPKmode( int nSkillID )
 	{
 		return GetSkillPKmode ( ConstDataManager.Instance.GetRow< SKILL > ( nSkillID ) );
 	}

@@ -263,8 +263,23 @@ public class MobAI  {
             nDist = mob.Loc.Dist(Tar.Loc); // 沒有路徑，則取兩生物之距離
         }
 
+        if ( mob.pUnitData.eComboAI == _AI_COMBO._DEFENCE) {
+            ActionManager.Instance.CreateWaitingAction(mob.Ident());
+            return;
+        }
+
+        // 如果是攻擊性技能，判斷 敵我關係
+        if (mob.CanPK(Tar) == false) {
+            if (MyTool.IsDamageSkill(nSkillID) == true)
+            {
+                ActionManager.Instance.CreateWaitingAction(mob.Ident()); // 不能攻擊我方
+                return;
+            }
+        }
+
+
         // check send atk cmd
-        if ((nDist <= nSkillRange) && (nDist >= nMinRange)) // 可以攻擊
+        if ((nDist <= nSkillRange) && (nDist >= nMinRange) ) // 可以攻擊
         {
             // check can atk or not 
             ActionManager.Instance.CreateAttackCMD(mob.Ident(), Tar.Ident(), nSkillID); // create Attack CMD . need battle manage to run				
@@ -762,68 +777,82 @@ public class MobAI  {
 			_AI_NormalAttack( mob , nSkillID ,nMove  );
 			return ;
 		}
+
+        //int nSkillID;
+        List<iVec2> path; ;
+        _FindToAttackTarget(mob, target, nMove, out nSkillID, out path, false);
+        _AI_MakeCmd(mob, target , nSkillID, ref path);
+            // wait 
+        //    return ;
+                //move 
+
+
+
+
+        return;
         // 無視 中立效果
 		//=========================
-		bool bCanAtk = false;
-		int nMinRange =0;
-		int nSkillRange =0;
-		MyTool.GetSkillRange ( nSkillID , out nSkillRange , out nMinRange);
-		int nDist = mob.Loc.Dist( target.Loc )   ; // value is dist
-		if( nDist > nSkillRange  ) // pathfind if need
-		{
-			List<iVec2> path = FindPathToTarget( mob , target , nMove , nSkillRange );
-			if( path == null || (path.Count ==0) )
-			{
-                //continue; // can't find correct path try nearest pos
-                // bug : need create a action to move closer target
-                // need filter zoc 
+		//bool bCanAtk = false;
+		//int nMinRange =0;
+		//int nSkillRange =0;
+		//MyTool.GetSkillRange ( nSkillID , out nSkillRange , out nMinRange);
+		//int nDist = mob.Loc.Dist( target.Loc )   ; // value is dist
+		//if( nDist > nSkillRange  ) // pathfind if need
+		//{
+		//	List<iVec2> path = FindPathToTarget( mob , target , nMove , nSkillRange );
+		//	if( path == null || (path.Count ==0) )
+		//	{
+  //              //continue; // can't find correct path try nearest pos
+  //              // bug : need create a action to move closer target
+  //              // need filter zoc 
                
-            }
-			else
-			{
-				iVec2 last = path[ path.Count -1 ];
-				if( last != null  ){
-					// send a move event					
-					mob.SetPath (path); 
-					// check if last pos is attack able pos
-					ActionManager.Instance.CreateMoveAction (ident, last.X, last.Y);	
+  //          }
+		//	else
+		//	{
+		//		iVec2 last = path[ path.Count -1 ];
+		//		if( last != null  ){
+		//			// send a move event					
+		//			mob.SetPath (path); 
+		//			// check if last pos is attack able pos
+		//			ActionManager.Instance.CreateMoveAction (ident, last.X, last.Y);	
 					
-					if (Config.GOD == true) {
-						Panel_StageUI.Instance.CreatePathOverEffect (path); // draw path
-					}
+		//			if (Config.GOD == true) {
+		//				Panel_StageUI.Instance.CreatePathOverEffect (path); // draw path
+		//			}
 
-					if( last.Dist( target.Loc ) > nSkillRange ){
-						// too far
-					}
-					else {
-						bCanAtk = true;
-					}
-				}			
-			}
+		//			if( last.Dist( target.Loc ) > nSkillRange ){
+		//				// too far
+		//			}
+		//			else {
+		//				bCanAtk = true;
+		//			}
+		//		}			
+		//	}
 
-		}
-		else if( nDist < nMinRange ){ // check if need change skill
-			SKILL newSkill = FindSkillByDist( mob ,nDist );
-			if( newSkill != null ){	// change skill
-				nSkillID = newSkill.n_ID ;
-				bCanAtk = true;
-			}else if( nDist <= 1 ){
-				nSkillID = 0;
-				bCanAtk = true;
-			}
-		}
-		else{
-			bCanAtk = true ; // atk directly
-		}
-		if( bCanAtk )
-		{
-			ActionManager.Instance.CreateAttackCMD (ident, target.Ident() , nSkillID ); // create Attack CMD . need battle manage to run
-			return;
-		}
+		//}
+		//else if( nDist < nMinRange ){ // check if need change skill
+		//	SKILL newSkill = FindSkillByDist( mob ,nDist );
+		//	if( newSkill != null ){	// change skill
+		//		nSkillID = newSkill.n_ID ;
+		//		bCanAtk = true;
+		//	}else if( nDist <= 1 ){
+		//		nSkillID = 0;
+		//		bCanAtk = true;
+		//	}
+		//}
+		//else{
+		//	bCanAtk = true ; // atk directly
+		//}
+		//if( bCanAtk )
+		//{
+		//	ActionManager.Instance.CreateAttackCMD (ident, target.Ident() , nSkillID ); // create Attack CMD . need battle manage to run
+		//	return;
+		//}
 
-		ActionManager.Instance.CreateWaitingAction (ident);
+		//ActionManager.Instance.CreateWaitingAction (ident);
 	}
 
+    // only move
 	static void _AI_PositionAttack(Panel_unit mob , int nSkillID , int nMove ) 
 	{
 		int ident = mob.Ident();
@@ -976,7 +1005,53 @@ public class MobAI  {
 
 	}
 
-    
+    static public int SelCountSkill(cUnitData pMob, cUnitData pTarget = null)
+    {
+        cUnitData pData = pMob;
+        if (pData == null)
+        {
+            return 0;  // no attack
+        }
+        // defence ai always defence
+        if (pData.eComboAI == _AI_COMBO._DEFENCE)
+        {
+            return -1;
+        }
+        int nDist = 0;
+        int nTarX = pMob.n_X;
+        int nTarY = pMob.n_Y;
+        if (pTarget != null)
+        {
+            nTarX = pTarget.n_X;
+            nTarY = pTarget.n_Y;
+            nDist = iVec2.Dist(pMob.n_X, pMob.n_Y, pTarget.n_X, pTarget.n_Y);
+        }
+        if (CreateSkilTmpList(pMob, nDist, true))
+        {
+            // roll a skill?
+            foreach (SKILL skl in tmpSklList)
+            {
+                int nMinRange = skl.n_MINRANGE;
+                int nSkillRange = skl.n_RANGE;
+
+                if ((nDist <= nSkillRange) && (nDist >= nMinRange)) // 可以直接攻擊
+                {
+                    return skl.n_ID;
+                }
+            }
+
+
+        }
+        else {
+            if( nDist <= 1) // use melee
+            {
+                return 0;
+            }
+
+        }
+        return -1; // defence
+
+    }
 
     static public int SelSkill( cUnitData pMob , cUnitData pTarget = null , bool bCounterMode = false  )// -1 is no attack
 	{
@@ -1143,8 +1218,8 @@ public class MobAI  {
     static public bool CreateSkilTmpList( cUnitData pData , int nDist, bool bCounterMode = false )
     {
         if (pData == null)
-            return false;
-
+            return false;     
+        
         int nRealDist = nDist;
         if (nRealDist < 1)
             nRealDist = 1;
@@ -1198,44 +1273,51 @@ public class MobAI  {
 		return null;
 	}
 
-	// tool func to check skill can use
-	static public bool CheckSkillCanCast( cUnitData pData , cUnitData pTarget , int nSkillID  , int nDist , bool bCounterMode = false){
-		if( pData == null ){
-			return false;  // no attack
-		}
+    // tool func to check skill can use
+    static public bool CheckSkillCanCast(cUnitData pData, cUnitData pTarget, int nSkillID, int nDist, bool bCounterMode = false) {
+        if (pData == null) {
+            return false;  // no attack
+        }
 
-		SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(nSkillID);			
-		if( skl.n_SCHOOL == 0 )	// == 0 is ability
-			return false;
-		if( skl.n_PASSIVE == 1 )
-			return false;
+        SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(nSkillID);
+        if (skl.n_SCHOOL == 0)  // == 0 is ability
+            return false;
+        if (skl.n_PASSIVE == 1)
+            return false;
 
-		// check cp && MP
-		if( (pData.n_CP < skl.n_CP) ){
-			return false;
-		}
-		if( (pData.n_MP < skl.n_MP) ){
-			if( Config.FREE_MP == false ){
-				return false;
-			}
-		}		
-		// 防招只在破防時使用
-		if( skl.f_DEF > 0.0f && pData.n_DEF>0)
-			return false;
+        // check cp && MP
+        if ((pData.n_CP < skl.n_CP)) {
+            return false;
+        }
+        if ((pData.n_MP < skl.n_MP)) {
+            if (Config.FREE_MP == false) {
+                return false;
+            }
+        }
+        // 防招只在破防時使用
+        if (skl.f_DEF > 0.0f && pData.n_DEF > 0)
+            return false;
 
-		//牽制招不對小怪物用
-		cSkillData skldata = GameDataManager.Instance.GetSkillData( nSkillID );
-		if( skldata.IsTag( _SKILLTAG._TIEUP ) )
-		{
-			if( pTarget != null ){
-				if( (pData.GetMar() - pTarget.GetMar()) > 20.0f ){
-					return false;
-				}
-			}
-		}
-		//=======
-		// counter mode
-		if( bCounterMode){
+        //牽制招不對小怪物用
+        cSkillData skldata = GameDataManager.Instance.GetSkillData(nSkillID);
+        if (skldata.IsTag(_SKILLTAG._TIEUP))
+        {
+            if (pTarget != null) {
+                if ((pData.GetMar() - pTarget.GetMar()) > 20.0f) {
+                    return false;
+                }
+            }
+        }
+
+        if (pData.eComboAI == _AI_COMBO._DEFENCE) {
+            if (skldata.IsTag(_SKILLTAG._DAMAGE))
+            {
+                return false;       // defence no use dmg skill
+            }
+        }
+                                //=======
+                                // counter mode
+        if ( bCounterMode){
 			if (skldata.IsTag (_SKILLTAG._BANDEF )) { // 反擊禁用
 				return false;
 			}

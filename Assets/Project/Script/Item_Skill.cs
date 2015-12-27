@@ -24,13 +24,18 @@ public class Item_Skill : MonoBehaviour {
 	{
 		MyTool.SetLabelText ( NameObj , name );
 
-		if( (nMinRange == 0) || (nMinRange==nRange) ){
 
-			MyTool.SetLabelInt ( RangeObj , nRange  );
-		}
-		else{
-			MyTool.SetLabelText ( RangeObj , string.Format("{0}-{1} ", nMinRange ,nRange  ) );
-		}
+        if ( -1 == nRange )
+        {
+            MyTool.SetLabelText(RangeObj, "∞" );
+        }
+        else if ((nMinRange == 0) || (nMinRange == nRange)) {
+
+            MyTool.SetLabelInt(RangeObj, nRange);
+        }
+        else {
+            MyTool.SetLabelText(RangeObj, string.Format("{0}-{1} ", nMinRange, nRange));
+        }
 
 		MyTool.SetLabelInt ( CostObj , nCost );
 

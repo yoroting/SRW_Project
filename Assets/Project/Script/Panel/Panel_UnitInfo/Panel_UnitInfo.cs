@@ -130,7 +130,13 @@ public class Panel_UnitInfo : MonoBehaviour {
 
         // name 
         //string name = pUnitData.cCharData.s_NAME;
-        MyTool.SetLabelText(NameObj, MyTool.GetCharName(nCharId));
+        string sName = MyTool.GetCharName(pUnitData.n_CharID);
+        if (Config.GOD)
+        {
+            sName += ("(" + pUnitData.n_CharID + ")");
+        }
+
+        MyTool.SetLabelText(NameObj, sName );
 
         ReloadData();
 
