@@ -482,7 +482,7 @@ public class cBuffs
 			{
 				if( eft != null )
 				{
-					eft._Attr( Owner , unit ,  ref attr );
+					eft._Attr( Owner , unit ,  ref attr , pair.Value.nNum  );
 				}
 			}
 		}
@@ -513,7 +513,7 @@ public class cBuffs
 				{
 					if( eft != null )
 					{
-						eft._Attr( Owner , unit , ref attr );
+						eft._Attr( Owner , unit , ref attr, pair.Value.nNum );
 					}
 				}
 			}

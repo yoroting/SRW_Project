@@ -178,8 +178,24 @@ public partial class BattleManager
 	}
 
 
+    public bool IsDamagePhase()
+    {
+        if (eBattleType == _BATTLE._ATTACK)
+        {
+            return true;
+        }
+        else if (eBattleType == _BATTLE._CAST )
+        {
+            if (MyTool.IsDamageSkill(nAtkerSkillID) )
+                return true;
+        }
+
+        // 有實際造成傷害的戰鬥
+        return false;
+    }
+
     // only run in battle  
-	public void Run()
+    public void Run()
 	{
 		if (eBattleType == _BATTLE._NONE)
 			return;
@@ -1613,10 +1629,21 @@ public partial class BattleManager
             return resPool;
         }
 
+        //
+        SKILL AtkerSkill = pAtker.FightAttr.SkillData.skill;
+
+        // 守方免疫飛行道具
+        if (pDefer.IsStates(_FIGHTSTATE._ANTIFLY))
+        {
+            if ( (pAtker.FightAttr.SkillData != null) && (pAtker.FightAttr.SkillData.IsTag( _SKILLTAG._FLY )  ) ) {
+                resPool.Add(new cHitResult(cHitResult._TYPE._IMMUNE, nDefer, 0)); // no dmg
+                return resPool;
+            }
+        }
 
 
-		// buff effect
-		float AtkMarPlus = pAtker.FightAttr.fAtkAssist;   // assist is base pils
+        // buff effect
+        float AtkMarPlus = pAtker.FightAttr.fAtkAssist;   // assist is base pils
 		float DefMarPlus = pDefer.FightAttr.fDefAssist;
 
 		int AtkPowPlus = 0;
@@ -1636,7 +1663,7 @@ public partial class BattleManager
 		//float fDefDamage = 1.0f + pDefer.GetMulDamage ();
 		//resPool.Add ( new cHitResult( cHitResult._TYPE._BEHIT , nDefer , pAtker.FightAttr.SkillID ) );
 
-		SKILL AtkerSkill = pAtker.FightAttr.SkillData.skill;
+		
 //		SKILL DeferSkill = pDefer.FightAttr.SkillData.skill;
 
 		// skill effect

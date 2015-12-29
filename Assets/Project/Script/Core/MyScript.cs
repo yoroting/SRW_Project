@@ -212,7 +212,7 @@ public class MyScript {
 	}
     public bool ConditionCombat( int nChar1 , int nChar2  )
 	{
-		if( BattleManager.Instance.IsBattlePhase() )
+		if( BattleManager.Instance.IsDamagePhase() ) // only check 有傷害的戰鬥才算
 		{
 			Panel_unit atker = Panel_StageUI.Instance.GetUnitByIdent( BattleManager.Instance.nAtkerID );
 			Panel_unit defer = Panel_StageUI.Instance.GetUnitByIdent( BattleManager.Instance.nDeferID );
@@ -1140,220 +1140,297 @@ public class MyScript {
 				else if( func.sFunc  == "AURABUFF_I") 				{
 					pool.Add( new AURABUFF_I( func.I(0) , func.I(1) ) );
 				}
+                else if (func.sFunc == "BATTLE_ARRAY")
+                {
+                    pool.Add(new BATTLE_ARRAY(func.I(0), func.I(1)));
+                }
                 else if (func.sFunc == "SKILL_EFFECT")
                 {
                     pool.Add(new SKILL_EFFECT(func.I(0)));
                 }
-                
                 // Hit effect
-                if ( func.sFunc  == "HITBUFF_I") 
-				{
-					pool.Add( new HITBUFF_I( func.I(0) ) );
-				}
-				else if( func.sFunc  == "HITBUFF_E") 
-				{
-					pool.Add( new HITBUFF_E( func.I(0) ) );
-				}
-				else if( func.sFunc  == "HITHP_I") {
-					pool.Add( new HITHP_I( func.F(0), func.I(1) ) );
-				}
-				else if( func.sFunc  == "HITHP_E") {
-					pool.Add( new HITHP_E( func.F(0), func.I(1) ) );
-				}
-				else if( func.sFunc  == "HITMP_I") {
-					pool.Add( new HITMP_I( func.F(0), func.I(1) ) );
-				}
-				else if( func.sFunc  == "HITMP_E") {
-					pool.Add( new HITMP_E( func.F(0), func.I(1) ) );
-				}
-				else if( func.sFunc  == "HITSP_I") {
-					pool.Add( new HITSP_I( func.F(0), func.I(1)) );
-				}
-				else if( func.sFunc  == "HITSP_E") {
-					pool.Add( new HITSP_E(func.F(0), func.I(1)) );
-				}
-				else if( func.sFunc  == "HITCP_I") {
-					pool.Add( new HITCP_I( func.I(0) ) );
-				}
-				else if( func.sFunc  == "HITCP_E") {
-					pool.Add( new HITCP_E( func.I(0) ) );
-				}
+                else if (func.sFunc == "HITBUFF_I")
+                {
+                    pool.Add(new HITBUFF_I(func.I(0)));
+                }
+                else if (func.sFunc == "HITBUFF_E")
+                {
+                    pool.Add(new HITBUFF_E(func.I(0)));
+                }
+                else if (func.sFunc == "HITHP_I")
+                {
+                    pool.Add(new HITHP_I(func.F(0), func.I(1)));
+                }
+                else if (func.sFunc == "HITHP_E")
+                {
+                    pool.Add(new HITHP_E(func.F(0), func.I(1)));
+                }
+                else if (func.sFunc == "HITMP_I")
+                {
+                    pool.Add(new HITMP_I(func.F(0), func.I(1)));
+                }
+                else if (func.sFunc == "HITMP_E")
+                {
+                    pool.Add(new HITMP_E(func.F(0), func.I(1)));
+                }
+                else if (func.sFunc == "HITSP_I")
+                {
+                    pool.Add(new HITSP_I(func.F(0), func.I(1)));
+                }
+                else if (func.sFunc == "HITSP_E")
+                {
+                    pool.Add(new HITSP_E(func.F(0), func.I(1)));
+                }
+                else if (func.sFunc == "HITCP_I")
+                {
+                    pool.Add(new HITCP_I(func.I(0)));
+                }
+                else if (func.sFunc == "HITCP_E")
+                {
+                    pool.Add(new HITCP_E(func.I(0)));
+                }
+                // skill upgrade
+                else if (func.sFunc == "UP_SKILL")
+                {
+                    pool.Add(new UP_SKILL(func.I(0), func.I(1)));
+                }
+                // char data modify
+                else if (func.sFunc == "ADDHP_I")
+                {
+                    pool.Add(new ADDHP_I(func.F(0), func.I(1)));
+                }
+                else if (func.sFunc == "ADDHP_E")
+                {
+                    pool.Add(new ADDHP_E(func.F(0), func.I(1)));
+                }
+                else if (func.sFunc == "ADDMP_I")
+                {
+                    pool.Add(new ADDMP_I(func.F(0), func.I(1)));
+                }
+                else if (func.sFunc == "ADDMP_E")
+                {
+                    pool.Add(new ADDMP_E(func.F(0), func.I(1)));
+                }
+                else if (func.sFunc == "ADDSP_I")
+                {
+                    pool.Add(new ADDSP_I(func.I(0)));
+                }
+                else if (func.sFunc == "ADDCP_I")
+                {
+                    pool.Add(new ADDCP_I(func.I(0)));
+                }
+                else if (func.sFunc == "ADDSP_E")
+                {
+                    pool.Add(new ADDSP_E(func.I(0)));
+                }
+                else if (func.sFunc == "ADDCP_E")
+                {
+                    pool.Add(new ADDCP_I(func.I(0)));
+                }
+                else if (func.sFunc == "ADDACTTIME_I")
+                {
+                    pool.Add(new ADDACTTIME_I(func.I(0)));
+                }
+                else if (func.sFunc == "ADDACTTIME_E")
+                {
+                    pool.Add(new ADDACTTIME_E(func.I(0)));
+                }
+                // Attr
+                else if (func.sFunc == "ADD_MAR")
+                {
+                    pool.Add(new ADD_MAR(func.F(0)));
+                }
+                else if (func.sFunc == "ADD_MAR_DIFF")
+                {
+                    pool.Add(new ADD_MAR_DIFF(func.F(0), func.I(1)));
+                }
+                else if (func.sFunc == "ADD_ATTACK_DIFF")
+                {
+                    pool.Add(new ADD_ATTACK_DIFF(func.F(0), func.I(1)));
+                }
+                else if (func.sFunc == "ADD_ATTACK")
+                {
+                    pool.Add(new ADD_ATTACK(func.I(0)));
+                }
+                else if (func.sFunc == "ADD_MAXDEF")
+                {
+                    pool.Add(new ADD_MAXDEF(func.I(0)));
+                }
+                else if (func.sFunc == "ADD_DEF_I")
+                {
+                    pool.Add(new ADD_DEF_I(func.F(0) , func.I(1)));
+                }
+                else if (func.sFunc == "ADD_DEF_E")
+                {
+                    pool.Add(new ADD_DEF_E(func.F(0), func.I(1)));
+                }
+                else if (func.sFunc == "ADD_POWER")
+                {
+                    pool.Add(new ADD_POWER(func.I(0)));
+                }
+                else if (func.sFunc == "ADD_MAXHP")
+                {
+                    pool.Add(new ADD_MAXHP(func.I(0)));
+                }
+                else if (func.sFunc == "ADD_MAXMP")
+                {
+                    pool.Add(new ADD_MAXMP(func.I(0)));
+                }
+                else if (func.sFunc == "ADD_MAXSP")
+                {
+                    pool.Add(new ADD_MAXSP(func.I(0)));
+                }
+                else if (func.sFunc == "MUL_DRAINHP")
+                {
+                    pool.Add(new MUL_DRAINHP(func.F(0)));
+                }
+                else if (func.sFunc == "MUL_DRAINMP")
+                {
+                    pool.Add(new MUL_DRAINMP(func.F(0)));
+                }
+                else if (func.sFunc == "ADD_MOVE")
+                {
+                    pool.Add(new ADD_MOVE(func.I(0)));
+                }
+                else if (func.sFunc == "MUL_DROP")
+                {
+                    pool.Add(new MUL_DROP(func.F(0)));
+                }
+                else if (func.sFunc == "MUL_BRUST")
+                {
+                    pool.Add(new MUL_BRUST(func.F(0)));
+                }
+                else if (func.sFunc == "MUL_DAMAGE")
+                {
+                    pool.Add(new MUL_DAMAGE(func.F(0)));
+                }
+                else if (func.sFunc == "MUL_ATTACK")
+                {
+                    pool.Add(new MUL_ATTACK(func.F(0)));
+                }
+                else if (func.sFunc == "MUL_MAXDEF")
+                {
+                    pool.Add(new MUL_MAXDEF(func.F(0)));
+                }
+                else if (func.sFunc == "MUL_POWER")
+                {
+                    pool.Add(new MUL_POWER(func.F(0)));
+                }
+                else if (func.sFunc == "MUL_MAXHP")
+                {
+                    pool.Add(new MUL_MAXHP(func.F(0)));
+                }
+                else if (func.sFunc == "MUL_MAXMP")
+                {
+                    pool.Add(new MUL_MAXMP(func.F(0)));
+                }
+                else if (func.sFunc == "MUL_MAXSP")
+                {
+                    pool.Add(new MUL_MAXSP(func.F(0)));
+                }
+                else if (func.sFunc == "MUL_MPCOST")
+                {
+                    pool.Add(new MUL_MPCOST(func.F(0)));
+                }
+                // immune
+                else if (func.sFunc == "IMMUNE")
+                {
+                    pool.Add(new IMMUNE(func.I(0)));
+                }
 
 
-
-				// skill upgrade
-				else if( func.sFunc  == "UP_SKILL") 
-				{
-					pool.Add( new UP_SKILL( func.I(0) , func.I(1) ) );
-				}
-
-				// char data modify
-				else if( func.sFunc  == "ADDHP_I") {
-					pool.Add( new ADDHP_I( func.F(0), func.I(1) ) );
-				}
-				else if( func.sFunc  == "ADDHP_E") {
-					pool.Add( new ADDHP_E( func.F(0), func.I(1) ) );
-				}
-				else if( func.sFunc  == "ADDMP_I") {
-					pool.Add( new ADDMP_I( func.F(0), func.I(1) ) );
-				}
-				else if( func.sFunc  == "ADDMP_E") {
-					pool.Add( new ADDMP_E( func.F(0), func.I(1) ) );
-				}
-				else if( func.sFunc  == "ADDSP_I") {
-					pool.Add( new ADDSP_I( func.I(0)) );
-				}
-				else if( func.sFunc  == "ADDCP_I") {
-					pool.Add( new ADDCP_I( func.I(0) ) );
-				}
-				else if( func.sFunc  == "ADDSP_E") {
-					pool.Add( new ADDSP_E( func.I(0) ) );
-				}
-				else if( func.sFunc  == "ADDCP_E") {
-					pool.Add( new ADDCP_I( func.I(0) ) );
-				}
-				else if( func.sFunc  == "ADDACTTIME_I") {
-					pool.Add( new ADDACTTIME_I( func.I(0) ) );
-				}
-				else if( func.sFunc  == "ADDACTTIME_E") {
-					pool.Add( new ADDACTTIME_E( func.I(0) ) );
-				}
-
-				// Attr
-				else if( func.sFunc  == "ADD_MAR") {
-					pool.Add( new ADD_MAR( func.F(0) ) );
-				}
-				else if( func.sFunc  == "ADD_MAR_DIFF") {
-					pool.Add( new ADD_MAR_DIFF( func.F(0) , func.I(1) ) );
-				}
-				else if( func.sFunc  == "ADD_ATTACK_DIFF") {
-					pool.Add( new ADD_ATTACK_DIFF( func.F(0), func.I(1) ) );
-				}
-				else if( func.sFunc  == "ADD_ATTACK") {
-					pool.Add( new ADD_ATTACK( func.I(0) ) );
-				}
-				else if( func.sFunc  == "ADD_MAXDEF") {
-					pool.Add( new ADD_MAXDEF( func.I(0) ) );
-				}
-				else if( func.sFunc  == "ADD_DEF_I") {
-					pool.Add( new ADD_DEF_I( func.I(0) ) );
-				}
-				else if( func.sFunc  == "ADD_POWER") {
-					pool.Add( new ADD_POWER( func.I(0) ) );
-				}
-				else if( func.sFunc  == "ADD_MAXHP") {
-					pool.Add( new ADD_MAXHP( func.I(0) ) );
-				}
-				else if( func.sFunc  == "ADD_MAXMP") {
-					pool.Add( new ADD_MAXMP( func.I(0) ) );
-				}
-				else if( func.sFunc  == "ADD_MAXSP") {
-					pool.Add( new ADD_MAXSP( func.I(0) ) );
-				}
-				else if( func.sFunc  == "MUL_DRAINHP") {
-					pool.Add( new MUL_DRAINHP( func.F(0) ) );
-				}
-				else if( func.sFunc  == "MUL_DRAINMP") {
-					pool.Add( new MUL_DRAINMP( func.F(0) ) );
-				}
-				else if( func.sFunc  == "ADD_MOVE") 
-				{
-					pool.Add( new ADD_MOVE( func.I(0) ) );
-				}
-				else if( func.sFunc  == "MUL_DROP") {
-					pool.Add( new MUL_DROP( func.F(0) ) );
-				}
-				else if( func.sFunc  == "MUL_BRUST") {
-					pool.Add( new MUL_BRUST( func.F(0) ) );
-				}
-				else if( func.sFunc  == "MUL_DAMAGE") {
-					pool.Add( new MUL_DAMAGE( func.F(0) ) );
-				}
-				else if( func.sFunc  == "MUL_ATTACK") {
-					pool.Add( new MUL_ATTACK( func.F(0) ) );
-				}
-				else if( func.sFunc  == "MUL_DEF") {
-					pool.Add( new MUL_DEF( func.F(0) ) );
-				}
-				else if( func.sFunc  == "MUL_POWER"){
-					pool.Add( new MUL_POWER( func.F(0) ) );
-				}
-				else if( func.sFunc  == "MUL_MAXHP") {
-					pool.Add( new MUL_MAXHP( func.F(0) ) );
-				}
-				else if( func.sFunc  == "MUL_MAXMP") {
-					pool.Add( new MUL_MAXMP( func.F(0) ) );
-				}
-				else if( func.sFunc  == "MUL_MAXSP") {
-					pool.Add( new MUL_MAXSP( func.F(0) ) );
-				}
-				
-				else if( func.sFunc  == "MUL_MPCOST") {
-					pool.Add( new MUL_MPCOST( func.F(0) ) );
-				}
-				// immune
-				else if( func.sFunc  == "IMMUNE") {
-					pool.Add( new IMMUNE( func.I(0) ) );
-				}
-                        
-
-				//=============== Tag 
-				else if ( func.sFunc  == "TAG_CHARGE") {  // 
-					pool.Add( new TAG_CHARGE( ) );
-				}
-				else if( func.sFunc  == "TAG_NODIE") {  // 不死身
-					pool.Add( new TAG_NODIE( ) );
-				}
-				else if( func.sFunc  == "TAG_SILENCE") {  // 被封言
-					pool.Add( new TAG_SILENCE( ) );
-				}
+                //=============== Tag 
+                else if (func.sFunc == "TAG_UNDEAD")// 除非隊長死否則無限重生
+                {  // 
+                    pool.Add(new TAG_UNDEAD());
+                }
+                else if (func.sFunc == "TAG_CHARGE") // 突襲移動. no block
+                {
+                    pool.Add(new TAG_CHARGE());
+                }
+                else if (func.sFunc == "TAG_NODIE")
+                {  // 不死身
+                    pool.Add(new TAG_NODIE());
+                }
+                else if (func.sFunc == "TAG_SILENCE")
+                {    // can't  skill
+                    pool.Add(new TAG_SILENCE());
+                }
                 else if (func.sFunc == "TAG_PEACE")
                 {  // 中立
                     pool.Add(new TAG_PEACE());
                 }
-                
-				//=============== fight status
-				else if ( func.sFunc  == "IS_HIT") { // 必HIT
-					pool.Add( new IS_HIT( ) );
-					//pool.Add( new IS_UNIT_STATUS( _FIGHTSTATE._DODGE ) );
-				}
-				else if( func.sFunc  == "IS_DODGE") { // 必閃
-					pool.Add( new IS_DODGE( ) );
-					//pool.Add( new IS_UNIT_STATUS( _FIGHTSTATE._DODGE ) );
-				}
-				else if( func.sFunc  == "IS_CIRIT") {  // 
-					pool.Add( new IS_CIRIT( ) );
-				}
-				else if( func.sFunc  == "IS_MERCY") {  //手加減
-					pool.Add( new IS_MERCY( ) );
-				}
-				else if( func.sFunc  == "IS_GUARD") { // 被防衛
-					pool.Add( new IS_GUARD( ) );
-				}
-				else if( func.sFunc  == "IS_THROUGH") { // 攻擊穿透
-					pool.Add( new IS_THROUGH( ) );
-				}
-				else if( func.sFunc  == "IS_MISS") { // 失誤
-					pool.Add( new IS_MISS( ) );
-				}
-				else if( func.sFunc  == "IS_COMBO") { // 失誤
-					pool.Add( new IS_COMBO( ) );
-				}
-				else if( func.sFunc  == "IS_BROKEN") { // 破防
-					pool.Add( new IS_BROKEN( ) );
-				}
-				else if( func.sFunc  == "IS_RETURN") { // 傷害轉彈
-					pool.Add( new IS_RETURN( ) );
-				}
-				else if( func.sFunc  == "IS_COPY") { // 
-					pool.Add( new IS_COPY( ) );
-				}
-				else if( func.sFunc  == "IS_TWICE") { // 
-					pool.Add( new IS_TWICE( ) );
-				}
-                else if (func.sFunc == "IS_NODMG")
+                else if (func.sFunc == "TAG_TRIGGER")// 是機關。不執行AI
+                {  // 中立
+                    pool.Add(new TAG_TRIGGER());
+                }
+                else if (func.sFunc == "TAG_BLOCKITEM")// 不能變更裝備道具           
+                {  // 中立
+                    pool.Add(new TAG_BLOCKITEM());
+                }
+
+                //=============== fight status
+                else if (func.sFunc == "IS_HIT")
+                { // 必HIT
+                    pool.Add(new IS_HIT());
+                    //pool.Add( new IS_UNIT_STATUS( _FIGHTSTATE._DODGE ) );
+                }
+                else if (func.sFunc == "IS_DODGE")
+                { // 必閃
+                    pool.Add(new IS_DODGE());
+                    //pool.Add( new IS_UNIT_STATUS( _FIGHTSTATE._DODGE ) );
+                }
+                else if (func.sFunc == "IS_CIRIT")
+                {  // 
+                    pool.Add(new IS_CIRIT());
+                }
+                else if (func.sFunc == "IS_MERCY")
+                {  //手加減
+                    pool.Add(new IS_MERCY());
+                }
+                else if (func.sFunc == "IS_GUARD")
+                { // 被防衛
+                    pool.Add(new IS_GUARD());
+                }
+                else if (func.sFunc == "IS_THROUGH")
+                { // 攻擊穿透
+                    pool.Add(new IS_THROUGH());
+                }
+                else if (func.sFunc == "IS_MISS")
+                { // 失誤
+                    pool.Add(new IS_MISS());
+                }
+                else if (func.sFunc == "IS_COMBO")
+                { // 失誤
+                    pool.Add(new IS_COMBO());
+                }
+                else if (func.sFunc == "IS_BROKEN")
+                { // 破防
+                    pool.Add(new IS_BROKEN());
+                }
+                else if (func.sFunc == "IS_RETURN")
+                { // 傷害轉彈
+                    pool.Add(new IS_RETURN());
+                }
+                else if (func.sFunc == "IS_COPY")
+                { // 複製對方出手招式
+                    pool.Add(new IS_COPY());
+                }
+                else if (func.sFunc == "IS_TWICE")
+                { // 打兩下
+                    pool.Add(new IS_TWICE());
+                }
+                else if (func.sFunc == "IS_NODMG")//免疫傷害
                 {
                     pool.Add(new IS_NODMG());
+                }
+                else if (func.sFunc == "IS_ANTIFLY")//免疫飛行道具
+                {
+                    pool.Add(new IS_ANTIFLY());
+                }
+                else {
+
+                    Debug.LogFormat(" unknow effect {0}", func.sFunc);
                 }
 
                 //===

@@ -155,8 +155,9 @@ public class Panel_Talk : MonoBehaviour
         }
         if (Tex_Flip != null)
         {
-            Tex_Flip.SetActive(false);
-        }
+            NGUITools.Destroy(Tex_Flip);
+            Tex_Flip = null;
+       } 
 
     }
 

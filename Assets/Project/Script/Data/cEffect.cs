@@ -35,7 +35,7 @@ public class cEffect
 	}
 
 
-	public virtual void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr ){ }
+	public virtual void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr, int nNum = 1) { }
 	
 																											// SKill
 	public virtual void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ }				//  casr/ hit event will run this
@@ -114,6 +114,32 @@ public class ADDACTTIME_E: cEffect
 			list.Add( new cHitResult( cHitResult._TYPE._ACTTIME , Defer.n_Ident , iValue, nAtkId , nSkillID , Defer.n_Ident  ) );
 		}
 	}
+}
+
+
+public class ADD_DEF_I : cEffect
+{
+    public ADD_DEF_I(float f, int i) { fValue = f; iValue = i; }
+
+    override public void _Do(cUnitData Atker, cUnitData Defer, ref List<cHitResult> list)
+    {
+        int def =  (int)(Atker.GetMaxDef() * fValue) + iValue;
+
+        list.Add(new cHitResult(cHitResult._TYPE._DEF, Atker.n_Ident, def, Atker.n_Ident, nSkillID, nBuffID));
+    }
+}
+public class ADD_DEF_E : cEffect
+{
+    public ADD_DEF_E(float f, int i) { fValue = f; iValue = i; }
+
+    override public void _Do(cUnitData Atker, cUnitData Defer, ref List<cHitResult> list)
+    {
+        if (Defer != null)
+        {
+            int def = (int)(Defer.GetMaxDef() * fValue) + iValue;
+            list.Add(new cHitResult(cHitResult._TYPE._DEF, Defer.n_Ident, def, Atker.n_Ident, nSkillID, nBuffID));
+        }
+    }
 }
 
 public class SKILL_EFFECT : cEffect
@@ -197,6 +223,38 @@ public class AURABUFF_E: cEffect
 	}
 }
 
+public class BATTLE_ARRAY : cEffect
+{
+    public int nRange;
+   // public int nCondBuff;
+    public BATTLE_ARRAY(int range,  int buffid) { nRange = range; iValue = buffid; }
+    //public int iValue ;
+    override public void _Do(cUnitData Atker, cUnitData Defer, ref List<cHitResult> list)
+    {
+        if (Atker != null)
+        {
+            if (GameDataManager.Instance != null)
+            {
+                foreach (KeyValuePair<int, cUnitData> pair in GameDataManager.Instance.UnitPool)
+                {
+                    if (BattleManager.CanPK(Atker, pair.Value) == false)
+                    {
+                        if (Atker.Dist(pair.Value) <= nRange)
+                        {
+                            if( pair.Value.Buffs.HaveBuff( nBuffID))
+                            {
+                                //雙方都獲得陣行BUFF
+                               // list.Add(new cHitResult(cHitResult._TYPE._ADDBUFF, Atker.n_Ident, iValue, Atker.n_Ident, nSkillID, pair.Key)); // slef will in unit pool dist check
+                                list.Add(new cHitResult(cHitResult._TYPE._ADDBUFF, pair.Key, iValue, Atker.n_Ident, nSkillID, pair.Key));
+                                //list.Add(new cHitResult(cHitResult._TYPE._ADDBUFF, pair.Key, iValue, Atker.n_Ident, nSkillID, pair.Key));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
 // Hit effect
 public class HITBUFF_I: cEffect
@@ -329,21 +387,23 @@ public class ADD_MAR: cEffect
 {
 	public ADD_MAR( float f ){		fValue = f;	}
 
-	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
-		attr.f_MAR += fValue;
-	}
+	override public void _Attr( cUnitData Atker , cUnitData Defer,  ref cAttrData attr  ,int nNum = 1 )
+    { 
+		attr.f_MAR += (fValue * nNum);
+    }
 }
 
 public class ADD_MAR_DIFF: cEffect
 {
 	public ADD_MAR_DIFF( float f , int i ){	 fValue = f; iValue = i;	}
-	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
+	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr, int nNum = 1)
+    { 
 		if ((Atker != null) && ( Defer != null)) {
 			float fDelt = Defer.GetMar( true ) - Atker.GetMar( true );
 			fDelt *=fValue;
 			// this is final
-			attr.f_MAR += fDelt;
-			attr.f_MAR += iValue;
+			attr.f_MAR += (fDelt* nNum);
+			attr.f_MAR += (iValue* nNum);
 		}
 	}
 }
@@ -352,13 +412,14 @@ public class ADD_ATTACK_DIFF: cEffect
 {
 	public ADD_ATTACK_DIFF( float f , int i ){	fValue = f;	iValue = i; }
 
-	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
+	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr, int nNum = 1)
+    { 
 		if ((Atker != null) && ( Defer != null)) {
 			float fDelt = Defer.GetBaseAttack() - Atker.GetBaseAttack();
 			fDelt *=fValue;
 			// this is final
-			attr.n_ATK += (int)fDelt;
-			attr.n_ATK += iValue;
+			attr.n_ATK += (int)(fDelt* nNum);
+			attr.n_ATK += (iValue* nNum);
 		}
 	}
 }
@@ -367,9 +428,10 @@ public class ADD_ATTACK: cEffect
 {
 	public ADD_ATTACK( int i ){	iValue = i;	}
 	
-	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
+	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr, int nNum = 1)
+    { 
 		if ((Atker != null)) {
-			attr.n_ATK += iValue;
+			attr.n_ATK += (iValue* nNum);
 		}
 	}
 }
@@ -378,36 +440,20 @@ public class ADD_MAXDEF: cEffect
 {
 	public ADD_MAXDEF( int i ){	iValue = i;	}
 	
-	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
+	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr, int nNum = 1)
+    { 
 		if ((Atker != null)) {
-			attr.n_DEF += iValue;
-		}
+			attr.n_DEF += (iValue * nNum);
+        }
 	}
 }
 
-public class ADD_DEF_I: cEffect
-{
-	public ADD_DEF_I( int i ){	iValue = i;	}
-	
-	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 
-			list.Add( new cHitResult( cHitResult._TYPE._DEF , Atker.n_Ident , iValue , Atker.n_Ident, nSkillID , nBuffID   ) );
-	}
-}
-public class ADD_DEF_E: cEffect
-{
-	public ADD_DEF_E( int i ){	iValue = i;	}
-	
-	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 
-		if (Defer != null) {
-			list.Add( new cHitResult( cHitResult._TYPE._DEF , Defer.n_Ident , iValue , Atker.n_Ident, nSkillID , nBuffID   ) );
-		}
-	}
-}
 public class ADD_POWER: cEffect
 {
 	public ADD_POWER( int i ){	iValue = i;	}
 	
-	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
+	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr, int nNum = 1)
+    { 
 		if ((Atker != null)) {
 			attr.n_POW += iValue;
 		}
@@ -418,7 +464,8 @@ public class ADD_MAXHP: cEffect
 {
 	public ADD_MAXHP( int i ){	iValue = i;	}
 	
-	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
+	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr, int nNum = 1)
+    { 
 		if ((Atker != null)) {
 			attr.n_HP += iValue;
 		}
@@ -427,7 +474,8 @@ public class ADD_MAXHP: cEffect
 public class ADD_MAXMP: cEffect
 {
 	public ADD_MAXMP( int i ){	iValue = i;	}
-	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
+	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr, int nNum = 1)
+    { 
 		if ((Atker != null)) {
 			attr.n_MP += iValue;
 		}
@@ -437,7 +485,8 @@ public class ADD_MAXSP: cEffect
 {
 	public ADD_MAXSP( int i ){	iValue = i;	}
 	
-	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
+	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr, int nNum = 1)
+    { 
 		if ((Atker != null)) {
 			attr.n_SP += iValue;
 		}
@@ -450,7 +499,8 @@ public class ADD_MOVE: cEffect
 {
 	public ADD_MOVE( int n ){		nValue = n;	}
 	public int nValue ;
-	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
+	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr, int nNum = 1)
+    { 
 		attr.n_MOV += nValue;
 	}
 }
@@ -539,26 +589,29 @@ public class MUL_DROP: cEffect
 {
 	public MUL_DROP( float v ){ fValue = v;}
 //	public float fValue ;	
-	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
-		attr.fDropRate += fValue;
-	}
+	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr, int nNum = 1 )
+    { 
+		attr.fDropRate += (fValue * nNum);
+    }
 }
 
 public class MUL_BRUST: cEffect
 {
 	public MUL_BRUST( float v ){ fValue = v;}
 //	public float fValue ;	
-	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
-		attr.fBurstRate += fValue;
-	}
+	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr, int nNum = 1)
+    { 
+		attr.fBurstRate += (fValue * nNum);
+    }
 }
 
 public class MUL_DAMAGE: cEffect
 {
 	public MUL_DAMAGE( float v ){fValue = v;}
 //	public float fValue ;	
-	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
-		attr.fDamageRate += fValue;
+	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr, int nNum = 1)
+    { 
+		attr.fDamageRate += (fValue* nNum);
 	}
 }
 
@@ -566,17 +619,19 @@ public class MUL_ATTACK: cEffect
 {
 	public MUL_ATTACK( float v ){fValue = v;}
 //	public float fValue ;	
-	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
-		attr.fAtkRate += fValue;
+	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr, int nNum = 1)
+    { 
+		attr.fAtkRate += (fValue* nNum);
 	}
 }
 
-public class MUL_DEF: cEffect
+public class MUL_MAXDEF: cEffect
 {
-	public MUL_DEF( float v ){fValue = v;}
+	public MUL_MAXDEF( float v ){fValue = v;}
 //	public float fValue ;	
-	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
-		attr.fDefRate += fValue;
+	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr, int nNum = 1)
+    { 
+		attr.fDefRate += (fValue* nNum);
 	}
 }
 
@@ -584,39 +639,43 @@ public class MUL_POWER: cEffect
 {
 	public MUL_POWER( float v ){fValue = v;}
 //	public float fValue ;	
-	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
-		attr.fPowRate += fValue;
-	}
+	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr, int nNum = 1)
+    { 
+		attr.fPowRate += (fValue * nNum);
+    }
 }
 
 public class MUL_MAXHP: cEffect
 {
 	public MUL_MAXHP( float v ){ fValue = v; }
 	
-	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
+	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr, int nNum = 1)
+    { 
 		if ((Atker != null)) {
-			attr.fHpRate += fValue;
-		}
+			attr.fHpRate += (fValue * nNum);
+        }
 	}
 }
 public class MUL_MAXMP: cEffect
 {
 	public MUL_MAXMP( float v ){ fValue = v; }
 	
-	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
+	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr, int nNum = 1)
+    { 
 		if ((Atker != null)) {
-			attr.fMpRate += fValue;
-		}
+			attr.fMpRate += (fValue * nNum);
+        }
 	}
 }
 public class MUL_MAXSP: cEffect
 {
 	public MUL_MAXSP( float v ){ fValue = v; }
 	
-	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
+	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr, int nNum = 1)
+    { 
 		if ((Atker != null)) {
-			attr.fSpRate += fValue;
-		}
+			attr.fSpRate += (fValue * nNum);
+        }
 	}
 }
 //====  Drain ===
@@ -624,18 +683,20 @@ public class MUL_DRAINHP: cEffect
 {
 	public MUL_DRAINHP( float v ){ fValue = v;}
 //	public float fValue ;	
-	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
-		attr.fDrainHpRate += fValue;
-	}
+	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr, int nNum = 1)
+    { 
+		attr.fDrainHpRate += (fValue * nNum);
+    }
 }
 
 public class MUL_DRAINMP: cEffect
 {
 	public MUL_DRAINMP( float v ){ fValue = v;}
 //	public float fValue ;	
-	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
-		attr.fDrainMpRate += fValue;
-	}
+	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr, int nNum = 1)
+    { 
+		attr.fDrainMpRate += (fValue * nNum);
+    }
 }
 
 
@@ -644,9 +705,10 @@ public class MUL_MPCOST: cEffect
 {
 	public MUL_MPCOST( float v ){ fValue = v;}
 //	public float fValue ;
-	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr  ){ 
-		attr.fMpCostRate += fValue;
-	}
+	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr, int nNum = 1)
+    { 
+		attr.fMpCostRate += (fValue * nNum);
+    }
 }
 
 
@@ -660,6 +722,16 @@ public class MUL_MPCOST: cEffect
 //}
 
 //==== tag status ==
+public class TAG_UNDEAD : cEffect
+{
+    public TAG_UNDEAD() { }
+
+    override public bool _IsTag(_UNITTAG tag)
+    {
+        return (_UNITTAG._UNDEAD == tag);
+    }				// check user in one status		
+}
+
 public class TAG_CHARGE: cEffect
 {
 	public TAG_CHARGE(  ){ }	
@@ -693,6 +765,26 @@ public class TAG_PEACE : cEffect
         return (_UNITTAG._PEACE == tag);
     }				// check user in one status		
 }
+public class TAG_TRIGGER : cEffect
+{
+    public TAG_TRIGGER() { }
+
+    override public bool _IsTag(_UNITTAG tag)
+    {
+        return (_UNITTAG._TRIGGER == tag);
+    }				// check user in one status		
+}
+public class TAG_BLOCKITEM : cEffect
+{
+    public TAG_BLOCKITEM() { }
+
+    override public bool _IsTag(_UNITTAG tag)
+    {
+        return (_UNITTAG._BLOCKITEM == tag);
+    }				// check user in one status		
+}
+
+
 //==== immune buff==
 public class IMMUNE: cEffect
 {
@@ -818,6 +910,15 @@ public class IS_NODMG : cEffect
     }				// check user in one status		
 }
 
+public class IS_ANTIFLY : cEffect
+{
+    public IS_ANTIFLY() { }
+
+    override public bool _IsStatus(_FIGHTSTATE st)
+    {
+        return (_FIGHTSTATE._ANTIFLY == st);
+    }				// check user in one status		
+}
 
 //==========================================================================
 // use to cache condition sctipr parser result

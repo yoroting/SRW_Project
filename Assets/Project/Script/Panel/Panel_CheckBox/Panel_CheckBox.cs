@@ -15,8 +15,9 @@ public class Panel_CheckBox : MonoBehaviour {
 	}
 
 	void OnEnable(){
-
-	}
+        btnOK.SetActive(true);
+        btnNO.SetActive(true);
+    }
 
 
 	// Update is called once per frame
@@ -37,8 +38,21 @@ public class Panel_CheckBox : MonoBehaviour {
 		SetMsg ( "直接結束本回合？" );
 	}
 
+    public void SetMessageCheck( int nMsgID )
+    {   
+        string msg = MyTool.GetMsgText(nMsgID);
+        SetMsg(msg);
+    }
 
-	public void SetMsg( string msg ){
+    public void SetMessageCheck(string sMsg)
+    {
+        nCheckType = 3;
+
+        btnNO.SetActive(false);
+        SetMsg(sMsg);
+    }
+
+    public void SetMsg( string msg ){
 		MyTool.SetLabelText ( lblText , msg );
 	}
 

@@ -192,18 +192,39 @@ public class MyTool {
 
     public static string GetUIText( int nID )
 	{
-
-		return "null";
+        DataRow row = ConstDataManager.Instance.GetRow("UI_MESSAGE", nID);
+        if (row != null)
+        {
+            string msg = row.Field<string>("s_UI_WORDS");
+            return msg;
+        }
+        return "null";
+       
 	}
 
 	public static string GetSYSText( int nID )
 	{
-		
-		return "null";
-	}
+        DataRow row = ConstDataManager.Instance.GetRow("MESSAGE", nID);
+        if (row != null)
+        {
+            string msg = row.Field<string>("s_MESSAGE");
+            return msg;
+        }
+        return "null";
+    }
 
+    public static string GetMsgText(int nID)
+    {
+        DataRow row = ConstDataManager.Instance.GetRow("MESSAGE", nID);
+        if (row != null)
+        {
+            string msg = row.Field<string>("s_MESSAGE");      
+            return msg;
+        }
+        return "null";
+    }
 
-	public static bool CheckInPosPool( List < iVec2 > lst , iVec2 v )
+    public static bool CheckInPosPool( List < iVec2 > lst , iVec2 v )
 	{
 		if (lst == null || v == null)
 			return false;
@@ -623,19 +644,24 @@ public class MyTool {
 	public static string GetCMDNameByID( _CMD_ID eID )
 	{
 		int nID = (int)eID;
-	//	if (ConstDataManager.Instance != null ) {
-			DataRow row = ConstDataManager.Instance.GetRow("UI_MESSAGE", nID); 	
-			/// if(row != null)	
-			///		Debug.Log(row.Field<string>("s_UI_WORDS"));
-			/// 
-		//	DataRow row = ConstDataManager.Instance.GetRow<DataRow> ("UI_MESSAGE", nID);
-			if (row != null) {
-				string s = row.Field< string > ("s_UI_WORDS");
-				if (s != null) {
-					return s;
-				}
-			}
-	//	}
+        string s = GetUIText(nID);
+        if( s != "null"){
+            return s;
+        }
+
+	////	if (ConstDataManager.Instance != null ) {
+	//		DataRow row = ConstDataManager.Instance.GetRow("UI_MESSAGE", nID); 	
+	//		/// if(row != null)	
+	//		///		Debug.Log(row.Field<string>("s_UI_WORDS"));
+	//		/// 
+	//	//	DataRow row = ConstDataManager.Instance.GetRow<DataRow> ("UI_MESSAGE", nID);
+	//		if (row != null) {
+	//			string s = row.Field< string > ("s_UI_WORDS");
+	//			if (s != null) {
+	//				return s;
+	//			}
+	//		}
+	////	}
 		return eID.ToString ();
 	}
 	public static _CMD_ID GetCMDIDByName( string name )

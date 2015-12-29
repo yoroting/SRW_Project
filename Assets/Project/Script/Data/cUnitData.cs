@@ -29,6 +29,7 @@ public enum _FIGHTSTATE
 	_COPY		,	// 複製目標的招式
 	_TWICE		,  // 打兩下
     _NODMG      ,  // no dmg
+    _ANTIFLY    ,  // 免疫暗器
 	// 
 	_KILL		,  //本次戰鬥有殺人
 }
@@ -42,6 +43,7 @@ public enum _UNITTAG
 	_SILENCE = 4 ,    // can't  skill
     _PEACE  = 5 ,     // 不能被瞄準攻擊
     _TRIGGER = 6 ,    // 是機關。不執行AI
+    _BLOCKITEM=7,       // 不能變更裝備道具
 
 }
 //
