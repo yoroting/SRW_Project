@@ -153,18 +153,13 @@ public class Panel_Talk : MonoBehaviour
         {
             Tex_BackGround.SetActive(false); // not clear background for flip
         }
-        if (Tex_Flip != null)
-        {
-            NGUITools.Destroy(Tex_Flip);
-            Tex_Flip = null;
-       } 
+        ReleaseFlip();
 
     }
 
     public void OnDisable()
     {
-        if (Tex_BackGround != null)
-        { }
+        ReleaseFlip();        
     }
 
     public void FadeIn()
@@ -303,7 +298,7 @@ public class Panel_Talk : MonoBehaviour
 
 
         //if (IsAllEnd())
-        Panel_StageUI.Instance.m_bIsSkipMode = true;
+        Panel_StageUI.Instance.SetScriptSkipMode( true );
 
         while (m_nScriptIdx < m_cScript.GetMaxCol())
         {
@@ -311,7 +306,7 @@ public class Panel_Talk : MonoBehaviour
         }
         EndTalk();
 
-        Panel_StageUI.Instance.m_bIsSkipMode = false;
+        Panel_StageUI.Instance.SetScriptSkipMode( false);
     }
 
     // close talk panel
@@ -482,6 +477,8 @@ public class Panel_Talk : MonoBehaviour
 
     public void SetBackground(int nBackID)
     {
+        ReleaseFlip();
+
         if (Tex_BackGround == null)
             return;
 
@@ -572,21 +569,20 @@ public class Panel_Talk : MonoBehaviour
         {
             //      NGUITools.SetActive(Tex_BackGround , false);
         }
-
+        ReleaseFlip();
         // destory all avg obj
+
+        m_bIsFadining = false;
+
+    }
+
+    public void ReleaseFlip()
+    {
         if (Tex_Flip != null)
         {
-            // switch bg
-          //  if (Tex_BackGround != null)
-          //  {
-                  NGUITools.Destroy(Tex_Flip);
-          //  }
-            //   Tex_BackGround = Tex_Flip;
+            NGUITools.Destroy(Tex_Flip);
             Tex_Flip = null;
-
-
         }
-        m_bIsFadining = false;
 
     }
 
@@ -651,7 +647,10 @@ public class Panel_Talk : MonoBehaviour
 
         //ParserScript ( m_cScript.GetTextLine( m_nScriptIdx++ )  );
         MyScript.Instance.ParserScript(m_cScript.GetTextLine(m_nScriptIdx++));
-
+        if (Panel_StageUI.Instance!=null)
+        {
+            Panel_StageUI.Instance.ClearSciptLineCacheData();
+        }
         m_bClickScript = false;
     }
 

@@ -182,7 +182,7 @@ public class Panel_Talk_bak : MonoBehaviour {
 
 
 		//if (IsAllEnd())
-		Panel_StageUI.Instance.m_bIsSkipMode = true;
+		Panel_StageUI.Instance.SetScriptSkipMode( true);
 
 		while( m_nScriptIdx< m_cScript.GetMaxCol ())
 		{
@@ -190,7 +190,7 @@ public class Panel_Talk_bak : MonoBehaviour {
 		}
 		EndTalk();
 
-		Panel_StageUI.Instance.m_bIsSkipMode = false;
+		Panel_StageUI.Instance.SetScriptSkipMode( false);
 	}
 
 	// close talk panel
@@ -393,7 +393,8 @@ public class Panel_Talk_bak : MonoBehaviour {
 	// script go next line
 	public void NextLine( )
 	{
-		if (m_nScriptIdx >= m_cScript.GetMaxCol ())
+        
+        if (m_nScriptIdx >= m_cScript.GetMaxCol ())
 		{
 			EndTalk();
 			return;
@@ -402,7 +403,12 @@ public class Panel_Talk_bak : MonoBehaviour {
 		//ParserScript ( m_cScript.GetTextLine( m_nScriptIdx++ )  );
 		MyScript.Instance.ParserScript ( m_cScript.GetTextLine( m_nScriptIdx++ )   );
 
-		m_bClickScript = false;
+        if (Panel_StageUI.Instance != null)
+        {
+            Panel_StageUI.Instance.ClearSciptLineCacheData();
+        }
+
+        m_bClickScript = false;
 	}
 
 	// talk 

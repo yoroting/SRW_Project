@@ -2042,7 +2042,17 @@ public class Panel_StageUI : MonoBehaviour
 
 	}
 
+    // talk ui will run script line by line , need a func to be called to clear cache
+    public void ClearSciptLineCacheData()
+    {
+        tmpScriptMoveEnd.Clear();
+    }
 
+    public void SetScriptSkipMode( bool bEnable )
+    {
+        m_bIsSkipMode = bEnable;
+        ClearSciptLineCacheData();
+    }
 
 	public GameObject CreateUnitByUnitData( cUnitData data )
 	{
@@ -3266,7 +3276,10 @@ public class Panel_StageUI : MonoBehaviour
 			}
 
 			if( MyScript.bParsing ){
-				tmpScriptMoveEnd.Add( pos );				// script 用的單位移動 mrak pool 防止 script 讓不同單位移動到 同樣座標
+                if (!m_bIsSkipMode)
+                {
+                    tmpScriptMoveEnd.Add(pos);              // script 用的單位移動 mrak pool 防止 script 讓不同單位移動到 同樣座標
+                }
 			}
 //			// check if need trace unit 
 //			Vector3 v = unit.transform.localPosition;
@@ -3496,7 +3509,7 @@ public class Panel_StageUI : MonoBehaviour
 				foreach( cUnitData d in pool )
 				{
 				
-					act.AddHitResult (new cHitResult (cHitResult._TYPE._BEHIT, d.n_Ident , nSkillID )); // for hit fx
+				//	act.AddHitResult (new cHitResult (cHitResult._TYPE._BEHIT, d.n_Ident , nSkillID )); // for hit fx
 					
 					
 					act.AddHitResult( BattleManager.CalSkillHitResult(pAtker , d , nSkillID  ) );

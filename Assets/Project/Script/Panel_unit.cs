@@ -2109,22 +2109,27 @@ public class Panel_unit : MonoBehaviour {
 		}
 	}
 
-	public void PlayFX( int nFXID )
+	public void PlayFX( int nFXID , bool bForce= true )
 	{
         if (nFXID == 0)
             return;
 
+        if(bForce == true)
+        {
+            GameSystem.PlayFX(this.gameObject, nFXID);
+            return;
+        }
+
+        // normal play fx will auto queue
         if (FxObj != null) {
+
             WaitFxPool.Add(nFXID);
             // push to 
 
             return;
         }
 
-
-		GameObject obj  = GameSystem.PlayFX( this.gameObject , nFXID );
-		FxObj = obj;
-
+        FxObj = GameSystem.PlayFX( this.gameObject , nFXID );
 	}
 
     public bool ProcessHitResult()
@@ -2262,7 +2267,7 @@ public class Panel_unit : MonoBehaviour {
                     }
                     //if( nhitFX == 0)
                     //	nhitFX = 203;
-                    PlayFX( nhitFX );
+                    PlayFX( nhitFX , false );
 
                 }
                 break;

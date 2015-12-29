@@ -54,8 +54,29 @@ public class MyScript {
 					return false;
 				}	
 			}
-			// 以上 可以在 戰鬥中檢查
-			else { 
+            else if (func.sFunc == "AFTER")
+            {
+                if (ConditionAfter(func.I(0), func.I(1), func.I(2)) == false)
+                {
+                    return false;
+                }
+            }
+            else if (func.sFunc == "DONE")
+            {
+                if (ConditionDone(func.I(0), func.I(1)) == false)
+                {
+                    return false;
+                }
+            }
+            else if ((func.sFunc == "NODONE") || (func.sFunc == "NO"))  //檢查的事件沒有完成
+            {
+                if (ConditionNotDone(func.I(0)) == false)
+                {
+                    return false;
+                }
+            }
+            // 以上 可以在 戰鬥中檢查
+            else { 
 				// 以下 不可在 戰鬥中檢查
 				if (BattleManager.Instance.IsBattlePhase ())
 					return false;// don't check in battle
@@ -96,27 +117,7 @@ public class MyScript {
 						return false;
 					}				
 				}		
-				else if( func.sFunc == "AFTER"  )
-				{
-                    if ( ConditionAfter( func.I(0),func.I(1), func.I(2)) == false )
-					{
-						return false;
-					}				
-				}
-				else if( func.sFunc == "DONE"  )
-				{
-					if( ConditionDone( func.I(0),func.I(1) ) == false )
-					{
-						return false;
-					}				
-				}
-				else if( (func.sFunc  == "NODONE") || (func.sFunc=="NO") )  //檢查的事件沒有完成
-				{
-					if( ConditionNotDone( func.I(0) ) == false )
-					{
-						return false;
-					}	
-				}
+				
 				else if( func.sFunc == "DIST"  )
 				{
 					if( ConditionDist( func.I(0),func.I(1) ,func.I(2) ) == false )
