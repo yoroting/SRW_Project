@@ -14,12 +14,14 @@ public class MobAI  {
 
 	public static void Run( Panel_unit mob )
 	{
-		int ident = mob.Ident ();
+        long tick = System.DateTime.Now.Ticks;
+
+        int ident = mob.Ident ();
 		cUnitData mobdata = GameDataManager.Instance.GetUnitDateByIdent ( ident );
 		int nSkillID = -1;		// -1 - no attack
 		// select a skill
 		if( mobdata.eComboAI == _AI_COMBO._NORMAL ){
-			nSkillID = SelSkill( mob.pUnitData );
+            nSkillID = 0; //  SelSkill( mob.pUnitData );
 		}
 
 		int nMove = mobdata.GetMov ()  ; 
@@ -52,7 +54,15 @@ public class MobAI  {
 				ActionManager.Instance.CreateWaitingAction (ident);
 			break;
 		}
-		return ;
+
+        // record ai time
+        if (Debug.isDebugBuild == true)
+        {
+            long during = System.DateTime.Now.Ticks - tick;
+            Debug.LogFormat("unit({0}-{1}) MobAI spend ticket:{2}ms ", mob.pUnitData.n_CharID, mob.pUnitData.n_Ident, during / 10000);
+        }
+
+        return;
 
 		// old method .give up 
 //		// find a pos 
@@ -889,12 +899,15 @@ public class MobAI  {
 	// tool finc
 	public static List<iVec2> FindPathToTarget( Panel_unit Mob , Panel_unit Target  , int nMove , int nRange =1 )
 	{
-		if( Mob == null || Target == null ){
+		if( Mob == null || Target == null || nMove ==0 )
+        {
 			return null;
 		}
-		//int ident = Mob.Ident();
 
-		List< iVec2 > nearList = Target.Loc.AdjacentList ( nRange ); // the 4 pos can't stand ally
+        long tick = System.DateTime.Now.Ticks;
+        //int ident = Mob.Ident();
+
+        List< iVec2 > nearList = Target.Loc.AdjacentList ( nRange ); // the 4 pos can't stand ally
 		Dictionary< iVec2 , int > distpool = new Dictionary< iVec2 , int > ();
 		foreach (iVec2 v in nearList) {
 			if (Panel_StageUI.Instance.CheckIsEmptyPos (v) == true) {// 目標 pos 不可以站人 也不可以是ZOC
@@ -902,10 +915,11 @@ public class MobAI  {
 				distpool.Add (v, d );
 			}
 		}
+       
 
-		// dist sort
-		// try each path until can atk
-		var itemsdist = from pair2 in distpool orderby pair2.Value ascending select pair2;
+        // dist sort
+        // try each path until can atk
+        var itemsdist = from pair2 in distpool orderby pair2.Value ascending select pair2;
 		foreach (KeyValuePair<iVec2 , int> pair2 in itemsdist) {
 
 		//	nDist = pair2.Value; // try other
@@ -944,11 +958,19 @@ public class MobAI  {
 				}
 			}
 		}
+        if (Debug.isDebugBuild == true)
+        {
+            long during = System.DateTime.Now.Ticks - tick;
+            Debug.LogFormat("Mob{0} FindPathToTarget {1} phase try each unit can atk spend {2}ms ", Mob.CharID, Target.CharID, during / 10000);
+            tick = System.DateTime.Now.Ticks;
+        }
         // all path failed. return null
         //try method to find path move near to target
         // find target to atk
-       
-        for (int i = 2; i < 999; i++)
+        // move == 0 時將造成這一段 太多的無意義收尋。所以 應該在最上方 move==0 return
+
+        int c = 0;
+        for (int i = 2; i < 999; i++) // range
         {
             // pool.Clear();
             List<iVec2> pool = Panel_StageUI.Instance.Grids.GetRangePool(Target.Loc, i, i - 1);
@@ -963,12 +985,14 @@ public class MobAI  {
                 }
 
                 List<iVec2>  path = Panel_StageUI.Instance.PathFinding(Mob , Mob.Loc, pos, 999); // get a vaild path to run
-                                                                                                 //path = FindPathToPos(mob, pos, nMove, nSkillRange);
+                c++;                                                                          //path = FindPathToPos(mob, pos, nMove, nSkillRange);
                 int nLimit = nMove;
-                if (path != null && (path.Count > 0))
+                if (path != null && (path.Count > 0)) // 這邊有路徑就算數了
                 {
-                    if (path != null && path.Count > 0)
-                    {
+                    //底層 A*問題，避免起點也記入
+                   // if (path != null && path.Count > 0)
+                   // {
+                   // 
                         iVec2 loc = path[0];
                         if (Mob.Loc.Collision(loc))
                         {
@@ -978,7 +1002,7 @@ public class MobAI  {
                         {
                             nLimit = nMove;  // this will happen?
                         }
-                    }
+                   // }
 
                     path = MyTool.CutList<iVec2>(path, nLimit);// mob movement; .. A-star 運算時自己原座標也算一個點所以這邊加給他
 
@@ -998,8 +1022,18 @@ public class MobAI  {
                             return path;
                         }
                     }
+
+                //  int num = path.Count;
+                //  Debug.LogFormat("Mob{0} FindPathToTarget{1} POS({2}, {3}) with num {4}", Mob.CharID, Target.CharID , pos.X , pos.Y  , num);
+
                 }
             }           
+        }
+        if (Debug.isDebugBuild == true)
+        {
+            float during = System.DateTime.Now.Ticks - tick;
+            Debug.LogFormat("Mob{0} FindPathToTarget {1} phase find a path to atk unit can atk spend {2} ms , {3} times", Mob.CharID, Target.CharID, during / 10000, c);
+            tick = System.DateTime.Now.Ticks;
         }
         return null;
 

@@ -101,7 +101,7 @@ public class MyScript {
                         Debug.LogErrorFormat("Script check error in {0} with param1 = {1}", func.sFunc , func.I(0) );
                     }
 
-					if( ConditionUnitDead( (_CAMP)func.I(0), func.I(1) ) == false )
+					if( ConditionUnitDead( func.I(0), func.I(1) ) == false )
 					{
 						return false;
 					}				
@@ -279,7 +279,7 @@ public class MyScript {
 //		return true;
 	}
 
-    public bool ConditionUnitDead( _CAMP nCampID ,int nCharID )
+    public bool ConditionUnitDead( int nCampID ,int nCharID )
 	{
 		// assign id
 //		cCamp camp = GameDataManager.Instance.GetCamp( (_CAMP)nCampID );
@@ -303,11 +303,14 @@ public class MyScript {
 		}
 
 		foreach( KeyValuePair< int , cUnitData > pair in GameDataManager.Instance.UnitPool ){
-			if( pair.Value.eCampID != nCampID )
+            if (pair.Value.n_CharID != nCharID)
+                continue;
+            if (nCampID == -1) {
+                return false;
+            }            
+
+            if ( pair.Value.eCampID != (_CAMP)nCampID )
 				continue;
-			if( pair.Value.n_CharID != nCharID )
-				continue;
-			
 			return false;
 		}  
 		return true;
