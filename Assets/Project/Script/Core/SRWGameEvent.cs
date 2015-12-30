@@ -32,9 +32,11 @@ public class StagePopUnitEvent: GameEvent {
 	public int nX	   ; 
 	public int nY	   ; 
 	public int nValue1 ; 
-	public int nValue2 ; 
-	
-	public StagePopUnitEvent(){
+	public int nValue2 ;
+    public int nRadius;
+
+
+    public StagePopUnitEvent(){
 		name = Name;		// important.  must have this line as key
 	}
 }

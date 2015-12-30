@@ -54,6 +54,13 @@ public class MyScript {
 					return false;
 				}	
 			}
+            else if (func.sFunc == "BUFF")
+            {
+                if ( ConditionUnitBuff( func.I(0),func.I(1), func.I(2) ) == false)
+                {
+                    return false;
+                }
+            }
             else if (func.sFunc == "AFTER")
             {
                 if (ConditionAfter(func.I(0), func.I(1), func.I(2)) == false)
@@ -341,7 +348,7 @@ public class MyScript {
 		//	if( GameDataManager.Instance.nRoundStatus != 0 )
 		//		return false;
 		if (GameDataManager.Instance.nRound >= nID) {
-			if( nCamp == (int)GameDataManager.Instance.nActiveCamp ){
+			if( (nCamp==-1) ||  (nCamp == (int)GameDataManager.Instance.nActiveCamp) ){
 				return true;
 			}
 		}
@@ -430,6 +437,20 @@ public class MyScript {
 		}
 		return false;
 	}
+
+    public bool ConditionUnitBuff(int nChar1, int buffid , int num )
+    {
+        foreach (KeyValuePair<int, cUnitData> pair in GameDataManager.Instance.UnitPool)
+        {
+            if (pair.Value.n_CharID != nChar1)
+                continue;
+
+            if (pair.Value.Buffs.HaveBuff(buffid, num)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public bool ConditionInRect( int nChar1 ,int x1 ,int y1 , int x2 , int y2  ) 
 	{
@@ -559,7 +580,9 @@ public class MyScript {
 				evt.nX		= func.I( 1 );
 				evt.nY		= func.I( 2 );
 				evt.nValue1 = func.I( 3 ); // pop num
-				Panel_StageUI.Instance.OnStagePopUnitEvent( evt ); 
+                evt.nRadius = func.I(4); // random range
+
+                Panel_StageUI.Instance.OnStagePopUnitEvent( evt ); 
 				//GameEventManager.DispatchEvent ( evt );
 			}
 			else if( func.sFunc == "POPMOB" || func.sFunc == "POPM" )
@@ -570,8 +593,9 @@ public class MyScript {
 				evt.nX		= func.I( 1 );
 				evt.nY		= func.I( 2 );
 				evt.nValue1 = func.I( 3 ); // pop num
-				//test code 
-				Panel_StageUI.Instance.OnStagePopUnitEvent( evt ); 
+                evt.nRadius = func.I(4); // random range
+                //test code 
+                Panel_StageUI.Instance.OnStagePopUnitEvent( evt ); 
 				//GameEventManager.DispatchEvent ( evt );
 			}
 			else if( func.sFunc == "POPFRIEND" || func.sFunc == "POPF" )
@@ -582,8 +606,9 @@ public class MyScript {
 				evt.nX		= func.I( 1 );
 				evt.nY		= func.I( 2 );
 				evt.nValue1 = func.I( 3 ); // pop num
-				//test code 
-				Panel_StageUI.Instance.OnStagePopUnitEvent( evt ); 
+                evt.nRadius = func.I(4); // random range
+                //test code 
+                Panel_StageUI.Instance.OnStagePopUnitEvent( evt ); 
 				//GameEventManager.DispatchEvent ( evt );
 			}
 			else if( func.sFunc == "POP" )
@@ -594,7 +619,8 @@ public class MyScript {
 				evt.nX		= func.I( 2 );
 				evt.nY		= func.I( 3 );
 				evt.nValue1 = func.I( 4 ); // pop num
-				Panel_StageUI.Instance.OnStagePopUnitEvent( evt ); 
+                evt.nRadius = func.I(5); // random range
+                Panel_StageUI.Instance.OnStagePopUnitEvent( evt ); 
 				//GameEventManager.DispatchEvent ( evt );
 
 			}

@@ -3108,8 +3108,18 @@ public class Panel_StageUI : MonoBehaviour
 		if (Evt.nValue1 > 1)
 			nPopNum = Evt.nValue1;
 
-		for (int i=0; i < nPopNum; i++) {
-			cUnitData cData = GameDataManager.Instance.StagePopUnit( Evt.nCharID,Evt.eCamp, Evt.nX, Evt.nY , StageData.n_MOB_LV ); 
+        for (int i=0; i < nPopNum; i++) {
+            int nX = Evt.nX;
+            int nY = Evt.nY;
+
+            if (Evt.nRadius > 0)
+            {
+                nX = Random.Range(nX - Evt.nRadius, nX + Evt.nRadius);
+                nY = Random.Range(nY - Evt.nRadius, nY + Evt.nRadius);
+            }
+
+
+            cUnitData cData = GameDataManager.Instance.StagePopUnit( Evt.nCharID,Evt.eCamp, nX, nY , StageData.n_MOB_LV ); 
 
 			GameObject obj = CreateUnitByUnitData (  cData );
 			if (obj != null) {		

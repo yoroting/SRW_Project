@@ -246,11 +246,15 @@ public class cBuffs
 		return false;
 	}
 
-	public bool HaveBuff( int nBuffID ){
+    // 檢查是否有指定 BUFF 並層數
+	public bool HaveBuff( int nBuffID , int nNum = 0 ){
 		foreach (KeyValuePair< int , cBuffData>  pair in Pool) {
 			if( pair.Value.nID ==  nBuffID )
 			{
-				return true;
+                if (pair.Value.nNum >= nNum)
+                {
+                    return true;
+                }
 			}
 
 		}

@@ -455,7 +455,7 @@ public class ADD_POWER: cEffect
 	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr, int nNum = 1)
     { 
 		if ((Atker != null)) {
-			attr.n_POW += iValue;
+			attr.n_POW += (iValue* nNum);
 		}
 	}
 }
@@ -467,7 +467,7 @@ public class ADD_MAXHP: cEffect
 	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr, int nNum = 1)
     { 
 		if ((Atker != null)) {
-			attr.n_HP += iValue;
+			attr.n_HP += (iValue* nNum);
 		}
 	}
 }
@@ -477,7 +477,7 @@ public class ADD_MAXMP: cEffect
 	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr, int nNum = 1)
     { 
 		if ((Atker != null)) {
-			attr.n_MP += iValue;
+			attr.n_MP += (iValue* nNum);
 		}
 	}
 }
@@ -488,7 +488,7 @@ public class ADD_MAXSP: cEffect
 	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr, int nNum = 1)
     { 
 		if ((Atker != null)) {
-			attr.n_SP += iValue;
+			attr.n_SP += (iValue* nNum);
 		}
 	}
 }
@@ -501,7 +501,7 @@ public class ADD_MOVE: cEffect
 	public int nValue ;
 	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr, int nNum = 1)
     { 
-		attr.n_MOV += nValue;
+		attr.n_MOV += (nValue* nNum);
 	}
 }
 
