@@ -3638,7 +3638,7 @@ public class Panel_StageUI : MonoBehaviour
 				foreach( cUnitData d in pool )
 				{
 
-					act.AddHitResult (new cHitResult (cHitResult._TYPE._BEHIT, d.n_Ident , nSkillID )); // for hit fx
+					//act.AddHitResult (new cHitResult (cHitResult._TYPE._BEHIT, d.n_Ident , nSkillID )); // for hit fx
 
 
 					act.AddHitResult( BattleManager.CalSkillHitResult(pAtker , d , nSkillID  ) );

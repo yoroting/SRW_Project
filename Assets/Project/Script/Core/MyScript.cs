@@ -1174,10 +1174,10 @@ public class MyScript {
                 {
                     pool.Add(new BATTLE_ARRAY(func.I(0), func.I(1)));
                 }
-                else if (func.sFunc == "SKILL_EFFECT")
-                {
-                    pool.Add(new SKILL_EFFECT(func.I(0)));
-                }
+                //else if (func.sFunc == "SKILL_EFFECT")
+                //{
+                //    pool.Add(new SKILL_EFFECT(func.I(0)));
+                //}
                 // Hit effect
                 else if (func.sFunc == "HITBUFF_I")
                 {

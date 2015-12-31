@@ -212,16 +212,14 @@ public class Panel_unit : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		// STOP UPDATE OTHER ACTION
-		if (IsAnimate () == true)
-			return;
-
 
         // process show value 
-        if (ProcessHitResult())
+        if (ProcessHitResult())         // this wlll cause playfx
             return;
 
-
+        // STOP UPDATE OTHER ACTION
+        if (IsAnimate () == true) // this line will wait all FX played
+			return;
 
         //if (WaitMsgPool.Count > 0 && (Time.time> m_fNextMsgTime) )
         //{
@@ -1124,6 +1122,7 @@ public class Panel_unit : MonoBehaviour {
 			return;
 		} else if (MyTool.IsSkillTag (skillid, _SKILLTAG._AOEMISSILE))  { // 
 			AOEMissileAttack (skillid, GridX, GridY);
+            return;
 		}
 		// exec result directly
 		ActionManager.Instance.ExecActionHitResult ( CurAction );
@@ -1640,7 +1639,7 @@ public class Panel_unit : MonoBehaviour {
 			BattleManager.Instance.ShowBattleResValue( this.gameObject , nValue , nMode );
 		}
         // show dmg effect
-        m_fNextMsgTime = Time.time + 0.7f; // next can play time
+        m_fNextMsgTime = Time.time + 0.5f; // next can play time
     }
 
 	public void SetShake()
@@ -2267,7 +2266,7 @@ public class Panel_unit : MonoBehaviour {
                     }
                     //if( nhitFX == 0)
                     //	nhitFX = 203;
-                    PlayFX( nhitFX , false );
+                    PlayFX( nhitFX , true ); // hit effect is direct play
 
                 }
                 break;

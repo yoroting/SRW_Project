@@ -726,37 +726,46 @@ public partial class BattleManager
 				
 				// check if base dodge happen
 				RollBaseDodge ( Atker , Defer );
-
-
 				// 
 				nGuarderID = Defer.Buffs.GetGuarder();
-				//if( Defer.IsStates( _FIGHTSTATE._GUARD ) )
-				if( nGuarderID != 0)
-				{
-					// change atk target to guard
-					cUnitData Guarder = GameDataManager.Instance.GetUnitDateByIdent( nGuarderID );
-					if(	Guarder!= null  ){
-						Guarder.SetFightAttr( atk , 0 ); // maybe change to def skill
+                //if( Defer.IsStates( _FIGHTSTATE._GUARD ) )
+                if (nGuarderID != 0)
+                {
+                    // change atk target to guard
+                    cUnitData Guarder = GameDataManager.Instance.GetUnitDateByIdent(nGuarderID);
+                    if (Guarder != null)
+                    {
+                        Guarder.SetFightAttr(atk, 0); // maybe change to def skill
 
-						action.AddHitResult(  new cHitResult( cHitResult._TYPE._GUARD , Guarder.n_Ident , def ) ) ;
+                        action.AddHitResult(new cHitResult(cHitResult._TYPE._GUARD, Guarder.n_Ident, def));
 
-						if( !AffectPool.Contains( Guarder ) ){
-							AffectPool.Add( Guarder );
-						}
+                        if (!AffectPool.Contains(Guarder))
+                        {  // this is call ed clear affect. but cause be hit issue
+                            AffectPool.Add(Guarder);
+                        }
 
-						cRealTarData = Guarder;		// change defer
-						nRealTarId   = Guarder.n_Ident;
-					}
+                        cRealTarData = Guarder;     // change defer
+                        nRealTarId = Guarder.n_Ident;
+                    }
 
-				}
+                }
+                else
+                {
 
-				action.AddHitResult(  CalAttackResult( atk , nRealTarId , IsDefMode() ) ) ;
+                    action.AddHitResult(CalAttackResult(atk, nRealTarId, IsDefMode()));
+                }
 			}
-			action.AddHitResult( CalSkillHitResult(  Atker , cRealTarData  , nSkillID ) );
+
+            if (nGuarderID != 0) {
+                // guard will be cacul in affect pool phase
+            }
+            else
+            {
+                action.AddHitResult(CalSkillHitResult(Atker, cRealTarData, nSkillID));
+            }
 		}
 
 		// aoe attack
-
 
 		if (Atker.IsStates( _FIGHTSTATE._THROUGH ) ) {
 			GetThroughPool( Atker , Defer ,nSkillID , gridX , gridY , ref AffectPool );
@@ -775,34 +784,91 @@ public partial class BattleManager
 			}
 			int 	  nRealTarId   = unit.n_Ident;
 			cUnitData cRealTarData = unit;
-
-			if( bIsDamage ){
+   //         nGuarderID = 0;
+            if ( bIsDamage ){
 				// change atk target to guard
-				nGuarderID = 0;
-				cUnitData Guarder = GameDataManager.Instance.GetUnitDateByIdent( nGuarderID );
-				if(	Guarder!= null  ){
-					Guarder.SetFightAttr( atk , 0 ); // maybe change to def skill
-					
-					action.AddHitResult(  new cHitResult( cHitResult._TYPE._GUARD , Guarder.n_Ident , def ) ) ;
-					
-					if( !AffectPool.Contains( Guarder ) ){
-						AffectPool.Add( Guarder );
-					}
-					
-					cRealTarData = Guarder;		// change defer
-					nRealTarId   = Guarder.n_Ident;
-				}
+				// can't guard aoe affect
 
-				unit.SetFightAttr( Atker.n_Ident , 0 );
-				ShowDefAssist( unit.n_Ident , false );
-				action.AddHitResult(  CalAttackResult( atk , nRealTarId ,true , true ) ) ;// always def at this time
+				//cUnitData Guarder = GameDataManager.Instance.GetUnitDateByIdent( nGuarderID );
+    //            if (Guarder != null)
+    //            {
+    //                Guarder.SetFightAttr(atk, 0); // maybe change to def skill
+
+    //                action.AddHitResult(new cHitResult(cHitResult._TYPE._GUARD, Guarder.n_Ident, def));
+
+    //                if (!AffectPool.Contains(Guarder))
+    //                {
+    //                    AffectPool.Add(Guarder);
+    //                }
+
+    //                cRealTarData = Guarder;     // change defer
+    //                nRealTarId = Guarder.n_Ident;
+    //            }
+    //            else
+    //            {
+                    unit.SetFightAttr(Atker.n_Ident, 0);
+                    ShowDefAssist(unit.n_Ident, false);
+                    action.AddHitResult(CalAttackResult(atk, nRealTarId, true, true));// always def at this time
+    //            }
 			}
-			action.AddHitResult( CalSkillHitResult(  Atker , cRealTarData  ,nSkillID ) );		
+            
+            action.AddHitResult(CalSkillHitResult(Atker, cRealTarData, nSkillID));
+            
 		}
-	}
+        // Link Skill
+        ProcessLinkSkill(atk, def, Atker, Defer , nSkillID , gridX , gridY, ref action ,ref AffectPool);
 
-	//drop after dead event complete
-	public bool HaveDrop()
+    }
+
+    public void ProcessLinkSkill(int atk, int def, cUnitData Atker, cUnitData Defer, int nSkillID, int gridX, int gridY, ref uAction action, ref List<cUnitData> AffectPool)
+    {
+        SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(nSkillID);
+        if (skl != null)
+        {
+            if (string.IsNullOrEmpty(skl.s_LINK_SKILL))
+                return;
+            if (skl.s_LINK_SKILL == "null" || skl.s_LINK_SKILL == "NULL")
+                return;
+            
+                // cTextArray Script = new cTextArray();
+                // 		Script.SetText (strEffect);
+            string[] links = skl.s_LINK_SKILL.Split(";".ToCharArray());
+            foreach (string s in links)
+            {
+                    int id ;
+                    if (int.TryParse(s, out id))
+                    {
+                        if (id == 0 || (id == nSkillID))
+                            continue;
+
+                        uAction pAct = ActionManager.Instance.CreateHitAction(Atker.n_Ident, 0, 0, id);
+                        if (pAct!= null)
+                        {
+                            List<cUnitData> pool = new List<cUnitData>();
+
+                            Atker.DoCastEffect(id, Defer, ref pAct.HitResult); // cast effect
+
+                            // def ?
+
+                            GetAtkHitResult(atk, def, Atker, Defer, id, gridX, gridY, ref pAct, ref pool);
+
+                            foreach(cUnitData data in pool)
+                            {
+                                if(AffectPool.Contains( data ) == false  )
+                                {
+                                    AffectPool.Add( data );
+                                }
+                            }
+                        }
+                     //   AddTag((_UNITTAG)tag);
+                    }
+            }
+        }
+    }
+
+
+    //drop after dead event complete
+    public bool HaveDrop()
 	{
 		return ( nDropExpPool.Count > 0 ) ;
 	}
@@ -1720,7 +1786,7 @@ public partial class BattleManager
 							pAtker.AddStates (_FIGHTSTATE._DEAD);
 						}
 					}
-					resPool.Add (new cHitResult (cHitResult._TYPE._HP, nAtker, nAtkHp));
+//					resPool.Add (new cHitResult (cHitResult._TYPE._HP, nAtker, nAtkHp));
 				}
 			}
 		}

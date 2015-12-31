@@ -142,43 +142,51 @@ public class ADD_DEF_E : cEffect
     }
 }
 
-public class SKILL_EFFECT : cEffect
-{
-    public SKILL_EFFECT(int nSkillID) { iValue = nSkillID; }
-    //public int iValue ;
+//public class SKILL_EFFECT : cEffect
+//{
+//    public SKILL_EFFECT(int nSkillID) { iValue = nSkillID; }
+//    //public int iValue ;
 
-    override public void _Do(cUnitData Atker, cUnitData Defer, ref List<cHitResult> list)
-    {
-        if (Defer != null)
-        {
-           // if (Defer.IsStates(_FIGHTSTATE._DODGE))
-            //    return;
+//    override public void _Do(cUnitData Atker, cUnitData Defer, ref List<cHitResult> list)
+//    {
+//        if (Defer != null)
+//        {
 
-            //	list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF ,Defer.n_Ident , nBuffID ) );
-            int nAtkId = 0; if (Atker != null) nAtkId = Atker.n_Ident;
-            // cast eff
-            cSkillData skilldata = MyTool.GetSkillData(iValue);
-            if (skilldata != null)
-            {
-                skilldata.DoCastEffect(Atker, Defer, ref list );
-            }
+//  //          uAction pAct = ActionManager.Instance.CreateHitAction(Atker.n_Ident , 0, 0, iValue);
+////            if (pAct!= null )
+//            {
+////                BattleManager.Instance.GetAtkHitResult(Atker, Defer , iValue , 0 , 0 , ref pAct) , ;
+//            }
+
+
+//            // if (Defer.IsStates(_FIGHTSTATE._DODGE))
+//            //    return;
+
+//            //	list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF ,Defer.n_Ident , nBuffID ) );
+//            //int nAtkId = 0; if (Atker != null) nAtkId = Atker.n_Ident;
+//            //// cast eff
+//            //cSkillData skilldata = MyTool.GetSkillData(iValue);
+//            //if (skilldata != null)
+//            //{
+//            //    skilldata.DoCastEffect(Atker, Defer, ref list );
+//            //}
            
-            //list.Add(new cHitResult(cHitResult._TYPE._ACTTIME, Defer.n_Ident, iValue, nAtkId, nSkillID, Defer.n_Ident));
-        }
-    }
-    override public void _Hit(cUnitData Atker, cUnitData Defer, ref List<cHitResult> list)
-    {
-        if (Atker != null)
-        {
-            // hit effect
-            List<cHitResult> l = BattleManager.CalSkillHitResult(Atker, Defer, iValue);
-            foreach (cHitResult res in l)
-            {
-                list.Add(res);
-            }
-        }
-    }
-}
+//            //list.Add(new cHitResult(cHitResult._TYPE._ACTTIME, Defer.n_Ident, iValue, nAtkId, nSkillID, Defer.n_Ident));
+//        }
+//    }
+//    override public void _Hit(cUnitData Atker, cUnitData Defer, ref List<cHitResult> list)
+//    {
+//        if (Atker != null)
+//        {
+//            // hit effect
+//  //          List<cHitResult> l = BattleManager.CalSkillHitResult(Atker, Defer, iValue);
+////            foreach (cHitResult res in l)
+//            {
+//                //list.Add(res);
+//            }
+//        }
+//    }
+//}
 
 //aura
 public class AURABUFF_I: cEffect

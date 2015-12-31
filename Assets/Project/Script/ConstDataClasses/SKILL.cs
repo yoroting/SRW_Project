@@ -36,5 +36,5 @@ public class SKILL : ConstDataRow<SKILL>
 	public float f_DEF;
 	public float f_POW;
 	public int n_HITBACK;
-	public int n_LINK_SKILL;
+	public string s_LINK_SKILL;
 }
