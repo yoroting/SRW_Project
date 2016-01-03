@@ -786,7 +786,9 @@ public class MyScript {
 					evt.nAtkCharID = func.I(0);
 					evt.nDefCharID = func.I(1);
 					evt.nAtkSkillID = func.I(2);
-					Panel_StageUI.Instance.OnStageBattleAttackEvent( evt  ); 
+                    evt.nNum        = func.I(3);
+
+                Panel_StageUI.Instance.OnStageBattleAttackEvent( evt  ); 
 					//GameEventManager.DispatchEvent ( evt  );
 			
 			}

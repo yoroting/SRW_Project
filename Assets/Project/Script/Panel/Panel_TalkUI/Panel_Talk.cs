@@ -676,6 +676,8 @@ public class Panel_Talk : MonoBehaviour
         TalkSetCharEvent Evt = evt as TalkSetCharEvent;
         if (Evt == null)
             return;
+        // close type      
+
         SetChar(Evt.nType, Evt.nChar);
 
     }
@@ -893,8 +895,20 @@ public class Panel_Talk : MonoBehaviour
 
     public void SetChar(int nType, int nCharID)
     {
+        SRW_AVGObj obj;
+        if (m_idToFace.TryGetValue(nType , out obj)  )
+        {
+            if (obj != null && (obj.CharID != nCharID) )
+            {
+                obj.ZoomOut();
+                m_idToFace.Remove(nType);
+            }
+
+        }
+        
+
         //SetTextBoxActive ( nType , true ); // need active first to awake() to do some thing
-        SRW_AVGObj obj = SelAVGObjByType(nType, nCharID);
+        obj = SelAVGObjByType(nType, nCharID);
         if (obj)
         {
             //			obj.ChangeFace (nCharID);

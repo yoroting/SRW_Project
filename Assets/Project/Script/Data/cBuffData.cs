@@ -175,8 +175,9 @@ public class cBuffs
 			if( Panel_StageUI.Instance ){
 				Panel_unit unit = Panel_StageUI.Instance.GetUnitByIdent( Owner.n_Ident );
 				if( unit != null ){
-					unit.PlayFX( buff.n_BUFF_FXS  , false ) ;
-				}
+                    //unit.PlayFX( buff.n_BUFF_FXS  , false ) ;
+                    unit.PlayFX(buff.n_BUFF_FXS);
+                }
 			}
 		}
 

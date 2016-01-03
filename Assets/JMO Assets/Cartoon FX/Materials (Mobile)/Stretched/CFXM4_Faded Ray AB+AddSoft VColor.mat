@@ -40,7 +40,7 @@ Material:
       data:
         first:
           name: _InvFade
-        second: .732238829
+        second: .111111112
       data:
         first:
           name: _TexCoordScrollX
@@ -57,8 +57,8 @@ Material:
       data:
         first:
           name: _TintColor
-        second: {r: .5, g: .5, b: .5, a: .5}
+        second: {r: .111111112, g: .111111112, b: .111111112, a: .111111112}
       data:
         first:
           name: _BaseColor
-        second: {r: .313725501, g: .313725501, b: .313725501, a: .501960814}
+        second: {r: .111111112, g: .111111112, b: .111111112, a: .111111112}

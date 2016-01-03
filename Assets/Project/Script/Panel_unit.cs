@@ -59,7 +59,7 @@ public class Panel_unit : MonoBehaviour {
 
 
     List<cHitResult> WaitMsgPool;
-    List<int>        WaitFxPool;
+  //  List<int>        WaitFxPool;
 
     float m_fNextMsgTime;    
 
@@ -171,7 +171,7 @@ public class Panel_unit : MonoBehaviour {
         //			psr.sortingLayerName = "FX";
         //		}
 
-        WaitFxPool.Clear();
+     //   WaitFxPool.Clear();
         WaitMsgPool.Clear();
         m_fNextMsgTime = 0.0f;
 
@@ -183,7 +183,7 @@ public class Panel_unit : MonoBehaviour {
 		bOnSelected = false;
         //	nActionTime = 1;				// default is 1
         WaitMsgPool = new List<cHitResult>();
-        WaitFxPool = new List<int>(); 
+   //     WaitFxPool = new List<int>(); 
         m_fNextMsgTime = 0.0f;
         //ParticleSystemRenderer
 
@@ -236,23 +236,23 @@ public class Panel_unit : MonoBehaviour {
         if (BattleMsg.nMsgCount > 0)
 			return ;
 
-        // wait all fx played
-        if ( WaitFxPool.Count > 0 ) {
-            if (FxObj != null)
-            { // detect obj is end
-                // it will be null when fx playend and auto delete
-//                ParticleSystem ps = FxObj.GetComponent<ParticleSystem>();
-//                if (ps.IsAlive() == true)
-//                {
-                    //Debug.Log(" ps end ");
-//                }
-                return; // block
-            }
+//        // wait all fx played
+//        if ( WaitFxPool.Count > 0 ) {
+//            if (FxObj != null)
+//            { // detect obj is end
+//                // it will be null when fx playend and auto delete
+////                ParticleSystem ps = FxObj.GetComponent<ParticleSystem>();
+////                if (ps.IsAlive() == true)
+////                {
+//                    //Debug.Log(" ps end ");
+////                }
+//                return; // block
+//            }
 
-            PlayFX( WaitFxPool[0] );
-            WaitFxPool.RemoveAt(0);
-            return;
-        }
+//            PlayFX( WaitFxPool[0] );
+//            WaitFxPool.RemoveAt(0);
+//            return;
+//        }
 		// check if need to move
 		//if (IsMoveing () == false ) {			// check have null point
 		if ((PathList != null) && (PathList.Count > 0)) {
@@ -690,18 +690,32 @@ public class Panel_unit : MonoBehaviour {
 		return false;
 	}
 	public void MoveToTop( bool bTop = true){
-		UIPanel p = this.GetComponent<UIPanel> ();
-		if (p != null) {
-				if( bTop ){
-					p.depth += 10;
-				}
-				else{
-					p.depth -= 10;
-				}
 
-		}
+        UISprite p = this.GetComponent<UISprite>();
+        if (p != null) {
+            if (bTop)
+            {
+                p.depth += 10;
+            }
+            else
+            {
+                p.depth -= 10;
+            }
+        }
 
-	}
+
+        //UIPanel p = this.GetComponent<UIPanel> ();
+        //if (p != null) {
+        //		if( bTop ){
+        //			p.depth += 10;
+        //		}
+        //		else{
+        //			p.depth -= 10;
+        //		}
+
+        //}
+
+    }
 
 	public bool SetAction( uAction act )
 	{
@@ -2108,25 +2122,26 @@ public class Panel_unit : MonoBehaviour {
 		}
 	}
 
-	public void PlayFX( int nFXID , bool bForce= true )
+	public void PlayFX( int nFXID  )
 	{
         if (nFXID == 0)
             return;
 
-        if(bForce == true)
-        {
-            GameSystem.PlayFX(this.gameObject, nFXID);
-            return;
-        }
+        //本機制維護成本過高，暫時移除
+        //if(bForce == true)
+        //{
+        //    GameSystem.PlayFX(this.gameObject, nFXID);
+        //    return;
+        //}
 
-        // normal play fx will auto queue
-        if (FxObj != null) {
+        //// normal play fx will auto queue
+        //if (FxObj != null) {
 
-            WaitFxPool.Add(nFXID);
-            // push to 
+        //    WaitFxPool.Add(nFXID);
+        //    // push to 
 
-            return;
-        }
+        //    return;
+        //}
 
         FxObj = GameSystem.PlayFX( this.gameObject , nFXID );
 	}
@@ -2266,7 +2281,7 @@ public class Panel_unit : MonoBehaviour {
                     }
                     //if( nhitFX == 0)
                     //	nhitFX = 203;
-                    PlayFX( nhitFX , true ); // hit effect is direct play
+                    PlayFX( nhitFX ); // hit effect is direct play
 
                 }
                 break;

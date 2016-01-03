@@ -1786,7 +1786,7 @@ public partial class BattleManager
 							pAtker.AddStates (_FIGHTSTATE._DEAD);
 						}
 					}
-//					resPool.Add (new cHitResult (cHitResult._TYPE._HP, nAtker, nAtkHp));
+					resPool.Add (new cHitResult (cHitResult._TYPE._HP, nAtker, nAtkHp));
 				}
 			}
 		}

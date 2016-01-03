@@ -2682,9 +2682,9 @@ public class Panel_StageUI : MonoBehaviour
 			}
 			else if( i == 2 )
 			{
-				pool.Add (to.MoveXY (1, 1));		pool.Add (to.MoveXY (1, -1));		pool.Add (to.MoveXY (-1, 1));		pool.Add (to.MoveXY (-1, -1));
-				pool.Add (to.MoveXY (2, 0));		pool.Add (to.MoveXY (0, 2));		pool.Add (to.MoveXY (-2, 0));		pool.Add (to.MoveXY (0, -2));
-
+                pool.Add(to.MoveXY(1, 1)); pool.Add(to.MoveXY(1, -1)); pool.Add(to.MoveXY(-1, 1)); pool.Add(to.MoveXY(-1, -1));
+                pool.Add(to.MoveXY(2, 0)); pool.Add(to.MoveXY(0, 2)); pool.Add(to.MoveXY(-2, 0)); pool.Add(to.MoveXY(0, -2));
+                
 			}
 			else {
 				pool = Grids.GetRangePool( to , i , i-1 );
@@ -3406,145 +3406,165 @@ public class Panel_StageUI : MonoBehaviour
 		if (Evt == null)
 			return;
 
-	
-		// attack 
+        int nNum = Evt.nNum;
+        if (nNum == 0)
+        {
+         //   nNum = 1;
+        }
+        // attack 
 
-		Panel_unit pAtkUnit = GetUnitByCharID ( Evt.nAtkCharID );
+      //  Panel_unit pAtkUnit = GetUnitByCharID ( Evt.nAtkCharID );
 		Panel_unit pDefUnit = GetUnitByCharID ( Evt.nDefCharID );
-		if (pAtkUnit == null || pDefUnit == null)
+		if (pDefUnit == null)
 			return;
 
-		cUnitData pAtker = pAtkUnit.pUnitData;
+	//	cUnitData pAtker = pAtkUnit.pUnitData;
 		cUnitData pDefer = pDefUnit.pUnitData;
 
-		int nAtkId = pAtkUnit.Ident ();
+//		int nAtkId = pAtkUnit.Ident ();
 		int nDefId = pDefUnit.Ident ();
 		int nSkillID = Evt.nAtkSkillID;
 		int nRange = 1;
-//		int nHitBack = 0;
+
 		if (Evt.nAtkSkillID != 0) {
 			SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(Evt.nAtkSkillID); 
 			if( skl != null ){
 				nRange = skl.n_RANGE;
-//				nHitBack = skl.n_HITBACK;
 			}
 		}
-		// show skill name
+
+        int count = 0;
+        // show skill name
+        foreach (KeyValuePair<int, Panel_unit> pair in IdentToUnit)
+        {
+            if (pair.Value == null || pair.Value.CharID != Evt.nAtkCharID )
+                continue;
+            cUnitData pAtker = pair.Value.pUnitData;
+            int nAtkId = pair.Value.Ident();
+            // check if need move 
+            int nDist = pair.Value.Loc.Dist(pDefUnit.Loc);
+            if (nDist > nRange)
+            {
+
+                iVec2 last = FindEmptyPosToAttack(pDefUnit.Loc, pair.Value.Loc);
+
+                if (m_bIsSkipMode)
+                {
+                    // change pos directly 
+                    pair.Value.SetXY(last.X, last.Y);
+                }
+                else
+                {
+                    ActionManager.Instance.CreateMoveAction(pair.Value.Ident(), last.X, last.Y);
+                    MoveToGameObj(pair.Value.gameObject, false);
+                    TraceUnit(pair.Value);
+
+                    tmpScriptMoveEnd.Add(last ); // avoid double pos
+                    // add to tmp 
+                }
+            }
+            // skill hit effect
+            List<cUnitData> pool = new List<cUnitData>();
+            BattleManager.GetAffectPool(pAtker, pDefer, nSkillID, 0, 0, ref pool); // will convert inside
+
+            if ((pDefer != null) && pool.Contains(pDefer) == false)
+            {
+                pool.Add(pDefer);
+            }
+            if (m_bIsSkipMode)
+            {
+                // perform pos directly
+                // perform pos directly		
+                foreach (cUnitData d in pool)
+                {
+                    List<cHitResult> HitResult = BattleManager.CalSkillHitResult(pAtker, d, nSkillID);
+                    ActionManager.Instance.ExecActionHitResult(HitResult, m_bIsSkipMode);  // play directly without action to avoid 1 frame error
+                    ActionManager.Instance.ExecActionEndResult(HitResult, m_bIsSkipMode);
+                }
+
+            }
+            else
+            {
+                ActionManager.Instance.CreateCastAction(nAtkId, Evt.nAtkSkillID, nDefId);
+
+                // send attack
+                //Panel_StageUI.Instance.MoveToGameObj(pDefUnit.gameObject , false );  // move to def 
+                uAction act = ActionManager.Instance.CreateAttackAction(nAtkId, nDefId, Evt.nAtkSkillID);
+                if (act != null)
+                {
+                    //act.AddHitResult (new cHitResult (cHitResult._TYPE._HIT, nAtkId, Evt.nAtkSkillID));
+
+                    foreach (cUnitData d in pool)
+                    {
+                        act.AddHitResult(BattleManager.CalSkillHitResult(pAtker, d, nSkillID));
+                    }
+
+                }
+            }
+             // check break;
+            if (count++ >= nNum && nNum > 0) // nNum = -1 is all
+            {
+                break;
+            }
+        }
+
 
 
 		// check if need move 
-		int nDist = pAtkUnit.Loc.Dist (pDefUnit.Loc);
-		if (nDist > nRange) {
+		//int nDist = pAtkUnit.Loc.Dist (pDefUnit.Loc);
+		//if (nDist > nRange) {
 
-			iVec2 last = FindEmptyPosToAttack ( pDefUnit.Loc , pAtkUnit.Loc);
+		//	iVec2 last = FindEmptyPosToAttack ( pDefUnit.Loc , pAtkUnit.Loc);
 
-			if (m_bIsSkipMode)
-			{
-				// change pos directly 
-				pAtkUnit.SetXY( last.X , last.Y );
-			}
-			else{    
-				ActionManager.Instance.CreateMoveAction( pAtkUnit.Ident() , last.X , last.Y );	
-				MoveToGameObj( pAtkUnit.gameObject , false );
-				TraceUnit( pAtkUnit );
-			}
+		//	if (m_bIsSkipMode)
+		//	{
+		//		// change pos directly 
+		//		pAtkUnit.SetXY( last.X , last.Y );
+		//	}
+		//	else{    
+		//		ActionManager.Instance.CreateMoveAction( pAtkUnit.Ident() , last.X , last.Y );	
+		//		MoveToGameObj( pAtkUnit.gameObject , false );
+		//		TraceUnit( pAtkUnit );
+		//	}
+		//}
 
-//			List< iVec2> path =  MobAI.FindPathToTarget( pAtkUnit ,pDefUnit , 999  ); //GameScene.Instance.Grids.PathFinding( pAtkUnit.Loc , pDefUnit.Loc , 0  ); // no any block
-//			//PathFinding
-//			
-//			if( (path!=null) && (path.Count>=2) )  // Mob AI 找到的會是目標的周圍
-//			{
-//				iVec2 last = path[path.Count -1 ];
-//
-//				if (m_bIsSkipMode)
-//				{
-//					// change pos directly 
-//					pAtkUnit.SetXY( last.X , last.Y );
-//				}
-//				else 
-//				{
-//					ActionManager.Instance.CreateMoveAction(nAtkId, last.X , last.Y );	
-//					MoveToGameObj( pAtkUnit.gameObject , false );
-//					TraceUnit( pAtkUnit );
-//				}
-//			}
-
-			// send move act
-
-			//iVec2 tarPos =  FindEmptyPos( pDefUnit.Loc );
-			//ActionManager.Instance.CreateMoveAction( pAtkUnit.Ident() , tarPos.X , tarPos.Y );
-
-
-		}
-
-		List< cUnitData> pool = new List< cUnitData> ();
+		//List< cUnitData> pool = new List< cUnitData> ();
 		
-		//BattleManager.ConvertSkillTargetXY( pAtker , nSkillID , nDefId , ref nX , ref nY );
-		BattleManager.GetAffectPool (pAtker ,pDefer ,nSkillID, 0 ,0, ref pool ); // will convert inside
 		
-		if(  (pDefer!=null) && pool.Contains (pDefer) == false) {
-			pool.Add( pDefer );
-		}
+		//BattleManager.GetAffectPool (pAtker ,pDefer ,nSkillID, 0 ,0, ref pool ); // will convert inside
+		
+		//if(  (pDefer!=null) && pool.Contains (pDefer) == false) {
+		//	pool.Add( pDefer );
+		//}
 
 
 		// attak perform 
-		if (m_bIsSkipMode) {
-			 // perform pos directly
-			// perform pos directly		
-			foreach( cUnitData d in pool )
-			{
-				List<cHitResult> HitResult = BattleManager.CalSkillHitResult(pAtker , d , nSkillID  );
+		//if (m_bIsSkipMode) {
+		//	 // perform pos directly
+		//	// perform pos directly		
+		//	foreach( cUnitData d in pool )
+		//	{
+		//		List<cHitResult> HitResult = BattleManager.CalSkillHitResult(pAtker , d , nSkillID  );
+		//		ActionManager.Instance.ExecActionHitResult(HitResult ,m_bIsSkipMode );  // play directly without action to avoid 1 frame error
+		//		ActionManager.Instance.ExecActionEndResult(HitResult ,m_bIsSkipMode );
+		//	}
 
-				ActionManager.Instance.ExecActionHitResult(HitResult ,m_bIsSkipMode );  // play directly without action to avoid 1 frame error
-				ActionManager.Instance.ExecActionEndResult(HitResult ,m_bIsSkipMode );
-				
-				//					Panel_unit pUnit = GetUnitByIdent( d.n_Ident );
-				//					if( pUnit != null ){
-				//						iVec2 vFinal = SkillHitBack (pAtkUnit, pUnit, nHitBack);
-				//						if (vFinal != null) {
-				//							pDefUnit.SetXY( vFinal.X , vFinal.Y );
-				//						}
-				//					}
-			}
+		//} else {
+		//	ActionManager.Instance.CreateCastAction (nAtkId, Evt.nAtkSkillID, nDefId );
 
-		} else {
-			ActionManager.Instance.CreateCastAction (nAtkId, Evt.nAtkSkillID, nDefId );
+		//	// send attack
+		//	//Panel_StageUI.Instance.MoveToGameObj(pDefUnit.gameObject , false );  // move to def 
+		//	uAction act = ActionManager.Instance.CreateAttackAction (nAtkId, nDefId, Evt.nAtkSkillID);
+		//	if (act != null) {
+		//		//act.AddHitResult (new cHitResult (cHitResult._TYPE._HIT, nAtkId, Evt.nAtkSkillID));
 
-			// send attack
-			//Panel_StageUI.Instance.MoveToGameObj(pDefUnit.gameObject , false );  // move to def 
-			uAction act = ActionManager.Instance.CreateAttackAction (nAtkId, nDefId, Evt.nAtkSkillID);
-			if (act != null) {
-				//act.AddHitResult (new cHitResult (cHitResult._TYPE._HIT, nAtkId, Evt.nAtkSkillID));
+		//		foreach( cUnitData d in pool )
+		//		{	
+		//			act.AddHitResult( BattleManager.CalSkillHitResult(pAtker , d , nSkillID  ) );				
+		//		}
 
-				foreach( cUnitData d in pool )
-				{
-				
-				//	act.AddHitResult (new cHitResult (cHitResult._TYPE._BEHIT, d.n_Ident , nSkillID )); // for hit fx
-					
-					
-					act.AddHitResult( BattleManager.CalSkillHitResult(pAtker , d , nSkillID  ) );
-					
-					//					Panel_unit pUnit = GetUnitByIdent( d.n_Ident );
-					//					if( pUnit != null ){
-					//						iVec2 vFinal = SkillHitBack (pAtkUnit, pUnit, nHitBack);
-					//						if (vFinal != null) {
-					//							pDefUnit.SetXY( vFinal.X , vFinal.Y );
-					//						}
-					//					}
-				}
-
-
-//				act.AddHitResult (new cHitResult (cHitResult._TYPE._BEHIT, nDefId, Evt.nAtkSkillID));
-//
-//				//add skill perform
-//				if (nHitBack != 0) {
-//					iVec2 vFinal = SkillHitBack (pAtkUnit, pDefUnit, nHitBack);
-//					if (vFinal != null) {
-//						act.AddHitResult (new cHitResult (cHitResult._TYPE._HITBACK, nDefId, vFinal.X, vFinal.Y));
-//					}
-//				}
-			}
-		}
+		//	}
+		//}
 	}
 
 

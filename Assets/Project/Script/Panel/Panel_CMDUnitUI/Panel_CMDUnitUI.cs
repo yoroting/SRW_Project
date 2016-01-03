@@ -292,7 +292,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
        
         // fix pos
-        FixCmderPos();
+        FixCmderPos( );
 
 	}
 
@@ -586,13 +586,17 @@ public class Panel_CMDUnitUI : MonoBehaviour
     }
 
  
-    public void  FixCmderPos()
+    public void  FixCmderPos(  )
     {
-        if (pCmder == null) {
-            return;
+        Vector3 v;
+        if (pCmder == null)
+        {
+            return;            
         }
+        
         // check pos
-        Vector3 v = MyTool.LocToScreenX(pCmder.gameObject);
+         v = MyTool.LocToScreenX(pCmder.gameObject);
+        
         v *= MyTool.fScnRatio;
         int fhW = Config.WIDTH / 2;
         if (v.x < fhW )
