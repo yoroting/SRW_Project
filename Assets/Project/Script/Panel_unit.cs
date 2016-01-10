@@ -156,8 +156,7 @@ public class Panel_unit : MonoBehaviour {
 		UITweener[] tws = GetComponents< UITweener > ();
 		foreach (UITweener tw in tws) {
 			Destroy( tw );
-		}
-
+		}      
 
         //UIEventListener.Get ( this.gameObject ).onClick
         //		GameObject instance = ResourcesManager.CreatePrefabGameObj ( this.gameObject ,"FX/Cartoon FX/CFXM4 SmokePuff Ground B" );
@@ -171,7 +170,7 @@ public class Panel_unit : MonoBehaviour {
         //			psr.sortingLayerName = "FX";
         //		}
 
-     //   WaitFxPool.Clear();
+        //   WaitFxPool.Clear();
         WaitMsgPool.Clear();
         m_fNextMsgTime = 0.0f;
 
@@ -316,9 +315,15 @@ public class Panel_unit : MonoBehaviour {
 
 	void OnDisable () 
 	{
-		// bad place.. move to on dead dead 
-		// don't del unit during stage	
-	}
+        // bad place.. move to on dead dead 
+        // don't del unit during stage	
+        // del unit may have fx with it       
+        ParticleSystem[] psAry = this.gameObject.GetComponentsInChildren<ParticleSystem>(false);
+        foreach (ParticleSystem ps in psAry)
+        {
+            Destroy(ps);
+        }
+    }
 	public void SetUnitData( cUnitData data )
 	{
 		pUnitData = data;
@@ -1741,8 +1746,10 @@ public class Panel_unit : MonoBehaviour {
 	public void OnDead()
 	{	
 		bIsDeading = false;
-		// remove char
-		StageDelUnitByIdentEvent evt = new StageDelUnitByIdentEvent ();
+        // delete ps        
+
+        // remove char
+        StageDelUnitByIdentEvent evt = new StageDelUnitByIdentEvent ();
 		//evt.eCamp  = eCampID; // no need
 		evt.nIdent = this.Ident ();
 

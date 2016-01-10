@@ -881,6 +881,7 @@ public class Panel_Talk : MonoBehaviour
             {
                 if (pair.Value.CharID == nCharID)
                 {
+
                     //return pair.Value;
                     CloseBox(pair.Key, 0);
                     return;

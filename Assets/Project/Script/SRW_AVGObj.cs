@@ -164,7 +164,7 @@ public class SRW_AVGObj : MonoBehaviour {
                 TweenScale tw = TweenScale.Begin<TweenScale>(_FaceTexObj.gameObject, 0.2f);
                 if (tw != null) {
                     tw.SetStartToCurrentValue();
-                    tw.to = Vector3.one * 1.2f;
+                    tw.to = Vector3.one * 1.1f;
                 }
             }
 			else {

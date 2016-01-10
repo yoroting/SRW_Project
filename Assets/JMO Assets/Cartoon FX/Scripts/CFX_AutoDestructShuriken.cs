@@ -15,7 +15,8 @@ public class CFX_AutoDestructShuriken : MonoBehaviour
 
     void OnDisable()
     {
-        if (--nFXCount < 0) {
+        if (--nFXCount < 0)
+        {
             nFXCount = 0;       // over del by force release lock
         }
     }

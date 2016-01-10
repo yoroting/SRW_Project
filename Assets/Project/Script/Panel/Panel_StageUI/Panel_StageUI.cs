@@ -1569,18 +1569,43 @@ public class Panel_StageUI : MonoBehaviour
         if (bIsMoveToObj)
             return true;
 
+       // ParticleSystem[] cacheParticleList = this.gameObject.GetComponentsInChildren<ParticleSystem>();
+        //foreach (ParticleSystem ps in cacheParticleList)
+        //{
+        //    if (ps.isStopped == false )
+        //    {
+        //        ParticleSystem t = ps;
+        //        return true;
+        //    }
+        //}
+
         if (CFX_AutoDestructShuriken.nFXCount > 0)
         {
-            
             fFxPlayTime += Time.deltaTime;
-            if (fFxPlayTime >= 30.0f) {
-                Debug.LogError( "FX dead locked over 30sec . release it");
+            if (fFxPlayTime >= 300.0f)
+            {
+                Debug.LogError("FX dead locked over 30sec . release it");
                 CFX_AutoDestructShuriken.nFXCount = 0;
             }
+            // safe release
+            ParticleSystem[] cacheParticleList = this.gameObject.GetComponentsInChildren<ParticleSystem>();
+
+            foreach (ParticleSystem ps in cacheParticleList)
+            {
+                if (ps.isStopped || ps.isPaused)
+                {
+                    ParticleSystem t = ps;
+
+                }
+            }
+            //            if (cacheParticleList == null || cacheParticleList.Length <=0 )
+            //            {
+            //              CFX_AutoDestructShuriken.nFXCount = 0;
+            //           }
 
             return true;
         }
-    
+
 
         fFxPlayTime = 0.0f;
         // this is very slow for play
@@ -3206,16 +3231,11 @@ public class Panel_StageUI : MonoBehaviour
 		int nCharid = Evt.nCharID;
 
 		if (m_bIsSkipMode) {
-			DelUnit (nCharid);
-			return;
+//			DelUnit (nCharid);
+//			return;
 		}
  		// normal mode to play
 		LeaveUnit (nCharid);
-//		if (Evt.nDelType == 1) {
-//			LeaveUnit (nCharid);
-//		} else {
-//			DelUnit (nCharid);
-//		}
 
 	}
 
@@ -3411,6 +3431,8 @@ public class Panel_StageUI : MonoBehaviour
         {
          //   nNum = 1;
         }
+        int nResult = Evt.nResult;
+
         // attack 
 
       //  Panel_unit pAtkUnit = GetUnitByCharID ( Evt.nAtkCharID );
@@ -3496,6 +3518,10 @@ public class Panel_StageUI : MonoBehaviour
 
                     foreach (cUnitData d in pool)
                     {
+                        if ( 1 == nResult ) {
+                            act.AddHitResult(new cHitResult(cHitResult._TYPE._DODGE, d.n_Ident, 0));
+                        }
+
                         act.AddHitResult(BattleManager.CalSkillHitResult(pAtker, d, nSkillID));
                     }
 

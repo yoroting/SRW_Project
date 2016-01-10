@@ -233,7 +233,8 @@ public class StageBattleAttackEvent: GameEvent {
 	public int nDefCharID = 0;
 	public int nAtkSkillID = 0;
     public int nNum = 0;
-	public StageBattleAttackEvent(){
+    public int nResult = 0;
+    public StageBattleAttackEvent(){
 		name = Name;		// important.  must have this line as key
 	}
 }

@@ -253,7 +253,14 @@ public class GameSystem : MonoBehaviour {
 			return null;
 		}
 
+        // no use
+       
 
+//        ParticleSystem ps = instance.GetComponent<ParticleSystem>();
+//        if ( ps != null )
+//        {          
+//            ps.simulationSpace = ParticleSystemSimulationSpace.World; // always world mode to avoid issue
+        //}
 
         //SetParticleRenderLayer(instance, "UI");
         //	SetParticleRenderLayer ( instance ,sortLayer  );
