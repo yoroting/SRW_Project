@@ -1582,22 +1582,20 @@ public class Panel_StageUI : MonoBehaviour
         if (CFX_AutoDestructShuriken.nFXCount > 0)
         {
             fFxPlayTime += Time.deltaTime;
-            if (fFxPlayTime >= 300.0f)
+            if (fFxPlayTime >= 30.0f)
             {
                 Debug.LogError("FX dead locked over 30sec . release it");
                 CFX_AutoDestructShuriken.nFXCount = 0;
-            }
-            // safe release
-            ParticleSystem[] cacheParticleList = this.gameObject.GetComponentsInChildren<ParticleSystem>();
 
-            foreach (ParticleSystem ps in cacheParticleList)
-            {
-                if (ps.isStopped || ps.isPaused)
+                // log for debug
+                ParticleSystem[] cacheParticleList = this.gameObject.GetComponentsInChildren<ParticleSystem>();
+                foreach (ParticleSystem ps in cacheParticleList)
                 {
-                    ParticleSystem t = ps;
-
+                    Debug.LogErrorFormat( "dead lock particle with[ {0} ] " , ps.name );
                 }
             }
+            // safe release
+            
             //            if (cacheParticleList == null || cacheParticleList.Length <=0 )
             //            {
             //              CFX_AutoDestructShuriken.nFXCount = 0;

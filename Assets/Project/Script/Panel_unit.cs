@@ -318,11 +318,18 @@ public class Panel_unit : MonoBehaviour {
         // bad place.. move to on dead dead 
         // don't del unit during stage	
         // del unit may have fx with it       
-        ParticleSystem[] psAry = this.gameObject.GetComponentsInChildren<ParticleSystem>(false);
-        foreach (ParticleSystem ps in psAry)
-        {
-            Destroy(ps);
-        }
+//        ParticleSystem[] psAry = this.gameObject.GetComponentsInChildren<ParticleSystem>();
+//        foreach (ParticleSystem ps in psAry)
+//        {
+//            if( ps.transform.parent == this )
+//            {
+//                //NGUITools.AddChild( )
+//                ps.transform.parent = this.transform.parent; // change parent to unit's parent
+
+//            }
+
+////            Destroy(ps);
+//        }
     }
 	public void SetUnitData( cUnitData data )
 	{
@@ -386,7 +393,18 @@ public class Panel_unit : MonoBehaviour {
 		GameDataManager.Instance.DelUnit( Ident() );
 
 		pUnitData = null;
-	}
+
+        // free ps
+        ParticleSystem[] psAry = this.gameObject.GetComponentsInChildren<ParticleSystem>();
+        foreach (ParticleSystem ps in psAry)
+        {
+            if (ps.transform.parent == this.transform )
+            {              //move to parent to keep play
+                ps.transform.parent = this.transform.parent; // change parent to unit's parent
+            };
+        }
+
+    }
 
 	public bool IsIdle()
 	{

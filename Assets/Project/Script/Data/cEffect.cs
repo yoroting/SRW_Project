@@ -1010,6 +1010,24 @@ public class cEffectCondition
                     return false;       //  fail
                 }
             }
+            else if (func.sFunc == "MP_I")
+            {
+                float f1 = data_I.n_MP / data_I.GetMaxMP();
+                float f2 = func.F(1);
+                if (MyScript.Instance.ConditionFloat(f1, func.S(0), f2) == false)
+                {
+                    return false;       //  fail
+                }
+            }
+            else if (func.sFunc == "MP_E")
+            {
+                float f1 = data_E.n_MP / data_E.GetMaxMP();
+                float f2 = func.F(1);
+                if (MyScript.Instance.ConditionFloat(f1, func.S(0), f2) == false)
+                {
+                    return false;       //  fail
+                }
+            }
             else if (func.sFunc == "POW_I")
             {
                 int i1 = data_I.GetPow();
