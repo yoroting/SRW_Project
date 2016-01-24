@@ -40,8 +40,9 @@ public class cHitResult		//
 
 		_ADDBUFF	,
 		_DELBUFF	,
+        _DELSTACK,          // del stack
 
-		_CAST		,		// cast skill
+        _CAST		,		// cast skill
 		_CASTOUT	,		// cast out skill
 		//_HIT		,		// skill hit enemy
 		_BEHIT		,		// 被

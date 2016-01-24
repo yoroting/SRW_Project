@@ -552,6 +552,7 @@ public partial class ActionManager
 
                             case cHitResult._TYPE._ADDBUFF:
                             case cHitResult._TYPE._DELBUFF:
+                            case cHitResult._TYPE._DELSTACK:
                                 pUnit.PlayHitResult(res , true );
                                 break;
                         }

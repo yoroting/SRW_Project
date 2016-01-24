@@ -2293,7 +2293,22 @@ public class Panel_unit : MonoBehaviour {
                             pUnitData.Buffs.DelBuff(res.Value1);
                         }
                     }
+                }
+                break;
 
+            case cHitResult._TYPE._DELSTACK: // remove buff by stack
+                {
+                    if (res.Value1 != 0) // maybe change data in  battle manage
+                    {
+                        //  cUnitData pData = GameDataManager.Instance.GetUnitDateByIdent(res.Ident);
+                        //  if (pData != null)
+                        {
+                            if (pUnitData.Buffs.DelBuffByStack(res.Value1)) {
+                                // check need play fx
+                                PlayFX( 206 );
+                            }
+                        }
+                    }
                 }
                 break;
             case cHitResult._TYPE._BEHIT: // be Hit fX

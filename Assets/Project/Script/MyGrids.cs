@@ -1404,6 +1404,20 @@ namespace MYGRIDS
             GetPathFinder().bIsDirty = true;
         }
 
+        public bool IsIgnorePos(iVec2 v)
+        {
+            int nX = v.X + hW;
+            int nY = v.Y + hH;
+            foreach (Point p in IgnorePool)
+            {
+                if ( (p.X == nX) && (p.Y == nY) )
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public void AddIgnorePool(List<iVec2> ivecPool)
         {
             if (ivecPool == null)

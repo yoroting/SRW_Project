@@ -337,13 +337,15 @@ public class MobAI  {
         {
             int nSkillID = 0;
             List<iVec2> path = null;
-            if (_FindToAttackTarget(mob, pair.Key, nMove , out nSkillID, out path, false) )
+            _FindToAttackTarget(mob, pair.Key, nMove, out nSkillID, out path, false);
+            //if (_FindToAttackTarget(mob, pair.Key, nMove , out nSkillID, out path, false) )
             {
                 _AI_MakeCmd(mob, pair.Key, nSkillID, ref path);
                 // wait 
                 return true;
             }
-            else {
+            //else
+            {
                 // next target
             }
         }
@@ -636,6 +638,11 @@ public class MobAI  {
         if (_AI_LowstAttack2(mob, nMove))
         {
             return;
+        }
+        if (mob.Ident() == 31)
+        {
+            int a = 0;
+             
         }
 
         // 找距離近的攻擊
@@ -953,15 +960,22 @@ public class MobAI  {
 					continue; // try next pos
 				}
 				else {
-					// get a sortest path 
-					return path; 
+                    // get a sortest path 
+                    if (Debug.isDebugBuild == true)
+                    {
+                        long during = System.DateTime.Now.Ticks - tick;
+                        Debug.LogFormat("Mob{0}-{1} FindPathToTarget OK {2} phase try each unit can atk spend {3}ms ", Mob.CharID, Mob.Ident(), Target.CharID, during / 10000);
+                        tick = System.DateTime.Now.Ticks;
+                    }
+
+                    return path; 
 				}
 			}
 		}
         if (Debug.isDebugBuild == true)
         {
             long during = System.DateTime.Now.Ticks - tick;
-            Debug.LogFormat("Mob{0} FindPathToTarget {1} phase try each unit can atk spend {2}ms ", Mob.CharID, Target.CharID, during / 10000);
+            Debug.LogFormat("Mob{0}-{1} FindPathToTarget FAIL {2} phase try each unit can atk spend {3}ms ", Mob.CharID, Mob.Ident() , Target.CharID, during / 10000   );
             tick = System.DateTime.Now.Ticks;
         }
         // all path failed. return null
@@ -969,6 +983,7 @@ public class MobAI  {
         // find target to atk
         // move == 0 時將造成這一段 太多的無意義收尋。所以 應該在最上方 move==0 return
 
+        // 太多的loop 容易有問題
         int c = 0;
         for (int i = 2; i < 999; i++) // range
         {
@@ -1018,7 +1033,15 @@ public class MobAI  {
                         {
                             continue; // try next pos
                         }
-                        else                   {                           
+                        else {
+                            if (Debug.isDebugBuild == true)
+                            {
+                                float during = System.DateTime.Now.Ticks - tick;
+                                Debug.LogFormat("Mob{0}-{1} FindPathToTarget  OK {2} phase find a path to atk unit can atk spend {3} ms , {4} times", Mob.CharID, Mob.Ident() , Target.CharID, during / 10000, c);
+                                tick = System.DateTime.Now.Ticks;
+                            }
+
+
                             return path;
                         }
                     }
@@ -1032,7 +1055,7 @@ public class MobAI  {
         if (Debug.isDebugBuild == true)
         {
             float during = System.DateTime.Now.Ticks - tick;
-            Debug.LogFormat("Mob{0} FindPathToTarget {1} phase find a path to atk unit can atk spend {2} ms , {3} times", Mob.CharID, Target.CharID, during / 10000, c);
+            Debug.LogFormat("Mob{0}-{1} FindPathToTarget FAIL {2} phase find a path to atk unit can atk spend {3} ms , {4} times", Mob.CharID, Mob.Ident(), Target.CharID, during / 10000, c);
             tick = System.DateTime.Now.Ticks;
         }
         return null;

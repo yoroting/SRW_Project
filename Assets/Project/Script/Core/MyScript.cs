@@ -1165,13 +1165,33 @@ public class MyScript {
 				else if( func.sFunc  == "ADDBUFF_I") 				{
 					pool.Add( new ADDBUFF_I( func.I(0) ) );
 				}
-
 				else if( func.sFunc  == "AURABUFF_E") 				{
 					pool.Add( new AURABUFF_E( func.I(0) , func.I(1)) );
 				}
 				else if( func.sFunc  == "AURABUFF_I") 				{
 					pool.Add( new AURABUFF_I( func.I(0) , func.I(1) ) );
 				}
+
+
+                else if (func.sFunc == "AURA_DELBUFF_I")
+                {
+                    pool.Add(new AURA_DELBUFF_I(func.I(0), func.I(1)));
+                }
+                else if (func.sFunc == "AURA_DELBUFF_E")
+                {
+                    pool.Add(new AURA_DELBUFF_E(func.I(0), func.I(1)));
+                }
+                else if (func.sFunc == "AURA_DELSTACK_I")
+                {
+                    pool.Add(new AURA_DELSTACK_I(func.I(0), func.I(1)));
+                }
+                else if (func.sFunc == "AURA_DELSTACK_E")
+                {
+                    pool.Add(new AURA_DELSTACK_E(func.I(0), func.I(1)));
+                }
+
+
+
                 else if (func.sFunc == "BATTLE_ARRAY")
                 {
                     pool.Add(new BATTLE_ARRAY(func.I(0), func.I(1)));
@@ -1278,7 +1298,7 @@ public class MyScript {
                 }
                 else if (func.sFunc == "ADD_ATTACK_DIFF")
                 {
-                    pool.Add(new ADD_ATTACK_DIFF(func.F(0), func.I(1)));
+                pool.Add(new ADD_ATTACK_DIFF(func.F(0), func.I(1)));
                 }
                 else if (func.sFunc == "ADD_ATTACK")
                 {

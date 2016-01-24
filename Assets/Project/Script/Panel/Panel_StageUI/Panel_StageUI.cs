@@ -2801,12 +2801,17 @@ public class Panel_StageUI : MonoBehaviour
                 Grids.AddIgnorePool( zocPool ); // APPLY ZOC	
 			}
 		}
-		
-		// avoid the end node have ally
-		//List< iVec2 > nearList =  GetUnitPKPosPool( unit , );
-		
-		
-		path = Grids.PathFinding( st , ed , nStep  );
+
+        // return null if ed in zoc pos
+        if( Grids.IsIgnorePos( ed ))
+        {
+            return new List<iVec2>();
+        }
+        // avoid the end node have ally
+        //List< iVec2 > nearList =  GetUnitPKPosPool( unit , );
+
+
+        path = Grids.PathFinding( st , ed , nStep  );
 		
 
 		if (Config.GOD == true) {
@@ -3229,8 +3234,8 @@ public class Panel_StageUI : MonoBehaviour
 		int nCharid = Evt.nCharID;
 
 		if (m_bIsSkipMode) {
-//			DelUnit (nCharid);
-//			return;
+			DelUnit (nCharid);
+			return;
 		}
  		// normal mode to play
 		LeaveUnit (nCharid);

@@ -703,6 +703,9 @@ public class MyTool {
     }
     public static List<T> CutList<T>( List<T> lst , int Len )
 	{
+        if (lst == null)
+            return null;
+
 		int c = lst.Count - Len;
 		if (c > 0) {
 			lst.RemoveRange (Len, c);
