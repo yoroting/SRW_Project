@@ -731,6 +731,7 @@ public class MyScript {
 				evt.nSayID = func.I(1);
 
 				//Say( func.I(0), func.I(1) );
+
 				GameEventManager.DispatchEvent ( evt  );
 			}
 			else if( func.sFunc == "SETCHAR" )
