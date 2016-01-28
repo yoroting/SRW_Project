@@ -1720,12 +1720,16 @@ public class cUnitData{
 		// restore def
 		AddDef ( GetMaxDef() / 2 , true );
 
-		uAction act =  ActionManager.Instance.CreateWeakUpAction ( this.n_Ident );
-		if (act != null) {
+        // restore mp
+        AddMp( GetMaxMP()/ 10 );
 
-			if( Buffs.BuffRoundEnd( ref act ) ){
-				SetUpdate( cAttrData._BUFF );
-			}
+
+        uAction act =  ActionManager.Instance.CreateWeakUpAction ( this.n_Ident );
+		if (act != null) {
+            Buffs.OnDo( null , ref act.HitResult );
+   //         if ( Buffs.BuffRoundEnd( ref act ) ){
+			//	SetUpdate( cAttrData._BUFF );
+			//}
 		}
         //Buffs.OnDo ( ref resPool );
 

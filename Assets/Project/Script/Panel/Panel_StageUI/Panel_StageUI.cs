@@ -355,7 +355,12 @@ public class Panel_StageUI : MonoBehaviour
         if (RunCampAI(GameDataManager.Instance.nActiveCamp) == false)
         {
             // no ai to run. go to next faction
-            GameDataManager.Instance.NextCamp();
+            if (GameDataManager.Instance.NextCamp())
+            {
+                // 回和變更時，各 buff -1
+                OnStageRoundEnd();    
+
+            }
         }
 
 
@@ -558,10 +563,8 @@ public class Panel_StageUI : MonoBehaviour
 	//	if( TilePlaneObj != null )
 		{
 			if (TarceMoveingUnit != null ) {
-				if( TarceMoveingUnit.IsMoving()== false )
-				{
-					TarceMoveingUnit = null;
-				}else{
+
+				//{
 					// force to unit
 					Vector3 v = TarceMoveingUnit.transform.localPosition;
 					v.x *= -1;
@@ -578,8 +581,12 @@ public class Panel_StageUI : MonoBehaviour
 
 					//TilePlaneObj.transform.localPosition  = v ;
 
-				}
-			}
+				//}
+                if (TarceMoveingUnit.IsMoving() == false)
+                {
+                    TarceMoveingUnit = null;
+                }
+            }
 
 			//float fMouseX = Input.mousePosition.x;
 			//float fMouseY = Input.mousePosition.y;
@@ -910,16 +917,24 @@ public class Panel_StageUI : MonoBehaviour
 //		Debug.Log( "OnMobClick" + sKey + ";Ident"+unit.Ident() ); 
 
 		bool bInAtkCell = OverCellAtkPool.ContainsKey (sKey);
+        bool bCanPK = false;
+        cUnitData pCmder = GameDataManager.Instance.GetUnitDateByIdent(cCMD.Instance.nCmderIdent);
+        if (pCmder != null) {
+            bCanPK = MyTool.CanPK(unit.eCampID, pCmder.eCampID );
+        }
+
 
 		if( bInAtkCell  ){
 			if( _PK_MODE._PLAYER ==  MyTool.GetSkillPKmode (cCMD.Instance.nSkillID) ){
-				if( unit.eCampID == _CAMP._ENEMY ){
+                //cCMD.Instance.pCmder.
+				if(bCanPK)
+                {
 					return ;
 				}
-
 			}
 			else{
-				if( unit.eCampID == _CAMP._FRIEND ){
+				if(!bCanPK)
+                {
 					return ;
 				}
 			}
@@ -3795,7 +3810,13 @@ public class Panel_StageUI : MonoBehaviour
 
 	public void OnStagePlaySound( string  SoundFile  )
 	{
-		GameSystem.PlaySound( SoundFile );
+        if (m_bIsSkipMode)
+        {
+            // skip mode no play sound
+        }
+        else {
+            GameSystem.PlaySound(SoundFile);
+        }
 	}
 	
 
@@ -4156,8 +4177,19 @@ public class Panel_StageUI : MonoBehaviour
 			}
 		}
 	}
-	// add star
-	public void AddStar( int nStar=1 )
+
+    public void OnStageRoundEnd()
+    {
+        foreach (KeyValuePair<int, Panel_unit> pair in IdentToUnit)
+        {
+            if (pair.Value != null)
+            {
+                pair.Value.pUnitData.Buffs.BuffRoundEnd();
+            }
+        }
+    }
+    // add star
+    public void AddStar( int nStar=1 )
 	{
 		if (nStar == 0) {
 			nStar = 1;

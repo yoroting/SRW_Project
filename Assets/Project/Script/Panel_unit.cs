@@ -983,10 +983,14 @@ public class Panel_unit : MonoBehaviour {
 		// swing fx
 		ShowSwingFX( skillid , TarIdent , 0 , 0 );
 
+        // trace to target unit 
+        if (defer != null)
+        {
+            Panel_StageUI.Instance.TraceUnit(defer);
+        }
 
-
-		// fly item
-		if (MyTool.IsSkillTag (skillid, _SKILLTAG._FLY)) {
+        // fly item
+        if (MyTool.IsSkillTag (skillid, _SKILLTAG._FLY)) {
 			int nMissileID = 0;
 			//string missile = "ACT_FLAME";
 //			Missile missdata = null;
@@ -1007,6 +1011,8 @@ public class Panel_unit : MonoBehaviour {
 			if( fbFx != null ){
 				MissileCount ++;
 			}
+            // trace atk target
+            
 			// create a fly item
 			return;
 		} else if (MyTool.IsSkillTag (skillid, _SKILLTAG._ROTATE)) {
@@ -1092,11 +1098,8 @@ public class Panel_unit : MonoBehaviour {
 			tw.to	= defer.transform.localPosition;
 //			Debug.LogFormat("ActionAttack from {0} , {1} , locPos {2} , {3} ", tw.from.x, tw.from.y , transform.localPosition.x ,  transform.localPosition.y );
 			MyTool.TweenSetOneShotOnFinish( tw , OnTwAtkHit ); // for once only
-
-
-
 		}
-		// add 
+       
 
 
 	}

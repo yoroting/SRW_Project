@@ -368,10 +368,10 @@ public class cBuffs
 	}
 
 	// run 1 round .  buff time-1 with all >= 1 . remove buff if time become 0
-	public bool BuffRoundEnd( ref uAction act )
+	public bool BuffRoundEnd( )
 	{
 		// 作用一次 buff
-		OnDo( null , ref act.HitResult);
+		//OnDo( null , ref act.HitResult);
 
 		//移除結束的BUFF
 		foreach( KeyValuePair<int , cBuffData>  pair in Pool )

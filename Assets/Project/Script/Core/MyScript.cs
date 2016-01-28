@@ -843,7 +843,7 @@ public class MyScript {
 			}
 			else if( func.sFunc  == "SOUND")  // PLAY SOUND
 			{
-				GameSystem.PlaySound( func.S(0) );
+                Panel_StageUI.Instance.OnStagePlaySound( func.S(0) );
 			}	
 			else if( func.sFunc  == "FX")  // PLAY FX
 			{
