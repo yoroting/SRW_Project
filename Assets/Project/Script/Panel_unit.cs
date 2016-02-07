@@ -571,8 +571,9 @@ public class Panel_unit : MonoBehaviour {
 		if ((PathList.Count <= 0)) {
 			// move end
 			PathList = null;
-		
-			return  ;
+            
+            Panel_StageUI.Instance.OnMoveEnd(this);
+            return  ;
 		}
 
 
@@ -1765,8 +1766,7 @@ public class Panel_unit : MonoBehaviour {
 	}
 
 	public void OnDead()
-	{	
-		bIsDeading = false;
+	{			
         // delete ps        
 
         // remove char
@@ -1781,6 +1781,8 @@ public class Panel_unit : MonoBehaviour {
         TalkSayEndEvent sayevt = new TalkSayEndEvent();
         sayevt.nChar = this.CharID;
         GameEventManager.DispatchEvent(sayevt);
+
+        bIsDeading = false;
     }
 
 	public void SetBorn()
@@ -1827,15 +1829,15 @@ public class Panel_unit : MonoBehaviour {
 		
 	}
 	public void OnLeaveFinish()
-	{
-		bIsLeaving = false;
+	{		
 		StageDelUnitByIdentEvent evt = new StageDelUnitByIdentEvent (); // del by ident
 		//evt.eCamp  = eCampID; // no need
-		evt.nIdent = this.Ident ();
-		
-		GameEventManager.DispatchEvent ( evt );
+		evt.nIdent = this.Ident ();		
+		GameEventManager.DispatchEvent ( evt ); // will check bIsLeaving inside
 
-	}
+        // importane here to avoid double leave in delunit event 
+        bIsLeaving = false;
+    }
 
 
 	public void SetCamp( _CAMP camp )

@@ -105,8 +105,35 @@ public class cUnitSaveData{
 	}
 
 }
-// 不斷調整後，SAVEDATA 變成了一個工具用物件
 
+[Serializable][JsonName("block")]
+public class cBlockSaveData
+{
+    [JsonName("id")]    [DefaultValue(0)]    public int ID;
+    [JsonName("sx")]    [DefaultValue(0)]    public int StX;
+    [JsonName("ex")]    [DefaultValue(0)]    public int EdX;
+    [JsonName("sy")]    [DefaultValue(0)]    public int StY;
+    [JsonName("ey")]    [DefaultValue(0)]    public int EdY;
+    [JsonName("evtid")]    [DefaultValue(0)]    public int EvtID;
+    [JsonName("type")]    [DefaultValue(0)]    public int Type;
+    [JsonName("name")]    [DefaultValue("")]    public string sName;
+
+    public cBlockSaveData() { }
+    public void SetData(cEvtBlock data)
+    {
+        ID = data.nID;
+        StX = data.rc.nStX;
+        StY = data.rc.nEdX;
+        EdX = data.rc.nStY;
+        EdY = data.rc.nEdY;
+        EvtID = data.nEvtID;
+        Type = data.nType;
+        sName = data.sName;
+    }
+
+}
+
+// 不斷調整後，SAVEDATA 變成了一個工具用物件
 [Serializable][JsonName("save")]
 public class cSaveData{
 	[JsonName("ver")] [DefaultValue(1)] public int nVersion=1;
@@ -151,8 +178,8 @@ public class cSaveData{
 //	[JsonName("evtwaitpool")] public List<int>					EvtWaitingPool;   // 已完成的重要事件列表
 
 	[JsonName("grouppool")] public Dictionary< string , int >		GroupPool;   //  group event pool
-
-			
+    [JsonName("blockpool")] public List<cBlockSaveData>              EvtBlockPool;   //  list of event block
+		
 	static bool 	bIsLoading;													// don't public to avoid recprd this
 	public static bool		IsLoading(){ return bIsLoading;	 }
 	public static void		SetLoading( bool b){  bIsLoading = b; }
@@ -204,7 +231,10 @@ public class cSaveData{
 			GroupPool   = MyTool.ConvetToStringInt( GameDataManager.Instance.GroupPool );
 			// unit pool
 			CharPool = GameDataManager.Instance.ExportSavePool();
-		}
+            // block pool
+            EvtBlockPool = GameDataManager.Instance.ExportBlockPool();
+           
+        }
 	}
 
 	//將遊戲還原到 紀錄的狀態
@@ -355,7 +385,8 @@ public class cSaveData{
 		readerSettings.TypeHintName = "__type";
 		
 		JsonReader reader = new JsonReader(sJson, readerSettings);
-		
+
+      //  return "s";
 		cSaveData save = (cSaveData)reader.Deserialize ( typeof(cSaveData) );
 		string sInfo = string.Format ( "STORY {0} " , save.n_StoryID );
 		return sInfo;

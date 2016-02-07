@@ -875,10 +875,29 @@ public class MobAI  {
 		int ident = mob.Ident();
 		cUnitData data = GameDataManager.Instance.GetUnitDateByIdent ( ident ); 
 		// move to pos
-		iVec2 pos = new iVec2 ( data.n_AIX , data.n_AIY  );
+		//iVec2 pos = new iVec2 ( data.n_AIX , data.n_AIY  );        
+        //List< iVec2> path = Panel_StageUI.Instance.PathFinding ( mob, mob.Loc, pos , 999); // get a vaild path to run
 
-		List< iVec2> path = Panel_StageUI.Instance.PathFinding ( mob, mob.Loc, pos , 999); // get a vaild path to run
-		if( path == null || (path.Count ==0) )
+        List<iVec2> path = FindPathToPos(mob, data.n_AIX, data.n_AIY, nMove, 999);
+        //// 由於底層搜尋 有快 A-str 兩種>
+        //int nLimit = nMove;
+        //if (path != null && path.Count > 0)
+        //{
+        //    iVec2 loc = path[0];
+        //    if (mob.Loc.Collision(loc))
+        //    {
+        //        nLimit++;
+        //    }
+        //    else
+        //    {
+        //        nLimit = nMove;  // this will happen?
+        //    }
+        //}
+
+        //path = MyTool.CutList<iVec2>(path, nLimit);// mob movement; .. A-star 運算時自己原座標也算一個點所以這邊加給他
+
+
+        if ( path == null || (path.Count ==0) )
 		{
 			//continue; // can't find path try next target
 		}
@@ -894,13 +913,10 @@ public class MobAI  {
 				if (Config.GOD == true) {
 					Panel_StageUI.Instance.CreatePathOverEffect (path); // draw path
 				}
-				return;
+				
 			}
 		}
-
-
-
-            ActionManager.Instance.CreateWaitingAction (ident);
+        ActionManager.Instance.CreateWaitingAction (ident);
 	}
 
 	// tool finc
@@ -984,22 +1000,32 @@ public class MobAI  {
         // move == 0 時將造成這一段 太多的無意義收尋。所以 應該在最上方 move==0 return
 
         // 太多的loop 容易有問題
+     
+
+
         int c = 0;
-        for (int i = 2; i < 999; i++) // range
+        for (int i = 2; i < 3; i++) // range
         {
             // pool.Clear();
             List<iVec2> pool = Panel_StageUI.Instance.Grids.GetRangePool(Target.Loc, i, i - 1);
             if (pool == null)
                 continue;
+            distpool.Clear();
             foreach (iVec2 pos in pool)
             {
-                iVec2 last = null;
                 if (Panel_StageUI.Instance.CheckIsEmptyPos(pos) == false)
                 {
                     continue;
                 }
-
-                List<iVec2>  path = Panel_StageUI.Instance.PathFinding(Mob , Mob.Loc, pos, 999); // get a vaild path to run
+                distpool.Add(pos, pos.Dist(Mob.Loc));
+            }
+            // for each
+            var dist2 = from pair2 in distpool orderby pair2.Value ascending select pair2;
+            foreach (KeyValuePair<iVec2, int> pair2 in dist2)
+            {
+               // { 
+                iVec2 last = null;
+                List<iVec2>  path = Panel_StageUI.Instance.PathFinding(Mob , Mob.Loc, pair2.Key, 999); // get a vaild path to run
                 c++;                                                                          //path = FindPathToPos(mob, pos, nMove, nSkillRange);
                 int nLimit = nMove;
                 if (path != null && (path.Count > 0)) // 這邊有路徑就算數了
@@ -1052,6 +1078,9 @@ public class MobAI  {
                 }
             }           
         }
+
+        // last find to target
+
         if (Debug.isDebugBuild == true)
         {
             float during = System.DateTime.Now.Ticks - tick;
@@ -1062,6 +1091,180 @@ public class MobAI  {
 
 	}
 
+
+    public static List<iVec2> FindPathToPos(Panel_unit Mob, int nTarX , int nTarY , int nMove, int nRange = 1)
+    {
+        if (Mob == null || nMove == 0)
+        {
+            return null;
+        }
+
+        long tick = System.DateTime.Now.Ticks;
+        //int ident = Mob.Ident();
+        iVec2 vTar = new iVec2(nTarX , nTarY);
+        Dictionary<iVec2, int> distpool = new Dictionary<iVec2, int>();
+        if (Panel_StageUI.Instance.CheckIsEmptyPos(vTar) == true)
+        {
+            distpool.Add(vTar, 0);
+        }
+
+
+        List<iVec2> nearList = vTar.AdjacentList(nRange); // the 4 pos can't stand ally
+        foreach (iVec2 v in nearList)
+        {
+            if (Panel_StageUI.Instance.CheckIsEmptyPos(v) == true)
+            {// 目標 pos 不可以站人 也不可以是ZOC
+                int d = v.Dist(Mob.Loc);
+                distpool.Add(v, d);
+            }
+        }
+
+
+        // dist sort
+        // try each path until can atk
+        var itemsdist = from pair2 in distpool orderby pair2.Value ascending select pair2;
+        foreach (KeyValuePair<iVec2, int> pair2 in itemsdist)
+        {
+
+            //	nDist = pair2.Value; // try other
+            iVec2 last = null;
+
+            List<iVec2> path = Panel_StageUI.Instance.PathFinding(Mob, Mob.Loc, pair2.Key, 999); // get a vaild path to run
+
+            // 由於底層搜尋 有快 A-str 兩種>
+            int nLimit = nMove;
+            if (path != null && path.Count > 0)
+            {
+                iVec2 loc = path[0];
+                if (Mob.Loc.Collision(loc))
+                {
+                    nLimit++;
+                }
+                else
+                {
+                    nLimit = nMove;  // this will happen?
+                }
+            }
+
+            path = MyTool.CutList<iVec2>(path, nLimit);// mob movement; .. A-star 運算時自己原座標也算一個點所以這邊加給他
+
+            // avoid stand on invalid pos
+            while (path.Count > 0)
+            {
+                last = path[path.Count - 1];
+                if (Panel_StageUI.Instance.CheckIsEmptyPos(last) == false)
+                {
+                    path.RemoveAt(path.Count - 1); // then go again
+
+                }
+                else if (path.Count <= 0)
+                {
+                    continue; // try next pos
+                }
+                else
+                {
+                    // get a sortest path 
+                    if (Debug.isDebugBuild == true)
+                    {
+                        long during = System.DateTime.Now.Ticks - tick;
+                        Debug.LogFormat("Mob{0}-{1} FindPathToPos OK ({2},{3}) phase try each unit can atk spend {4}ms ", Mob.CharID, Mob.Ident(), nTarX , nTarY, during / 10000);
+                        tick = System.DateTime.Now.Ticks;
+                    }
+
+                    return path;
+                }
+            }
+        }
+        if (Debug.isDebugBuild == true)
+        {
+            long during = System.DateTime.Now.Ticks - tick;
+            Debug.LogFormat("Mob{0}-{1} FindPathToPos FAIL ({2},{3}) phase try each unit can atk spend {4}ms ", Mob.CharID, Mob.Ident(), nTarX, nTarY, during / 10000);
+            tick = System.DateTime.Now.Ticks;
+        }
+        // all path failed. return null
+        //try method to find path move near to target
+        // find target to atk
+        // move == 0 時將造成這一段 太多的無意義收尋。所以 應該在最上方 move==0 return
+
+        // 太多的loop 容易有問題
+        int c = 0;
+        for (int i = 2; i < 3; i++) // range
+        {
+            // pool.Clear();
+            List<iVec2> pool = Panel_StageUI.Instance.Grids.GetRangePool( vTar, i, i - 1);
+            if (pool == null)
+                continue;
+            foreach (iVec2 pos in pool)
+            {
+                iVec2 last = null;
+                if (Panel_StageUI.Instance.CheckIsEmptyPos(pos) == false)
+                {
+                    continue;
+                }
+
+                List<iVec2> path = Panel_StageUI.Instance.PathFinding(Mob, Mob.Loc, pos, 999); // get a vaild path to run
+                c++;                                                                          //path = FindPathToPos(mob, pos, nMove, nSkillRange);
+                int nLimit = nMove;
+                if (path != null && (path.Count > 0)) // 這邊有路徑就算數了
+                {
+                    //底層 A*問題，避免起點也記入
+                    // if (path != null && path.Count > 0)
+                    // {
+                    // 
+                    iVec2 loc = path[0];
+                    if (Mob.Loc.Collision(loc))
+                    {
+                        nLimit++;
+                    }
+                    else
+                    {
+                        nLimit = nMove;  // this will happen?
+                    }
+                    // }
+
+                    path = MyTool.CutList<iVec2>(path, nLimit);// mob movement; .. A-star 運算時自己原座標也算一個點所以這邊加給他
+
+                    // avoid stand on invalid pos
+                    while (path.Count > 0)
+                    {
+                        last = path[path.Count - 1];
+                        if (Panel_StageUI.Instance.CheckIsEmptyPos(last) == false)
+                        {
+                            path.RemoveAt(path.Count - 1); // then go again
+                        }
+                        else if (path.Count <= 0)
+                        {
+                            continue; // try next pos
+                        }
+                        else
+                        {
+                            if (Debug.isDebugBuild == true)
+                            {
+                                float during = System.DateTime.Now.Ticks - tick;
+                                Debug.LogFormat("Mob{0}-{1} FindPathToPos  OK ({2},{3}) phase find a path to atk unit can atk spend {4} ms , {5} times", Mob.CharID, Mob.Ident(), nTarX, nTarY, during / 10000, c);
+                                tick = System.DateTime.Now.Ticks;
+                            }
+
+
+                            return path;
+                        }
+                    }
+
+                    //  int num = path.Count;
+                    //  Debug.LogFormat("Mob{0} FindPathToTarget{1} POS({2}, {3}) with num {4}", Mob.CharID, Target.CharID , pos.X , pos.Y  , num);
+
+                }
+            }
+        }
+        if (Debug.isDebugBuild == true)
+        {
+            float during = System.DateTime.Now.Ticks - tick;
+            Debug.LogFormat("Mob{0}-{1} FindPathToPos FAIL phase find a path to ({2},{3}) unit can atk spend {4} ms , {5} times", Mob.CharID, Mob.Ident(), nTarX , nTarY, during / 10000, c);
+            tick = System.DateTime.Now.Ticks;
+        }
+        return null;
+
+    }
     static public int SelCountSkill(cUnitData pMob, cUnitData pTarget = null)
     {
         cUnitData pData = pMob;

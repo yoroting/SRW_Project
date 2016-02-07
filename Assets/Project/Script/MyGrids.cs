@@ -433,13 +433,13 @@ namespace MYGRIDS
 
     //定義一個矩行。最小 size = 1 ,1 。永不為零。永不反相
     public class iRect
-    {
-        int nStX;
-        int nStY;
+    {      
+        public int nStX;
+        public int nStY;
 
         // 矩行
-        int nEdX;
-        int nEdY;
+        public int nEdX;
+        public int nEdY;
 
         public iRect(int stX, int stY)
         {
@@ -451,10 +451,8 @@ namespace MYGRIDS
 
         public iRect(int stX, int stY, int edX, int edY)
         {
-            nStX = stX;
-            nStY = stY;
-            nEdX = edX;
-            nEdY = edY;
+            //
+            SetRect(stX, stY, edX, edY);
             if (nEdX <= nStX)
             {
                 nEdX = nStX + 1;
@@ -465,19 +463,25 @@ namespace MYGRIDS
             }
         }
 
-
+        public void SetRect(int stX, int stY, int edX, int edY)
+        {
+            nStX = stX < edX ? stX : edX;
+            nStY = stY < edY ? stY : edY;
+            nEdX = stX > edX ? stX : edX;
+            nEdY = stY > edY ? stY : edY;
+        }
 
         public void SetSize(int W, int H)
         {
             if (W < 1) W = 1;
             if (H < 1) H = 1;
-            nEdX = W + nStX;
-            nEdY = H + nStY;
+            nEdX = (W-1) + nStX;
+            nEdY = (H-1) + nStY;
         }
 
-        public bool CheckCol(int x, int y)
+        public bool CheckInside(int x, int y)
         {
-            if ((x >= nStX) && (x < nEdX) && (y >= nStY) && (y < nEdY))
+            if ((x >= nStX) && (x <= nEdX) && (y >= nStY) && (y <= nEdY))
             {
                 return true;
             }
@@ -488,13 +492,12 @@ namespace MYGRIDS
         public List<iVec2> GetList()
         {
             List<iVec2> lst = new List<iVec2>();
-            int w = nEdX - nStX;
-            int h = nEdY - nStY;
-            for (int i = 0; i < w; i++)
+            
+            for (int i = nStX; i <= nEdX; i++)
             {
-                for (int j = 0; j < h; j++)
+                for (int j = nStY; j <= nEdY; j++)
                 {
-                    lst.Add(new iVec2(nStX + i, nStY + j));
+                    lst.Add(new iVec2( i, j));
                 }
             }
             return lst;

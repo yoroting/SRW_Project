@@ -331,9 +331,9 @@ public class cUnitData{
 				Panel_StageUI.Instance.CheckPlayerRoundEnd();
 			}
 		}
-
-
-	}
+        // check block event
+        Panel_StageUI.Instance.CheckBlockEventToRun( this );
+    }
 	
 	public void AddActionTime( int nTime ){
 		nActionTime +=nTime ;		

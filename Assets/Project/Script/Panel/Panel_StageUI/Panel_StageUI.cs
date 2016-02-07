@@ -208,7 +208,7 @@ public class Panel_StageUI : MonoBehaviour
 
 				STAGE_EVENT evt = ConstDataManager.Instance.GetRow<STAGE_EVENT>(nMissionID);
 				if (evt != null)
-				{
+				{      
 					if( EvtPool.ContainsKey( nMissionID ) == false )
 					{
 						EvtPool.Add(nMissionID, evt);
@@ -229,7 +229,10 @@ public class Panel_StageUI : MonoBehaviour
 				STAGE_EVENT evt = ConstDataManager.Instance.GetRow<STAGE_EVENT>(nEventID);
 				if (evt != null)
 				{
-					if( EvtPool.ContainsKey( nEventID ) == false )
+                    if (evt.n_TYPE == 2)
+                        continue;   // skip block event
+
+                    if ( EvtPool.ContainsKey( nEventID ) == false )
 					{
 						EvtPool.Add(nEventID, evt);
 					}
@@ -502,9 +505,9 @@ public class Panel_StageUI : MonoBehaviour
 
         //
         ClearOverCellEffect ();
-
-		// clear unit 
-		foreach (KeyValuePair<int , Panel_unit  > pair in IdentToUnit) {
+        ClearMarkCellEffect(); // only clear here
+        // clear unit 
+        foreach (KeyValuePair<int , Panel_unit  > pair in IdentToUnit) {
 			//NGUITools.Destroy( pair.Value.gameObject );
 			//pair.Value.FreeUnitData();
 			pair.Value.Recycle();
@@ -1291,7 +1294,26 @@ public class Panel_StageUI : MonoBehaviour
 		}
 	}
 
-	public void CreateMoveOverEffect( Panel_unit unit )
+    public void ClearMarkCellEffect()
+    {
+        if (OverCellMarkPool != null)
+        {
+            foreach ( KeyValuePair< string, GameObject> pair in OverCellMarkPool )
+            {
+                if( pair.Value != null)
+                {
+                    NGUITools.Destroy( pair.Value );
+                    //pair.Value = null;
+
+                }
+            }
+
+            OverCellMarkPool.Clear();
+        }
+
+    }
+
+    public void CreateMoveOverEffect( Panel_unit unit )
 	{
 		MoveEftObj.RecycleAll();
 
@@ -1854,10 +1876,11 @@ public class Panel_StageUI : MonoBehaviour
 				// clear event for next
 				NextEvent = null;
 				IsEventEnd = true;
+                MyScript.nCheckIdent = 0;  // clear
 
-				// all end . check again  for new condition status
-			//	if( WaitPool.Count <= 0 ){
-				if( IsRunningEvent() == false )
+                // all end . check again  for new condition status
+                //	if( WaitPool.Count <= 0 ){
+                if ( IsRunningEvent() == false )
 				{
 					GetEventToRun();
 				}
@@ -1882,6 +1905,39 @@ public class Panel_StageUI : MonoBehaviour
 		}
 		return false;
 	}
+
+    public bool CheckBlockEventToRun( cUnitData unit )
+    {
+        if (NextEvent != null || unit==null ) {
+            // wait current event complete
+            return false;
+        }
+        foreach (cEvtBlock b in GameDataManager.Instance.EvtBlockPool )
+        {
+            if (b == null)
+                continue;
+            if (b.nEvtID == 0)
+                continue;
+            // check in block 
+            if (false == b.rc.CheckInside(unit.n_X, unit.n_Y))
+                continue;
+
+            // check evt condit
+            STAGE_EVENT evt = ConstDataManager.Instance.GetRow<STAGE_EVENT>(b.nEvtID );
+            if (evt == null)
+                continue;
+            if( MyScript.Instance.CheckEventCanRun( evt, unit.n_Ident) )
+            {             
+                TrigEventToRun(b.nEvtID);               
+            }
+
+            return true;
+        }
+
+        //EvtBlockPool = new List<cEvtBlock>();        // list of event block
+
+        return false;
+    }
 	// this is debug tool func
 	public void TrigEventToRun( int nEventID )
 	{
@@ -1890,10 +1946,7 @@ public class Panel_StageUI : MonoBehaviour
 			Debug.LogError( " TrigEventToRun Err!! nextevent exist");
 			return ;
 		}
-		if( (EvtPool==null) || (EvtPool.Count<=0)){
-			Debug.LogError( " TrigEventToRun Err!! EvtPool is null");
-			return  ;
-		}
+		
 		
 		if (bIsStageEnd) {
 			Debug.LogError( " TrigEventToRun Err!! stage is end");
@@ -1905,16 +1958,13 @@ public class Panel_StageUI : MonoBehaviour
 		}
 		//======================================
 		STAGE_EVENT evt;
-		if( EvtPool.TryGetValue( nEventID , out evt ) )
+        if ((EvtPool != null) && EvtPool.TryGetValue( nEventID , out evt ) )
 		{
 			//WaitPool.Add( evt );
 			// check is loop event?
 			if( IsLoopEvent( evt )== false  )
-			{
-				if( EvtPool.ContainsKey( nEventID ) )
-				{
-					EvtPool.Remove( nEventID );
-				}
+			{				
+				EvtPool.Remove( nEventID );
 
 				//removeLst.Add( pair.Key );
 			}
@@ -1924,7 +1974,17 @@ public class Panel_StageUI : MonoBehaviour
 			Debug.LogFormat( " TrigEventToRun ok!! event {0}  " , nEventID );
 		}
 		else{
-			Debug.LogErrorFormat( " TrigEventToRun Err!! event{0} not exist " , nEventID );
+            // find event from const
+            evt = ConstDataManager.Instance.GetRow<STAGE_EVENT>(nEventID );
+            if (evt != null)
+            {
+                NextEvent = evt;
+                PreEcecuteEvent();					// parser next event to run
+            }
+            else
+            {
+                Debug.LogErrorFormat(" TrigEventToRun Err!! event{0} not exist ", nEventID);
+            }
 		}
 
 	}
@@ -2255,8 +2315,22 @@ public class Panel_StageUI : MonoBehaviour
 		}
 	}
 
+    void LeaveUnitByIdent(int nIdent )
+    {
+        Panel_unit unit;
+        if (IdentToUnit.TryGetValue(nIdent , out unit) ) {
+            if (unit.bIsLeaving || unit.bIsDeading)
+            {
+                DelUnitbyIdent( nIdent ); // avoid double leave
+            }
+            else
+            {
+                unit.SetLeave();
+            }
+        }
+    }
 
-	void DelUnit(  int nCharid , int nNum=0 )
+    void DelUnit(  int nCharid , int nNum=0 )
 	{
         //change to del all unit with char
 
@@ -2422,11 +2496,18 @@ public class Panel_StageUI : MonoBehaviour
 
 	public GameObject AddMark( int x , int y  )
 	{
-		GameObject mark = ResourcesManager.CreatePrefabGameObj(TilePlaneObj, "Prefab/PathOverEffect");
+        GameObject mark;
+        iVec2 v = new iVec2(x, y);
+        if(OverCellMarkPool.TryGetValue( v.GetKey() , out mark ))
+        {
+            return mark;
+        }
+
+        mark = ResourcesManager.CreatePrefabGameObj(TilePlaneObj, "Prefab/PathOverEffect");
 		if( mark != null )
 		{
-			iVec2 v = new iVec2( x , y );
-			mark.name = string.Format("PATHOVER({0},{1},{2})", v.X , v.Y , 0 );
+			
+			mark.name = string.Format("MARKOVER({0},{1},{2})", v.X , v.Y , 0 );
 			SynGridToLocalPos( mark , v.X , v.Y) ;
 				
 				//UIEventListener.Get(over).onClick += OnOverClick;
@@ -2552,6 +2633,12 @@ public class Panel_StageUI : MonoBehaviour
 	{
 		bIsMoveToObj = false;
 	}
+
+
+    public void OnMoveEnd( Panel_unit unit )
+    {
+
+    }
 
 	public void PlayStageBGM()
 	{
@@ -3079,20 +3166,29 @@ public class Panel_StageUI : MonoBehaviour
 				Debug.LogErrorFormat ("RestoreBySaveData PopUnit Fail with char({0}) )",pair.Value.n_CharID  )  ;			
 			}
 		}
-//		foreach( cUnitSaveData s in save.CharPool )
-//		{
-//			cUnitData data = GameDataManager.Instance.CreateCharbySaveData( s  , true );
-//			
-//			GameObject obj = AddUnit( data ) ;
-//			if (obj != null) {		
-//			} else {
-//				Debug.Log (string.Format ("RestoreBySaveData PopUnit Fail with charid({0}) )", s.n_CharID  )  );			
-//			}
-//		}
-		
-		// reset bgm
-		
-		if( save.nPlayerBGM > 0 )
+
+        // block pool
+        GameDataManager.Instance.ImportBlockPool(save.EvtBlockPool);
+        // re pop mark 
+        foreach( cEvtBlock b in GameDataManager.Instance.EvtBlockPool )
+        {
+            OnStagePopMarkEvent( b.rc.nStX , b.rc.nStY , b.rc.nEdX , b.rc.nEdY );
+        }
+
+        //		foreach( cUnitSaveData s in save.CharPool )
+        //		{
+        //			cUnitData data = GameDataManager.Instance.CreateCharbySaveData( s  , true );
+        //			
+        //			GameObject obj = AddUnit( data ) ;
+        //			if (obj != null) {		
+        //			} else {
+        //				Debug.Log (string.Format ("RestoreBySaveData PopUnit Fail with charid({0}) )", s.n_CharID  )  );			
+        //			}
+        //		}
+
+        // reset bgm
+
+        if ( save.nPlayerBGM > 0 )
 			GameDataManager.Instance.nPlayerBGM = save.nPlayerBGM ;   //我方
 		if( save.nEnemyBGM > 0 )
 			GameDataManager.Instance.nEnemyBGM  = save.nEnemyBGM;	 // 敵方
@@ -3229,8 +3325,13 @@ public class Panel_StageUI : MonoBehaviour
 		StageDelUnitByIdentEvent Evt = evt as StageDelUnitByIdentEvent;
 		if (Evt == null)
 			return;
-		DelUnitbyIdent ( Evt.nIdent );
-	}
+        if (m_bIsSkipMode )
+        {
+            DelUnitbyIdent(Evt.nIdent);
+            return;
+        }
+        LeaveUnitByIdent(Evt.nIdent );
+    }
 	
 
 

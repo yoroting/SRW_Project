@@ -76,6 +76,22 @@ using MYGRIDS;
 //	}
 //}
 
+public class cEvtBlock
+{
+    // use to triger event
+    public int nID;
+    public string sName;
+    public int nType;
+    public iRect rc;
+    public int nEvtID;
+
+    public cEvtBlock(int nStX , int nEdX , int nStY, int nEdY ) {
+        rc = new iRect(nStX, nEdX, nStY, nEdY);
+    }
+
+};
+
+
 /// <summary>預設存在的 Channel Type</summary>
 
 public partial class GameDataManager 
@@ -105,11 +121,14 @@ public partial class GameDataManager
 		ItemPool  = new List<int>();//
 
 		GroupPool = new Dictionary< int , int >();			//  <leader char id , leader char ident>
-		SkillDataCachePool = new Dictionary< int , cSkillData >();		
+		SkillDataCachePool = new Dictionary< int , cSkillData >();
 
-	}
 
-	private static GameDataManager instance;
+        EvtBlockPool = new List<cEvtBlock>();        // list of event block
+
+    }
+
+private static GameDataManager instance;
 	public static GameDataManager Instance
 	{
 		get 
@@ -139,8 +158,9 @@ public partial class GameDataManager
 		EvtDonePool.Clear();
 		GroupPool.Clear();
 
-		// special reset
-		nSerialNO = 0;
+        EvtBlockPool.Clear();
+        // special reset
+        nSerialNO = 0;
 	}
 
 	public void EndStage()
@@ -207,54 +227,7 @@ public partial class GameDataManager
 
 	// Camp
 	public _CAMP nActiveCamp{ get; set; }  // 
-
-
-	// Camp
-//	public Dictionary< _CAMP , cCamp > CampPool;			// add Camp
-//	public cCamp GetCamp( _CAMP nCampID )
-//	{
-//		if( CampPool.ContainsKey( nCampID ) )
-//		{
-//			return CampPool[ nCampID ];
-//		}
-//		return null;
-//	}
-//
-//	public void AddCampMember( _CAMP nCampID , int nMemIdent )
-//	{
-//		if( CampPool.ContainsKey( nCampID ) ){
-//			cCamp unit = CampPool[ nCampID ];
-//			if( unit != null ){
-//				if( unit.memLst.Contains( nMemIdent ) == false  )
-//				{
-//					unit.memLst.Add( nMemIdent );
-//				}
-//			}
-//		}
-//		else{
-//			cCamp unit = new cCamp();
-//			unit.CampID = nCampID;
-//			unit.memLst.Add( nMemIdent );
-//			CampPool.Add( nCampID , unit );
-//		}
-//		// find unit to set camp
-//		cUnitData data = GetUnitDateByIdent ( nMemIdent );
-//		if (data != null) {
-//			data.eCampID = nCampID;
-//		}
-//
-//
-//	}
-//	public void DelCampMember( _CAMP nCampID , int nMemIdent )
-//	{
-//		if( CampPool.ContainsKey( nCampID ) ){
-//			cCamp unit = CampPool[ nCampID ];
-//			if( unit != null )
-//			{
-//				unit.memLst.Remove( nMemIdent );
-//			}
-//		}
-//	}
+    
 	public int GetCampNum( _CAMP eCampID )
 	{
 		int cout = 0;
@@ -411,9 +384,32 @@ public partial class GameDataManager
 //			ImportEventPool = new List<int> ();
 //		return ImportEventPool;
 //	}					
+    
+    public List<cEvtBlock> EvtBlockPool;        // list of event block
+    public cEvtBlock RegEvtBlock( int nStX , int nEdX , int nStY, int nEdY , int nEvtID , string sName="" )
+    {
+        cEvtBlock evt = new cEvtBlock(nStX, nEdX, nStY, nEdY );
+        evt.nEvtID = nEvtID;
+        evt.sName = sName;
+        EvtBlockPool.Add(evt);
+        return evt;
+    }
 
+    public bool DelEvtBlock( string sName = "")
+    {
+        foreach (cEvtBlock evt in EvtBlockPool)
+        {
+            if( evt.sName == sName)
+            {
+                EvtBlockPool.Remove( evt );
+                return true;
+            }
 
-	public List<int>			ItemPool;  //
+        }        
+        return false;
+    }
+
+    public List<int>			ItemPool;  //
 	public void AddItemtoBag( int nItemID )
 	{
 		if (ItemPool == null) {
@@ -884,8 +880,29 @@ public partial class GameDataManager
 		return pool;
 	}
 
-	// load from binary;
-	public void ImportStoragePool( List< cUnitSaveData > pool)
+    public List<cBlockSaveData> ExportBlockPool()
+    {
+        List<cBlockSaveData> pool = new List<cBlockSaveData>();
+        foreach ( cEvtBlock b in EvtBlockPool )
+        {
+            cBlockSaveData s = new cBlockSaveData( );
+            s.ID = b.nID;
+            s.StX = b.rc.nStX;
+            s.StY = b.rc.nStY;
+            s.EdX = b.rc.nEdX;
+            s.EdY = b.rc.nEdY;
+            s.EvtID = b.nEvtID;
+            s.Type = b.nType;
+            s.sName = b.sName;
+            pool.Add(s);
+        }
+
+        return pool;
+    }
+
+
+    // load from binary;
+    public void ImportStoragePool( List< cUnitSaveData > pool)
 	{
 		// clear unit data
 		//Panel_StageUI.Instance.in
@@ -907,8 +924,11 @@ public partial class GameDataManager
 		// clear unit data
 		//Panel_StageUI.Instance.in
 		UnitPool.Clear ();
-
-		foreach( cUnitSaveData save in pool ) {
+        if (pool == null)
+        {
+            return;
+        }
+        foreach ( cUnitSaveData save in pool ) {
 			// add to char 
 			cUnitData data = CreateCharbySaveData( save  , true );
 			if( data != null ){
@@ -919,7 +939,28 @@ public partial class GameDataManager
 		}
 	}
 
-	public void SetBGMPhase( int nPhase )
+    public void ImportBlockPool(List<cBlockSaveData> pool)
+    {
+        // clear unit data
+        EvtBlockPool.Clear();
+        if (pool == null)
+        {
+            return;
+        }
+
+        foreach (cBlockSaveData save in pool)
+        {
+            // add to char 
+            cEvtBlock evt = new cEvtBlock( save.StX , save.StY , save.EdX , save.EdY );
+            evt.nID = save.ID;
+            evt.nEvtID = save.EvtID;
+            evt.nType = save.Type;
+            evt.sName = save.sName;
+            EvtBlockPool.Add( evt );
+        }
+    }
+
+    public void SetBGMPhase( int nPhase )
 	{
 		// 0-正常 , 1-勝利 , 2-緊張 , 3-悲壯 ,4-壓迫
 		if( nPhase < 0 || nPhase >9)

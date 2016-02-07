@@ -24,13 +24,15 @@ public class MyScript {
 
 	//List<cHitResult> CacheHitResultPool;
 	public static bool bParsing = false;
+    public static int nCheckIdent= 0;   // 指定檢查 執行事件者
 
-	public bool CheckEventCondition( CTextLine line  )
+    public bool CheckEventCondition( CTextLine line  )
 	{
 		if( line == null )
 			return false;
-		
-		List<cTextFunc> funcList =line.GetFuncList();
+      
+
+        List<cTextFunc> funcList =line.GetFuncList();
 		foreach( cTextFunc func in funcList )
 		{
 			if( func.sFunc == "COMBAT"  )
@@ -168,7 +170,13 @@ public class MyScript {
                         return false;
                     }
                 }
-
+                else if (func.sFunc == "TRIG_CHAR")
+                {
+                    if (ConditionTrigChar(func.I(0)) == false)
+                    {
+                        return false;
+                    }
+                }
                 else if (func.sFunc == "COUNT")
                 {
                     _CAMP campid = (_CAMP)func.I(0);
@@ -189,14 +197,21 @@ public class MyScript {
 		return true;
 	}
 
-	// Check event
-	public bool CheckEventCanRun( STAGE_EVENT evt )
+    public bool IsCheckIdent(int nIdent)
+    {
+        return (nCheckIdent == 0) || (nCheckIdent == nIdent);
+    }
+
+    // Check event
+    public bool CheckEventCanRun(STAGE_EVENT evt, int checkIdent = 0 )
 	{
 		// don't check during cmding
 		if (cCMD.Instance.eCMDSTATUS != _CMD_STATUS._NONE)
 			return false;
 
-		cTextArray sCond = new cTextArray( );
+        nCheckIdent = checkIdent; // check target
+
+          cTextArray sCond = new cTextArray( );
 		sCond.SetText( evt.s_CONDITION );
 		// check all line . if one line success . this event check return true
 		
@@ -305,6 +320,8 @@ public class MyScript {
 		foreach( KeyValuePair< int , cUnitData > pair in GameDataManager.Instance.UnitPool ){
             if (pair.Value.n_CharID != nCharID)
                 continue;
+          
+
             if (nCampID == -1) {
                 return false;
             }            
@@ -338,10 +355,10 @@ public class MyScript {
 		foreach( KeyValuePair< int , cUnitData > pair in GameDataManager.Instance.UnitPool ){
 			if( pair.Value.eCampID != nCampID )
 				continue;
-			if( pair.Value.n_CharID != nCharID )
-				continue;
 			
-			return true;
+            if (!IsCheckIdent(pair.Value.n_Ident))
+                continue;
+            return true;
 		}  
 		return false;
 	}
@@ -506,7 +523,18 @@ public class MyScript {
     {
         return ConditionInPos(nChar1,x1,y1) == false;         
     }
-    
+
+    public bool ConditionTrigChar(int nChar1)
+    {
+        if (nCheckIdent == 0)
+            return false;
+
+        cUnitData unit = GameDataManager.Instance.GetUnitDateByIdent( nCheckIdent );
+        if (unit != null) {
+            return (unit.n_CharID == nChar1);
+        }
+        return false;
+    }
 
     public bool ConditionCount(int campid , string op , int nNum )
     {       
@@ -575,428 +603,468 @@ public class MyScript {
 		List<cTextFunc> funcList =line.GetFuncList();
 		foreach( cTextFunc func in funcList )
 		{
-			if( func.sFunc == "POPCHAR" || func.sFunc == "POPC" )
-			{
-				StagePopUnitEvent evt = new StagePopUnitEvent ();
-				evt.eCamp   = _CAMP._PLAYER;
-				evt.nCharID = func.I( 0 );
-				evt.nX		= func.I( 1 );
-				evt.nY		= func.I( 2 );
-				evt.nValue1 = func.I( 3 ); // pop num
+            if (func.sFunc == "POPCHAR" || func.sFunc == "POPC")
+            {
+                StagePopUnitEvent evt = new StagePopUnitEvent();
+                evt.eCamp = _CAMP._PLAYER;
+                evt.nCharID = func.I(0);
+                evt.nX = func.I(1);
+                evt.nY = func.I(2);
+                evt.nValue1 = func.I(3); // pop num
                 evt.nRadius = func.I(4); // random range
 
-                Panel_StageUI.Instance.OnStagePopUnitEvent( evt ); 
-				//GameEventManager.DispatchEvent ( evt );
-			}
-			else if( func.sFunc == "POPMOB" || func.sFunc == "POPM" )
-			{
-				StagePopUnitEvent evt = new StagePopUnitEvent ();
-				evt.eCamp   = _CAMP._ENEMY;
-				evt.nCharID = func.I( 0 );
-				evt.nX		= func.I( 1 );
-				evt.nY		= func.I( 2 );
-				evt.nValue1 = func.I( 3 ); // pop num
+                Panel_StageUI.Instance.OnStagePopUnitEvent(evt);
+                //GameEventManager.DispatchEvent ( evt );
+            }
+            else if (func.sFunc == "POPMOB" || func.sFunc == "POPM")
+            {
+                StagePopUnitEvent evt = new StagePopUnitEvent();
+                evt.eCamp = _CAMP._ENEMY;
+                evt.nCharID = func.I(0);
+                evt.nX = func.I(1);
+                evt.nY = func.I(2);
+                evt.nValue1 = func.I(3); // pop num
                 evt.nRadius = func.I(4); // random range
                 //test code 
-                Panel_StageUI.Instance.OnStagePopUnitEvent( evt ); 
-				//GameEventManager.DispatchEvent ( evt );
-			}
-			else if( func.sFunc == "POPFRIEND" || func.sFunc == "POPF" )
-			{
-				StagePopUnitEvent evt = new StagePopUnitEvent ();
-				evt.eCamp   = _CAMP._FRIEND;
-				evt.nCharID = func.I( 0 );
-				evt.nX		= func.I( 1 );
-				evt.nY		= func.I( 2 );
-				evt.nValue1 = func.I( 3 ); // pop num
+                Panel_StageUI.Instance.OnStagePopUnitEvent(evt);
+                //GameEventManager.DispatchEvent ( evt );
+            }
+            else if (func.sFunc == "POPFRIEND" || func.sFunc == "POPF")
+            {
+                StagePopUnitEvent evt = new StagePopUnitEvent();
+                evt.eCamp = _CAMP._FRIEND;
+                evt.nCharID = func.I(0);
+                evt.nX = func.I(1);
+                evt.nY = func.I(2);
+                evt.nValue1 = func.I(3); // pop num
                 evt.nRadius = func.I(4); // random range
                 //test code 
-                Panel_StageUI.Instance.OnStagePopUnitEvent( evt ); 
-				//GameEventManager.DispatchEvent ( evt );
-			}
-			else if( func.sFunc == "POP" )
-			{
-				StagePopUnitEvent evt = new StagePopUnitEvent ();
-				evt.eCamp 	= (_CAMP)func.I( 0 );
-				evt.nCharID = func.I( 1 );
-				evt.nX		= func.I( 2 );
-				evt.nY		= func.I( 3 );
-				evt.nValue1 = func.I( 4 ); // pop num
+                Panel_StageUI.Instance.OnStagePopUnitEvent(evt);
+                //GameEventManager.DispatchEvent ( evt );
+            }
+            else if (func.sFunc == "POP")
+            {
+                StagePopUnitEvent evt = new StagePopUnitEvent();
+                evt.eCamp = (_CAMP)func.I(0);
+                evt.nCharID = func.I(1);
+                evt.nX = func.I(2);
+                evt.nY = func.I(3);
+                evt.nValue1 = func.I(4); // pop num
                 evt.nRadius = func.I(5); // random range
-                Panel_StageUI.Instance.OnStagePopUnitEvent( evt ); 
-				//GameEventManager.DispatchEvent ( evt );
+                Panel_StageUI.Instance.OnStagePopUnitEvent(evt);
+                //GameEventManager.DispatchEvent ( evt );
 
-			}
-			else if( func.sFunc == "POPGROUP" || func.sFunc == "POPG" )
-			{
-				StagePopGroupEvent evt = new StagePopGroupEvent ();
-				//evt.eCamp 	= (_CAMP)func.I( 0 );
+            }
+            else if (func.sFunc == "POPGROUP" || func.sFunc == "POPG")
+            {
+                StagePopGroupEvent evt = new StagePopGroupEvent();
+                //evt.eCamp 	= (_CAMP)func.I( 0 );
 
-				evt.nCharID = func.I( 0 );
-				evt.nLeaderCharID = func.I( 1 );
-				evt.stX		= func.I( 2 );
-				evt.stY		= func.I( 3 );
-				evt.edX		= func.I( 4 );
-				evt.edY		= func.I( 5 );
-				evt.nPopType = func.I( 6 ); // pop num
-				Panel_StageUI.Instance.OnStagePopGroupEvent( evt ); 
-				//GameEventManager.DispatchEvent ( evt );
-				
-			}
-			else if( func.sFunc == "TALK"  ) // open talkui
-			{
-				#if UNITY_EDITOR
-				//	return ;
-				#endif
-				int nID = func.I( 0 );
-				GameSystem.TalkEvent( nID );
-			}
-			else if( func.sFunc == "BGM"  )
-			{
-				int nID = func.I( 0 );
-				// change bgm 
-				GameSystem.PlayBGM ( nID );
-			}
-			else if( func.sFunc == "P_BGM"  )
-			{
-				int nID = func.I( 0 );
-				// change bgm 
-				if( nID> 0 ){
-					GameDataManager.Instance.nPlayerBGM = nID;
-				}
-			}
-			else if( func.sFunc == "E_BGM"  )
-			{
-				int nID = func.I( 0 );
-				// change bgm 
-				if( nID> 0 ){
-					GameDataManager.Instance.nEnemyBGM = nID;
-				}
-			}
-			else if( func.sFunc == "F_BGM"  )
-			{
-				int nID = func.I( 0 );
-				// change bgm 
-				if( nID> 0 ){
-					GameDataManager.Instance.nFriendBGM = nID;
-				}
-			}
+                evt.nCharID = func.I(0);
+                evt.nLeaderCharID = func.I(1);
+                evt.stX = func.I(2);
+                evt.stY = func.I(3);
+                evt.edX = func.I(4);
+                evt.edY = func.I(5);
+                evt.nPopType = func.I(6); // pop num
+                Panel_StageUI.Instance.OnStagePopGroupEvent(evt);
+                //GameEventManager.DispatchEvent ( evt );
+
+            }
+            else if (func.sFunc == "TALK") // open talkui
+            {
+#if UNITY_EDITOR
+                //	return ;
+#endif
+                int nID = func.I(0);
+                GameSystem.TalkEvent(nID);
+            }
+            else if (func.sFunc == "BGM")
+            {
+                int nID = func.I(0);
+                // change bgm 
+                GameSystem.PlayBGM(nID);
+            }
+            else if (func.sFunc == "P_BGM")
+            {
+                int nID = func.I(0);
+                // change bgm 
+                if (nID > 0)
+                {
+                    GameDataManager.Instance.nPlayerBGM = nID;
+                }
+            }
+            else if (func.sFunc == "E_BGM")
+            {
+                int nID = func.I(0);
+                // change bgm 
+                if (nID > 0)
+                {
+                    GameDataManager.Instance.nEnemyBGM = nID;
+                }
+            }
+            else if (func.sFunc == "F_BGM")
+            {
+                int nID = func.I(0);
+                // change bgm 
+                if (nID > 0)
+                {
+                    GameDataManager.Instance.nFriendBGM = nID;
+                }
+            }
 
 
-			else if( func.sFunc == "BGMPHASE"  )
-			{
-				// 0-正常 , 1-勝利 , 2-緊張 , 3-悲壯 ,4-壓迫
-				int nPhase = func.I( 0 );
-				GameDataManager.Instance.SetBGMPhase( nPhase );
-				// play stage bgm
-				Panel_StageUI.Instance.OnStageBGMEvent( new StageBGMEvent()  ); 
-			}
-			else if( func.sFunc == "HELPBGM"  ) // 支援登場
-			{
-				int nID = 130+func.I( 0 );// from 130 - 139
-				GameSystem.PlayBGM ( nID );
-			}
-			else if( func.sFunc == "FORCEBGM"  ) // 敵軍登場
-			{
-				int nID = 140 + func.I( 0 ); // from 140-149
-				GameSystem.PlayBGM ( nID );
-			}
-			else if( func.sFunc == "BOSSBGM"  ) // BOSS FIGHT BGM
-			{
-				int nID = 150 + func.I( 0 ); // from 150-159
-				GameSystem.PlayBGM ( nID );
-			}
-			else if( func.sFunc == "CHARBGM"  ) // 1i z;4
-			{
-				int nCharID = func.I( 0 ); 
-				CHARS pData = ConstDataManager.Instance.GetRow<CHARS>( nCharID ); 
-				if( pData != null ){
-					if( pData.n_BGM != 0 ){
-						GameSystem.PlayBGM ( pData.n_BGM );
-					}
-				}
-			}
+            else if (func.sFunc == "BGMPHASE")
+            {
+                // 0-正常 , 1-勝利 , 2-緊張 , 3-悲壯 ,4-壓迫
+                int nPhase = func.I(0);
+                GameDataManager.Instance.SetBGMPhase(nPhase);
+                // play stage bgm
+                Panel_StageUI.Instance.OnStageBGMEvent(new StageBGMEvent());
+            }
+            else if (func.sFunc == "HELPBGM") // 支援登場
+            {
+                int nID = 130 + func.I(0);// from 130 - 139
+                GameSystem.PlayBGM(nID);
+            }
+            else if (func.sFunc == "FORCEBGM") // 敵軍登場
+            {
+                int nID = 140 + func.I(0); // from 140-149
+                GameSystem.PlayBGM(nID);
+            }
+            else if (func.sFunc == "BOSSBGM") // BOSS FIGHT BGM
+            {
+                int nID = 150 + func.I(0); // from 150-159
+                GameSystem.PlayBGM(nID);
+            }
+            else if (func.sFunc == "CHARBGM") // 1i z;4
+            {
+                int nCharID = func.I(0);
+                CHARS pData = ConstDataManager.Instance.GetRow<CHARS>(nCharID);
+                if (pData != null)
+                {
+                    if (pData.n_BGM != 0)
+                    {
+                        GameSystem.PlayBGM(pData.n_BGM);
+                    }
+                }
+            }
             else if (func.sFunc == "CHARFACE") //變更角色FACE
             {
                 int nCharID = func.I(0); // old
                 int nFaceID = func.I(1); // new 
-                GameDataManager.Instance.SetCharFace(nCharID , nFaceID );
+                GameDataManager.Instance.SetCharFace(nCharID, nFaceID);
             }
 
-            else if( func.sFunc == "SAY" )
-			{
-				TalkSayEvent evt = new TalkSayEvent();
-				//evt.nType  = func.I(0);
-				evt.nChar  = func.I(0);
-				evt.nSayID = func.I(1);
+            else if (func.sFunc == "SAY")
+            {
+                TalkSayEvent evt = new TalkSayEvent();
+                //evt.nType  = func.I(0);
+                evt.nChar = func.I(0);
+                evt.nSayID = func.I(1);
 
-				//Say( func.I(0), func.I(1) );
+                //Say( func.I(0), func.I(1) );
 
-				GameEventManager.DispatchEvent ( evt  );
-			}
-			else if( func.sFunc == "SETCHAR" )
-			{
-				TalkSetCharEvent evt = new TalkSetCharEvent();
-				evt.nType  = func.I(0);
-				evt.nChar  = func.I(1);
-				
-				//Say( func.I(0), func.I(1) );
-				GameEventManager.DispatchEvent ( evt  );
-			}		
-			else if( func.sFunc == "TALKDEAD" )
-			{
-				TalkDeadEvent evt = new TalkDeadEvent();			
-				evt.nChar  = func.I(0);			
-				GameEventManager.DispatchEvent ( evt  );
-				// del unit . if it on stage
-				Panel_StageUI.Instance.OnStageUnitDeadEvent( func.I(0)); // del unit auto
-			}		
-			else if( func.sFunc == "TALKSHAKE" )
-			{
-				TalkShakeEvent evt = new TalkShakeEvent();			
-				evt.nChar  = func.I(0);
-				GameEventManager.DispatchEvent ( evt  );
-			}		
-			else if( func.sFunc == "BACKGROUND" || func.sFunc == "TALKBG" ) 
-			{
-				TalkBackGroundEvent evt = new TalkBackGroundEvent();
-				//evt.nType = func.I(0);
-				evt.nBackGroundID = func.I(0);
-				GameEventManager.DispatchEvent ( evt  );
-			}
-			else if( func.sFunc  == "SAYEND") 
-			{
-				TalkSayEndEvent evt = new TalkSayEndEvent();
-				//evt.nType = func.I(0);
-				evt.nChar = func.I(0);
-				GameEventManager.DispatchEvent ( evt  );
-//				CloseBox( func.I(0), func.I(1) );
-			}
-			// stage event
-			else if( func.sFunc  == "STAGEBGM") 
-			{
-				Panel_StageUI.Instance.OnStageBGMEvent( new StageBGMEvent()  ); 
-				//GameEventManager.DispatchEvent ( new StageBGMEvent()  );				
-			}
+                GameEventManager.DispatchEvent(evt);
+            }
+            else if (func.sFunc == "SETCHAR")
+            {
+                TalkSetCharEvent evt = new TalkSetCharEvent();
+                evt.nType = func.I(0);
+                evt.nChar = func.I(1);
 
-			else if( func.sFunc  == "ATTACK")  //  pop a group of mob
-			{
-				// this is bad idea
-			
-					StageBattleAttackEvent evt = new StageBattleAttackEvent();
-					evt.nAtkCharID = func.I(0);
-					evt.nDefCharID = func.I(1);
-					evt.nAtkSkillID = func.I(2);
-                    evt.nNum        = func.I(3);
-                    evt.nResult = func.I(4); // 0- normal , 1- miss
-                Panel_StageUI.Instance.OnStageBattleAttackEvent( evt  ); 
-					//GameEventManager.DispatchEvent ( evt  );
-			
-			}
-//			else if( func.sFunc  == "CAST")  //  pop a group of mob
-//			{
-//				// this is bad idea
-//				
-//				StageBattleCastEvent evt = new StageBattleCastEvent();
-//				evt.nAtkCharID = func.I(0);
-//				evt.nDefCharID = func.I(1);
-//				evt.nAtkSkillID = func.I(2);
-//				Panel_StageUI.Instance.OnStageBattleCastEvent( evt  ); 
-//				//GameEventManager.DispatchEvent ( evt  );
-//				
-//			}
+                //Say( func.I(0), func.I(1) );
+                GameEventManager.DispatchEvent(evt);
+            }
+            else if (func.sFunc == "TALKDEAD")
+            {
+                TalkDeadEvent evt = new TalkDeadEvent();
+                evt.nChar = func.I(0);
+                GameEventManager.DispatchEvent(evt);
+                // del unit . if it on stage
+                Panel_StageUI.Instance.OnStageUnitDeadEvent(func.I(0)); // del unit auto
+            }
+            else if (func.sFunc == "TALKSHAKE")
+            {
+                TalkShakeEvent evt = new TalkShakeEvent();
+                evt.nChar = func.I(0);
+                GameEventManager.DispatchEvent(evt);
+            }
+            else if (func.sFunc == "BACKGROUND" || func.sFunc == "TALKBG")
+            {
+                TalkBackGroundEvent evt = new TalkBackGroundEvent();
+                //evt.nType = func.I(0);
+                evt.nBackGroundID = func.I(0);
+                GameEventManager.DispatchEvent(evt);
+            }
+            else if (func.sFunc == "SAYEND")
+            {
+                TalkSayEndEvent evt = new TalkSayEndEvent();
+                //evt.nType = func.I(0);
+                evt.nChar = func.I(0);
+                GameEventManager.DispatchEvent(evt);
+                //				CloseBox( func.I(0), func.I(1) );
+            }
+            // stage event
+            else if (func.sFunc == "STAGEBGM")
+            {
+                Panel_StageUI.Instance.OnStageBGMEvent(new StageBGMEvent());
+                //GameEventManager.DispatchEvent ( new StageBGMEvent()  );				
+            }
 
-			else if( func.sFunc  == "CAST")  //  pop a group of mob
-			{
-				// this is bad idea
-				
-				StageBattleCastEvent evt = new StageBattleCastEvent();
-				evt.nAtkCharID = func.I(0);
-				evt.nDefCharID = func.I(1);
-				evt.nAtkSkillID = func.I(2);
+            else if (func.sFunc == "ATTACK")  //  pop a group of mob
+            {
+                // this is bad idea
 
-				Panel_StageUI.Instance.OnStageBattleCastEvent( evt  ); 
-				//GameEventManager.DispatchEvent ( evt  );
-				
-			}
+                StageBattleAttackEvent evt = new StageBattleAttackEvent();
+                evt.nAtkCharID = func.I(0);
+                evt.nDefCharID = func.I(1);
+                evt.nAtkSkillID = func.I(2);
+                evt.nNum = func.I(3);
+                evt.nResult = func.I(4); // 0- normal , 1- miss
+                Panel_StageUI.Instance.OnStageBattleAttackEvent(evt);
+                //GameEventManager.DispatchEvent ( evt  );
 
-			else if( func.sFunc  == "MOVETOUNIT")  //  pop a group of mob
-			{
-				StageMoveToUnitEvent evt = new StageMoveToUnitEvent();
-				evt.nAtkCharID = func.I(0);
-				evt.nDefCharID = func.I(1);
-				//evt.nAtkSkillID = func.I(2);
-				Panel_StageUI.Instance.OnStageMoveToUnitEvent( evt  ); 
-				//GameEventManager.DispatchEvent ( evt  );
-			}
-			else if( func.sFunc  == "MOVE")  //  pop a group of mob
-			{
-				StageCharMoveEvent evt = new StageCharMoveEvent();
-				evt.nIdent =0;
-				evt.nCharID = func.I(0);
-				evt.nX = func.I(1);
-				evt.nY = func.I(2);
-				//evt.nAtkSkillID = func.I(2);
-				Panel_StageUI.Instance.OnStageCharMoveEvent( evt  ); 
-				//GameEventManager.DispatchEvent ( evt  );
+            }
+            //			else if( func.sFunc  == "CAST")  //  pop a group of mob
+            //			{
+            //				// this is bad idea
+            //				
+            //				StageBattleCastEvent evt = new StageBattleCastEvent();
+            //				evt.nAtkCharID = func.I(0);
+            //				evt.nDefCharID = func.I(1);
+            //				evt.nAtkSkillID = func.I(2);
+            //				Panel_StageUI.Instance.OnStageBattleCastEvent( evt  ); 
+            //				//GameEventManager.DispatchEvent ( evt  );
+            //				
+            //			}
 
-			}
-			else if( func.sFunc  == "SOUND")  // PLAY SOUND
-			{
-                Panel_StageUI.Instance.OnStagePlaySound( func.S(0) );
-			}	
-			else if( func.sFunc  == "FX")  // PLAY FX
-			{
-				Panel_StageUI.Instance.OnStagePlayFX( func.I(0) , func.I(1)  );
-			}
+            else if (func.sFunc == "CAST")  //  pop a group of mob
+            {
+                // this is bad idea
+
+                StageBattleCastEvent evt = new StageBattleCastEvent();
+                evt.nAtkCharID = func.I(0);
+                evt.nDefCharID = func.I(1);
+                evt.nAtkSkillID = func.I(2);
+
+                Panel_StageUI.Instance.OnStageBattleCastEvent(evt);
+                //GameEventManager.DispatchEvent ( evt  );
+
+            }
+
+            else if (func.sFunc == "MOVETOUNIT")  //  pop a group of mob
+            {
+                StageMoveToUnitEvent evt = new StageMoveToUnitEvent();
+                evt.nAtkCharID = func.I(0);
+                evt.nDefCharID = func.I(1);
+                //evt.nAtkSkillID = func.I(2);
+                Panel_StageUI.Instance.OnStageMoveToUnitEvent(evt);
+                //GameEventManager.DispatchEvent ( evt  );
+            }
+            else if (func.sFunc == "MOVE")  //  pop a group of mob
+            {
+                StageCharMoveEvent evt = new StageCharMoveEvent();
+                evt.nIdent = 0;
+                evt.nCharID = func.I(0);
+                evt.nX = func.I(1);
+                evt.nY = func.I(2);
+                //evt.nAtkSkillID = func.I(2);
+                Panel_StageUI.Instance.OnStageCharMoveEvent(evt);
+                //GameEventManager.DispatchEvent ( evt  );
+
+            }
+            else if (func.sFunc == "SOUND")  // PLAY SOUND
+            {
+                Panel_StageUI.Instance.OnStagePlaySound(func.S(0));
+            }
+            else if (func.sFunc == "FX")  // PLAY FX
+            {
+                Panel_StageUI.Instance.OnStagePlayFX(func.I(0), func.I(1));
+            }
             else if (func.sFunc == "POSFX")  // PLAY POSFX
             {
-                Panel_StageUI.Instance.OnStagePosPlayFX(func.I(0), func.I(1) , func.I(2), func.I(3) );
+                Panel_StageUI.Instance.OnStagePosPlayFX(func.I(0), func.I(1), func.I(2), func.I(3));
             }
 
-            else if( func.sFunc  == "ADDBUFF")  // Add buff
-			{
-				Panel_StageUI.Instance.OnStageAddBuff( func.I(0) , func.I(1) , func.I(2) , 0 );
-			}	
-			else if( func.sFunc  == "DELBUFF")  // Add buff
-			{
-				Panel_StageUI.Instance.OnStageAddBuff( func.I(0) , func.I(1) , func.I(2) , 1 );
-			}
-			else if( func.sFunc  == "ADDCAMPBUFF")  // Add buff
-			{
-				Panel_StageUI.Instance.OnStageCampAddBuff( func.I(0) , func.I(1), func.I(2)  , 0 );
-			}	
-			else if( func.sFunc  == "DELCAMPBUFF")  // Add buff
-			{
-				Panel_StageUI.Instance.OnStageCampAddBuff( func.I(0) , func.I(1) , func.I(2) , 1 );
-			}
-			else if( func.sFunc  == "ADDHP")  // Add HP
-			{
-				Panel_StageUI.Instance.OnStageAddUnitValue( func.I(0) , 0 , func.F(1) );
-			}
-			else if( func.sFunc  == "ADDDEF")  // Add DEF
-			{
-				Panel_StageUI.Instance.OnStageAddUnitValue( func.I(0) , 1 ,func.F(1) );
-			}
-			else if( func.sFunc  == "ADDMP")  // Add HP
-			{
-				Panel_StageUI.Instance.OnStageAddUnitValue( func.I(0) , 2 , func.F(1) );
-			}
-			else if( func.sFunc  == "ADDSCHOOL")  // Add school
-			{
-				Panel_StageUI.Instance.OnStageAddSchool( func.I(0) , func.I(1), func.I(2) );
-			}
+            else if (func.sFunc == "ADDBUFF")  // Add buff
+            {
+                Panel_StageUI.Instance.OnStageAddBuff(func.I(0), func.I(1), func.I(2), 0);
+            }
+            else if (func.sFunc == "DELBUFF")  // Add buff
+            {
+                Panel_StageUI.Instance.OnStageAddBuff(func.I(0), func.I(1), func.I(2), 1);
+            }
+            else if (func.sFunc == "ADDCAMPBUFF")  // Add buff
+            {
+                Panel_StageUI.Instance.OnStageCampAddBuff(func.I(0), func.I(1), func.I(2), 0);
+            }
+            else if (func.sFunc == "DELCAMPBUFF")  // Add buff
+            {
+                Panel_StageUI.Instance.OnStageCampAddBuff(func.I(0), func.I(1), func.I(2), 1);
+            }
+            else if (func.sFunc == "ADDHP")  // Add HP
+            {
+                Panel_StageUI.Instance.OnStageAddUnitValue(func.I(0), 0, func.F(1));
+            }
+            else if (func.sFunc == "ADDDEF")  // Add DEF
+            {
+                Panel_StageUI.Instance.OnStageAddUnitValue(func.I(0), 1, func.F(1));
+            }
+            else if (func.sFunc == "ADDMP")  // Add HP
+            {
+                Panel_StageUI.Instance.OnStageAddUnitValue(func.I(0), 2, func.F(1));
+            }
+            else if (func.sFunc == "ADDSCHOOL")  // Add school
+            {
+                Panel_StageUI.Instance.OnStageAddSchool(func.I(0), func.I(1), func.I(2));
+            }
             else if (func.sFunc == "SETHP")  // Add HP
             {
-                Panel_StageUI.Instance.OnStageSetUnitValue(func.I(0), 0 , func.F(1) , func.I(2));
+                Panel_StageUI.Instance.OnStageSetUnitValue(func.I(0), 0, func.F(1), func.I(2));
             }
 
-            else if( func.sFunc  == "RELIVE")  // relive
-			{
-				Panel_StageUI.Instance.OnStageRelive( func.I(0) );
-			}
-			else if( func.sFunc  == "UNITDEAD") 
-			{			
-				//int nCharID = func.I( 0 );		
-				Panel_StageUI.Instance.OnStageUnitDeadEvent( func.I(0), func.I(1));
+            else if (func.sFunc == "RELIVE")  // relive
+            {
+                Panel_StageUI.Instance.OnStageRelive(func.I(0));
+            }
+            else if (func.sFunc == "UNITDEAD")
+            {
+                //int nCharID = func.I( 0 );		
+                Panel_StageUI.Instance.OnStageUnitDeadEvent(func.I(0), func.I(1));
 
-				// dont close auto.
-			//	TalkDeadEvent evt = new TalkDeadEvent();			
-			//	evt.nChar  = nCharID;			
-			//	GameEventManager.DispatchEvent ( evt  );
+                // dont close auto.
+                //	TalkDeadEvent evt = new TalkDeadEvent();			
+                //	evt.nChar  = nCharID;			
+                //	GameEventManager.DispatchEvent ( evt  );
 
-			}
-			else if( func.sFunc  == "DELUNIT") 
-			{			
-				StageDelUnitEvent evt = new StageDelUnitEvent ();
-				//evt.eCamp = (_CAMP)func.I( 0 );
-				evt.nCharID = func.I( 0 );
-				evt.nDelType = 1; // always is leave mode
+            }
+            else if (func.sFunc == "DELUNIT")
+            {
+                if (nCheckIdent > 0)
+                {
+                    cUnitData data = GameDataManager.Instance.GetUnitDateByIdent(nCheckIdent);
+                    if( data != null )
+                    {
+                        StageDelUnitByIdentEvent evt = new StageDelUnitByIdentEvent();
+                        evt.nIdent = nCheckIdent;
+                        Panel_StageUI.Instance.OnStageDelUnitByIdentEvent(evt);
+
+                        if (data.n_CharID!= 0)
+                        {
+                            TalkSayEndEvent tlkevt = new TalkSayEndEvent();
+                            tlkevt.nChar = data.n_CharID;
+                            GameEventManager.DispatchEvent(tlkevt);
+                        }
+
+                    }
+                }
+                else
+                {
+
+                    StageDelUnitEvent evt = new StageDelUnitEvent();
+                    //evt.eCamp = (_CAMP)func.I( 0 );
+                    evt.nCharID = func.I(0);
+                    evt.nDelType = 1; // always is leave mode
 
 
-				Panel_StageUI.Instance.OnStageDelUnitEvent( evt  ); 
-				//GameEventManager.DispatchEvent ( evt );
+                    Panel_StageUI.Instance.OnStageDelUnitEvent(evt);
+                    //GameEventManager.DispatchEvent ( evt );
 
-				// say end  event
-				if( evt.nCharID != 0 ){
-					TalkSayEndEvent tlkevt = new TalkSayEndEvent();				
-					tlkevt.nChar = evt.nCharID;
-					GameEventManager.DispatchEvent ( tlkevt  );
-				}
+                    // say end  event
+                    if (evt.nCharID != 0)
+                    {
+                        TalkSayEndEvent tlkevt = new TalkSayEndEvent();
+                        tlkevt.nChar = evt.nCharID;
+                        GameEventManager.DispatchEvent(tlkevt);
+                    }
+                }
+            }
+           
 
-			}
-			else if( func.sFunc  == "JOIN") 
-			{		
-				int nCharID = func.I( 0 );
-				GameDataManager.Instance.EnableStorageUnit(nCharID, true );
+            else if (func.sFunc == "JOIN")
+            {
+                int nCharID = func.I(0);
+                GameDataManager.Instance.EnableStorageUnit(nCharID, true);
                 GameDataManager.Instance.EnableStageUnit(nCharID, true);
             }
-			else if( func.sFunc  == "LEAVE") 
-			{			
-				int nCharID = func.I( 0 );
-				GameDataManager.Instance.EnableStorageUnit(nCharID, false );
-                GameDataManager.Instance.EnableStageUnit(nCharID, false );
+            else if (func.sFunc == "LEAVE")
+            {
+                int nCharID = func.I(0);
+                GameDataManager.Instance.EnableStorageUnit(nCharID, false);
+                GameDataManager.Instance.EnableStageUnit(nCharID, false);
             }
-			//不能刪除 等待執行 event. 會造成 讀檔上的麻煩
-//			else if( func.sFunc  == "DELEVENT") 
-//			{
-//				Panel_StageUI.Instance.OnStageDelEventEvent( func.I( 0 ) );			
-//			}
-			else if( func.sFunc  == "UNITCAMP") //改變單位 陣營
-			{			
-				int nCharid =  func.I(0);
-				int nCampid = func.I(1);
+            //不能刪除 等待執行 event. 會造成 讀檔上的麻煩
+            //			else if( func.sFunc  == "DELEVENT") 
+            //			{
+            //				Panel_StageUI.Instance.OnStageDelEventEvent( func.I( 0 ) );			
+            //			}
+            else if (func.sFunc == "UNITCAMP") //改變單位 陣營
+            {
+                int nCharid = func.I(0);
+                int nCampid = func.I(1);
 
-				Panel_StageUI.Instance.OnStageUnitCampEvent( nCharid , (_CAMP)nCampid );
-			}
-			else if( func.sFunc  == "POPMARK" ) //stage地圖上顯示 mark
-			{
-				Panel_StageUI.Instance.OnStagePopMarkEvent( func.I(0),func.I(1),func.I(2),func.I(3) );
-			}
-			else if( func.sFunc  == "CAMERACENTER") 
-			{
-				Panel_StageUI.Instance.OnStageCameraCenterEvent( func.I(0),func.I(1) );
-			}
-			else if( func.sFunc  == "SHAKECAMERA") 
-			{
-				//Panel_StageUI.Instance.OnStageCameraCenterEvent( func.I(0),func.I(1) );
-				GameSystem.ShakeCamera( func.F(0)  );
+                Panel_StageUI.Instance.OnStageUnitCampEvent(nCharid, (_CAMP)nCampid);
+            }
+            else if (func.sFunc == "POPMARK") //stage地圖上顯示 mark
+            {
+                Panel_StageUI.Instance.OnStagePopMarkEvent(func.I(0), func.I(1), func.I(2), func.I(3));
+            }
+            else if (func.sFunc == "CAMERACENTER")
+            {
+                Panel_StageUI.Instance.OnStageCameraCenterEvent(func.I(0), func.I(1));
+            }
+            else if (func.sFunc == "SHAKECAMERA")
+            {
+                //Panel_StageUI.Instance.OnStageCameraCenterEvent( func.I(0),func.I(1) );
+                GameSystem.ShakeCamera(func.F(0));
 
-			}
-			else if( func.sFunc  == "SAI") //設定索敵AI
-			{
-				GameDataManager.Instance.SetUnitSearchAI( func.I(0),(_AI_SEARCH)func.I(1),func.I(2),func.I(3) ); 
-			}
-			else if( func.sFunc  == "CAI") // 改變單位攻擊AI
-			{
-				GameDataManager.Instance.SetUnitComboAI( func.I(0),(_AI_COMBO)func.I(1) ); 
-			}
-			else if( func.sFunc  == "WIN") 
-			{
-				PanelManager.Instance.OpenUI(  Panel_Win.Name );
-				//Panel_StageUI.Instance.bIsStageEnd = true;
-			}
-			else if( func.sFunc  == "LOST") 
-			{
-				PanelManager.Instance.OpenUI(  Panel_Lost.Name );
-				//Panel_StageUI.Instance.bIsStageEnd = true;
-			}
-			else if( func.sFunc  == "ADDSTAR")  // add star
-			{
-				int nStar = func.I(0);
-//				if( nStar == 0 )
-//					nStar += 1 ;
-//				GameDataManager.Instance.nStars +=nStar;
-//				string sMsg = string.Format( "星星+ {0}" , nStar );
-//				BattleManager.Instance.ShowBattleMsg( null , sMsg );
-				//ShowBattleMsg.
-				Panel_StageUI.Instance.AddStar( nStar );
+            }
+            else if (func.sFunc == "SAI") //設定索敵AI
+            {
+                GameDataManager.Instance.SetUnitSearchAI(func.I(0), (_AI_SEARCH)func.I(1), func.I(2), func.I(3));
+            }
+            else if (func.sFunc == "CAI") // 改變單位攻擊AI
+            {
+                GameDataManager.Instance.SetUnitComboAI(func.I(0), (_AI_COMBO)func.I(1));
+            }
+            else if (func.sFunc == "WIN")
+            {
+                PanelManager.Instance.OpenUI(Panel_Win.Name);
+                //Panel_StageUI.Instance.bIsStageEnd = true;
+            }
+            else if (func.sFunc == "LOST")
+            {
+                PanelManager.Instance.OpenUI(Panel_Lost.Name);
+                //Panel_StageUI.Instance.bIsStageEnd = true;
+            }
+            else if (func.sFunc == "ADDSTAR")  // add star
+            {
+                int nStar = func.I(0);
+                //				if( nStar == 0 )
+                //					nStar += 1 ;
+                //				GameDataManager.Instance.nStars +=nStar;
+                //				string sMsg = string.Format( "星星+ {0}" , nStar );
+                //				BattleManager.Instance.ShowBattleMsg( null , sMsg );
+                //ShowBattleMsg.
+                Panel_StageUI.Instance.AddStar(nStar);
 
-			}
-			else 
-			{
-				Debug.LogError( string.Format( "Error-Can't find script func '{0}'" , func.sFunc ) );
-			}
+            }
+            else if (func.sFunc == "REGBLOCK")  // REG BLOCK EVENT
+            {
+                GameDataManager.Instance.RegEvtBlock(func.I(0), func.I(1), func.I(2), func.I(3), func.I(4), func.S(5));
+                Panel_StageUI.Instance.OnStagePopMarkEvent(func.I(0), func.I(1), func.I(2), func.I(3));
+            }
+            else if (func.sFunc == "DELBLOCK")  // un reg BLOCK EVENT
+            {
+                GameDataManager.Instance.DelEvtBlock( func.S(0));
+                Panel_StageUI.Instance.ClearMarkCellEffect();
+                //nel_StageUI.Instance.OnStagePopMarkEvent(func.I(0), func.I(1), func.I(2), func.I(3));
+            }
+            else
+            {
+                Debug.LogError(string.Format("Error-Can't find script func '{0}'", func.sFunc));
+            }
 		}
 		bParsing = false;
 	}
