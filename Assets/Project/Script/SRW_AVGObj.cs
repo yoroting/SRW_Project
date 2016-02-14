@@ -9,6 +9,7 @@ public class SRW_AVGObj : MonoBehaviour {
     public bool bIsZoom = true;    
     public bool bIsShaking = false;
 	public bool bIsDeading = false;
+    public bool bIsReplacing = false;
     public int nLayout;
 
 
@@ -69,8 +70,10 @@ public class SRW_AVGObj : MonoBehaviour {
 			return false;
 		if (bIsDeading)
 			return false;
-		
-		return true;
+        if(bIsReplacing)
+            return false;
+
+        return true;
 	}
 	public void ChangeFace( int nCharId )
 	{
@@ -110,8 +113,82 @@ public class SRW_AVGObj : MonoBehaviour {
 					}
 			}
 	}
-	
-	public void ChangeLayout( int layout = 0 )
+
+    public void ReplaceFace(int nCharId)
+    {
+        if (nCharId == CharID)
+        {
+            return;
+        }
+        CharID = nCharId;
+      //  int nFaceID = GameDataManager.Instance.GetUnitFaceID(CharID);
+       
+
+            NGUITools.SetActive(this.gameObject, true);
+            
+           
+            //tex.MakePixelPerfect();
+            bIsReplacing = true;
+            TweenRotation twr = gameObject.AddComponent<TweenRotation>();  //TweenRotation.Begin<TweenRotation>(this.gameObject, 0.2f);
+            if (twr != null)
+            {
+                twr.duration = 0.3f;
+                twr.SetStartToCurrentValue();
+                twr.to = new Vector3(0.0f, 270.0f, 0.0f);//Math.PI
+                MyTool.TweenSetOneShotOnFinish(twr, OnTwReplaceFace); // for once only
+              
+            }
+            TweenRotation twr2 = gameObject.AddComponent<TweenRotation>();  //TweenRotation.Begin<TweenRotation>(this.gameObject, 0.2f);
+            if (twr2 != null)
+            {
+                twr2.delay    = 0.3f;
+                twr2.duration = 0.4f;
+                twr2.from = new Vector3(0.0f, 270.0f, 0.0f);//Math.PI
+                twr2.to = new Vector3(0.0f, 360.0f, 0.0f);//Math.PI
+                MyTool.TweenSetOneShotOnFinish(twr2, OnTwReplaceRotateEnd); // for once only
+
+            }
+
+            // twR.from = Vector3.n();
+            //TweenHeight twH = TweenHeight.Begin<TweenHeight>(this.gameObject, 0.2f);
+            //if (twH)
+            //{
+            //    twH.from = 0;
+            //    twH.to = _FaceTexObj.height;
+            //    twH.SetOnFinished(OnTweenNotifyEnd);
+            //    nTweenObjCount++;
+            //}
+
+    }
+
+    public void OnTwReplaceFace()
+    {
+        if (_FaceTexObj != null)
+        {
+            NGUITools.SetActive(_FaceTexObj.gameObject, true);
+            int nFaceID = GameDataManager.Instance.GetUnitFaceID(CharID);
+            if (_FaceTexObj != null)
+            {
+                _FaceTexObj.mainTexture = MyTool.GetCharTexture(nFaceID, 1);
+            }
+        }
+    }
+    public void OnTwReplaceRotateEnd()
+    {
+        // clear all move tw
+        TweenRotation[] tws = gameObject.GetComponents<TweenRotation>();
+        foreach (TweenRotation tw in tws)
+        {
+            Destroy(tw);
+        }
+
+
+        // reset pos
+        gameObject.transform.localRotation = Quaternion.identity;
+        bIsReplacing = false;
+    }
+
+    public void ChangeLayout( int layout = 0 )
 	{  
         //	UITexture tex = GetComponentInChildren<UITexture>();
         //	UILabel lbl = GetComponentInChildren <UILabel> ();

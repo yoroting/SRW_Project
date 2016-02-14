@@ -47,7 +47,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &112118
 GameObject:
   m_ObjectHideFlags: 1
@@ -173,6 +173,7 @@ GameObject:
   - 4: {fileID: 442282}
   - 114: {fileID: 11478972}
   - 114: {fileID: 11439156}
+  - 114: {fileID: 11490396}
   m_Layer: 5
   m_Name: SRW_AVGObj
   m_TagString: Untagged
@@ -272,7 +273,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 107052}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -364, y: -132, z: 0}
+  m_LocalPosition: {x: -449, y: -199, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 471446}
@@ -402,7 +403,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 167490}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 20, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 481386}
@@ -455,7 +456,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 102118}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 403642}
@@ -481,7 +482,7 @@ Rigidbody:
   serializedVersion: 2
   m_Mass: 1
   m_Drag: 0
-  m_AngularDrag: .0500000007
+  m_AngularDrag: 0
   m_UseGravity: 0
   m_IsKinematic: 1
   m_Interpolate: 0
@@ -684,7 +685,7 @@ MonoBehaviour:
   mMaterial: {fileID: 0}
   mApplyGradient: 0
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
-  mGradientBottom: {r: .699999988, g: .699999988, b: .699999988, a: 1}
+  mGradientBottom: {r: .111111112, g: .111111112, b: .111111112, a: 1}
   mSpacingX: 0
   mSpacingY: 0
   mUseFloatSpacing: 0
@@ -758,10 +759,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tweenTarget: {fileID: 141488}
-  hover: {r: .882352948, g: .784313738, b: .588235319, a: 1}
-  pressed: {r: .717647076, g: .639215708, b: .482352942, a: 1}
-  disabledColor: {r: .5, g: .5, b: .5, a: 1}
-  duration: .200000003
+  hover: {r: .111111112, g: .111111112, b: .111111112, a: 1}
+  pressed: {r: .111111112, g: .111111112, b: .111111112, a: 1}
+  disabledColor: {r: .111111112, g: .111111112, b: .111111112, a: 1}
+  duration: .111111112
   dragHighlight: 0
   hoverSprite: btm_skip
   pressedSprite: btn_skip_press
@@ -801,33 +802,33 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 120
-  mHeight: 32
+  mWidth: 36
+  mHeight: 160
   mDepth: 15
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 3.75
+  aspectRatio: .111111112
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   mFont: {fileID: 0}
-  mText: New Label
+  mText: "\u4E00\u4E8C\u4E09\u56DB"
   mFontSize: 32
   mFontStyle: 0
-  mAlignment: 0
+  mAlignment: 2
   mEncoding: 1
   mMaxLineCount: 0
-  mEffectStyle: 0
-  mEffectColor: {r: 0, g: 0, b: 0, a: 1}
+  mEffectStyle: 1
+  mEffectColor: {r: 1, g: 1, b: 1, a: 1}
   mSymbols: 1
-  mEffectDistance: {x: 1, y: 1}
-  mOverflow: 0
+  mEffectDistance: {x: 2, y: 2}
+  mOverflow: 3
   mMaterial: {fileID: 0}
   mApplyGradient: 1
-  mGradientTop: {r: 1, g: 1, b: 1, a: 1}
-  mGradientBottom: {r: .699999988, g: .699999988, b: .699999988, a: 1}
+  mGradientTop: {r: .111111112, g: .111111112, b: .111111112, a: 1}
+  mGradientBottom: {r: 0, g: 0, b: 0, a: 1}
   mSpacingX: 0
-  mSpacingY: 0
+  mSpacingY: 8
   mUseFloatSpacing: 0
   mFloatSpacingX: 0
   mFloatSpacingY: 0
@@ -955,6 +956,7 @@ MonoBehaviour:
   bIsZoom: 1
   bIsShaking: 0
   bIsDeading: 0
+  bIsReplacing: 0
   nLayout: 0
 --- !u!114 &11442720
 MonoBehaviour:
@@ -1135,11 +1137,11 @@ MonoBehaviour:
   leftAnchor:
     target: {fileID: 0}
     relative: 0
-    absolute: 0
+    absolute: -2
   rightAnchor:
     target: {fileID: 0}
     relative: 1
-    absolute: 0
+    absolute: 2
   bottomAnchor:
     target: {fileID: 0}
     relative: 0
@@ -1149,15 +1151,15 @@ MonoBehaviour:
     relative: 1
     absolute: 0
   updateAnchors: 1
-  mColor: {r: 0, g: 0, b: 1, a: 1}
+  mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 128
-  mHeight: 40
+  mWidth: 48
+  mHeight: 200
   mDepth: 14
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 3.20000005
+  aspectRatio: .111111112
   mType: 1
   mFillDirection: 4
   mFillAmount: 1
@@ -1169,7 +1171,7 @@ MonoBehaviour:
   bottomType: 1
   topType: 1
   mAtlas: {fileID: 11400000, guid: 62adb30369acbf943a67cee0f69267a3, type: 2}
-  mSpriteName: Flat
+  mSpriteName: Button
   mFillCenter: 1
 --- !u!114 &11456762
 MonoBehaviour:
@@ -1199,7 +1201,7 @@ MonoBehaviour:
     relative: 1
     absolute: -4
   updateAnchors: 1
-  mColor: {r: .23880595, g: .197638646, b: .121185109, a: 1}
+  mColor: {r: .111111112, g: .111111112, b: .111111112, a: 1}
   mPivot: 4
   mWidth: 72
   mHeight: 40
@@ -1218,14 +1220,14 @@ MonoBehaviour:
   mEncoding: 1
   mMaxLineCount: 0
   mEffectStyle: 1
-  mEffectColor: {r: .805970132, g: .714862168, b: .553352594, a: 1}
+  mEffectColor: {r: .111111112, g: .111111112, b: .111111112, a: 1}
   mSymbols: 1
   mEffectDistance: {x: 1, y: 1}
   mOverflow: 0
   mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
-  mGradientBottom: {r: .699999988, g: .699999988, b: .699999988, a: 1}
+  mGradientBottom: {r: .111111112, g: .111111112, b: .111111112, a: 1}
   mSpacingX: 0
   mSpacingY: 0
   mUseFloatSpacing: 0
@@ -1285,7 +1287,7 @@ MonoBehaviour:
   bottomType: 1
   topType: 1
   mAtlas: {fileID: 11426408, guid: 25576dd4c299fef4f9fc244f1e89bb8b, type: 2}
-  mSpriteName: talk_main
+  mSpriteName: talk_say
   mFillCenter: 1
 --- !u!114 &11478972
 MonoBehaviour:
@@ -1323,7 +1325,7 @@ MonoBehaviour:
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: .75
+  aspectRatio: .111111112
   mType: 0
   mFillDirection: 4
   mFillAmount: 1
@@ -1359,29 +1361,29 @@ MonoBehaviour:
   leftAnchor:
     target: {fileID: 403642}
     relative: 0
-    absolute: 0
+    absolute: -4
   rightAnchor:
     target: {fileID: 403642}
     relative: 1
-    absolute: 0
+    absolute: 4
   bottomAnchor:
     target: {fileID: 403642}
     relative: 0
-    absolute: 0
+    absolute: -4
   topAnchor:
     target: {fileID: 403642}
     relative: 1
-    absolute: 0
+    absolute: 4
   updateAnchors: 1
-  mColor: {r: 1, g: 1, b: 1, a: 1}
+  mColor: {r: 0, g: 0, b: 0, a: 1}
   mPivot: 4
-  mWidth: 128
-  mHeight: 40
+  mWidth: 56
+  mHeight: 208
   mDepth: 15
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 3.20000005
+  aspectRatio: .111111112
   mType: 1
   mFillDirection: 4
   mFillAmount: 1
@@ -1393,8 +1395,47 @@ MonoBehaviour:
   bottomType: 1
   topType: 1
   mAtlas: {fileID: 11400000, guid: 62adb30369acbf943a67cee0f69267a3, type: 2}
-  mSpriteName: Highlight - Thin
+  mSpriteName: Highlight - Shadowed
   mFillCenter: 1
+--- !u!114 &11490396
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 148306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04d1b7c9e9a19a24ab67123a43c6544b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  method: 0
+  style: 0
+  animationCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 1
+      tangentMode: 0
+    - time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+  ignoreTimeScale: 1
+  delay: 0
+  duration: 1
+  steeperCurves: 0
+  tweenGroup: 0
+  onFinished: []
+  eventReceiver: {fileID: 0}
+  callWhenFinished: 
+  from: {x: -0, y: 0, z: 0}
+  to: {x: -0, y: 0, z: 0}
+  quaternionLerp: 0
 --- !u!114 &11497338
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1423,7 +1464,7 @@ MonoBehaviour:
     relative: 1
     absolute: -3
   updateAnchors: 1
-  mColor: {r: 0, g: 0, b: 0, a: .152941182}
+  mColor: {r: 0, g: 0, b: 0, a: .111111112}
   mPivot: 4
   mWidth: 42
   mHeight: 42

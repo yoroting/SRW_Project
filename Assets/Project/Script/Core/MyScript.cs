@@ -762,7 +762,7 @@ public class MyScript {
                 //evt.nType  = func.I(0);
                 evt.nChar = func.I(0);
                 evt.nSayID = func.I(1);
-
+                evt.nReplaceID = func.I(2);
                 //Say( func.I(0), func.I(1) );
 
                 GameEventManager.DispatchEvent(evt);
@@ -772,7 +772,7 @@ public class MyScript {
                 TalkSetCharEvent evt = new TalkSetCharEvent();
                 evt.nType = func.I(0);
                 evt.nChar = func.I(1);
-
+                evt.nReplaceID = func.I(2);
                 //Say( func.I(0), func.I(1) );
                 GameEventManager.DispatchEvent(evt);
             }
@@ -944,13 +944,13 @@ public class MyScript {
                 if (nCheckIdent > 0)
                 {
                     cUnitData data = GameDataManager.Instance.GetUnitDateByIdent(nCheckIdent);
-                    if( data != null )
+                    if (data != null)
                     {
                         StageDelUnitByIdentEvent evt = new StageDelUnitByIdentEvent();
                         evt.nIdent = nCheckIdent;
                         Panel_StageUI.Instance.OnStageDelUnitByIdentEvent(evt);
 
-                        if (data.n_CharID!= 0)
+                        if (data.n_CharID != 0)
                         {
                             TalkSayEndEvent tlkevt = new TalkSayEndEvent();
                             tlkevt.nChar = data.n_CharID;
@@ -980,7 +980,7 @@ public class MyScript {
                     }
                 }
             }
-           
+
 
             else if (func.sFunc == "JOIN")
             {
@@ -1057,9 +1057,20 @@ public class MyScript {
             }
             else if (func.sFunc == "DELBLOCK")  // un reg BLOCK EVENT
             {
-                GameDataManager.Instance.DelEvtBlock( func.S(0));
+                GameDataManager.Instance.DelEvtBlock(func.S(0));
                 Panel_StageUI.Instance.ClearMarkCellEffect();
                 //nel_StageUI.Instance.OnStagePopMarkEvent(func.I(0), func.I(1), func.I(2), func.I(3));
+            }
+            else if (func.sFunc == "DISPATCH")  // DISPATCH
+            {
+                Panel_Dispatch panel = MyTool.GetPanel<Panel_Dispatch>( PanelManager.Instance.OpenUI(Panel_Dispatch.Name) );
+                if(panel != null)
+                {
+                    panel.BornBlock( func.I(0), func.I(1), func.I(2), func.I(3) );
+
+                }
+
+
             }
             else
             {

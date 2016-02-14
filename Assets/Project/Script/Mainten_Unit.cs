@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Mainten_Unit : MonoBehaviour {
+public class Mainten_Unit : MonoBehaviour
+{
 
     public GameObject EnhanceBtn;
     private cUnitData pUnitData;
@@ -18,39 +19,70 @@ public class Mainten_Unit : MonoBehaviour {
     public GameObject LvObj;
     public GameObject ExpObj;
 
+    public GameObject FuncObj;  // 功能名稱
 
+    public int m_nType = 0;
 
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
 
-        UIEventListener.Get(FaceObj).onClick += OnUnitInfoClick;
-        UIEventListener.Get(EnhanceBtn).onClick += OnUnitEnhanceClick;
+        UIEventListener.Get(FaceObj).onClick = OnUnitInfoClick;
+
     }
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
 
     void onEnable()
     {
-        
+
         ReSize();
-        
+
     }
 
     public void ReSize()
     {
-       
+
         transform.localScale = Vector3.one;
 
         transform.localRotation = Quaternion.identity;
     }
 
-    public void SetData( cUnitData UnitData )
+    public void SetData(cUnitData UnitData, int nType = 0)
     {
+        //if (scrollview != null) {
+        //    UIDragScrollView dragitem= this.GetComponent<UIDragScrollView>();
+        //    if (dragitem != null) {
+        //        dragitem.scrollView = scrollview;
+        //    }
+        //}
         pUnitData = UnitData;
         ReloadData();
+        SetType(nType);
+    }
+
+    public void SetType(int nType)
+    {
+        if (nType == 0) // 強化
+        {
+            MyTool.SetLabelText(FuncObj, "修練");
+            UIEventListener.Get(EnhanceBtn).onClick = OnUnitEnhanceClick;
+        }
+        else if (nType == 1) // 出擊
+        {
+            MyTool.SetLabelText(FuncObj, "出擊");
+            UIEventListener.Get(EnhanceBtn).onClick = OnUnitWaiting; // 點擊後 待機
+        }
+        else if (nType == 2) // 待機
+        {
+            MyTool.SetLabelText(FuncObj, "待機");
+            UIEventListener.Get(EnhanceBtn).onClick = OnUnitFight;// 點擊後  出擊
+
+        }
     }
 
     public void ReloadData()
@@ -64,10 +96,10 @@ public class Mainten_Unit : MonoBehaviour {
         UITexture tex = FaceObj.GetComponent<UITexture>();
         if (tex != null)
         {
-  //          string url = "Art/char/" + pUnitData.cCharData.s_FILENAME + "_S";
-    //        //Texture2D tex = Resources.LoadAssetAtPath(url, typeof(Texture2D)) as Texture2D;
-      //      Texture t = Resources.Load(url, typeof(Texture)) as Texture;
-            tex.mainTexture = MyTool.GetCharTexture(pUnitData.n_FaceID );
+            //          string url = "Art/char/" + pUnitData.cCharData.s_FILENAME + "_S";
+            //        //Texture2D tex = Resources.LoadAssetAtPath(url, typeof(Texture2D)) as Texture2D;
+            //      Texture t = Resources.Load(url, typeof(Texture)) as Texture;
+            tex.mainTexture = MyTool.GetCharTexture(pUnitData.n_FaceID);
         }
 
 
@@ -116,19 +148,20 @@ public class Mainten_Unit : MonoBehaviour {
 
         // Set ability
         //UpdateCharData();
-   
+
     }
 
 
     void OnUnitInfoClick(GameObject go)
     {
-        if (pUnitData == null) {
+        if (pUnitData == null)
+        {
             Debug.LogError("OnUnitInfoClick with null data");
             return;
         }
 
-        Panel_UnitInfo.OpenUI( pUnitData );
-        
+        Panel_UnitInfo.OpenUI(pUnitData);
+
 
     }
 
@@ -148,9 +181,32 @@ public class Mainten_Unit : MonoBehaviour {
 
         Panel_Enhance panel = MyTool.GetPanel<Panel_Enhance>(PanelManager.Instance.OpenUI(Panel_Enhance.Name));
         if (pUnitData != null)
-        {            
-                panel.SetData(pUnitData);           
+        {
+            panel.SetData(pUnitData);
         }
 
+    }
+
+    void OnUnitFight(GameObject go)
+    {
+        Panel_Dispatch panel = MyTool.GetPanel<Panel_Dispatch>(PanelManager.Instance.OpenUI(Panel_Dispatch.Name));
+        if (panel != null) {
+            if( panel.AddUnit(pUnitData.n_CharID ))
+            {
+                SetType(1);
+            }
+        }        
+    }
+
+    void OnUnitWaiting(GameObject go)
+    {
+        Panel_Dispatch panel = MyTool.GetPanel<Panel_Dispatch>(PanelManager.Instance.OpenUI(Panel_Dispatch.Name));
+        if (panel != null)
+        {
+            if (panel.DelUnit(pUnitData.n_CharID))
+            {
+                SetType(2);
+            }
+        }        
     }
 }

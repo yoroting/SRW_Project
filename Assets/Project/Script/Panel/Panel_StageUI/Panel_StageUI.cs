@@ -1658,9 +1658,13 @@ public class Panel_StageUI : MonoBehaviour
 			return true;	
 
 		if( PanelManager.Instance.CheckUIIsOpening( Panel_Skill.Name ) == true )
-			return true;	
+			return true;
 
-		foreach( KeyValuePair< int , Panel_unit > pair in IdentToUnit )
+        if (PanelManager.Instance.CheckUIIsOpening(Panel_Dispatch.Name) == true) // 派兵
+            return true;
+
+
+        foreach ( KeyValuePair< int , Panel_unit > pair in IdentToUnit )
 		{
 			if( pair.Value == null )
 				continue;

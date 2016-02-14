@@ -356,10 +356,38 @@ public class Panel_Talk : MonoBehaviour
 
     }
 
- 
 
-    public SRW_AVGObj SelAVGObjByType(int nType, int nCharID)
+
+    public SRW_AVGObj SelAVGObjByType(int nType, int nCharID, int nReplaceID = 0)
     {
+        // check if replace already exist
+        if (nReplaceID > 0) {
+
+            foreach (KeyValuePair<int, SRW_AVGObj> pair in m_idToFace)
+            {
+                if (pair.Value != null)
+                {
+                    if (pair.Value.CharID == nReplaceID)
+                    {
+                        pair.Value.ReplaceFace(nCharID);
+                        return pair.Value;
+                    }
+                }              
+            }
+        }
+
+        //remove exist face
+        SRW_AVGObj old;
+        if (m_idToFace.TryGetValue(nType, out old))
+        {
+            if (old != null && (old.CharID != nCharID))
+            {
+                old.ZoomOut();
+                m_idToFace.Remove(nType);
+            }
+
+        }
+
         if (m_idToFace.ContainsKey(nType) == false)
         {
             GameObject obj = ResourcesManager.CreatePrefabGameObj(this.gameObject, "Prefab/SRW_AVGObj");
@@ -391,7 +419,7 @@ public class Panel_Talk : MonoBehaviour
         return null;
     }
 
-    public SRW_AVGObj SelAVGObjByCharID(int nCharid)
+    public SRW_AVGObj SelAVGObjByCharID(int nCharid, int nReplaceCharID=0)
     {
         //        if (nCharid == 0)
         //            return null;
@@ -404,6 +432,15 @@ public class Panel_Talk : MonoBehaviour
                 {
                     return pair.Value;
                 }
+            }
+            // check if need replace
+            if (nReplaceCharID > 0)
+            {
+                if (pair.Value.CharID == nReplaceCharID) {
+                    pair.Value.ReplaceFace(nCharid);
+                    return pair.Value;
+                }
+               // pair.Value;
             }
         }
         // if this is not exist. create new
@@ -661,7 +698,7 @@ public class Panel_Talk : MonoBehaviour
         if (Evt == null)
             return;
 
-        CharSay(Evt.nChar, Evt.nSayID);
+        CharSay(Evt.nChar, Evt.nSayID , Evt.nReplaceID );
 
         // find obj to move
         Panel_unit unit = Panel_StageUI.Instance.GetUnitByCharID(Evt.nChar);
@@ -678,7 +715,7 @@ public class Panel_Talk : MonoBehaviour
             return;
         // close type      
 
-        SetChar(Evt.nType, Evt.nChar);
+        SetChar(Evt.nType, Evt.nChar, Evt.nReplaceID);
 
     }
 
@@ -765,7 +802,7 @@ public class Panel_Talk : MonoBehaviour
         }
     }
 
-    public void CharSay(int nCharID, int nSayTextID)
+    public void CharSay(int nCharID, int nSayTextID, int nReplaceCharID =0)
     {
 
         SetEnable(true);         // ensure ui re active
@@ -773,12 +810,11 @@ public class Panel_Talk : MonoBehaviour
         SpeakAll(false);          // small all  
 
 
-        SRW_AVGObj avgobj = SelAVGObjByCharID(nCharID);// face 
+        SRW_AVGObj avgobj = SelAVGObjByCharID(nCharID, nReplaceCharID);// face 
         if (avgobj != null)
         {
             avgobj.Speak(true);
-            SetName(nCharID, avgobj.gameObject); // name POS
-
+        //    SetName(nCharID, avgobj.gameObject); // name POS
         }
 
 
@@ -839,6 +875,11 @@ public class Panel_Talk : MonoBehaviour
             sName = name.Replace("$F", Config.PlayerFirst); // replace player name
             sName = sName.Replace("$N", Config.PlayerName); // replace player name		
         }
+        // change name?
+
+
+
+
         UILabel lbl = NameObj.GetComponentInChildren<UILabel>();
         if (lbl != null)
         {
@@ -871,7 +912,7 @@ public class Panel_Talk : MonoBehaviour
             // avoid 
             TalkWindow.SetEnable(false);
             //			TalkWindow_new.SetActive (false); // close all
-
+            nLastPopType = 1;
             return;
         }
 
@@ -881,9 +922,21 @@ public class Panel_Talk : MonoBehaviour
             {
                 if (pair.Value.CharID == nCharID)
                 {
-
+                    if ( 0 == pair.Key)
+                    {
+                        nLastPopType = 1;
+                    }
+                    else
+                    {
+                        nLastPopType = 0;
+                    }
+                        
                     //return pair.Value;
                     CloseBox(pair.Key, 0);
+                    // change last pop
+                    
+
+
                     return;
                 }
             }
@@ -894,26 +947,26 @@ public class Panel_Talk : MonoBehaviour
 
     }
 
-    public void SetChar(int nType, int nCharID)
+    public void SetChar(int nType, int nCharID , int nReplaceID )
     {
-        SRW_AVGObj obj;
-        if (m_idToFace.TryGetValue(nType , out obj)  )
+     //   SRW_AVGObj obj;
+        if (nType >= 0)
         {
-            if (obj != null && (obj.CharID != nCharID) )
-            {
-                obj.ZoomOut();
-                m_idToFace.Remove(nType);
-            }
-
+           
+            SelAVGObjByType(nType, nCharID, nReplaceID );
+        }
+        else {
+            // auto select a char
+            SelAVGObjByCharID(nCharID, nReplaceID);
         }
         
 
         //SetTextBoxActive ( nType , true ); // need active first to awake() to do some thing
-        obj = SelAVGObjByType(nType, nCharID);
-        if (obj)
-        {
-            //			obj.ChangeFace (nCharID);
-        }
+        //obj = SelAVGObjByType(nType, nCharID);
+        //if (obj)
+        //{
+        //    //			obj.ChangeFace (nCharID);
+        //}
 
     }
     public void CharShake(int nCharID)

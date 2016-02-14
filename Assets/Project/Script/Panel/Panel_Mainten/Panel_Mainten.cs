@@ -25,9 +25,11 @@ public class Panel_Mainten : MonoBehaviour {
     public GameObject btnCheat;
 
 	public GameObject lblStoryName;
+ //   public GameObject scrollviewList;
+ //   UIScrollView scrollview;
 
-	// Use this for initialization
-	void OnEnable()
+    // Use this for initialization
+    void OnEnable()
 	{
 		GameSystem.PlayBGM ( 7 );
 
@@ -53,6 +55,9 @@ public class Panel_Mainten : MonoBehaviour {
         {
             CharUnit.SetActive(false);
         }
+        //if (scrollviewList != null) {
+        //    scrollview = scrollviewList.GetComponent<UIScrollView>();
+        //}
 
     }
 
@@ -284,7 +289,7 @@ public class Panel_Mainten : MonoBehaviour {
                 if (unit != null)
                 {
                     unit.ReSize();
-                    unit.SetData(pair.Value );
+                    unit.SetData(pair.Value , 0  );
                 }
             }
         }

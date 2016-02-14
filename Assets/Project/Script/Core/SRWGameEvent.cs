@@ -174,8 +174,9 @@ public class TalkSayEvent: GameEvent {
 	public int nChar = 0;
 	public int nType  ;
 	public int nSayID ;
-	
-	public TalkSayEvent(){
+    public int nReplaceID;
+
+    public TalkSayEvent(){
 		name = Name;		// important.  must have this line as key
 	}
 }
@@ -184,8 +185,8 @@ public class TalkSetCharEvent: GameEvent {
 	public const string Name = "TalkSetCharEvent";
 	public int nChar = 0;
 	public int nType  ;
-	
-	public TalkSetCharEvent(){
+    public int nReplaceID;
+    public TalkSetCharEvent(){
 		name = Name;		// important.  must have this line as key
 	}
 }
