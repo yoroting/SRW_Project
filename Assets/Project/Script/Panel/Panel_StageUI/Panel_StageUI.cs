@@ -3641,10 +3641,14 @@ public class Panel_StageUI : MonoBehaviour
 
                     foreach (cUnitData d in pool)
                     {
-                        if ( 1 == nResult ) {
+                        if (1 == nResult)
+                        {
                             act.AddHitResult(new cHitResult(cHitResult._TYPE._DODGE, d.n_Ident, 0));
                         }
-
+                        else if (2 == nResult)
+                        {
+                            act.AddHitResult(new cHitResult(cHitResult._TYPE._MISS, pAtker.n_Ident, 0));
+                        }
                         act.AddHitResult(BattleManager.CalSkillHitResult(pAtker, d, nSkillID));
                     }
 
@@ -3779,6 +3783,7 @@ public class Panel_StageUI : MonoBehaviour
 			foreach( cUnitData d in pool )
 			{
 				List<cHitResult> HitResult = BattleManager.CalSkillHitResult(pAtker , d , nSkillID  );
+
 
 				ActionManager.Instance.ExecActionHitResult(HitResult ,m_bIsSkipMode );  // play directly without action to avoid 1 frame error
 				ActionManager.Instance.ExecActionEndResult(HitResult ,m_bIsSkipMode );

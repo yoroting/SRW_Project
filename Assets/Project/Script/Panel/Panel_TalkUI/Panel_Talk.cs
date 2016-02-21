@@ -358,7 +358,7 @@ public class Panel_Talk : MonoBehaviour
 
 
 
-    public SRW_AVGObj SelAVGObjByType(int nType, int nCharID, int nReplaceID = 0)
+    public SRW_AVGObj SelAVGObjByType(int nType, int nCharID, int nReplaceID = 0 , int nReplaceType=0 )
     {
         // check if replace already exist
         if (nReplaceID > 0) {
@@ -367,7 +367,7 @@ public class Panel_Talk : MonoBehaviour
             {
                 if (pair.Value != null)
                 {
-                    if (pair.Value.CharID == nReplaceID)
+                    if (pair.Value.CharID == nReplaceID && (nReplaceType>0) )
                     {
                         pair.Value.ReplaceFace(nCharID);
                         return pair.Value;
@@ -419,8 +419,9 @@ public class Panel_Talk : MonoBehaviour
         return null;
     }
 
-    public SRW_AVGObj SelAVGObjByCharID(int nCharid, int nReplaceCharID=0)
+    public SRW_AVGObj SelAVGObjByCharID(int nCharid, int nReplaceCharID= 0, int nReplaceType=0 )
     {
+        int nType = -1;
         //        if (nCharid == 0)
         //            return null;
         //
@@ -437,26 +438,38 @@ public class Panel_Talk : MonoBehaviour
             if (nReplaceCharID > 0)
             {
                 if (pair.Value.CharID == nReplaceCharID) {
-                    pair.Value.ReplaceFace(nCharid);
-                    return pair.Value;
+                    if (nReplaceType > 0)
+                    {
+                        pair.Value.ReplaceFace(nCharid);
+                        return pair.Value;
+                    }
+                    else // remove exists
+                    {
+                        nType = pair.Key;
+                        pair.Value.ZoomOut();
+                        m_idToFace.Remove(pair.Key );
+                        break;
+                    }
                 }
                // pair.Value;
             }
         }
         // if this is not exist. create new
-        int nType = 0;
-        if (m_idToFace.ContainsKey(0) == false)
+        if (nType == -1)
         {
-            nType = 0;
-        }
-        else if (m_idToFace.ContainsKey(1) == false)
-        {
-            nType = 1;
-        }
-        else
-        { // auto destory 0 . and create			
-            nType = (nLastPopType == 0) ? 1 : 0;
-            CloseBox(nType, 0);
+            if (m_idToFace.ContainsKey(0) == false)
+            {
+                nType = 0;
+            }
+            else if (m_idToFace.ContainsKey(1) == false)
+            {
+                nType = 1;
+            }
+            else
+            { // auto destory 0 . and create			
+                nType = (nLastPopType == 0) ? 1 : 0;
+                CloseBox(nType, 0);
+            }
         }
         nLastPopType = nType;
         // create plane
@@ -633,7 +646,10 @@ public class Panel_Talk : MonoBehaviour
 
         m_cStageTalk = ConstDataManager.Instance.GetRow<STAGE_TALK>(nScriptID);
         if (m_cStageTalk == null)
+        {
+            Debug.LogErrorFormat("Can't Find Talk script data ({0})", nScriptID );
             return;
+        }
 
         // change Back Tex
         //if ( m_cStageTalk.n_BACK_ID > 0 ) 
@@ -698,7 +714,7 @@ public class Panel_Talk : MonoBehaviour
         if (Evt == null)
             return;
 
-        CharSay(Evt.nChar, Evt.nSayID , Evt.nReplaceID );
+        CharSay(Evt.nChar, Evt.nSayID , Evt.nReplaceID , Evt.nReplaceType);
 
         // find obj to move
         Panel_unit unit = Panel_StageUI.Instance.GetUnitByCharID(Evt.nChar);
@@ -715,7 +731,7 @@ public class Panel_Talk : MonoBehaviour
             return;
         // close type      
 
-        SetChar(Evt.nType, Evt.nChar, Evt.nReplaceID);
+        SetChar(Evt.nType, Evt.nChar, Evt.nReplaceID, Evt.nReplaceType );
 
     }
 
@@ -802,7 +818,7 @@ public class Panel_Talk : MonoBehaviour
         }
     }
 
-    public void CharSay(int nCharID, int nSayTextID, int nReplaceCharID =0)
+    public void CharSay(int nCharID, int nSayTextID, int nReplaceCharID =0 , int nReplaceType=0)
     {
 
         SetEnable(true);         // ensure ui re active
@@ -810,7 +826,7 @@ public class Panel_Talk : MonoBehaviour
         SpeakAll(false);          // small all  
 
 
-        SRW_AVGObj avgobj = SelAVGObjByCharID(nCharID, nReplaceCharID);// face 
+        SRW_AVGObj avgobj = SelAVGObjByCharID(nCharID, nReplaceCharID, nReplaceType);// face 
         if (avgobj != null)
         {
             avgobj.Speak(true);
@@ -947,17 +963,17 @@ public class Panel_Talk : MonoBehaviour
 
     }
 
-    public void SetChar(int nType, int nCharID , int nReplaceID )
+    public void SetChar(int nType, int nCharID , int nReplaceID , int nReplaceType )
     {
      //   SRW_AVGObj obj;
         if (nType >= 0)
         {
            
-            SelAVGObjByType(nType, nCharID, nReplaceID );
+            SelAVGObjByType(nType, nCharID, nReplaceID , nReplaceType);
         }
         else {
             // auto select a char
-            SelAVGObjByCharID(nCharID, nReplaceID);
+            SelAVGObjByCharID(nCharID, nReplaceID , nReplaceType );
         }
         
 

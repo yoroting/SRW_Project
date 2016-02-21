@@ -175,6 +175,7 @@ public class TalkSayEvent: GameEvent {
 	public int nType  ;
 	public int nSayID ;
     public int nReplaceID;
+    public int nReplaceType;
 
     public TalkSayEvent(){
 		name = Name;		// important.  must have this line as key
@@ -186,6 +187,7 @@ public class TalkSetCharEvent: GameEvent {
 	public int nChar = 0;
 	public int nType  ;
     public int nReplaceID;
+    public int nReplaceType;
     public TalkSetCharEvent(){
 		name = Name;		// important.  must have this line as key
 	}

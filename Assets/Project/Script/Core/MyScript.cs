@@ -763,6 +763,7 @@ public class MyScript {
                 evt.nChar = func.I(0);
                 evt.nSayID = func.I(1);
                 evt.nReplaceID = func.I(2);
+                evt.nReplaceType = func.I(3);
                 //Say( func.I(0), func.I(1) );
 
                 GameEventManager.DispatchEvent(evt);
@@ -773,6 +774,7 @@ public class MyScript {
                 evt.nType = func.I(0);
                 evt.nChar = func.I(1);
                 evt.nReplaceID = func.I(2);
+                evt.nReplaceType = func.I(3);
                 //Say( func.I(0), func.I(1) );
                 GameEventManager.DispatchEvent(evt);
             }
@@ -821,7 +823,7 @@ public class MyScript {
                 evt.nDefCharID = func.I(1);
                 evt.nAtkSkillID = func.I(2);
                 evt.nNum = func.I(3);
-                evt.nResult = func.I(4); // 0- normal , 1- miss
+                evt.nResult = func.I(4); // 0- normal , 1- dodge, 2-miss
                 Panel_StageUI.Instance.OnStageBattleAttackEvent(evt);
                 //GameEventManager.DispatchEvent ( evt  );
 
@@ -847,6 +849,9 @@ public class MyScript {
                 evt.nAtkCharID = func.I(0);
                 evt.nDefCharID = func.I(1);
                 evt.nAtkSkillID = func.I(2);
+                func.I(3); // fight result
+                evt.nTargetX   = func.I(4);
+                evt.nTargetY = func.I(5);
 
                 Panel_StageUI.Instance.OnStageBattleCastEvent(evt);
                 //GameEventManager.DispatchEvent ( evt  );
