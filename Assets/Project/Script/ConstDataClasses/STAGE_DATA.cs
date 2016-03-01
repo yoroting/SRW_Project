@@ -13,6 +13,7 @@ public class STAGE_DATA : ConstDataRow<STAGE_DATA>
 	public int n_WIN_TALK;
 	public string s_MISSION;
 	public string s_EVENT;
+	public string s_AVOID_CHAR;
 	public int n_ENEMY_BGM;
 	public int n_PLAYER_BGM;
 	public int n_FRIEND_BGM;

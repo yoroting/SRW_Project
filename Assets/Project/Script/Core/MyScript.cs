@@ -368,9 +368,16 @@ public class MyScript {
 		//	if( GameDataManager.Instance.nRoundStatus != 0 )
 		//		return false;
 		if (GameDataManager.Instance.nRound >= nID) {
-			if( (nCamp==-1) ||  (nCamp == (int)GameDataManager.Instance.nActiveCamp) ){
-				return true;
-			}
+            if (nCamp == 0)  // camp = 0 代表 兩方陣營都可觸發
+                return true;
+            else
+            {
+                if ((nCamp == (int)GameDataManager.Instance.nActiveCamp))
+                {
+                    return true;
+                }
+            }
+            
 		}
 		return false ;
 	}

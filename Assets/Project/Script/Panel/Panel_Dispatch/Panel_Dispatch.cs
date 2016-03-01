@@ -154,7 +154,27 @@ public class Panel_Dispatch : MonoBehaviour
     public void ReloadUnitList(int nCharID = 0) // 0- all
     {
         //if (nCharID != 0) {
-
+        List<int> avoidList = new List<int>();
+        STAGE_DATA StageData = ConstDataManager.Instance.GetRow<STAGE_DATA>(GameDataManager.Instance.nStageID);
+        if (StageData != null)
+        {
+            // create avoid list
+            char[] split = { ';', ' ', ',' };
+            string[] strAvoid = StageData.s_AVOID_CHAR.Split(split);
+            for (int i = 0; i < strAvoid.Length; i++)
+            {
+                int nAvoid = 0;
+                if (int.TryParse(strAvoid[i], out nAvoid))
+                {
+                    if (0 == nAvoid)
+                        continue;                  
+                    if (avoidList.Contains(nAvoid) == false)
+                    {
+                        avoidList.Add(nAvoid);
+                    }
+                }
+            }
+        }
 
         //    // sort grid resort
 
@@ -171,7 +191,8 @@ public class Panel_Dispatch : MonoBehaviour
                 DestroyImmediate(grid.transform.GetChild(0).gameObject);
             }
         }
-
+        grid.repositionNow = true;  // for re pos
+        grid.Reposition();
         // sort by mar
 
         var items = from pair in GameDataManager.Instance.StoragePool
@@ -194,6 +215,10 @@ public class Panel_Dispatch : MonoBehaviour
                     continue;
                 }
             }
+            // skip avoid char
+            if (avoidList.Contains(pair.Value.n_CharID) ) {
+                continue;
+            }
 
             GameObject obj = CharUnit.Spawn(GridUnitList.transform);
             if (obj != null)
@@ -208,5 +233,7 @@ public class Panel_Dispatch : MonoBehaviour
         }
 
         grid.repositionNow = true;  // for re pos
+        grid.Reposition();
+
     }
 }
