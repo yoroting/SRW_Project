@@ -4288,6 +4288,40 @@ public class Panel_StageUI : MonoBehaviour
 		}
 	}
 
+
+    public void OnStageDelCamp(int nCampID)
+    {
+        // add , del buff      
+        _CAMP camp = (_CAMP)nCampID;
+       
+            // char id ary
+            // DelUnit(nCharID, nNum);
+            List<int> idList = new List<int>();
+            foreach (KeyValuePair<int, Panel_unit> pair in IdentToUnit)
+            {
+                Panel_unit unit = pair.Value;
+                if (unit.eCampID != camp)
+                    continue;
+                //
+                if (unit.pUnitData == null)
+                    continue;
+                idList.Add(unit.CharID);
+            }
+        // 
+        foreach (int id in idList)
+        {
+            if (m_bIsSkipMode)
+            {
+                DelUnit(id, 0);
+            }
+            else
+            {
+                LeaveUnit(id);
+            }
+        }
+       
+    }
+
     public void OnStageRoundEnd()
     {
         foreach (KeyValuePair<int, Panel_unit> pair in IdentToUnit)

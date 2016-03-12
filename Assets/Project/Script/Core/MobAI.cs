@@ -173,7 +173,7 @@ public class MobAI  {
         }
          
         int nDist = mob.Loc.Dist(taget.Loc);
-        if (CreateSkilTmpList(mob.pUnitData, nDist - nMove , bCounterMode)) // create skill pool to atl
+        if (CreateSkilTmpList(mob.pUnitData, taget.pUnitData , nDist - nMove , bCounterMode)) // create skill pool to atl
         {
 
             foreach (SKILL skl in tmpSklList)
@@ -406,7 +406,7 @@ public class MobAI  {
 					if( last != null  ){
 						int nDist2 = last.Dist( pair.Key.Loc );
 						if( (nDist2 > nSkillRange) || (nDist2 < nMinRange) ){// 檢查 too far/too near 要不要換skill打
-							SKILL newSkill = FindSkillByDist( mob ,nDist2 );
+							SKILL newSkill = FindSkillByDist( mob , pair.Key.pUnitData , nDist2);
 							if( newSkill == null ){
 								continue; // 太遠了~放棄不打
 							}
@@ -432,7 +432,7 @@ public class MobAI  {
 
 			}
 			else if( nDist < nMinRange ){ // check if need change skill
-				SKILL newSkill = FindSkillByDist( mob ,nDist );
+				SKILL newSkill = FindSkillByDist( mob , pair.Key.pUnitData , nDist);
 				if( newSkill != null ){	// change skill
 					nSkillID = newSkill.n_ID ;
 					bCanAtk = true;
@@ -495,7 +495,7 @@ public class MobAI  {
 						int nDist2 = last.Dist( pair.Key.Loc );
 						if( (nDist2 > nSkillRange) || (nDist2 < nMinRange) ){
 							// 檢查要不要換skill打
-							SKILL newSkill = FindSkillByDist( mob ,nDist2 );
+							SKILL newSkill = FindSkillByDist( mob , pair.Key.pUnitData , nDist2);
 							if( newSkill == null ){
 								//	continue; // can't find skill. use original skill
 							}
@@ -522,7 +522,7 @@ public class MobAI  {
 
 			}
 			else if( nDist < nMinRange ){ // check if need change skill
-				SKILL newSkill = FindSkillByDist( mob ,nDist );
+				SKILL newSkill = FindSkillByDist( mob , pair.Key.pUnitData, nDist );
 				if( newSkill != null ){	// change skill
 					nSkillID = newSkill.n_ID ;
 				}else if( nDist <= 1 ){
@@ -568,7 +568,7 @@ public class MobAI  {
 						if( (nDist2 > nSkillRange) || (nDist2 < nMinRange) ){
 							// too far .. no attack
 							// 檢查要不要換skill打
-							SKILL newSkill = FindSkillByDist( mob ,nDist2 );
+							SKILL newSkill = FindSkillByDist( mob , pair.Key.pUnitData , nDist2 );
 							if( newSkill == null ){
 								//continue; //  don't continue . set cmd for this loop
 							}
@@ -597,7 +597,7 @@ public class MobAI  {
 				
 			}
 			else if( nDist < nMinRange ){ // check if need change skill
-				SKILL newSkill = FindSkillByDist( mob ,nDist );
+				SKILL newSkill = FindSkillByDist( mob , pair.Key.pUnitData, nDist );
 				if( newSkill != null ){	// change skill
 					nSkillID = newSkill.n_ID ;
 					bCanAtk = true;
@@ -1286,7 +1286,7 @@ public class MobAI  {
             nTarY = pTarget.n_Y;
             nDist = iVec2.Dist(pMob.n_X, pMob.n_Y, pTarget.n_X, pTarget.n_Y);
         }
-        if (CreateSkilTmpList(pMob, nDist, true))
+        if (CreateSkilTmpList(pMob, pTarget, nDist, true))
         {
             // roll a skill?
             foreach (SKILL skl in tmpSklList)
@@ -1475,7 +1475,7 @@ public class MobAI  {
 	}
 
 
-    static public bool CreateSkilTmpList( cUnitData pData , int nDist, bool bCounterMode = false )
+    static public bool CreateSkilTmpList( cUnitData pData , cUnitData pTarget,  int nDist, bool bCounterMode = false )
     {
         if (pData == null)
             return false;     
@@ -1494,7 +1494,7 @@ public class MobAI  {
                 continue;
             }
 
-            if (CheckSkillCanCast(pData, null, nSkillID, nRealDist , bCounterMode) == false)
+            if (CheckSkillCanCast(pData, pTarget, nSkillID, nRealDist , bCounterMode) == false)
             {
                 continue;
             }
@@ -1510,11 +1510,12 @@ public class MobAI  {
         return (tmpSklList.Count > 0 );
     }
 
-	static public SKILL FindSkillByDist( Panel_unit mob  , int nDist  , bool bCounterMode = false )
+	static public SKILL FindSkillByDist( Panel_unit mob , cUnitData pTarget  , int nDist  , bool bCounterMode = false )
 	{	
 		cUnitData pData = mob.pUnitData;
 		if( pData == null )
 			return null;
+
 
 		foreach(  int  nID in pData.SkillPool ){
 			int nSkillID = nID;
@@ -1523,7 +1524,7 @@ public class MobAI  {
 				continue;
 			}
 
-			if( CheckSkillCanCast( pData , null ,  nSkillID , nDist , bCounterMode ) == false  ){
+			if( CheckSkillCanCast( pData , pTarget,  nSkillID , nDist , bCounterMode ) == false  ){
 				continue;
 			}
 
@@ -1610,13 +1611,30 @@ public class MobAI  {
 				return false;
 			}
 		}
-	
 		// range check
 		if( (skl.n_RANGE < nDist) || ( skl.n_MINRANGE > nDist ) ){
 			return false;
 		}
 
-		return true;
+        // 敵我判斷
+        if (pTarget != null)
+        {
+            if (MyTool.CanPK(pData.eCampID, pTarget.eCampID))
+            {
+                if (MyTool.GetSkillPKmode(skl) == _PK_MODE._PLAYER)
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                if (MyTool.GetSkillPKmode(skl) == _PK_MODE._ENEMY)
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
 	}
 
     static public int _AI_GetMaxSkillRange(cUnitData pData)

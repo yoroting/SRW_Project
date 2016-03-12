@@ -424,13 +424,19 @@ public class MyScript {
 	{
 		//check range
 		Panel_unit unit1 = Panel_StageUI.Instance.GetUnitByCharID (nChar1);
-		Panel_unit unit2 = Panel_StageUI.Instance.GetUnitByCharID (nChar2);
-		if ((unit1 != null) && (unit2 != null)) {
-			int dist = unit1.Loc.Dist( unit2.Loc );
-			if( dist <= nDist )
-			{
-				return true;
-			}
+		//Panel_unit unit2 = Panel_StageUI.Instance.GetUnitByCharID (nChar2);
+		if ((unit1 != null) ) {
+            foreach (KeyValuePair<int, cUnitData> pair in GameDataManager.Instance.UnitPool)
+            {
+                if (pair.Value.n_CharID != nChar2)
+                    continue;
+
+                if ( iVec2.Dist(unit1.Loc.X , unit1.Loc.Y , pair.Value.n_X , pair.Value.n_Y ) <= nDist )
+                {
+                    return true;
+                }
+            }
+
 		}
 		return false;
 	}
@@ -857,7 +863,7 @@ public class MyScript {
                 evt.nDefCharID = func.I(1);
                 evt.nAtkSkillID = func.I(2);
                 func.I(3); // fight result
-                evt.nTargetX   = func.I(4);
+                evt.nTargetX = func.I(4);
                 evt.nTargetY = func.I(5);
 
                 Panel_StageUI.Instance.OnStageBattleCastEvent(evt);
@@ -1018,6 +1024,12 @@ public class MyScript {
 
                 Panel_StageUI.Instance.OnStageUnitCampEvent(nCharid, (_CAMP)nCampid);
             }
+            else if (func.sFunc == "DELCAMP")
+            {
+                int nCampid = func.I(0);
+                Panel_StageUI.Instance.OnStageDelCamp(func.I(0));
+
+            }
             else if (func.sFunc == "POPMARK") //stage地圖上顯示 mark
             {
                 Panel_StageUI.Instance.OnStagePopMarkEvent(func.I(0), func.I(1), func.I(2), func.I(3));
@@ -1075,14 +1087,12 @@ public class MyScript {
             }
             else if (func.sFunc == "DISPATCH")  // DISPATCH
             {
-                Panel_Dispatch panel = MyTool.GetPanel<Panel_Dispatch>( PanelManager.Instance.OpenUI(Panel_Dispatch.Name) );
-                if(panel != null)
+                Panel_Dispatch panel = MyTool.GetPanel<Panel_Dispatch>(PanelManager.Instance.OpenUI(Panel_Dispatch.Name));
+                if (panel != null)
                 {
-                    panel.BornBlock( func.I(0), func.I(1), func.I(2), func.I(3) );
+                    panel.BornBlock(func.I(0), func.I(1), func.I(2), func.I(3));
 
                 }
-
-
             }
             else
             {

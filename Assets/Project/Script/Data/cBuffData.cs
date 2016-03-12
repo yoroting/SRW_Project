@@ -133,14 +133,19 @@ public class cBuffs
 		if (Pool.TryGetValue (buff.n_STACK, out olddata) == true) {
 			// check if need replace
 			if( nBuffID == olddata.nID ) // the same buff
-			{
-				olddata.nNum ++;
+			{	
 				STACK stack = ConstDataManager.Instance.GetRow< STACK >( buff.n_STACK );
-				if( stack != null ){
-					if( olddata.nNum > stack.n_MAX_STACK  ){
-						olddata.nNum= stack.n_MAX_STACK ;
-					}
-				}
+                if (stack != null)
+                {
+                    ++olddata.nNum;
+                    if (olddata.nNum > stack.n_MAX_STACK)
+                    {
+                        olddata.nNum = stack.n_MAX_STACK;
+                    }
+                }
+                else {
+                    olddata.nNum = 1; // no stack data always = 1
+                }
 				// refresh time
 				olddata.nCastIdent = nCastIdent;
 				olddata.nSkillID = nSkillID;
