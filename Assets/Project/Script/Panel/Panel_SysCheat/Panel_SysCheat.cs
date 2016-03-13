@@ -66,22 +66,41 @@ public class Panel_SysCheat : MonoBehaviour {
         UIEventListener.Get(AddItemBtn).onClick = OnAddItemClick;
 
         ///
-        UIPopupList popList = StoryPoplist.GetComponent<UIPopupList>();
-		if (popList != null) {		
-			//添加触发事件
-		//	EventDelegate.Add (popList.onChange, label.SetCurrentSelection);
-			EventDelegate.Add (popList.onChange, StoryComboboxChange);
+        
+        //      UIPopupList popList = StoryPoplist.GetComponent<UIPopupList>();
+        //if (popList != null) {		
+        //	//添加触发事件
+        ////	EventDelegate.Add (popList.onChange, label.SetCurrentSelection);
+        //	EventDelegate.Add (popList.onChange, StoryComboboxChange);
 
-			popList.Clear ();
-			DataTable storyTable = ConstDataManager.Instance.GetTable ("STAGE_STORY");
-			if (storyTable != null) {
-				foreach (STAGE_STORY s in  storyTable) {
-					popList.AddItem ( MyTool.GetStoryName (s.n_ID), s );
-				}
-			}
-		}
-		// camp
-		UIPopupList campList = CampPoplist.GetComponent<UIPopupList>();
+        //	popList.Clear ();
+        //	DataTable storyTable = ConstDataManager.Instance.GetTable ("STAGE_STORY");
+        //	if (storyTable != null) {
+        //		foreach (STAGE_STORY s in  storyTable) {
+        //			popList.AddItem ( MyTool.GetStoryName (s.n_ID), s );
+        //		}
+        //	}
+        //}
+        UIScrollablePopupList popList = StoryPoplist.GetComponent<UIScrollablePopupList>();
+        if (popList != null)
+        {
+            //添加触发事件
+            //	EventDelegate.Add (popList.onChange, label.SetCurrentSelection);
+          EventDelegate.Add(popList.onChange, StoryComboboxChange);
+            DataTable storyTable = ConstDataManager.Instance.GetTable("STAGE_STORY");
+            if (storyTable != null)
+            {
+                popList.Clear();
+                foreach (STAGE_STORY s in storyTable)
+                {
+                   // popList.items.Add(MyTool.GetStoryName(s.n_ID));
+                      popList.AddItem(MyTool.GetStoryName(s.n_ID), s);
+                }
+            }
+        }
+       
+        // camp
+        UIPopupList campList = CampPoplist.GetComponent<UIPopupList>();
 		if (campList != null) {		
 			//添加触发事件
 			//	EventDelegate.Add (popList.onChange, label.SetCurrentSelection);
@@ -124,9 +143,8 @@ public class Panel_SysCheat : MonoBehaviour {
         //		}; 
     }
 
-	void OnEnable () {
-
-		UIToggle god = GodChk.GetComponent<UIToggle> ();
+	void OnEnable () {      
+        UIToggle god = GodChk.GetComponent<UIToggle> ();
 		god.value =Config.GOD;
 
 		UIToggle kill = KillChk.GetComponent<UIToggle> ();
@@ -349,7 +367,7 @@ public class Panel_SysCheat : MonoBehaviour {
 	//跳關
 	public void StoryComboboxChange()
 	{
-		UIPopupList popList = StoryPoplist.GetComponent<UIPopupList>();
+        UIScrollablePopupList popList = StoryPoplist.GetComponent<UIScrollablePopupList>();
 		if (popList != null) {	
 //			string s = popList.value;
 			STAGE_STORY st = popList.data as STAGE_STORY;

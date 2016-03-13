@@ -1446,6 +1446,10 @@ public class MyScript {
                 {
                     pool.Add(new ADD_MOVE(func.I(0)));
                 }
+                else if (func.sFunc == "ADD_ARMOR")
+                {
+                    pool.Add(new ADD_ARMOR(func.F(0)));
+                }
                 else if (func.sFunc == "MUL_DROP")
                 {
                     pool.Add(new MUL_DROP(func.F(0)));

@@ -1016,6 +1016,7 @@ GameObject:
   - 114: {fileID: 11469824}
   - 65: {fileID: 6550772}
   - 114: {fileID: 11466144}
+  - 114: {fileID: 11489206}
   m_Layer: 5
   m_Name: PopupStage
   m_TagString: Untagged
@@ -5021,7 +5022,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 181210}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 57e428c9b6087304da439ec665b56a2d, type: 3}
   m_Name: 
@@ -5036,7 +5037,7 @@ MonoBehaviour:
   position: 0
   alignment: 1
   items: []
-  padding: {x: 4, y: 4}
+  padding: {x: 40, y: 4}
   textColor: {r: 0, g: 0, b: 0, a: .839215696}
   backgroundColor: {r: 1, g: 1, b: 1, a: 1}
   highlightColor: {r: .87843138, g: .78039217, b: .58431375, a: 1}
@@ -5874,6 +5875,53 @@ MonoBehaviour:
   mAtlas: {fileID: 11400000, guid: 62adb30369acbf943a67cee0f69267a3, type: 2}
   mSpriteName: Button
   mFillCenter: 1
+--- !u!114 &11489206
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 181210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ace50a45f3a5404e995605055c8246a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  atlas: {fileID: 11400000, guid: 62adb30369acbf943a67cee0f69267a3, type: 2}
+  scrollbarAtlas: {fileID: 11400000, guid: 62adb30369acbf943a67cee0f69267a3, type: 2}
+  scrollbarSpriteName: Button
+  scrollbarForegroundName: Window
+  bitmapFont: {fileID: 0}
+  trueTypeFont: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+  fontSize: 20
+  fontStyle: 0
+  backgroundSprite: Button
+  highlightSprite: Button
+  position: 0
+  items: []
+  padding: {x: 4, y: 4}
+  textColor: {r: 0, g: 0, b: 0, a: 1}
+  backgroundColor: {r: 1, g: 1, b: 1, a: 1}
+  highlightColor: {r: .882352948, g: .784313738, b: .588235319, a: 1}
+  scrollbarBgDefColour: {r: 1, g: 1, b: 1, a: 1}
+  scrollbarBgHovColour: {r: .882352948, g: .784313738, b: .588235319, a: 1}
+  scrollbarBgPrsColour: {r: 1, g: 1, b: 1, a: 1}
+  scrollbarFgDefColour: {r: 1, g: 1, b: 1, a: 1}
+  scrollbarFgHovColour: {r: .882352948, g: .784313738, b: .588235319, a: 1}
+  scrollbarFgPrsColour: {r: 1, g: 1, b: 1, a: 1}
+  isAnimated: 1
+  isLocalized: 0
+  maxHeight: 400
+  onChange:
+  - mTarget: {fileID: 11497050}
+    mMethodName: SetCurrentSelection
+    mParameters: []
+    oneShot: 0
+  mSelectedItem: 
+  eventReceiver: {fileID: 0}
+  functionName: 
+  textScale: 0
+  font: {fileID: 0}
+  textLabel: {fileID: 0}
 --- !u!114 &11490528
 MonoBehaviour:
   m_ObjectHideFlags: 1

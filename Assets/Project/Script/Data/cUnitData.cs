@@ -100,9 +100,9 @@ public class cAttrData
 	public float f_MAR;
 	public int n_ATK;
 	public int n_POW;
+   
 
-
-	public float fHpRate;
+    public float fHpRate;
 	public float fMpRate;
 	public float fSpRate;
 	public float fAtkRate;
@@ -110,10 +110,11 @@ public class cAttrData
 	public float fPowRate;
 
 
-	public float fBurstRate;	//	曾商
-	public float fDamageRate; 	// 承受傷害
+	public float fBurstRate;	// 爆發
+	public float fDamageRate;   // 傷害減免
+    public float fArmor;        // 護甲- 減免物理傷害    
 
-	public float fDrainHpRate;  // 
+    public float fDrainHpRate;  // 
 	public float fDrainMpRate;  //
 
 	public float fDropRate;
@@ -136,8 +137,9 @@ public class cAttrData
 
 		fBurstRate = 0.0f;
 		fDamageRate = 0.0f;
+        fArmor = 0.0f;
 
-		fDrainHpRate =0.0f;  // 
+        fDrainHpRate =0.0f;  // 
 		fDrainMpRate =0.0f;  //
 
 		fDropRate = 0.0f;
@@ -1494,8 +1496,19 @@ public class cUnitData{
 		if (f < 0.0f )			f = 0.0f;
 		return f;
 	}
-
-	public float GetMulAttack()
+    public float GetArmor()
+    {
+        UpdateAttr(); // update first to get newest data
+        float f = 0.0f;
+        foreach (KeyValuePair<int, cAttrData> pair in Attr)
+        {
+            f += pair.Value.fArmor;
+        }
+        if (f < 0.0f) f = 0.0f;
+        else if (f > 100.0f) f = 100.0f;
+        return f;
+    }
+    public float GetMulAttack()
 	{
 		UpdateAttr(  ); // update first to get newest data
 		float f = 1.0f;

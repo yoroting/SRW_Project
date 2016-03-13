@@ -1658,8 +1658,9 @@ public partial class BattleManager
 		if ( (pAtker == null) || (pDefer == null) )
 			return null;
 
-		//標示用，讓後面有判斷依據
-		pAtker.AddStates (_FIGHTSTATE._DAMAGE);		// 使用傷害姓技能
+        List<cHitResult> resPool = new List<cHitResult>();
+        //標示用，讓後面有判斷依據
+        pAtker.AddStates (_FIGHTSTATE._DAMAGE);		// 使用傷害姓技能
 		pDefer.AddStates (_FIGHTSTATE._BEDAMAGE);// 被使用傷害姓技能
 
 
@@ -1671,10 +1672,11 @@ public partial class BattleManager
 
 		if (bDefMode == true) {
 			pDefer.AddStates( _FIGHTSTATE._DEFMODE );
-		}
-		// create result pool
+            resPool.Add ( new cHitResult( cHitResult._TYPE._CP ,nDefer , 1  ) ); // defence add 1 cp
+        }
+        // create result pool
 
-		List<cHitResult> resPool = new List<cHitResult> ();
+       
 	//	resPool.Add ( new cHitResult( cHitResult._TYPE._HIT ,nAtker , nDefer  ) );
 
 		// Atk must hit
@@ -1724,6 +1726,7 @@ public partial class BattleManager
 		float fAtkPowFactor = 1.0f;
 		float fDefPowFactor = 1.0f;
 		float fAtkFactor = 1.0f;
+       
 //		float fDefFactor = 1.0f;
 
 		//float fAtkBurst  = 1.0f + pAtker.GetMulBurst ();
@@ -1754,23 +1757,22 @@ public partial class BattleManager
 
 		float AtkMar =  pAtker.GetMar() + AtkMarPlus ;
 		float DefMar =  pDefer.GetMar() + DefMarPlus ;
-
-		// 1 mar = 0.5% hit rate
-		float HitRate = ((AtkMar-DefMar) + Config.HIT) / 200.0f; // add base rate
+        // 1 mar = 0.5% hit rate
+        float HitRate = ((AtkMar-DefMar + Config.HIT) / 200.0f)  ; // add base rate
 		if( HitRate < 0.0f )
 			HitRate = 0.0f;
 
 
 		float AtkPow =  fAtkPowFactor*(pAtker.GetPow() + AtkPowPlus);
 		float DefPow =  fDefPowFactor*(pDefer.GetPow() + DefPowPlus);
-
-		int PowDmg = (int)(HitRate*(AtkPow-DefPow) ); // 
+        float fAtkBrust = pAtker.GetMulBurst();  //攻方爆發
+        float fDefReduce = pDefer.GetMulDamage();  //守方減免
+        int PowDmg = (int)(HitRate*(AtkPow-DefPow) ); // 
 
 		if( PowDmg > 0 ){
-			nDefHp -= (int)(PowDmg * pAtker.GetMulBurst() * pDefer.GetMulDamage() );
-	
+			nDefHp -= (int)(PowDmg * fAtkBrust * fDefReduce);	
 		}
-		else if( PowDmg < 0 ){ // 氣進傷害反彈
+		else if( PowDmg < 0 ){ // 氣勁傷害反彈
 			if ( pAtker.FightAttr.SkillData.IsTag( _SKILLTAG._FLY )  || bAffect )
 			{
 				//暗器不造成反彈，AOE坡及的也不造成反彈
@@ -1794,38 +1796,35 @@ public partial class BattleManager
 
 		// buff effect
 		float Atk = (pAtker.GetAtk() + AtkPlus)* fAtkFactor;
-		float DefAC = 0.0f; // armor
+		
 
-		float fAtkDmg 	= (HitRate*Atk) - DefAC  ; 
-		float fDefReduce = pDefer.GetMulDamage ();  //守方減免
-		if (pAtker.IsStates (_FIGHTSTATE._BROKEN)) {
-			fDefReduce += 0.5f;
-			//if( fDefReduce > 1.0f ){
-				fDefReduce = 1.0f;						// 破防 
-			//}
-		}
+        float fAtkDmg = (HitRate * Atk) * fAtkBrust * fDefReduce;
 
+        // 計算物理護甲減傷
+        
 
-		fAtkDmg = (fAtkDmg<0)? 0: fAtkDmg;
+        if (pAtker.IsStates(_FIGHTSTATE._BROKEN) == false )// 攻方沒有破甲效果
+        {
+            float DefAC = pDefer.GetArmor();  // armor max is 100
+                
+            fAtkDmg *= ((100.0f - DefAC) / 100.0f);            
+        }
+        
+
+        fAtkDmg = (fAtkDmg<0)? 0: fAtkDmg;
+        // 防禦..
 		if( bDefMode )
 		{
 			fAtkDmg = (fAtkDmg*Config.DefReduce /100.0f);
 		}
-
-
-		// 攻方加成
-		fAtkDmg = fAtkDmg * pAtker.GetMulBurst () ;
-
+	
         // cirit happpen       
         if (pAtker.IsStates (_FIGHTSTATE._CIRIT)) {
 
 			fAtkDmg *= Config.CiritRatio;
 			resPool.Add (new cHitResult (cHitResult._TYPE._CIRIT , nAtker, 0 ));	
 		}
-
-		//守方減免
-		fAtkDmg *= fDefReduce;
-
+	
 
 		//守方反彈傷害 1/2
 		if( pDefer.IsStates( _FIGHTSTATE._RETURN ) ){
@@ -1872,7 +1871,7 @@ public partial class BattleManager
 		}
 
 		resPool.Add ( new cHitResult( cHitResult._TYPE._HP ,nDefer , nDefHp  ) );
-		resPool.Add ( new cHitResult( cHitResult._TYPE._CP ,nDefer , 1  ) ); // def add 1 cp
+	//	resPool.Add ( new cHitResult( cHitResult._TYPE._CP ,nDefer , 1  ) ); // def add 1 cp
 
 		// drain hp / mp
 		float fDrainHpRate = pAtker.GetDrainHP();

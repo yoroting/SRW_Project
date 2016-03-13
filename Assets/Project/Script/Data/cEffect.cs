@@ -609,12 +609,23 @@ public class ADD_MAXSP: cEffect
 
 public class ADD_MOVE: cEffect
 {
-	public ADD_MOVE( int n ){		nValue = n;	}
-	public int nValue ;
+	public ADD_MOVE( int n ){ iValue = n;	}
+//	public int nValue ;
 	override public void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr, int nNum = 1)
     { 
-		attr.n_MOV += (nValue* nNum);
+		attr.n_MOV += (iValue * nNum);
 	}
+}
+
+// armor
+public class ADD_ARMOR : cEffect
+{
+    public ADD_ARMOR(float v) { fValue = v; }
+    //	public float fValue ;	
+    override public void _Attr(cUnitData Atker, cUnitData Defer, ref cAttrData attr, int nNum = 1)
+    {
+        attr.fArmor += (fValue * nNum);
+    }
 }
 
 public class ADDHP_I: cEffect
@@ -696,6 +707,9 @@ public class ADDCP_E: cEffect
 		list.Add( new cHitResult( cHitResult._TYPE._CP , Defer.n_Ident , iValue  , Atker.n_Ident, nSkillID , nBuffID   ) );
 	}
 }
+
+
+
 // ==== MUL_BRUST
 public class MUL_DROP: cEffect
 {
@@ -726,6 +740,7 @@ public class MUL_DAMAGE: cEffect
 		attr.fDamageRate += (fValue* nNum);
 	}
 }
+
 
 public class MUL_ATTACK: cEffect
 {
