@@ -119,7 +119,7 @@ public class MyScript {
 						return false;
 					}				
 				}
-				else if( func.sFunc == "ROUND"  )
+				else if( func.sFunc == "ROUND" || func.sFunc == "R")
 				{
 					if( ConditionRound( func.I(0), func.I(1)) == false )
 					{
@@ -173,6 +173,13 @@ public class MyScript {
                 else if (func.sFunc == "TRIG_CHAR")
                 {
                     if (ConditionTrigChar(func.I(0)) == false)
+                    {
+                        return false;
+                    }
+                }
+                else if (func.sFunc == "TRIG_CAMP")
+                {
+                    if (ConditionTrigCamp(func.I(0)) == false)
                     {
                         return false;
                     }
@@ -548,6 +555,21 @@ public class MyScript {
         }
         return false;
     }
+
+    public bool ConditionTrigCamp(int nCampID )
+    {
+        if (nCheckIdent == 0)
+            return false;
+
+        cUnitData unit = GameDataManager.Instance.GetUnitDateByIdent(nCheckIdent);
+        if (unit != null)
+        {
+            return (unit.eCampID == (_CAMP)nCampID );
+        }
+        return false;
+    }
+
+    
 
     public bool ConditionCount(int campid , string op , int nNum )
     {       
