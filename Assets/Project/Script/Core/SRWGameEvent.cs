@@ -216,15 +216,16 @@ public class TalkBackGroundEvent: GameEvent {
 public class TalkDeadEvent: GameEvent {
 	public const string Name = "TalkDeadEvent";
 	public int nChar = 0;
-	public TalkDeadEvent(){
+    public int nSoundID = 0;
+    public TalkDeadEvent(){
 		name = Name;		// important.  must have this line as key
 	}
 }
 public class TalkShakeEvent: GameEvent {
 	public const string Name = "TalkShakeEvent";
 	public int nChar = 0;
-	
-	public TalkShakeEvent(){
+    public int nSoundID = 0;
+    public TalkShakeEvent(){
 		name = Name;		// important.  must have this line as key
 	}
 }

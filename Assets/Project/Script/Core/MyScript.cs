@@ -817,6 +817,7 @@ public class MyScript {
             {
                 TalkDeadEvent evt = new TalkDeadEvent();
                 evt.nChar = func.I(0);
+                evt.nSoundID = func.I(1);
                 GameEventManager.DispatchEvent(evt);
                 // del unit . if it on stage
                 Panel_StageUI.Instance.OnStageUnitDeadEvent(func.I(0)); // del unit auto
@@ -825,6 +826,7 @@ public class MyScript {
             {
                 TalkShakeEvent evt = new TalkShakeEvent();
                 evt.nChar = func.I(0);
+                evt.nSoundID = func.I(1);
                 GameEventManager.DispatchEvent(evt);
             }
             else if (func.sFunc == "BACKGROUND" || func.sFunc == "TALKBG")

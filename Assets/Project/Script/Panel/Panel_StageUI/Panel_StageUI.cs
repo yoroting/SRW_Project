@@ -3925,7 +3925,15 @@ public class Panel_StageUI : MonoBehaviour
             // skip mode no play sound
         }
         else {
-            GameSystem.PlaySound(SoundFile);
+            int nIdx;
+            if (int.TryParse(SoundFile, out nIdx))
+            {
+                GameSystem.PlaySound(nIdx);
+            }
+            else
+            {
+                GameSystem.PlaySound(SoundFile);
+            }
         }
 	}
 	

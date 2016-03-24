@@ -744,6 +744,9 @@ public class Panel_Talk : MonoBehaviour
             return;
 
         CharEnd(Evt.nChar);
+        // close talk window
+
+
     }
 
     // set back ground
@@ -761,6 +764,11 @@ public class Panel_Talk : MonoBehaviour
         if (Evt == null)
             return;
         this.CharDead(Evt.nChar);
+
+        if (Evt.nSoundID > 0 ) {
+            GameSystem.PlaySound(Evt.nSoundID );
+        }
+
     }
     void OnTalkShakeEvent(GameEvent evt)
     {
@@ -768,6 +776,10 @@ public class Panel_Talk : MonoBehaviour
         if (Evt == null)
             return;
         this.CharShake(Evt.nChar);
+        if (Evt.nSoundID > 0)
+        {
+            GameSystem.PlaySound(Evt.nSoundID);
+        }
     }
 
 
@@ -893,9 +905,6 @@ public class Panel_Talk : MonoBehaviour
         }
         // change name?
 
-
-
-
         UILabel lbl = NameObj.GetComponentInChildren<UILabel>();
         if (lbl != null)
         {
@@ -926,6 +935,7 @@ public class Panel_Talk : MonoBehaviour
             NameObj.SetActive(false);
 
             // avoid 
+            TalkWindow.ClearText();
             TalkWindow.SetEnable(false);
             //			TalkWindow_new.SetActive (false); // close all
             nLastPopType = 1;
@@ -950,8 +960,10 @@ public class Panel_Talk : MonoBehaviour
                     //return pair.Value;
                     CloseBox(pair.Key, 0);
                     // change last pop
-                    
 
+                    // avoid 
+                    TalkWindow.ClearText();
+                    TalkWindow.SetEnable(false);
 
                     return;
                 }

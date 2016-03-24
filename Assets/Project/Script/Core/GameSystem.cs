@@ -329,8 +329,27 @@ public class GameSystem : MonoBehaviour {
 		}
 	}
 
+    public static void PlaySound(int nSoundIdx)
+    {
+        if (nSoundIdx <= 0)
+        {
+            AudioManager.Instance.Stop(AudioChannelType.SoundFX);
+            return;
+        }
+            
+        SOUND sound = ConstDataManager.Instance.GetRow<SOUND>(nSoundIdx);
+        if (sound != null)
+        {
+            string strFile = sound.s_FILENAME;
+            if (!String.IsNullOrEmpty(strFile))
+            {
+                string audioPath = ResourcesManager.GetAudioClipPath(AudioChannelType.SoundFX, strFile);
+                AudioManager.Instance.Play(AudioChannelType.SoundFX, audioPath);
+            }
+        }
+    }
 
-	public static void PlaySound( string strFile )
+    public static void PlaySound( string strFile )
 	{
 		string audioPath = ResourcesManager.GetAudioClipPath( AudioChannelType.SoundFX , strFile );
 		AudioManager.Instance.Play( AudioChannelType.SoundFX ,  audioPath );

@@ -19,8 +19,9 @@
 
 	BGM = 27,
 	FX = 28,
+    SOUND = 29,
 
-	SCENE_TILE = 32,
+    SCENE_TILE = 32,
 	MARKER = 33,
 	SCENE_THING = 34,
 	AOE = 37,
