@@ -196,6 +196,23 @@ public class AudioManager : Singleton<AudioManager>
 
 		return true;
 	}
+
+    /// <summary>
+	/// 檢查指定頻道是是否播放完畢
+	/// </summary>
+	/// <param name="channel">Channel.</param>
+	/// <param name="path">Path.</param>
+	public bool IsPlaying(AudioChannelType channelType, string path) { return IsPlaying((int)channelType, path); }
+    public bool IsPlaying(int channel, string path)
+    {
+        AudioChannelBase audioChannel = null;
+
+        if (!channels.TryGetValue(channel, out audioChannel))
+            return true;
+
+       return  audioChannel.IsPlaying(path);
+    }
+
 }
 
 /// <summary>
@@ -315,7 +332,7 @@ public abstract class AudioChannelBase : MonoBehaviour
 			//使用快取資料
 			OnPlayAudioClip(clip);
 		}
-	}
+    }
 
 	public void Play(AudioClip clip)
 	{
@@ -329,7 +346,7 @@ public abstract class AudioChannelBase : MonoBehaviour
 
 		//直接播放不存快取
 		OnPlayAudioClip(clip);
-	}
+    }
 
 	private string FindPathByClip(AudioClip clip)
 	{
@@ -433,11 +450,38 @@ public abstract class AudioChannelBase : MonoBehaviour
 			cache = new Dictionary<string, AudioClip>();
 	}
 
-	abstract protected void OnStopAudioClip(AudioClip clip);
+    public bool IsPlaying( string path="")
+    {
+        if (path == "") {
+            // check all
+            foreach (var pair in cache)
+            {
+                if( IsAudioClipPlaying(pair.Value)  )
+                {
+                    return true;
+                }              
+            }
+            return false;
+        }
+        AudioClip clip = null;
+        cache.TryGetValue(path, out clip);
+        if(clip != null)
+        {
+            // clip.
+            return IsAudioClipPlaying(clip);
+        }
+
+
+        return false;
+    }
+
+    abstract protected void OnStopAudioClip(AudioClip clip);
 
 	abstract protected void OnPlayAudioClip(AudioClip clip);
 
-	abstract protected void OnVolumeChanged();
+    abstract protected bool IsAudioClipPlaying(AudioClip clip);  // check audio is play done
+
+    abstract protected void OnVolumeChanged();
 
 	abstract protected void OnMuteChanged();
 }

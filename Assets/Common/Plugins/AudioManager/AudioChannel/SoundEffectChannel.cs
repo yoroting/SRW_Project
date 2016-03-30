@@ -55,8 +55,29 @@ public class SoundEffectChannel : AudioChannelBase
 			existAudio.Play();
 		}
 	}
-	
-	private AudioSource FindAudioSource(AudioClip clip)
+
+    protected override bool IsAudioClipPlaying(AudioClip clip)  // check audio is play done
+    {
+        AudioSource existAudio = FindAudioSource(clip);
+
+        if (existAudio == null)
+        {
+            return false;
+        }
+
+        if (clip != existAudio.clip) // not current clip
+            return false;
+
+
+        if (existAudio.isPlaying && !existAudio.mute)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private AudioSource FindAudioSource(AudioClip clip)
 	{
 		if (audioSourceList == null)
 			return null;

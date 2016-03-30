@@ -66,7 +66,24 @@ public class BGMChannel : AudioChannelBase
 		}
 	}
 
-	private void FadeOutEndHandler()
+    protected override bool IsAudioClipPlaying(AudioClip clip)  // check audio is play done
+    {
+        if (currentAudio == null)
+            return false;
+
+        if (clip != currentAudio.clip) // not current clip
+            return false;
+        
+
+        if (currentAudio.isPlaying && !currentAudio.mute)
+        {
+            return true;
+        }
+        
+        return false;
+    }
+
+    private void FadeOutEndHandler()
 	{
 		if (fadeOutTween != null)
 		{

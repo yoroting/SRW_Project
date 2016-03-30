@@ -72,7 +72,7 @@ public class Panel_StageUI : MonoBehaviour
 	bool 							bIsMoveToObj;		// is move camera to obj
 //	public bool	bIsRestoreData;								// this stage is need restore data
 	public bool m_bIsSkipMode;							// skip for script perform
-
+    public bool m_bWaitSoundPlayDone ;          // need wait sound channel playdone
 	// drag canvas limit								
 	float fMinOffX ;
 	float fMaxOffX ;
@@ -537,8 +537,8 @@ public class Panel_StageUI : MonoBehaviour
 		IsEventEnd = false;
 		bIsStageEnd = false;
 		bIsReady = false;
-
-		bIsMoveToObj = false;
+        m_bWaitSoundPlayDone = false;
+        bIsMoveToObj = false;
 	}
 
 //	IEnumerator StageLoading(  )
@@ -1605,8 +1605,8 @@ public class Panel_StageUI : MonoBehaviour
 
         if (bIsMoveToObj)
             return true;
-
-       // ParticleSystem[] cacheParticleList = this.gameObject.GetComponentsInChildren<ParticleSystem>();
+      
+        // ParticleSystem[] cacheParticleList = this.gameObject.GetComponentsInChildren<ParticleSystem>();
         //foreach (ParticleSystem ps in cacheParticleList)
         //{
         //    if (ps.isStopped == false )
@@ -1672,9 +1672,17 @@ public class Panel_StageUI : MonoBehaviour
 				return true;
 		}
 
+        // check waiting sound .. 應該增加一個 判斷旗標 增進效能 
+        if (m_bWaitSoundPlayDone == true)
+        {
+            if (GameSystem.IsSoundPlaying())
+            {
+                return true;
+            }
+            m_bWaitSoundPlayDone = false; // check complete
+        }
 
-
-		return false;
+        return false;
 	}
 
 	// UnitAction
@@ -3925,6 +3933,9 @@ public class Panel_StageUI : MonoBehaviour
             // skip mode no play sound
         }
         else {
+
+            m_bWaitSoundPlayDone = true;
+
             int nIdx;
             if (int.TryParse(SoundFile, out nIdx))
             {

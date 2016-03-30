@@ -355,7 +355,16 @@ public class GameSystem : MonoBehaviour {
 		AudioManager.Instance.Play( AudioChannelType.SoundFX ,  audioPath );
 	}
 
-	public static void PlayBGM( int nBGMIdx )
+    public static bool IsSoundPlaying(  string strFile= "" )
+    {
+        string audioPath = "";
+        if(strFile != "")
+            audioPath = ResourcesManager.GetAudioClipPath(AudioChannelType.SoundFX, strFile);
+
+        return AudioManager.Instance.IsPlaying(AudioChannelType.SoundFX, audioPath);
+    }
+
+    public static void PlayBGM( int nBGMIdx )
 	{
 		if( nBGMIdx <=0 ){
 			AudioManager.Instance.Stop(AudioChannelType.BGM);
