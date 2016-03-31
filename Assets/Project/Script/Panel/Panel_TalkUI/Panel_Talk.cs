@@ -755,6 +755,9 @@ public class Panel_Talk : MonoBehaviour
         TalkBackGroundEvent Evt = evt as TalkBackGroundEvent;
         if (Evt == null)
             return;
+        if (Panel_StageUI.Instance.m_bIsSkipMode)
+            return;
+
         this.SetBackground(Evt.nBackGroundID);
     }
     // set talk dead
@@ -775,6 +778,11 @@ public class Panel_Talk : MonoBehaviour
         TalkShakeEvent Evt = evt as TalkShakeEvent;
         if (Evt == null)
             return;
+        // return if skip mode
+
+        if (Panel_StageUI.Instance.m_bIsSkipMode)
+            return;
+
         this.CharShake(Evt.nChar);
         if (Evt.nSoundID > 0)
         {
