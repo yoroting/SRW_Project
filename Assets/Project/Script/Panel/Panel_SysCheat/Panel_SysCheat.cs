@@ -194,7 +194,8 @@ public class Panel_SysCheat : MonoBehaviour {
 				if( int.TryParse( strMission[i],  out nMissionID ) ){
 					if( nMissionID ==0 )
 						continue;
-					EvtList.AddItem(  nMissionID.ToString(), nMissionID);
+                 
+                        EvtList.AddItem(nMissionID.ToString(), nMissionID);
 				}
 			}
 			
@@ -206,7 +207,15 @@ public class Panel_SysCheat : MonoBehaviour {
 				if( int.TryParse( strEvent[i],  out nEventID ) ){
 					if( nEventID ==0 )
 						continue;
-					EvtList.AddItem(  nEventID.ToString(), nEventID);
+                    string sTmp = nEventID.ToString();
+                    // check mission complete
+                    if (GameDataManager.Instance.EvtDonePool.ContainsKey(nEventID))
+                    {
+                        int nCompleteRound = GameDataManager.Instance.EvtDonePool[nEventID];
+                        sTmp += "-" + nCompleteRound;
+                    }
+
+                    EvtList.AddItem(sTmp.ToString(), nEventID);
 				}
 			}
 		}
@@ -363,9 +372,30 @@ public class Panel_SysCheat : MonoBehaviour {
 		}
 		PanelManager.Instance.CloseUI( Name );
 	}
+    public void OnTestEventClick(GameObject go)
+    {
+        UIPopupList popList = EventPoplist.GetComponent<UIPopupList>();
+        if (popList != null)
+        {
+            string s = popList.value;
+            int nEventID;
+            if (int.TryParse(s, out nEventID))
+            {
+                // get event data
 
-	//跳關
-	public void StoryComboboxChange()
+                // Panel_StageUI.Instance.TrigEventToRun(nEventID);
+                STAGE_EVENT evt = ConstDataManager.Instance.GetRow<STAGE_EVENT> (nEventID);
+                if (evt != null ) {
+                    MyScript.Instance.CheckEventCanRun(evt);
+                }
+
+            }
+        }
+        PanelManager.Instance.CloseUI(Name);
+    }
+
+    //跳關
+    public void StoryComboboxChange()
 	{
         UIScrollablePopupList popList = StoryPoplist.GetComponent<UIScrollablePopupList>();
 		if (popList != null) {	
@@ -400,5 +430,19 @@ public class Panel_SysCheat : MonoBehaviour {
         //PanelManager.Instance.CloseUI(Name);
     }
 
-    
+    public void OnDelItemClick(GameObject go)
+    {
+        UIPopupList popList = ItemPoplist.GetComponent<UIPopupList>();
+        if (popList != null)
+        {
+            if (popList.data != null)
+            {
+                int nItemID = (int)popList.data;
+
+                GameDataManager.Instance.RemoveItemfromBag(nItemID);
+            }
+
+        }
+        //PanelManager.Instance.CloseUI(Name);
+    }
 }

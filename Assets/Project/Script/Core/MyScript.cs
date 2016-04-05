@@ -706,6 +706,10 @@ public class MyScript {
                 //GameEventManager.DispatchEvent ( evt );
 
             }
+            else if (func.sFunc == "SCREEN") // open  screen ui
+            {
+                Panel_Screen.Open(func.I(0));
+            }
             else if (func.sFunc == "TALK") // open talkui
             {
 #if UNITY_EDITOR
@@ -1075,6 +1079,14 @@ public class MyScript {
             else if (func.sFunc == "CAI") // 改變單位攻擊AI
             {
                 GameDataManager.Instance.SetUnitComboAI(func.I(0), (_AI_COMBO)func.I(1));
+            }
+            else if (func.sFunc == "CAMPSAI") //設定 陣營      索敵AI
+            {
+                GameDataManager.Instance.SetCampSearchAI(func.I(0), (_AI_SEARCH)func.I(1), func.I(2), func.I(3));
+            }
+            else if (func.sFunc == "CAMPCAI") // 改變陣營單位攻擊AI
+            {
+                GameDataManager.Instance.SetCampComboAI(func.I(0), (_AI_COMBO)func.I(1));
             }
             else if (func.sFunc == "WIN")
             {

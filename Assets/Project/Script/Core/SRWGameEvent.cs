@@ -169,6 +169,17 @@ public class CmdCharMoveEvent: GameEvent {
 }
 
 // Talk UI EVent
+public class TalkClickEvent : GameEvent
+{
+    public const string Name = "TalkClickEvent";
+    public int nType;
+
+    public TalkClickEvent()
+    {
+        name = Name;        // important.  must have this line as key
+    }
+}
+
 public class TalkSayEvent: GameEvent {
 	public const string Name = "TalkSayEvent";
 	public int nChar = 0;

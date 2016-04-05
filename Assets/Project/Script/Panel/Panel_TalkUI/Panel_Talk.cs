@@ -18,8 +18,8 @@ public class Panel_Talk : MonoBehaviour
     public GameObject Skip_Button;
 
     public GameObject AVG_Obj;          //右邊人像
-    public GameObject NameObj;              // 名稱物件
-
+    public GameObject NameObj;              // 人物    名稱物件
+ 
     public GameObject TalkWindow_new;       //對話框框
 
     // AVG 用的新物件
@@ -39,7 +39,8 @@ public class Panel_Talk : MonoBehaviour
     bool m_bClickScript;
     bool m_bIsClosing;
     bool m_bIsFadining;
-
+    bool m_bIsFliping;
+  
     // tween check
     private int nTweenObjCount;
     // Declare a delegate type for processing a book:
@@ -83,6 +84,8 @@ public class Panel_Talk : MonoBehaviour
         //StartCoroutine(ConstDataManager.Instance.ReadDataStreaming("pcz/", Config.COMMON_DATA_NAMES));
 
         // cmd event
+        GameEventManager.AddEventListener(TalkClickEvent.Name, OnTalkClickEvent);
+
         GameEventManager.AddEventListener(TalkSayEvent.Name, OnTalkSayEvent);
         GameEventManager.AddEventListener(TalkSetCharEvent.Name, OnTalkSetCharEvent);
         GameEventManager.AddEventListener(TalkSayEndEvent.Name, OnTalkSayEndEvent);
@@ -154,7 +157,8 @@ public class Panel_Talk : MonoBehaviour
             Tex_BackGround.SetActive(false); // not clear background for flip
         }
         ReleaseFlip();
-
+       
+        m_bClickScript = false; 
     }
 
     public void OnDisable()
@@ -194,7 +198,10 @@ public class Panel_Talk : MonoBehaviour
     void OnFadeInFinished()
     {
         m_bIsFadining = false;
-        NextLine(); // auto next line when fade in complete
+        if (Tex_BackGround.activeSelf == false )
+        {
+            NextLine(); // auto next line when fade in complete  and no scene name block
+        }
     }
 
     public void SetEnable(bool bActive)
@@ -269,6 +276,7 @@ public class Panel_Talk : MonoBehaviour
     void OnDestroy()
     {
         // cmd event
+        GameEventManager.RemoveEventListener(TalkClickEvent.Name, OnTalkClickEvent);
         GameEventManager.RemoveEventListener(TalkSayEvent.Name, OnTalkSayEvent);
         GameEventManager.RemoveEventListener(TalkSetCharEvent.Name, OnTalkSetCharEvent);
         GameEventManager.RemoveEventListener(TalkSayEndEvent.Name, OnTalkSayEndEvent);
@@ -296,7 +304,8 @@ public class Panel_Talk : MonoBehaviour
         if (m_bIsClosing == true)
             return;
 
-
+        if (PanelManager.Instance.CheckUIIsOpening(Panel_Screen.Name) == true)
+            return ;
         //if (IsAllEnd())
         Panel_StageUI.Instance.SetScriptSkipMode( true );
 
@@ -498,7 +507,7 @@ public class Panel_Talk : MonoBehaviour
         return null;
     }
 
-
+  
 
     public void SetName(int nCharID, GameObject go)
     {
@@ -603,7 +612,7 @@ public class Panel_Talk : MonoBehaviour
 
         if (twA)
         {
-            m_bIsFadining = true;
+            m_bIsFliping = true;
             tex.alpha = 0.0f;
             twA.from = 0.0f;
             twA.to = 1.0f;
@@ -622,7 +631,7 @@ public class Panel_Talk : MonoBehaviour
         ReleaseFlip();
         // destory all avg obj
 
-        m_bIsFadining = false;
+        m_bIsFliping = false;
 
     }
 
@@ -651,15 +660,14 @@ public class Panel_Talk : MonoBehaviour
             return;
         }
 
+        //}
+        Panel_Screen.Open(m_cStageTalk.n_SCENE_ID);
         // change Back Tex
         //if ( m_cStageTalk.n_BACK_ID > 0 ) 
         //{
         SetBackground(m_cStageTalk.n_BACK_ID); // auto hide  bg with id=0
                                                // load texture of sceneID
 
-        //}
-
-        // change BGM
         if (m_cStageTalk.n_TALK_BGM > 0)
         {
             GameSystem.PlayBGM(m_cStageTalk.n_TALK_BGM);
@@ -675,7 +683,7 @@ public class Panel_Talk : MonoBehaviour
         //m_cScript.SetText( "SAY(1,9)\nCLOSE(1,0)");
         // need get script for const data
 
-        if (fadein)
+        if (fadein || (m_cStageTalk.n_SCENE_ID > 0) )
         {
             FadeIn();
         }
@@ -692,11 +700,18 @@ public class Panel_Talk : MonoBehaviour
     // script go next line
     public void NextLine()
     {
+        if (PanelManager.Instance.CheckUIIsOpening( Panel_Screen.Name )) {
+            return;
+        }
+
+
         if (m_nScriptIdx >= m_cScript.GetMaxCol())
         {
             EndTalk();
             return;
         }
+       
+            
 
         //ParserScript ( m_cScript.GetTextLine( m_nScriptIdx++ )  );
         MyScript.Instance.ParserScript(m_cScript.GetTextLine(m_nScriptIdx++));
@@ -707,7 +722,14 @@ public class Panel_Talk : MonoBehaviour
         m_bClickScript = false;
     }
 
+
     // talk 
+    void OnTalkClickEvent(GameEvent evt)
+    {
+        OnPanelClick(null);
+    }
+    
+
     void OnTalkSayEvent(GameEvent evt)
     {
         TalkSayEvent Evt = evt as TalkSayEvent;
@@ -793,7 +815,7 @@ public class Panel_Talk : MonoBehaviour
 
     public bool IsAllEnd()
     {
-        if (m_bIsFadining || m_bIsClosing)
+        if (m_bIsFadining || m_bIsClosing || m_bIsFliping )
             return false;
 
         // check both box is end

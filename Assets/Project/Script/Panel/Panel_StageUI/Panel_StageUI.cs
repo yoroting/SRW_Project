@@ -1663,6 +1663,8 @@ public class Panel_StageUI : MonoBehaviour
         if (PanelManager.Instance.CheckUIIsOpening(Panel_Dispatch.Name) == true) // 派兵
             return true;
 
+        if (PanelManager.Instance.CheckUIIsOpening(Panel_Screen.Name) == true)
+            return true;
 
         foreach ( KeyValuePair< int , Panel_unit > pair in IdentToUnit )
 		{
@@ -2065,9 +2067,11 @@ public class Panel_StageUI : MonoBehaviour
 		// running talk ui is running event too
 		if( IsAnyActionRunning() ) // many trig action. all event need wait them complete
 			return true;
-
-		//avoid event close soon when call talkui already
-		if( PanelManager.Instance.CheckUIIsOpening( Panel_Talk.Name) == true )
+        //
+        if (PanelManager.Instance.CheckUIIsOpening(Panel_Screen.Name) == true)
+            return true;
+        //avoid event close soon when call talkui already
+        if ( PanelManager.Instance.CheckUIIsOpening( Panel_Talk.Name) == true )
 			return true;
 
 		return false;
@@ -4027,7 +4031,8 @@ public class Panel_StageUI : MonoBehaviour
 				unit.pUnitData.Buffs.DelBuff( nBuffID, true );
 				
 			}
-		}
+            unit.pUnitData.FixOverData();
+        }
 		if (nTot == 0) {
 			Debug.LogErrorFormat ("OnStageAddBuff {0} on null unit with char {1} , type{2}", nBuffID, nCharID,nDel);
 		}
@@ -4068,7 +4073,8 @@ public class Panel_StageUI : MonoBehaviour
 				unit.pUnitData.Buffs.DelBuff( nBuffID, true );
 				
 			}
-		}
+            unit.pUnitData.FixOverData();
+        }
 		if (nTot == 0) {
 			Debug.LogErrorFormat ("OnStageCampAddBuff {0} on null unit with camp {1} , type{2}", nBuffID, nCampID,nDel);
 		}

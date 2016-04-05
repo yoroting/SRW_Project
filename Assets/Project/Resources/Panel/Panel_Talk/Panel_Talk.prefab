@@ -808,7 +808,7 @@ MonoBehaviour:
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: .111111112
+  aspectRatio: .224999994
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   mFont: {fileID: 0}
@@ -1159,7 +1159,7 @@ MonoBehaviour:
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: .111111112
+  aspectRatio: .239999995
   mType: 1
   mFillDirection: 4
   mFillAmount: 1
@@ -1325,7 +1325,7 @@ MonoBehaviour:
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: .111111112
+  aspectRatio: .75
   mType: 0
   mFillDirection: 4
   mFillAmount: 1
@@ -1383,7 +1383,7 @@ MonoBehaviour:
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: .111111112
+  aspectRatio: .269230783
   mType: 1
   mFillDirection: 4
   mFillAmount: 1

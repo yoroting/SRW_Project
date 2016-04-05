@@ -821,8 +821,66 @@ private static GameDataManager instance;
             }
         }
 	}
-	// Event Status
-	public Dictionary< int , int > EvtDonePool;			// record event complete round 
+    public void SetCampSearchAI(int nCampID, _AI_SEARCH nSearchAI, int nArg1 = 0, int nArg2 = 0)
+    {
+        _CAMP camp = (_CAMP)nCampID;
+
+        foreach (var pair in UnitPool)
+        {
+            cUnitData unit = pair.Value; //  GetUnitDateByCharID(nCharID);
+            if (unit != null)
+            {
+                if (unit.eCampID != camp)
+                    continue;
+                //unit.n
+                if (nSearchAI != _AI_SEARCH._NOCHANGE)
+                {
+                    unit.eSearchAI = nSearchAI;
+
+                    if (nSearchAI == _AI_SEARCH._TARGET)
+                    {
+                        unit.n_AITarget = nArg1;
+                    }
+                    else if (nSearchAI == _AI_SEARCH._POSITION)
+                    {
+                        unit.n_AIX = nArg1;
+                        unit.n_AIY = nArg2;
+                    }
+                }
+            }
+            else
+            {
+                Debug.LogErrorFormat(" Set camp SAI fail with {0} - {1} - {2}", nCampID, nSearchAI, nArg1);
+
+            }
+        }
+    }
+    public void SetCampComboAI(int nCampID, _AI_COMBO nComboAI = _AI_COMBO._NOCHANGE)
+    {
+        _CAMP camp = (_CAMP)nCampID;
+
+        foreach (KeyValuePair<int, cUnitData> pair in UnitPool)
+        {
+            cUnitData unit = pair.Value; //  GetUnitDateByCharID(nCharID);
+            if (unit != null)
+            {
+                if (unit.eCampID != camp)
+                    continue;
+
+                if (nComboAI != _AI_COMBO._NOCHANGE)
+                {
+                    unit.eComboAI = nComboAI;
+                }
+            }
+            else
+            {
+                Debug.LogErrorFormat(" Set camp CAI fail with {0} - {1} ", nCampID, nComboAI);
+
+            }
+        }
+    }
+    // Event Status
+    public Dictionary< int , int > EvtDonePool;			// record event complete round 
 
 
 	// public  Group

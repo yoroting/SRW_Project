@@ -1041,6 +1041,8 @@ public class cUnitData{
 //		if( bUpCond )
 //			UpdateBuffConditionAttr ();		// always check condition and update
 
+        // FIX hp / mp / def / sp     
+
 	}
 
 
@@ -1160,25 +1162,50 @@ public class cUnitData{
 
 	}
 
-//	// this should work only each casting phase
-//	void UpdateFightAttr( )
-//	{
-//		if (FightAttr == null )
-//			return;
-//
-//		FightAttr.ClearBase (); // clear base attr only
-//
-//		// cast attr will add in  cast pahse
-//
-////		if (FightAttr.SkillData != null) {
-////			MyTool.AttrSkillEffect( this , FightAttr.SkillData.CastPool , FightAttr.SkillData.CastCond , FightAttr.SkillData.CastCondEffectPool );
-////		}
-//	}
+    //	// this should work only each casting phase
+    //	void UpdateFightAttr( )
+    //	{
+    //		if (FightAttr == null )
+    //			return;
+    //
+    //		FightAttr.ClearBase (); // clear base attr only
+    //
+    //		// cast attr will add in  cast pahse
+    //
+    ////		if (FightAttr.SkillData != null) {
+    ////			MyTool.AttrSkillEffect( this , FightAttr.SkillData.CastPool , FightAttr.SkillData.CastCond , FightAttr.SkillData.CastCondEffectPool );
+    ////		}
+    //	}
+    // 修正過大 數值
+    public void FixOverData()
+    {
+        UpdateAttr(); // update soon
+        UpdateBuffConditionAttr();
+
+        int hp = GetMaxHP();
+        if ( n_HP > hp) {
+            n_HP = hp;
+        }
+        int mp = GetMaxMP();
+        if (n_MP > mp)
+        {
+            n_MP = mp;
+        }
+        int def = GetMaxDef();
+        if (n_DEF > def)
+        {
+            n_DEF = def;
+        }
+        int sp = GetMaxSP();
+        if (n_SP > sp )
+        {
+            n_SP = sp;
+        }
+
+    }
 
 
-
-
-	public cAttrData GetAttrData( int idx )
+    public cAttrData GetAttrData( int idx )
 	{
 		cAttrData attr;
 		if (Attr.TryGetValue( idx , out attr ) == false ) {
