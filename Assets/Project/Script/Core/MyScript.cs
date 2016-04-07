@@ -817,6 +817,23 @@ public class MyScript {
                 //Say( func.I(0), func.I(1) );
                 GameEventManager.DispatchEvent(evt);
             }
+            else if (func.sFunc == "SETALL")
+            {
+                // sayend auto
+                TalkSayEndEvent evt = new TalkSayEndEvent();                
+                evt.nChar = 0;
+                GameEventManager.DispatchEvent(evt);
+                //set char 0
+                TalkSetCharEvent evt1 = new TalkSetCharEvent();
+                evt1.nType = 0;
+                evt1.nChar = func.I(0);
+                GameEventManager.DispatchEvent(evt1);
+                //set char 1
+                TalkSetCharEvent evt2 = new TalkSetCharEvent();
+                evt2.nType = 1;
+                evt2.nChar = func.I(1);                                
+                GameEventManager.DispatchEvent(evt2);
+            }
             else if (func.sFunc == "TALKDEAD")
             {
                 TalkDeadEvent evt = new TalkDeadEvent();
@@ -1327,7 +1344,14 @@ public class MyScript {
                 {
                     pool.Add(new AURA_DELSTACK_E(func.I(0), func.I(1)));
                 }
-
+                else if (func.sFunc == "AURA_CP_I")
+                {
+                    pool.Add(new AURA_CP_I(func.I(0), func.I(1)));
+                }
+                else if (func.sFunc == "AURA_CP_E")
+                {
+                    pool.Add(new AURA_CP_E(func.I(0), func.I(1)));
+                }
 
 
                 else if (func.sFunc == "BATTLE_ARRAY")

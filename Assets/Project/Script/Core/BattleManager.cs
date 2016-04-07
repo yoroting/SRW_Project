@@ -1806,10 +1806,13 @@ public partial class BattleManager
         if (pAtker.IsStates(_FIGHTSTATE._BROKEN) == false )// 攻方沒有破甲效果
         {
             float DefAC = pDefer.GetArmor();  // armor max is 100
-                
-            fAtkDmg *= ((100.0f - DefAC) / 100.0f);            
-        }
-        
+
+            //fAtkDmg *= ((100.0f - DefAC) / 100.0f);            
+            fAtkDmg -= DefAC;
+            if (fAtkDmg < 0.0f) {
+                fAtkDmg = 0.0f;
+            }
+        }        
 
         fAtkDmg = (fAtkDmg<0)? 0: fAtkDmg;
         // 防禦..

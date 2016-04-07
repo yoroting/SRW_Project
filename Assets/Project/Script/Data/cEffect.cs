@@ -335,6 +335,59 @@ public class AURA_DELSTACK_E : cEffect
     }
 }
 
+public class AURA_CP_I : cEffect
+{
+    public int nRange;
+    public AURA_CP_I(int range, int cp) { nRange = range; iValue = cp; }
+    //public int iValue ;
+    override public void _Do(cUnitData Atker, cUnitData Defer, ref List<cHitResult> list)
+    {
+        if (Atker != null)
+        {
+            if (GameDataManager.Instance != null)
+            {
+                foreach (KeyValuePair<int, cUnitData> pair in GameDataManager.Instance.UnitPool)
+                {
+                    if (BattleManager.CanPK(Atker, pair.Value) == false)
+                    {
+                        if (Atker.Dist(pair.Value) <= nRange)
+                        {
+                            list.Add(new cHitResult(cHitResult._TYPE._CP, pair.Key, iValue, Atker.n_Ident, nSkillID, pair.Key));
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+public class AURA_CP_E : cEffect
+{
+    public int nRange;
+    public AURA_CP_E(int range, int cp) { nRange = range; iValue = cp; }
+    //public int iValue ;
+    override public void _Do(cUnitData Atker, cUnitData Defer, ref List<cHitResult> list)
+    {
+        if (Atker != null)
+        {
+            if (GameDataManager.Instance != null)
+            {
+                foreach (KeyValuePair<int, cUnitData> pair in GameDataManager.Instance.UnitPool)
+                {
+                    if (BattleManager.CanPK(Atker, pair.Value) == true)
+                    {
+                        if (Atker.Dist(pair.Value) <= nRange)
+                        {
+                            list.Add(new cHitResult(cHitResult._TYPE._CP, pair.Key, iValue, Atker.n_Ident, nSkillID, pair.Key));
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// 陣型
 public class BATTLE_ARRAY : cEffect
 {
     public int nRange;

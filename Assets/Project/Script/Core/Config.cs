@@ -37,7 +37,7 @@ public class Config
 	public static int	MaxCP = 5;
 	public static float CharMarLVUp = 1.0f;
 	public static int 	CharBaseSp = 40;
-	public static int 	CharSpLVUp = 4;
+	public static int 	CharSpLVUp = 8;
 	public static int 	CharAtkLVUp = 50;
 
 	public static float HIT	=100.0f;                // 命中基礎傷害率
