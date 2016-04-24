@@ -833,6 +833,7 @@ public class MyScript {
                 evt2.nType = 1;
                 evt2.nChar = func.I(1);                                
                 GameEventManager.DispatchEvent(evt2);
+                
             }
             else if (func.sFunc == "TALKDEAD")
             {

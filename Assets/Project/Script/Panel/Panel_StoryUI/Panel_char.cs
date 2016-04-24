@@ -54,7 +54,7 @@ public class Panel_char : MonoBehaviour {
                     //string url = "Art/char/" + charData.s_FILENAME + "_S";
                     //Texture2D tex = Resources.LoadAssetAtPath(url, typeof(Texture2D)) as Texture2D;
                     //Texture t= Resources.Load( url , typeof(Texture) ) as Texture; ;
-                    tex.mainTexture = MyTool.GetCharTexture( nCharId );  //Resources.Load(url, typeof(Texture)) as Texture; ;
+                    tex.mainTexture = MyTool.GetCharTexture(nFaceID);  //Resources.Load(url, typeof(Texture)) as Texture; ;
                     //tex.mainTexture = Resources.Load( texpath) as Texture; 
                     //tex.MakePixelPerfect();
                 }

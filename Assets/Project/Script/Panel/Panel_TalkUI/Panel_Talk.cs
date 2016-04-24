@@ -439,7 +439,7 @@ public class Panel_Talk : MonoBehaviour
             if (pair.Value != null)
             {
                 if (pair.Value.CharID == nCharid)
-                {
+                {                   
                     return pair.Value;
                 }
             }
@@ -447,14 +447,15 @@ public class Panel_Talk : MonoBehaviour
             if (nReplaceCharID > 0)
             {
                 if (pair.Value.CharID == nReplaceCharID) {
+                   
                     if (nReplaceType > 0)
                     {
+                        nLastPopType = pair.Key;                            ;
                         pair.Value.ReplaceFace(nCharid);
                         return pair.Value;
                     }
                     else // remove exists
-                    {
-                        nType = pair.Key;
+                    {                        
                         pair.Value.ZoomOut();
                         m_idToFace.Remove(pair.Key );
                         break;
@@ -865,38 +866,32 @@ public class Panel_Talk : MonoBehaviour
 
         SetEnable(true);         // ensure ui re active
 
+        // face obj
         SpeakAll(false);          // small all  
 
-
-        SRW_AVGObj avgobj = SelAVGObjByCharID(nCharID, nReplaceCharID, nReplaceType);// face 
-        if (avgobj != null)
+        if (nCharID > 0)
         {
-            avgobj.Speak(true);
-        //    SetName(nCharID, avgobj.gameObject); // name POS
+            SRW_AVGObj avgobj = SelAVGObjByCharID(nCharID, nReplaceCharID, nReplaceType);// face 
+            if (avgobj != null)
+            {
+                avgobj.Speak(true);
+                //    SetName(nCharID, avgobj.gameObject); // name POS
+                
+                TalkWindow.ChangeLayout(avgobj.nLayout);
+                NameObj.SetActive(true);
+                
+            }
         }
 
 
-
+        // text data
         //SRW_TextBox obj = SelTextBoxObjByCharID (nCharID) ;
         SRW_TextBox obj = TalkWindow;// SelTextBoxObjByCharID (nCharID) ;
         if (obj == null)
             return;
 
         TalkWindow.SetEnable(true);
-
-        if (avgobj != null)
-        {
-            TalkWindow.ChangeLayout(avgobj.nLayout);
-        }
-
-        //		TalkWindow_new.SetActive( true );
-        if (nCharID > 0)
-        {
-            NameObj.SetActive(true);
-        }
-        else
-        {
-        }
+        
 
         obj.ClearText(); // clear text first
 
