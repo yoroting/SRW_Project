@@ -963,7 +963,15 @@ public class TAG_BLOCKITEM : cEffect
         return (_UNITTAG._BLOCKITEM == tag);
     }				// check user in one status		
 }
+public class TAG_STUN : cEffect
+{
+    public TAG_STUN() { }
 
+    override public bool _IsTag(_UNITTAG tag)
+    {
+        return (_UNITTAG._STUN == tag);
+    }				// check user in one status		
+}
 
 //==== immune buff==
 public class IMMUNE: cEffect

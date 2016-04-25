@@ -44,7 +44,8 @@ public enum _UNITTAG
     _PEACE  = 5 ,     // 不能被瞄準攻擊
     _TRIGGER = 6 ,    // 是機關。不執行AI
     _BLOCKITEM=7,       // 不能變更裝備道具
-
+    _STUN     =8,     //暈眩，點穴
+      
 }
 //
 public enum _ITEMSLOT

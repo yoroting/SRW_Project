@@ -1584,10 +1584,13 @@ public class MyScript {
                     pool.Add(new TAG_TRIGGER());
                 }
                 else if (func.sFunc == "TAG_BLOCKITEM")// 不能變更裝備道具           
-                {  // 中立
+                {  //
                     pool.Add(new TAG_BLOCKITEM());
                 }
-
+                else if (func.sFunc == "TAG_STUN")// 暈眩 ，點穴                            
+                { 
+                    pool.Add(new TAG_STUN());
+                }
                 //=============== fight status
                 else if (func.sFunc == "IS_HIT")
                 { // 必HIT
