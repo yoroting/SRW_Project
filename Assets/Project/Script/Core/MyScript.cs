@@ -1650,6 +1650,10 @@ public class MyScript {
                 {
                     pool.Add(new IS_ANTIFLY());
                 }
+                else if (func.sFunc == "IS_SHIELD")
+                { // 真氣盾
+                    pool.Add(new IS_SHIELD());
+                }
                 else {
 
                     Debug.LogFormat(" unknow effect {0}", func.sFunc);

@@ -1108,6 +1108,17 @@ public class IS_ANTIFLY : cEffect
     }				// check user in one status		
 }
 
+public class IS_SHIELD : cEffect
+{
+    public IS_SHIELD() { }
+
+    override public bool _IsStatus(_FIGHTSTATE st)
+    {
+        return (_FIGHTSTATE._SHIELD == st);
+    }				// check user in one status		
+}
+
+
 //==========================================================================
 // use to cache condition sctipr parser result
 public class cEffectCondition
@@ -1605,44 +1616,29 @@ public class cEffectCondition
             // Fight stat check
             else if (func.sFunc == "FST_ATKER")
             {
-                return data_I.IsStates(_FIGHTSTATE._ATKER);
+                return data_I.FightStates(_FIGHTSTATE._ATKER);
             }
             else if (func.sFunc == "FST_DEFER")
             {
-                return data_I.IsStates(_FIGHTSTATE._ATKER) == false;
+                return data_I.FightStates(_FIGHTSTATE._ATKER) == false;
             }
             else if (func.sFunc == "FST_DAMAGE")
             {
-                return data_I.IsStates(_FIGHTSTATE._DAMAGE);
+                return data_I.FightStates(_FIGHTSTATE._DAMAGE);
             }
             else if (func.sFunc == "FST_KILL")
             {
-                return data_I.IsStates(_FIGHTSTATE._KILL);
+                return data_I.FightStates(_FIGHTSTATE._KILL);
             }
             else if (func.sFunc == "FST_DEAD")
             {
-                return data_I.IsStates(_FIGHTSTATE._DEAD);
+                return data_I.FightStates(_FIGHTSTATE._DEAD);
             }
             else if (func.sFunc == "FST_DODGE")
             {
-                return data_I.IsStates(_FIGHTSTATE._DODGE);
+                return data_I.FightStates(_FIGHTSTATE._DODGE);
             }
-            else if (func.sFunc == "FST_THROUGH")
-            {
-                return data_I.IsStates(_FIGHTSTATE._THROUGH);
-            }
-            else if (func.sFunc == "FST_MISS")
-            {
-                return data_I.IsStates(_FIGHTSTATE._MISS);
-            }
-            else if (func.sFunc == "FST_COMBO")
-            {
-                return data_I.IsStates(_FIGHTSTATE._COMBO);
-            }
-            else if (func.sFunc == "FST_BROKEN")
-            {
-                return data_I.IsStates(_FIGHTSTATE._BROKEN);
-            }
+           
 
             else
             {

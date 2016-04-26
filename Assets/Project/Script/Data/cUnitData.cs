@@ -30,6 +30,7 @@ public enum _FIGHTSTATE
 	_TWICE		,  // 打兩下
     _NODMG      ,  // no dmg
     _ANTIFLY    ,  // 免疫暗器
+    _SHIELD     ,  // 真氣盾
 	// 
 	_KILL		,  //本次戰鬥有殺人
 }
@@ -1842,7 +1843,7 @@ public class cUnitData{
 	
 	}
 
-	public bool IsStates( _FIGHTSTATE st ){ 
+	public bool IsStates( _FIGHTSTATE st  ){ 
 		// char status
 		if (GetStates ().IndexOf (st) >= 0) {
 			return true;
@@ -1862,10 +1863,47 @@ public class cUnitData{
 				}
 			}
 		}
+      
 		// buff status
-		return Buffs.CheckStatus (st);
+		return Buffs.CheckStatus (st);  // buff check 到 fst status 會 導致 遞迴
+
 	}
 
+    public bool FightStates(_FIGHTSTATE st)
+    {
+        // char status
+        if (GetStates().IndexOf(st) >= 0)
+        {
+            return true;
+        }
+        return false;
+        // effect check 有可能引起 遞迴
+
+        //// fight skill effect status
+        //if ((FightAttr != null) && (FightAttr.SkillData != null))
+        //{
+        //    cUnitData unit_e = null;
+        //    if (FightAttr.TarIdent > 0)
+        //    {
+        //        unit_e = GameDataManager.Instance.GetUnitDateByIdent(FightAttr.TarIdent);
+        //    }
+
+        //    cSkillData skilldata = FightAttr.SkillData;
+        //    if (skilldata != null)
+        //    {
+        //        if (skilldata.CheckStatus(this, unit_e, st))
+        //        {
+        //            return true;
+        //        }
+        //    }
+        //}
+
+
+
+        // buff status
+        //return Buffs.CheckStatus(st);  // buff check 到 fst status 會 導致 遞迴
+
+    }
 
     public bool IsTriggr() {
         if(      IsTag( _UNITTAG._TRIGGER ))
