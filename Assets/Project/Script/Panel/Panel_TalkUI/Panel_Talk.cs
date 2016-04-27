@@ -93,6 +93,7 @@ public class Panel_Talk : MonoBehaviour
         GameEventManager.AddEventListener(TalkBackGroundEvent.Name, OnTalkBackGroundEvent);
         GameEventManager.AddEventListener(TalkDeadEvent.Name, OnTalkDeadEvent);
         GameEventManager.AddEventListener(TalkShakeEvent.Name, OnTalkShakeEvent);
+        GameEventManager.AddEventListener(TalkFaceEvent.Name, OnTalkFaceEvent);
 
         if (AVG_Obj != null)
         {
@@ -378,7 +379,7 @@ public class Panel_Talk : MonoBehaviour
                 {
                     if (pair.Value.CharID == nReplaceID && (nReplaceType>0) )
                     {
-                        pair.Value.ReplaceFace(nCharID);
+                        pair.Value.ReplaceChar(nCharID);
                         return pair.Value;
                     }
                 }              
@@ -409,8 +410,9 @@ public class Panel_Talk : MonoBehaviour
                 SRW_AVGObj boxobj = obj.GetComponent<SRW_AVGObj>();
                 if (boxobj)
                 {
+                    boxobj.SetChar(nCharID);
                     boxobj.ChangeLayout(nType);
-                    boxobj.ChangeFace(nCharID);
+                   
                 }
                 m_idToFace.Add(nType, boxobj);
                 nLastPopType = nType;
@@ -451,7 +453,7 @@ public class Panel_Talk : MonoBehaviour
                     if (nReplaceType > 0)
                     {
                         nLastPopType = pair.Key;                            ;
-                        pair.Value.ReplaceFace(nCharid);
+                        pair.Value.ReplaceChar(nCharid);
                         return pair.Value;
                     }
                     else // remove exists
@@ -493,7 +495,7 @@ public class Panel_Talk : MonoBehaviour
             SRW_AVGObj boxobj = obj.GetComponent<SRW_AVGObj>();
             if (boxobj)
             {
-                boxobj.ChangeFace(nCharid);
+                boxobj.SetChar(nCharid);
                 boxobj.ChangeLayout(nType);
 
                 // avoid create fail and dead lock
@@ -812,6 +814,35 @@ public class Panel_Talk : MonoBehaviour
             GameSystem.PlaySound(Evt.nSoundID);
         }
     }
+
+    void OnTalkFaceEvent(GameEvent evt)
+    {
+        TalkFaceEvent Evt = evt as TalkFaceEvent;
+        if (Evt == null)
+            return;
+        // return if skip mode
+        int nCharid = Evt.nChar;
+        int nFaceID = Evt.nFaceID;
+
+        if (Panel_StageUI.Instance.m_bIsSkipMode)
+            return;
+        // find avg
+        // this.CharShake(Evt.nChar);
+        foreach (KeyValuePair<int, SRW_AVGObj> pair in m_idToFace)
+        {
+            if (pair.Value != null)
+            {
+                if (pair.Value.CharID == nCharid)
+                {
+                    pair.Value.SetFace ( nFaceID );
+
+                }
+            }
+            
+        }
+    }
+
+    
 
 
     public bool IsAllEnd()

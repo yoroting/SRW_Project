@@ -665,10 +665,11 @@ public class Panel_Talk_bak : MonoBehaviour {
 		//SRW_TextBox obj = SelTextBoxObjByType (nType) ;
 		SRW_TextBox obj = SelTextBoxObjByType (nType) ;
 		if (obj) {
-			// get Text form talk_text
-			//SRW_TextBox pBox = obj.GetComponent<SRW_TextBox> ();
-			//if (pBox) {
-			obj.ChangeFace (nCharID);
+            // get Text form talk_text
+            //SRW_TextBox pBox = obj.GetComponent<SRW_TextBox> ();
+            //if (pBox) {
+            obj.CharID = nCharID;
+            obj.ChangeFace( GameDataManager.Instance.GetUnitFaceID(nCharID) );
 			//}
 		}
 		

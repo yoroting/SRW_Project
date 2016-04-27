@@ -793,6 +793,7 @@ public class MyScript {
                 int nCharID = func.I(0); // old
                 int nFaceID = func.I(1); // new 
                 GameDataManager.Instance.SetCharFace(nCharID, nFaceID);
+
             }
 
             else if (func.sFunc == "SAY")

@@ -240,7 +240,16 @@ public class TalkShakeEvent: GameEvent {
 		name = Name;		// important.  must have this line as key
 	}
 }
-
+public class TalkFaceEvent : GameEvent
+{
+    public const string Name = "TalkFaceEvent";
+    public int nChar = 0;
+    public int nFaceID = 0;
+    public TalkFaceEvent()
+    {
+        name = Name;        // important.  must have this line as key
+    }
+}
 // Battle
 public class StageBattleAttackEvent: GameEvent {
 	public const string Name = "StageBattleAttackEvent";

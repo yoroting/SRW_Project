@@ -328,6 +328,36 @@ private static GameDataManager instance;
 
     public void SetCharFace(int nCharID, int nFaceID)
     {
+        foreach (KeyValuePair<int, cUnitData> pair in StoragePool)
+        {
+            if (pair.Value == null)
+                continue;
+
+            if (nCharID == pair.Value.n_CharID)
+            {
+                pair.Value.n_FaceID = nFaceID ;
+                break;
+            }
+        }
+        //================
+        foreach (KeyValuePair<int, cUnitData> pair in UnitPool)
+        {
+            if (pair.Value == null)
+                continue;
+
+            if (nCharID == pair.Value.n_CharID)
+            {
+                pair.Value.n_FaceID = nFaceID;
+
+                if ( Panel_StageUI.Instance != null ) {
+                    Panel_StageUI.Instance.OnStageRefreshUnitFaceEvent(pair.Key);
+                }
+
+                // change face
+                break;
+            }
+        }
+        // talk change face
 
     }
     

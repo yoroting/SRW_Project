@@ -3374,7 +3374,21 @@ public class Panel_StageUI : MonoBehaviour
 
 	}
 
-	public void OnStageUnitCampEvent( int nCharid , _CAMP nCampid )
+    public void OnStageRefreshUnitFaceEvent( int nIdent )
+    {
+        Panel_unit panel;
+        if (IdentToUnit.TryGetValue(nIdent, out panel))
+        {
+            int nFaceID = panel.pUnitData.n_FaceID;
+            if (nFaceID == 0)
+                nFaceID = panel.pUnitData.n_CharID;
+
+            panel.SetFace( nFaceID); 
+        }
+    }
+
+     
+    public void OnStageUnitCampEvent( int nCharid , _CAMP nCampid )
 	{
 		// auto close all say window
 		TalkSayEndEvent sayevt = new TalkSayEndEvent();

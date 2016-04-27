@@ -354,17 +354,18 @@ public class Panel_unit : MonoBehaviour {
 		
 		SetXY( data.n_X , data.n_Y );
 
-		//CHARS charData = ConstDataManager.Instance.GetRow<CHARS>( CharID );
-		//if( charData == null)
-		//	return;
-		//// change face
-		//string url = "Art/char/" + charData.s_FILENAME +"_S";
-		UITexture face = FaceObj.GetComponent<UITexture>();
-		if( face != null )
-		{
-			face.mainTexture = MyTool.GetCharTexture(data.n_FaceID);
+        //CHARS charData = ConstDataManager.Instance.GetRow<CHARS>( CharID );
+        //if( charData == null)
+        //	return;
+        //// change face
+        //string url = "Art/char/" + charData.s_FILENAME +"_S";
 
-        }
+        SetFace(data.n_FaceID );
+  //      UITexture face = FaceObj.GetComponent<UITexture>();
+		//if( face != null )
+		//{
+		//	face.mainTexture = MyTool.GetCharTexture(data.n_FaceID);
+  //      }
 		
 		// have assign data
 		//if (data != null) {
@@ -404,6 +405,15 @@ public class Panel_unit : MonoBehaviour {
             };
         }
 
+    }
+
+    public void SetFace( int nFaceID )
+    {
+        UITexture face = FaceObj.GetComponent<UITexture>();
+        if (face != null)
+        {
+            face.mainTexture = MyTool.GetCharTexture( nFaceID );
+        }
     }
 
 	public bool IsIdle()
@@ -482,14 +492,17 @@ public class Panel_unit : MonoBehaviour {
 		CHARS charData = ConstDataManager.Instance.GetRow<CHARS>( nCharID );
 		if( charData == null)
 			return;
-		// change face
-		string url = "Art/char/" + charData.s_FILENAME +"_S";
-		UITexture face = FaceObj.GetComponent<UITexture>();
-		if( face != null )
-		{
-			face.mainTexture = Resources.Load <Texture>( url  ) ;
+        // change face
 
-		}
+        SetFace(data.n_FaceID );
+
+		//string url = "Art/char/" + charData.s_FILENAME +"_S";
+		//UITexture face = FaceObj.GetComponent<UITexture>();
+		//if( face != null )
+		//{
+		//	face.mainTexture = Resources.Load <Texture>( url  ) ;
+
+		//}
 
 		// have assign data
 		if (data != null) {

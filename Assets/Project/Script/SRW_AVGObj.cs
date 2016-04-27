@@ -6,6 +6,7 @@ public class SRW_AVGObj : MonoBehaviour {
 	//public GameObject	_FaceTexObj;  // Face Texture
 	public UITexture _FaceTexObj;  // Face Texture
 	public int CharID { set; get; }
+    public int FaceID { set; get; }
     public bool bIsZoom = true;    
     public bool bIsShaking = false;
 	public bool bIsDeading = false;
@@ -19,7 +20,8 @@ public class SRW_AVGObj : MonoBehaviour {
 
 	void Awake(){ // construct
 		CharID = 0;
-		_FaceTexObj = this.gameObject.GetComponent<UITexture>(); 
+        FaceID = 0;
+        _FaceTexObj = this.gameObject.GetComponent<UITexture>(); 
 
 	}
 
@@ -75,22 +77,30 @@ public class SRW_AVGObj : MonoBehaviour {
 
         return true;
 	}
-	public void ChangeFace( int nCharId )
-	{
-		if( nCharId <= 0 ){
+
+    public void SetChar(int nCharId) // 0 - close obj
+    {
+        if (nCharId <= 0)
+        {
             ClearFlag();
             NGUITools.SetActive(_FaceTexObj.gameObject, false);
-            NGUITools.SetActive( this.gameObject ,  false );
-			return ;
-		}
+            NGUITools.SetActive(this.gameObject, false);
+            return;
+        }
+
+        CharID = nCharId;
+        SetFace(GameDataManager.Instance.GetUnitFaceID(CharID));
+
+    }
+
+    public void SetFace( int nFaceId )
+	{	
 		// 
-		if( nCharId == CharID ){
-			return ;
-		}
-		CharID = nCharId;
+
+        FaceID = nFaceId;
 
         // set face texture
-        int nFaceID = GameDataManager.Instance.GetUnitFaceID(CharID);   
+       // int nFaceID = GameDataManager.Instance.GetUnitFaceID(CharID);   
        		if( _FaceTexObj != null  )
 			{
 				
@@ -100,7 +110,7 @@ public class SRW_AVGObj : MonoBehaviour {
                 //					string url = "Art/char/" + charData.s_FILENAME +"_L";
                 //Texture2D tex = Resources.LoadAssetAtPath(url, typeof(Texture2D)) as Texture2D;
                 //					Texture t= Resources.Load( url , typeof(Texture) ) as Texture; ;
-                _FaceTexObj.mainTexture = MyTool.GetCharTexture(nFaceID, 1 );			
+                _FaceTexObj.mainTexture = MyTool.GetCharTexture(FaceID, 1 );			
 					//tex.MakePixelPerfect();
 					
 					TweenHeight twH = TweenHeight.Begin<TweenHeight>( this.gameObject , 0.2f );
@@ -113,14 +123,24 @@ public class SRW_AVGObj : MonoBehaviour {
 					}
 			}
 	}
-
-    public void ReplaceFace(int nCharId)
+    public void ReplaceChar(int nCharId)
     {
-        if (nCharId == CharID)
+        if (CharID == nCharId)
         {
             return;
         }
         CharID = nCharId;
+
+        ReplaceFace( GameDataManager.Instance.GetUnitFaceID(CharID) );
+    }
+
+    public void ReplaceFace(int nFaceId)
+    {
+        if (FaceID == nFaceId)
+        {
+            return;
+        }
+        FaceID = nFaceId;
       //  int nFaceID = GameDataManager.Instance.GetUnitFaceID(CharID);
        
 
@@ -166,10 +186,10 @@ public class SRW_AVGObj : MonoBehaviour {
         if (_FaceTexObj != null)
         {
             NGUITools.SetActive(_FaceTexObj.gameObject, true);
-            int nFaceID = GameDataManager.Instance.GetUnitFaceID(CharID);
+            // int nFaceID = GameDataManager.Instance.GetUnitFaceID(CharID);
             if (_FaceTexObj != null)
             {
-                _FaceTexObj.mainTexture = MyTool.GetCharTexture(nFaceID, 1);
+                _FaceTexObj.mainTexture = MyTool.GetCharTexture(FaceID, 1);
             }
         }
     }
