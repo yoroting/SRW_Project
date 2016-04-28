@@ -54,7 +54,9 @@ public class cHitResult		//
 		_MISS		, 		// fail
 		_GUARD		,		// guard some 
         _IMMUNE     ,      //  immune
-                    //_BLOCK		
+        //_BLOCK		
+        _SHIELD     ,       // 護盾
+
 
     };
 

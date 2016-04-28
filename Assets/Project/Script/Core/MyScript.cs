@@ -794,6 +794,10 @@ public class MyScript {
                 int nFaceID = func.I(1); // new 
                 GameDataManager.Instance.SetCharFace(nCharID, nFaceID);
 
+                TalkFaceEvent evt = new TalkFaceEvent();
+                evt.nChar = func.I(0);
+                evt.nFaceID = func.I(1);
+                GameEventManager.DispatchEvent(evt);
             }
 
             else if (func.sFunc == "SAY")
@@ -883,7 +887,7 @@ public class MyScript {
                 evt.nDefCharID = func.I(1);
                 evt.nAtkSkillID = func.I(2);
                 evt.nNum = func.I(3);
-                evt.nResult = func.I(4); // 0- normal , 1- dodge, 2-miss
+                evt.nResult = func.I(4); // 0- normal , 1- dodge, 2-miss , 3-shield
                 Panel_StageUI.Instance.OnStageBattleAttackEvent(evt);
                 //GameEventManager.DispatchEvent ( evt  );
 
@@ -909,10 +913,10 @@ public class MyScript {
                 evt.nAtkCharID = func.I(0);
                 evt.nDefCharID = func.I(1);
                 evt.nAtkSkillID = func.I(2);
-                func.I(3); // fight result
+                evt.nResult = func.I(3); // fight result , // 0- normal , 1- dodge, 2-miss , 3-shield
                 evt.nTargetX = func.I(4);
                 evt.nTargetY = func.I(5);
-
+              
                 Panel_StageUI.Instance.OnStageBattleCastEvent(evt);
                 //GameEventManager.DispatchEvent ( evt  );
 

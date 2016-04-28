@@ -474,8 +474,30 @@ public partial class ActionManager
 //                            BattleManager.Instance.ShowBattleFX( res.Ident , nhitFX );
 							// it should have fx
 						
-						}break;	
-						case cHitResult._TYPE._CIRIT: // show dodge
+						}break;
+                        case cHitResult._TYPE._SHIELD: // be Hit fX
+                            {
+                                if (bSkipMode)
+                                {
+                                    continue;
+                                }
+
+                                //							int nhitFX = 203;// default  
+                                //						SKILL skl = ConstDataManager.Instance.GetRow<SKILL> (res.Value1);
+                                //					if( skl != null ){								
+                                //					nhitFX=skl.n_HIT_FX;  // skill data may cancel hit fx to 0
+                                //			}
+                                //if( nhitFX == 0)
+                                //	nhitFX = 203;
+                                pUnit.PlayHitResult(res);
+                                //                                pUnit.PlayFX(nhitFX );
+                                //                            BattleManager.Instance.ShowBattleFX( res.Ident , nhitFX );
+                                // it should have fx
+
+                            }
+                            break;
+
+                        case cHitResult._TYPE._CIRIT: // show dodge
 						{
 							if( bSkipMode ){
 								continue;

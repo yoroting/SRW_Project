@@ -834,7 +834,7 @@ public class Panel_Talk : MonoBehaviour
             {
                 if (pair.Value.CharID == nCharid)
                 {
-                    pair.Value.SetFace ( nFaceID );
+                    pair.Value.ReplaceFace ( nFaceID );
 
                 }
             }

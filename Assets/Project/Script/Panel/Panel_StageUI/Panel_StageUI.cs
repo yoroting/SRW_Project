@@ -3675,6 +3675,10 @@ public class Panel_StageUI : MonoBehaviour
                         {
                             act.AddHitResult(new cHitResult(cHitResult._TYPE._MISS, pAtker.n_Ident, 0));
                         }
+                        else if (3 == nResult)
+                        {
+                            act.AddHitResult(new cHitResult(cHitResult._TYPE._SHIELD, d.n_Ident, 0));
+                        }
                         act.AddHitResult(BattleManager.CalSkillHitResult(pAtker, d, nSkillID));
                     }
 
@@ -3760,11 +3764,11 @@ public class Panel_StageUI : MonoBehaviour
         StageBattleCastEvent Evt = evt as StageBattleCastEvent;
 		if (Evt == null)
 			return;
-		
-		
-		// attack 
-		
-		Panel_unit pAtkUnit = GetUnitByCharID ( Evt.nAtkCharID );
+        int nResult = Evt.nResult;
+
+        // attack 
+
+        Panel_unit pAtkUnit = GetUnitByCharID ( Evt.nAtkCharID );
 		Panel_unit pDefUnit = GetUnitByCharID ( Evt.nDefCharID );
 		if (pAtkUnit == null )
 			return;
@@ -3809,7 +3813,8 @@ public class Panel_StageUI : MonoBehaviour
 			foreach( cUnitData d in pool )
 			{
 				List<cHitResult> HitResult = BattleManager.CalSkillHitResult(pAtker , d , nSkillID  );
-
+                // 計算結果
+                 
 
 				ActionManager.Instance.ExecActionHitResult(HitResult ,m_bIsSkipMode );  // play directly without action to avoid 1 frame error
 				ActionManager.Instance.ExecActionEndResult(HitResult ,m_bIsSkipMode );
@@ -3838,10 +3843,21 @@ public class Panel_StageUI : MonoBehaviour
 				foreach( cUnitData d in pool )
 				{
 
-					//act.AddHitResult (new cHitResult (cHitResult._TYPE._BEHIT, d.n_Ident , nSkillID )); // for hit fx
+                    //act.AddHitResult (new cHitResult (cHitResult._TYPE._BEHIT, d.n_Ident , nSkillID )); // for hit fx
+                    if (1 == nResult)
+                    {
+                        act.AddHitResult(new cHitResult(cHitResult._TYPE._DODGE, d.n_Ident, 0));
+                    }
+                    else if (2 == nResult)
+                    {
+                        act.AddHitResult(new cHitResult(cHitResult._TYPE._MISS, pAtker.n_Ident, 0));
+                    }
+                    else if (3 == nResult)
+                    {
+                        act.AddHitResult(new cHitResult(cHitResult._TYPE._SHIELD, d.n_Ident, 0));
+                    }
 
-
-					act.AddHitResult( BattleManager.CalSkillHitResult(pAtker , d , nSkillID  ) );
+                    act.AddHitResult( BattleManager.CalSkillHitResult(pAtker , d , nSkillID  ) );
 //					if (nHitBack != 0) {
 //						Panel_unit pUnit = GetUnitByIdent( d.n_Ident );
 //						if( pUnit != null ){

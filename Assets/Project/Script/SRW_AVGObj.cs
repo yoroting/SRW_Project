@@ -94,10 +94,8 @@ public class SRW_AVGObj : MonoBehaviour {
     }
 
     public void SetFace( int nFaceId )
-	{	
-		// 
-
-        FaceID = nFaceId;
+	{
+        // 
 
         // set face texture
        // int nFaceID = GameDataManager.Instance.GetUnitFaceID(CharID);   
@@ -110,7 +108,7 @@ public class SRW_AVGObj : MonoBehaviour {
                 //					string url = "Art/char/" + charData.s_FILENAME +"_L";
                 //Texture2D tex = Resources.LoadAssetAtPath(url, typeof(Texture2D)) as Texture2D;
                 //					Texture t= Resources.Load( url , typeof(Texture) ) as Texture; ;
-                _FaceTexObj.mainTexture = MyTool.GetCharTexture(FaceID, 1 );			
+                _FaceTexObj.mainTexture = MyTool.GetCharTexture(nFaceId, 1 );			
 					//tex.MakePixelPerfect();
 					
 					TweenHeight twH = TweenHeight.Begin<TweenHeight>( this.gameObject , 0.2f );
@@ -122,7 +120,8 @@ public class SRW_AVGObj : MonoBehaviour {
 						nTweenObjCount++;
 					}
 			}
-	}
+        FaceID = nFaceId;
+    }
     public void ReplaceChar(int nCharId)
     {
         if (CharID == nCharId)

@@ -1074,16 +1074,16 @@ public class Panel_unit : MonoBehaviour {
 			AOEMissileAttack(  skillid , nTarX , nTarY );
 
 
-			// attach on parent
-			//RotateAttack(); 
-//			TweenRotation twr = TweenRotation.Begin< TweenRotation >( gameObject , 0.5f );
-//			if( twr != null )
-//			{
-//				twr.SetStartToCurrentValue();
-//				twr.to	= new Vector3( 0.0f , 0.0f , 360.0f );//Math.PI
-//				//MyTool.TweenSetOneShotOnFinish( twr , OnTwAtkRotateEnd ); // for once only
-//			}
-
+            // attach on parent
+            //RotateAttack(); 
+            //			TweenRotation twr = TweenRotation.Begin< TweenRotation >( gameObject , 0.5f );
+            //			if( twr != null )
+            //			{
+            //				twr.SetStartToCurrentValue();
+            //				twr.to	= new Vector3( 0.0f , 0.0f , 360.0f );//Math.PI
+            //				//MyTool.TweenSetOneShotOnFinish( twr , OnTwAtkRotateEnd ); // for once only
+            //			}
+            return;
 
 		}
 		else if (MyTool.IsSkillTag (skillid, _SKILLTAG._DANCEKILL) ) { // 
@@ -2343,6 +2343,13 @@ public class Panel_unit : MonoBehaviour {
 
                 }
                 break;
+            case cHitResult._TYPE._SHIELD: // shield fX
+                {
+                    int nShieldFX = 400;
+                    PlayFX(nShieldFX); // shield  effect is direct play
+                }
+                break;
+
             default:
                 break;
 

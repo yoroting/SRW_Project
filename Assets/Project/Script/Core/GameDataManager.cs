@@ -392,9 +392,13 @@ private static GameDataManager instance;
             }
         }
         // use const data default
-        CHARS data = ConstDataManager.Instance.GetRow<CHARS>(nCharID);
-        if (data != null) {
-            nFaceID = data.n_FACEID;
+        if (0 == nFaceID)
+        {
+            CHARS data = ConstDataManager.Instance.GetRow<CHARS>(nCharID);
+            if (data != null)
+            {
+                nFaceID = data.n_FACEID;
+            }
         }
 
         if (0 == nFaceID) {

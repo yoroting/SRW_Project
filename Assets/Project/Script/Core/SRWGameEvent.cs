@@ -270,9 +270,9 @@ public class StageBattleCastEvent: GameEvent {
 	public int nAtkSkillID = 0;
 	public int nTargetX = 0;
 	public int nTargetY = 0;
+    public int nResult = 0;
 
-	
-	public StageBattleCastEvent(){
+    public StageBattleCastEvent(){
 		name = Name;		// important.  must have this line as key
 	}
 }
