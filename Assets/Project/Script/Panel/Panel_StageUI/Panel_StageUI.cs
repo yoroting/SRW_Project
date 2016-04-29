@@ -3576,9 +3576,8 @@ public class Panel_StageUI : MonoBehaviour
 			return;
 
         int nNum = Evt.nNum;
-        if (nNum == 0)
-        {
-         //   nNum = 1;
+        if (nNum == 0) {
+            nNum = 1;   // 0 is default to 1
         }
         int nResult = Evt.nResult;
 
