@@ -1533,8 +1533,8 @@ public class cUnitData{
         {
             f += pair.Value.fArmor;
         }
-        if (f < 0.0f) f = 0.0f;
-        else if (f > 100.0f) f = 100.0f;
+  //      if (f < 0.0f) f = 0.0f;
+  //      else if (f > 100.0f) f = 100.0f;
         return f;
     }
     public float GetMulAttack()
