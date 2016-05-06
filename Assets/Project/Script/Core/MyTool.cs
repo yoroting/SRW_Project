@@ -323,7 +323,23 @@ public class MyTool {
 		return false;
 	}
 
-	public static bool IsSkillTag( int nSkillID , _SKILLTAG tag )
+    public static bool IsFinishSkill(int nSkillID)
+    {
+        if (nSkillID == 0)
+        {
+            return true; // skill -0 is damage skill
+        }
+
+        SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(nSkillID);
+        if (skl != null)
+        {
+            if (skl.n_FINISH > 0)
+                return true;
+        }        
+        return false;
+    }
+
+    public static bool IsSkillTag( int nSkillID , _SKILLTAG tag )
 	{
 		if (nSkillID == 0) {
 			if( tag == _SKILLTAG._DAMAGE ){

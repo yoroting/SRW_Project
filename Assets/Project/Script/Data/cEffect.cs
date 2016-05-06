@@ -1379,34 +1379,50 @@ public class cEffectCondition
                 if (data_I != null)
                 {
                     if (!data_I.Buffs.HaveBuff(buffid))
+                    {
                         return false;
+                    }
                 }
-                return false;       // always fail
+                else
+                {
+                    return false;       // always fail
+                }
             }
             else if (func.sFunc == "BUFF_E")
             {
                 int buffid = func.I(0);
-                if (data_E != null)
+                if (data_E != null )
                 {
                     if (!data_E.Buffs.HaveBuff(buffid))
+                    {
                         return false;
+                    }
                 }
-                return false;       // always fail
+                else
+                {
+                    return false;       // always fail
+                }
             }
             else if (func.sFunc == "SCHOOL_I")
             {
                 int schoolid = func.I(0);
                 // if (data_I.nActSch[0] != schoolid && data_I.nActSch[1] != schoolid)
-                if (!data_I.IsActiveSchool(schoolid))
+                if (data_I == null)
+                    return false;
+
+                if ( !data_I.IsActiveSchool(schoolid) )
                 {
                     return false;
                 }
+                
             }
             else if (func.sFunc == "SCHOOL_E")
             {
                 int schoolid = func.I(0);
-                if (!data_E.IsActiveSchool(schoolid))
-                {
+                if (data_E == null)
+                    return false;
+
+                if ( !data_E.IsActiveSchool(schoolid) ) {                    
                     return false;
                 }
             }

@@ -498,7 +498,7 @@ public partial class BattleManager
 
 					uAction pAtkTwice = ActionManager.Instance.CreateAttackAction(nAtkerID,nDeferID, nAtkerSkillID ); // always normal atk
 					if( pAtkTwice != null ){		
-						Atker.FightAttr.fBurstRate -= 0.5f;		// 第二下 傷害降低
+						//Atker.FightAttr.fBurstRate -= 0.5f;		// 第二下 傷害降低
 						GetAtkHitResult( nAtkerID , nDeferID , Atker , Defer ,  nAtkerSkillID , nTarGridX , nTarGridY , ref pAtkTwice , ref AtkAffectPool );
 					}
 				}
@@ -506,7 +506,7 @@ public partial class BattleManager
 				if( Defer.IsDead()==false && (bCanCounter==true) && Defer.IsStates( _FIGHTSTATE._TWICE)  ){
 					uAction pDefTwice = ActionManager.Instance.CreateAttackAction(nDeferID ,nAtkerID, nDeferSkillID  );// always normal atk
 					if( pDefTwice != null ){
-						Defer.FightAttr.fBurstRate -= 0.5f;		// 第二下 傷害降低
+					//	Defer.FightAttr.fBurstRate -= 0.5f;		// 第二下 傷害降低
 						GetAtkHitResult( nDeferID , nAtkerID ,  Defer , Atker , nDeferSkillID  , nTarGridX , nTarGridY , ref pDefTwice , ref DefAffectPool );
 					}
 				}
@@ -608,7 +608,21 @@ public partial class BattleManager
 			}
 			nPhase++;
 			break;
-		case 2:			
+         case 2: 	{// atker twice atk
+			//if( Atker.Dist( Defer  )<=2 ){ // need range 2
+				if( Atker.IsDead() == false && Atker.IsStates( _FIGHTSTATE._TWICE)  && MyTool.IsFinishSkill(nAtkerSkillID) ){
+                    // 必須是 終結技才會twice
+
+					uAction pAtkTwice = ActionManager.Instance.CreateHitAction (nAtkerID, nTarGridX, nTarGridY, nAtkerSkillID); // always normal atk
+					if( pAtkTwice != null ){
+                            //Atker.FightAttr.fBurstRate -= 0.5f;		// 第二下 傷害降低
+                            GetAtkHitResult(nAtkerID, nDeferID, Atker, Defer, nAtkerSkillID , nTarGridX, nTarGridY, ref pAtkTwice, ref AtkAffectPool);
+					}
+				}
+			//}
+			nPhase++;
+		}break;
+		case 3:			
 			// wait all action complete
 			//if( Panel_StageUI.Instance.IsAnyActionRunning() == false ){
 
@@ -616,7 +630,7 @@ public partial class BattleManager
 			//}
 
 			break;
-		case 3:			// close all 
+		case 4:			// close all 
 			nPhase++;
 			// cal cul drop
 
