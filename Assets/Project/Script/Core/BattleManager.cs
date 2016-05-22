@@ -1551,6 +1551,10 @@ public partial class BattleManager
 					continue;				
 				if( pUnit.IsDead() )
 					continue;
+                if (pUnit.IsTag( _UNITTAG._PEACE ) ) {
+                    continue;
+                }
+
 				if( bAll == true ){ // all is no need check
 					if( pUnit == Atker )  
 						continue;				
@@ -1586,8 +1590,11 @@ public partial class BattleManager
 
 				if( pUnit.IsDead() )
 					continue;
-				 
-				if( bAll == true ){ // all is no need check
+                if (pUnit.IsTag(_UNITTAG._PEACE))
+                {
+                    continue;
+                }
+                if ( bAll == true ){ // all is no need check
 					if( pUnit == Atker )  
 						continue;				
 					if( pool.Contains( pUnit ) == false ){
@@ -1924,14 +1931,14 @@ public partial class BattleManager
 		//cUnitData pAtker = GameDataManager.Instance.GetUnitDateByIdent( nAtker ); 	//Panel_StageUI.Instance.GetUnitByIdent( nAtker ); 
 		if ( (pAtker == null) || (pDefer == null) )
 			return null;
-        // 中立 單位 不處理 
-        if (pDefer.IsTag(_UNITTAG._PEACE)) {
+
+        // 機關 單位不處理戰鬥
+        if (pDefer.IsTag(_UNITTAG._TRIGGER)) {
             return null;
-        }
+        }       
 
-
-		// 守方強制迴避- Yoro : 需過濾非攻擊性技能
-		bool bIsDamage =  MyTool.IsDamageSkill( nSkillID );
+        // 守方強制迴避- Yoro : 需過濾非攻擊性技能
+        bool bIsDamage =  MyTool.IsDamageSkill( nSkillID );
 		if( bIsDamage ){
 			if (pDefer.IsStates (_FIGHTSTATE._DODGE)) {		
 				return null;

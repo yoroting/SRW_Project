@@ -3595,13 +3595,16 @@ public class Panel_StageUI : MonoBehaviour
 		int nDefId = pDefUnit.Ident ();
 		int nSkillID = Evt.nAtkSkillID;
 		int nRange = 1;
+        int nMinRange = 1;
 
-		if (Evt.nAtkSkillID != 0) {
-			SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(Evt.nAtkSkillID); 
-			if( skl != null ){
-				nRange = skl.n_RANGE;
-			}
-		}
+        MyTool.GetSkillRange(Evt.nAtkSkillID , out nRange, out nMinRange); 
+        
+  //      if (Evt.nAtkSkillID != 0) {
+		//	SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(Evt.nAtkSkillID); 
+		//	if( skl != null ){
+		//		nRange = skl.n_RANGE;
+		//	}
+		//}
 
         int count = 0;
         // show skill name
@@ -3655,7 +3658,7 @@ public class Panel_StageUI : MonoBehaviour
             }
             else
             {
-                ActionManager.Instance.CreateCastAction(nAtkId, Evt.nAtkSkillID, nDefId);
+                ActionManager.Instance.CreateCastAction(nAtkId, Evt.nAtkSkillID, nDefId);      
 
                 // send attack
                 //Panel_StageUI.Instance.MoveToGameObj(pDefUnit.gameObject , false );  // move to def 
@@ -3666,6 +3669,7 @@ public class Panel_StageUI : MonoBehaviour
 
                     foreach (cUnitData d in pool)
                     {
+                        cUnitData Tar = d;
                         if (1 == nResult)
                         {
                             act.AddHitResult(new cHitResult(cHitResult._TYPE._DODGE, d.n_Ident, 0));
@@ -3678,8 +3682,21 @@ public class Panel_StageUI : MonoBehaviour
                         {
                             act.AddHitResult(new cHitResult(cHitResult._TYPE._SHIELD, d.n_Ident, 0));
                         }
-                        act.AddHitResult(BattleManager.CalSkillHitResult(pAtker, d, nSkillID));
+                        else if (4 == nResult) // guard
+                        {                            
+                            Tar = GameDataManager.Instance.GetUnitDateByCharID(Evt.nVar1);
+                            if (Tar != null)
+                            {
+                                act.AddHitResult(new cHitResult(cHitResult._TYPE._GUARD, Tar.n_Ident, d.n_Ident));
+                            }
+                            else {
+                                Tar = d;
+                            }
+                        }
+                        act.AddHitResult(BattleManager.CalSkillHitResult(pAtker, Tar, nSkillID));
+                     
                     }
+                        
 
                 }
             }
@@ -4223,8 +4240,26 @@ public class Panel_StageUI : MonoBehaviour
 
 	}
 
+    public void OnStageEquipItem(int nCharID, int nItemID )
+    {
+        foreach (KeyValuePair<int, Panel_unit> pair in IdentToUnit)
+        {
+            Panel_unit unit = pair.Value;
+            if (unit == null)
+                continue;
+            if (unit.CharID != nCharID)
+                continue;
+            //
+            if (unit.pUnitData == null)
+                continue;
+            unit.pUnitData.EquipItem(_ITEMSLOT._SLOTMAX , nItemID);
 
-	public void OnStageRelive(int nCharID  )
+            unit.pUnitData.UpdateAllAttr();
+        }
+
+    }
+
+    public void OnStageRelive(int nCharID  )
 	{
 		foreach (KeyValuePair< int ,Panel_unit> pair in IdentToUnit) {
 			Panel_unit unit = pair.Value;

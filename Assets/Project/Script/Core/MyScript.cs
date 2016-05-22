@@ -887,7 +887,10 @@ public class MyScript {
                 evt.nDefCharID = func.I(1);
                 evt.nAtkSkillID = func.I(2);
                 evt.nNum = func.I(3);
-                evt.nResult = func.I(4); // 0- normal , 1- dodge, 2-miss , 3-shield
+                evt.nResult = func.I(4); // 0- normal , 1- dodge, 2-miss , 3-shield , 4 - GUARD
+                evt.nVar1 = func.I(5);
+                evt.nVar2 = func.I(6);
+
                 Panel_StageUI.Instance.OnStageBattleAttackEvent(evt);
                 //GameEventManager.DispatchEvent ( evt  );
 
@@ -987,6 +990,10 @@ public class MyScript {
             else if (func.sFunc == "ADDSCHOOL")  // Add school
             {
                 Panel_StageUI.Instance.OnStageAddSchool(func.I(0), func.I(1), func.I(2));
+            }
+            else if (func.sFunc == "EQUIPITEM")  // Add buff
+            {
+                Panel_StageUI.Instance.OnStageEquipItem(func.I(0), func.I(1));
             }
             else if (func.sFunc == "SETHP")  // Add HP
             {
@@ -1089,7 +1096,7 @@ public class MyScript {
             {
                 Panel_StageUI.Instance.OnStageCameraCenterEvent(func.I(0), func.I(1));
             }
-            else if (func.sFunc == "SHAKECAMERA")
+            else if (func.sFunc == "SHAKECAMERA" || func.sFunc == "CAMERASHAKE")
             {
                 //Panel_StageUI.Instance.OnStageCameraCenterEvent( func.I(0),func.I(1) );
                 GameSystem.ShakeCamera(func.F(0));

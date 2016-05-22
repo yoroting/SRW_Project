@@ -360,7 +360,7 @@ public class MyTool {
 	public static int GetSkillRange( int nID  , out int nMax,out int nMin  )
 	{
 		// default value
-		nMin =0;
+		nMin = 0;
 		nMax = 1;
 		if (nID == 0){
 			nMin = 1; // normal atk can't atk self
@@ -368,12 +368,15 @@ public class MyTool {
 		}
 
 		SKILL skl = ConstDataManager.Instance.GetRow< SKILL > ( nID );
-		if (skl == null)
-			return 0;
+        if (skl == null)
+        {
+            nMin = 1;
+            return 0;
+        }
 		// get const value
 		nMin = skl.n_MINRANGE;
 		nMax = skl.n_RANGE;
-		if( nMax == 0 ){
+		if( nMax == 0) { 
 			nMax =1;
 		}
 

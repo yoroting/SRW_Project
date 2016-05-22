@@ -162,7 +162,7 @@ public class MobAI  {
         pathList = null;
 
         if (taget == null) return false;
-        if (taget.pUnitData == null || taget.pUnitData.IsTag(_UNITTAG._PEACE))
+        if (taget.pUnitData == null || taget.pUnitData.IsTag(_UNITTAG._PEACE) )
         {
             return false; 
         }

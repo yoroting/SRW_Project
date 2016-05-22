@@ -42,8 +42,8 @@ public enum _UNITTAG
 	_CHARGE = 2 ,    // 突襲移動. no block
 	_NODIE	= 3 ,		// 不死身... 劇情NPC
 	_SILENCE = 4 ,    // can't  skill
-    _PEACE  = 5 ,     // 不能被瞄準攻擊
-    _TRIGGER = 6 ,    // 是機關。不執行AI
+    _PEACE  = 5 ,     // 不能被瞄準攻擊，不會行動
+    _TRIGGER = 6 ,    // 是機關。不執行AI，不計算傷害戰鬥
     _BLOCKITEM=7,       // 不能變更裝備道具
     _STUN     =8,     //暈眩，點穴
       
@@ -926,8 +926,24 @@ public class cUnitData{
     //
 	public int EquipItem( _ITEMSLOT slot, int nItemID , bool synbag = false )
 	{
-		if (slot >= _ITEMSLOT._SLOTMAX )
-			return 0; 
+		if (slot > _ITEMSLOT._SLOTMAX )
+			return 0;
+        // auto detect
+        if (slot == _ITEMSLOT._SLOTMAX)
+        {
+            if (Items[0] == 0)
+            {
+                slot = _ITEMSLOT._SLOT0;
+            }
+            else if (Items[1] == 0)
+            {
+                slot = _ITEMSLOT._SLOT1;
+            }
+            else {
+                slot = _ITEMSLOT._SLOT0;
+            }
+        }
+
 
 		int nOldItemID = Items [(int)slot];
 		if( nOldItemID == nItemID ){
@@ -955,16 +971,21 @@ public class cUnitData{
         //============================================================
         if (synbag)
         {
-            if (GameDataManager.Instance != null)
+            if (eCampID == _CAMP._PLAYER) // 玩家才需要同步 背包
             {
-                if (nOldItemID > 0) {
-                    GameDataManager.Instance.AddItemtoBag(nOldItemID );
-                }
-                //===================
-                if (nItemID > 0) {
-                    GameDataManager.Instance.RemoveItemfromBag(nItemID );
-                }
+                if (GameDataManager.Instance != null)
+                {
+                    if (nOldItemID > 0)
+                    {
+                        GameDataManager.Instance.AddItemtoBag(nOldItemID);
+                    }
+                    //===================
+                    if (nItemID > 0)
+                    {
+                        GameDataManager.Instance.RemoveItemfromBag(nItemID);
+                    }
 
+                }
             }
         }
 
