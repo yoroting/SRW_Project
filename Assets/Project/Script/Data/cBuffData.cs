@@ -177,7 +177,8 @@ public class cBuffs
 
 		// play buff fx
 		if (buff.n_BUFF_FXS > 0) {
-			if( Panel_StageUI.Instance ){
+			if( Panel_StageUI.Instance && (Panel_StageUI.Instance.m_bIsSkipMode==false) )
+            {
 				Panel_unit unit = Panel_StageUI.Instance.GetUnitByIdent( Owner.n_Ident );
 				if( unit != null ){
                     //unit.PlayFX( buff.n_BUFF_FXS  , false ) ;

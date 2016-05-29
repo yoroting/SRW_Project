@@ -4343,8 +4343,37 @@ public class Panel_StageUI : MonoBehaviour
 			
 		}
 	}
-	// 單位死亡
-	public void OnStageUnitDeadEvent( int nCharID , int nNum = 0)
+
+    public void OnStageSetUnDeadEvent(int nCharID, int nOn = 1)
+    {  
+        
+        foreach (KeyValuePair<int, Panel_unit> pair in IdentToUnit)
+        {
+            if (pair.Value != null)
+            {
+                if (pair.Value.CharID == nCharID)
+                {
+                    if (pair.Value.bIsDead == false)
+                    {
+                        if (nOn > 0)
+                        {
+                            pair.Value.pUnitData.AddTag(_UNITTAG._UNDEAD);
+                        }
+                        else
+                        {
+                            pair.Value.pUnitData.RemoveTag(_UNITTAG._UNDEAD);
+                            
+                        }
+                    }
+                    
+                }
+            }
+        }
+    }
+
+    
+    // 單位死亡
+    public void OnStageUnitDeadEvent( int nCharID , int nNum = 0)
 	{
 		// auto close all say window. 
         // bug .. auto close in dead end

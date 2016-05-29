@@ -108,73 +108,50 @@ public class Panel_unit : MonoBehaviour {
 		TarIdent = 0;
 
 	}
-
-	void OnEnable(){
-
-		if (FaceObj != null) {
-			FaceObj.transform.localPosition = Vector3.zero;
+    void Init()
+    {
+        if (FaceObj != null)
+        {
+            FaceObj.transform.localPosition = Vector3.zero;
             UITexture tex = FaceObj.GetComponent<UITexture>();
-            if (tex != null) {
-                tex.width  = Config.UnitW;
+            if (tex != null)
+            {
+                tex.width = Config.UnitW;
                 tex.height = Config.UnitH;
             }
         }
 
-		transform.localRotation = new Quaternion(); 
-		transform.localScale = new Vector3( 1.0f, 1.0f ,1.0f);
+        transform.localRotation = new Quaternion();
+        transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
 
-		bOnSelected = false;
-		bIsDead = false;
-		TarIdent = 0;
-
-//		UITweener[] twAry = this.GetComponents< UITweener >();
-//		foreach (UITweener tw in twAry) {
-//			tw.enabled = false;
-//
-//		}
-
-//		TweenPosition twpos = this.GetComponent< TweenPosition > ();
-//		if (twpos != null) {
-//			twpos.enabled = false;
-//		}
-
-		// shake
-//		TweenShake tws = TweenShake.Begin(gameObject, 1.0f , 15 );
-//		if( tws )
-//		{
-//			tws.shakeX = true;
-//			tws.shakeY = true;
-//		}
-//		
-//		//TweenGrayLevel
-//		//Vector2 vfrom = new Vector3( 1.0f , 1.0f , 1.0f );
-//		//Vector2 vto   = new Vector3( 0.0f , 10.0f, 1.0f );
-//		TweenGrayLevel tw = TweenGrayLevel.Begin <TweenGrayLevel >( FaceObj, 1.0f);
-//		if (tw) {
-
-		// clear all tween
-		UITweener[] tws = GetComponents< UITweener > ();
-		foreach (UITweener tw in tws) {
-			Destroy( tw );
-		}      
-
-        //UIEventListener.Get ( this.gameObject ).onClick
-        //		GameObject instance = ResourcesManager.CreatePrefabGameObj ( this.gameObject ,"FX/Cartoon FX/CFXM4 SmokePuff Ground B" );
-        //		
-        //		ParticleSystem ps =instance.GetComponent< ParticleSystem>();
-        //		if (ps!= null) {
-        //			
-        //		}
-        //		ParticleSystemRenderer psr =instance.GetComponent< ParticleSystemRenderer>();
-        //		if (psr != null) {
-        //			psr.sortingLayerName = "FX";
-        //		}
-
-        //   WaitFxPool.Clear();
+        bOnSelected = false;
+        bIsDead = false;
+        TarIdent = 0;
+        UITweener[] tws = GetComponents<UITweener>();
+        foreach (UITweener tw in tws)
+        {
+            Destroy(tw);
+        }
+        PathList = null; // stop move
         WaitMsgPool.Clear();
         m_fNextMsgTime = 0.0f;
 
-//		SetBorn (); // start born animate
+        bIsDead = false;
+        bIsAtking = false;
+        bIsCasting = false;
+        bIsShaking = false;
+        bIsMoving = false;
+        bIsBorning = false;
+        bIsDeading = false;
+        bIsLeaving = false;
+        bIsDodgeing = false;
+        bIsMissing = false;
+        bIsGuarding = false;
+    }
+
+    void OnEnable(){
+        Init();
+        
     }
 
 	// Awake
@@ -2169,6 +2146,9 @@ public class Panel_unit : MonoBehaviour {
 	{
         if (nFXID == 0)
             return;
+
+        // skip mode no FX
+
 
         //本機制維護成本過高，暫時移除
         //if(bForce == true)

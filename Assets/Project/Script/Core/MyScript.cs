@@ -825,7 +825,7 @@ public class MyScript {
             else if (func.sFunc == "SETALL")
             {
                 // sayend auto
-                TalkSayEndEvent evt = new TalkSayEndEvent();                
+                TalkSayEndEvent evt = new TalkSayEndEvent();
                 evt.nChar = 0;
                 GameEventManager.DispatchEvent(evt);
                 //set char 0
@@ -836,9 +836,9 @@ public class MyScript {
                 //set char 1
                 TalkSetCharEvent evt2 = new TalkSetCharEvent();
                 evt2.nType = 1;
-                evt2.nChar = func.I(1);                                
+                evt2.nChar = func.I(1);
                 GameEventManager.DispatchEvent(evt2);
-                
+
             }
             else if (func.sFunc == "TALKDEAD")
             {
@@ -919,7 +919,7 @@ public class MyScript {
                 evt.nResult = func.I(3); // fight result , // 0- normal , 1- dodge, 2-miss , 3-shield
                 evt.nTargetX = func.I(4);
                 evt.nTargetY = func.I(5);
-              
+
                 Panel_StageUI.Instance.OnStageBattleCastEvent(evt);
                 //GameEventManager.DispatchEvent ( evt  );
 
@@ -1003,6 +1003,10 @@ public class MyScript {
             else if (func.sFunc == "RELIVE")  // relive
             {
                 Panel_StageUI.Instance.OnStageRelive(func.I(0));
+            }
+            else if (func.sFunc == "SETUNDEAD")
+            {
+                Panel_StageUI.Instance.OnStageSetUnDeadEvent(func.I(0), func.I(1));
             }
             else if (func.sFunc == "UNITDEAD")
             {
