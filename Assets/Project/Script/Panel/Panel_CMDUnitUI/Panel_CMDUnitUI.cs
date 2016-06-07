@@ -517,7 +517,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 	{
 		Panel_StageUI.Instance.ClearOverCellEffect ();
 	
-		if( pCmder )
+		if( pCmder && (pCmder.bIsDead== false) )
 		{
 			//Panel_StageUI.Instance.SynGridToLocalPos( pCmder.gameObject , CMD.nOrgGridX , CMD.nOrgGridY );
 			pCmder.SetXY(  CMD.nOrgGridX , CMD.nOrgGridY  );

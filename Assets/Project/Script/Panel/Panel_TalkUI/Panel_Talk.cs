@@ -564,6 +564,10 @@ public class Panel_Talk : MonoBehaviour
         //	return;
 
         TALK_BACK back = ConstDataManager.Instance.GetRow<TALK_BACK>(nBackID);
+        if (back == null) {
+            Debug.LogErrorFormat( "Null Back ground ID {0}", nBackID );
+            return;
+        }
 
         string url = "Art/BG/" + back.s_IMAGENAME;
 

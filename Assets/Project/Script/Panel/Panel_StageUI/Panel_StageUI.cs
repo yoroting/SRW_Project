@@ -1325,12 +1325,14 @@ public class Panel_StageUI : MonoBehaviour
 
 		//return; // 
 		// find move
-		cUnitData pdata = GameDataManager.Instance.GetUnitDateByIdent ( unit.Ident() ); 
-		// don't zoc 
-//		List<iVec2> posList = GetUnitPosList ( );
+		cUnitData pdata = GameDataManager.Instance.GetUnitDateByIdent ( unit.Ident() );
+        if (pdata == null)
+            return;
+        // don't zoc 
+        //		List<iVec2> posList = GetUnitPosList ( );
 
-	//	List<iVec2> moveList =  Grids.GetRangePool (unit.Loc, pdata.GetMov()  , 1);
-		Grids.ClearIgnorePool();
+        //	List<iVec2> moveList =  Grids.GetRangePool (unit.Loc, pdata.GetMov()  , 1);
+        Grids.ClearIgnorePool();
 		List< iVec2 > pkPosPool = GetUnitPKPosPool(unit , true  );
 
 		if( !pdata.IsTag( _UNITTAG._CHARGE ) ) {
