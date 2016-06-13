@@ -8,7 +8,7 @@ public class STAGE_TALK : ConstDataRow<STAGE_TALK>
 	public int n_BACK_ID;
 	public int n_TALK_BGM;
 	public int n_SCENE_ID;
-	public int n_NEXT_STAGE;
+	public int n_NEXT_STAR;
 	public int n_NEXT_TALK;
 	public string s_CONTEXT;
 }

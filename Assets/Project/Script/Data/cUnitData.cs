@@ -31,8 +31,10 @@ public enum _FIGHTSTATE
     _NODMG      ,  // no dmg
     _ANTIFLY    ,  // 免疫暗器
     _SHIELD     ,  // 真氣盾
-	// 
-	_KILL		,  //本次戰鬥有殺人
+    _PARRY      ,       // 招架
+    _BLOCK      ,       // 格檔
+                  // 
+    _KILL		,  //本次戰鬥有殺人
 }
 //
 public enum _UNITTAG

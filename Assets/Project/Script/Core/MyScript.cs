@@ -861,6 +861,8 @@ public class MyScript {
                 TalkBackGroundEvent evt = new TalkBackGroundEvent();
                 //evt.nType = func.I(0);
                 evt.nBackGroundID = func.I(0);
+                evt.nSoundID = func.I(1);
+                evt.nType = func.I(2);
                 GameEventManager.DispatchEvent(evt);
             }
             else if (func.sFunc == "SAYEND")
@@ -1104,6 +1106,11 @@ public class MyScript {
             {
                 //Panel_StageUI.Instance.OnStageCameraCenterEvent( func.I(0),func.I(1) );
                 GameSystem.ShakeCamera(func.F(0));
+
+                int nSoundID = func.I(1);
+                if (nSoundID > 0) {
+                    GameSystem.PlaySound(nSoundID); 
+                }
 
             }
             else if (func.sFunc == "SAI") //設定索敵AI

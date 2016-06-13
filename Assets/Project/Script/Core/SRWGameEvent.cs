@@ -218,7 +218,8 @@ public class TalkSayEndEvent: GameEvent {
 public class TalkBackGroundEvent: GameEvent {
 	public const string Name = "TalkBackGroundEvent";
 	public int nBackGroundID = 0;
-	public int nType  ;
+    public int nSoundID = 0;
+    public int nType =0 ;
 	
 	public TalkBackGroundEvent(){
 		name = Name;		// important.  must have this line as key

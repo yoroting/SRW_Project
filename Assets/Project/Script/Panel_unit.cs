@@ -2312,10 +2312,23 @@ public class Panel_unit : MonoBehaviour {
             case cHitResult._TYPE._BEHIT: // be Hit fX
                 {
                     int nhitFX = 203;// default  
-                    SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(res.Value1);
-                    if (skl != null)
+                    int nHitRes = res.Value2;
+
+                    if (nHitRes == (int)_FIGHTSTATE._BLOCK)// 格檔
                     {
-                        nhitFX = skl.n_HIT_FX;  // skill data may cancel hit fx to 0
+                        nhitFX = 412;
+                    }
+                    else if (nHitRes == (int)_FIGHTSTATE._PARRY)// 招架
+                    {
+                        nhitFX = 411;
+                    }
+                    else // normal hit
+                    {
+                        SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(res.Value1);
+                        if (skl != null)
+                        {
+                            nhitFX = skl.n_HIT_FX;  // skill data may cancel hit fx to 0
+                        }
                     }
                     //if( nhitFX == 0)
                     //	nhitFX = 203;

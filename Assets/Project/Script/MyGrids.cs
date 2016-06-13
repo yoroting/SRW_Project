@@ -274,7 +274,11 @@ namespace MYGRIDS
         {
             return (X == v2.X && Y == v2.Y);
         }
-
+        // 比對 座標。看是否同一點
+        public bool Collision(int nX , int nY)
+        {
+            return ( X == nX && Y == nY );
+        }
 
         public double GetAngleFromTwoPoint(iVec2 p1, iVec2 p2)
         {

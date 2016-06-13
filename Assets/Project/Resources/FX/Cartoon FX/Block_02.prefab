@@ -279,7 +279,7 @@ ParticleSystem:
         rgba: 4285988608
       minMaxState: 0
     startSize:
-      scalar: .25
+      scalar: .1875
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1200,7 +1200,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 0
     startSpeed:
-      scalar: 1.25
+      scalar: .9375
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1317,7 +1317,7 @@ ParticleSystem:
         rgba: 4285988608
       minMaxState: 0
     startSize:
-      scalar: .25
+      scalar: .1875
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1389,12 +1389,12 @@ ParticleSystem:
     serializedVersion: 2
     enabled: 1
     type: 0
-    radius: .0250000004
+    radius: .0187500007
     angle: 0
     length: 0
-    boxX: .25
-    boxY: .25
-    boxZ: .25
+    boxX: .1875
+    boxY: .1875
+    boxZ: .1875
     arc: 360
     placementMode: 0
     m_Mesh: {fileID: 0}
@@ -2335,7 +2335,7 @@ ParticleSystem:
         rgba: 4294934528
       minMaxState: 0
     startSize:
-      scalar: .25
+      scalar: .1875
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -3328,6 +3328,22 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: moveWithTransform
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ShapeModule.radius
+      value: .0187500007
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ShapeModule.boxX
+      value: .1875
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ShapeModule.boxY
+      value: .1875
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ShapeModule.boxZ
+      value: .1875
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

@@ -537,7 +537,7 @@ public class Panel_Talk : MonoBehaviour
     }
 
 
-    public void SetBackground(int nBackID)
+    public void SetBackground(int nBackID  , int nType=0 )
     {
         ReleaseFlip();
 
@@ -699,7 +699,14 @@ public class Panel_Talk : MonoBehaviour
             NextLine();
         }
 
-
+        // 依據熟練度，把next 對話加入
+        if( m_cStageTalk.n_NEXT_TALK > 0 )
+        {
+            if ( m_cStageTalk.n_NEXT_STAR <= GameDataManager.Instance.nStars  ) {
+                // add to queue
+                m_WaitQueue.Add(m_cStageTalk.n_NEXT_TALK);
+            }
+        }
 
         // NextLine(); // next lin in fadein complete
     }
@@ -787,7 +794,12 @@ public class Panel_Talk : MonoBehaviour
         if (Panel_StageUI.Instance.m_bIsSkipMode)
             return;
 
-        this.SetBackground(Evt.nBackGroundID);
+        this.SetBackground(Evt.nBackGroundID , Evt.nType );
+
+        if (Evt.nSoundID > 0)
+        {
+            GameSystem.PlaySound(Evt.nSoundID);
+        }
     }
     // set talk dead
     void OnTalkDeadEvent(GameEvent evt)

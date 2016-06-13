@@ -884,13 +884,38 @@ public class Panel_StageUI : MonoBehaviour
 
 			// check target is vaild
 			bool bInAtkCell = OverCellAtkPool.ContainsKey (sKey);
-			
-			if( bInAtkCell && (_PK_MODE._ENEMY ==  MyTool.GetSkillPKmode (cCMD.Instance.nSkillID) ) ){
-					return ;
-			}
+            bool bCanPK = false;
+            cUnitData pCmder = GameDataManager.Instance.GetUnitDateByIdent(cCMD.Instance.nCmderIdent);
+            if (pCmder != null)
+            {
+                bCanPK = MyTool.CanPK(unit.eCampID, pCmder.eCampID);
+            }
+            //if( bInAtkCell && (_PK_MODE._ENEMY ==  MyTool.GetSkillPKmode (cCMD.Instance.nSkillID) ) ){
+            //		return ;
+            //}
 
-			if ( bInAtkCell == true) {
-				Panel_CMDUnitUI panel = MyTool.GetPanel<Panel_CMDUnitUI> ( PanelManager.Instance.OpenUI (Panel_CMDUnitUI.Name) );
+            if ( bInAtkCell == true) {
+                if (bInAtkCell)
+                {
+                    if (_PK_MODE._PLAYER == MyTool.GetSkillPKmode(cCMD.Instance.nSkillID))
+                    {
+                        //cCMD.Instance.pCmder.
+                        if (bCanPK)
+                        {
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        if (!bCanPK)
+                        {
+                            return;
+                        }
+                    }
+                }
+
+
+                Panel_CMDUnitUI panel = MyTool.GetPanel<Panel_CMDUnitUI> ( PanelManager.Instance.OpenUI (Panel_CMDUnitUI.Name) );
 				if (panel != null) {
 					panel.SetTarget( unit );
 				}
@@ -3444,7 +3469,14 @@ public class Panel_StageUI : MonoBehaviour
 		Panel_unit unit = GetUnitByIdent ( nIdent); // IdentToUnit[ nIdent ];
 		if( unit != null )
 		{
-			iVec2 pos = new iVec2(nX ,nY );
+            if ( unit.Loc.Collision(nX, nY) )
+            {
+                return; // already in target pos , no need move
+            }
+
+            iVec2 pos = new iVec2(nX ,nY );
+            
+
 			if( CheckIsEmptyPos(pos)== false ){
 				pos = FindEmptyPosToAttack  ( pos , unit.Loc );
 			}

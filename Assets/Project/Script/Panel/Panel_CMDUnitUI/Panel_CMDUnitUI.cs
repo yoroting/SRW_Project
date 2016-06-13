@@ -214,10 +214,17 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		if (NGuiGrids == null)
 			return;
 
-      
+        //if (eType != _CMD_TYPE._CELL )
+        //{
+        //    if (pCmder == null || pCmder.pUnitData == null)
+        //    {
+        //        return;
+        //    }
+        //}
 
-        // record cmd type
-        CMD.eLASTCMDTYPE = CMD.eCMDTYPE;
+
+            // record cmd type
+            CMD.eLASTCMDTYPE = CMD.eCMDTYPE;
 		CMD.eCMDTYPE = eType;
 
       
@@ -271,7 +278,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		}
 
 		// show sample info
-		if (pCmder != null) {
+		if (pCmder != null && pCmder.pUnitData != null ) {
             if (pCmder.pUnitData.eCampID == _CAMP._ENEMY)
             {
                 pMobInfo.gameObject.SetActive(true);
@@ -1111,10 +1118,16 @@ public class Panel_CMDUnitUI : MonoBehaviour
         Panel_CMDUnitUI panel = MyTool.GetPanel<Panel_CMDUnitUI> ( PanelManager.Instance.OpenUI (Panel_CMDUnitUI.Name) );
 		if( panel == null )
 		{
-			return panel;
+			return null;
 		}
-		
-		cCMD.Instance.eCMDSTATUS = _CMD_STATUS._WAIT_CMDID;
+        // check cmder is dead
+        if (panel.pCmder == null || panel.pCmder.pUnitData == null)
+        {
+            panel.EndCMDUI();
+            return null;
+        }
+        
+        cCMD.Instance.eCMDSTATUS = _CMD_STATUS._WAIT_CMDID;
 		
 		panel.CreateCMDList (type);	
 		

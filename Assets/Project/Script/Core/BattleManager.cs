@@ -56,7 +56,7 @@ public class cHitResult		//
         _IMMUNE     ,      //  immune
         //_BLOCK		
         _SHIELD     ,       // 護盾
-
+       
 
     };
 
@@ -1674,48 +1674,48 @@ public partial class BattleManager
 	}
 
 
-	static public List<cHitResult> CalAttackResult( int nAtker , int nDefer , bool bDefMode = false , bool bAffect = false )
-	{
-		cUnitData pAtker = GameDataManager.Instance.GetUnitDateByIdent( nAtker ); 	//Panel_StageUI.Instance.GetUnitByIdent( nAtker ); 
-		cUnitData pDefer = GameDataManager.Instance.GetUnitDateByIdent( nDefer );	//Panel_StageUI.Instance.GetUnitByIdent( nDefer ); 
-		if ( (pAtker == null) || (pDefer == null) )
-			return null;
+    static public List<cHitResult> CalAttackResult(int nAtker, int nDefer, bool bDefMode = false, bool bAffect = false)
+    {
+        cUnitData pAtker = GameDataManager.Instance.GetUnitDateByIdent(nAtker);     //Panel_StageUI.Instance.GetUnitByIdent( nAtker ); 
+        cUnitData pDefer = GameDataManager.Instance.GetUnitDateByIdent(nDefer); //Panel_StageUI.Instance.GetUnitByIdent( nDefer ); 
+        if ((pAtker == null) || (pDefer == null))
+            return null;
 
         List<cHitResult> resPool = new List<cHitResult>();
         //標示用，讓後面有判斷依據
-        pAtker.AddStates (_FIGHTSTATE._DAMAGE);		// 使用傷害姓技能
-		pDefer.AddStates (_FIGHTSTATE._BEDAMAGE);// 被使用傷害姓技能
+        pAtker.AddStates(_FIGHTSTATE._DAMAGE);      // 使用傷害姓技能
+        pDefer.AddStates(_FIGHTSTATE._BEDAMAGE);// 被使用傷害姓技能
 
 
-		// check if base cirit happen
-//		RollBaseCirit ( pAtker , pDefer );
+        // check if base cirit happen
+        //		RollBaseCirit ( pAtker , pDefer );
 
-		// check if base dodge happen
-//		RollBaseDodge ( pAtker , pDefer );
+        // check if base dodge happen
+        //		RollBaseDodge ( pAtker , pDefer );
 
-		if (bDefMode == true) {
-			pDefer.AddStates( _FIGHTSTATE._DEFMODE );
-            resPool.Add ( new cHitResult( cHitResult._TYPE._CP ,nDefer , 1  ) ); // defence add 1 cp
+        if (bDefMode == true) {
+            pDefer.AddStates(_FIGHTSTATE._DEFMODE);
+            resPool.Add(new cHitResult(cHitResult._TYPE._CP, nDefer, 1)); // defence add 1 cp
         }
         // create result pool
 
-       
-	//	resPool.Add ( new cHitResult( cHitResult._TYPE._HIT ,nAtker , nDefer  ) );
 
-		// Atk must hit
+        //	resPool.Add ( new cHitResult( cHitResult._TYPE._HIT ,nAtker , nDefer  ) );
 
-		// 守方強制迴避
-		if (pDefer.IsStates (_FIGHTSTATE._DODGE)) {
-			resPool.Add (new cHitResult (cHitResult._TYPE._DODGE, nDefer, 0 ));	
-			return resPool;
-		}
-		// atk方強制 Fail
-		if (pAtker.IsStates (_FIGHTSTATE._MISS )) {
-			resPool.Add (new cHitResult (cHitResult._TYPE._MISS, nAtker, 0 ));	
-			return resPool;
-		}
+        // Atk must hit
+
+        // 守方強制迴避
+        if (pDefer.IsStates(_FIGHTSTATE._DODGE)) {
+            resPool.Add(new cHitResult(cHitResult._TYPE._DODGE, nDefer, 0));
+            return resPool;
+        }
+        // atk方強制 Fail
+        if (pAtker.IsStates(_FIGHTSTATE._MISS)) {
+            resPool.Add(new cHitResult(cHitResult._TYPE._MISS, nAtker, 0));
+            return resPool;
+        }
         // 守方免疫傷害
-        if(pDefer.IsStates(_FIGHTSTATE._NODMG))
+        if (pDefer.IsStates(_FIGHTSTATE._NODMG))
         {
             resPool.Add(new cHitResult(cHitResult._TYPE._IMMUNE, nDefer, 0)); // no dmg
             return resPool;
@@ -1727,7 +1727,7 @@ public partial class BattleManager
         // 守方免疫飛行道具
         if (pDefer.IsStates(_FIGHTSTATE._ANTIFLY))
         {
-            if ( (pAtker.FightAttr.SkillData != null) && (pAtker.FightAttr.SkillData.IsTag( _SKILLTAG._FLY )  ) ) {
+            if ((pAtker.FightAttr.SkillData != null) && (pAtker.FightAttr.SkillData.IsTag(_SKILLTAG._FLY))) {
                 resPool.Add(new cHitResult(cHitResult._TYPE._IMMUNE, nDefer, 0)); // no dmg
                 return resPool;
             }
@@ -1736,167 +1736,180 @@ public partial class BattleManager
 
         // buff effect
         float AtkMarPlus = pAtker.FightAttr.fAtkAssist;   // assist is base pils
-		float DefMarPlus = pDefer.FightAttr.fDefAssist;
+        float DefMarPlus = pDefer.FightAttr.fDefAssist;
 
-		int AtkPowPlus = 0;
-		int DefPowPlus = 0;
-		int AtkPlus = 0;
-//		int DedfPlus = 0;
+        int AtkPowPlus = 0;
+        int DefPowPlus = 0;
+        int AtkPlus = 0;
+        //		int DedfPlus = 0;
 
-		// default 倍率
-	//	float fAtkMarFactor = 0.0f;
-	//	float fDefMarFactor = 0.0f;
-		float fAtkPowFactor = 1.0f;
-		float fDefPowFactor = 1.0f;
-		float fAtkFactor = 1.0f;
-       
-//		float fDefFactor = 1.0f;
+        // default 倍率
+        //	float fAtkMarFactor = 0.0f;
+        //	float fDefMarFactor = 0.0f;
+        float fAtkPowFactor = 1.0f;
+        float fDefPowFactor = 1.0f;
+        float fAtkFactor = 1.0f;
 
-		//float fAtkBurst  = 1.0f + pAtker.GetMulBurst ();
-		//float fDefDamage = 1.0f + pDefer.GetMulDamage ();
-		//resPool.Add ( new cHitResult( cHitResult._TYPE._BEHIT , nDefer , pAtker.FightAttr.SkillID ) );
+        //		float fDefFactor = 1.0f;
 
-		
-//		SKILL DeferSkill = pDefer.FightAttr.SkillData.skill;
+        //float fAtkBurst  = 1.0f + pAtker.GetMulBurst ();
+        //float fDefDamage = 1.0f + pDefer.GetMulDamage ();
+        //resPool.Add ( new cHitResult( cHitResult._TYPE._BEHIT , nDefer , pAtker.FightAttr.SkillID ) );
 
-		// skill effect
-		if ( AtkerSkill != null ) {
-			fAtkFactor = AtkerSkill.f_ATK;
-			fAtkPowFactor = AtkerSkill.f_POW;
-			// how to trig condition?
-		}
-//		if (DeferSkill != null) {
-//			fDedFactor 	  = DeferSkill.f_ATK;
-//			fDefPowFactor = DeferSkill.f_POW;
-//		}
 
-		// Buff condition Effect
-//		pAtker.UpdateBuffConditionEffect ( pDefer ); // update buff eff
-//		pDefer.UpdateBuffConditionEffect ( pAtker );
+        //		SKILL DeferSkill = pDefer.FightAttr.SkillData.skill;
 
-		// dmg record
-		int nAtkHp = 0;
-		int nDefHp = 0;
+        // skill effect
+        if (AtkerSkill != null) {
+            fAtkFactor = AtkerSkill.f_ATK;
+            fAtkPowFactor = AtkerSkill.f_POW;
+            // how to trig condition?
+        }
+        //		if (DeferSkill != null) {
+        //			fDedFactor 	  = DeferSkill.f_ATK;
+        //			fDefPowFactor = DeferSkill.f_POW;
+        //		}
 
-		float AtkMar =  pAtker.GetMar() + AtkMarPlus ;
-		float DefMar =  pDefer.GetMar() + DefMarPlus ;
+        // Buff condition Effect
+        //		pAtker.UpdateBuffConditionEffect ( pDefer ); // update buff eff
+        //		pDefer.UpdateBuffConditionEffect ( pAtker );
+
+        // dmg record
+        int nAtkHp = 0;
+        int nDefHp = 0;
+
+        float AtkMar = pAtker.GetMar() + AtkMarPlus;
+        float DefMar = pDefer.GetMar() + DefMarPlus;
         // 1 mar = 0.5% hit rate
-        float HitRate = ((AtkMar-DefMar + Config.HIT) / 200.0f)  ; // add base rate
-		if( HitRate < 0.0f )
-			HitRate = 0.0f;
+        float HitRate = ((AtkMar - DefMar + Config.HIT) / 200.0f); // add base rate
+        if (HitRate < 0.0f)
+            HitRate = 0.0f;
 
 
-		float AtkPow =  fAtkPowFactor*(pAtker.GetPow() + AtkPowPlus);
-		float DefPow =  fDefPowFactor*(pDefer.GetPow() + DefPowPlus);
+        float AtkPow = fAtkPowFactor * (pAtker.GetPow() + AtkPowPlus);
+        float DefPow = fDefPowFactor * (pDefer.GetPow() + DefPowPlus);
         float fAtkBrust = pAtker.GetMulBurst();  //攻方爆發
         float fDefReduce = pDefer.GetMulDamage();  //守方減免
-        int PowDmg = (int)(HitRate*(AtkPow-DefPow) ); // 
+        int PowDmg = (int)(HitRate * (AtkPow - DefPow)); // 
 
-		if( PowDmg > 0 ){
-			nDefHp -= (int)(PowDmg * fAtkBrust * fDefReduce);	
-		}
-		else if( PowDmg < 0 ){ // 氣勁傷害反彈
-			if ( pAtker.FightAttr.SkillData.IsTag( _SKILLTAG._FLY )  || bAffect )
-			{
-				//暗器不造成反彈，AOE坡及的也不造成反彈
-			}
-			else {
-				nAtkHp += (int)(PowDmg * pDefer.GetMulBurst() * pAtker.GetMulDamage() ); // it is neg value already
-				if (nAtkHp < 0) {
-					if ( ((pAtker.n_HP + pAtker.n_DEF) < Mathf.Abs(nAtkHp))) {
-						if (pDefer.IsStates (_FIGHTSTATE._MERCY)) {
-							nAtkHp = -(pAtker.n_HP + pAtker.n_DEF-1);
-						}
-						else {
-							pDefer.AddStates (_FIGHTSTATE._KILL);
-							pAtker.AddStates (_FIGHTSTATE._DEAD);
-						}
-					}
-					resPool.Add (new cHitResult (cHitResult._TYPE._HP, nAtker, nAtkHp));
-				}
-			}
-		}
+        if (PowDmg > 0) {
+            nDefHp -= (int)(PowDmg * fAtkBrust * fDefReduce);
+        }
+        else if (PowDmg < 0) { // 氣勁傷害反彈
+            if (pAtker.FightAttr.SkillData.IsTag(_SKILLTAG._FLY) || bAffect)
+            {
+                //暗器不造成反彈，AOE坡及的也不造成反彈
+            }
+            else {
+                nAtkHp += (int)(PowDmg * pDefer.GetMulBurst() * pAtker.GetMulDamage()); // it is neg value already
+                if (nAtkHp < 0) {
+                    if (((pAtker.n_HP + pAtker.n_DEF) < Mathf.Abs(nAtkHp))) {
+                        if (pDefer.IsStates(_FIGHTSTATE._MERCY)) {
+                            nAtkHp = -(pAtker.n_HP + pAtker.n_DEF - 1);
+                        }
+                        else {
+                            pDefer.AddStates(_FIGHTSTATE._KILL);
+                            pAtker.AddStates(_FIGHTSTATE._DEAD);
+                        }
+                    }
+                    resPool.Add(new cHitResult(cHitResult._TYPE._HP, nAtker, nAtkHp));
+                }
+            }
+        }
 
-		// buff effect
-		float Atk = (pAtker.GetAtk() + AtkPlus)* fAtkFactor;
-		
+        // buff effect
+        float Atk = (pAtker.GetAtk() + AtkPlus) * fAtkFactor;
+
 
         float fAtkDmg = (HitRate * Atk) * fAtkBrust * fDefReduce;
 
         // 計算物理護甲減傷
-        
 
-        if (pAtker.IsStates(_FIGHTSTATE._BROKEN) == false )// 攻方沒有破甲效果
+
+        if (pAtker.IsStates(_FIGHTSTATE._BROKEN) == false)// 攻方沒有破甲效果
         {
-            float DefAC = pDefer.GetArmor();  // armor max is 100
+            float DefAC = pDefer.GetArmor();
 
             //fAtkDmg *= ((100.0f - DefAC) / 100.0f);            
             fAtkDmg -= DefAC;
             if (fAtkDmg < 0.0f) {
                 fAtkDmg = 0.0f;
+                // 完全格檔
+                pDefer.AddStates(_FIGHTSTATE._BLOCK);
             }
-        }        
+        }
 
-        fAtkDmg = (fAtkDmg<0)? 0: fAtkDmg;
+        fAtkDmg = (fAtkDmg < 0) ? 0 : fAtkDmg;
         // 防禦..
-		if( bDefMode )
-		{
-			fAtkDmg = (fAtkDmg*Config.DefReduce /100.0f);
-		}
-	
+        if (bDefMode)
+        {
+            fAtkDmg = (fAtkDmg * Config.DefReduce / 100.0f);
+        }
+
         // cirit happpen       
-        if (pAtker.IsStates (_FIGHTSTATE._CIRIT)) {
+        if (pAtker.IsStates(_FIGHTSTATE._CIRIT)) {
 
-			fAtkDmg *= Config.CiritRatio;
-			resPool.Add (new cHitResult (cHitResult._TYPE._CIRIT , nAtker, 0 ));	
-		}
-	
-
-		//守方反彈傷害 1/2
-		if( pDefer.IsStates( _FIGHTSTATE._RETURN ) ){
-			nAtkHp = (int)( -0.5f*fAtkDmg );
-			if (nAtkHp < 0) {
-				if (((pAtker.n_HP + pAtker.n_DEF) < Mathf.Abs (nAtkHp))) {
-					if (pDefer.IsStates (_FIGHTSTATE._MERCY)) {
-						nAtkHp = -(pAtker.n_HP + pAtker.n_DEF-1);
-					}
-					else {
-						pDefer.AddStates (_FIGHTSTATE._KILL);
-						pAtker.AddStates (_FIGHTSTATE._DEAD);
-					}
-				}
-				resPool.Add (new cHitResult (cHitResult._TYPE._HP, nAtker, nAtkHp));
-			}
-		} 
-
-		//玩家秒殺模式- cheat
-		if (Config.KILL_MODE ) {
-			if( pAtker.eCampID == _CAMP._PLAYER ){
-				fAtkDmg *= 100.0f;
-			}
-		}
+            fAtkDmg *= Config.CiritRatio;
+            resPool.Add(new cHitResult(cHitResult._TYPE._CIRIT, nAtker, 0));
+        }
 
 
-		nDefHp -= (int)(fAtkDmg);
+        //守方反彈傷害 1/2
+        if (pDefer.IsStates(_FIGHTSTATE._RETURN)) {
+            nAtkHp = (int)(-0.5f * fAtkDmg);
+            if (nAtkHp < 0) {
+                if (((pAtker.n_HP + pAtker.n_DEF) < Mathf.Abs(nAtkHp))) {
+                    if (pDefer.IsStates(_FIGHTSTATE._MERCY)) {
+                        nAtkHp = -(pAtker.n_HP + pAtker.n_DEF - 1);
+                    }
+                    else {
+                        pDefer.AddStates(_FIGHTSTATE._KILL);
+                        pAtker.AddStates(_FIGHTSTATE._DEAD);
+                    }
+                }
+                resPool.Add(new cHitResult(cHitResult._TYPE._HP, nAtker, nAtkHp));
+            }
+        }
 
-//		cHitResult res = new cHitResult (nAtker, nDefer );
-//		res.AtkHp = nAtkHp;
-//		res.DefHp = nDefHp;
+        //玩家秒殺模式- cheat
+        if (Config.KILL_MODE) {
+            if (pAtker.eCampID == _CAMP._PLAYER) {
+                fAtkDmg *= 100.0f;
+            }
+        }
 
 
-		// normal attack
+        nDefHp -= (int)(fAtkDmg);
 
-		if( nDefHp < 0 && ( (pDefer.n_HP+pDefer.n_DEF) < Mathf.Abs(nDefHp) ) ){
-			if (pAtker.IsStates (_FIGHTSTATE._MERCY) || pDefer.IsTag( _UNITTAG._NODIE ) ) {		// 手加減 或 defer is 不死身
-				nDefHp = -(pDefer.n_HP+pDefer.n_DEF-1);
-			}
-			else {
-				pAtker.AddStates( _FIGHTSTATE._KILL );
-				pDefer.AddStates( _FIGHTSTATE._DEAD );  // dead
-			}
-		}
+        //		cHitResult res = new cHitResult (nAtker, nDefer );
+        //		res.AtkHp = nAtkHp;
+        //		res.DefHp = nDefHp;
 
-		resPool.Add ( new cHitResult( cHitResult._TYPE._HP ,nDefer , nDefHp  ) );
+
+        // normal attack
+
+        if (nDefHp < 0 && ((pDefer.n_HP + pDefer.n_DEF) < Mathf.Abs(nDefHp)))
+        {
+            if (pAtker.IsStates(_FIGHTSTATE._MERCY) || pDefer.IsTag(_UNITTAG._NODIE))
+            {       // 手加減 或 defer is 不死身
+                nDefHp = -(pDefer.n_HP + pDefer.n_DEF - 1);
+            }
+            else
+            {
+                pAtker.AddStates(_FIGHTSTATE._KILL);
+                pDefer.AddStates(_FIGHTSTATE._DEAD);  // dead
+            }
+        }
+        // check parry / block
+        //  if (pDefer.IsStates(_FIGHTSTATE._BLOCK))// 格檔
+        if (fAtkDmg < pDefer.n_DEF )
+        {
+            pDefer.AddStates(_FIGHTSTATE._PARRY ); // 還在防禦值內，算格檔
+        }
+
+
+
+            resPool.Add ( new cHitResult( cHitResult._TYPE._HP ,nDefer , nDefHp  ) );
 	//	resPool.Add ( new cHitResult( cHitResult._TYPE._CP ,nDefer , 1  ) ); // def add 1 cp
 
 		// drain hp / mp
@@ -1947,7 +1960,17 @@ public partial class BattleManager
 
 		List<cHitResult> resPool = new List<cHitResult> ();
 		if (pDefer != null) {
-			resPool.Add (new cHitResult (cHitResult._TYPE._BEHIT, pDefer.n_Ident, nSkillID )); // for play fx
+            int nRes = 0;
+
+            if (pDefer.IsStates(_FIGHTSTATE._BLOCK))// 格檔
+            {
+                nRes = (int)_FIGHTSTATE._BLOCK; 
+            }
+            else if (pDefer.IsStates(_FIGHTSTATE._PARRY))// 招架
+            {
+                nRes = (int)_FIGHTSTATE._PARRY;
+            }            
+			resPool.Add (new cHitResult (cHitResult._TYPE._BEHIT, pDefer.n_Ident, nSkillID , nRes )); // for play fx
 
 		}
 
