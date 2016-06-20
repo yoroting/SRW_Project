@@ -1,14 +1,14 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &114926
+--- !u!1 &169312
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 4
   m_Component:
-  - 4: {fileID: 453342}
-  - 114: {fileID: 11426408}
+  - 4: {fileID: 424292}
+  - 114: {fileID: 11491776}
   m_Layer: 0
   m_Name: UIAtlas
   m_TagString: Untagged
@@ -16,24 +16,25 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &453342
+--- !u!4 &424292
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 114926}
+  m_GameObject: {fileID: 169312}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!114 &11426408
+--- !u!114 &11491776
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 114926}
+  m_GameObject: {fileID: 169312}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4d0c51bb0b6e93049af5e88f93826e3b, type: 3}
@@ -42,177 +43,177 @@ MonoBehaviour:
   material: {fileID: 2100000, guid: 6374d72801500d9488aaff85565b7c11, type: 2}
   mSprites:
   - name: btm_skip
-    x: 938
-    y: 2001
+    x: 951
+    y: 977
     width: 47
     height: 47
-    borderLeft: 5
-    borderRight: 5
-    borderTop: 5
-    borderBottom: 5
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
     paddingLeft: 0
     paddingRight: 0
     paddingTop: 0
     paddingBottom: 0
   - name: btn_close
-    x: 938
-    y: 1980
+    x: 999
+    y: 956
     width: 24
     height: 20
-    borderLeft: 2
-    borderRight: 2
-    borderTop: 2
-    borderBottom: 2
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
     paddingLeft: 0
     paddingRight: 0
     paddingTop: 0
     paddingBottom: 0
   - name: btn_close_disable
-    x: 986
-    y: 2028
+    x: 999
+    y: 1004
     width: 24
     height: 20
-    borderLeft: 2
-    borderRight: 2
-    borderTop: 2
-    borderBottom: 2
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
     paddingLeft: 0
     paddingRight: 0
     paddingTop: 0
     paddingBottom: 0
   - name: btn_close_over
-    x: 986
-    y: 2007
+    x: 999
+    y: 983
     width: 24
     height: 20
-    borderLeft: 2
-    borderRight: 2
-    borderTop: 2
-    borderBottom: 2
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
     paddingLeft: 0
     paddingRight: 0
     paddingTop: 0
     paddingBottom: 0
   - name: btn_close_press
-    x: 986
-    y: 1986
+    x: 999
+    y: 935
     width: 24
     height: 20
-    borderLeft: 2
-    borderRight: 2
-    borderTop: 2
-    borderBottom: 2
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
     paddingLeft: 0
     paddingRight: 0
     paddingTop: 0
     paddingBottom: 0
   - name: btn_skip_press
-    x: 938
-    y: 1925
+    x: 951
+    y: 833
     width: 47
     height: 47
-    borderLeft: 5
-    borderRight: 5
-    borderTop: 5
-    borderBottom: 5
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
     paddingLeft: 0
     paddingRight: 0
     paddingTop: 0
     paddingBottom: 0
   - name: button
-    x: 707
-    y: 1773
+    x: 951
+    y: 881
     width: 47
     height: 47
-    borderLeft: 16
-    borderRight: 16
-    borderTop: 16
-    borderBottom: 16
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
     paddingLeft: 0
     paddingRight: 0
     paddingTop: 0
     paddingBottom: 0
   - name: Button_Blue
-    x: 707
-    y: 1973
+    x: 616
+    y: 336
     width: 230
     height: 75
-    borderLeft: 24
-    borderRight: 24
-    borderTop: 24
-    borderBottom: 24
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
     paddingLeft: 0
     paddingRight: 0
     paddingTop: 0
     paddingBottom: 0
   - name: Button_Gray
     x: 707
-    y: 1897
+    y: 753
     width: 230
     height: 75
-    borderLeft: 24
-    borderRight: 24
-    borderTop: 24
-    borderBottom: 24
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
     paddingLeft: 0
     paddingRight: 0
     paddingTop: 0
     paddingBottom: 0
   - name: Button_Green
-    x: 707
-    y: 1821
+    x: 616
+    y: 260
     width: 230
     height: 75
-    borderLeft: 24
-    borderRight: 24
-    borderTop: 24
-    borderBottom: 24
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
     paddingLeft: 0
     paddingRight: 0
     paddingTop: 0
     paddingBottom: 0
   - name: button_press
-    x: 755
-    y: 1773
+    x: 951
+    y: 929
     width: 47
     height: 47
-    borderLeft: 16
-    borderRight: 16
-    borderTop: 16
-    borderBottom: 16
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
     paddingLeft: 0
     paddingRight: 0
     paddingTop: 0
     paddingBottom: 0
   - name: Button_Red
     x: 593
-    y: 1678
+    y: 536
     width: 230
     height: 75
-    borderLeft: 24
-    borderRight: 24
-    borderTop: 24
-    borderBottom: 24
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
     paddingLeft: 0
     paddingRight: 0
     paddingTop: 0
     paddingBottom: 0
   - name: Button_Yellow
-    x: 593
-    y: 1602
+    x: 616
+    y: 412
     width: 230
     height: 75
-    borderLeft: 24
-    borderRight: 24
-    borderTop: 24
-    borderBottom: 24
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
     paddingLeft: 0
     paddingRight: 0
     paddingTop: 0
     paddingBottom: 0
   - name: CG-1545
-    x: 824
-    y: 1662
+    x: 828
+    y: 638
     width: 143
     height: 91
     borderLeft: 0
@@ -225,36 +226,36 @@ MonoBehaviour:
     paddingBottom: 4
   - name: talk_large
     x: 0
-    y: 1754
+    y: 730
     width: 706
     height: 294
-    borderLeft: 100
-    borderRight: 100
-    borderTop: 100
-    borderBottom: 50
+    borderLeft: 96
+    borderRight: 96
+    borderTop: 108
+    borderBottom: 72
     paddingLeft: 0
     paddingRight: 0
     paddingTop: 0
     paddingBottom: 0
   - name: talk_main
-    x: 0
-    y: 1091
-    width: 640
-    height: 205
-    borderLeft: 60
-    borderRight: 60
-    borderTop: 30
-    borderBottom: 30
+    x: 707
+    y: 829
+    width: 243
+    height: 195
+    borderLeft: 48
+    borderRight: 48
+    borderTop: 48
+    borderBottom: 48
     paddingLeft: 0
     paddingRight: 0
     paddingTop: 0
     paddingBottom: 0
   - name: talk_say
     x: 0
-    y: 1297
+    y: 273
     width: 615
     height: 214
-    borderLeft: 100
+    borderLeft: 104
     borderRight: 32
     borderTop: 48
     borderBottom: 32
@@ -264,10 +265,10 @@ MonoBehaviour:
     paddingBottom: 0
   - name: talk_think
     x: 0
-    y: 878
+    y: 60
     width: 609
     height: 212
-    borderLeft: 96
+    borderLeft: 104
     borderRight: 32
     borderTop: 48
     borderBottom: 32
@@ -277,13 +278,26 @@ MonoBehaviour:
     paddingBottom: 0
   - name: UI_001
     x: 0
-    y: 1512
+    y: 488
     width: 592
     height: 241
-    borderLeft: 100
-    borderRight: 100
-    borderTop: 100
-    borderBottom: 100
+    borderLeft: 48
+    borderRight: 48
+    borderTop: 48
+    borderBottom: 48
+    paddingLeft: 0
+    paddingRight: 0
+    paddingTop: 0
+    paddingBottom: 0
+  - name: UI_TIP
+    x: 593
+    y: 612
+    width: 234
+    height: 117
+    borderLeft: 48
+    borderRight: 48
+    borderTop: 48
+    borderBottom: 48
     paddingLeft: 0
     paddingRight: 0
     paddingTop: 0
@@ -298,208 +312,8 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[0].borderLeft
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[0].borderRight
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[0].borderBottom
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[0].borderTop
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[0].paddingLeft
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[0].paddingRight
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[0].paddingBottom
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[0].paddingTop
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[4].borderLeft
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[4].borderRight
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[4].borderBottom
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[4].borderTop
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[3].borderLeft
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[3].borderRight
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[3].borderTop
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[3].borderBottom
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[2].borderLeft
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[2].borderBottom
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[2].borderRight
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[2].borderTop
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[1].borderLeft
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[1].borderBottom
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[1].borderRight
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[1].borderTop
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[5].borderLeft
-      value: 24
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[5].borderRight
-      value: 24
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[5].borderBottom
-      value: 24
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[5].borderTop
-      value: 24
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[6].borderLeft
-      value: 60
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[6].borderRight
-      value: 60
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[6].borderBottom
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[6].borderTop
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[7].borderLeft
-      value: 24
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[7].borderRight
-      value: 24
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[7].borderBottom
-      value: 24
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[7].borderTop
-      value: 24
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[8].borderLeft
-      value: 24
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[8].borderRight
-      value: 24
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[8].borderBottom
-      value: 24
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[8].borderTop
-      value: 24
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[14].borderLeft
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[14].borderRight
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[14].borderBottom
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[14].borderTop
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[19].borderLeft
-      value: 40
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[19].borderRight
-      value: 40
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[19].borderBottom
-      value: 40
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[19].borderTop
-      value: 40
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[2].paddingLeft
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: mSprites.Array.data[2].paddingBottom
-      value: 0
-      objectReference: {fileID: 0}
+    m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 114926}
+  m_RootGameObject: {fileID: 169312}
   m_IsPrefabParent: 1

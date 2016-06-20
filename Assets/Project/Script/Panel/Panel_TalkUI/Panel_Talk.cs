@@ -441,7 +441,9 @@ public class Panel_Talk : MonoBehaviour
             if (pair.Value != null)
             {
                 if (pair.Value.CharID == nCharid)
-                {                   
+                {
+                    // SetBackground last pop
+                    nLastPopType = pair.Key;
                     return pair.Value;
                 }
             }

@@ -275,6 +275,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -449, y: -199, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 471446}
   - {fileID: 488936}
@@ -289,6 +290,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 26, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 481386}
   m_RootOrder: 3
@@ -301,6 +303,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 450, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 481386}
   m_RootOrder: 1
@@ -313,6 +316,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 240, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 459272}
   m_RootOrder: 3
@@ -325,6 +329,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 453, y: -127, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 467448}
   - {fileID: 479558}
@@ -340,6 +345,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 481386}
   m_RootOrder: 2
@@ -352,6 +358,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 459272}
   m_RootOrder: 2
@@ -364,6 +371,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 481386}
   - {fileID: 452126}
@@ -381,6 +389,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 452126}
   m_RootOrder: 0
@@ -393,6 +402,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 403642}
   m_RootOrder: 0
@@ -405,6 +415,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 20, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 481386}
   m_RootOrder: 0
@@ -417,6 +428,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 348, y: -50, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 481386}
   m_RootOrder: 4
@@ -429,6 +441,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 452126}
   m_RootOrder: 1
@@ -441,6 +454,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -220, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 473176}
   - {fileID: 440000}
@@ -458,6 +472,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 403642}
   m_RootOrder: 1
@@ -470,6 +485,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 452126}
   m_RootOrder: 2
@@ -605,6 +621,7 @@ MonoBehaviour:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
+    m_RotationOrder: 4
   ignoreTimeScale: 1
   delay: 0
   duration: 1
@@ -685,7 +702,7 @@ MonoBehaviour:
   mMaterial: {fileID: 0}
   mApplyGradient: 0
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
-  mGradientBottom: {r: .111111112, g: .111111112, b: .111111112, a: 1}
+  mGradientBottom: {r: 0.11111111, g: 0.11111111, b: 0.11111111, a: 1}
   mSpacingX: 0
   mSpacingY: 0
   mUseFloatSpacing: 0
@@ -744,7 +761,7 @@ MonoBehaviour:
   rightType: 1
   bottomType: 1
   topType: 1
-  mAtlas: {fileID: 11426408, guid: 25576dd4c299fef4f9fc244f1e89bb8b, type: 2}
+  mAtlas: {fileID: 11491776, guid: 25576dd4c299fef4f9fc244f1e89bb8b, type: 2}
   mSpriteName: btm_skip
   mFillCenter: 1
 --- !u!114 &11423426
@@ -759,10 +776,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tweenTarget: {fileID: 141488}
-  hover: {r: .111111112, g: .111111112, b: .111111112, a: 1}
-  pressed: {r: .111111112, g: .111111112, b: .111111112, a: 1}
-  disabledColor: {r: .111111112, g: .111111112, b: .111111112, a: 1}
-  duration: .111111112
+  hover: {r: 0.11111111, g: 0.11111111, b: 0.11111111, a: 1}
+  pressed: {r: 0.11111111, g: 0.11111111, b: 0.11111111, a: 1}
+  disabledColor: {r: 0.11111111, g: 0.11111111, b: 0.11111111, a: 1}
+  duration: 0.11111111
   dragHighlight: 0
   hoverSprite: btm_skip
   pressedSprite: btn_skip_press
@@ -808,7 +825,7 @@ MonoBehaviour:
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: .224999994
+  aspectRatio: 0.225
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   mFont: {fileID: 0}
@@ -825,7 +842,7 @@ MonoBehaviour:
   mOverflow: 3
   mMaterial: {fileID: 0}
   mApplyGradient: 1
-  mGradientTop: {r: .111111112, g: .111111112, b: .111111112, a: 1}
+  mGradientTop: {r: 0.11111111, g: 0.11111111, b: 0.11111111, a: 1}
   mGradientBottom: {r: 0, g: 0, b: 0, a: 1}
   mSpacingX: 0
   mSpacingY: 8
@@ -1087,7 +1104,7 @@ MonoBehaviour:
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 5.11111116
+  aspectRatio: 5.111111
   mType: 1
   mFillDirection: 4
   mFillAmount: 1
@@ -1159,7 +1176,7 @@ MonoBehaviour:
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: .239999995
+  aspectRatio: 0.24
   mType: 1
   mFillDirection: 4
   mFillAmount: 1
@@ -1201,7 +1218,7 @@ MonoBehaviour:
     relative: 1
     absolute: -4
   updateAnchors: 1
-  mColor: {r: .111111112, g: .111111112, b: .111111112, a: 1}
+  mColor: {r: 0.11111111, g: 0.11111111, b: 0.11111111, a: 1}
   mPivot: 4
   mWidth: 72
   mHeight: 40
@@ -1209,7 +1226,7 @@ MonoBehaviour:
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 1.79999995
+  aspectRatio: 1.8
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 0}
   mFont: {fileID: 11400000, guid: 29056518aafb01b49a5b08faf8e30cff, type: 2}
@@ -1220,14 +1237,14 @@ MonoBehaviour:
   mEncoding: 1
   mMaxLineCount: 0
   mEffectStyle: 1
-  mEffectColor: {r: .111111112, g: .111111112, b: .111111112, a: 1}
+  mEffectColor: {r: 0.11111111, g: 0.11111111, b: 0.11111111, a: 1}
   mSymbols: 1
   mEffectDistance: {x: 1, y: 1}
   mOverflow: 0
   mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
-  mGradientBottom: {r: .111111112, g: .111111112, b: .111111112, a: 1}
+  mGradientBottom: {r: 0.11111111, g: 0.11111111, b: 0.11111111, a: 1}
   mSpacingX: 0
   mSpacingY: 0
   mUseFloatSpacing: 0
@@ -1275,7 +1292,7 @@ MonoBehaviour:
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 3.52459025
+  aspectRatio: 3.5245903
   mType: 0
   mFillDirection: 4
   mFillAmount: 1
@@ -1286,7 +1303,7 @@ MonoBehaviour:
   rightType: 1
   bottomType: 1
   topType: 1
-  mAtlas: {fileID: 11426408, guid: 25576dd4c299fef4f9fc244f1e89bb8b, type: 2}
+  mAtlas: {fileID: 11491776, guid: 25576dd4c299fef4f9fc244f1e89bb8b, type: 2}
   mSpriteName: talk_say
   mFillCenter: 1
 --- !u!114 &11478972
@@ -1325,7 +1342,7 @@ MonoBehaviour:
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: .75
+  aspectRatio: 0.75
   mType: 0
   mFillDirection: 4
   mFillAmount: 1
@@ -1383,7 +1400,7 @@ MonoBehaviour:
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: .269230783
+  aspectRatio: 0.26923078
   mType: 1
   mFillDirection: 4
   mFillAmount: 1
@@ -1425,6 +1442,7 @@ MonoBehaviour:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
+    m_RotationOrder: 4
   ignoreTimeScale: 1
   delay: 0
   duration: 1
@@ -1464,7 +1482,7 @@ MonoBehaviour:
     relative: 1
     absolute: -3
   updateAnchors: 1
-  mColor: {r: 0, g: 0, b: 0, a: .111111112}
+  mColor: {r: 0, g: 0, b: 0, a: 0.11111111}
   mPivot: 4
   mWidth: 42
   mHeight: 42
