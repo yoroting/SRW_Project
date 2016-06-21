@@ -3432,8 +3432,40 @@ public class Panel_StageUI : MonoBehaviour
 		}
 	}
 
+    public void OnStageCharSwapEvent(GameEvent evt)
+    {
+        Panel_Talk.Show(false);
+        //Debug.Log ("OnStagePopCharEvent");
+        StageCharSwapEvent Evt = evt as StageCharSwapEvent;
+        if (Evt == null)
+            return;
 
-	public void OnStageCharMoveEvent(GameEvent evt)
+        cUnitData data1 = GameDataManager.Instance.GetUnitDateByCharID(Evt.nCharID);
+        cUnitData data2 = GameDataManager.Instance.GetUnitDateByCharID(Evt.nCharID2);
+        if (data1 == null || data2 == null)
+            return;
+        Panel_unit unit1 = GetUnitByIdent(data1.n_Ident);
+        Panel_unit unit2 = GetUnitByIdent(data2.n_Ident);
+        if (unit1 == null || unit2 == null)
+            return;
+        //
+        int X1 = unit1.Loc.X; int Y1 = unit1.Loc.Y;
+        int X2 = unit2.Loc.X; int Y2 = unit2.Loc.Y;
+        if (m_bIsSkipMode)
+        {
+            unit1.SetXY(X2, Y2);
+            unit2.SetXY(X1, Y1);
+        }
+        else
+        {
+            unit1.MoveTo(X2, Y2);
+            unit2.MoveTo(X1, Y1);
+        }
+
+    }
+    
+
+    public void OnStageCharMoveEvent(GameEvent evt)
 	{
         // say end
         //		TalkSayEndEvent sayevt = new TalkSayEndEvent();
@@ -3844,8 +3876,8 @@ public class Panel_StageUI : MonoBehaviour
 //		}
 
 		// cast directly
-		int nX = Evt.nTargetX ;
-		int nY = Evt.nTargetY ;
+		int nX = Evt.nVar1;
+		int nY = Evt.nVar2;
 
 
 		List< cUnitData> pool = new List< cUnitData> ();
@@ -3892,7 +3924,7 @@ public class Panel_StageUI : MonoBehaviour
 
 				foreach( cUnitData d in pool )
 				{
-
+                    cUnitData Tar = d;
                     //act.AddHitResult (new cHitResult (cHitResult._TYPE._BEHIT, d.n_Ident , nSkillID )); // for hit fx
                     if (1 == nResult)
                     {
@@ -3906,8 +3938,12 @@ public class Panel_StageUI : MonoBehaviour
                     {
                         act.AddHitResult(new cHitResult(cHitResult._TYPE._SHIELD, d.n_Ident, 0));
                     }
+                    else if (4 == nResult) // guard
+                    {
+                        Tar.AddStates(_FIGHTSTATE._BLOCK); 
+                    }                  
 
-                    act.AddHitResult( BattleManager.CalSkillHitResult(pAtker , d , nSkillID  ) );
+                        act.AddHitResult( BattleManager.CalSkillHitResult(pAtker , Tar, nSkillID  ) );
 //					if (nHitBack != 0) {
 //						Panel_unit pUnit = GetUnitByIdent( d.n_Ident );
 //						if( pUnit != null ){

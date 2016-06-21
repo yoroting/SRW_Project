@@ -95,6 +95,18 @@ public class StageCharMoveEvent: GameEvent {
 	}
 }
 
+public class StageCharSwapEvent : GameEvent
+{
+    public const string Name = "StageCharSwapEvent";    
+    public int nCharID = 0;
+    public int nCharID2 = 0;
+    public StageCharSwapEvent()
+    {
+        name = Name;        // important.  must have this line as key
+    }
+}
+
+
 
 public class StageShowMoveRangeEvent: GameEvent {
 	public const string Name = "StageShowMoveRangeEvent";
@@ -271,8 +283,8 @@ public class StageBattleCastEvent: GameEvent {
 	public int nAtkCharID = 0;
 	public int nDefCharID = 0;
 	public int nAtkSkillID = 0;
-	public int nTargetX = 0;
-	public int nTargetY = 0;
+	public int nVar1 = 0;   // param
+	public int nVar2 = 0;
     public int nResult = 0;
 
     public StageBattleCastEvent(){

@@ -918,9 +918,9 @@ public class MyScript {
                 evt.nAtkCharID = func.I(0);
                 evt.nDefCharID = func.I(1);
                 evt.nAtkSkillID = func.I(2);
-                evt.nResult = func.I(3); // fight result , // 0- normal , 1- dodge, 2-miss , 3-shield
-                evt.nTargetX = func.I(4);
-                evt.nTargetY = func.I(5);
+                evt.nResult = func.I(3); // fight result , // 0- normal , 1- dodge, 2-miss , 3-shield,4-guard
+                evt.nVar1 = func.I(4);
+                evt.nVar2 = func.I(5);
 
                 Panel_StageUI.Instance.OnStageBattleCastEvent(evt);
                 //GameEventManager.DispatchEvent ( evt  );
@@ -948,6 +948,17 @@ public class MyScript {
                 //GameEventManager.DispatchEvent ( evt  );
 
             }
+            else if (func.sFunc == "SWAP")  //  swap 2 mob's pos
+            {
+                StageCharSwapEvent evt = new StageCharSwapEvent();
+                evt.nCharID = func.I(0);
+                evt.nCharID2 = func.I(1);
+                //evt.nAtkSkillID = func.I(2);
+                Panel_StageUI.Instance.OnStageCharSwapEvent(evt);
+                //GameEventManager.DispatchEvent ( evt  );
+
+            }
+
             else if (func.sFunc == "SOUND")  // PLAY SOUND
             {
                 Panel_StageUI.Instance.OnStagePlaySound(func.S(0));
