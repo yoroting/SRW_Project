@@ -793,12 +793,22 @@ public class cUnitData{
 		ActiveSchool( nIntSchool );
 		ActiveSchool( nExtSchool );
 
-		//AvtiveSchool (0, cData.n_INT_SCHOOL);
-		//AvtiveSchool (1, cData.n_EXT_SCHOOL);
-		// 取回Const 特定旗標
-		
-		// Set TAG 
-		string[] tags = cCharData.s_EXT_TAG.Split ( ";".ToCharArray() );
+        //AvtiveSchool (0, cData.n_INT_SCHOOL);
+        //AvtiveSchool (1, cData.n_EXT_SCHOOL);
+        // 取回Const 特定旗標
+        string[] ext_skl = cCharData.s_EXT_SKILL.Split(";".ToCharArray());
+        foreach (string s in ext_skl)
+        {
+            int skl = 0;
+            if (int.TryParse(s, out skl)){                
+                AddSkill( skl );
+            }
+        }
+
+
+
+        // Set TAG 
+        string[] tags = cCharData.s_EXT_TAG.Split ( ";".ToCharArray() );
 		foreach (string s in tags) {
 			int tag =0;
 			if( int.TryParse( s , out tag ) ){ 

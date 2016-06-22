@@ -1120,10 +1120,14 @@ public class Panel_unit : MonoBehaviour {
 			}
 			Vector3 vTar = MyTool.SnyGridtoLocalPos( GridX , GridY  , ref GameScene.Instance.Grids );
 
-			//FightBulletFX fbFx = 
-			FightBulletFX.CreatFX (nMissileID, transform.parent , this.transform.localPosition, vTar, OnTwAtkFlyHit);
-			
-			// create a fly item
+            // create a fly item
+            FightBulletFX bullet = FightBulletFX.CreatFX (nMissileID, transform.parent , this.transform.localPosition, vTar, OnTwAtkFlyHit);
+
+            // 如果是單體目標，則 trace 過去
+            if ( bullet != null ) {
+                Panel_StageUI.Instance.TraceFightBullet(bullet );
+
+            }
 			return;
 		} else if (MyTool.IsSkillTag (skillid, _SKILLTAG._ROTATE)) {
 			RotateAttack ();
@@ -1936,6 +1940,14 @@ public class Panel_unit : MonoBehaviour {
 			ActionWait();
 			return;
 		}
+
+        if (pUnitData.IsTag(_UNITTAG._PEACE))
+        {
+            pUnitData.nActionTime = 0; // no more action
+            return; // should not run. 
+        } 
+
+
 		MobAI.Run (this);
 
 		Panel_StageUI.Instance.MoveToGameObj ( this.gameObject , false );

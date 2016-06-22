@@ -59,8 +59,9 @@ public class Panel_StageUI : MonoBehaviour
 
 
 	Panel_unit TarceMoveingUnit; //  Trace the moving unit
+    FightBulletFX TraceMovingFightBullet;       // trace fight bullet
 
-	public MyGrids	Grids;				// main grids . only one
+    public MyGrids	Grids;				// main grids . only one
 
 	STAGE_DATA	StageData;
 
@@ -565,32 +566,57 @@ public class Panel_StageUI : MonoBehaviour
 		// ensure canvrs in screen
 	//	if( TilePlaneObj != null )
 		{
-			if (TarceMoveingUnit != null ) {
+            if (TarceMoveingUnit != null)
+            {
 
-				//{
-					// force to unit
-					Vector3 v = TarceMoveingUnit.transform.localPosition;
-					v.x *= -1;
-					v.y *= -1;
+                //{
+                // force to unit
+                Vector3 v = TarceMoveingUnit.transform.localPosition;
+                v.x *= -1;
+                v.y *= -1;
 
-					//get time from speed 200pix /sec
-					Vector3 d = this.transform.localPosition - v;
-					float time = d.magnitude  /1000 ;
-					TweenPosition tw = TweenPosition.Begin<TweenPosition>(this.gameObject , time );
-					if( tw ){
-						tw.SetStartToCurrentValue();
-						tw.to = v;
-					}
+                //get time from speed 200pix /sec
+                Vector3 d = this.transform.localPosition - v;
+                float time = d.magnitude / 1000;
+                TweenPosition tw = TweenPosition.Begin<TweenPosition>(this.gameObject, time);
+                if (tw)
+                {
+                    tw.SetStartToCurrentValue();
+                    tw.to = v;
+                }
 
-					//TilePlaneObj.transform.localPosition  = v ;
+                //TilePlaneObj.transform.localPosition  = v ;
 
-				//}
+                //}
                 if (TarceMoveingUnit.IsMoving() == false)
                 {
                     TarceMoveingUnit = null;
                 }
             }
+            else if(TraceMovingFightBullet != null )
+            {
+                Vector3 v = TraceMovingFightBullet.transform.localPosition;
+                v.x *= -1;
+                v.y *= -1;
 
+                //get time from speed 200pix /sec
+                Vector3 d = this.transform.localPosition - v;
+                float time = d.magnitude / 1000;
+                TweenPosition tw = TweenPosition.Begin<TweenPosition>(this.gameObject, time);
+                if (tw)
+                {
+                    tw.SetStartToCurrentValue();
+                    tw.to = v;
+                }
+
+                FightBulletTween_Direction move = TraceMovingFightBullet.GetComponent<FightBulletTween_Direction>();
+                if (move == null || (move.IsTweenEnd == true))
+                {
+                    TraceMovingFightBullet = null;
+                }
+
+
+            }
 			//float fMouseX = Input.mousePosition.x;
 			//float fMouseY = Input.mousePosition.y;
 			
@@ -2624,13 +2650,23 @@ public class Panel_StageUI : MonoBehaviour
 			return;
 		if (TarceMoveingUnit != null) // 避免富庶單位移動時會震動
 			return;
-
+        
 
 		TarceMoveingUnit = unit;
+    }
+
+    public void TraceFightBullet(FightBulletFX fb)
+    {
+		if (fb == null || bIsStageEnd )
+			return;
+
+		if (TraceMovingFightBullet != null) 
+			return;
+
+        TraceMovingFightBullet = fb;
 	}
 
-
-	public void MoveToGameObj( GameObject obj , bool force = false , float time = 1.0f)
+    public void MoveToGameObj( GameObject obj , bool force = false , float time = 1.0f)
 	{
 		if (obj == null || bIsStageEnd)
 			return;
@@ -2665,6 +2701,7 @@ public class Panel_StageUI : MonoBehaviour
 
 		}
 
+        // check is char unit
 		Panel_unit unit = obj.GetComponent< Panel_unit > ();
 		if (unit != null) {
 			TraceUnit( unit );
@@ -3461,6 +3498,7 @@ public class Panel_StageUI : MonoBehaviour
             unit1.MoveTo(X2, Y2);
             unit2.MoveTo(X1, Y1);
         }
+        GameSystem.PlaySound(333); // 換位的音效
 
     }
     
@@ -3911,6 +3949,8 @@ public class Panel_StageUI : MonoBehaviour
 			}
 			
 		} else {
+           
+
 			ActionManager.Instance.CreateCastAction (nAtkId, Evt.nAtkSkillID, nDefId , nX , nY );
 
 			// send attack
@@ -3956,12 +3996,14 @@ public class Panel_StageUI : MonoBehaviour
 //					}
 				}
 
-//					iVec2 vFinal = SkillHitBack (pAtkUnit, pDefUnit, nHitBack);
-//					if (vFinal != null) {
-//						act.AddHitResult (new cHitResult (cHitResult._TYPE._HITBACK, nDefId, vFinal.X, vFinal.Y));
-//					}
+                //					iVec2 vFinal = SkillHitBack (pAtkUnit, pDefUnit, nHitBack);
+                //					if (vFinal != null) {
+                //						act.AddHitResult (new cHitResult (cHitResult._TYPE._HITBACK, nDefId, vFinal.X, vFinal.Y));
+                //					}
 
-			}
+                TraceUnit(pAtkUnit);
+
+            }
 		}
 	}
 

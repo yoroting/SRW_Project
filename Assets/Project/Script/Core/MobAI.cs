@@ -18,6 +18,7 @@ public class MobAI  {
 
         int ident = mob.Ident ();
 		cUnitData mobdata = GameDataManager.Instance.GetUnitDateByIdent ( ident );
+
 		int nSkillID = -1;		// -1 - no attack
 		// select a skill
 		if( mobdata.eComboAI == _AI_COMBO._NORMAL ){
@@ -156,7 +157,7 @@ public class MobAI  {
 
     // Widget func .. find a skill to atk a target , -1 == can't atk
     // return : true - can attack , false - cant attack
-    public static bool _FindToAttackTarget( Panel_unit mob, Panel_unit taget, int nMove , out int nSKillID , out List<iVec2> pathList , bool bCounterMode = false )
+    public static bool _FindToAttackTarget( Panel_unit mob, Panel_unit taget, int nMove , out int nSKillID , out List<iVec2> pathList , bool bCounterMode = false , bool ative = false)
     {
         nSKillID = 0;
         pathList = null;
@@ -175,7 +176,6 @@ public class MobAI  {
         int nDist = mob.Loc.Dist(taget.Loc);
         if (CreateSkilTmpList(mob.pUnitData, taget.pUnitData , nDist - nMove , bCounterMode)) // create skill pool to atl
         {
-
             foreach (SKILL skl in tmpSklList)
             {
                 int nMinRange = skl.n_MINRANGE;
@@ -184,13 +184,22 @@ public class MobAI  {
                 if ((nDist <= nSkillRange) && (nDist >= nMinRange)) // 可以直接攻擊
                 {
                     nSKillID = skl.n_ID;
-                    return true; // tmpSklList
+                   // return true; // tmpSklList
                 }
 
                 // 在最短距離內，需要跑遠一點再攻擊
                 if (nDist < nMinRange)
                 {
                     // 不處理本問題
+                }
+
+                // 被動時，增加距離檢查. 減少 a*次數
+                if (ative == false)
+                {
+                    if (nDist > nMove + nSkillRange )
+                    {
+                        return false;
+                    }
                 }
 
                 // 在技能範圍外，需要收尋一個位置
@@ -219,6 +228,16 @@ public class MobAI  {
                 nSKillID = 0;
                 return true; // tmpSklList
             }
+
+            // 被動時，增加距離檢查. 減少 a*次數
+            if (ative == false)
+            {
+                if (nDist > nMove + 1)
+                {
+                    return false;
+                }
+            }
+
 
             List<iVec2> path = FindPathToTarget(mob, taget , nMove, 1 ); // melee is 1
             if ( (path != null) && (path.Count > 0) )
@@ -302,7 +321,7 @@ public class MobAI  {
     }
 
     // tool func hp lowest ver2
-    static bool _AI_LowstAttack2(Panel_unit mob, int nMove)
+    static bool _AI_LowstAttack2(Panel_unit mob, int nMove , bool ative = false )
     {
         //int ident = mob.Ident();
         int nMaxRange = _AI_GetMaxSkillRange( mob.pUnitData );
@@ -314,7 +333,7 @@ public class MobAI  {
         {
             int nSkillID ;
             List<iVec2> path ;            ;
-            if (_FindToAttackTarget(mob, pair.Key, nMove , out nSkillID , out path, false))
+            if (_FindToAttackTarget(mob, pair.Key, nMove , out nSkillID , out path, false , ative )) // 確定可以打到
             {
                 _AI_MakeCmd(mob, pair.Key, nSkillID, ref path );
                 // wait 
@@ -327,7 +346,7 @@ public class MobAI  {
         return false;
     }
 
-    static bool _AI_NearestAttack2(Panel_unit mob, int nMove, bool bForceMove = false )
+    static bool _AI_NearestAttack2(Panel_unit mob, int nMove, bool ative = false) // 是否 主動攻擊
     {
         Dictionary<Panel_unit, int> pool = Panel_StageUI.Instance.GetUnitDistPool(mob, true);
       //  int ident = mob.Ident();
@@ -337,30 +356,43 @@ public class MobAI  {
         {
             int nSkillID = 0;
             List<iVec2> path = null;
-            _FindToAttackTarget(mob, pair.Key, nMove, out nSkillID, out path, false);
-            //if (_FindToAttackTarget(mob, pair.Key, nMove , out nSkillID, out path, false) )
+            if(  _FindToAttackTarget(mob, pair.Key, nMove, out nSkillID, out path, false, false ) )         
             {
                 _AI_MakeCmd(mob, pair.Key, nSkillID, ref path);
                 // wait 
                 return true;
             }
-            //else
+            else // 不能 主動攻擊， 先看看 能否找到下一個
             {
+              
                 // next target
             }
         }
 
         // 決定是否需要主動移動
-        if (bForceMove) {
+        if (ative) { // 主動攻擊
             foreach (KeyValuePair<Panel_unit, int> pair in items)
             {
+                // 避開 錯誤目標
+                if (pair.Key.pUnitData.IsTag(_UNITTAG._PEACE))
+                {
+                    continue; // 不往中立單位移動
+                }
+
                 int nSkillID = 0;
                 List<iVec2> path = null;
-                _FindToAttackTarget(mob, pair.Key, nMove , out nSkillID, out path, false); // 由於有些機關是中立單位，不會被攻擊。所以不能只找第一個資料
-                if (path != null)
+                if (_FindToAttackTarget(mob, pair.Key, nMove, out nSkillID, out path, false , true )) // 由於有些機關是中立單位，不會被攻擊。所以不能只找第一個資料                
                 {
-                    _AI_MakeCmd(mob, pair.Key, nSkillID, ref path); // 往最近的移動
+                    _AI_MakeCmd(mob, pair.Key, nSkillID, ref path); // 往最近的移動 + 攻擊
                     return true;
+                }
+                else {
+                    // 移動過去
+                    if (path != null && path.Count > 0 )
+                    {
+                        _AI_MakeCmd(mob, pair.Key, 0, ref path); // 往最近的移動
+                        return true;
+                    }
                 }
             }
         }
@@ -635,15 +667,15 @@ public class MobAI  {
 
     static void _AI_NormalAttack(Panel_unit mob, int nSkillID, int nMove)
     {
-        if (_AI_LowstAttack2(mob, nMove))
+        if (_AI_LowstAttack2(mob, nMove, true))
         {
             return;
         }
-        if (mob.Ident() == 31)
-        {
-            int a = 0;
+        //if (mob.Ident() == 31)
+        //{
+        //    int a = 0;
              
-        }
+        //}
 
         // 找距離近的攻擊
         if (_AI_NearestAttack2(mob, nMove, true))

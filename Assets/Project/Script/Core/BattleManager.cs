@@ -1856,18 +1856,30 @@ public partial class BattleManager
 
         //守方反彈傷害 1/2
         if (pDefer.IsStates(_FIGHTSTATE._RETURN)) {
-            nAtkHp = (int)(-0.5f * fAtkDmg);
-            if (nAtkHp < 0) {
-                if (((pAtker.n_HP + pAtker.n_DEF) < Mathf.Abs(nAtkHp))) {
-                    if (pDefer.IsStates(_FIGHTSTATE._MERCY)) {
-                        nAtkHp = -(pAtker.n_HP + pAtker.n_DEF - 1);
+            // 非 肉搏 不反彈
+            if (pAtker.FightAttr.SkillData.IsTag(_SKILLTAG._FLY) || bAffect)
+            {
+                //暗器不造成反彈，AOE坡及的也不造成反彈
+            }
+            else
+            {
+                nAtkHp = (int)(-0.5f * fAtkDmg);
+                if (nAtkHp < 0)
+                {
+                    if (((pAtker.n_HP + pAtker.n_DEF) < Mathf.Abs(nAtkHp)))
+                    {
+                        if (pDefer.IsStates(_FIGHTSTATE._MERCY))
+                        {
+                            nAtkHp = -(pAtker.n_HP + pAtker.n_DEF - 1);
+                        }
+                        else
+                        {
+                            pDefer.AddStates(_FIGHTSTATE._KILL);
+                            pAtker.AddStates(_FIGHTSTATE._DEAD);
+                        }
                     }
-                    else {
-                        pDefer.AddStates(_FIGHTSTATE._KILL);
-                        pAtker.AddStates(_FIGHTSTATE._DEAD);
-                    }
+                    resPool.Add(new cHitResult(cHitResult._TYPE._HP, nAtker, nAtkHp));
                 }
-                resPool.Add(new cHitResult(cHitResult._TYPE._HP, nAtker, nAtkHp));
             }
         }
 
