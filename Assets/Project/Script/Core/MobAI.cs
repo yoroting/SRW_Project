@@ -184,14 +184,15 @@ public class MobAI  {
                 if ((nDist <= nSkillRange) && (nDist >= nMinRange)) // 可以直接攻擊
                 {
                     nSKillID = skl.n_ID;
-                   // return true; // tmpSklList
+                    return true; // tmpSklList
                 }
 
                 // 在最短距離內，需要跑遠一點再攻擊
                 if (nDist < nMinRange)
                 {
                     // 不處理本問題
-                }
+                }             
+
 
                 // 被動時，增加距離檢查. 減少 a*次數
                 if (ative == false)
@@ -829,8 +830,13 @@ public class MobAI  {
 
         //int nSkillID;
         List<iVec2> path; ;
-        _FindToAttackTarget(mob, target, nMove, out nSkillID, out path, false);
-        _AI_MakeCmd(mob, target , nSkillID, ref path);
+        if (_FindToAttackTarget(mob, target, nMove, out nSkillID, out path, false, true))
+        {
+            _AI_MakeCmd(mob, target, nSkillID, ref path);
+        }
+        else {
+
+        }
             // wait 
         //    return ;
                 //move 

@@ -2666,24 +2666,49 @@ public class Panel_StageUI : MonoBehaviour
         TraceMovingFightBullet = fb;
 	}
 
+    public bool CheckNeedTrace(Vector3 vTar, bool force = false )
+    {
+        if (bIsStageEnd)
+            return false;
+        Vector3 v = vTar;
+        Vector3 canv = gameObject.transform.localPosition; // shift
+        Vector3 realpos = v + canv;
+        if (force == false)
+        {
+            int hW = (Config.WIDTH) / 2 - Config.TileW;
+            int hH = (Config.HEIGHT) / 2 - Config.TileH;
+            if ((realpos.x < hW && realpos.x > -hW) && (realpos.y < hH && realpos.y > -hH))
+            {
+                return false; // pass
+            }
+        }
+        return true;
+    }
+
     public void MoveToGameObj( GameObject obj , bool force = false , float time = 1.0f)
 	{
-		if (obj == null || bIsStageEnd)
-			return;
+        if (obj == null || bIsStageEnd)
+            return;
+
+        if (CheckNeedTrace(obj.transform.localPosition , force) == false ) {
+            return;
+        }
+
 		Vector3 v = obj.transform.localPosition;
 		Vector3 canv = gameObject.transform.localPosition; // shift
 		Vector3 realpos = v + canv;
-		if (force == false)
-		{
+        
+        //if (force == false)
+        //{
 
-			int hW = (Config.WIDTH )/2 - Config.TileW;
-			int hH = (Config.HEIGHT)/2 - Config.TileH;
-			if( (realpos.x < hW  && realpos.x > -hW ) && (realpos.y < hH && realpos.y > -hH ) )
-				return; // pass
-		}
+        //	int hW = (Config.WIDTH )/2 - Config.TileW;
+        //	int hH = (Config.HEIGHT)/2 - Config.TileH;
+        //	if( (realpos.x < hW  && realpos.x > -hW ) && (realpos.y < hH && realpos.y > -hH ) )
+        //		return; // pass
+        //}
 
-		//TilePlaneObj.transform.localPosition = -v;
-		float dist = Vector3.Magnitude( realpos );
+        //TilePlaneObj.transform.localPosition = -v;
+        float dist = Vector3.Magnitude( realpos );
 
 		float during = dist/500.0f; // 這是最小值
 							//距離過大要算最大值

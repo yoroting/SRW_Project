@@ -974,81 +974,87 @@ public class Panel_unit : MonoBehaviour {
 		// swing fx
 		ShowSwingFX( skillid , TarIdent , 0 , 0 );
 
-        // trace to target unit 
-        if (defer != null)
-        {
-            Panel_StageUI.Instance.TraceUnit(defer);
-        }
+        // trace to target unit  fix : should trace when hit
+        //if (defer != null) 
+        //{          
+        //    Panel_StageUI.Instance.TraceUnit(defer);
+        //}
 
         // fly item
-        if (MyTool.IsSkillTag (skillid, _SKILLTAG._FLY)) {
-			int nMissileID = 0;
-			//string missile = "ACT_FLAME";
-//			Missile missdata = null;
-			if (skillid > 0) {
-				SKILL skl = ConstDataManager.Instance.GetRow<SKILL> (skillid); 
-				if (skl != null) {
-					if (skl.n_MISSILE_ID > 0) {
-						nMissileID = skl.n_MISSILE_ID ;
-//						missdata = ConstDataManager.Instance.GetRow<Missile> (skl.n_MISSILE_ID); 
-//						if (missdata != null) {
-//							missile = missdata.s_MISSILE;
-//						}
-					}
-				}
-			}
-			// attach on parent
-			FightBulletFX fbFx = FightBulletFX.CreatFX (nMissileID, transform.parent, this.transform.localPosition, defer.transform.localPosition, OnTwAtkFlyHit);
-			if( fbFx != null ){
-				MissileCount ++;
-			}
+        if (MyTool.IsSkillTag(skillid, _SKILLTAG._FLY)) {
+            int nMissileID = 0;
+            //string missile = "ACT_FLAME";
+            //			Missile missdata = null;
+            if (skillid > 0) {
+                SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(skillid);
+                if (skl != null) {
+                    if (skl.n_MISSILE_ID > 0) {
+                        nMissileID = skl.n_MISSILE_ID;
+                        //						missdata = ConstDataManager.Instance.GetRow<Missile> (skl.n_MISSILE_ID); 
+                        //						if (missdata != null) {
+                        //							missile = missdata.s_MISSILE;
+                        //						}
+                    }
+                }
+            }
+            // attach on parent
+            FightBulletFX fbFx = FightBulletFX.CreatFX(nMissileID, transform.parent, this.transform.localPosition, defer.transform.localPosition, OnTwAtkFlyHit);
+            if (fbFx != null) {
+               
+                if (Panel_StageUI.Instance.CheckNeedTrace(defer.transform.localPosition))
+                {
+                   Panel_StageUI.Instance.TraceFightBullet(fbFx);
+                }
+
+                MissileCount++;
+            }
             // trace atk target
-            
-			// create a fly item
-			return;
-		} else if (MyTool.IsSkillTag (skillid, _SKILLTAG._ROTATE)) {
 
-			RotateAttack ();
-			return;
-		} else if (MyTool.IsSkillTag (skillid, _SKILLTAG._FLASH)) {
-			SKILL skl = ConstDataManager.Instance.GetRow<SKILL> (skillid); 
-			if (skl != null && skl.n_AREA > 0) {
-				// get aoe pool
-				int nTarX = defer.Loc.X;
-				int nTarY = defer.Loc.Y;
-				List < iVec2 > lst = MyTool.GetAOEPool (nTarX, nTarY, skl.n_AREA, Loc.X, Loc.Y);
-				FlashAttack (lst);
-				return;
-			}
+            // create a fly item
+            return;
+        } else if (MyTool.IsSkillTag(skillid, _SKILLTAG._ROTATE)) {
 
-		} else if (MyTool.IsSkillTag (skillid, _SKILLTAG._JUMP)) {
-			int nTarX = defer.Loc.X;
-			int nTarY = defer.Loc.Y;
-			JumpAttack (nTarX, nTarY);
-			return;
-		} else if (MyTool.IsSkillTag (skillid, _SKILLTAG._BOW)) {
-		
-			int nTarX = defer.Loc.X;
-			int nTarY = defer.Loc.Y;
-			BowAttack (nTarX, nTarY);
-			return;		
-		} else if (MyTool.IsSkillTag (skillid, _SKILLTAG._NOACT)) { //無動作
-			
-			int nTarX = defer.Loc.X;
-			int nTarY = defer.Loc.Y;
-			NoActAttack (nTarX, nTarY);
-			return;		
-		} else if (MyTool.IsSkillTag (skillid, _SKILLTAG._CROSS)) {
-			//_CROSS
-			int nTarX = defer.Loc.X;
-			int nTarY = defer.Loc.Y;
-			CrossAttack (nTarX, nTarY);
-			return;
-		}
-		else if (MyTool.IsSkillTag (skillid, _SKILLTAG._AOEMISSILE)) { // 
-			int nTarX = defer.Loc.X;
-			int nTarY = defer.Loc.Y;
-			AOEMissileAttack(  skillid , nTarX , nTarY );
+            RotateAttack();
+            return;
+        } else if (MyTool.IsSkillTag(skillid, _SKILLTAG._FLASH)) {
+            SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(skillid);
+            if (skl != null && skl.n_AREA > 0) {
+                // get aoe pool
+                int nTarX = defer.Loc.X;
+                int nTarY = defer.Loc.Y;
+                List<iVec2> lst = MyTool.GetAOEPool(nTarX, nTarY, skl.n_AREA, Loc.X, Loc.Y);
+                FlashAttack(lst);
+                return;
+            }
+
+        } else if (MyTool.IsSkillTag(skillid, _SKILLTAG._JUMP)) {
+            int nTarX = defer.Loc.X;
+            int nTarY = defer.Loc.Y;
+            JumpAttack(nTarX, nTarY);
+            return;
+        } else if (MyTool.IsSkillTag(skillid, _SKILLTAG._BOW)) {
+
+            int nTarX = defer.Loc.X;
+            int nTarY = defer.Loc.Y;
+            BowAttack(nTarX, nTarY);
+            return;
+        } else if (MyTool.IsSkillTag(skillid, _SKILLTAG._NOACT)) { //無動作
+
+            int nTarX = defer.Loc.X;
+            int nTarY = defer.Loc.Y;
+            NoActAttack(nTarX, nTarY);
+            return;
+        } else if (MyTool.IsSkillTag(skillid, _SKILLTAG._CROSS)) {
+            //_CROSS
+            int nTarX = defer.Loc.X;
+            int nTarY = defer.Loc.Y;
+            CrossAttack(nTarX, nTarY);
+            return;
+        }
+        else if (MyTool.IsSkillTag(skillid, _SKILLTAG._AOEMISSILE)) { // 
+            int nTarX = defer.Loc.X;
+            int nTarY = defer.Loc.Y;
+            AOEMissileAttack(skillid, nTarX, nTarY);
 
 
             // attach on parent
@@ -1062,20 +1068,21 @@ public class Panel_unit : MonoBehaviour {
             //			}
             return;
 
-		}
-		else if (MyTool.IsSkillTag (skillid, _SKILLTAG._DANCEKILL) ) { // 
-			int nTarX = defer.Loc.X;
-			int nTarY = defer.Loc.Y;
-			//List < iVec2 > lst = MyTool.GetAOEPool (nTarX, nTarY, skl.n_AREA, Loc.X, Loc.Y);
-			// need some code
+        }
+        else if (MyTool.IsSkillTag(skillid, _SKILLTAG._DANCEKILL)) { // 
+            int nTarX = defer.Loc.X;
+            int nTarY = defer.Loc.Y;
+            //List < iVec2 > lst = MyTool.GetAOEPool (nTarX, nTarY, skl.n_AREA, Loc.X, Loc.Y);
+            // need some code
 
 
-		}
-		//  非攻擊型技能，跳過攻擊動作
-		else if (MyTool.IsSkillTag (skillid, _SKILLTAG._DAMAGE)==false) {
-			OnTwAtkHit ();
-			return;
-		}
+        }
+        //  非攻擊型技能，跳過攻擊動作
+        else if (MyTool.IsSkillTag(skillid, _SKILLTAG._DAMAGE) == false) {
+            OnTwAtkHit();
+            return;
+        }
+       
 
 		//Vector3 vOrg = this.transform.localPosition;
 		//Vector3 vTar = defer.transform.localPosition;
@@ -1125,8 +1132,12 @@ public class Panel_unit : MonoBehaviour {
 
             // 如果是單體目標，則 trace 過去
             if ( bullet != null ) {
-                Panel_StageUI.Instance.TraceFightBullet(bullet );
+                if (Panel_StageUI.Instance.CheckNeedTrace(vTar))
+                {
+                    Panel_StageUI.Instance.TraceFightBullet(bullet);
+                }
 
+                MissileCount++;
             }
 			return;
 		} else if (MyTool.IsSkillTag (skillid, _SKILLTAG._ROTATE)) {

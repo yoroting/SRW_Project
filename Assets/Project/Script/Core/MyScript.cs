@@ -129,13 +129,21 @@ public class MyScript {
 				
 				else if( func.sFunc == "DIST"  )
 				{
-					if( ConditionDist( func.I(0),func.I(1) ,func.I(2) ) == false )
+					if( ConditionDist( func.I(0),func.I(1) ,func.I(2), func.I(3)) == false )
 					{
 						return false;
 					}	
 				}
 
-				else if( func.sFunc == "RATE"  )
+                else if (func.sFunc == "NODIST")
+                {
+                    if (ConditionNoDist(func.I(0), func.I(1), func.I(2), func.I(3)) == false)
+                    {
+                        return false;
+                    }
+                }
+
+                else if ( func.sFunc == "RATE"  )
 				{
 					if( ConditionRate( func.I(0) ) == false )
 					{
@@ -427,7 +435,7 @@ public class MyScript {
 	}
 
 
-    public bool ConditionDist( int nChar1 , int nChar2 , int nDist )
+    public bool ConditionDist( int nChar1 , int nChar2 , int nMax  , int nMin = 0)
 	{
 		//check range
 		Panel_unit unit1 = Panel_StageUI.Instance.GetUnitByCharID (nChar1);
@@ -438,7 +446,8 @@ public class MyScript {
                 if (pair.Value.n_CharID != nChar2)
                     continue;
 
-                if ( iVec2.Dist(unit1.Loc.X , unit1.Loc.Y , pair.Value.n_X , pair.Value.n_Y ) <= nDist )
+                int nDist = iVec2.Dist(unit1.Loc.X, unit1.Loc.Y, pair.Value.n_X, pair.Value.n_Y);
+                if (nDist <= nMax && nDist >= nMin)
                 {
                     return true;
                 }
@@ -447,7 +456,28 @@ public class MyScript {
 		}
 		return false;
 	}
+    public bool ConditionNoDist(int nChar1, int nChar2, int nMax, int nMin = 0)
+    {
+        //check range
+        Panel_unit unit1 = Panel_StageUI.Instance.GetUnitByCharID(nChar1);
+        //Panel_unit unit2 = Panel_StageUI.Instance.GetUnitByCharID (nChar2);
+        if ((unit1 != null))
+        {
+            foreach (KeyValuePair<int, cUnitData> pair in GameDataManager.Instance.UnitPool)
+            {
+                if (pair.Value.n_CharID != nChar2)
+                    continue;
 
+                int nDist = iVec2.Dist(unit1.Loc.X, unit1.Loc.Y, pair.Value.n_X, pair.Value.n_Y);
+                if (nDist > nMax || nDist < nMin)
+                {
+                    return true;
+                }
+            }
+
+        }
+        return false;
+    }
     public bool ConditionHp( int nChar1 , string op , float fValue )
 	{
 		cUnitData unit = GameDataManager.Instance.GetUnitDateByCharID ( nChar1 );
