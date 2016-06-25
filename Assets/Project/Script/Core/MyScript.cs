@@ -754,7 +754,7 @@ public class MyScript {
                 // change bgm 
                 GameSystem.PlayBGM(nID);
             }
-            else if (func.sFunc == "P_BGM")
+            else if (func.sFunc == "P_BGMseta")
             {
                 int nID = func.I(0);
                 // change bgm 
@@ -886,7 +886,7 @@ public class MyScript {
                 evt.nSoundID = func.I(1);
                 GameEventManager.DispatchEvent(evt);
             }
-            else if (func.sFunc == "BACKGROUND" || func.sFunc == "TALKBG")
+            else if (func.sFunc == "BACKGROUND" || func.sFunc == "TALKBG" || func.sFunc == "BG" )
             {
                 TalkBackGroundEvent evt = new TalkBackGroundEvent();
                 //evt.nType = func.I(0);
