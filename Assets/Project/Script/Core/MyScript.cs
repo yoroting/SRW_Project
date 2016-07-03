@@ -142,7 +142,13 @@ public class MyScript {
                         return false;
                     }
                 }
-
+                else if (func.sFunc == "DIST_CAMP")
+                {
+                    if (ConditionDistCamp(func.I(0), func.I(1), func.I(2), func.I(3)) == false)
+                    {
+                        return false;
+                    }
+                }
                 else if ( func.sFunc == "RATE"  )
 				{
 					if( ConditionRate( func.I(0) ) == false )
@@ -192,6 +198,14 @@ public class MyScript {
                         return false;
                     }
                 }
+                else if (func.sFunc == "INRECT_CAMP")
+                {
+                    if (ConditionInRectCamp(func.I(0), func.I(1), func.I(2), func.I(3), func.I(4)) == false)
+                    {
+                        return false;
+                    }
+                }
+
                 else if (func.sFunc == "COUNT")
                 {
                     _CAMP campid = (_CAMP)func.I(0);
@@ -478,6 +492,31 @@ public class MyScript {
         }
         return false;
     }
+    public bool ConditionDistCamp( int nChar1 , int nCampID, int nMax, int nMin = 0)
+    {
+        //check range
+        Panel_unit unit1 = Panel_StageUI.Instance.GetUnitByCharID(nChar1);
+        //Panel_unit unit2 = Panel_StageUI.Instance.GetUnitByCharID (nChar2);
+
+        if ((unit1 != null))
+        {
+            _CAMP campid = (_CAMP)nCampID;
+
+            foreach (KeyValuePair<int, cUnitData> pair in GameDataManager.Instance.UnitPool)
+            {
+                if (pair.Value.eCampID != campid)
+                    continue;
+
+                int nDist = iVec2.Dist(unit1.Loc.X, unit1.Loc.Y, pair.Value.n_X, pair.Value.n_Y);
+                if (nDist <= nMax && nDist >= nMin)
+                {
+                    return true;
+                }
+            }
+
+        }
+        return false;
+    }
     public bool ConditionHp( int nChar1 , string op , float fValue )
 	{
 		cUnitData unit = GameDataManager.Instance.GetUnitDateByCharID ( nChar1 );
@@ -558,6 +597,32 @@ public class MyScript {
         //}
 //        return false;
 	}
+
+    public bool ConditionInRectCamp(int nCampID, int x1, int y1, int x2, int y2)
+    {
+        int sx = x1 < x2 ? x1 : x2;
+        int sy = y1 < y2 ? y1 : y2;
+        int ex = x1 > x2 ? x1 : x2;
+        int ey = y1 > y2 ? y1 : y2;
+        int w = x2 - x1;
+        int h = y2 - y1;
+        _CAMP campid = (_CAMP)nCampID;
+        foreach (KeyValuePair<int, cUnitData> pair in GameDataManager.Instance.UnitPool)
+        {
+            if (pair.Value.eCampID != campid)
+                continue;
+            if (MyTool.CheckInRect(pair.Value.n_X, pair.Value.n_Y, sx, sy, w, h))
+            {
+                return true;
+            }
+        }
+
+        //      cUnitData unit = GameDataManager.Instance.GetUnitDateByCharID ( nChar1 );
+        //if (unit != null) {
+        //	return MyTool.CheckInRect( unit.n_X , unit.n_Y , x1 , y1 , x2-x1 , y2-y1 );
+        //}
+        return false;
+    }
 
     public bool ConditionInPos(int nChar1, int x1, int y1)
     {
