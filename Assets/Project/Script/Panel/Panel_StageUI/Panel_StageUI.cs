@@ -13,8 +13,16 @@ public class Panel_StageUI : MonoBehaviour
 
 	const int st_CellObjPoolSize  = 100;		//
 
+    public enum _STATEPHASE
+    {
+        _STAGE_BEFORE,
+        _STAGE_BATTLE,
+        _STAGE_AFTER,
+    };
 
-	static Panel_StageUI instance;
+
+
+    static Panel_StageUI instance;
 	public static Panel_StageUI Instance
 	{
 		get
@@ -69,7 +77,8 @@ public class Panel_StageUI : MonoBehaviour
 	bool	bIsLoading	;
 	bool	bIsReady;
 
-	public bool	bIsStageEnd;								// this stage is end
+    public _STATEPHASE m_StagePhase;
+    public bool	bIsStageEnd;								// this stage is end
 	bool 							bIsMoveToObj;		// is move camera to obj
 //	public bool	bIsRestoreData;								// this stage is need restore data
 	public bool m_bIsSkipMode;							// skip for script perform
@@ -191,11 +200,10 @@ public class Panel_StageUI : MonoBehaviour
             Debug.LogFormat("stageloding:LoadScene fail with ID {0} ", StageData.n_SCENE_ID);
             return;
         }
+                                    // EVENT 
+                                    //GameDataManager.Instance.nRound = 0;		// many mob pop in talk ui. we need a 0 round to avoid issue
 
-        // EVENT 
-        //GameDataManager.Instance.nRound = 0;		// many mob pop in talk ui. we need a 0 round to avoid issue
-
-        //Record All Event to execute
+    //Record All Event to execute
         EvtPool.Clear();
 		char[] split = { ';',' ',',' };
 
@@ -218,7 +226,7 @@ public class Panel_StageUI : MonoBehaviour
 			}
 		}
 
-		// mission
+		// Event
 		string[] strEvent = StageData.s_EVENT.Split(split);
 		for (int i = 0; i < strEvent.Length; i++)
 		{
@@ -252,26 +260,19 @@ public class Panel_StageUI : MonoBehaviour
         RegeditGameEvent(true);
         // create sub panel?
 
-//        Panel_CMDUnitUI.OpenCMDUI(_CMD_TYPE._SYS, 0);
-
 		Panel_UnitInfo.OpenUI (0);
         
         //PanelManager.Instance.OpenUI(Panel_UnitInfo.Name);
 		Panel_MiniUnitInfo.OpenUI (null);
-        //PanelManager.Instance.OpenUI(Panel_MiniUnitInfo.Name);
-
-        //Dictionary< int , STAGE_EVENT > EvtPool;			// add event id 
-
-//		if (bIsRestoreData == true) {
-//			RestoreBySaveData();
-//		}
 
 
 
-        bIsLoading = false;		// debug mode no coror to close loading
+        bIsLoading = false;     // debug mode no coror to close loading
 
-  //      long during = System.DateTime.Now.Ticks - tick;
-  //      Debug.Log("stage srart loding complete. total ticket:" + during);
+        //      long during = System.DateTime.Now.Ticks - tick;
+        //      Debug.Log("stage srart loding complete. total ticket:" + during);
+
+        EnterBeforePhase();
     }
 
 
@@ -280,6 +281,126 @@ public class Panel_StageUI : MonoBehaviour
         // start the loading panel
     }
 
+    public void EnterBeforePhase()
+    {
+        // start the loading panel
+        NextEvent = null;
+        EvtPool.Clear();
+        char[] split = { ';', ' ', ',' };
+        // Event
+        string[] strEvent = StageData.s_BEFORE_EVENT.Split(split);
+        for (int i = 0; i < strEvent.Length; i++)
+        {
+            int nEventID;
+            if (int.TryParse(strEvent[i], out nEventID))
+            {
+                if (0 == nEventID)
+                    continue;
+                STAGE_EVENT evt = ConstDataManager.Instance.GetRow<STAGE_EVENT>(nEventID);
+                if (evt != null)
+                {
+                    if (evt.n_TYPE == 2)
+                        continue;   // skip block event
+
+                    if (EvtPool.ContainsKey(nEventID) == false)
+                    {
+                        EvtPool.Add(nEventID, evt);
+                    }
+                }
+            }
+        }
+
+        BackGroundObj.SetActive(false); // back ground
+        TilePlaneObj.SetActive(false); // plane of all tiles sprite
+        m_StagePhase = _STATEPHASE._STAGE_BEFORE;
+
+    }
+    public void EnterBattlePhase()
+    {
+        // start the loading panel
+        //Record All Event to execute
+        NextEvent = null;
+        EvtPool.Clear();
+        char[] split = { ';', ' ', ',' };
+
+        string[] strMission = StageData.s_MISSION.Split(split);
+        for (int i = 0; i < strMission.Length; i++)
+        {
+            int nMissionID = 0;
+            if (int.TryParse(strMission[i], out nMissionID))
+            {
+                if (0 == nMissionID)
+                    continue;
+
+                STAGE_EVENT evt = ConstDataManager.Instance.GetRow<STAGE_EVENT>(nMissionID);
+                if (evt != null)
+                {
+                    if (EvtPool.ContainsKey(nMissionID) == false)
+                    {
+                        EvtPool.Add(nMissionID, evt);
+                    }
+                }
+            }
+        }
+
+        // Event
+        string[] strEvent = StageData.s_EVENT.Split(split);
+        for (int i = 0; i < strEvent.Length; i++)
+        {
+            int nEventID;
+            if (int.TryParse(strEvent[i], out nEventID))
+            {
+                if (0 == nEventID)
+                    continue;
+                STAGE_EVENT evt = ConstDataManager.Instance.GetRow<STAGE_EVENT>(nEventID);
+                if (evt != null)
+                {
+                    if (evt.n_TYPE == 2)
+                        continue;   // skip block event
+
+                    if (EvtPool.ContainsKey(nEventID) == false)
+                    {
+                        EvtPool.Add(nEventID, evt);
+                    }
+                }
+            }
+        }
+      
+        BackGroundObj.SetActive(true); // back ground
+        TilePlaneObj.SetActive(true); // plane of all tiles sprite
+        m_StagePhase = _STATEPHASE._STAGE_BATTLE;
+    }
+    public void EnterAfterPhase()
+    {
+        // start the loading panel
+        NextEvent = null;
+        EvtPool.Clear();
+        char[] split = { ';', ' ', ',' };
+        // Event
+        string[] strEvent = StageData.s_AFTER_EVENT.Split(split);
+        for (int i = 0; i < strEvent.Length; i++)
+        {
+            int nEventID;
+            if (int.TryParse(strEvent[i], out nEventID))
+            {
+                if (0 == nEventID)
+                    continue;
+                STAGE_EVENT evt = ConstDataManager.Instance.GetRow<STAGE_EVENT>(nEventID);
+                if (evt != null)
+                {
+                    if (evt.n_TYPE == 2)
+                        continue;   // skip block event
+
+                    if (EvtPool.ContainsKey(nEventID) == false)
+                    {
+                        EvtPool.Add(nEventID, evt);
+                    }
+                }
+            }
+        }
+        m_StagePhase = _STATEPHASE._STAGE_AFTER;
+        bIsStageEnd = false;  // reopen for after event
+    }
 
     // Update is called once per frame
     void Update()
@@ -306,6 +427,8 @@ public class Panel_StageUI : MonoBehaviour
         if (bIsStageEnd == true)
             return;
 
+       
+
         // Real update .. update each frae is not a good idea
        // GameDataManager.Instance.Update();
 
@@ -322,8 +445,11 @@ public class Panel_StageUI : MonoBehaviour
         if (PanelManager.Instance.CheckUIIsOpening(Panel_Talk.Name) == true)
             return;
 
-        //==================	
-        if (RunEvent() == true)// this will throw many unit action and interrupt battle.
+      
+
+
+       //==================	
+       if (RunEvent() == true)// this will throw many unit action and interrupt battle.
             return;
 
         // if one event need to run battle. it should pause ein event
@@ -351,7 +477,32 @@ public class Panel_StageUI : MonoBehaviour
         if (BattleManager.Instance.ProcessDrop() == true)
             return;
 
-		if( bIsStageEnd == true ){  // 每個敵方單位行動後都可能觸發，關卡結束 要避免AI 繼續運算
+
+        // stage phase
+        if (m_StagePhase == _STATEPHASE._STAGE_BEFORE)
+        {
+            // 當事件都執行後，進入戰鬥 phase
+            if (EvtPool.Count == 0 && (NextEvent == null))
+            {               
+                EnterBattlePhase();
+                return;
+            }
+        }
+        else if (m_StagePhase == _STATEPHASE._STAGE_AFTER)
+        {
+            // 不在 這裡 執行 結束判斷？
+            // 當事件都執行後，進入戰鬥 phase
+            if (EvtPool.Count == 0 && (NextEvent == null))
+            {
+                bIsStageEnd = true; // 再次關閉旗標
+                // 進入 整備畫面
+                PanelManager.Instance.OpenUI(Panel_Mainten.Name);
+                return;
+            }
+        }
+
+
+        if ( bIsStageEnd == true ){  // 每個敵方單位行動後都可能觸發，關卡結束 要避免AI 繼續運算
 			return ; // block all ai here
 		}
 
@@ -367,7 +518,7 @@ public class Panel_StageUI : MonoBehaviour
             }
         }
 
-
+        
         //===================onchar
 
         // startup panel when opening event done.
@@ -533,9 +684,11 @@ public class Panel_StageUI : MonoBehaviour
 		WaitPool.Clear ();
 
 		tmpScriptMoveEnd.Clear ();
-		//EvtCompletePool.Clear ();
+        //EvtCompletePool.Clear ();
 
-		IsEventEnd = false;
+        m_StagePhase = _STATEPHASE._STAGE_BEFORE;
+
+        IsEventEnd = false;
 		bIsStageEnd = false;
 		bIsReady = false;
         m_bWaitSoundPlayDone = false;
@@ -2063,15 +2216,30 @@ public class Panel_StageUI : MonoBehaviour
 			return ;
 		if( (EvtPool==null) )
 			return  ;
-		if( EvtPool.Count<=0)
+
+        // prepare event to run
+        if (WaitPool.Count > 0)
+        {
+            NextEvent = WaitPool[0];
+            WaitPool.RemoveAt(0);
+
+            PreEcecuteEvent();                  // parser next event to run
+            return;
+        }
+
+        // check event
+        if ( EvtPool.Count<=0)
 			return ;
 
+        // warning 用
 		if (bIsStageEnd) {
 			Debug.LogError( " check event when stage end");
+            return;
 		}
 		if (bIsLoading) {
 			Debug.LogError( " check event when stage loading");
-		}
+            return;
+        }
 
 		List< int > removeLst = new List< int >();
 		// get next event to run
@@ -2096,7 +2264,7 @@ public class Panel_StageUI : MonoBehaviour
 				EvtPool.Remove( key );
 			}
 		}
-		// prepare event to run
+		// inst run event
 		if( WaitPool.Count > 0 )
 		{
 			NextEvent =  WaitPool[0];
@@ -2126,8 +2294,14 @@ public class Panel_StageUI : MonoBehaviour
         //avoid event close soon when call talkui already
         if ( PanelManager.Instance.CheckUIIsOpening( Panel_Talk.Name) == true )
 			return true;
+        // win / lost
+        if (PanelManager.Instance.CheckUIIsOpening(Panel_Win.Name) == true)
+            return true;
+        if (PanelManager.Instance.CheckUIIsOpening(Panel_Lost.Name) == true)
+            return true;
 
-		return false;
+
+        return false;
 	}
 
 	void PreEcecuteEvent(  )
@@ -3188,7 +3362,11 @@ public class Panel_StageUI : MonoBehaviour
 				return false;
 			}
 		}
-		
+
+
+        ShowStage(true); // 顯示一下
+        m_StagePhase = _STATEPHASE._STAGE_BATTLE; // 一定是 battle
+
 		// re build evt pool
 		EvtPool.Clear ();
 		char[] split = { ';',' ' , ',' };
@@ -4159,8 +4337,9 @@ public class Panel_StageUI : MonoBehaviour
             // move camera
             MoveToGameObj(unit.gameObject , true , 0.5f );		
 		}
-		if (nTot == 0) {
-			Debug.LogErrorFormat ("OnStagePlayFX {0} on null unit with char {1} ", nFXID, nCharID);
+        if (nTot == 0 && (m_StagePhase == _STATEPHASE._STAGE_BATTLE))
+        {
+            Debug.LogErrorFormat ("OnStagePlayFX {0} on null unit with char {1} ", nFXID, nCharID);
 		}
 	}
 
@@ -4187,6 +4366,10 @@ public class Panel_StageUI : MonoBehaviour
 		if (nBuffID == 0) {
 			return ;
 		}
+        if (m_StagePhase != _STATEPHASE._STAGE_BATTLE)
+        {
+            return;
+        }
         //		TalkSayEndEvent sayevt = new TalkSayEndEvent();
         //		sayevt.nChar = 0;		
         //		GameEventManager.DispatchEvent ( sayevt  );
@@ -4216,8 +4399,9 @@ public class Panel_StageUI : MonoBehaviour
 			}
             unit.pUnitData.FixOverData();
         }
-		if (nTot == 0) {
-			Debug.LogErrorFormat ("OnStageAddBuff {0} on null unit with char {1} , type{2}", nBuffID, nCharID,nDel);
+        if (nTot == 0 )
+        {
+            Debug.LogErrorFormat ("OnStageAddBuff {0} on null unit with char {1} , type{2}", nBuffID, nCharID,nDel);
 		}
 	}
 
@@ -4226,6 +4410,11 @@ public class Panel_StageUI : MonoBehaviour
 		if (nBuffID == 0) {
 			return ;
 		}
+        if (m_StagePhase != _STATEPHASE._STAGE_BATTLE) {
+            return;
+        }
+
+
         // close say ui
         TalkSayEndEvent sayevt = new TalkSayEndEvent();
         sayevt.nChar = 0;
@@ -4258,7 +4447,7 @@ public class Panel_StageUI : MonoBehaviour
 			}
             unit.pUnitData.FixOverData();
         }
-		if (nTot == 0) {
+		if (nTot == 0 ) {
 			Debug.LogErrorFormat ("OnStageCampAddBuff {0} on null unit with camp {1} , type{2}", nBuffID, nCampID,nDel);
 		}
 	}
