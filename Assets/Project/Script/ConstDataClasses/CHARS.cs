@@ -9,6 +9,7 @@ public class CHARS : ConstDataRow<CHARS>
 	public int n_TAG;
 	public int n_TYPE;
 	public int n_FACEID;
+	public int n_LV;
 	public int n_RANK;
 	public int n_GENDER;
 	public int n_MOBAI;

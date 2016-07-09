@@ -710,6 +710,14 @@ public class cUnitData{
 		if (n_CharID != cData.n_ID) {
 			Debug.LogErrorFormat ("cUnitData{0} set wrong SetContData{1}", n_CharID, cData.n_ID);
 		}
+
+        // 當角色小於預設等級，指定到預設等級
+        if (n_Lv < cData.n_LV )
+        {
+            n_Lv = cData.n_LV;
+        }
+       
+
         // face ID
         n_FaceID = cData.n_FACEID;
 

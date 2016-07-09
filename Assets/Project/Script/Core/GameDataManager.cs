@@ -409,6 +409,28 @@ private static GameDataManager instance;
 
     }
 
+    public bool IsCharInParty( int nCharID)
+    {
+        cUnitData unit = GetStorageUnit(nCharID);
+        if (unit != null)
+        {
+            if (unit.bEnable) {
+                return true;
+            }
+        }
+
+        // 只檢查我方
+        foreach (KeyValuePair<int, cUnitData> pair in UnitPool)
+        {
+            if (pair.Value != null && pair.Value.n_CharID == nCharID )
+            {
+                if(pair.Value.eCampID == _CAMP._PLAYER )
+                    return true;
+            }
+        }
+        
+        return false;
+    }
     // 目前的紀錄狀態
     //public PLAYER_DATA			cPlayerData;
     //	public cSaveData				SaveData;		
@@ -650,7 +672,7 @@ private static GameDataManager instance;
 
 	}
 
-	public cUnitData GetUnitDateByCharID( int nCharID )
+	public cUnitData GetUnitDateByCharID( int nCharID  ) // stage unit data
 	{
 		if( nCharID == 0 )			return null;
 
@@ -758,9 +780,19 @@ private static GameDataManager instance;
 
 	public void EnableStorageUnit( int nCharID , bool bEnable = false )
 	{
-		if (StoragePool.ContainsKey (nCharID) == true) {
-			StoragePool[nCharID].bEnable = bEnable;
-		}
+        if (StoragePool.ContainsKey(nCharID) == true)
+        {
+            StoragePool[nCharID].bEnable = bEnable;
+        }
+        else {  // 不存在
+            if (bEnable == true) // 不存在又要新增時。 建立一個新的
+            {
+                cUnitData unit = CreateChar(nCharID, _CAMP._PLAYER, 0, 0, 0 , 0 );
+                BackUnitToStorage( unit.n_Ident );
+                //AddUnitToStorage(unit);
+                //DelUnit(unit);
+            }
+        }
 	}
     public void EnableStageUnit(int nCharID, bool bEnable = false)
     {

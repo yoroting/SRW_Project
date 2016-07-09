@@ -217,6 +217,14 @@ public class MyScript {
                     }
 
                 }
+                else if (func.sFunc == "STAR")
+                {                    
+                    if (MyScript.Instance.ConditionStar(func.S(0), func.I(1)) == false)
+                    {
+                        return false;       // always fail
+                    }
+
+                }
                 else
                 {
 					Debug.LogError( string.Format( "Error-Can't find script cond func '{0}'" , func.sFunc ) );
@@ -724,10 +732,39 @@ public class MyScript {
 		return false;
 	}
 
-	//------------------
-	// Stage Run
-	//-----------------
-	public void ParserScript( CTextLine line   )
+    public bool ConditionStar( string op, int nVar1 )
+    {
+        int nStar = GameDataManager.Instance.nStars;
+        if (op == "<")
+        {
+            return (nStar < nVar1);
+        }
+        else if (op == "<=")
+        {
+            return (nStar <= nVar1);
+        }
+        else if (op == "==")
+        {
+            return (nStar == nVar1);
+        }
+        else if (op == "!=")
+        {
+            return (nStar != nVar1);
+        }
+        else if (op == ">")
+        {
+            return (nStar > nVar1);
+        }
+        else if (op == ">=")
+        {
+            return (nStar >= nVar1);
+        }
+        return false;
+    }
+    //------------------
+    // Stage Run
+    //-----------------
+    public void ParserScript( CTextLine line   )
 	{
 		bParsing = true;
 		List<cTextFunc> funcList =line.GetFuncList();
@@ -785,6 +822,25 @@ public class MyScript {
                 //GameEventManager.DispatchEvent ( evt );
 
             }
+            else if (func.sFunc == "EPOPCHAR" || func.sFunc == "EPOPC")
+            {
+                // check unit in party                
+                if (GameDataManager.Instance.IsCharInParty(func.I(0)) == false ) // 0 - check char 
+                    return;
+
+
+                StagePopUnitEvent evt = new StagePopUnitEvent();
+                evt.eCamp = _CAMP._PLAYER;
+                evt.nCharID = func.I(1); // 1 - pop char
+                evt.nX = func.I(2);
+                evt.nY = func.I(3);
+                evt.nValue1 = func.I(4); // pop num
+                evt.nRadius = func.I(5); // random range
+
+                Panel_StageUI.Instance.OnStagePopUnitEvent(evt);
+                //GameEventManager.DispatchEvent ( evt );
+            }
+
             else if (func.sFunc == "POPGROUP" || func.sFunc == "POPG")
             {
                 StagePopGroupEvent evt = new StagePopGroupEvent();
@@ -819,7 +875,7 @@ public class MyScript {
                 // change bgm 
                 GameSystem.PlayBGM(nID);
             }
-            else if (func.sFunc == "P_BGMseta")
+            else if (func.sFunc == "P_BGM")
             {
                 int nID = func.I(0);
                 // change bgm 
@@ -894,7 +950,6 @@ public class MyScript {
                 evt.nFaceID = func.I(1);
                 GameEventManager.DispatchEvent(evt);
             }
-
             else if (func.sFunc == "SAY")
             {
                 TalkSayEvent evt = new TalkSayEvent();
@@ -903,6 +958,23 @@ public class MyScript {
                 evt.nSayID = func.I(1);
                 evt.nReplaceID = func.I(2);
                 evt.nReplaceType = func.I(3);
+                //Say( func.I(0), func.I(1) );
+
+                GameEventManager.DispatchEvent(evt);
+            }
+            else if (func.sFunc == "ESAY")
+            {
+                // check unit in party
+              
+                if (GameDataManager.Instance.IsCharInParty(func.I(0)) == false ) // 0 - 檢查角色
+                    return;
+
+                TalkSayEvent evt = new TalkSayEvent();
+                //evt.nType  = func.I(0);
+                evt.nChar = func.I(1);          // 1- 說話角色
+                evt.nSayID = func.I(2);
+                evt.nReplaceID = func.I(3);
+                evt.nReplaceType = func.I(4);
                 //Say( func.I(0), func.I(1) );
 
                 GameEventManager.DispatchEvent(evt);
@@ -1080,8 +1152,25 @@ public class MyScript {
                 Panel_StageUI.Instance.OnStageCampAddBuff(func.I(0), func.I(1), func.I(2), 0);
             }
             else if (func.sFunc == "DELCAMPBUFF")  // Add buff
-            {
+            {               
                 Panel_StageUI.Instance.OnStageCampAddBuff(func.I(0), func.I(1), func.I(2), 1);
+            }
+            else if (func.sFunc == "ADDPARTYBUFF")  // Add party buff - 增加隊伍內角色的 buff
+            {
+                cUnitData unit = GameDataManager.Instance.GetStorageUnit(func.I(0));
+                if (unit != null)
+                {
+                    unit.Buffs.AddBuff(func.I(1), 0, 0, 0);
+                }
+                //Panel_StageUI.Instance.OnStageAddBuff(func.I(0), func.I(1), func.I(2), 0);
+            }
+            else if (func.sFunc == "DELPARTYBUFF")  // Add party buff- 刪除隊伍內角色的 buff
+            {
+                cUnitData unit = GameDataManager.Instance.GetStorageUnit(func.I(0));
+                if (unit != null)
+                {
+                    unit.Buffs.DelBuff(func.I(1), true);
+                }
             }
             else if (func.sFunc == "ADDHP")  // Add HP
             {
@@ -1174,13 +1263,13 @@ public class MyScript {
             {
                 int nCharID = func.I(0);
                 GameDataManager.Instance.EnableStorageUnit(nCharID, true);
-                GameDataManager.Instance.EnableStageUnit(nCharID, true);
+              //  GameDataManager.Instance.EnableStageUnit(nCharID, true);
             }
             else if (func.sFunc == "LEAVE")
             {
                 int nCharID = func.I(0);
                 GameDataManager.Instance.EnableStorageUnit(nCharID, false);
-                GameDataManager.Instance.EnableStageUnit(nCharID, false);
+             //   GameDataManager.Instance.EnableStageUnit(nCharID, false);
             }
             //不能刪除 等待執行 event. 會造成 讀檔上的麻煩
             //			else if( func.sFunc  == "DELEVENT") 

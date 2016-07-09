@@ -48,24 +48,25 @@ public class Panel_Win : MonoBehaviour {
         Panel_StageUI.Instance.EnterAfterPhase();
         // 決定 下一個story
 
-        //STAGE_DATA stage = ConstDataManager.Instance.GetRow< STAGE_DATA > ( GameDataManager.Instance.nStageID );
-        //if (stage != null) {
-        //	GameDataManager.Instance.nStoryID = stage.n_NEXT_STORY;
+        STAGE_DATA stage = ConstDataManager.Instance.GetRow<STAGE_DATA>(GameDataManager.Instance.nStageID);
+        if (stage != null)
+        {
+            GameDataManager.Instance.nStoryID = stage.n_NEXT_STORY;
 
-        //	if( stage.n_WIN_TALK > 0 ){
-        //		GameSystem.TalkEvent( stage.n_WIN_TALK );
-        //	}
-        //	else{
-        //		// open main ten ui directly
-        //		PanelManager.Instance.OpenUI ( Panel_Mainten.Name );
+            //	if( stage.n_WIN_TALK > 0 ){
+            //		GameSystem.TalkEvent( stage.n_WIN_TALK );
+            //	}
+            //	else{
+            //		// open main ten ui directly
+            //		PanelManager.Instance.OpenUI ( Panel_Mainten.Name );
 
-        //	}
+            //	}
 
-        //}
+        }
 
 
-        // Go to Mainten Ui 
-        PanelManager.Instance.DestoryUI ( Name );
+            // Go to Mainten Ui 
+            PanelManager.Instance.DestoryUI ( Name );
 
 	}
 }

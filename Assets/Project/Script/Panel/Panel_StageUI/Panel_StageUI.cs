@@ -285,7 +285,7 @@ public class Panel_StageUI : MonoBehaviour
     {
         // start the loading panel
         NextEvent = null;
-        EvtPool.Clear();
+        EvtPool.Clear(); // don't run other event
         char[] split = { ';', ' ', ',' };
         // Event
         string[] strEvent = StageData.s_BEFORE_EVENT.Split(split);
@@ -302,10 +302,10 @@ public class Panel_StageUI : MonoBehaviour
                     if (evt.n_TYPE == 2)
                         continue;   // skip block event
 
-                    if (EvtPool.ContainsKey(nEventID) == false)
+                    if (CheckEventCanRun(evt) == true)
                     {
-                        EvtPool.Add(nEventID, evt);
-                    }
+                        WaitPool.Add(evt);
+                    }                    
                 }
             }
         }
@@ -313,6 +313,15 @@ public class Panel_StageUI : MonoBehaviour
         BackGroundObj.SetActive(false); // back ground
         TilePlaneObj.SetActive(false); // plane of all tiles sprite
         m_StagePhase = _STATEPHASE._STAGE_BEFORE;
+
+    
+        // inst run event
+        //if (WaitPool.Count > 0)
+        //{
+        //    NextEvent = WaitPool[0];
+        //    WaitPool.RemoveAt(0);
+        //    PreEcecuteEvent();                  // parser next event to run
+        //}
 
     }
     public void EnterBattlePhase()
@@ -390,10 +399,9 @@ public class Panel_StageUI : MonoBehaviour
                 {
                     if (evt.n_TYPE == 2)
                         continue;   // skip block event
-
-                    if (EvtPool.ContainsKey(nEventID) == false)
+                    if (CheckEventCanRun(evt) == true)
                     {
-                        EvtPool.Add(nEventID, evt);
+                        WaitPool.Add(evt);
                     }
                 }
             }
@@ -2245,15 +2253,17 @@ public class Panel_StageUI : MonoBehaviour
 		// get next event to run
 		foreach( KeyValuePair< int ,STAGE_EVENT > pair in EvtPool ) 
 		{
-			if( CheckEventCanRun( pair.Value ) == true ){		// check if this event need run
-				//NextEvent = pair.Value ; 		// run in next loop
-				WaitPool.Add( pair.Value );
-				// check is loop event?
-				if( IsLoopEvent( pair.Value )== false  )
-				{
-					removeLst.Add( pair.Key );
-				}
-			}
+            if (CheckEventCanRun(pair.Value) == true)
+            {       // check if this event need run
+                    //NextEvent = pair.Value ; 		// run in next loop
+                WaitPool.Add(pair.Value);
+                // check is loop event?
+                if (IsLoopEvent(pair.Value) == false)
+                {
+                    removeLst.Add(pair.Key);
+                }
+            }
+           
 		}
 
 		// remove key , never check it again
