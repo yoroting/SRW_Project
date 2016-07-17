@@ -357,14 +357,18 @@ public class MyScript {
 		foreach( KeyValuePair< int , cUnitData > pair in GameDataManager.Instance.UnitPool ){
             if (pair.Value.n_CharID != nCharID)
                 continue;
-          
+            if (pair.Value.n_HP <= 0)
+            {
+                continue;
+            }
 
-            if (nCampID == -1) {
-                return false;
-            }            
+            if (nCampID != -1) { // 
+                if (pair.Value.eCampID != (_CAMP)nCampID)
+                {
+                    continue;
+                }
+            }
 
-            if ( pair.Value.eCampID != (_CAMP)nCampID )
-				continue;
 			return false;
 		}  
 		return true;
@@ -852,7 +856,7 @@ public class MyScript {
                 evt.stY = func.I(3);
                 evt.edX = func.I(4);
                 evt.edY = func.I(5);
-                evt.nPopType = func.I(6); // pop num
+                evt.nPopType = func.I(6); // 0 - only empty , 1 - force pop
                 Panel_StageUI.Instance.OnStagePopGroupEvent(evt);
                 //GameEventManager.DispatchEvent ( evt );
 
@@ -1005,6 +1009,15 @@ public class MyScript {
                 evt2.nType = 1;
                 evt2.nChar = func.I(1);
                 GameEventManager.DispatchEvent(evt2);
+                // talk id
+                int sayid = func.I(2);
+                if (sayid > 0) {
+                    TalkSayEvent evt3 = new TalkSayEvent();
+                    evt3.nChar = -1;
+                    evt3.nSayID = sayid;
+                    GameEventManager.DispatchEvent(evt3);
+                }
+
 
             }
             else if (func.sFunc == "TALKDEAD")

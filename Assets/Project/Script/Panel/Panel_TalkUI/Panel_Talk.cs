@@ -925,11 +925,15 @@ public class Panel_Talk : MonoBehaviour
             {
                 avgobj.Speak(true);
                 //    SetName(nCharID, avgobj.gameObject); // name POS
-                
+
                 TalkWindow.ChangeLayout(avgobj.nLayout);
                 NameObj.SetActive(true);
-                
+
             }
+        }
+        else if (nCharID <0 ) // both 
+        {
+            SpeakAll(true);          // speak all
         }
 
 

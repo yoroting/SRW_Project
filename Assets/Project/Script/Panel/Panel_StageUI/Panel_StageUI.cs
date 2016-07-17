@@ -3586,7 +3586,8 @@ public class Panel_StageUI : MonoBehaviour
 		//int nLeaderIdent =pLeader.n_Ident;
 
 		//int nGroupID = 
-		if( Evt.nPopType == 0 ){
+		//if( Evt.nPopType == 0 )
+       // {
 			int sx = Evt.stX < Evt.edX ? Evt.stX :Evt.edX ;
 			int sy = Evt.stY < Evt.edY ? Evt.stY :Evt.edY ;
 			int ex = Evt.stX > Evt.edX ? Evt.stX :Evt.edX ; 
@@ -3594,6 +3595,15 @@ public class Panel_StageUI : MonoBehaviour
 
 			for( int i = sx ; i <= ex ; i++  ){
 				for( int j = sy ; j <= ey ; j++  ){
+
+                    if (Evt.nPopType == 0 ) { // 0 - check empty
+                        iVec2 pos = new iVec2(i, j);
+                        if (CheckIsEmptyPos(pos)==false)
+                        {
+                            continue;
+                        }
+                    }
+
 					//cUnitData cData =  GameDataManager.Instance.StagePopUnit( Evt.nCharID,Evt.eCamp, i , j ,nLeaderIdent  ); 
 					cUnitData cData = GameDataManager.Instance.StagePopUnit( Evt.nCharID  , pLeader.eCampID , i , j  , StageData.n_MOB_LV , nLeaderIdent );
 					if( cData == null ){
@@ -3610,7 +3620,7 @@ public class Panel_StageUI : MonoBehaviour
 
 				}
 			}
-		}
+		//}
 	}
 
 	public void OnStageDelUnitByIdentEvent(GameEvent evt)
