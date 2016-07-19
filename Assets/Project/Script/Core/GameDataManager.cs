@@ -235,7 +235,9 @@ private static GameDataManager instance;
 		{
 			if( pair.Value == null  )
 				continue;
-			if( pair.Value.eCampID ==  eCampID ){
+            if (pair.Value.n_HP == 0 )
+                continue;
+            if ( pair.Value.eCampID ==  eCampID ){
 				cout++;
 			}
 		}
@@ -824,6 +826,12 @@ private static GameDataManager instance;
 			// relive
 			cUnitData p = pair.Value;
 			if( p.n_HP == 0 ){
+                cUnitData pLeader = GetUnitDateByIdent( p.n_LeaderIdent );
+                if (pLeader == null || pLeader.n_HP == 0) {
+                    p.n_LeaderIdent = 0; // 清空 leader
+                    continue; // leader 死亡，不重生
+                }
+
 				p.Relive();
 				Panel_StageUI.Instance.CreateUnitByUnitData( p );
 			}
