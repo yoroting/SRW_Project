@@ -25,6 +25,7 @@ public class MyScript {
 	//List<cHitResult> CacheHitResultPool;
 	public static bool bParsing = false;
     public static int nCheckIdent= 0;   // 指定檢查 執行事件者
+    public static int nTrigerIdent = 0;   // 事件觸發者
 
     public bool CheckEventCondition( CTextLine line  )
 	{
@@ -89,6 +90,12 @@ public class MyScript {
 				// 以下 不可在 戰鬥中檢查
 				if (BattleManager.Instance.IsBattlePhase ())
 					return false;// don't check in battle
+                //if ( cCMD.Instance.eCMDSTATUS != _CMD_STATUS._NONE)
+                if (cCMD.Instance.eCMDTYPE != _CMD_TYPE._SYS)
+                {
+                    return false;// don't check during cmd
+                }
+
 
 				if( func.sFunc == "ALLDEAD" )
 				{
@@ -207,14 +214,12 @@ public class MyScript {
                 }
 
                 else if (func.sFunc == "COUNT")
-                {
-                    _CAMP campid = (_CAMP)func.I(0);
-                    int count = GameDataManager.Instance.GetCampNum(campid);
-                    int nNum = func.I(2);
-                    if (MyScript.Instance.ConditionInt(count, func.S(1), func.I(2)) == false)
+                {   
+                    if (ConditionCount(func.I(0), func.S(1) , func.I(2), func.I(3)) == false)
                     {
-                        return false;       // always fail
+                        return false;
                     }
+                  
 
                 }
                 else if (func.sFunc == "STAR")
@@ -247,6 +252,7 @@ public class MyScript {
 			return false;
 
         nCheckIdent = checkIdent; // check target
+        nTrigerIdent = 0;
 
           cTextArray sCond = new cTextArray( );
 		sCond.SetText( evt.s_CONDITION );
@@ -325,7 +331,7 @@ public class MyScript {
 //		{
 //			return (unit.memLst.Count<=0) ;
 //		}
-		int nCount = GameDataManager.Instance.GetCampNum ( (_CAMP)nCampID  );
+		int nCount = Panel_StageUI.Instance.GetCampNum ( (_CAMP)nCampID  );
 		return (nCount <= 0);
 
 //		return true;
@@ -352,26 +358,37 @@ public class MyScript {
 		if (nCharID == 0) {
 			Debug.LogErrorFormat( "script check dead err in char{0}", nCharID );
 			return false;
-		}
+		}      
 
-		foreach( KeyValuePair< int , cUnitData > pair in GameDataManager.Instance.UnitPool ){
-            if (pair.Value.n_CharID != nCharID)
-                continue;
-            if (pair.Value.n_HP <= 0)
-            {
-                continue;
-            }
+        
+        return ConditionCount(nCampID, "<=", 0, nCharID);
 
-            if (nCampID != -1) { // 
-                if (pair.Value.eCampID != (_CAMP)nCampID)
-                {
-                    continue;
-                }
-            }
+		//foreach( KeyValuePair< int , cUnitData > pair in GameDataManager.Instance.UnitPool ){
+  //          if (pair.Value.n_CharID != nCharID)
+  //              continue;
+  //          if (pair.Value.IsDead() )
+  //          {
+  //              continue;
+  //          }
+  //          if (nCampID != -1) { // 
+  //              if (pair.Value.eCampID != (_CAMP)nCampID)
+  //              {
+  //                  continue;
+  //              }
+  //          }
+  //          // 等死亡表演結束
+  //          Panel_unit unit = Panel_StageUI.Instance.GetUnitByIdent( pair.Value.n_Ident );
+  //          if (unit != null)
+  //          {
+  //              if(unit.IsAnimate() || (unit.bIsDead == false) )
+  //              {
+  //                  continue;
+  //              }
+  //          }
 
-			return false;
-		}  
-		return true;
+		//	return false;
+		//}  
+	//	return true;
 	}
 
 
@@ -588,6 +605,10 @@ public class MyScript {
                 continue;
             if (MyTool.CheckInRect(pair.Value.n_X, pair.Value.n_Y, sx, sy, w, h))
             {
+                if (nTrigerIdent == 0)
+                {
+                    nTrigerIdent = pair.Key;
+                }
                 return true;
             }
         }
@@ -625,6 +646,12 @@ public class MyScript {
                 continue;
             if (MyTool.CheckInRect(pair.Value.n_X, pair.Value.n_Y, sx, sy, w, h))
             {
+
+                if (nTrigerIdent == 0)
+                {
+                    nTrigerIdent = pair.Key ;
+                }
+
                 return true;
             }
         }
@@ -641,7 +668,15 @@ public class MyScript {
         cUnitData unit = GameDataManager.Instance.GetUnitDateByCharID(nChar1);
         if (unit != null)
         {
-            return ((unit.n_X== x1)&&(unit.n_Y==y1));
+            if ((unit.n_X == x1) && (unit.n_Y == y1))
+            {
+                if (nTrigerIdent == 0) {
+                    nTrigerIdent = unit.n_Ident;
+                }
+                return true;
+            }
+            
+            
         }
         return false;
     }
@@ -658,7 +693,10 @@ public class MyScript {
 
         cUnitData unit = GameDataManager.Instance.GetUnitDateByIdent( nCheckIdent );
         if (unit != null) {
-            return (unit.n_CharID == nChar1);
+            if (unit.n_CharID == nChar1) {
+              //  nTrigerIdent = nCheckIdent;
+                return true;
+            }
         }
         return false;
     }
@@ -671,21 +709,37 @@ public class MyScript {
         cUnitData unit = GameDataManager.Instance.GetUnitDateByIdent(nCheckIdent);
         if (unit != null)
         {
-            return (unit.eCampID == (_CAMP)nCampID );
+            if (unit.eCampID == (_CAMP)nCampID)
+            {
+               // nTrigerIdent = nCheckIdent;
+                return true;
+            }
+           
         }
         return false;
     }
 
     
 
-    public bool ConditionCount(int campid , string op , int nNum )
-    {       
-        int count = GameDataManager.Instance.GetCampNum((_CAMP)campid);     
-        if (MyScript.Instance.ConditionInt(count, op , nNum) == true)
+    public bool ConditionCount(int campid , string op , int nNum , int nCharid  )
+    {
+
+       // _CAMP campid = (_CAMP)func.I(0);
+        int count = Panel_StageUI.Instance.GetCampNum( (_CAMP)campid, nCharid);
+        //int nNum = func.I(2);
+        if (MyScript.Instance.ConditionInt(count, op, nNum  ) == true)
         {
-            return true;       
+            return true;       // 
         }
-        return false;// always fail
+
+        return false;
+
+        //int count = GameDataManager.Instance.GetCampNum((_CAMP)campid);     
+        //if (MyScript.Instance.ConditionInt(count, op , nNum) == true)
+        //{
+        //    return true;       
+        //}
+        //return false;// always fail
     }
 
 
@@ -698,7 +752,8 @@ public class MyScript {
 		else if( op == "<="){
 			return (fVal_I <= fVal_E);
 		}
-		else if( op == "=="){
+		else if( op == "==" || op == "=" )
+        {
 			return (fVal_I == fVal_E);
 		}
 		else if( op == "!="){
@@ -721,7 +776,8 @@ public class MyScript {
 		else if( op == "<="){
 			return (nInt_I <= nInt_E);
 		}
-		else if( op == "=="){
+		else if( op == "==" || op == "=" )
+        {
 			return (nInt_I == nInt_E);
 		}
 		else if( op == "!="){
@@ -747,7 +803,7 @@ public class MyScript {
         {
             return (nStar <= nVar1);
         }
-        else if (op == "==")
+        else if (op == "==" || op == "=" )
         {
             return (nStar == nVar1);
         }
@@ -856,7 +912,7 @@ public class MyScript {
                 evt.stY = func.I(3);
                 evt.edX = func.I(4);
                 evt.edY = func.I(5);
-                evt.nPopType = func.I(6); // 0 - only empty , 1 - force pop
+                evt.nPopType = func.I(6); // 0 - force pop , 1 - only empty
                 Panel_StageUI.Instance.OnStagePopGroupEvent(evt);
                 //GameEventManager.DispatchEvent ( evt );
 
@@ -1231,25 +1287,25 @@ public class MyScript {
             }
             else if (func.sFunc == "DELUNIT")
             {
-                if (nCheckIdent > 0)
-                {
-                    cUnitData data = GameDataManager.Instance.GetUnitDateByIdent(nCheckIdent);
-                    if (data != null)
-                    {
-                        StageDelUnitByIdentEvent evt = new StageDelUnitByIdentEvent();
-                        evt.nIdent = nCheckIdent;
-                        Panel_StageUI.Instance.OnStageDelUnitByIdentEvent(evt);
+                //if (nTrigerIdent > 0)
+                //{
+                //    cUnitData data = GameDataManager.Instance.GetUnitDateByIdent(nTrigerIdent);
+                //    if (data != null && (data.n_CharID== func.I(0) )  )
+                //    {
+                //        StageDelUnitByIdentEvent evt = new StageDelUnitByIdentEvent();
+                //        evt.nIdent = nTrigerIdent;
+                //        Panel_StageUI.Instance.OnStageDelUnitByIdentEvent(evt);
 
-                        if (data.n_CharID != 0)
-                        {
-                            TalkSayEndEvent tlkevt = new TalkSayEndEvent();
-                            tlkevt.nChar = data.n_CharID;
-                            GameEventManager.DispatchEvent(tlkevt);
-                        }
-
-                    }
-                }
-                else
+                //        if (data.n_CharID != 0)
+                //        {
+                //            TalkSayEndEvent tlkevt = new TalkSayEndEvent();
+                //            tlkevt.nChar = data.n_CharID;
+                //            GameEventManager.DispatchEvent(tlkevt);
+                //        }
+                //        continue;
+                //    }
+                //}
+                // normal
                 {
 
                     StageDelUnitEvent evt = new StageDelUnitEvent();

@@ -755,7 +755,23 @@ public class Panel_Talk : MonoBehaviour
         CharSay(Evt.nChar, Evt.nSayID , Evt.nReplaceID , Evt.nReplaceType);
 
         // find obj to move
-        Panel_unit unit = Panel_StageUI.Instance.GetUnitByCharID(Evt.nChar);
+        Panel_unit unit = null;
+        if (Panel_StageUI.Instance.nEventTriggerIdent > 0)
+        {
+            unit = Panel_StageUI.Instance.GetUnitByIdent( Panel_StageUI.Instance.nEventTriggerIdent );
+            if (unit != null && unit.pUnitData.n_CharID != Evt.nChar)// 不是指定角色，清空
+            {
+                unit = null;
+            }
+        }
+
+        // final get a unit
+        if(unit == null)
+        {
+            unit = Panel_StageUI.Instance.GetUnitByCharID(Evt.nChar);
+        }
+
+        
         if (unit != null)
         {
             Panel_StageUI.Instance.MoveToGameObj(unit.gameObject, false);

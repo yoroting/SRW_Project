@@ -227,26 +227,27 @@ private static GameDataManager instance;
 
 	// Camp
 	public _CAMP nActiveCamp{ get; set; }  // 
-    
-	public int GetCampNum( _CAMP eCampID )
-	{
-		int cout = 0;
-		foreach( KeyValuePair< int , cUnitData > pair in UnitPool )
-		{
-			if( pair.Value == null  )
-				continue;
-            if (pair.Value.n_HP == 0 )
+
+    int GetCampNum(_CAMP eCampID) // game data 用，不考慮 stage animate，外部應使用 stage 的 getcampnum
+    {
+        int cout = 0;
+        foreach (KeyValuePair<int, cUnitData> pair in UnitPool)
+        {
+            if (pair.Value == null)
                 continue;
-            if ( pair.Value.eCampID ==  eCampID ){
-				cout++;
-			}
-		}
-		return cout;
-	}
+            if (pair.Value.n_HP == 0) // 直接判斷將造成 死亡表演來不及演
+                continue;
+            if (pair.Value.eCampID == eCampID)
+            {
+                cout++;
+            }
+        }
+        return cout;
+    }
 
 
-	// switch to next Camp. return true if round change
-	public bool NextCamp()
+    // switch to next Camp. return true if round change
+    public bool NextCamp()
 	{
 		// weakup current camp first for remove unit mask
 //		StageWeakUpCampEvent cmd = new StageWeakUpCampEvent ();

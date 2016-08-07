@@ -10,7 +10,7 @@ Material:
   m_Shader: {fileID: 4800000, guid: bfafa0382d50c244091509d50ad76a46, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 5
-  m_CustomRenderQueue: 3100
+  m_CustomRenderQueue: 2600
   stringTagMap: {}
   m_SavedProperties:
     serializedVersion: 2
@@ -35,12 +35,12 @@ Material:
       data:
         first:
           name: _TintColor
-        second: {r: .111111112, g: .111111112, b: .111111112, a: .111111112}
+        second: {r: 0.11111111, g: 0.11111111, b: 0.11111111, a: 0.11111111}
       data:
         first:
           name: _BaseColor
-        second: {r: .111111112, g: 0, b: 0, a: .111111112}
+        second: {r: 0.11111111, g: 0, b: 0, a: 0.11111111}
       data:
         first:
           name: _MaskColor
-        second: {r: .111111112, g: 0, b: 0, a: .111111112}
+        second: {r: 0.11111111, g: 0, b: 0, a: 0.11111111}

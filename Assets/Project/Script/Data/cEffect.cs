@@ -1623,7 +1623,7 @@ public class cEffectCondition
             }
             else if (func.sFunc == "COUNT")
             {
-                if (MyScript.Instance.ConditionCount(func.I(0), func.S(1), func.I(2)) == false)
+                if (MyScript.Instance.ConditionCount(func.I(0), func.S(1), func.I(2), func.I(3)) == false)
                 {
                     return false;
                 }

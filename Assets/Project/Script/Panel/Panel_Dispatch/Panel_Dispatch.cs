@@ -41,7 +41,7 @@ public class Panel_Dispatch : MonoBehaviour
     public void OnEnable()
     {
         // calcul current unit
-        nDispatchNum = Config.MaxStageUnit -  GameDataManager.Instance.GetCampNum(_CAMP._PLAYER);
+        nDispatchNum = Config.MaxStageUnit -  Panel_StageUI.Instance.GetCampNum(_CAMP._PLAYER);
 
         if(nDispatchNum <= 0)
         {

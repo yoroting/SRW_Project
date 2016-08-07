@@ -97,21 +97,22 @@ public class Panel_StageUI : MonoBehaviour
 	// change to evt list for custom order by list 
 	//List< STAGE_EVENT > EvtPool;			// add event id 
 
-	List< STAGE_EVENT >				WaitPool;			// wait to exec pool
-//	Dictionary< int , int > EvtCompletePool;			// record event complete round 
+	List< STAGE_EVENT >				WaitPool;           // wait to exec pool
+                                                        //	Dictionary< int , int > EvtCompletePool;			// record event complete round 
+    Dictionary<int, int> EventTrigPool;            // 紀錄 各事件的觸發者
 
-	STAGE_EVENT						NextEvent;
+    STAGE_EVENT						NextEvent;
 	private cTextArray 				m_cScript;			// 劇本 腳本集合
 	private int						m_nFlowIdx;			// 腳本演到哪段
 	bool							IsEventEnd;			// 
 //	bool							IsPreBattleEvent;	// is prebattle event
+    public  int             nEventTriggerIdent;      // the event trigger ident
 
 
+    //	bool							CheckEventPause;	// 	event check pause
 
-//	bool							CheckEventPause;	// 	event check pause
-
-	// Select effect
-	Dictionary< string , GameObject >  OverCellPool;			// Over tile effect pool ( str = cell key )
+    // Select effect
+    Dictionary< string , GameObject >  OverCellPool;			// Over tile effect pool ( str = cell key )
 	Dictionary< string , GameObject >  OverCellAtkPool;			// Over tile effect pool( attack ) ( str = cell key )
 
 	Dictionary< string , GameObject > OverCellPathPool;
@@ -305,6 +306,7 @@ public class Panel_StageUI : MonoBehaviour
                     if (CheckEventCanRun(evt) == true)
                     {
                         WaitPool.Add(evt);
+                        RegEventTriger(nEventID, MyScript.nTrigerIdent);
                     }                    
                 }
             }
@@ -402,6 +404,7 @@ public class Panel_StageUI : MonoBehaviour
                     if (CheckEventCanRun(evt) == true)
                     {
                         WaitPool.Add(evt);
+                        RegEventTriger(nEventID, MyScript.nTrigerIdent);
                     }
                 }
             }
@@ -562,11 +565,11 @@ public class Panel_StageUI : MonoBehaviour
 
 		EvtPool = new Dictionary< int , STAGE_EVENT >();			// add event id 
 
-		WaitPool = new List< STAGE_EVENT >();					// check ok. waitinf to execute event
-		//EvtCompletePool = new Dictionary< int , int >();
-		
-		// unit
-		IdentToUnit = new Dictionary< int , Panel_unit >();		//
+		WaitPool = new List< STAGE_EVENT >();                   // check ok. waitinf to execute event
+                                                                //EvtCompletePool = new Dictionary< int , int >();
+        EventTrigPool = new Dictionary<int, int>();
+        // unit
+        IdentToUnit = new Dictionary< int , Panel_unit >();		//
 		
 		
 		OverCellPool 	= new Dictionary< string , GameObject >();			// Over tile effect pool ( in = cell key )
@@ -2042,8 +2045,13 @@ public class Panel_StageUI : MonoBehaviour
 
 	// Check event
 	bool CheckEventCanRun( STAGE_EVENT evt )
-	{	
-		return MyScript.Instance.CheckEventCanRun (evt);
+	{       
+        if (MyScript.Instance.CheckEventCanRun(evt))
+        {
+            
+            return true;
+        }
+        return false;
 
 //		cTextArray sCond = new cTextArray( );
 //		sCond.SetText( evt.s_CONDITION );
@@ -2085,33 +2093,35 @@ public class Panel_StageUI : MonoBehaviour
 		  //run event
 		if( NextEvent != null )
 		{
-			NextLine();					// execute one line
+			NextLine();                 // execute one line
 
-			//NextLine();					// parser event to run
-			if( IsNextEventCompleted() )
-			{
-				// record event comp
-				//EvtCompletePool.Add( NextEvent.n_ID , GameDataManager.Instance.nRound );
+            //NextLine();					// parser event to run
+            if (IsNextEventCompleted())
+            {
+                // record event comp
+                //EvtCompletePool.Add( NextEvent.n_ID , GameDataManager.Instance.nRound );
 
-				if( GameDataManager.Instance.EvtDonePool.ContainsKey( NextEvent.n_ID )  )
-				{
-					GameDataManager.Instance.EvtDonePool[ NextEvent.n_ID ] = GameDataManager.Instance.nRound; // update newest complete round
-				}
-				else{
-					GameDataManager.Instance.EvtDonePool.Add( NextEvent.n_ID , GameDataManager.Instance.nRound );
-				}
+                if (GameDataManager.Instance.EvtDonePool.ContainsKey(NextEvent.n_ID))
+                {
+                    GameDataManager.Instance.EvtDonePool[NextEvent.n_ID] = GameDataManager.Instance.nRound; // update newest complete round
+                }
+                else {
+                    GameDataManager.Instance.EvtDonePool.Add(NextEvent.n_ID, GameDataManager.Instance.nRound);
+                }
 
-				// clear event for next
-				NextEvent = null;
-				IsEventEnd = true;
-                MyScript.nCheckIdent = 0;  // clear
+                // clear event for next
+                NextEvent = null;
+                IsEventEnd = true;
+                // don't clear chekident here . some event need it to perform
 
                 // all end . check again  for new condition status
                 //	if( WaitPool.Count <= 0 ){
-                if ( IsRunningEvent() == false )
-				{
-					GetEventToRun();
-				}
+                if (IsRunningEvent() == false)
+                {
+                   
+                    GetEventToRun();
+                }
+                
 			//	}
 
 			}
@@ -2155,7 +2165,8 @@ public class Panel_StageUI : MonoBehaviour
             if (evt == null)
                 continue;
             if( MyScript.Instance.CheckEventCanRun( evt, unit.n_Ident) )
-            {             
+            {
+                RegEventTriger(b.nEvtID, unit.n_Ident);
                 TrigEventToRun(b.nEvtID);               
             }
 
@@ -2249,7 +2260,8 @@ public class Panel_StageUI : MonoBehaviour
             return;
         }
 
-		List< int > removeLst = new List< int >();
+        //MyScript.nCheckIdent = 0;  // clear here  .maybe fix in the future
+        List< int > removeLst = new List< int >();
 		// get next event to run
 		foreach( KeyValuePair< int ,STAGE_EVENT > pair in EvtPool ) 
 		{
@@ -2257,6 +2269,8 @@ public class Panel_StageUI : MonoBehaviour
             {       // check if this event need run
                     //NextEvent = pair.Value ; 		// run in next loop
                 WaitPool.Add(pair.Value);
+
+                RegEventTriger(pair.Key, MyScript.nTrigerIdent );
                 // check is loop event?
                 if (IsLoopEvent(pair.Value) == false)
                 {
@@ -2326,8 +2340,10 @@ public class Panel_StageUI : MonoBehaviour
 		m_cScript.SetText( NextEvent.s_BEHAVIOR );	
 
 		m_nFlowIdx = 0;
-		//NextLine();			// script to run
-	}
+
+        nEventTriggerIdent = GetEventTriger( NextEvent.n_ID );  // maybe clear
+        //NextLine();			// script to run
+    }
 
 	void NextLine()// script to run
 	{
@@ -3596,7 +3612,7 @@ public class Panel_StageUI : MonoBehaviour
 			for( int i = sx ; i <= ex ; i++  ){
 				for( int j = sy ; j <= ey ; j++  ){
 
-                    if (Evt.nPopType == 0 ) { // 0 - check empty
+                    if (Evt.nPopType == 1 ) { // 1 - check empty
                         iVec2 pos = new iVec2(i, j);
                         if (CheckIsEmptyPos(pos)==false)
                         {
@@ -3652,6 +3668,24 @@ public class Panel_StageUI : MonoBehaviour
 			return;
 		int nCharid = Evt.nCharID;
 
+        // 有事件觸發者，優先從他開始處理
+        if (nEventTriggerIdent > 0)
+        {
+             cUnitData data = GameDataManager.Instance.GetUnitDateByIdent(nEventTriggerIdent);
+             if (data != null && (data.n_CharID == nCharid))
+             {
+                if (m_bIsSkipMode)
+                {
+                    DelUnitbyIdent(nEventTriggerIdent );
+                    return;
+                }
+                // normal mode to play
+                LeaveUnitByIdent(nEventTriggerIdent );
+                return;
+             }
+        }
+
+        // normal
 		if (m_bIsSkipMode) {
 			DelUnit (nCharid);
 			return;
@@ -4806,5 +4840,65 @@ public class Panel_StageUI : MonoBehaviour
 		string sMsg = string.Format( "星星+ {0}" , nStar );
 		BattleManager.Instance.ShowBattleMsg( null , sMsg );
 	}
+
+    // 取得指定陣營，指定角色ID的數量 。 0 - 全角色ID 
+    public int GetCampNum( _CAMP eCamp , int nCharID=0  )
+    {
+        int nNum = 0;
+        foreach (KeyValuePair<int, Panel_unit> pair in IdentToUnit)
+        {
+            if (pair.Value != null)
+            {
+                //pair.Value.pUnitData.Buffs.BuffRoundEnd();
+                if (pair.Value.eCampID != eCamp) {
+                    continue;
+                }
+                if (nCharID != 0 && (pair.Value.pUnitData.n_CharID!= nCharID ) )
+                {
+                    continue;
+                }
+                // 死亡. 理論上還存在  panel 的都是還沒表演結束的活人
+                //if (pair.Value.pUnitData.IsDead() ) {
+                //    if (pair.Value.bIsDead && (pair.Value.IsAnimate() == false))
+                //    {
+                //        continue;  //已死亡不計數
+                //    }
+                //    else {
+                //        // 死亡表演的還算是活著
+                //    }
+                //}
+
+                nNum++;
+            }
+        }
+
+
+        return nNum;
+    }
+
+    public void RegEventTriger( int nEventID , int nTrigerIdent )
+    {
+        if (EventTrigPool == null)
+            return;
+        if (EventTrigPool.ContainsKey(nEventID))
+        {
+            EventTrigPool[nEventID] = nTrigerIdent;
+        }
+        else {
+            EventTrigPool.Add(nEventID, nTrigerIdent);
+        }   
+    }
+    public int GetEventTriger (int nEventID)
+    {
+        if (EventTrigPool == null)
+            return 0;
+        if (EventTrigPool.ContainsKey(nEventID))
+        {
+            return EventTrigPool[nEventID];
+        }
+        return 0;
+    }
+
+
 
 }
