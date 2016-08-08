@@ -9,7 +9,7 @@ public class Panel_Win : MonoBehaviour {
 
 	void OnEnable()
 	{
-		Panel_StageUI.Instance.EndStage (); // 馬上呼叫關閉旗標，是為了防止其他事件觸發，卻觸發了 通用 事件Lost() .. 因為全物件刪除
+		Panel_StageUI.Instance.EndStage ( 1 ); // 馬上呼叫關閉旗標，是為了防止其他事件觸發，卻觸發了 通用 事件Lost() .. 因為全物件刪除( 改用旗標方法)
 		//Panel_StageUI.Instance.bIsStageEnd = true;
 
 		// GameDataManager.Instance.EndStage ();   // 處理戰場結束的資料回存

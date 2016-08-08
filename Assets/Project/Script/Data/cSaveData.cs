@@ -170,14 +170,16 @@ public class cSaveData{
 	[JsonName("cpool")] public List< cUnitSaveData > 			CharPool;
 	[JsonName("ipool")] public List<int>						ItemPool;
 	[JsonName("importpool")] public List<int>					ImportEventPool;   // 已完成的重要事件列表
+    
 
 	// stage special info
 	[JsonName("evtdonepool")] public Dictionary<string,int>		EvtDonePool;   // 已完成的事件列表
+    [JsonName("flagpool")]    public Dictionary<string, int> FlagPool;   // 特殊紀錄 旗標
 
-//	[JsonName("evtcheckpool")] public List<int>					EvtCheckPool;   // event can run
-//	[JsonName("evtwaitpool")] public List<int>					EvtWaitingPool;   // 已完成的重要事件列表
+    //	[JsonName("evtcheckpool")] public List<int>					EvtCheckPool;   // event can run
+    //	[JsonName("evtwaitpool")] public List<int>					EvtWaitingPool;   // 已完成的重要事件列表
 
-	[JsonName("grouppool")] public Dictionary< string , int >		GroupPool;   //  group event pool
+    [JsonName("grouppool")] public Dictionary< string , int >		GroupPool;   //  group event pool
     [JsonName("blockpool")] public List<cBlockSaveData>              EvtBlockPool;   //  list of event block
 		
 	static bool 	bIsLoading;													// don't public to avoid recprd this
@@ -210,7 +212,9 @@ public class cSaveData{
 		ImportEventPool = GameDataManager.Instance.ImportEventPool;
 		StoragePool = GameDataManager.Instance.ExportStoragePool();
 
-		ePhase = phase;
+        FlagPool = GameDataManager.Instance.FlagPool; // maybe it is null
+
+        ePhase = phase;
 
 		// save during mainta
 		if (ePhase == _SAVE_PHASE._MAINTEN ) {
@@ -221,14 +225,16 @@ public class cSaveData{
 			// event done pool
 		//	EvtDonePool = GameDataManager.Instance.EvtDonePool;
 			EvtDonePool = MyTool.ConvetToStringInt( GameDataManager.Instance.EvtDonePool );
-//			EvtDonePool = new Dictionary<string,int>();
-//			foreach( KeyValuePair< int , int > pair in GameDataManager.Instance.EvtDonePool)
-//			{
-//				EvtDonePool.Add( pair.Key.ToString() , pair.Value );
-//			}
-			//EvtCheckPool = Panel_StageUI.Instance.evt
-			// group pool
-			GroupPool   = MyTool.ConvetToStringInt( GameDataManager.Instance.GroupPool );
+            //			EvtDonePool = new Dictionary<string,int>();
+            //			foreach( KeyValuePair< int , int > pair in GameDataManager.Instance.EvtDonePool)
+            //			{
+            //				EvtDonePool.Add( pair.Key.ToString() , pair.Value );
+            //			}
+            // flag pool
+          
+           //EvtCheckPool = Panel_StageUI.Instance.evt
+           // group pool
+           GroupPool   = MyTool.ConvetToStringInt( GameDataManager.Instance.GroupPool );
 			// unit pool
 			CharPool = GameDataManager.Instance.ExportSavePool();
             // block pool
@@ -281,13 +287,19 @@ public class cSaveData{
 		GameDataManager.Instance.ItemPool = ItemPool ;			// item list
 		GameDataManager.Instance.ImportEventPool = ImportEventPool;
 		GameDataManager.Instance.ImportStoragePool( StoragePool );
-		// 由phase 決定目前該切到哪個場僅. this should need a 
+        
+        GameDataManager.Instance.FlagPool = FlagPool;           // flag
+        // 由phase 決定目前該切到哪個場僅. this should need a 
+        if (GameDataManager.Instance.FlagPool == null)
+        {
+            GameDataManager.Instance.FlagPool = new Dictionary<string, int>();
+        }
 
-		// restore mainta
+        // restore mainta
 
-		//StartCoroutine(  cSaveData.SaveLoading( this  ) ); // need a mono behacior
+        //StartCoroutine(  cSaveData.SaveLoading( this  ) ); // need a mono behacior
 
-		if (phase == _SAVE_PHASE._MAINTEN) {
+        if (phase == _SAVE_PHASE._MAINTEN) {
 			Panel_Mainten panel = MyTool.GetPanel< Panel_Mainten >( PanelManager.Instance.JustGetUI( Panel_Mainten.Name )  );
 			if( panel != null ){
 				panel.LoadSaveGame( this );

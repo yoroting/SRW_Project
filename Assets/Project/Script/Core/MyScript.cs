@@ -228,7 +228,13 @@ public class MyScript {
                     {
                         return false;       // always fail
                     }
-
+                }
+                else if (func.sFunc == "FLAG")
+                {
+                    if (MyScript.Instance.ConditionFlag(func.S(0), func.S(1), func.I(2) ) == false)
+                    {
+                        return false;       // always fail
+                    }
                 }
                 else
                 {
@@ -795,32 +801,39 @@ public class MyScript {
     public bool ConditionStar( string op, int nVar1 )
     {
         int nStar = GameDataManager.Instance.nStars;
-        if (op == "<")
-        {
-            return (nStar < nVar1);
-        }
-        else if (op == "<=")
-        {
-            return (nStar <= nVar1);
-        }
-        else if (op == "==" || op == "=" )
-        {
-            return (nStar == nVar1);
-        }
-        else if (op == "!=")
-        {
-            return (nStar != nVar1);
-        }
-        else if (op == ">")
-        {
-            return (nStar > nVar1);
-        }
-        else if (op == ">=")
-        {
-            return (nStar >= nVar1);
-        }
-        return false;
+        return ConditionInt(nStar, op, nVar1);
+        //if (op == "<")
+        //{
+        //    return (nStar < nVar1);
+        //}
+        //else if (op == "<=")
+        //{
+        //    return (nStar <= nVar1);
+        //}
+        //else if (op == "==" || op == "=" )
+        //{
+        //    return (nStar == nVar1);
+        //}
+        //else if (op == "!=")
+        //{
+        //    return (nStar != nVar1);
+        //}
+        //else if (op == ">")
+        //{
+        //    return (nStar > nVar1);
+        //}
+        //else if (op == ">=")
+        //{
+        //    return (nStar >= nVar1);
+        //}
+        //return false;
     }
+    public bool ConditionFlag(string sflag , string op, int nVar1)
+    {
+        int n = GameDataManager.Instance.GetFlag(sflag );
+        return ConditionInt(n , op , nVar1 );
+    }
+        
     //------------------
     // Stage Run
     //-----------------
@@ -885,7 +898,7 @@ public class MyScript {
             else if (func.sFunc == "EPOPCHAR" || func.sFunc == "EPOPC")
             {
                 // check unit in party                
-                if (GameDataManager.Instance.IsCharInParty(func.I(0)) == false ) // 0 - check char 
+                if (GameDataManager.Instance.IsCharInParty(func.I(0)) == false) // 0 - check char 
                     return;
 
 
@@ -1025,8 +1038,8 @@ public class MyScript {
             else if (func.sFunc == "ESAY")
             {
                 // check unit in party
-              
-                if (GameDataManager.Instance.IsCharInParty(func.I(0)) == false ) // 0 - 檢查角色
+
+                if (GameDataManager.Instance.IsCharInParty(func.I(0)) == false) // 0 - 檢查角色
                     return;
 
                 TalkSayEvent evt = new TalkSayEvent();
@@ -1067,7 +1080,8 @@ public class MyScript {
                 GameEventManager.DispatchEvent(evt2);
                 // talk id
                 int sayid = func.I(2);
-                if (sayid > 0) {
+                if (sayid > 0)
+                {
                     TalkSayEvent evt3 = new TalkSayEvent();
                     evt3.nChar = -1;
                     evt3.nSayID = sayid;
@@ -1092,7 +1106,7 @@ public class MyScript {
                 evt.nSoundID = func.I(1);
                 GameEventManager.DispatchEvent(evt);
             }
-            else if (func.sFunc == "BACKGROUND" || func.sFunc == "TALKBG" || func.sFunc == "BG" )
+            else if (func.sFunc == "BACKGROUND" || func.sFunc == "TALKBG" || func.sFunc == "BG")
             {
                 TalkBackGroundEvent evt = new TalkBackGroundEvent();
                 //evt.nType = func.I(0);
@@ -1221,7 +1235,7 @@ public class MyScript {
                 Panel_StageUI.Instance.OnStageCampAddBuff(func.I(0), func.I(1), func.I(2), 0);
             }
             else if (func.sFunc == "DELCAMPBUFF")  // Add buff
-            {               
+            {
                 Panel_StageUI.Instance.OnStageCampAddBuff(func.I(0), func.I(1), func.I(2), 1);
             }
             else if (func.sFunc == "ADDPARTYBUFF")  // Add party buff - 增加隊伍內角色的 buff
@@ -1332,13 +1346,13 @@ public class MyScript {
             {
                 int nCharID = func.I(0);
                 GameDataManager.Instance.EnableStorageUnit(nCharID, true);
-              //  GameDataManager.Instance.EnableStageUnit(nCharID, true);
+                //  GameDataManager.Instance.EnableStageUnit(nCharID, true);
             }
             else if (func.sFunc == "LEAVE")
             {
                 int nCharID = func.I(0);
                 GameDataManager.Instance.EnableStorageUnit(nCharID, false);
-             //   GameDataManager.Instance.EnableStageUnit(nCharID, false);
+                //   GameDataManager.Instance.EnableStageUnit(nCharID, false);
             }
             //不能刪除 等待執行 event. 會造成 讀檔上的麻煩
             //			else if( func.sFunc  == "DELEVENT") 
@@ -1372,8 +1386,9 @@ public class MyScript {
                 GameSystem.ShakeCamera(func.F(0));
 
                 int nSoundID = func.I(1);
-                if (nSoundID > 0) {
-                    GameSystem.PlaySound(nSoundID); 
+                if (nSoundID > 0)
+                {
+                    GameSystem.PlaySound(nSoundID);
                 }
 
             }
@@ -1414,6 +1429,14 @@ public class MyScript {
                 //ShowBattleMsg.
                 Panel_StageUI.Instance.AddStar(nStar);
 
+            }
+            else if (func.sFunc == "SETFLAG")  //set flag
+            {               
+                GameDataManager.Instance.SetFlag(func.S(0) , func.I(1));
+            }
+            else if (func.sFunc == "ADDFLAG")  // Add flag
+            {
+                GameDataManager.Instance.AddFlag(func.S(0), func.I(1));
             }
             else if (func.sFunc == "REGBLOCK")  // REG BLOCK EVENT
             {

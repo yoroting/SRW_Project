@@ -112,11 +112,12 @@ public partial class GameDataManager
 		UnitPool = new Dictionary< int , cUnitData >();
 //		CampPool = new Dictionary< _CAMP , cCamp >();
 		EvtDonePool = new Dictionary< int , int > ();			// record event complete round 
-//		ConCharPool = new Dictionary< int , CHARS >();
-//		ConCharPool   = new Dictionary< int , CHARS >() ;
-//		ConSchoolPool = new Dictionary< int , SCHOOL >() ;
-//		ConSkillPool  = new Dictionary< int , SKILL >() ;
-		ImportEventPool = new List<int>();   // 已完成的重要事件列表
+        FlagPool = new Dictionary<string, int>();
+        //		ConCharPool = new Dictionary< int , CHARS >();
+        //		ConCharPool   = new Dictionary< int , CHARS >() ;
+        //		ConSchoolPool = new Dictionary< int , SCHOOL >() ;
+        //		ConSkillPool  = new Dictionary< int , SKILL >() ;
+        ImportEventPool = new List<int>();   // 已完成的重要事件列表
 
 		ItemPool  = new List<int>();//
 
@@ -156,7 +157,9 @@ private static GameDataManager instance;
 		UnitPool.Clear ();
 		//CampPool.Clear ();
 		EvtDonePool.Clear();
-		GroupPool.Clear();
+        FlagPool.Clear();
+
+        GroupPool.Clear();
 
         EvtBlockPool.Clear();
         // special reset
@@ -955,11 +958,11 @@ private static GameDataManager instance;
         }
     }
     // Event Status
-    public Dictionary< int , int > EvtDonePool;			// record event complete round 
+    public Dictionary< int , int > EvtDonePool;         // record event complete round 
+    public Dictionary<string, int> FlagPool;               //  var pool 
 
-
-	// public  Group
-	public Dictionary< int , int > GroupPool;			//  <leader char id , leader char ident>
+    // public  Group
+    public Dictionary< int , int > GroupPool;			//  <leader char id , leader char ident>
 	public int GetGroupIDbyLeaderChar( int nCharID  ){
 		int nIdent = 0;
 		if (GroupPool.TryGetValue (nCharID, out nIdent) == false ) {
@@ -1103,5 +1106,49 @@ private static GameDataManager instance;
 		nEnemyBGM  = 110 + nPhase ; // from 110-119	
 		nFriendBGM  = 120 + nPhase ; // from 120-129	
 	}
+
+    //
+    public void SetFlag(string sKey, int nValue)
+    {
+        if (FlagPool == null)
+            return;
+        string s = sKey.Trim().ToUpper();
+
+        if (FlagPool.ContainsKey(s))
+        {
+            FlagPool[s] = nValue;
+        }
+        else
+        {
+            FlagPool.Add(s, nValue);
+        }
+    }
+    public void AddFlag(string sKey, int nValue)
+    {
+        if (FlagPool == null)
+            return;
+        string s = sKey.Trim().ToUpper();
+
+        if (FlagPool.ContainsKey(s))
+        {
+            FlagPool[s] += nValue;
+        }
+        else
+        {
+            FlagPool.Add(s, nValue);
+        }
+    }
+
+    public int GetFlag(string sKey)
+    {
+        if (FlagPool == null)
+            return 0;
+        string s = sKey.Trim().ToUpper();
+        if (FlagPool.ContainsKey(s))
+        {
+            return FlagPool[s];
+        }
+        return 0;
+    }
 }
 

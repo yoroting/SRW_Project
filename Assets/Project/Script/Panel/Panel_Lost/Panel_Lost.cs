@@ -9,7 +9,7 @@ public class Panel_Lost : MonoBehaviour {
 
 	void OnEnable()
 	{
-		Panel_StageUI.Instance.EndStage ();
+		Panel_StageUI.Instance.EndStage ( 2 );  // lost
 	//	Panel_StageUI.Instance.HideStage ();
 //		Panel_StageUI.Instance.bIsStageEnd = true;
 //		GameDataManager.Instance.EndStage ();   // 處理戰場結束的資料回存

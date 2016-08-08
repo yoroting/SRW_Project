@@ -108,6 +108,7 @@ public class Panel_StageUI : MonoBehaviour
 //	bool							IsPreBattleEvent;	// is prebattle event
     public  int             nEventTriggerIdent;      // the event trigger ident
 
+   // Dictionary<string, int> FlagPool;			    //  var pool for stage
 
     //	bool							CheckEventPause;	// 	event check pause
 
@@ -568,6 +569,7 @@ public class Panel_StageUI : MonoBehaviour
 		WaitPool = new List< STAGE_EVENT >();                   // check ok. waitinf to execute event
                                                                 //EvtCompletePool = new Dictionary< int , int >();
         EventTrigPool = new Dictionary<int, int>();
+      
         // unit
         IdentToUnit = new Dictionary< int , Panel_unit >();		//
 		
@@ -2663,11 +2665,20 @@ public class Panel_StageUI : MonoBehaviour
 //		}
 //	}
 
-	public void EndStage()
+	public void EndStage( int nResult = 0 ) // 0 - nothing , 1 -win , 2 - lost
 	{
 		bIsStageEnd = true;
-		
-		GameDataManager.Instance.EndStage ();   // 處理戰場結束的資料回存
+
+        if (nResult ==1 )
+        {
+            GameDataManager.Instance.SetFlag("win", 1);
+        }
+        else if (nResult == 2)
+        {
+            GameDataManager.Instance.SetFlag("lost", 1);
+        }
+
+        GameDataManager.Instance.EndStage ();   // 處理戰場結束的資料回存
 	}
 
 	public void ShowStage( bool bShow )
@@ -4899,6 +4910,5 @@ public class Panel_StageUI : MonoBehaviour
         return 0;
     }
 
-
-
+    
 }
