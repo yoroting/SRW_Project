@@ -1012,7 +1012,7 @@ public class MyScript {
                     }
                 }
             }
-            else if (func.sFunc == "CHARFACE") //變更角色FACE
+            else if (func.sFunc == "CHARFACE" || func.sFunc == "SETFACE" ) //變更角色FACE
             {
                 int nCharID = func.I(0); // old
                 int nFaceID = func.I(1); // new 
@@ -1038,9 +1038,16 @@ public class MyScript {
             else if (func.sFunc == "ESAY")
             {
                 // check unit in party
-
-                if (GameDataManager.Instance.IsCharInParty(func.I(0)) == false) // 0 - 檢查角色
-                    return;
+                int charid = func.I(0);
+                // 檢查 場上有沒有該人物
+                if (Panel_StageUI.Instance.GetUnitByCharID(charid) == null) // 敵方有也可以
+                {
+                    // 看看 隊伍內 有沒有 
+                    if (GameDataManager.Instance.IsCharInParty(charid) == false) // 0 - 檢查角色
+                    {
+                        return;
+                    }                
+                }                
 
                 TalkSayEvent evt = new TalkSayEvent();
                 //evt.nType  = func.I(0);
@@ -1205,6 +1212,15 @@ public class MyScript {
                 evt.nCharID2 = func.I(1);
                 //evt.nAtkSkillID = func.I(2);
                 Panel_StageUI.Instance.OnStageCharSwapEvent(evt);
+                //GameEventManager.DispatchEvent ( evt  );
+
+            }
+            else if (func.sFunc == "MOVECAMP")  //  pop a group of mob
+            {
+
+                //evt.nAtkSkillID = func.I(2);
+                _CAMP campid = (_CAMP)func.I(0);
+                Panel_StageUI.Instance.OnStageMoveCampEvent( campid, func.I(1), func.I(2), func.I(3), func.I(4));
                 //GameEventManager.DispatchEvent ( evt  );
 
             }

@@ -345,7 +345,21 @@ public class Panel_SysCheat : MonoBehaviour {
 
 		if( camp == _CAMP._PLAYER )
 		{
-			GameDataManager.Instance.RemoveStorageUnit( nPopCharID ); // to avoid re use storage data
+            // enable char in mainten mode 
+            if (GameDataManager.Instance.ePhase == _SAVE_PHASE._MAINTEN)
+            {
+                GameDataManager.Instance.EnableStorageUnit(nPopCharID, true); // add char
+
+                Panel_Mainten p = PanelManager.Instance.JustGetUI<Panel_Mainten>(Panel_Mainten.Name);
+                // MyTool.GetPanel<>
+                if (p != null) {
+                    p.ReloadUnitList();
+                }
+                
+                return;
+            }
+
+            GameDataManager.Instance.RemoveStorageUnit( nPopCharID ); // to avoid re use storage data
 		}
 
 

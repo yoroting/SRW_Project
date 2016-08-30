@@ -3861,6 +3861,41 @@ public class Panel_StageUI : MonoBehaviour
 		GameEventManager.DispatchEvent ( cmd );
 	}
 
+    public void OnStageMoveCampEvent( _CAMP eCampID , int stX , int stY , int edX , int edY )
+    {
+        // 建立  pool
+        List<Panel_unit> pool = GetUnitListByCamp(eCampID );
+        if (pool == null || pool.Count == 0)
+            return;
+
+
+        int sx = stX < edX ? stX : edX;
+        int sy = stY < edY ? stY : edY;
+        int ex = stX > edX ? stX : edX;
+        int ey = stY > edY ? stY : edY;
+
+        for (int i = sx; i <= ex; i++)
+        {
+            for (int j = sy; j <= ey; j++)
+            {                               
+                 // 1 - check empty
+                 iVec2 pos = new iVec2(i, j);
+                 if (CheckIsEmptyPos(pos) == false)
+                 {
+                        continue;
+                 }
+                // 把單位一個個move過去   
+                Panel_unit unit = pool[0];
+                if (unit != null) {
+                    unit.MoveTo( i , j );
+                }
+
+                pool.RemoveAt(0); 
+            }
+        }
+
+
+    }
 //	public void OnStageUnitActionFinishEvent(GameEvent evt)
 //	{
 //		StageUnitActionFinishEvent Evt = evt as StageUnitActionFinishEvent;
@@ -3873,7 +3908,7 @@ public class Panel_StageUI : MonoBehaviour
 //		}
 //	}
 
-	public void OnStageWeakUpCampEvent(GameEvent evt)
+    public void OnStageWeakUpCampEvent(GameEvent evt)
 	{
 		StageWeakUpCampEvent Evt = evt as StageWeakUpCampEvent;
 		if (Evt == null)
