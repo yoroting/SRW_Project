@@ -85,13 +85,25 @@ public class Panel_unit : MonoBehaviour {
 	public bool CanDoCmd()
 	{
 		if (pUnitData != null) {
-//			if( Config.GOD ){
-//				if( eCampID == _CAMP._PLAYER ){
-//					return true;
-//				}
-//			}
-			return pUnitData.nActionTime > 0;
-		}
+            //			if( Config.GOD ){
+            //				if( eCampID == _CAMP._PLAYER ){
+            //					return true;
+            //				}
+            //			}
+
+            // 沒有行動力
+            if (pUnitData.nActionTime <= 0)
+            {
+                return false;
+            }
+
+            // 觀戰 NPC 不能執行命令
+            if (pUnitData.IsTag( _UNITTAG._PEACE) )
+            {
+                return false;
+            }
+            return true;
+        }
 		return false;
 	}
 

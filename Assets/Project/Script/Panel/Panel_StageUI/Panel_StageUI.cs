@@ -3874,25 +3874,102 @@ public class Panel_StageUI : MonoBehaviour
         int ex = stX > edX ? stX : edX;
         int ey = stY > edY ? stY : edY;
 
-        for (int i = sx; i <= ex; i++)
+        int x = sx;
+        int y = sy;
+
+        while (pool.Count > 0)
         {
-            for (int j = sy; j <= ey; j++)
-            {                               
-                 // 1 - check empty
-                 iVec2 pos = new iVec2(i, j);
-                 if (CheckIsEmptyPos(pos) == false)
-                 {
-                        continue;
-                 }
-                // 把單位一個個move過去   
-                Panel_unit unit = pool[0];
-                if (unit != null) {
-                    unit.MoveTo( i , j );
+            Panel_unit unit = pool[0];
+            if (unit != null)
+            {
+                bool bFind = false;
+                // check if in rect.
+                if (MyTool.CheckInRect(unit.X() , unit.Y() , sx, sy, (ex-sx), (ey-sy) ))
+                {
+                    bFind = true;
                 }
 
-                pool.RemoveAt(0); 
+                for (int j = y; j <= ey && bFind == false; j++)
+                {
+                    for (int i = x; i <= ex && bFind == false ; i++)
+                    {
+                   
+                        iVec2 pos = new iVec2(i, j);
+
+                        if (CheckIsEmptyPos(pos) == false)
+                        {
+                           continue;
+                        }
+                            // iVec2 tar = FindEmptyPos(pos);
+                        StageCharMoveEvent Evt = new StageCharMoveEvent();
+                        if (Evt == null)
+                            continue; ;
+                        Evt.nIdent = unit.Ident() ;
+                        Evt.nX = i;
+                        Evt.nY = j;
+                        OnStageCharMoveEvent( Evt );
+
+                        // avoid loop too manay
+                        x = i + 1;
+                        y = j;
+                        bFind = true;
+                        break;
+                       // unit.MoveTo(tar.X, tar.Y);
+
+                    }
+                    // find next pos to move
+                    if (bFind)
+                    {                        
+                        if (x > ex) {
+                            y = y + 1; // next
+                            x = sx;    // re start x 
+                        }                        
+                        break;
+                    }
+                   
+                }
+
+                // 都沒位置的最後處理
+                if (bFind == false)
+                {
+                    iVec2 pos = new iVec2(x, y);
+                    iVec2 tar = FindEmptyPos( pos);
+                    StageCharMoveEvent Evt = new StageCharMoveEvent();
+                    if (Evt == null)
+                        continue; ;
+                    Evt.nIdent = unit.Ident();
+                    Evt.nX = tar.X;
+                    Evt.nY = tar.Y;
+                    OnStageCharMoveEvent(Evt);
+                }
             }
+            pool.RemoveAt(0);
         }
+
+
+        //for (int i = sx; i <= ex; i++)
+        //{
+        //    for (int j = sy; j <= ey; j++)
+        //    {
+        //        // avoid over range
+        //        if (pool.Count <= 0)
+        //            break;
+
+        //         // 1 - check empty
+        //         iVec2 pos = new iVec2(i, j);
+        //         if (CheckIsEmptyPos(pos) == false)
+        //         {
+        //                continue;
+        //         }
+        //        // 把單位一個個move過去   
+        //        Panel_unit unit = pool[0];
+        //        if (unit != null) {
+        //            unit.MoveTo( i , j );
+        //        }
+
+        //        pool.RemoveAt(0); 
+        //    }
+        //}
 
 
     }

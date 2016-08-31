@@ -212,7 +212,20 @@ public class MyScript {
                         return false;
                     }
                 }
-
+                else if (func.sFunc == "IS_JOIN")
+                {
+                    if (ConditionIsJoin(func.I(0)) == false)
+                    {
+                        return false;
+                    }
+                }
+                else if (func.sFunc == "IS_LEAVE")
+                {
+                    if (ConditionIsLeave(func.I(0)) == false)
+                    {
+                        return false;
+                    }
+                }
                 else if (func.sFunc == "COUNT")
                 {   
                     if (ConditionCount(func.I(0), func.S(1) , func.I(2), func.I(3)) == false)
@@ -595,6 +608,25 @@ public class MyScript {
         }
         return false;
     }
+
+    public bool ConditionIsJoin(int nChar1)
+    {
+        if (GameDataManager.Instance.IsCharInParty(nChar1) == true)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public bool ConditionIsLeave(int nChar1)
+    {
+        if (GameDataManager.Instance.IsCharInParty(nChar1) == false )
+        {
+            return true;
+        }
+        return false;
+    }
+
 
     public bool ConditionInRect( int nChar1 ,int x1 ,int y1 , int x2 , int y2  ) 
 	{
