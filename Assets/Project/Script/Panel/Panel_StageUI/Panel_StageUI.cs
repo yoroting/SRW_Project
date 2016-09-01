@@ -4520,7 +4520,7 @@ public class Panel_StageUI : MonoBehaviour
 		}
 	}
 
-    public void OnStagePosPlayFX(int nX, int nY,  int nFXID , int nDown = 0 )
+    public void OnStagePosPlayFX(int nX, int nY,  int nFXID , int nLayer = 0 ) // true 
     {
         if (nFXID == 0)
         {
@@ -4533,7 +4533,7 @@ public class Panel_StageUI : MonoBehaviour
 
         CameraMoveTo(nX, nY);
 
-        PlayFX( nFXID, nX, nY , (0== nDown) );
+        PlayFX( nFXID, nX, nY , (0== nLayer) );
     }
 
 

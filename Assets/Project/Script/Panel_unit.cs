@@ -808,7 +808,9 @@ public class Panel_unit : MonoBehaviour {
 			switch( nSubActFlow )
 			{
 			case 0:
-				nSubActFlow++;
+                // move camera to unit
+              
+                nSubActFlow++;
 				break;
 			case 1:
 				ActionAttack( CurAction.nTarIdent , CurAction.nSkillID );
@@ -851,7 +853,8 @@ public class Panel_unit : MonoBehaviour {
 			switch( nSubActFlow )
 			{
 			case 0:
-				nSubActFlow++;
+                
+                nSubActFlow++;
 				ActionCasting( CurAction.nSkillID  , CurAction.nTarGridX , CurAction.nTarGridY );
 				//ActionMove( CurAction.nTarGridX , CurAction.nTarGridY  );
 				break;
@@ -980,8 +983,10 @@ public class Panel_unit : MonoBehaviour {
 			Debug.LogErrorFormat( "unit {0} attack null target{1}  " , Ident() , TarIdent );
 			return;
 		}
+        
+        Panel_StageUI.Instance.MoveToGameObj(this.gameObject, false);
 
-		bIsAtking = true;
+        bIsAtking = true;
 
 		// swing fx
 		ShowSwingFX( skillid , TarIdent , 0 , 0 );
@@ -1222,8 +1227,8 @@ public class Panel_unit : MonoBehaviour {
 	{
 		Panel_StageUI.Instance.AddAVGObj ( Ident() );
 
-
-		if( CurAction.nSkillID == 0 ){
+        Panel_StageUI.Instance.MoveToGameObj(this.gameObject, false);
+        if ( CurAction.nSkillID == 0 ){
 			// too long.. skip this
 			//BattleManager.Instance.ShowBattleMsg( this  , MyTool.GetUnitSchoolFullName(Ident(), pUnitData.nActSch[1] ) );  // Get school name
 		}
