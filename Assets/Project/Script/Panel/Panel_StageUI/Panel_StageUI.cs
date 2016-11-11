@@ -4976,10 +4976,21 @@ public class Panel_StageUI : MonoBehaviour
                 if (pair.Value.eCampID != eCamp) {
                     continue;
                 }
+                if (pair.Value.pUnitData == null)
+                {
+                    continue;
+                }
+
                 if (nCharID != 0 && (pair.Value.pUnitData.n_CharID!= nCharID ) )
                 {
                     continue;
                 }
+                // 中立單位 不計算
+                if (pair.Value.pUnitData.IsTag( _UNITTAG._PEACE ) )
+                {
+                    continue;
+                }
+
                 // 死亡. 理論上還存在  panel 的都是還沒表演結束的活人
                 //if (pair.Value.pUnitData.IsDead() ) {
                 //    if (pair.Value.bIsDead && (pair.Value.IsAnimate() == false))
