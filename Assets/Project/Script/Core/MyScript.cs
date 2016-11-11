@@ -1145,6 +1145,15 @@ public class MyScript {
                 evt.nSoundID = func.I(1);
                 GameEventManager.DispatchEvent(evt);
             }
+            else if (func.sFunc == "TALKGRAY")
+            {
+                TalkGrayEvent evt = new TalkGrayEvent();
+                evt.nChar = func.I(0);
+                evt.nOn = func.I(1);
+                GameEventManager.DispatchEvent(evt);
+                // del unit . if it on stage
+                Panel_StageUI.Instance.OnStageUnitDeadEvent(func.I(0)); // del unit auto
+            }
             else if (func.sFunc == "BACKGROUND" || func.sFunc == "TALKBG" || func.sFunc == "BG")
             {
                 TalkBackGroundEvent evt = new TalkBackGroundEvent();

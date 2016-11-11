@@ -306,13 +306,36 @@ public class SRW_AVGObj : MonoBehaviour {
 			bIsDeading = true;
 			tw.from = 0.0f;
 			tw.to   = 1.0f;
-			MyTool.TweenSetOneShotOnFinish( tw , OnGrayEnd );
+			MyTool.TweenSetOneShotOnFinish( tw , OnDeadEnd);
 			//			tw.style = UITweener.Style.Once; // PLAY ONCE
 			//			tw.SetOnFinished( OnDead );
 			
 		}
 	}
+    public void SetGray( int nOn )
+    {
+        TweenGrayLevel tw = GrayLevelHelper.StartTweenGrayLevel(_FaceTexObj, 0.0f);
+        if (tw)
+        {
+            if (nOn == 1)
+            {
+                tw.from = 0.0f;
+                tw.to = 1.0f;
+            }
+            else {
+                tw.from = 1.0f;
+                tw.to = 0.0f;
+            }
+            tw.Play();
 
+           // MyTool.TweenSetOneShotOnFinish(tw, OnGrayEnd);
+            //			tw.style = UITweener.Style.Once; // PLAY ONCE
+            //			tw.SetOnFinished( OnDead );
+
+        }
+    }
+
+    
     public void FadeIn()
     {
         _FaceTexObj.alpha = 0.0f;
@@ -415,16 +438,18 @@ public class SRW_AVGObj : MonoBehaviour {
 		bIsShaking = false;
 		// remove char
 	}
-	
-	public void OnGrayEnd()
-	{	
-		bIsDeading = false;
-		
-		// remove char
-		TalkSayEndEvent evt = new TalkSayEndEvent();
-		evt.nChar = this.CharID;
-		GameEventManager.DispatchEvent ( evt  );
-	}
+
+    public void OnDeadEnd()
+    {
+        bIsDeading = false;
+
+        // remove char
+        TalkSayEndEvent evt = new TalkSayEndEvent();
+        evt.nChar = this.CharID;
+        GameEventManager.DispatchEvent(evt);
+    }
+
+ 
 
 	// untility
 	int 	nTweenObjCount=0;

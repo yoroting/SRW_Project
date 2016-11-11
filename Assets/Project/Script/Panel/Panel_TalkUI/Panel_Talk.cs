@@ -94,6 +94,7 @@ public class Panel_Talk : MonoBehaviour
         GameEventManager.AddEventListener(TalkDeadEvent.Name, OnTalkDeadEvent);
         GameEventManager.AddEventListener(TalkShakeEvent.Name, OnTalkShakeEvent);
         GameEventManager.AddEventListener(TalkFaceEvent.Name, OnTalkFaceEvent);
+        GameEventManager.AddEventListener(TalkGrayEvent.Name, OnTalkGrayEvent);
 
         if (AVG_Obj != null)
         {
@@ -285,7 +286,7 @@ public class Panel_Talk : MonoBehaviour
         GameEventManager.RemoveEventListener(TalkBackGroundEvent.Name, OnTalkBackGroundEvent);
         GameEventManager.RemoveEventListener(TalkDeadEvent.Name, OnTalkDeadEvent);
         GameEventManager.RemoveEventListener(TalkShakeEvent.Name, OnTalkShakeEvent);
-
+        GameEventManager.RemoveEventListener(TalkGrayEvent.Name, OnTalkGrayEvent);
 
     }
     // Base Panel click
@@ -876,6 +877,14 @@ public class Panel_Talk : MonoBehaviour
         }
     }
 
+    void OnTalkGrayEvent(GameEvent evt)
+    {
+        TalkGrayEvent Evt = evt as TalkGrayEvent;
+        if (Evt == null)
+            return;
+        
+        this.CharGray(Evt.nChar , Evt.nOn );
+    }
     
 
 
@@ -1119,6 +1128,22 @@ public class Panel_Talk : MonoBehaviour
         }
 
     }
+
+    public void CharGray(int nCharID , int nOn )
+    {
+        foreach (KeyValuePair<int, SRW_AVGObj> pair in m_idToFace)
+        {
+            if (pair.Value != null)
+            {
+                if (pair.Value.CharID == nCharID)
+                {
+                    pair.Value.SetGray(nOn );
+                }
+            }
+        }
+
+    }
+
 
     public void CloseBox(int nType, int nCloseType)
     {
