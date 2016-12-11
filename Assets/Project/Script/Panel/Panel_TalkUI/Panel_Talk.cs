@@ -881,9 +881,9 @@ public class Panel_Talk : MonoBehaviour
     {
         TalkGrayEvent Evt = evt as TalkGrayEvent;
         if (Evt == null)
-            return;
-        
-        this.CharGray(Evt.nChar , Evt.nOn );
+            return;        
+
+        this.CharGray(Evt.nChar , Evt.nDisable );
     }
     
 
@@ -1129,7 +1129,7 @@ public class Panel_Talk : MonoBehaviour
 
     }
 
-    public void CharGray(int nCharID , int nOn )
+    public void CharGray(int nCharID , int nDisable=0 )
     {
         foreach (KeyValuePair<int, SRW_AVGObj> pair in m_idToFace)
         {
@@ -1137,7 +1137,8 @@ public class Panel_Talk : MonoBehaviour
             {
                 if (pair.Value.CharID == nCharID)
                 {
-                    pair.Value.SetGray(nOn );
+                  //  pair.Value.SetColor(Color.yellow);
+                    pair.Value.SetGray(nDisable);
                 }
             }
         }

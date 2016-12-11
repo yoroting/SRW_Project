@@ -257,7 +257,7 @@ public class TalkGrayEvent : GameEvent
 {
     public const string Name = "TalkGrayEvent";
     public int nChar = 0;
-    public int nOn = 1;  // 1 - gray , 0 - normal
+    public int nDisable = 0;  // 0 - gray , 1 - normal
     public TalkGrayEvent()
     {
         name = Name;        // important.  must have this line as key

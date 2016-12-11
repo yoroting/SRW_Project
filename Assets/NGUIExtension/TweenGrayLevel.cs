@@ -27,7 +27,7 @@ public class TweenGrayLevel : UITweener {
 	{
 		TweenGrayLevel comp = UITweener.Begin<TweenGrayLevel>(go, duration); 
 		// Change shader at run time.
-		comp.material.shader = Shader.Find("Custom/GrayLevel");
+//		comp.material.shader = Shader.Find("Custom/GrayLevel");
 
 		comp.from = comp.material.GetFloat("_GrayLevelScale");
 		comp.to = newPoint;

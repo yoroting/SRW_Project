@@ -89,11 +89,11 @@ public abstract class UIComponent : MonoBehaviour
 		if (isRedraw)
 		{
 			#if DEBUG
-			Profiler.BeginSample("UIComponent Redraw");
+			UnityEngine.Profiling.Profiler.BeginSample("UIComponent Redraw");
 			#endif
 			Redraw();
 			#if DEBUG
-			Profiler.EndSample();
+			UnityEngine.Profiling.Profiler.EndSample();
 			#endif
 			isRedraw = false;
 		}

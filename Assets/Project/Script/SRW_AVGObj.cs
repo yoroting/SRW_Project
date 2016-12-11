@@ -254,7 +254,7 @@ public class SRW_AVGObj : MonoBehaviour {
 	{
         if ( _FaceTexObj != null ){
 			if( bSpeak ){
-				_FaceTexObj.color = clrEnable;
+//				_FaceTexObj.color = clrEnable;
                 _FaceTexObj.depth = 3; // spealer is more front
 
                 TweenScale tw = TweenScale.Begin<TweenScale>(_FaceTexObj.gameObject, 0.2f);
@@ -264,7 +264,7 @@ public class SRW_AVGObj : MonoBehaviour {
                 }
             }
 			else {
-				_FaceTexObj.color = clrDisEnable;
+//				_FaceTexObj.color = clrDisEnable;
                 _FaceTexObj.depth = 2;
                 TweenScale tw = TweenScale.Begin<TweenScale>(_FaceTexObj.gameObject, 0.2f);
                 if (tw != null)
@@ -301,8 +301,9 @@ public class SRW_AVGObj : MonoBehaviour {
 	}
 	public void SetDead(  )
 	{
-		TweenGrayLevel tw = GrayLevelHelper.StartTweenGrayLevel(_FaceTexObj, 2.0f);
-		if (tw) {
+       // TweenGrayLevel tw = TweenGrayLevel.Begin<TweenGrayLevel>( _FaceTexObj.gameObject , 2.0f);
+        TweenGrayLevel tw = GrayLevelHelper.StartTweenGrayLevel(_FaceTexObj, 2.0f);
+        if (tw) {
 			bIsDeading = true;
 			tw.from = 0.0f;
 			tw.to   = 1.0f;
@@ -312,21 +313,35 @@ public class SRW_AVGObj : MonoBehaviour {
 			
 		}
 	}
-    public void SetGray( int nOn )
+
+    public void SetColor( Color color )
     {
+        _FaceTexObj.color = color;
+    }
+    public void SetGray( int nDisable )
+    {
+        UITexture texture = _FaceTexObj.GetComponent<UITexture>();
+        texture.material = new Material(Shader.Find("Custom/GrayLevel"));
+        texture.material.SetFloat("_GrayLevelScale", 1.0f );
+
+        return;
+       // TweenGrayLevel tw = TweenGrayLevel.Begin<TweenGrayLevel>(_FaceTexObj.gameObject, 2.0f);
         TweenGrayLevel tw = GrayLevelHelper.StartTweenGrayLevel(_FaceTexObj, 0.0f);
         if (tw)
         {
-            if (nOn == 1)
+            if (nDisable == 1) // full color
             {
-                tw.from = 0.0f;
-                tw.to = 1.0f;
-            }
-            else {
                 tw.from = 1.0f;
                 tw.to = 0.0f;
             }
+            else { // default is gray
+                tw.from = 0.0f;
+                tw.to = 1.0f;                
+            }
+            tw.duration = 5.1f;
+            //tw.ResetToBeginning();
             tw.Play();
+            
 
            // MyTool.TweenSetOneShotOnFinish(tw, OnGrayEnd);
             //			tw.style = UITweener.Style.Once; // PLAY ONCE
