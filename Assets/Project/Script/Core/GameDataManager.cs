@@ -293,15 +293,16 @@ private static GameDataManager instance;
 			bRoundChange =  true;
 		}
 
+        // open . round change panel ui
+        PanelManager.Instance.OpenUI(Panel_Round.Name); // pop ui first to block event check
 
-		//weak up current for correct re def
-		StageWeakUpCampEvent cmd = new StageWeakUpCampEvent ();
+
+        //weak up current for correct re def
+        StageWeakUpCampEvent cmd = new StageWeakUpCampEvent ();
 		cmd.nCamp = nActiveCamp;
 		GameEventManager.DispatchEvent ( cmd );
 
-		// open . round change panel ui
-		PanelManager.Instance.OpenUI( Panel_Round.Name );
-
+	
 
 		return bRoundChange;	 
 	}

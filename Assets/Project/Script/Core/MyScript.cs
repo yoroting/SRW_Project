@@ -482,8 +482,8 @@ public class MyScript {
 			if( nRound == 0 )
 				return true;
 			//========================
-			int nCompleteRound = GameDataManager.Instance.EvtDonePool[ nID ];			
-			return ( nCompleteRound <= ( nRound ) );
+			int nCompleteRoud = GameDataManager.Instance.EvtDonePool[ nID ];			
+			return ( nCompleteRoud <= ( nRound ) );
 		}
 		return false;
 	}
@@ -554,6 +554,16 @@ public class MyScript {
             {
                 if (pair.Value.eCampID != campid)
                     continue;
+
+                if (pair.Value.n_Ident == unit1.Ident()) {
+                    continue; // 別算到自己
+                }
+                // 中立單位不處理
+                if (pair.Value.IsTag(_UNITTAG._PEACE))
+                {
+                    continue;
+                }
+
 
                 int nDist = iVec2.Dist(unit1.Loc.X, unit1.Loc.Y, pair.Value.n_X, pair.Value.n_Y);
                 if (nDist <= nMax && nDist >= nMin)

@@ -4006,6 +4006,10 @@ public class Panel_StageUI : MonoBehaviour
 			unit.pUnitData.WeakUp();
 			//unit.AddActionTime( 1 ); // al add 1 time to action
 		}
+        // run weakup event  。注意只觸發一次的問題
+
+      //  RunEvent();
+
 	}
 
 	public void OnStageShowMoveRangeEvent(GameEvent evt)
