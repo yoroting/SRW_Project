@@ -264,6 +264,17 @@ public class TalkGrayEvent : GameEvent
     }
 }
 
+public class TalkAlphaEvent : GameEvent
+{
+    public const string Name = "TalkAlphaEvent";
+    public int nChar = 0;
+    public float fValue= 0.0f;  
+    public TalkAlphaEvent()
+    {
+        name = Name;        // important.  must have this line as key
+    }
+}
+
 
 public class TalkFaceEvent : GameEvent
 {

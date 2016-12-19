@@ -95,7 +95,8 @@ public class Panel_Talk : MonoBehaviour
         GameEventManager.AddEventListener(TalkShakeEvent.Name, OnTalkShakeEvent);
         GameEventManager.AddEventListener(TalkFaceEvent.Name, OnTalkFaceEvent);
         GameEventManager.AddEventListener(TalkGrayEvent.Name, OnTalkGrayEvent);
-
+        GameEventManager.AddEventListener(TalkAlphaEvent.Name, OnTalkAlphaEvent);
+        
         if (AVG_Obj != null)
         {
             AVG_Obj.SetActive(false);
@@ -288,6 +289,7 @@ public class Panel_Talk : MonoBehaviour
         GameEventManager.RemoveEventListener(TalkShakeEvent.Name, OnTalkShakeEvent);
         GameEventManager.RemoveEventListener(TalkGrayEvent.Name, OnTalkGrayEvent);
 
+        GameEventManager.RemoveEventListener(TalkAlphaEvent.Name, OnTalkAlphaEvent);
     }
     // Base Panel click
     void OnPanelClick(GameObject go)
@@ -885,6 +887,15 @@ public class Panel_Talk : MonoBehaviour
 
         this.CharGray(Evt.nChar , Evt.nDisable );
     }
+
+    void OnTalkAlphaEvent(GameEvent evt)
+    {
+        TalkAlphaEvent Evt = evt as TalkAlphaEvent;
+        if (Evt == null)
+            return;
+
+        this.CharAlpha(Evt.nChar, Evt.fValue );
+    }
     
 
 
@@ -1139,6 +1150,21 @@ public class Panel_Talk : MonoBehaviour
                 {
                   //  pair.Value.SetColor(Color.yellow);
                     pair.Value.SetGray(nDisable);
+                }
+            }
+        }
+
+    }
+    public void CharAlpha(int nCharID, float fValue)
+    {
+        foreach (KeyValuePair<int, SRW_AVGObj> pair in m_idToFace)
+        {
+            if (pair.Value != null)
+            {
+                if (pair.Value.CharID == nCharID)
+                {
+                    //  pair.Value.SetColor(Color.yellow);
+                    pair.Value.SetAlpha( fValue);
                 }
             }
         }

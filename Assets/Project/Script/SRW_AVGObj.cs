@@ -325,32 +325,41 @@ public class SRW_AVGObj : MonoBehaviour {
         texture.material.SetFloat("_GrayLevelScale", 1.0f );
 
         return;
-       // TweenGrayLevel tw = TweenGrayLevel.Begin<TweenGrayLevel>(_FaceTexObj.gameObject, 2.0f);
-        TweenGrayLevel tw = GrayLevelHelper.StartTweenGrayLevel(_FaceTexObj, 0.0f);
-        if (tw)
-        {
-            if (nDisable == 1) // full color
-            {
-                tw.from = 1.0f;
-                tw.to = 0.0f;
-            }
-            else { // default is gray
-                tw.from = 0.0f;
-                tw.to = 1.0f;                
-            }
-            tw.duration = 5.1f;
-            //tw.ResetToBeginning();
-            tw.Play();
+       //// TweenGrayLevel tw = TweenGrayLevel.Begin<TweenGrayLevel>(_FaceTexObj.gameObject, 2.0f);
+       // TweenGrayLevel tw = GrayLevelHelper.StartTweenGrayLevel(_FaceTexObj, 0.0f);
+       // if (tw)
+       // {
+       //     if (nDisable == 1) // full color
+       //     {
+       //         tw.from = 1.0f;
+       //         tw.to = 0.0f;
+       //     }
+       //     else { // default is gray
+       //         tw.from = 0.0f;
+       //         tw.to = 1.0f;                
+       //     }
+       //     tw.duration = 5.1f;
+       //     //tw.ResetToBeginning();
+       //     tw.Play();
             
 
-           // MyTool.TweenSetOneShotOnFinish(tw, OnGrayEnd);
-            //			tw.style = UITweener.Style.Once; // PLAY ONCE
-            //			tw.SetOnFinished( OnDead );
+       //    // MyTool.TweenSetOneShotOnFinish(tw, OnGrayEnd);
+       //     //			tw.style = UITweener.Style.Once; // PLAY ONCE
+       //     //			tw.SetOnFinished( OnDead );
 
-        }
+       // }
     }
 
-    
+    public void SetAlpha(float fAlpha)
+    {
+        UITexture texture = _FaceTexObj.GetComponent<UITexture>();
+        //    texture.material = new Material(Shader.Find("Custom/GrayLevel"));
+        //    texture.material.SetFloat("_GrayLevelScale", 1.0f);
+        texture.alpha = fAlpha;
+        return;
+    }
+        
+
     public void FadeIn()
     {
         _FaceTexObj.alpha = 0.0f;

@@ -1164,6 +1164,15 @@ public class MyScript {
                 // del unit . if it on stage
               //  Panel_StageUI.Instance.OnStageUnitDeadEvent(func.I(0)); // del unit auto
             }
+            else if (func.sFunc == "TALKALPHA")
+            {
+                TalkAlphaEvent evt = new TalkAlphaEvent();
+                evt.nChar = func.I(0);
+                evt.fValue = func.F(1);
+                GameEventManager.DispatchEvent(evt);
+                // del unit . if it on stage
+                //  Panel_StageUI.Instance.OnStageUnitDeadEvent(func.I(0)); // del unit auto
+            }
             else if (func.sFunc == "BACKGROUND" || func.sFunc == "TALKBG" || func.sFunc == "BG")
             {
                 TalkBackGroundEvent evt = new TalkBackGroundEvent();
