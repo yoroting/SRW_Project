@@ -255,17 +255,20 @@ public class cUnitData{
 	public int n_CP;
 	public int n_DEF;
 
-	public int [] nActSch;		// current use 
-
-	public int n_LeaderIdent;	// follow leader
+	public int [] nActSch;      // current use 
+   
+    public int n_LeaderIdent;	// follow leader
 	public int n_BornX;			// born Pox
 	public int n_BornY;
 	public cBuffs						Buffs;				// all buffs of unit
-	public int []						Items;			// all buffs of unit
-	
-	public int nActionTime;							//	行動次數
+	public int []						Items;          // Equip Item
 
-	public _AI_SEARCH  eSearchAI;								// 找怪物
+    public cCoolDown CDs;                // all buffs of unit
+
+    public int nActionTime;							//	行動次數
+    public int nTired;                         //	疲勞
+
+    public _AI_SEARCH  eSearchAI;								// 找怪物
 	public _AI_COMBO	 eComboAI;								// 選技能
 
 	public int n_AITarget;						// AI目標
@@ -352,8 +355,9 @@ public class cUnitData{
 		AbilityPool = new Dictionary< int , int > ();
 		SkillPool 	= new List< int > ();
 
-		Buffs = new cBuffs( this ); 
-	//	CDPool = new Dictionary< int , int > ();
+		Buffs = new cBuffs( this );
+        //	CDPool = new Dictionary< int , int > ();
+        CDs = new cCoolDown( this );
 		
 		Attr = new Dictionary< int , cAttrData > (); 
 		nActSch = new int []{0,0};
@@ -1276,9 +1280,9 @@ public class cUnitData{
 		n_DEF = GetMaxDef();
 
 		nActionTime = 1;
-
-		//
-		UpdateAllAttr ();
+        nTired = 0;
+        //
+        UpdateAllAttr ();
 		UpdateAttr ();
 
 	}
@@ -1843,7 +1847,8 @@ public class cUnitData{
 		n_HP = 0;
 
 		nActionTime = 0; // no more action
-		n_X = n_BornX;
+        nTired = 0;
+        n_X = n_BornX;
 		n_Y = n_BornY;
 	}
 

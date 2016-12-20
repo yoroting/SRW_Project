@@ -563,7 +563,7 @@ private static GameDataManager instance;
         unit.n_CP    = save.n_CP;
         unit.n_DEF   = save.n_DEF;
 		unit.nActionTime = save.nActionTime;
-
+        unit.nTired = save.nTired;
 		unit.n_X	 = save.n_X;
 		unit.n_Y	 = save.n_Y;
 
@@ -576,6 +576,7 @@ private static GameDataManager instance;
 		unit.SchoolPool = MyTool.ConvetToIntInt ( save.School );
 		// buff
 		unit.Buffs.ImportSavePool ( save.Buffs );
+        unit.CDs.ImportSavePool( save.CDs );
 
 		//=== AI
 		unit.eSearchAI = save.eSearchAI;

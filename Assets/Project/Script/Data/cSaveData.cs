@@ -33,6 +33,29 @@ public class cBuffSaveData{
 
 }
 
+[Serializable][JsonName("cd")]
+public class cCDSaveData
+{
+
+    [JsonName("id")]
+    [DefaultValue(0)]
+    public int nID;
+
+    [JsonName("time")]
+    [DefaultValue(0)]
+    public int nTime;           //還有幾回合 
+
+
+    public cCDSaveData() { }
+
+    public cCDSaveData(int skillid , int time)
+    {
+        nID = skillid;
+        nTime = time;
+    }
+
+}
+
 [Serializable][JsonName("unit")]
 public class cUnitSaveData{
 	[JsonName("id")] [DefaultValue(0)]public int n_Ident;
@@ -52,7 +75,8 @@ public class cUnitSaveData{
     [JsonName("def")][DefaultValue(0)]	public int n_DEF;
 
 	[JsonName("action")][DefaultValue(0)]	public int nActionTime;
-	[JsonName("leader")][DefaultValue(0)] public int n_LeaderIdent;	// follow leader
+    [JsonName("tired")] [DefaultValue(0)]    public int nTired;
+    [JsonName("leader")][DefaultValue(0)] public int n_LeaderIdent;	// follow leader
 	[JsonName("bornx")][DefaultValue(0)]	public int n_BornX;			// born Pox
 	[JsonName("borny")][DefaultValue(0)]	public int n_BornY;
 	//====data pool
@@ -61,6 +85,7 @@ public class cUnitSaveData{
 	// buff pool
 	[JsonName("school")]				public Dictionary< string , int > School;		// current school 
 	[JsonName("buffs")]					public List< cBuffSaveData> Buffs;		// current buffs
+    [JsonName("cds")]					public List< cCDSaveData> CDs;		// current cd
 	//==== AI
 	[JsonName("sai")][DefaultValue(_AI_SEARCH._NORMAL )]	public _AI_SEARCH eSearchAI=_AI_SEARCH._NORMAL ;		// current use 
 	[JsonName("cai")][DefaultValue(_AI_COMBO._NORMAL )]	public _AI_COMBO  eComboAI=_AI_COMBO._NORMAL ;		// current use 
@@ -93,11 +118,13 @@ public class cUnitSaveData{
 		Items = data.Items;
 
 		nActionTime = data.nActionTime;
+        nTired = data.nTired;
 
 		School = MyTool.ConvetToStringInt ( data.SchoolPool );  // unit school pool
 		Buffs = data.Buffs.ExportSavePool ();					// unit buff pool
+        CDs = data.CDs.ExportSavePool();
 
-		eSearchAI = data.eSearchAI;
+        eSearchAI = data.eSearchAI;
 		eComboAI = data.eComboAI;
 		nAITarget = data.n_AITarget;
 		nAIX = data.n_AIX;
