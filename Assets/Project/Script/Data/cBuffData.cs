@@ -753,9 +753,9 @@ public class cBuffs
 
 	public bool CheckTag( _UNITTAG tag ){
 		cUnitData unit_e = null ;
-		if( Owner.FightAttr.TarIdent > 0 ){
-			GameDataManager.Instance.GetUnitDateByIdent ( Owner.FightAttr.TarIdent );
-		}
+		//if( Owner.FightAttr.TarIdent > 0 ){
+  //          unit_e = GameDataManager.Instance.GetUnitDateByIdent ( Owner.FightAttr.TarIdent );
+		//}
 		foreach( KeyValuePair< int , cBuffData > pair in Pool )
 		{
 			// normal effect

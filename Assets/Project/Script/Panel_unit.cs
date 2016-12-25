@@ -56,7 +56,7 @@ public class Panel_unit : MonoBehaviour {
 
 	//int nActionTime=1;	
 	public int  	MissileCount = 0 ;          //Missile Count
-
+    public int      ActionSkillID = 0;      // 目前施展的技能
 
     List<cHitResult> WaitMsgPool;
   //  List<int>        WaitFxPool;
@@ -767,6 +767,7 @@ public class Panel_unit : MonoBehaviour {
 		CurAction = null;
 		nSubActFlow ++;
 
+        ActionSkillID = 0;
 //		// check auto pop round end
 //		if( false == CanDoCmd() )
 //		{
@@ -777,7 +778,7 @@ public class Panel_unit : MonoBehaviour {
 //		}
 
 
-		return true;
+        return true;
 	}
 	public void RunAction()
 	{
@@ -978,7 +979,8 @@ public class Panel_unit : MonoBehaviour {
 	public void ActionAttack( int tarident  , int skillid )
 	{
 		TarIdent = tarident;
-		Panel_unit defer = Panel_StageUI.Instance.GetUnitByIdent( TarIdent );
+        ActionSkillID = skillid;
+        Panel_unit defer = Panel_StageUI.Instance.GetUnitByIdent( TarIdent );
 		if (defer == null) {
 			Debug.LogErrorFormat( "unit {0} attack null target{1}  " , Ident() , TarIdent );
 			return;
@@ -1118,10 +1120,11 @@ public class Panel_unit : MonoBehaviour {
 
 
 	}
-	public void ActionHit( int skillid , int GridX , int GridY )
+	public void ActionHit( int skillid , int GridX , int GridY )// 這不是命中，而是施法中
 	{
 		bIsAtking = true;
-		SKILL skl = ConstDataManager.Instance.GetRow<SKILL> (skillid); 
+        ActionSkillID = skillid;
+        SKILL skl = ConstDataManager.Instance.GetRow<SKILL> (skillid); 
 
 
 		// swing fx
@@ -1187,8 +1190,11 @@ public class Panel_unit : MonoBehaviour {
 			AOEMissileAttack (skillid, GridX, GridY);
             return;
 		}
-		// exec result directly
-		ActionManager.Instance.ExecActionHitResult ( CurAction );
+        // exec result directly
+        // play FX 
+        ShowSkillCastHitFX(ActionSkillID, 0, GridX , GridY );
+
+        ActionManager.Instance.ExecActionHitResult ( CurAction );
 		bIsAtking = false;
 		// do hitresult direct
 	//	ActionManager.Instance.ExecActionEndResult ( CurAction );			// this is very import . all preform and data modify here!!
@@ -1227,6 +1233,7 @@ public class Panel_unit : MonoBehaviour {
 	{
 		Panel_StageUI.Instance.AddAVGObj ( Ident() );
 
+        ActionSkillID = nSkillID;
         Panel_StageUI.Instance.MoveToGameObj(this.gameObject, false);
         if ( CurAction.nSkillID == 0 ){
 			// too long.. skip this
@@ -1500,10 +1507,13 @@ public class Panel_unit : MonoBehaviour {
 		foreach (TweenRotation tw in tws) {
 			Destroy( tw );
 		}
-		// reset pos
-		gameObject.transform.localRotation = Quaternion.identity;
-		
-		ActionManager.Instance.ExecActionHitResult ( CurAction );	 // perform sm hit action
+
+
+        ShowSkillCastHitFX(ActionSkillID, 0, Loc.X, Loc.Y);
+
+        // reset pos
+        gameObject.transform.localRotation = Quaternion.identity;
+        ActionManager.Instance.ExecActionHitResult ( CurAction );	 // perform sm hit action
 		
 		bIsAtking = false;
 	}
@@ -1546,9 +1556,12 @@ public class Panel_unit : MonoBehaviour {
 		foreach (TweenPosition tw in tws) {
 			Destroy( tw );
 		}
-		// reset pos
-		this.gameObject.transform.localPosition = MyTool.SnyGridtoLocalPos(Loc.X , Loc.Y , ref GameScene.Instance.Grids );
 
+        iVec2 v = MyTool.SnyLocalPostoGrid(transform.localPosition, ref GameScene.Instance.Grids);
+
+        ShowSkillCastHitFX(ActionSkillID, 0,v.X, v.Y );
+        // reset pos
+        this.gameObject.transform.localPosition = MyTool.SnyGridtoLocalPos(Loc.X , Loc.Y , ref GameScene.Instance.Grids );        
 		ActionManager.Instance.ExecActionHitResult ( CurAction );	 // perform sm hit action
 
 		bIsAtking = false;
@@ -1557,7 +1570,10 @@ public class Panel_unit : MonoBehaviour {
 	public void NoActAttack( int GridX , int  GridY )
 	{
 		bIsAtking = true;
-		ActionManager.Instance.ExecActionHitResult ( CurAction );	 // perform sm hit action
+
+        ShowSkillCastHitFX(ActionSkillID, 0, GridX, GridY);
+
+        ActionManager.Instance.ExecActionHitResult ( CurAction );	 // perform sm hit action
 		bIsAtking = false;
 	}
 
@@ -1639,10 +1655,15 @@ public class Panel_unit : MonoBehaviour {
 	//==============Tween CAll back
 	public void OnTwAtkHit( )
 	{
-		// move back 
-//		Debug.LogFormat (this.ToString () + " hit Target{0}", TarIdent);
+        // move back 
+        //		Debug.LogFormat (this.ToString () + " hit Target{0}", TarIdent);
+        // play FX 
+        iVec2 v = MyTool.SnyLocalPostoGrid(transform.localPosition, ref GameScene.Instance.Grids);
 
-		Vector3  vTar = MyTool.SnyGridtoLocalPos(Loc.X , Loc.Y , ref GameScene.Instance.Grids );
+        ShowSkillCastHitFX(ActionSkillID, 0, v.X, v.Y );
+
+
+        Vector3  vTar = MyTool.SnyGridtoLocalPos(Loc.X , Loc.Y , ref GameScene.Instance.Grids );
 		ActionManager.Instance.ExecActionHitResult ( CurAction );	 // perform sm hit action
 
 		TweenPosition tw = TweenPosition.Begin< TweenPosition >( this.gameObject , 0.3f ); // always move back to start pos
@@ -1659,7 +1680,10 @@ public class Panel_unit : MonoBehaviour {
 			//===========================================================
 
 		}
-	}
+
+       
+
+    }
 	public void OnTwAtkFlyHit( )
 	{
 		--MissileCount;
@@ -1667,8 +1691,11 @@ public class Panel_unit : MonoBehaviour {
 		if (MissileCount > 0) {
 			return ;
 		}
+        
+        // play FX 
+        //ShowSkillCastHitFX(ActionSkillID, 0, Loc.X, Loc.Y);
 
-		ActionManager.Instance.ExecActionHitResult ( CurAction );	 // perform sm hit action
+        ActionManager.Instance.ExecActionHitResult ( CurAction );	 // perform sm hit action
 
 		OnTwAtkEnd(); // Hit is end
 	}
@@ -1823,7 +1850,9 @@ public class Panel_unit : MonoBehaviour {
 
 		CHARS data = ConstDataManager.Instance.GetRow <CHARS>(CharID);
 		if (data != null) {
-			GameSystem.PlayFX (gameObject, data.n_BORN_FX );
+            if (cSaveData.IsLoading() == false) {
+                GameSystem.PlayFX(gameObject, data.n_BORN_FX);
+            }
 		}
 	}
 	public void OnBornFinish()
@@ -2040,6 +2069,8 @@ public class Panel_unit : MonoBehaviour {
 		//
 		this.gameObject.transform.localScale = new Vector3 (1.0f, 1.0f, 1.0f);
 
+        ShowSkillCastHitFX( ActionSkillID , 0 , v.X , v.Y );
+
 		ActionManager.Instance.ExecActionHitResult ( CurAction );	 // perform sm hit action
 
 		bIsAtking = false;
@@ -2152,7 +2183,46 @@ public class Panel_unit : MonoBehaviour {
 //		}
 	}
 
-	public void ShowTailFX( string sFileName , bool bClose = false)
+    public void ShowSkillCastHitFX(int nSkillID, int nTarIdent, int nX, int nY)
+    {
+        //Debug.Log ("show skillfx");
+        if (nSkillID == 0)
+        {
+            return;
+        }
+
+        if (nTarIdent != 0)
+        {
+            cUnitData pdata = GameDataManager.Instance.GetUnitDateByIdent(nTarIdent);
+            if (pdata == null)
+            {
+                return;
+            }
+            nX = pdata.n_X; nY = pdata.n_Y;
+        }
+        //================ cast skill =================
+        SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(nSkillID);
+        if (skl == null)
+            return;
+
+        //if (skl.n_SHAKECAMERA > 0)
+        //{
+        //    GameSystem.ShakeCamera();
+        //}
+
+
+        FX fxData = ConstDataManager.Instance.GetRow<FX>(skl.n_HIT_FX);
+        if (fxData == null)
+            return;
+
+        Panel_StageUI.Instance.PlayFX(skl.n_HIT_FX, nX, nY);
+        
+    //    GameSystem.PlayFX(this.gameObject, skl.n_HIT_FX );
+
+    }
+
+
+    public void ShowTailFX( string sFileName , bool bClose = false)
 	{
 		if( TailObj != null ){
 			NGUITools.Destroy( TailObj );
@@ -2367,7 +2437,7 @@ public class Panel_unit : MonoBehaviour {
                         SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(res.Value1);
                         if (skl != null)
                         {
-                            nhitFX = skl.n_HIT_FX;  // skill data may cancel hit fx to 0
+                            nhitFX = skl.n_BEHIT_FX;  // skill data may cancel hit fx to 0
                         }
                     }
                     //if( nhitFX == 0)

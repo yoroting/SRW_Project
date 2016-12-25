@@ -164,11 +164,15 @@ public class Panel_Skill : MonoBehaviour {
 				continue;
 
 			Item_Skill item = go.GetComponent<Item_Skill> ();
-			item.SetItemData( MyTool.GetSkillName( skl.n_ID )  , skl.n_MINRANGE , skl.n_RANGE , skl.n_MP );
+            int nCost = (skl.n_SCHOOL > 0) ? skl.n_MP : skl.n_SP;
+
+            item.SetItemData( MyTool.GetSkillName( skl.n_ID )  , skl.n_MINRANGE , skl.n_RANGE , nCost);
             if (skl.n_SCHOOL != 0)  // == 0 is ability
             {
                 item.SetItemDmgData( skl.f_ATK , skl.f_POW );
             }
+            item.SetItemCD( data.CDs.GetCD( skl.n_ID ) , skl.n_CD );
+
             item.SetScrollView( ScrollView );
             //check can use
 			item.SetEnable(  CheckSkillCanUse( pData , skl , target , cmdType ) );
@@ -195,8 +199,10 @@ public class Panel_Skill : MonoBehaviour {
 		if (uiScrollView != null) {
             grid.Reposition();             // need this for reset grid pos            v
             uiScrollView.ResetPosition();
+          //  uiScrollView.Scroll(1.0f);
 
-		}
+
+        }
 
 
 	}
@@ -236,7 +242,7 @@ public class Panel_Skill : MonoBehaviour {
 		pUI.SetData( data , eType  ,GameDataManager.Instance.GetUnitDateByIdent ( nTarIdent ) , cmdType  );
 		return pUI;
 	}
-
+    // show skill deteail
 	void SetSkill( SKILL skl )
 	{
 		SkillSprite.SetActive ( (skl != null) );
@@ -244,7 +250,13 @@ public class Panel_Skill : MonoBehaviour {
 
 			return;
 		}
-		MyTool.SetLabelText (SkillContent, skl.s_NAME);
+        string sName = skl.s_NAME;
+
+#if DEBUG
+        sName += "-"+ skl.n_ID;
+#endif//DEBUG
+
+        MyTool.SetLabelText (SkillContent, sName );
 		nOpSkillID = skl.n_ID;
 
 	//	CastNote.SetActive (true);
@@ -370,6 +382,9 @@ public class Panel_Skill : MonoBehaviour {
 		if (sklData == null) {
 			return false;
 		}
+
+        // 攻擊時不能使用 反擊技能
+
 		//====反擊時不能使用 MAP AOE 技能===============
 		if (cmdType == _CMD_TYPE._COUNTER) {
 			//if( skl.n_TARGET >= 3 )
@@ -415,8 +430,11 @@ public class Panel_Skill : MonoBehaviour {
 			if (sklData.IsTag (_SKILLTAG._NOMOVE)) {
 				return false;
 			}
+            if (sklData.IsTag(_SKILLTAG._BANATK)){
+                return false;
+            }
 
-		} else { // normal atk
+        } else { // normal atk
 			if (sklData.IsTag (_SKILLTAG._BANATK)) {
 				return false;
 			}

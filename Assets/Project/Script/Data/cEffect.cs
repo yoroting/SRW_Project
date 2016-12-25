@@ -681,6 +681,19 @@ public class ADD_ARMOR : cEffect
     }
 }
 
+public class HEALHP : cEffect
+{
+    public HEALHP(float f, int i) { fValue = f; iValue = i; }
+
+    override public void _Do(cUnitData Atker, cUnitData Defer, ref List<cHitResult> list)
+    {
+        float fHp = Atker.GetPow() * fValue ;
+        //	list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF ,Defer.n_Ident , nBuffID ) );
+        list.Add(new cHitResult(cHitResult._TYPE._HP, Defer.n_Ident, (int)fHp + iValue, Atker.n_Ident, nSkillID, nBuffID));
+    }
+}
+
+
 public class ADDHP_I: cEffect
 {
 	public ADDHP_I( float f , int i ){	fValue = f;	iValue = i; }
@@ -1540,8 +1553,8 @@ public class cEffectCondition
             //雙方內外功星等比較
             else if (func.sFunc == "INTRANK_I")
             {
-                int i1 = data_I.GetIntSchRank();
-                int i2 = 0;
+                float i1 = data_I.GetIntSchRank();
+                float i2 = 0;
                 string s1 = func.S(1);  // s1 
                 if (s1 == "E")
                 {
@@ -1578,8 +1591,8 @@ public class cEffectCondition
             }
             else if (func.sFunc == "EXTRANK_I")
             {
-                int i1 = data_I.GetExtSchRank();
-                int i2 = 0;
+                float i1 = data_I.GetExtSchRank();
+                float i2 = 0;
                 string s1 = func.S(1);  // s1 
                 if (s1 == "E")
                 {

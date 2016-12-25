@@ -133,7 +133,10 @@ public partial class BattleManager
 
 	public void Clear()
 	{
-		eBattleType = _BATTLE._NONE;
+       
+
+        // 
+        eBattleType = _BATTLE._NONE;
 		eAtkCmdID = _CMD_ID._NONE;
 		eDefCmdID = _CMD_ID._NONE;
 
@@ -171,6 +174,23 @@ public partial class BattleManager
 	//	DefCCPool = null;
 
 	}
+    public void RecordLastCombatCharID()
+    {
+        // record last atker
+        cUnitData Atker = GameDataManager.Instance.GetUnitDateByIdent(nAtkerID);
+        cUnitData Defer = GameDataManager.Instance.GetUnitDateByIdent(nDeferID);
+        if (Atker != null)
+        {
+            nLastAtkerCharID = Atker.n_CharID;
+        }
+        if (Defer != null)
+        {
+            nLastDeferCharID = Defer.n_CharID;
+        }
+
+        nLastAtkerSkillID = nAtkerSkillID;
+        nLastDeferSkillID = nDeferSkillID;
+    }
 
 	public bool IsBattlePhase()
 	{
@@ -240,21 +260,21 @@ public partial class BattleManager
 //			Debug.Log( " null unit when RunAttack" );
 //		}
 		if( Atker == null ){
-			Debug.LogErrorFormat( "RunCast with null Atker at {0}", nAtkerID );
+			Debug.LogErrorFormat( "RunAttack with null Atker at {0}", nAtkerID );
 			Clear ();
 			return ;
 		}
 		else if( Defer == null ){
-			Debug.LogErrorFormat( "RunCast with null Defer at {0}", nDeferID );
+			Debug.LogErrorFormat( "RunAttack with null Defer at {0}", nDeferID );
 			Clear ();
 			return;
 		}
 
+      
 
+        //Panel_unit uDefer = Panel_StageUI.Instance.GetUnitByIdent( nDeferID ); 
 
-		//Panel_unit uDefer = Panel_StageUI.Instance.GetUnitByIdent( nDeferID ); 
-
-		switch (nPhase) {
+        switch (nPhase) {
 		case 0:	// prepare for event check
 			Panel_StageUI.Instance.ClearAVGObj();
 			// open CMD UI for def player
@@ -545,15 +565,15 @@ public partial class BattleManager
 			}
 
 
-			// cmd finish
-			
-			// action finish in atk action
-			//		StageUnitActionFinishEvent cmd = new StageUnitActionFinishEvent ();
-			//		cmd.nIdent = nAtkerID;
-			//		GameEventManager.DispatchEvent ( cmd );
-			
-			// Do Counter
-			Clear ();
+                // cmd finish
+
+                // action finish in atk action
+                //		StageUnitActionFinishEvent cmd = new StageUnitActionFinishEvent ();
+                //		cmd.nIdent = nAtkerID;
+                //		GameEventManager.DispatchEvent ( cmd );
+            RecordLastCombatCharID();
+            // Do Counter
+            Clear ();
 
 			break;
 		}
@@ -648,10 +668,10 @@ public partial class BattleManager
 				Atker.FightEnd( true );
 			}
 
-			// cmd finish
-			
-			// action finish in atk action
-			Clear ();
+            // cmd finish
+            RecordLastCombatCharID();
+           // action finish in atk action
+            Clear ();
 			Panel_StageUI.Instance.ClearAVGObj();
 			break;
 		}
@@ -946,7 +966,10 @@ public partial class BattleManager
 		GameDataManager.Instance.nMoney += nDropMoney;
 		nDropMoney = 0;
 
-	}
+        // 清除戰鬥狀態
+        Clear();
+
+    }
 
 	//===================================================
 	public _BATTLE eBattleType { get; set; } 
@@ -957,12 +980,19 @@ public partial class BattleManager
 	public _CMD_ID eDefCmdID{ get; set; } 
 
 	public int nAtkerID{ get; set; } 
-	public int nDeferID{ get; set; } 
+	public int nDeferID{ get; set; }
 
-//	public bool bDefMode{ get; set; } 
+    public int nAtkerSkillID { get; set; }
+    public int nDeferSkillID { get; set; }
 
-	public int nAtkerSkillID{ get; set;} 
-	public int nDeferSkillID{ get; set;  } 
+
+    public int nLastAtkerCharID { get; set; }
+    public int nLastDeferCharID { get; set; }
+
+    //	public bool bDefMode{ get; set; } 
+
+    public int nLastAtkerSkillID{ get; set;} 
+	public int nLastDeferSkillID{ get; set;  } 
 
 	//public bool bIsDefenceMode { get; set; } 		// 
 
@@ -1781,7 +1811,7 @@ public partial class BattleManager
         float AtkMar = pAtker.GetMar() + AtkMarPlus;
         float DefMar = pDefer.GetMar() + DefMarPlus;
         // 1 mar = 0.5% hit rate
-        float HitRate = ((AtkMar - DefMar + Config.HIT) / 200.0f); // add base rate
+        float HitRate = ((AtkMar - DefMar + Config.HIT) / 100.0f); // add base rate
         if (HitRate < 0.0f)
             HitRate = 0.0f;
 
@@ -1983,7 +2013,6 @@ public partial class BattleManager
                 nRes = (int)_FIGHTSTATE._PARRY;
             }            
 			resPool.Add (new cHitResult (cHitResult._TYPE._BEHIT, pDefer.n_Ident, nSkillID , nRes )); // for play fx
-
 		}
 
 	

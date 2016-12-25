@@ -11,7 +11,7 @@ public class SCHOOL : ConstDataRow<SCHOOL>
 	public int n_RELATIVE;
 	public int n_BUFF;
 	public int n_MOV;
-	public int n_RANK;
+	public float f_RANK;
 	public float f_MAR_LVUP;
 	public float f_MAR;
 	public int n_HP_LVUP;

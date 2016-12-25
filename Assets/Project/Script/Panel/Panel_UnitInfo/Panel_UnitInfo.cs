@@ -27,9 +27,9 @@ public class Panel_UnitInfo : MonoBehaviour {
 
 	public GameObject LvObj;
 	public GameObject ExpObj;
+    public GameObject TiredObj;
 
-
-	public GameObject AbilityGrid;
+    public GameObject AbilityGrid;
 	public GameObject SkillGrid;
 	public GameObject ItemGrid;
 	public GameObject FateGrid;
@@ -275,6 +275,8 @@ public class Panel_UnitInfo : MonoBehaviour {
         MyTool.SetLabelInt(LvObj, pUnitData.n_Lv);
         // exp 
         MyTool.SetLabelInt(ExpObj, pUnitData.n_EXP);
+        //tired
+        MyTool.SetLabelInt(TiredObj, pUnitData.nTired);
         // mar
         MyTool.SetLabelFloat(MarObj, pUnitData.GetMar());
         // HP

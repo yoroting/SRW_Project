@@ -361,8 +361,9 @@ public partial class ActionManager
 					}
 					if( skill.n_CP > 0 ){
 						caster.AddCp( -skill.n_CP );
-					}
-					cUnitData target = GameDataManager.Instance.GetUnitDateByIdent( nTargetIdent );
+					}                   
+
+                    cUnitData target = GameDataManager.Instance.GetUnitDateByIdent( nTargetIdent );
 					caster.DoCastEffect( nSkillID  , target ,  ref act.HitResult  );
 
 					// 直接回復防禦
@@ -374,7 +375,10 @@ public partial class ActionManager
 
                     // 攻擊技能，判斷 是否爆擊
 
-                   
+                    // 技能進入CD
+                    caster.CDs.AddCD( nSkillID );
+
+
                 }
 			}
 			else{ // bug

@@ -9,9 +9,12 @@ public enum _SKILLTAG
 {
 	_DAMAGE 	= 1,	// 造成傷害
 	_FLY		= 2,	// 飛行道具
+
 	_BANATK 	= 3,	//攻擊 禁用
 	_BANDEF 	= 4,	//防禦 禁用
-	_NOMOVE 	= 5, 	//不可移動後攻擊
+
+	_NOMOVE 	= 5, 	//不可移動後使用
+
 	_ROTATE		= 6,	// 原地旋轉
 	_JUMP		= 7,	// 跳躍攻擊
 	_FLASH		= 8,	// AOE閃擊
@@ -22,8 +25,10 @@ public enum _SKILLTAG
 	_DANCEKILL  = 13,   // 亂舞殺
 	_GHOSTKILL  = 14,   // 瞬獄殺
 
-	// TAG for mob ai check
-	_TIEUP 		= 100,	//牽制
+    _HEAL = 20,   //治療
+
+    // TAG for mob ai check
+    _TIEUP 		= 100,	//牽制
 };
 
 

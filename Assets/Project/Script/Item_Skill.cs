@@ -7,6 +7,7 @@ public class Item_Skill : MonoBehaviour {
 	public GameObject CostObj;
     public GameObject DmgObj;
     public GameObject PowObj;
+    public GameObject CDObj;
 
     public bool bEnable = true;
 
@@ -52,6 +53,24 @@ public class Item_Skill : MonoBehaviour {
         PowObj.SetActive(true);
     }
 
+    public void SetItemCD(int nTime, int nCD)
+    {
+        if (0 == nCD) {
+            CDObj.SetActive(false);
+            return;
+        }
+        //===================
+        if (0 == nTime)
+        {
+            MyTool.SetLabelText(CDObj, string.Format("{0}", nCD ));
+        }
+        else {
+            MyTool.SetLabelText(CDObj, string.Format("{0}/{1}", nTime , nCD) );
+        }
+        
+        CDObj.SetActive(true);
+    }
+
     public void SetScrollView( GameObject go )
 	{
 		UIDragScrollView dsv = this.GetComponent<UIDragScrollView> ();
@@ -70,8 +89,14 @@ public class Item_Skill : MonoBehaviour {
 		}
 		
 		if (NameObj != null) {
-			MyTool.SetLabelColor ( CostObj , c );
-		}
+            MyTool.SetLabelColor(NameObj, c);
+            MyTool.SetLabelColor (RangeObj, c );
+            MyTool.SetLabelColor(CostObj, c);
+            MyTool.SetLabelColor(DmgObj, c);
+            MyTool.SetLabelColor(PowObj, c);
+            MyTool.SetLabelColor(CDObj, c);
+
+        }
 	}
 }
 

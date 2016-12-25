@@ -54,7 +54,7 @@ public class EnhanceItem : MonoBehaviour
 
         MyTool.SetLabelText(lblName, MyTool.GetSchoolName(schid));
         MyTool.SetLabelInt(lblLv, lv);
-        MyTool.SetLabelInt(lblRank, sch.n_RANK);
+        MyTool.SetLabelFloat(lblRank, sch.f_RANK);
 
 
     }

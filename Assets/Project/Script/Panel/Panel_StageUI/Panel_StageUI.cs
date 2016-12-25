@@ -1885,6 +1885,9 @@ public class Panel_StageUI : MonoBehaviour
         if (PanelManager.Instance.CheckUIIsOpening(Panel_Screen.Name) == true)
             return true;
 
+        if (PanelManager.Instance.CheckUIIsOpening(Panel_CheckBox.Name) == true)
+            return true;
+
         foreach ( KeyValuePair< int , Panel_unit > pair in IdentToUnit )
 		{
 			if( pair.Value == null )
@@ -4953,7 +4956,11 @@ public class Panel_StageUI : MonoBehaviour
         {
             if (pair.Value != null)
             {
+                // Buff time -1
                 pair.Value.pUnitData.Buffs.BuffRoundEnd();
+                // CD -1
+                pair.Value.pUnitData.CDs.DecAll();
+
             }
         }
     }

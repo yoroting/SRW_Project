@@ -96,8 +96,14 @@ public class MyScript {
                     return false;// don't check during cmd
                 }
 
-
-				if( func.sFunc == "ALLDEAD" )
+                if (func.sFunc == "AFTERCAST")
+                {
+                    if (ConditionAfterCast(func.I(0), func.I(1) , func.I(2) ) == false)
+                    {
+                        return false;
+                    }
+                }
+                else if ( func.sFunc == "ALLDEAD" )
 				{
 					if( ConditionAllDead( func.I(0) ) == false )
 					{
@@ -239,7 +245,7 @@ public class MyScript {
                 {                    
                     if (MyScript.Instance.ConditionStar(func.S(0), func.I(1)) == false)
                     {
-                        return false;       // always fail
+                        return false;       
                     }
                 }
                 else if (func.sFunc == "FLAG")
@@ -604,6 +610,37 @@ public class MyScript {
 		}
 		return false;
 	}
+
+    public bool ConditionAfterCast(int nChar1, int  nSKillID , int nChar2)
+    {        
+        if (BattleManager.Instance.nLastAtkerCharID == nChar1 )
+        {
+            if (nSKillID == 0 || (BattleManager.Instance.nLastAtkerSkillID == nSKillID) )
+            {
+                if (nChar2 == 0 || (nChar2 == BattleManager.Instance.nLastDeferCharID))
+                {
+
+                    return true;
+                }
+            }
+
+        }
+        else if (BattleManager.Instance.nLastDeferCharID == nChar1 && BattleManager.Instance.nLastDeferSkillID == nSKillID )
+        {
+            if (nSKillID == 0 || (BattleManager.Instance.nLastDeferSkillID == nSKillID))
+            {
+                if (nChar2 == 0 || (nChar2 == BattleManager.Instance.nLastAtkerCharID))
+                {
+
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    
 
     public bool ConditionUnitBuff(int nChar1, int buffid , int num )
     {
@@ -1796,6 +1833,10 @@ public class MyScript {
                     pool.Add(new UP_SKILL(func.I(0), func.I(1)));
                 }
                 // char data modify
+                else if (func.sFunc == "HEALHP") // heal 
+                {
+                    pool.Add(new HEALHP(func.F(0), func.I(1)));
+                }
                 else if (func.sFunc == "ADDHP_I")
                 {
                     pool.Add(new ADDHP_I(func.F(0), func.I(1)));

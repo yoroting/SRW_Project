@@ -753,7 +753,7 @@ private static GameDataManager instance;
 		{
 			StoragePool.Remove( data.n_CharID );
 		}
-		data.Relive ();
+		data.Relive();
 	//	data.bEnable = true; // not always enable
 		StoragePool.Add( data.n_CharID , data );
 	}

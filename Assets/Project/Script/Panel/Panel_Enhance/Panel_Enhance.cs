@@ -303,15 +303,18 @@ public class Panel_Enhance : MonoBehaviour {
             // check max lv
             if (nLv >= sch.n_MAXLV)
                 return;
+
+            float fRate = Mathf.Pow(1.5f, nLv);
+            int nCost = (int)(Config.LevelUPMoney * sch.f_RANK * fRate); // 用當前等級算才不會太高
+            nCostMoney += nCost;
+
+
             nLv++;
 
             pTmpData.LearnSchool(nSchID , nLv );
-            enItem.SetData( nSchID, nLv);
-
-            float fRate = Mathf.Pow( 1.5f, nLv);
-            int nCost = (int)(  Config.LevelUPMoney  * sch.n_RANK * fRate);
+            enItem.SetData( nSchID, nLv);            
                         
-            nCostMoney += nCost;
+           
 
             // update lab value
             pTmpData.ActiveSchool(nSchID );

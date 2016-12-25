@@ -1579,20 +1579,25 @@ public class MobAI  {
         }
 
         SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(nSkillID);
-        if (skl.n_SCHOOL == 0)  // == 0 is ability
+        if (skl.n_SCHOOL == 0)  // == 0 is ability，怪物 AI 不會放 精神指令
             return false;
+
+        if (pData.CheckSkillCanUse(skl) == false)
+            return false;
+
+
         if (skl.n_PASSIVE == 1)
             return false;
 
         // check cp && MP
-        if ((pData.n_CP < skl.n_CP)) {
-            return false;
-        }
-        if ((pData.n_MP < skl.n_MP)) {
-            if (Config.FREE_MP == false) {
-                return false;
-            }
-        }
+        //if ((pData.n_CP < skl.n_CP)) {
+        //    return false;
+        //}
+        //if ((pData.n_MP < skl.n_MP)) {
+        //    if (Config.FREE_MP == false) {
+        //        return false;
+        //    }
+        //}
         // 防招只在破防時使用
         if (skl.f_DEF > 0.0f && pData.n_DEF > 0)
             return false;

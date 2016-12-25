@@ -609,10 +609,11 @@ public class cUnitData{
 					continue;
 				}
 				
-				if( skl.n_LEVEL_LEARN > nLv && (!Config.GOD) )
-				{
-					continue;
-				}
+                // 變更設計，通通可以學，但是等級不到不能用
+				//if( skl.n_LEVEL_LEARN > nLv && (!Config.GOD) )
+				//{
+				//	continue;
+				//}
 				if( skl.n_SCHOOL != SchID )
 					continue;
 				
@@ -848,9 +849,12 @@ public class cUnitData{
 
 	public int GetSchoolLv( int School )
 	{
+        if (School <= 0)// 精神指令
+            return 0;
+
 		int nLv = 0;
 		if (SchoolPool.TryGetValue(School, out nLv ) == false) {
-			Debug.LogErrorFormat( "Unit can't get school{1} lv , charid={1},identid={2} " ,School , n_CharID, n_Ident );
+			Debug.LogErrorFormat( "Unit can't get school{0} lv , charid={1},identid={2} " ,School , n_CharID, n_Ident );
 			return 0;
 		}
 		return nLv;
@@ -872,19 +876,19 @@ public class cUnitData{
 		return GetSchoolLv( nActSch[ cAttrData._EXTSCH ] );
 	}
 
-	public int GetIntSchRank(  )
+	public float GetIntSchRank(  )
 	{
 		SCHOOL sch = ConstDataManager.Instance.GetRow<SCHOOL> ( nActSch[ cAttrData._INTSCH ] );
 		if( sch != null ){
-			return sch.n_RANK;
+			return sch.f_RANK;
 		}
 		return 0;
 	}
-	public int GetExtSchRank(  )
+	public float GetExtSchRank(  )
 	{
 		SCHOOL sch = ConstDataManager.Instance.GetRow<SCHOOL> ( nActSch[ cAttrData._EXTSCH ] );
 		if( sch != null ){
-			return sch.n_RANK;
+			return sch.f_RANK;
 		}
 		return GetSchoolLv( nActSch[ cAttrData._EXTSCH ] );
 	}
@@ -1156,19 +1160,19 @@ public class cUnitData{
 		}
 		if (nLv > sch.n_MAXLV)
 			nLv = sch.n_MAXLV;
-		int rank = sch.n_RANK;
+		float rank = sch.f_RANK;
 
 		attr.f_MAR 	 = rank * ( sch.f_MAR+ (sch.f_MAR_LVUP * nLv) );
 
 		float fHpGrow = Mathf.Pow( 1.3f , nLv );
-		attr.n_HP    = rank * ( sch.n_HP + (int)(sch.n_HP_LVUP * fHpGrow ) );  // HP 成長率較高
+		attr.n_HP    = (int)(rank * ( sch.n_HP + (sch.n_HP_LVUP * fHpGrow ) ));  // HP 成長率較高
 
 		float fGrow = Mathf.Pow( 1.2f , nLv );
 
-		attr.n_MP 	 = rank * ( sch.n_MP + (int)(sch.n_MP_LVUP * fGrow ) );
-		attr.n_ATK 	 = rank * ( sch.n_ATK+ (int)(sch.n_ATK_LVUP * fGrow ) );
-		attr.n_DEF 	 = rank * ( sch.n_DEF+ (int)(sch.n_DEF_LVUP * fGrow ) );
-		attr.n_POW 	 = rank * ( sch.n_POW+ (int)(sch.n_POW_LVUP * fGrow ) );
+		attr.n_MP 	 = (int)( rank * ( sch.n_MP + (sch.n_MP_LVUP * fGrow ) ));
+		attr.n_ATK 	 = (int)( rank * ( sch.n_ATK+ (sch.n_ATK_LVUP * fGrow ) ));
+		attr.n_DEF 	 = (int) (rank * ( sch.n_DEF+ (sch.n_DEF_LVUP * fGrow ) ));
+		attr.n_POW 	 = (int) (rank * ( sch.n_POW+ (sch.n_POW_LVUP * fGrow ) ));
 
 
 //		attr.n_HP 	 = rank * ( sch.n_HP + (sch.n_HP_LVUP * nLv) );
@@ -1267,8 +1271,9 @@ public class cUnitData{
 
 	public void Relive()
 	{
-		Buffs.BuffRelive ();
-
+        FightAttr.Reset();
+        Buffs.BuffRelive ();
+        CDs.Relive();
 		for (int i=0; i <bUpdateFlag.Length; i++) {
 			bUpdateFlag[i] = true ;
 		}
@@ -1281,13 +1286,25 @@ public class cUnitData{
 
 		nActionTime = 1;
         nTired = 0;
+        n_CP = 0;
         //
         UpdateAllAttr ();
 		UpdateAttr ();
 
 	}
 
-	public void AddHp( int nhp )
+    public void AddTired(int n )
+    {
+        int ntired = nTired + n;
+        SetTired( ntired );
+    }
+
+    public void SetTired(int n )
+    {
+        nTired = MyTool.ClampInt( n, 0, Config.CharMaxTired );
+    }
+
+    public void AddHp( int nhp )
 	{
 		// this cheat always hard to balance battle value. mark it
 //		if ( (Config.GOD==true) && nhp < 0 ) {
@@ -1463,6 +1480,10 @@ public class cUnitData{
 		{
 			f +=pair.Value.f_MAR;
 		}
+
+        // 疲勞影響
+        f -= nTired;
+
 		if (bTrue)
 			return f;
 
@@ -1708,6 +1729,12 @@ public class cUnitData{
 			SetUpdate( cAttrData._BUFF );
 		}
 
+        // 增加疲勞
+        if ( (MyTool.IsFinishSkill(FightAttr.SkillID) == true ) )
+        {
+            AddTired(1);
+        }
+
 		// state 最後清
 		ClearState(); // clear fight state
 
@@ -1810,6 +1837,7 @@ public class cUnitData{
         // restore mp
         AddMp( GetMaxMP()/ 10 );
 
+        AddTired(-5);           //降低疲勞
 
         uAction act =  ActionManager.Instance.CreateWeakUpAction ( this.n_Ident );
 		if (act != null) {
@@ -1988,14 +2016,29 @@ public class cUnitData{
 		if (Config.GOD == true)
 			return true;
 
-		if ( skill.n_MP > 0 && (skill.n_MP > this.n_MP) )
+        if (skill.n_PASSIVE == 1) // 被動技能
+            return false;
+
+        if ( skill.n_MP > 0 && (skill.n_MP > this.n_MP) )
 			return false;
 		if ( skill.n_SP > 0 && (skill.n_SP > this.n_SP) )
 			return false;
 		if ( skill.n_CP > 0 && (skill.n_CP > this.n_CP) )
 			return false;
-		
-		return true;
+		if( skill.n_CD > 0 && CDs.GetCD( skill.n_ID )>0  )
+            return false;
+
+        // check skill can play lv
+        if ( skill.n_SCHOOL >0 ) { // 精神指令不用檢查等級
+            int nSchLv = GetSchoolLv(skill.n_SCHOOL);
+            if (nSchLv != 0 && nSchLv < skill.n_LEVEL_LEARN) {
+                return false;
+            }
+        }
+
+
+
+        return true;
 	}
 
 

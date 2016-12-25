@@ -9,10 +9,11 @@ public class cCoolDown
     public cCoolDown(cUnitData unit)
     {
         Pool = new Dictionary<int, int>();
+        //RemoveList = new List<int>();
         Owner = unit;
     }
     public Dictionary<int, int> Pool; // < skillid , sec >
-    List<int> RemoveList;
+ //   List<int> RemoveList;
 
     // clear all buff
     public void Reset()
@@ -31,6 +32,9 @@ public class cCoolDown
 
     public void AddCD(int nSkillID, int nSec = 0)
     {
+        if (0 == nSkillID)
+            return;
+
         if (nSec == 0)
         {
             // 沒指定的，撈技能預設資料
@@ -73,24 +77,38 @@ public class cCoolDown
     // 經過一回合
     public void DecAll(int nSec = 1)
     {
+        //create a new directory 
+        Dictionary<int, int> tmp = new Dictionary<int, int>(); // < skillid , sec >
+
         foreach (KeyValuePair<int, int> p in Pool)
         {
             int nNew = p.Value - nSec;
-            if (p.Value <= 0)
+            if (nNew <= 0)
             {
-                RemoveList.Add(p.Key);
+            //    RemoveList.Add(p.Key);
             }
             else
             {
-                Pool[p.Key] = nNew;
+                // can't modify in pool
+                //  Pool[p.Key] = nNew;
+                tmp.Add( p.Key , nNew );
             }
         }
-        // remove cd
-        foreach (int id in RemoveList)
-        {
-            Pool.Remove(id);
-        }
+        Pool = tmp;
+        //// remove cd
+        //foreach (int id in RemoveList)
+        //{
+        //    Pool.Remove(id);
+        //}
+        //RemoveList.Clear();
 
+    }
+
+    // 經過一回合
+    public void Relive()
+    {
+        Pool.Clear();
+        
     }
 
     // save 

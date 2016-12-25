@@ -194,7 +194,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
 		foreach ( Transform t in lst) {
 
-			UIEventListener.Get(t.gameObject).onClick -= OnCMDButtonClick;;  // need for objpool 
+//			UIEventListener.Get(t.gameObject).onClick -= OnCMDButtonClick;;  // need for objpool 
   //                                                                           //	NGUITools.Destroy( t.gameObject );
   //          grid.RemoveChild(t);
         }
@@ -239,13 +239,17 @@ public class Panel_CMDUnitUI : MonoBehaviour
             GameObject obj = CmdButton.Spawn(  NGuiGrids.transform ) ;
             if ( obj != null )
 			{
-                CMD_BTN cmdBtn = obj.GetComponent<CMD_BTN>();
-                if (cmdBtn != null) {
-                    cmdBtn.ReSize();
-                }
+                //CMD_BTN cmdBtn = obj.GetComponent<CMD_BTN>();
+                //if (cmdBtn != null) {
+                //    cmdBtn.ReSize();
+                //}
+                //UIButton b = obj.GetComponent<UIButton>();
+                //if (b != null)
+                //{
+                //    b.isEnabled = true; // disable btn
+                //}
 
-
-               // NGUITools.AddChild( NGuiGrids , obj );
+                // NGUITools.AddChild( NGuiGrids , obj );
                 //grid.AddChild( obj.transform );
 
                 obj.name = id.ToString();
@@ -255,11 +259,34 @@ public class Panel_CMDUnitUI : MonoBehaviour
 					lbl.text =  MyTool.GetCMDNameByID( id );
 					// Load Label by const data
 				}
-				UIEventListener.Get(obj).onClick += OnCMDButtonClick;
+				UIEventListener.Get(obj).onClick = OnCMDButtonClick;
 
 
-				
-			}
+                // 如果是 防禦CMD～注意counter btn
+                if (_CMD_TYPE._COUNTER == CMD.eCMDTYPE)
+                {
+                    if (id == _CMD_ID._COUNTER)
+                    {
+                        // 距離太遠的不能反擊
+                        if (nAtkerId > 0)
+                        {
+                            cUnitData pAtker = GameDataManager.Instance.GetUnitDateByIdent(nAtkerId);
+                            if (pAtker != null)
+                            {
+                                int nDist = MYGRIDS.iVec2.Dist(pAtker.n_X, pAtker.n_Y, pCmder.Loc.X, pCmder.Loc.Y);
+                                if (nDist > 1)
+                                {
+                                    UIButton b = obj.GetComponent<UIButton>();
+                                    if (b != null)
+                                    {
+                                        b.isEnabled = false; // disable btn
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
 		}
         
         // update
@@ -276,6 +303,9 @@ public class Panel_CMDUnitUI : MonoBehaviour
 			Panel_StageUI.Instance.CreateAttackOverEffect (pCmder);
 
 		}
+
+      
+
 
 		// show sample info
 		if (pCmder != null && pCmder.pUnitData != null ) {
@@ -399,7 +429,22 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
     public void CounterCmd( ) // counter atk
 	{
-
+        //// 距離太遠的不能反擊
+        //if ( nAtkerId > 0)
+        //{
+        //   cUnitData pAtker = GameDataManager.Instance.GetUnitDateByIdent(nAtkerId);
+        //    if (pAtker != null)
+        //    {
+        //        int nDist = MYGRIDS.iVec2.Dist(pAtker.n_X, pAtker.n_Y, pCmder.Loc.X, pCmder.Loc.Y );
+        //        if (nDist > 1)
+        //        {
+        //            return;
+        //        }
+        //    }
+    
+        //}
+        
+        // 正常反擊
 		BattleManager.Instance.nDeferSkillID = 0; // counter normaly
 		BattleManager.Instance.eDefCmdID	= _CMD_ID._COUNTER;	
 		EndCMDUI ();					

@@ -43,7 +43,7 @@ public class ItemList_School : MonoBehaviour {
         SCHOOL sch = ConstDataManager.Instance.GetRow<SCHOOL>(schoolid);
         if (sch != null)
         {
-            MyTool.SetLabelInt(lblStar, sch.n_RANK);
+            MyTool.SetLabelFloat(lblStar, sch.f_RANK);
         }
 
         MyTool.SetLabelText(lblName, MyTool.GetSchoolName(schoolid));

@@ -24,6 +24,7 @@ public class SKILL : ConstDataRow<SKILL>
 	public int n_CASTOUT_TYPE;
 	public int n_CASTOUT_FX;
 	public int n_HIT_FX;
+	public int n_BEHIT_FX;
 	public int n_MISSILE_ID;
 	public int n_AREA;
 	public int n_BUFF;
