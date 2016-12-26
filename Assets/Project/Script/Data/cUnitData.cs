@@ -1729,8 +1729,8 @@ public class cUnitData{
 			SetUpdate( cAttrData._BUFF );
 		}
 
-        // 增加疲勞
-        if ( (MyTool.IsFinishSkill(FightAttr.SkillID) == true ) )
+        // 增加疲勞, 終結技能，且不是傷害型技能
+        if ( (MyTool.IsFinishSkill(FightAttr.SkillID) == true ) && (MyTool.IsDamageSkill(FightAttr.SkillID) == false) )
         {
             AddTired(1);
         }

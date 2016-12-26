@@ -208,10 +208,10 @@ public class Panel_Enhance : MonoBehaviour {
         if (pTmpData == null)
             return;
 
-        pTmpData.UpdateAllAttr();
-        pTmpData.UpdateAttr();
-        pTmpData.UpdateBuffConditionAttr();
-        pTmpData.UpdateBuffConditionEffect();
+//        pTmpData.UpdateAllAttr();
+//        pTmpData.UpdateAttr();
+//        pTmpData.UpdateBuffConditionAttr();
+//        pTmpData.UpdateBuffConditionEffect();
 
         // school buff affect attr too
         //cAttrData intAttr = pTmpData.GetAttrData( cAttrData._INTSCH );
@@ -219,7 +219,7 @@ public class Panel_Enhance : MonoBehaviour {
 
         //if (intAttr == null || extAttr == null )
         //    return;
-
+        pTmpData.Relive();
 
         MyTool.SetLabelInt( lblOrgMar, (int)pTmpData.GetMar() );
         MyTool.SetLabelInt( lblOrgHp , pTmpData.GetMaxHP());
@@ -269,8 +269,19 @@ public class Panel_Enhance : MonoBehaviour {
 
         UpdateAttr();
 
+        pOrgData.Relive();
+
+
         GameDataManager.Instance.nMoney -= nCostMoney;
          nCostMoney = 0;
+
+        //main ten UI  要reload unit list        
+        Panel_Mainten panel = MyTool.GetPanel<Panel_Mainten>(PanelManager.Instance.OpenUI(Panel_Mainten.Name));
+        if (panel != null)
+        {
+            panel.ReloadUnitList();
+        }
+
     }
     public void OnCloseClick(GameObject go)
     {

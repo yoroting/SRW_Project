@@ -835,7 +835,15 @@ public class MobAI  {
             _AI_MakeCmd(mob, target, nSkillID, ref path);
         }
         else {
+            // 需要移動命令
+            // 移動過去
+            if (path != null && path.Count > 0)
+            {
+                _AI_MakeCmd(mob, target, 0, ref path); // 往最近的移動
+                return ;
+            }
 
+            ActionManager.Instance.CreateWaitingAction(ident); // 待機
         }
             // wait 
         //    return ;

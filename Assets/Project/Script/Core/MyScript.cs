@@ -1388,6 +1388,11 @@ public class MyScript {
             {
                 Panel_StageUI.Instance.OnStageEquipItem(func.I(0), func.I(1));
             }
+            else if (func.sFunc == "ADDITEM")  // Add buff
+            {
+                GameDataManager.Instance.AddItemtoBag( func.I(0) );                
+            }
+
             else if (func.sFunc == "SETHP")  // Add HP
             {
                 Panel_StageUI.Instance.OnStageSetUnitValue(func.I(0), 0, func.F(1), func.I(2));

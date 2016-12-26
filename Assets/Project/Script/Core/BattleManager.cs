@@ -845,7 +845,7 @@ public partial class BattleManager
     //            {
                     unit.SetFightAttr(Atker.n_Ident, 0);
                     ShowDefAssist(unit.n_Ident, false);
-                    action.AddHitResult(CalAttackResult(atk, nRealTarId, true, true));// always def at this time
+                    action.AddHitResult(CalAttackResult(atk, nRealTarId, false, true));// no def at this time
     //            }
 			}
             

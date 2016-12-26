@@ -151,7 +151,7 @@ private static GameDataManager instance;
 
 	public void ResetStage()
 	{
-		nMoney = 0;
+	//	nMoney = 0;  // don't reset money
 		nRound = 0;
 		nActiveCamp = _CAMP._PLAYER;
 		UnitPool.Clear ();
@@ -595,7 +595,7 @@ private static GameDataManager instance;
 
 
 		unit.UpdateAllAttr ();
-		unit.UpdateAttr ();
+	//	unit.UpdateAttr (); // sometime will cause fail when other ident not ready
 
 		if (bAddtoPool) {
 			AddCharToPool( unit );
@@ -1075,6 +1075,15 @@ private static GameDataManager instance;
 
 			}
 		}
+        // update all attr
+        foreach (KeyValuePair<int , cUnitData > pair in UnitPool )
+        {
+            if (pair.Value != null ) {
+                pair.Value.UpdateAttr();
+            }
+        }
+
+
 	}
 
     public void ImportBlockPool(List<cBlockSaveData> pool)
