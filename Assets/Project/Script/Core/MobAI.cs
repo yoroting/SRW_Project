@@ -5,9 +5,7 @@ using System.Linq;
 using MYGRIDS;
 using MyClassLibrary;
 
-public class MobAI  {
-
-    
+public class MobAI  {    
 
     public static List<SKILL> tmpSklList  =  new List<SKILL>();
 
@@ -65,88 +63,7 @@ public class MobAI  {
 
         return;
 
-		// old method .give up 
-//		// find a pos 
-//		Dictionary< Panel_unit , int > pool = Panel_StageUI.Instance.GetUnitDistPool (mob, true);
-//
-//		var items = from pair in pool orderby pair.Value ascending select pair;
-//		//Dictionary< Panel_unit , int > items = from pair in pool orderby pair.Value ascending select pair;
-//		foreach (KeyValuePair<Panel_unit , int> pair in items) {
-//			Debug.LogFormat ("{0}: {1}", pair.Key, pair.Value);
-//			int nDist = pair.Value;
-//			cUnitData data = GameDataManager.Instance.GetUnitDateByIdent (pair.Key.Ident ()); 
-//			
-//
-//			// path find when dist > 1
-//			if (nDist > 1) {
-//				// throw event
-//				//	GameScene.Instance.Grids.ClearIgnorePool();
-//				
-//				//GameScene.Instance.Grids.AddIgnorePool(  GetPKPosPool(  true )  ); // need check camp
-//				List< iVec2 > nearList = pair.Key.Loc.AdjacentList (); // the 4 pos can't stand ally
-//				Dictionary< iVec2 , int > distpool = new Dictionary< iVec2 , int > ();
-//				foreach (iVec2 v in nearList) {
-//					if (Panel_StageUI.Instance.CheckIsEmptyPos (v) == true) {// 目標 周圍 不可以站人
-//						distpool.Add (v, v.Dist (mob.Loc));
-//					}
-//				}
-//				// start try each vaild pos
-//				nDist = pair.Value;
-//				iVec2 last = null;
-//				
-//				var itemsdist = from pair2 in distpool orderby pair2.Value ascending select pair2;
-//				foreach (KeyValuePair<iVec2 , int> pair2 in itemsdist) {
-//					nDist = pair.Value; // try other
-//					last = null;
-//					
-//					List< iVec2> path = Panel_StageUI.Instance.PathFinding (mob, mob.Loc, pair2.Key, 999); // get a vaild path to run
-//					
-//					// limit out side
-//					path = MyTool.CutList<iVec2> (path, nMove);
-//					
-//					// avoid stand on invalid pos
-//					while (path.Count > 0) {
-//						last = path [path.Count - 1];
-//						if (Panel_StageUI.Instance.CheckIsEmptyPos (last) == false) {
-//							path.RemoveAt (path.Count - 1); // then go again
-//							
-//						} else {
-//							// success
-//							mob.SetPath (path); 
-//							// check if last pos is attack able pos
-//							ActionManager.Instance.CreateMoveAction (ident, last.X, last.Y);	
-//							
-//							
-//							if (Config.GOD == true) {
-//								Panel_StageUI.Instance.CreatePathOverEffect (path); // draw path
-//							}
-//							
-//							
-//							break;
-//						}
-//					}
-//					if (last != null) {
-//						nDist = last.Dist (pair.Key.Loc);  // final dist
-//						break;
-//					} else {
-//						nDist = -1; // can't find
-//					}
-//				}
-//			}
-//		
-//			
-//			// send attack
-//			
-//			if (nDist >= 0 && nDist <= 1) {
-//				ActionManager.Instance.CreateAttackCMD (ident, pair.Key.Ident (), 0); // create Attack CMD . need battle manage to run
-//				return;
-//			} else {
-//				//  can't attavk . waiting only 
-//				ActionManager.Instance.CreateWaitingAction (ident);
-//				return ;
-//			}
-//			// for next target
-//		}
+
 	}
 
 
@@ -261,15 +178,12 @@ public class MobAI  {
             }
         }
         return false; 
-    }
-
-
-
-	
+    }	
 
     //
     static void _AI_MakeCmd(Panel_unit mob, Panel_unit Tar , int nSkillID , ref List<iVec2> path )
-    {
+    {      
+
         int nMinRange = 0;
         int nSkillRange = 0;
         int nDist = 0;
@@ -324,6 +238,7 @@ public class MobAI  {
     // tool func hp lowest ver2
     static bool _AI_LowstAttack2(Panel_unit mob, int nMove , bool ative = false )
     {
+
         //int ident = mob.Ident();
         int nMaxRange = _AI_GetMaxSkillRange( mob.pUnitData );
 
@@ -336,6 +251,13 @@ public class MobAI  {
             List<iVec2> path ;            ;
             if (_FindToAttackTarget(mob, pair.Key, nMove , out nSkillID , out path, false , ative )) // 確定可以打到
             {
+
+                // 先判斷是否要 上 buff
+                if (_AI_CastBuff(mob, nSkillID, 0))
+                {
+                    return true; // 有 buff 先中斷並 重新收尋
+                }
+
                 _AI_MakeCmd(mob, pair.Key, nSkillID, ref path );
                 // wait 
                 return true;
@@ -359,6 +281,13 @@ public class MobAI  {
             List<iVec2> path = null;
             if(  _FindToAttackTarget(mob, pair.Key, nMove, out nSkillID, out path, false, false ) )         
             {
+
+                // 先判斷是否要 上 buff
+                if (_AI_CastBuff(mob, nSkillID, 0))
+                {
+                    return true; // 有 buff 先中斷並 重新收尋
+                }
+
                 _AI_MakeCmd(mob, pair.Key, nSkillID, ref path);
                 // wait 
                 return true;
@@ -384,6 +313,13 @@ public class MobAI  {
                 List<iVec2> path = null;
                 if (_FindToAttackTarget(mob, pair.Key, nMove, out nSkillID, out path, false , true )) // 由於有些機關是中立單位，不會被攻擊。所以不能只找第一個資料                
                 {
+
+                    // 先判斷是否要 上 buff
+                    if (_AI_CastBuff(mob, nSkillID, 0))
+                    {
+                        return true; // 有 buff 先中斷並 重新收尋
+                    }
+
                     _AI_MakeCmd(mob, pair.Key, nSkillID, ref path); // 往最近的移動 + 攻擊
                     return true;
                 }
@@ -665,9 +601,31 @@ public class MobAI  {
 
 
     //==================================
+    static bool _AI_CastBuff(Panel_unit mob, int nSkillID, int nMove)
+    {
+        // 決定要不要施展 buff 技能
+        if (CreateBuffTmpList(mob.pUnitData,null , 0, false )) // create skill pool to atl
+        {
+            // 
+            foreach (SKILL skl in tmpSklList)
+            {
+                ActionManager.Instance.CreateCastCMD(mob.Ident(), 0, 0, skl.n_ID); // create Attack CMD . need battle manage to run				
+                return true;              
+            }
+        }
+
+        return false;
+    }
+
 
     static void _AI_NormalAttack(Panel_unit mob, int nSkillID, int nMove)
     {
+        // 先判斷是否要 上 buff
+        //if (_AI_CastBuff(mob, nSkillID , nMove))
+        //{
+        //    return;
+        //}
+
         if (_AI_LowstAttack2(mob, nMove, true))
         {
             return;
@@ -853,66 +811,7 @@ public class MobAI  {
 
 
         return;
-        // 無視 中立效果
-		//=========================
-		//bool bCanAtk = false;
-		//int nMinRange =0;
-		//int nSkillRange =0;
-		//MyTool.GetSkillRange ( nSkillID , out nSkillRange , out nMinRange);
-		//int nDist = mob.Loc.Dist( target.Loc )   ; // value is dist
-		//if( nDist > nSkillRange  ) // pathfind if need
-		//{
-		//	List<iVec2> path = FindPathToTarget( mob , target , nMove , nSkillRange );
-		//	if( path == null || (path.Count ==0) )
-		//	{
-  //              //continue; // can't find correct path try nearest pos
-  //              // bug : need create a action to move closer target
-  //              // need filter zoc 
-               
-  //          }
-		//	else
-		//	{
-		//		iVec2 last = path[ path.Count -1 ];
-		//		if( last != null  ){
-		//			// send a move event					
-		//			mob.SetPath (path); 
-		//			// check if last pos is attack able pos
-		//			ActionManager.Instance.CreateMoveAction (ident, last.X, last.Y);	
-					
-		//			if (Config.GOD == true) {
-		//				Panel_StageUI.Instance.CreatePathOverEffect (path); // draw path
-		//			}
-
-		//			if( last.Dist( target.Loc ) > nSkillRange ){
-		//				// too far
-		//			}
-		//			else {
-		//				bCanAtk = true;
-		//			}
-		//		}			
-		//	}
-
-		//}
-		//else if( nDist < nMinRange ){ // check if need change skill
-		//	SKILL newSkill = FindSkillByDist( mob ,nDist );
-		//	if( newSkill != null ){	// change skill
-		//		nSkillID = newSkill.n_ID ;
-		//		bCanAtk = true;
-		//	}else if( nDist <= 1 ){
-		//		nSkillID = 0;
-		//		bCanAtk = true;
-		//	}
-		//}
-		//else{
-		//	bCanAtk = true ; // atk directly
-		//}
-		//if( bCanAtk )
-		//{
-		//	ActionManager.Instance.CreateAttackCMD (ident, target.Ident() , nSkillID ); // create Attack CMD . need battle manage to run
-		//	return;
-		//}
-
-		//ActionManager.Instance.CreateWaitingAction (ident);
+     
 	}
 
     // only move
@@ -1546,7 +1445,12 @@ public class MobAI  {
             }
 
             SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(nSkillID);
-
+            // 必須不是 精神 技能
+            if (skl.n_SCHOOL == 0)
+                continue;
+            // 必須是終結技能
+            if (skl.n_FINISH == 0)
+                continue;
             tmpSklList.Add(skl);
             
         }
@@ -1579,6 +1483,48 @@ public class MobAI  {
 		}
 		return null;
 	}
+
+    static public bool CreateBuffTmpList(cUnitData pData, cUnitData pTarget, int nDist, bool bCounterMode = false)
+    {
+        if (pData == null)
+            return false;
+
+        int nRealDist = nDist;
+        if (nRealDist < 1)
+            nRealDist = 1;
+
+        tmpSklList.Clear();
+        foreach (int nID in pData.SkillPool)
+        {
+            int nSkillID = nID;
+            nSkillID = pData.Buffs.GetUpgradeSkill(nSkillID); // Get upgrade skill
+            if (nSkillID == 0)
+            {
+                continue;
+            }
+
+            if (CheckSkillCanCast(pData, pTarget, nSkillID, nRealDist, bCounterMode) == false)
+            {
+                continue;
+            }
+
+            SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(nSkillID);
+
+            // 必須不是 精神 技能
+            if (skl.n_SCHOOL == 0)
+                continue;
+            // 不能是終結技能
+            if (skl.n_FINISH == 1)
+                continue;
+
+            tmpSklList.Add(skl);
+
+        }
+        // revert for high skill use fast
+        tmpSklList.Reverse();
+
+        return (tmpSklList.Count > 0);
+    }
 
     // tool func to check skill can use
     static public bool CheckSkillCanCast(cUnitData pData, cUnitData pTarget, int nSkillID, int nDist, bool bCounterMode = false) {
