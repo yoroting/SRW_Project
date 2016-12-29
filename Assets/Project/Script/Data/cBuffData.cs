@@ -616,19 +616,21 @@ public class cBuffs
 	{
 		if (Pool.Count == 0)
 			return;
-//		// dodge 
-//		if( unit_e != null ){
-//			if( unit_e.IsStates(_FIGHTSTATE._DODGE)  ){
-//				return ;
-//			}
-//		}
-//		// miss
-//		if( Owner.IsStates( _FIGHTSTATE._MISS ) ){
-//			return ;
-//		}
+        if (unit_e == Owner)
+            return;
+        //		// dodge 
+        //		if( unit_e != null ){
+        //			if( unit_e.IsStates(_FIGHTSTATE._DODGE)  ){
+        //				return ;
+        //			}
+        //		}
+        //		// miss
+        //		if( Owner.IsStates( _FIGHTSTATE._MISS ) ){
+        //			return ;
+        //		}
 
-		// normal hit
-		foreach( KeyValuePair< int , cBuffData > pair in Pool )
+        // normal hit
+        foreach ( KeyValuePair< int , cBuffData > pair in Pool )
 		{
 			// normal 
 			foreach( cEffect eft in pair.Value.EffectPool )
@@ -668,15 +670,17 @@ public class cBuffs
 	{
 		if (Pool.Count == 0)
 			return;
-		// normal hit
-		foreach( KeyValuePair< int , cBuffData > pair in Pool )
+        if (unit_e == Owner)
+            return;
+        // normal hit
+        foreach ( KeyValuePair< int , cBuffData > pair in Pool )
 		{
 			// normal 
 			foreach( cEffect eft in pair.Value.EffectPool )
 			{
 				if( eft != null )
 				{
-					eft._BeHit( Owner , unit_e , ref resPool );
+					eft._BeHit( unit_e , Owner , ref resPool );
 				}
 			}
 
@@ -698,7 +702,7 @@ public class cBuffs
 				{
 					if( eft != null )
 					{
-						eft._BeHit( Owner , unit , ref resPool );
+						eft._BeHit( unit , Owner , ref resPool );
 					}
 				}
 			}

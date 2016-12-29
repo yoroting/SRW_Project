@@ -1772,8 +1772,9 @@ public class cUnitData{
 
 	public void DoHitEffect( int nSkillID  , cUnitData tarunit , ref List< cHitResult > resPool )
 	{
-
-		cSkillData skilldata = MyTool.GetSkillData ( nSkillID ) ;
+        if (tarunit == this)
+            return;
+        cSkillData skilldata = MyTool.GetSkillData ( nSkillID ) ;
 		if (skilldata != null) {
 			skilldata.DoHitEffect (this, tarunit, ref resPool);  
 		}
@@ -1783,7 +1784,10 @@ public class cUnitData{
 	}
 
 	public void DoBeHitEffect( cUnitData tarunit , ref List< cHitResult > resPool )
-	{	
+	{
+        if (tarunit == this)
+            return;
+
 		if( FightAttr != null && (FightAttr.SkillData!= null)  ){
 			cSkillData skilldata = FightAttr.SkillData ;
 			if (skilldata != null) {
@@ -1848,8 +1852,8 @@ public class cUnitData{
 		}
         //Buffs.OnDo ( ref resPool );
 
-        //機關直接歸零 行動力
-        if (IsTriggr()) {
+        //機關 或被暈 直接歸零 行動力
+        if (IsTriggr() || IsStun() ) {
             nActionTime = 0;
         }
 	}
@@ -1987,19 +1991,26 @@ public class cUnitData{
         return false;
     }
 
+    public bool IsStun()
+    {
+        if (IsTag(_UNITTAG._STUN))
+        {
+            return true;
+        }
+        return false;
+    }
+    //	public bool GetStateValue( _FIGHTSTATE st , out float f , out int i )
+    //	{
+    //		bool bFind = false;
+    //		f = 0.0f;
+    //		i = 0;
+    //
+    //
+    //
+    //		return bFind;
+    //	}
 
-//	public bool GetStateValue( _FIGHTSTATE st , out float f , out int i )
-//	{
-//		bool bFind = false;
-//		f = 0.0f;
-//		i = 0;
-//
-//
-//
-//		return bFind;
-//	}
-		 
-	public void RemoveStates( _FIGHTSTATE st ){
+    public void RemoveStates( _FIGHTSTATE st ){
 		GetStates ().Remove (st);
 	}
 

@@ -532,6 +532,87 @@ public class HITCP_E: cEffect
 		list.Add( new cHitResult( cHitResult._TYPE._CP , Defer.n_Ident , iValue  , Atker.n_Ident, nSkillID , nBuffID   ) );
 	}
 }
+// Be Hit atker is 打的人， defer 是被打人的人( behit)
+public class BEHITBUFF_I : cEffect
+{
+    public BEHITBUFF_I(int buffid) { iValue = buffid; }
+    //public int iValue ;
+    override public void _BeHit(cUnitData Atker, cUnitData Defer, ref List<cHitResult> list)
+    {
+#if DEBUG 
+        BUFF buff = ConstDataManager.Instance.GetRow<BUFF>(iValue);
+        if (buff == null){
+            Debug.LogErrorFormat("BEHITBUFF_I  with null buff {0}" , iValue );
+        }
+        else if(buff.n_DURATION == -1 ){
+            Debug.LogErrorFormat("BEHITBUFF_I  with error fight buff {0}", iValue);
+        }   
+#endif 
+
+        if (Defer != null)
+        {
+            if (Defer.IsStates(_FIGHTSTATE._DODGE))
+                return;
+           
+            // ( int nBuffID , int nCastIdent , int nSkillID  , int nTargetId )
+            //pData.Buffs.AddBuff( res.Value1 , res.Value2, res.SkillID, res.Value3 );
+            int nDefId = 0; if (Defer != null) nDefId = Defer.n_Ident;
+            list.Add(new cHitResult(cHitResult._TYPE._ADDBUFF, Defer.n_Ident, iValue, nDefId, nSkillID, nDefId));
+        }
+    }
+}
+
+public class BEHITBUFF_E : cEffect
+{
+    public BEHITBUFF_E(int buffid) { iValue = buffid; ; }
+
+
+    override public void _BeHit(cUnitData Atker, cUnitData Defer, ref List<cHitResult> list)
+    {
+#if DEBUG 
+        BUFF buff = ConstDataManager.Instance.GetRow<BUFF>(iValue);
+        if (buff == null)
+        {
+            Debug.LogErrorFormat("BEHITBUFF_E  with null buff {0}", iValue);
+        }
+        else if (buff.n_DURATION == -1)
+        {
+            Debug.LogErrorFormat("BEHITBUFF_E  with error fight buff {0}", iValue);
+        }
+#endif
+        if (Atker != null)
+        {
+         
+            //	list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF ,Defer.n_Ident , nBuffID ) );
+            int nDefId = 0; if (Defer != null) nDefId = Defer.n_Ident;
+            list.Add(new cHitResult(cHitResult._TYPE._ADDBUFF, Atker.n_Ident, iValue, nDefId, nSkillID, nDefId));
+        }
+    }
+}
+
+public class BEHITCP_I : cEffect
+{
+    public BEHITCP_I(int i) { iValue = i; }
+
+    override public void _BeHit(cUnitData Atker, cUnitData Defer, ref List<cHitResult> list)
+    {
+       
+        list.Add(new cHitResult(cHitResult._TYPE._CP, Defer.n_Ident, iValue, Atker.n_Ident, nSkillID, nBuffID));
+    }
+}
+public class BEHITCP_E : cEffect
+{
+    public BEHITCP_E(int i) { iValue = i; }
+
+    override public void _BeHit(cUnitData Atker, cUnitData Defer, ref List<cHitResult> list)
+    {
+        if (Defer == Atker)
+            return;
+        list.Add(new cHitResult(cHitResult._TYPE._CP, Atker.n_Ident, iValue, Defer.n_Ident, nSkillID, nBuffID));
+    }
+}
+
+
 
 // upgrade skill
 public class UP_SKILL: cEffect

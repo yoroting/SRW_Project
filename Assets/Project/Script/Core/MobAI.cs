@@ -253,9 +253,9 @@ public class MobAI  {
             {
 
                 // 先判斷是否要 上 buff
-                if (_AI_CastBuff(mob, nSkillID, 0))
-                {
-                    return true; // 有 buff 先中斷並 重新收尋
+                if (_AI_CastBuff(mob, nSkillID, nMove ))
+                {   
+                        return true; // 能施展下一個技能的話 先中斷並 重新收尋
                 }
 
                 _AI_MakeCmd(mob, pair.Key, nSkillID, ref path );

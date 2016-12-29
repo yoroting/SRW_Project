@@ -1832,6 +1832,23 @@ public class MyScript {
                 {
                     pool.Add(new HITCP_E(func.I(0)));
                 }
+                // BEHIT EFFECT
+                else if (func.sFunc == "BEHITBUFF_I")
+                {
+                    pool.Add(new BEHITBUFF_I(func.I(0)));
+                }
+                else if (func.sFunc == "BEHITBUFF_E")
+                {
+                    pool.Add(new BEHITBUFF_E(func.I(0)));
+                }
+                else if (func.sFunc == "BEHITCP_I")
+                {
+                    pool.Add(new BEHITCP_I(func.I(0)));
+                }
+                else if (func.sFunc == "BEHITCP_E")
+                {
+                    pool.Add(new BEHITCP_E(func.I(0)));
+                }
                 // skill upgrade
                 else if (func.sFunc == "UP_SKILL")
                 {
