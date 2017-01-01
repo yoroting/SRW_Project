@@ -76,7 +76,7 @@ public class Panel_StageUI : MonoBehaviour
 	// For flag
 	bool	bIsLoading	;
 	bool	bIsReady;
-
+    public bool    bIsAutoPopRoundCheck;               // 每回合只自動彈一次
     public _STATEPHASE m_StagePhase;
     public bool	bIsStageEnd;								// this stage is end
 	bool 							bIsMoveToObj;		// is move camera to obj
@@ -182,6 +182,7 @@ public class Panel_StageUI : MonoBehaviour
         // loading panel
         //	PanelManager.Instance.OpenUI( "Panel_Loading");
         bIsLoading = true;
+        bIsAutoPopRoundCheck = false;
         //	StartCoroutine("StageLoading" );
 
         // clear data
@@ -542,6 +543,9 @@ public class Panel_StageUI : MonoBehaviour
             //cmd.nCamp = GameDataManager.Instance.nActiveCamp;
             //GameEventManager.DispatchEvent ( cmd );
         }
+
+        // check auto pop round end
+          CheckPlayerRoundEnd(); //這邊會造成一直彈出來，所以要旗標保護
 
     }
 
@@ -2018,6 +2022,10 @@ public class Panel_StageUI : MonoBehaviour
 			return false;  // don't check in enemy round
 
 		}
+        if (bIsAutoPopRoundCheck) {
+            return false;
+        }
+
 
 		if (BattleManager.Instance.HaveDrop ()) {
 			return false;
@@ -2043,8 +2051,8 @@ public class Panel_StageUI : MonoBehaviour
 		if (panel) {
 			panel.SetRoundEndCheck();
 		}
-
-		return true;
+        bIsAutoPopRoundCheck = true;
+        return true;
 	}
 
 
@@ -4974,6 +4982,14 @@ public class Panel_StageUI : MonoBehaviour
 		string sMsg = string.Format( "星星+ {0}" , nStar );
 		BattleManager.Instance.ShowBattleMsg( null , sMsg );
 	}
+    // only drop money
+    public void DropMoney( int nMoney)
+    {
+        string sMsg = string.Format(" Money + {0}",  nMoney);
+        GameDataManager.Instance.nMoney += nMoney;
+        BattleManager.Instance.ShowDropMsg(sMsg);
+    }
+
 
     // 取得指定陣營，指定角色ID的數量 。 0 - 全角色ID 
     public int GetCampNum( _CAMP eCamp , int nCharID=0  )

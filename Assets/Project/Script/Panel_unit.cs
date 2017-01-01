@@ -715,17 +715,17 @@ public class Panel_unit : MonoBehaviour {
 
 		return false;
 	}
-	public void MoveToTop( bool bTop = true){
+	public void MoveToTop( bool bTop = true , int shift=0){
 
         UISprite p = this.GetComponent<UISprite>();
         if (p != null) {
             if (bTop)
             {
-                p.depth += 10;
+                p.depth += (10+shift);
             }
             else
             {
-                p.depth -= 10;
+                p.depth -= (10+shift);
             }
         }
 
@@ -922,9 +922,11 @@ public class Panel_unit : MonoBehaviour {
 				if( eCampID == _CAMP._PLAYER )
 				{
 					// check need round end or not 
-					if(  false == CanDoCmd() ){				
-						Panel_StageUI.Instance.CheckPlayerRoundEnd();
-					}
+					if(  false == CanDoCmd() ){
+                       Panel_StageUI.Instance.bIsAutoPopRoundCheck = false;
+
+                                //	Panel_StageUI.Instance.CheckPlayerRoundEnd();
+                     }
 				}
 
 				break;
@@ -1273,14 +1275,12 @@ public class Panel_unit : MonoBehaviour {
 	{
 		string sMsg = string.Format( "Exp + {0} , \n Money + {1}" , nExp , nMoney );
 
-		BattleManager.Instance.ShowBattleMsg( null , sMsg );  // show 
-
 		pUnitData.AddExp( nExp );
 
 		GameDataManager.Instance.nMoney += nMoney;
-
-
-	}
+        BattleManager.Instance.ShowDropMsg(sMsg );
+       // BattleManager.Instance.ShowBattleMsg(null, sMsg);  // show 
+    }
 
 	public void ActionLvUp( int nLvUP , int nExp )
 	{
@@ -1392,7 +1392,7 @@ public class Panel_unit : MonoBehaviour {
 				tw.to = v;
 				MyTool.TweenSetOneShotOnFinish( tw , OnTwGuardEnd ); // for once only
 
-				MoveToTop();
+				MoveToTop( true , 1 );
 			}
 			bIsGuarding = true ;
 		}
@@ -2122,18 +2122,21 @@ public class Panel_unit : MonoBehaviour {
 			return ;
 		}
 
-		if (nTarIdent != 0) {
-			cUnitData pdata = GameDataManager.Instance.GetUnitDateByIdent( nTarIdent  );
-			if( pdata == null ){
-				return;
-			}
-			nX = pdata.n_X; nY = pdata.n_Y;
-		}
+		//if (nTarIdent != 0) {
+		//	cUnitData pdata = GameDataManager.Instance.GetUnitDateByIdent( nTarIdent  );
+		//	if( pdata == null ){
+		//		return;
+		//	}
+		//	nX = pdata.n_X; nY = pdata.n_Y;
+		//}
 		//================ cast skill =================
 		SKILL skl = ConstDataManager.Instance.GetRow< SKILL > ( nSkillID ); 
 		if (skl == null)
 			return;
-		FX fxData = ConstDataManager.Instance.GetRow< FX > ( skl.n_CASTOUT_FX ); 
+        BattleManager.ConvertSkillTargetXY( pUnitData , nSkillID, nTarIdent, ref nX, ref nY);
+
+
+        FX fxData = ConstDataManager.Instance.GetRow< FX > ( skl.n_CASTOUT_FX ); 
 		if (fxData == null)
 			return;
 		switch ( skl.n_CASTOUT_TYPE ) {

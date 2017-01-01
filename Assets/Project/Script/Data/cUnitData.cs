@@ -48,7 +48,8 @@ public enum _UNITTAG
     _TRIGGER = 6 ,    // 是機關。不執行AI，不計算傷害戰鬥
     _BLOCKITEM=7,       // 不能變更裝備道具
     _STUN     =8,     //暈眩，點穴
-      
+    _HIDE = 9,     //隱身
+
 }
 //
 public enum _ITEMSLOT
@@ -336,8 +337,9 @@ public class cUnitData{
 		if( eCampID == _CAMP._PLAYER )
 		{
 			// check need round end or not 
-			if( nActionTime <= 0 ){				
-				Panel_StageUI.Instance.CheckPlayerRoundEnd();
+			if( nActionTime <= 0 ){
+                Panel_StageUI.Instance.bIsAutoPopRoundCheck = false;
+               // Panel_StageUI.Instance.CheckPlayerRoundEnd();
 			}
 		}
         // check block event
@@ -1720,25 +1722,27 @@ public class cUnitData{
 				ActionDone();
 			}
 		}
-		
-		//FightAttr.ClearBase (); // clear base attr only
-		FightAttr.Reset();			// clear all fight attr
-
-		// Fight end to remove buff
-		if (Buffs.BuffFightEnd ( )) {
-			SetUpdate( cAttrData._BUFF );
-		}
-
         // 增加疲勞, 終結技能，且不是傷害型技能
-        if ( (MyTool.IsFinishSkill(FightAttr.SkillID) == true ) && (MyTool.IsDamageSkill(FightAttr.SkillID) == false) )
+        if ((MyTool.IsFinishSkill(FightAttr.SkillID) == true) && (MyTool.IsDamageSkill(FightAttr.SkillID) == true))
         {
             AddTired(1);
         }
 
+        //FightAttr.ClearBase (); // clear base attr only
+
+
+        // Fight end to remove buff
+        if (Buffs.BuffFightEnd ( )) {
+			SetUpdate( cAttrData._BUFF );
+		}
+
+      
+
 		// state 最後清
 		ClearState(); // clear fight state
+        FightAttr.Reset();          // clear all fight attr
 
-		UpdateAllAttr ();
+        UpdateAllAttr ();
 		UpdateAttr (  );
 		UpdateBuffConditionAttr ();
 
@@ -1841,7 +1845,7 @@ public class cUnitData{
         // restore mp
         AddMp( GetMaxMP()/ 10 );
 
-        AddTired(-5);           //降低疲勞
+        AddTired(-3);           //降低疲勞
 
         uAction act =  ActionManager.Instance.CreateWeakUpAction ( this.n_Ident );
 		if (act != null) {

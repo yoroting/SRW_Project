@@ -364,23 +364,31 @@ public class MyScript {
 
     public bool ConditionUnitDead( int nCampID ,int nCharID )
 	{
-		// assign id
-//		cCamp camp = GameDataManager.Instance.GetCamp( (_CAMP)nCampID );
-//		if( camp != null )
-//		{
-//			foreach( int no in  camp.memLst )
-//			{
-//				Panel_unit unit =  Panel_StageUI.Instance.GetUnitByIdent( no ); //this.IdentToUnit[ no ];
-//				if( unit != null )
-//				{
-//					if( unit.CharID ==  nCharID )
-//					{
-//						return false;
-//					}
-//				}
-//			}
-//		}
-		if (nCharID == 0) {
+        // 等掉落結束
+        if (BattleManager.Instance.IsDroping())
+        {
+            return false;
+        }
+
+        // assign id
+
+
+        //		cCamp camp = GameDataManager.Instance.GetCamp( (_CAMP)nCampID );
+        //		if( camp != null )
+        //		{
+        //			foreach( int no in  camp.memLst )
+        //			{
+        //				Panel_unit unit =  Panel_StageUI.Instance.GetUnitByIdent( no ); //this.IdentToUnit[ no ];
+        //				if( unit != null )
+        //				{
+        //					if( unit.CharID ==  nCharID )
+        //					{
+        //						return false;
+        //					}
+        //				}
+        //			}
+        //		}
+        if (nCharID == 0) {
 			Debug.LogErrorFormat( "script check dead err in char{0}", nCharID );
 			return false;
 		}      
@@ -1914,7 +1922,7 @@ public class MyScript {
                 }
                 else if (func.sFunc == "ADD_ATTACK")
                 {
-                    pool.Add(new ADD_ATTACK(func.I(0)));
+                    pool.Add(new ADD_ATTACK(  func.I(0) ));
                 }
                 else if (func.sFunc == "ADD_MAXDEF")
                 {
@@ -2039,6 +2047,10 @@ public class MyScript {
                 else if (func.sFunc == "TAG_STUN")// 暈眩 ，點穴                            
                 { 
                     pool.Add(new TAG_STUN());
+                }
+                else if (func.sFunc == "TAG_HIDE")
+                {  // 中立
+                    pool.Add(new TAG_HIDE());
                 }
                 //=============== fight status
                 else if (func.sFunc == "IS_HIT")

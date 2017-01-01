@@ -1067,6 +1067,16 @@ public class TAG_STUN : cEffect
     }				// check user in one status		
 }
 
+public class TAG_HIDE : cEffect
+{
+    public TAG_HIDE() { }
+
+    override public bool _IsTag(_UNITTAG tag)
+    {
+        return (_UNITTAG._HIDE == tag);
+    }				// check user in one status		
+}
+
 //==== immune buff==
 public class IMMUNE: cEffect
 {

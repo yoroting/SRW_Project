@@ -80,7 +80,7 @@ public class MobAI  {
         pathList = null;
 
         if (taget == null) return false;
-        if (taget.pUnitData == null || taget.pUnitData.IsTag(_UNITTAG._PEACE) )
+        if (taget.pUnitData == null || taget.pUnitData.IsTag(_UNITTAG._PEACE) ||  taget.pUnitData.IsTag(_UNITTAG._HIDE))
         {
             return false; 
         }
@@ -304,7 +304,7 @@ public class MobAI  {
             foreach (KeyValuePair<Panel_unit, int> pair in items)
             {
                 // 避開 錯誤目標
-                if (pair.Key.pUnitData.IsTag(_UNITTAG._PEACE))
+                if (pair.Key.pUnitData.IsTag(_UNITTAG._PEACE) || pair.Key.pUnitData.IsTag(_UNITTAG._HIDE ) )
                 {
                     continue; // 不往中立單位移動
                 }
@@ -357,7 +357,7 @@ public class MobAI  {
 			// try path to target
 			bool bCanAtk = false;
             
-            if (pair.Key.pUnitData== null || pair.Key.pUnitData.IsTag( _UNITTAG._PEACE ) ) {
+            if (pair.Key.pUnitData== null || pair.Key.pUnitData.IsTag( _UNITTAG._PEACE) || pair.Key.pUnitData.IsTag(_UNITTAG._HIDE) ) {
                 continue;
             }
 
@@ -444,7 +444,7 @@ public class MobAI  {
 			// try path to target
 			bool bCanAtk = false;
             
-            if (pair.Key.pUnitData == null || pair.Key.pUnitData.IsTag(_UNITTAG._PEACE))
+            if (pair.Key.pUnitData == null || pair.Key.pUnitData.IsTag(_UNITTAG._PEACE) || pair.Key.pUnitData.IsTag(_UNITTAG._HIDE) )
             {
                 continue;
             }
@@ -516,7 +516,7 @@ public class MobAI  {
 		foreach (KeyValuePair<Panel_unit , int> pair in items) {
 			// try path to target
 			bool bCanAtk = false;
-            if (pair.Key.pUnitData == null || pair.Key.pUnitData.IsTag(_UNITTAG._PEACE))
+            if (pair.Key.pUnitData == null || pair.Key.pUnitData.IsTag(_UNITTAG._PEACE) || pair.Key.pUnitData.IsTag(_UNITTAG._HIDE) )
             {
                 continue;
             }

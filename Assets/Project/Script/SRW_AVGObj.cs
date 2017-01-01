@@ -387,19 +387,19 @@ public class SRW_AVGObj : MonoBehaviour {
 
     public void ZoomIn()
     {
-
+        float fY = 128.0f;
         Vector3 vPos;
         Vector3 vTar;
 
         //this.nLayout; // 0- left , 1 - right
         if (nLayout == 0)
         {
-            vPos = new Vector3(-960, 0, 0);
-            vTar = new Vector3(-240, 0, 0);
+            vPos = new Vector3(-960, fY, 0);
+            vTar = new Vector3(-240, fY, 0);
         }
         else {
-            vPos = new Vector3(960, 0, 0);
-            vTar = new Vector3(240, 0, 0);
+            vPos = new Vector3(960, fY, 0);
+            vTar = new Vector3(240, fY, 0);
         }
         this.gameObject.transform.localPosition = vPos;
 
@@ -415,19 +415,20 @@ public class SRW_AVGObj : MonoBehaviour {
 
     public void ZoomOut()
     {
+        float fY = 128.0f;
         Vector3 vPos;
         Vector3 vTar;
 
         //this.nLayout; // 0- left , 1 - right
         if (nLayout == 0)
         {
-            vTar = new Vector3(-960, 0, 0);
-            vPos = new Vector3(-240, 0, 0);
+            vTar = new Vector3(-960, fY, 0);
+            vPos = new Vector3(-240, fY, 0);
         }
         else
         {
-            vTar = new Vector3(960, 0, 0);
-            vPos = new Vector3(240, 0, 0);
+            vTar = new Vector3(960, fY, 0);
+            vPos = new Vector3(240, fY, 0);
         }
         this.gameObject.transform.localPosition = vPos;
 

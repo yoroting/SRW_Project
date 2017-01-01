@@ -141,8 +141,9 @@ public partial class BattleManager
 		eDefCmdID = _CMD_ID._NONE;
 
 		bPause = false;
-		
-		nAtkerID = 0;
+      
+
+        nAtkerID = 0;
 		nDeferID = 0;
 
 
@@ -751,8 +752,8 @@ public partial class BattleManager
 		int nGuarderID   = 0;
 		// single atk
 		if( Defer != null ){
-			gridX = Defer.n_X;
-			gridY = Defer.n_Y;
+			//gridX = Defer.n_X; // 不要這邊指定
+			//gridY = Defer.n_Y;
 			int 	  nRealTarId   = def;
 			cUnitData cRealTarData = Defer;
 
@@ -1003,7 +1004,15 @@ public partial class BattleManager
 
 	public bool bCanCounter{ get; set; }     // def have counter action
 
-	public int nDropMoney{ get; set; } 		// drop money
+	public int nDropMoney{ get; set; }      // drop money
+    public bool IsDroping() {
+        if (nDropExpPool.Count > 0) {
+            return true;
+        }
+        return false;
+    }
+    
+
 	public Dictionary< int , int > nDropExpPool;
 	public List<int>			nDropItemPool;
 	//===================================================
@@ -1154,26 +1163,48 @@ public partial class BattleManager
 //		eBattleType = _BATTLE._CAST ;
 	}
 
-//	public void Play()
-//	{
-//		bPause = false;
-//	}
+    //	public void Play()
+    //	{
+    //		bPause = false;
+    //	}
 
-//	public void ShowSysMsg( string msg )
-//	{
-//		GameObject go = ResourcesManager.CreatePrefabGameObj ( Panel_StageUI.Instance.MaskPanelObj , "prefab/BattleMsg" );
-//		if (go != null) {
-//			go.transform.position = v;
-//			UILabel lbl = go.GetComponentInChildren<UILabel>();
-//			if( lbl != null )
-//			{
-//				lbl.text = msg;
-//			}
-//		}
-//	}
-	
+    //	public void ShowSysMsg( string msg )
+    //	{
+    //		GameObject go = ResourcesManager.CreatePrefabGameObj ( Panel_StageUI.Instance.MaskPanelObj , "prefab/BattleMsg" );
+    //		if (go != null) {
+    //			go.transform.position = v;
+    //			UILabel lbl = go.GetComponentInChildren<UILabel>();
+    //			if( lbl != null )
+    //			{
+    //				lbl.text = msg;
+    //			}
+    //		}
+    //	}
 
-	public void ShowBattleMsg( int nIdent , string msg )
+  
+
+    public void ShowDropMsg( string msg)
+    {
+        Vector3 v = Vector3.zero;
+        GameObject go = ResourcesManager.CreatePrefabGameObj(Panel_StageUI.Instance.MaskPanelObj, "prefab/BattleMsg");        
+        //GameObject go = ResourcesManager.CreatePrefabGameObj ( Panel_StageUI.Instance.MaskPanelObj , "prefab/BattleMsg" );
+
+        if (go != null)
+        {
+           // bIsDroping = true;
+            go.transform.position = v;
+            //go.transform.localPosition = v;
+            UILabel lbl = go.GetComponentInChildren<UILabel>();
+            if (lbl != null)
+            {
+                lbl.text = msg;
+            }
+           
+        }
+
+    }
+
+    public void ShowBattleMsg( int nIdent , string msg )
 	{
 		Panel_unit unit = Panel_StageUI.Instance.GetUnitByIdent( nIdent ); 
 		ShowBattleMsg (unit , msg );

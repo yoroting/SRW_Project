@@ -159,8 +159,28 @@ public partial class ActionManager
 					}
 					}
 					break;
-					// normal action
-					default:
+                    case _ACTION._DROP: // drop exp/money
+                        {
+                            Panel_unit unit = Panel_StageUI.Instance.GetUnitByIdent(act.nActIdent);
+                            if ((unit != null))
+                            {
+                                if (unit.SetAction(act))
+                                {
+                                    // 掉經驗跟錢
+
+                                }
+                            }
+                            else {
+                                // 只掉錢
+                                Panel_StageUI.Instance.DropMoney(act.nActVar2 );
+                            }
+
+                            ActionPool.RemoveAt(0); // remove when setup success
+
+                        }
+                            break;
+                    // normal action
+                    default:
 					{	
 						// Normal atk action
 						Panel_unit unit = Panel_StageUI.Instance.GetUnitByIdent( act.nActIdent );

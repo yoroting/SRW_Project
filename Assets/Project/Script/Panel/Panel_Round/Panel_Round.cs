@@ -65,11 +65,16 @@ public class Panel_Round : MonoBehaviour {
 
 	public void OnFadeOut()
 	{
-		// close UI
-		//PanelManager.Instance.CloseUI( Name );
-		PanelManager.Instance.DestoryUI( Name );
+        // reopen roundcheck
+        Panel_StageUI.Instance.bIsAutoPopRoundCheck = false;
 
-		System.GC.Collect();			// Free memory each round end
+        System.GC.Collect();			// Free memory each round end
+       
+        // close UI
+        //PanelManager.Instance.CloseUI( Name );
+        PanelManager.Instance.DestoryUI( Name );
+
+		
 	}
 
 }
