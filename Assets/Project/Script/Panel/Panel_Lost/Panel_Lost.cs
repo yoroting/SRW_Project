@@ -33,6 +33,7 @@ public class Panel_Lost : MonoBehaviour {
 	void OnCloseBtnClick(GameObject go)
 	{	
 		Panel_StageUI.Instance.ShowStage (false);
+
 		// open main ten ui
 		PanelManager.Instance.OpenUI ( Panel_Mainten.Name );
 		

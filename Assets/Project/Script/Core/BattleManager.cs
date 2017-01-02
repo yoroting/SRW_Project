@@ -1704,9 +1704,10 @@ public partial class BattleManager
                 
                 int nIntLV = Defer.GetIntSchLv();
                 int nExtLV = Defer.GetExtSchLv();
-                int nMaxLv = nIntLV > nExtLV ? nIntLV : nExtLV;
-                if (nMaxLv < 1)                    nMaxLv = 1;
-                float fMoneyRatio = Mathf.Pow(1.5f, (nMaxLv-1));
+                //int nMaxLv = nIntLV > nExtLV ? nIntLV : nExtLV;
+                //if (nMaxLv < 1)                    nMaxLv = 1;
+                // float fMoneyRatio = Mathf.Pow(1.5f, (nMaxLv-1));
+                float fMoneyRatio = 1.0f + ((nIntLV + nExtLV) * 0.1f);
                 money = (int)(money * fMoneyRatio);
 
                 // check drop item

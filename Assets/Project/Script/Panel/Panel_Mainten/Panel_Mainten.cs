@@ -250,6 +250,27 @@ public class Panel_Mainten : MonoBehaviour {
 
         //    return;
         //}
+        // remove leave unit
+        STAGE_DATA StageData = ConstDataManager.Instance.GetRow<STAGE_DATA>(GameDataManager.Instance.nStoryID);
+        if (StageData != null)
+        {
+            // create avoid list
+            char[] split = { ';', ' ', ',' };
+            string[] strLeave = StageData.s_LEAVE_CHAR.Split(split);
+            for (int i = 0; i < strLeave.Length; i++)
+            {
+                int nLeave = 0;
+                if (int.TryParse(strLeave[i], out nLeave))
+                {
+                    if (0 == nLeave)
+                        continue;
+                   //leaveList.Add(nAvoid);
+                   GameDataManager.Instance.EnableStorageUnit(nLeave, false);
+                }
+            }
+        }
+
+
 
         // clear all
         CharUnit.RecycleAll();

@@ -715,19 +715,62 @@ public class Panel_unit : MonoBehaviour {
 
 		return false;
 	}
-	public void MoveToTop( bool bTop = true , int shift=0){
 
+    public void SetDepth(int dep)
+    {
         UISprite p = this.GetComponent<UISprite>();
-        if (p != null) {
-            if (bTop)
-            {
-                p.depth += (10+shift);
-            }
-            else
-            {
-                p.depth -= (10+shift);
-            }
+        {
+            p.depth = dep;
         }
+
+        UITexture tex = FaceObj.GetComponent<UITexture>();
+        if (tex != null) {
+            tex.depth = dep + 1;
+        }        
+        //UISprite pDef = DefBarObj.GetComponent<UISprite>();
+        //{
+        //    pDef.depth = dep +2 ;
+        //}
+
+        //UISprite pHp = HpBarObj.GetComponent<UISprite>();
+        //{
+        //    pHp.depth = dep + 3;
+        //}
+        //UISprite pMask = MaskObj.GetComponent<UISprite>();
+        //{
+        //    pMask.depth = dep + 5;
+        //}
+        
+
+    }
+
+    public void MoveToTop( bool bTop = true , int shift=0){
+        //int nDep = 0;
+        //UISprite p = this.GetComponent<UISprite>();
+        //if (p != null)
+        //{
+        //    nDep = p.depth;
+        //}
+
+        if (bTop)
+        {
+            SetDepth(11);
+        }
+        else {
+            SetDepth(1);
+        }
+
+        //UISprite p = this.GetComponent<UISprite>();
+        //if (p != null) {
+        //    if (bTop)
+        //    {
+        //        p.depth += (10+shift);
+        //    }
+        //    else
+        //    {
+        //        p.depth -= (10+shift);
+        //    }
+        //}
 
 
         //UIPanel p = this.GetComponent<UIPanel> ();
@@ -1395,6 +1438,9 @@ public class Panel_unit : MonoBehaviour {
 				MoveToTop( true , 1 );
 			}
 			bIsGuarding = true ;
+
+            SetDepth(20);
+
 		}
 	}
 	public void OnTwGuardEnd( )
@@ -1409,7 +1455,9 @@ public class Panel_unit : MonoBehaviour {
 
 		MoveToTop( false );
 		bIsGuarding = false;
-	}
+
+        SetDepth(1);
+    }
 
     public void SetImmune()
     {
@@ -1483,11 +1531,17 @@ public class Panel_unit : MonoBehaviour {
 				twj2.PlayForward();
 			}
 
-			UIPanel p = this.gameObject.GetComponent<UIPanel> ();
-			if( p != null ){
-				p.depth ++ ; // move to hight then other
-			}
-
+            UISprite p = this.gameObject.GetComponent<UISprite>();
+            if (p != null)
+            {
+                SetDepth(p.depth + 1);
+                //p.depth--; // move to hight then other
+            }
+            //UIPanel p = this.gameObject.GetComponent<UIPanel> ();
+            //if( p != null ){
+            //	p.depth ++ ; // move to hight then other
+            //}
+          //  SetDepth(20); // most top
 		}
 	}
 	public void RotateAttack( )
@@ -1854,7 +1908,10 @@ public class Panel_unit : MonoBehaviour {
                 GameSystem.PlayFX(gameObject, data.n_BORN_FX);
             }
 		}
-	}
+        //設定深度
+        SetDepth(1);
+
+    }
 	public void OnBornFinish()
 	{
 		bIsBorning = false;
@@ -2056,13 +2113,15 @@ public class Panel_unit : MonoBehaviour {
 		SetXY (final.X, final.Y);
 
 		PathList = null; // move end
-		//MoveNextPoint();
-		UIPanel p = this.gameObject.GetComponent<UIPanel> ();
-		if( p != null ){
-			p.depth -- ; // move to hight then other
-		}
-		// remove all scale
-		TweenScale[] tws = gameObject.GetComponents<TweenScale> (); 
+                         //MoveNextPoint();
+        UISprite p = this.gameObject.GetComponent<UISprite>();
+        if (p != null)
+        {
+            SetDepth(p.depth -1 );
+            //p.depth--; // move to hight then other
+        }
+        // remove all scale
+        TweenScale[] tws = gameObject.GetComponents<TweenScale> (); 
 		foreach (TweenScale tw in tws) {
 			Destroy( tw );
 		}
