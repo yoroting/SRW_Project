@@ -612,7 +612,7 @@ public partial class BattleManager
 		case 1:			// hit
 			Panel_StageUI.Instance.FadeOutAVGObj();
 			// hit effect
-			uAction pAct = ActionManager.Instance.CreateHitAction ( nAtkerID, nTarGridX , nTarGridY , nAtkerSkillID );
+			uAction pAct = ActionManager.Instance.CreateHitAction ( nAtkerID, nAtkerSkillID, nDeferID, nTarGridX , nTarGridY   );
 			if( pAct != null )
 			{
 				if( Defer != null ){
@@ -634,7 +634,7 @@ public partial class BattleManager
 				if( Atker.IsDead() == false && Atker.IsStates( _FIGHTSTATE._TWICE)  && MyTool.IsFinishSkill(nAtkerSkillID) ){
                     // 必須是 終結技才會twice
 
-					uAction pAtkTwice = ActionManager.Instance.CreateHitAction (nAtkerID, nTarGridX, nTarGridY, nAtkerSkillID); // always normal atk
+					uAction pAtkTwice = ActionManager.Instance.CreateHitAction (nAtkerID, nAtkerSkillID, nDeferID, nTarGridX, nTarGridY); // always normal atk
 					if( pAtkTwice != null ){
                             //Atker.FightAttr.fBurstRate -= 0.5f;		// 第二下 傷害降低
                             GetAtkHitResult(nAtkerID, nDeferID, Atker, Defer, nAtkerSkillID , nTarGridX, nTarGridY, ref pAtkTwice, ref AtkAffectPool);
@@ -867,7 +867,7 @@ public partial class BattleManager
                 return;
             if (skl.s_LINK_SKILL == "null" || skl.s_LINK_SKILL == "NULL")
                 return;
-            
+           
                 // cTextArray Script = new cTextArray();
                 // 		Script.SetText (strEffect);
             string[] links = skl.s_LINK_SKILL.Split(";".ToCharArray());
@@ -879,7 +879,7 @@ public partial class BattleManager
                         if (id == 0 || (id == nSkillID))
                             continue;
 
-                        uAction pAct = ActionManager.Instance.CreateHitAction(Atker.n_Ident, 0, 0, id);
+                        uAction pAct = ActionManager.Instance.CreateHitAction(Atker.n_Ident, id , def, gridX, gridY);
                         if (pAct!= null)
                         {
                             List<cUnitData> pool = new List<cUnitData>();
@@ -1132,7 +1132,7 @@ public partial class BattleManager
 
 		ActionManager.Instance.CreateCastAction( nCastIdent , nSkillID  , nTarIdent );
 		// hit effect
-		uAction pAct = ActionManager.Instance.CreateHitAction ( nCastIdent, 0 , 0 , nSkillID );
+		uAction pAct = ActionManager.Instance.CreateHitAction ( nCastIdent, nSkillID , nTarIdent, 0, 0  );
 		if( pAct != null )
 		{
 			//必須先取得影響人數

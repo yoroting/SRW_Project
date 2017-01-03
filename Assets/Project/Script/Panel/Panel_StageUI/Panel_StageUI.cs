@@ -4350,7 +4350,7 @@ public class Panel_StageUI : MonoBehaviour
 
 			// send attack
 			//Panel_StageUI.Instance.MoveToGameObj(pDefUnit.gameObject , false );  // move to def 
-			uAction act = ActionManager.Instance.CreateHitAction (nAtkId, nX , nY ,nSkillID );
+			uAction act = ActionManager.Instance.CreateHitAction (nAtkId, nSkillID, nDefId, nX , nY  );
 			if (act != null) {
 				//act.AddHitResult (new cHitResult (cHitResult._TYPE. , nAtkId, Evt.nAtkSkillID));
 				//act.AddHitResult (new cHitResult (cHitResult._TYPE._BEHIT, nDefId, Evt.nAtkSkillID));
@@ -4995,13 +4995,18 @@ public class Panel_StageUI : MonoBehaviour
     public int GetCampNum( _CAMP eCamp , int nCharID=0  )
     {
         int nNum = 0;
+        bool bCheckCamp = (int)eCamp != -1 ? true : false; // -1 是不比較陣營
         foreach (KeyValuePair<int, Panel_unit> pair in IdentToUnit)
         {
             if (pair.Value != null)
             {
                 //pair.Value.pUnitData.Buffs.BuffRoundEnd();
-                if (pair.Value.eCampID != eCamp) {
-                    continue;
+                if (bCheckCamp)
+                {
+                    if (pair.Value.eCampID != eCamp)
+                    {
+                        continue;
+                    }
                 }
                 if (pair.Value.pUnitData == null)
                 {

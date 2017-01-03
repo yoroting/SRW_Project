@@ -459,17 +459,29 @@ public class MyScript {
 		//	if( GameDataManager.Instance.nRoundStatus != 0 )
 		//		return false;
 		if (GameDataManager.Instance.nRound >= nID) {
-            if (nCamp == 0)  // camp = 0 代表 兩方陣營都可觸發
-                return true;
-            else
+            if (nCamp > 0)  // camp = 0 代表 兩方陣營都可觸發 ( 為了方便 0 是預設值）
             {
-                if ((nCamp == (int)GameDataManager.Instance.nActiveCamp))
+                if (nCamp == (int)GameDataManager.Instance.nActiveCamp)
                 {
                     return true;
                 }
             }
-            
-		}
+            else {
+                return true;
+            }
+
+
+            //if (nCamp == 0)  // camp = 0 代表 兩方陣營都可觸發
+            //    return true;
+            //else
+            //{
+            //    if ((nCamp == (int)GameDataManager.Instance.nActiveCamp))
+            //    {
+            //        return true;
+            //    }
+            //}
+
+        }
 		return false ;
 	}
     public bool ConditionAfter( int nID , int nRound, int nCamp = 0 ) // -1 = any camp

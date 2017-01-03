@@ -408,7 +408,7 @@ public partial class ActionManager
 		return  act;
 	}
 
-	public uAction CreateHitAction( int nAtkIdent , int X , int Y , int nSkillID )
+	public uAction CreateHitAction( int nAtkIdent , int nSkillID, int nTargetIdent, int X, int Y )
 	{
 		uAction act = CreateAction (nAtkIdent, _ACTION._HIT);
 		if( act != null )  {
@@ -416,7 +416,7 @@ public partial class ActionManager
 			act.nTarGridX = X;
 			act.nTarGridY = Y;		
 
-			act.AddHitResult( new cHitResult( cHitResult._TYPE._CASTOUT , nAtkIdent ,nSkillID ,0, X , Y  ) );
+			act.AddHitResult( new cHitResult( cHitResult._TYPE._CASTOUT , nAtkIdent ,nSkillID , nTargetIdent, X , Y  ) );
 		}
 		return  act;
 	}

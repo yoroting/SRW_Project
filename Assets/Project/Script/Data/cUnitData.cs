@@ -44,7 +44,7 @@ public enum _UNITTAG
 	_CHARGE = 2 ,    // 突襲移動. no block
 	_NODIE	= 3 ,		// 不死身... 劇情NPC
 	_SILENCE = 4 ,    // can't  skill
-    _PEACE  = 5 ,     // 不能被瞄準攻擊，不會行動
+    _PEACE  = 5 ,     // 不能被瞄準攻擊，不會行動，也不計數 陣營人數
     _TRIGGER = 6 ,    // 是機關。不執行AI，不計算傷害戰鬥
     _BLOCKITEM=7,       // 不能變更裝備道具
     _STUN     =8,     //暈眩，點穴
