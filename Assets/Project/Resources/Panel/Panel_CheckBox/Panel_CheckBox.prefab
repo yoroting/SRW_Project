@@ -5,9 +5,9 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 437588}
+  - component: {fileID: 437588}
   m_Layer: 5
   m_Name: NGUI Snapshot Point 36
   m_TagString: Untagged
@@ -20,10 +20,10 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 441794}
-  - 114: {fileID: 11483576}
+  - component: {fileID: 441794}
+  - component: {fileID: 11483576}
   m_Layer: 5
   m_Name: BG
   m_TagString: Untagged
@@ -36,13 +36,13 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 458638}
-  - 114: {fileID: 11461400}
-  - 114: {fileID: 11441312}
-  - 114: {fileID: 11469746}
-  - 54: {fileID: 5489016}
+  - component: {fileID: 458638}
+  - component: {fileID: 11461400}
+  - component: {fileID: 11441312}
+  - component: {fileID: 11469746}
+  - component: {fileID: 5489016}
   m_Layer: 5
   m_Name: Panel_CheckBox
   m_TagString: Untagged
@@ -55,9 +55,9 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 409604}
+  - component: {fileID: 409604}
   m_Layer: 5
   m_Name: NGUI Snapshot Point 36
   m_TagString: Untagged
@@ -70,26 +70,26 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 417614}
-  - 114: {fileID: 11407564}
+  - component: {fileID: 417614}
+  - component: {fileID: 11407564}
   m_Layer: 5
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &165110
 GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 450170}
-  - 114: {fileID: 11448126}
+  - component: {fileID: 450170}
+  - component: {fileID: 11448126}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -102,12 +102,12 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 417134}
-  - 114: {fileID: 11471166}
-  - 114: {fileID: 11461504}
-  - 65: {fileID: 6587474}
+  - component: {fileID: 417134}
+  - component: {fileID: 11471166}
+  - component: {fileID: 11461504}
+  - component: {fileID: 6587474}
   m_Layer: 5
   m_Name: Control - Button NO
   m_TagString: Untagged
@@ -120,10 +120,10 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 437654}
-  - 114: {fileID: 11436114}
+  - component: {fileID: 437654}
+  - component: {fileID: 11436114}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -136,12 +136,12 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 447940}
-  - 114: {fileID: 11477902}
-  - 114: {fileID: 11405490}
-  - 65: {fileID: 6507084}
+  - component: {fileID: 447940}
+  - component: {fileID: 11477902}
+  - component: {fileID: 11405490}
+  - component: {fileID: 6507084}
   m_Layer: 5
   m_Name: Control - ButtonOK
   m_TagString: Untagged
@@ -154,10 +154,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 417914}
-  - 114: {fileID: 11457440}
+  - component: {fileID: 417914}
+  - component: {fileID: 11457440}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -177,6 +177,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 447940}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &417134
 Transform:
   m_ObjectHideFlags: 1
@@ -191,6 +192,7 @@ Transform:
   - {fileID: 437588}
   m_Father: {fileID: 458638}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &417614
 Transform:
   m_ObjectHideFlags: 1
@@ -203,6 +205,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 458638}
   m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &417914
 Transform:
   m_ObjectHideFlags: 1
@@ -215,6 +218,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 417134}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &437588
 Transform:
   m_ObjectHideFlags: 1
@@ -227,6 +231,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 417134}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &437654
 Transform:
   m_ObjectHideFlags: 1
@@ -239,6 +244,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 458638}
   m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &441794
 Transform:
   m_ObjectHideFlags: 1
@@ -246,11 +252,12 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 121042}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.52587891e-05, z: 0}
+  m_LocalPosition: {x: 0, y: -0.000015258789, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 458638}
   m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &447940
 Transform:
   m_ObjectHideFlags: 1
@@ -265,6 +272,7 @@ Transform:
   - {fileID: 409604}
   m_Father: {fileID: 458638}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &450170
 Transform:
   m_ObjectHideFlags: 1
@@ -277,6 +285,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 447940}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &458638
 Transform:
   m_ObjectHideFlags: 1
@@ -294,6 +303,7 @@ Transform:
   - {fileID: 441794}
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &5489016
 Rigidbody:
   m_ObjectHideFlags: 1
@@ -303,7 +313,7 @@ Rigidbody:
   serializedVersion: 2
   m_Mass: 1
   m_Drag: 0
-  m_AngularDrag: .0500000007
+  m_AngularDrag: 0.05
   m_UseGravity: 0
   m_IsKinematic: 1
   m_Interpolate: 0
@@ -345,10 +355,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tweenTarget: {fileID: 188532}
-  hover: {r: .882352948, g: .784313738, b: .588235319, a: 1}
-  pressed: {r: .717647076, g: .639215708, b: .482352942, a: 1}
-  disabledColor: {r: .5, g: .5, b: .5, a: 1}
-  duration: .200000003
+  hover: {r: 0.88235295, g: 0.78431374, b: 0.5882353, a: 1}
+  pressed: {r: 0.7176471, g: 0.6392157, b: 0.48235294, a: 1}
+  disabledColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  duration: 0.2
   dragHighlight: 0
   hoverSprite: 
   pressedSprite: 
@@ -455,14 +465,14 @@ MonoBehaviour:
   mEncoding: 1
   mMaxLineCount: 0
   mEffectStyle: 0
-  mEffectColor: {r: 0, g: .490999997, b: 1, a: 1}
+  mEffectColor: {r: 0, g: 0.491, b: 1, a: 1}
   mSymbols: 1
   mEffectDistance: {x: 1, y: 1}
   mOverflow: 3
   mMaterial: {fileID: 0}
   mApplyGradient: 0
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
-  mGradientBottom: {r: .699999988, g: .699999988, b: .699999988, a: 1}
+  mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
   mSpacingX: 0
   mSpacingY: 0
   mUseFloatSpacing: 0
@@ -517,7 +527,7 @@ MonoBehaviour:
     relative: 1
     absolute: -4
   updateAnchors: 1
-  mColor: {r: 0, g: 0, b: 0, a: .737254918}
+  mColor: {r: 0, g: 0, b: 0, a: 0.7372549}
   mPivot: 4
   mWidth: 192
   mHeight: 67
@@ -525,7 +535,7 @@ MonoBehaviour:
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 2.86567163
+  aspectRatio: 2.8656716
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 5e4f85552dfd4ea46a49ea0044bba09a, type: 3}
   mFont: {fileID: 0}
@@ -543,7 +553,7 @@ MonoBehaviour:
   mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
-  mGradientBottom: {r: .699999988, g: .699999988, b: .699999988, a: 1}
+  mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
   mSpacingX: 0
   mSpacingY: 0
   mUseFloatSpacing: 0
@@ -583,7 +593,7 @@ MonoBehaviour:
     relative: 1
     absolute: -4
   updateAnchors: 1
-  mColor: {r: 0, g: 0, b: 0, a: .737254918}
+  mColor: {r: 0, g: 0, b: 0, a: 0.7372549}
   mPivot: 4
   mWidth: 192
   mHeight: 67
@@ -591,11 +601,11 @@ MonoBehaviour:
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 2.86567163
+  aspectRatio: 2.8656716
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 5e4f85552dfd4ea46a49ea0044bba09a, type: 3}
   mFont: {fileID: 0}
-  mText: NO
+  mText: "\u53D6\u6D88"
   mFontSize: 48
   mFontStyle: 0
   mAlignment: 0
@@ -609,7 +619,7 @@ MonoBehaviour:
   mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
-  mGradientBottom: {r: .699999988, g: .699999988, b: .699999988, a: 1}
+  mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
   mSpacingX: 0
   mSpacingY: 0
   mUseFloatSpacing: 0
@@ -678,10 +688,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tweenTarget: {fileID: 166660}
-  hover: {r: .882352948, g: .784313738, b: .588235319, a: 1}
-  pressed: {r: .717647076, g: .639215708, b: .482352942, a: 1}
-  disabledColor: {r: .5, g: .5, b: .5, a: 1}
-  duration: .200000003
+  hover: {r: 0.88235295, g: 0.78431374, b: 0.5882353, a: 1}
+  pressed: {r: 0.7176471, g: 0.6392157, b: 0.48235294, a: 1}
+  disabledColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  duration: 0.2
   dragHighlight: 0
   hoverSprite: 
   pressedSprite: 
@@ -741,7 +751,7 @@ MonoBehaviour:
   autoResizeBoxCollider: 1
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 2.66666675
+  aspectRatio: 2.6666667
   mType: 1
   mFillDirection: 4
   mFillAmount: 1
@@ -752,7 +762,7 @@ MonoBehaviour:
   rightType: 1
   bottomType: 1
   topType: 1
-  mAtlas: {fileID: 11426408, guid: 25576dd4c299fef4f9fc244f1e89bb8b, type: 2}
+  mAtlas: {fileID: 11491776, guid: 25576dd4c299fef4f9fc244f1e89bb8b, type: 2}
   mSpriteName: Button_Red
   mFillCenter: 1
 --- !u!114 &11477902
@@ -791,7 +801,7 @@ MonoBehaviour:
   autoResizeBoxCollider: 1
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 2.66666675
+  aspectRatio: 2.6666667
   mType: 1
   mFillDirection: 4
   mFillAmount: 1
@@ -802,7 +812,7 @@ MonoBehaviour:
   rightType: 1
   bottomType: 1
   topType: 1
-  mAtlas: {fileID: 11426408, guid: 25576dd4c299fef4f9fc244f1e89bb8b, type: 2}
+  mAtlas: {fileID: 11491776, guid: 25576dd4c299fef4f9fc244f1e89bb8b, type: 2}
   mSpriteName: Button_Green
   mFillCenter: 1
 --- !u!114 &11483576
@@ -852,7 +862,7 @@ MonoBehaviour:
   rightType: 1
   bottomType: 1
   topType: 1
-  mAtlas: {fileID: 11426408, guid: 25576dd4c299fef4f9fc244f1e89bb8b, type: 2}
+  mAtlas: {fileID: 11491776, guid: 25576dd4c299fef4f9fc244f1e89bb8b, type: 2}
   mSpriteName: UI_001
   mFillCenter: 1
 --- !u!1001 &100100000

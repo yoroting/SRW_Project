@@ -1776,8 +1776,9 @@ public class cUnitData{
 
 	public void DoHitEffect( int nSkillID  , cUnitData tarunit , ref List< cHitResult > resPool )
 	{
-        if (tarunit == this)
-            return;
+        // 精神指令會 hit 自己
+     //   if (tarunit == this)
+     //       return;
         cSkillData skilldata = MyTool.GetSkillData ( nSkillID ) ;
 		if (skilldata != null) {
 			skilldata.DoHitEffect (this, tarunit, ref resPool);  
@@ -1866,14 +1867,20 @@ public class cUnitData{
 	public bool CheckCanRePop( )
 	{
 		if (this.IsTag (  _UNITTAG._UNDEAD ) ) {
-			if( n_LeaderIdent > 0){
-				cUnitData leader = GameDataManager.Instance.GetUnitDateByIdent( n_LeaderIdent );
-				if( leader != null ){
-					if( leader.n_HP > 0 && !MyTool.CanPK( eCampID , leader.eCampID ) ){
-						return true;
-					}
-				}
-			}
+            if (n_LeaderIdent > 0)
+            {
+                cUnitData leader = GameDataManager.Instance.GetUnitDateByIdent(n_LeaderIdent);
+                if (leader != null)
+                {
+                    if (leader.n_HP > 0 && !MyTool.CanPK(eCampID, leader.eCampID))
+                    {
+                        return true;
+                    }
+                }
+            }
+            else {
+                return true; // repop if no leader
+            }
 		}
 		return false;
 	}
@@ -2028,7 +2035,12 @@ public class cUnitData{
 		if (skill == null)
 			return false;
 
-		if (Config.GOD == true)
+        //神也要管CD～不然會 buff 無限放
+        if (skill.n_CD > 0 && CDs.GetCD(skill.n_ID) > 0)
+            return false;
+
+
+        if (Config.GOD == true)
 			return true;
 
         if (skill.n_PASSIVE == 1) // 被動技能
@@ -2040,9 +2052,7 @@ public class cUnitData{
 			return false;
 		if ( skill.n_CP > 0 && (skill.n_CP > this.n_CP) )
 			return false;
-		if( skill.n_CD > 0 && CDs.GetCD( skill.n_ID )>0  )
-            return false;
-
+		
         // check skill can play lv
         if ( skill.n_SCHOOL >0 ) { // 精神指令不用檢查等級
             int nSchLv = GetSchoolLv(skill.n_SCHOOL);

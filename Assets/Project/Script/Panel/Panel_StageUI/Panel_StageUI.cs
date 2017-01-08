@@ -3536,6 +3536,7 @@ public class Panel_StageUI : MonoBehaviour
 		bIsLoading = false;
 		bIsStageEnd = false;
 
+        bIsAutoPopRoundCheck = true; // 視為彈出過，以防止一讀完就跳出
 
 		return true;
 	}
@@ -4871,8 +4872,8 @@ public class Panel_StageUI : MonoBehaviour
             {
                 if (pair.Value.CharID == nCharID)
                 {
-                    if (pair.Value.bIsDead == false)
-                    {
+                   // if (pair.Value.bIsDead == false)  ????
+                   // {
                         if (nOn > 0)
                         {
                             pair.Value.pUnitData.AddTag(_UNITTAG._UNDEAD);
@@ -4882,7 +4883,7 @@ public class Panel_StageUI : MonoBehaviour
                             pair.Value.pUnitData.RemoveTag(_UNITTAG._UNDEAD);
                             
                         }
-                    }
+                   // }
                     
                 }
             }

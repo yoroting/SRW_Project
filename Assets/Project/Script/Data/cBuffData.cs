@@ -345,7 +345,8 @@ public class cBuffs
 				if( eft != null )
 				{
 					if( eft._IsStatus( _FIGHTSTATE._GUARD ) ){
-						if( pair.Value.nCastIdent != 0 ){
+						if( pair.Value.nCastIdent != 0 && (pair.Value.nCastIdent!= Owner.n_Ident) )
+                        {
 							return pair.Value.nCastIdent;
 						}
 						
@@ -361,7 +362,8 @@ public class cBuffs
 					if( eft != null )
 					{
 						if( eft._IsStatus( _FIGHTSTATE._GUARD ) ){
-							if( pair.Value.nCastIdent != 0 ){
+							if( pair.Value.nCastIdent != 0 && (pair.Value.nCastIdent != Owner.n_Ident) )
+                            {
 								return pair.Value.nCastIdent;
 							}							
 						}

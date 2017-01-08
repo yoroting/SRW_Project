@@ -1935,7 +1935,7 @@ public class MyScript {
                 else if (func.sFunc == "ADD_ATTACK")
                 {
                     pool.Add(new ADD_ATTACK(  func.I(0) ));
-                }
+                }             
                 else if (func.sFunc == "ADD_MAXDEF")
                 {
                     pool.Add(new ADD_MAXDEF(func.I(0)));

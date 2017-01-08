@@ -1222,6 +1222,11 @@ public class MobAI  {
         {
             return -1;
         }
+        // 被暈眩的不可以反擊
+        if (pData.IsStun() ) {
+            return -1;
+        }
+
         int nDist = 0;
         int nTarX = pMob.n_X;
         int nTarY = pMob.n_Y;

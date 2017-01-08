@@ -1406,13 +1406,18 @@ namespace MYGRIDS
         public void ClearIgnorePool()
         {
             if (IgnorePool != null)
+            {
                 IgnorePool.Clear();
-
+            }
             GetPathFinder().bIsDirty = true;
         }
 
         public bool IsIgnorePos(iVec2 v)
         {
+            if (IgnorePool == null) {
+                return false;
+            }
+
             int nX = v.X + hW;
             int nY = v.Y + hH;
             foreach (Point p in IgnorePool)
