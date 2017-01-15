@@ -43,7 +43,7 @@ public class MobAI  {
                     }
             }
                 break;
-			case _AI_SEARCH._TARGET:{ //前往指定
+			case _AI_SEARCH._TARGET:{ //前往指定目標
 				_AI_TargetAttack( mob , nSkillID ,  nMove ) ;
 			}break;	
 			case _AI_SEARCH._POSITION:{ //不在目標地點前往目標
@@ -785,6 +785,13 @@ public class MobAI  {
 			_AI_NormalAttack( mob , nSkillID ,nMove  );
 			return ;
 		}
+        //如果目標隱藏，改用正常AI
+        if (target.IsHide())
+        {
+            _AI_NormalAttack(mob, nSkillID, nMove);
+            return;
+        }
+
 
         //int nSkillID;
         List<iVec2> path; ;

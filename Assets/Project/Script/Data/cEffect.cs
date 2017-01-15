@@ -198,9 +198,12 @@ public class AURABUFF_I: cEffect
 		if (Atker != null) {
 			if( GameDataManager.Instance != null ){
 				foreach( KeyValuePair<int,cUnitData> pair in GameDataManager.Instance.UnitPool )
-				{
+				{                    
 					if( BattleManager.CanPK( Atker ,pair.Value ) == false ){
-						if( Atker.Dist( pair.Value ) <= nRange ){
+                        if (pair.Value.IsTriggr())
+                            continue; // 機關不上 aura buff
+
+						if ( Atker.Dist( pair.Value ) <= nRange ){
 							list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF , pair.Key , iValue , Atker.n_Ident, nSkillID ,pair.Key  ) );
 						}
 					}
@@ -221,7 +224,9 @@ public class AURABUFF_E: cEffect
 				foreach( KeyValuePair<int,cUnitData> pair in GameDataManager.Instance.UnitPool )
 				{
 					if( BattleManager.CanPK( Atker ,pair.Value ) == true ){
-						if( Atker.Dist( pair.Value ) <= nRange ){
+                        if (pair.Value.IsTriggr())
+                            continue; // 機關不上 aura buff
+                        if ( Atker.Dist( pair.Value ) <= nRange ){
 							list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF , pair.Key , iValue , Atker.n_Ident, nSkillID ,pair.Key  ) );
 						}
 					}
@@ -246,6 +251,8 @@ public class AURA_DELBUFF_I : cEffect
                 {
                     if (BattleManager.CanPK(Atker, pair.Value) == false)
                     {
+                        if (pair.Value.IsTriggr())
+                            continue; // 機關不上 aura buff
                         if (Atker.Dist(pair.Value) <= nRange)
                         {
                             list.Add(new cHitResult(cHitResult._TYPE._DELBUFF, pair.Key, iValue, Atker.n_Ident, nSkillID, pair.Key));
@@ -272,6 +279,8 @@ public class AURA_DELBUFF_E : cEffect
                 {
                     if (BattleManager.CanPK(Atker, pair.Value) == true)
                     {
+                        if (pair.Value.IsTriggr())
+                            continue; // 機關不上 aura buff
                         if (Atker.Dist(pair.Value) <= nRange)
                         {
                             list.Add(new cHitResult(cHitResult._TYPE._DELBUFF, pair.Key, iValue, Atker.n_Ident, nSkillID, pair.Key));
@@ -298,6 +307,8 @@ public class AURA_DELSTACK_I : cEffect
                 {
                     if (BattleManager.CanPK(Atker, pair.Value) == false)
                     {
+                        if (pair.Value.IsTriggr())
+                            continue; // 機關不上 aura buff
                         if (Atker.Dist(pair.Value) <= nRange)
                         {
                             list.Add(new cHitResult(cHitResult._TYPE._DELSTACK, pair.Key, iValue, Atker.n_Ident, nSkillID, pair.Key));
@@ -324,6 +335,8 @@ public class AURA_DELSTACK_E : cEffect
                 {
                     if (BattleManager.CanPK(Atker, pair.Value) == true)
                     {
+                        if (pair.Value.IsTriggr())
+                            continue; // 機關不上 aura buff
                         if (Atker.Dist(pair.Value) <= nRange)
                         {
                             list.Add(new cHitResult(cHitResult._TYPE._DELSTACK, pair.Key, iValue, Atker.n_Ident, nSkillID, pair.Key));
@@ -350,6 +363,8 @@ public class AURA_CP_I : cEffect
                 {
                     if (BattleManager.CanPK(Atker, pair.Value) == false)
                     {
+                        if (pair.Value.IsTriggr())
+                            continue; // 機關不上 aura buff
                         if (Atker.Dist(pair.Value) <= nRange)
                         {
                             list.Add(new cHitResult(cHitResult._TYPE._CP, pair.Key, iValue, Atker.n_Ident, nSkillID, pair.Key));
@@ -376,6 +391,9 @@ public class AURA_CP_E : cEffect
                 {
                     if (BattleManager.CanPK(Atker, pair.Value) == true)
                     {
+                        if (pair.Value.IsTriggr())
+                            continue; // 機關不上 aura buff
+
                         if (Atker.Dist(pair.Value) <= nRange)
                         {
                             list.Add(new cHitResult(cHitResult._TYPE._CP, pair.Key, iValue, Atker.n_Ident, nSkillID, pair.Key));
@@ -406,7 +424,9 @@ public class BATTLE_ARRAY : cEffect
                     {
                         if (Atker.Dist(pair.Value) <= nRange)
                         {
-                            if( pair.Value.Buffs.HaveBuff( nBuffID))
+                            if (pair.Value.IsTriggr())
+                                continue; // 機關不上 aura buff
+                            if ( pair.Value.Buffs.HaveBuff( nBuffID))
                             {
                                 //雙方都獲得陣行BUFF
                                // list.Add(new cHitResult(cHitResult._TYPE._ADDBUFF, Atker.n_Ident, iValue, Atker.n_Ident, nSkillID, pair.Key)); // slef will in unit pool dist check
@@ -489,6 +509,16 @@ public class HITCP_I: cEffect
 		list.Add( new cHitResult( cHitResult._TYPE._CP , Atker.n_Ident , iValue  , Atker.n_Ident, nSkillID , nBuffID   ) );
 	}
 }
+public class HITTIRED_I : cEffect
+{
+    public HITTIRED_I(int i) { iValue = i; }
+
+    override public void _Hit(cUnitData Atker, cUnitData Defer, ref List<cHitResult> list)
+    {
+
+        list.Add(new cHitResult(cHitResult._TYPE._TIRED, Atker.n_Ident, iValue, Atker.n_Ident, nSkillID, nBuffID));
+    }
+}
 public class HITHP_E: cEffect
 {
 	public HITHP_E(float f , int i ){	fValue = f;	iValue = i;	}
@@ -532,6 +562,17 @@ public class HITCP_E: cEffect
 		list.Add( new cHitResult( cHitResult._TYPE._CP , Defer.n_Ident , iValue  , Atker.n_Ident, nSkillID , nBuffID   ) );
 	}
 }
+public class HITTIRED_E : cEffect
+{
+    public HITTIRED_E(int i) { iValue = i; }
+
+    override public void _Hit(cUnitData Atker, cUnitData Defer, ref List<cHitResult> list)
+    {
+
+        list.Add(new cHitResult(cHitResult._TYPE._TIRED, Defer.n_Ident, iValue, Atker.n_Ident, nSkillID, nBuffID));
+    }
+}
+
 // Be Hit atker is 打的人， defer 是被打人的人( behit)
 public class BEHITBUFF_I : cEffect
 {
@@ -1528,6 +1569,28 @@ public class cEffectCondition
 
                 if ( !data_E.IsActiveSchool(schoolid) ) {                    
                     return false;
+                }
+            }
+            else if (func.sFunc == "SLV_I")
+            {
+                int schoolid = func.I(0);
+                if (data_I == null)
+                    return false;
+                int nLv = data_I.GetSchoolLv(schoolid);
+                if (MyScript.Instance.ConditionInt(nLv, func.S(1), func.I(2)) == false)
+                {
+                    return false;       // always fail
+                }
+            }
+            else if (func.sFunc == "SLV_E")
+            {
+                int schoolid = func.I(0);
+                if (data_E == null)
+                    return false;
+                int nLv = data_E.GetSchoolLv(schoolid);
+                if (MyScript.Instance.ConditionInt(nLv, func.S(1), func.I(2)) == false)
+                {
+                    return false;       // always fail
                 }
             }
             else if (func.sFunc == "CHAR_CHECK") // combo check

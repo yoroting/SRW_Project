@@ -295,7 +295,17 @@ public class Panel_unit : MonoBehaviour {
 				defbar.value = (def+hp) / nTotal;
 			}
 
-		}	
+		}
+
+        // 改變顯示
+        if ( IsHide() )
+        {
+            SetAlpha(0.75f);
+        }
+        else {
+            SetAlpha(1.0f);
+        }
+
 	}
 
 	void OnDestory () {
@@ -405,7 +415,17 @@ public class Panel_unit : MonoBehaviour {
         }
     }
 
-	public bool IsIdle()
+    public void SetAlpha(float alpha )
+    {
+        UITexture face = FaceObj.GetComponent<UITexture>();
+        if (face != null)
+        {
+            face.alpha = alpha;            
+        }
+    }
+
+
+    public bool IsIdle()
 	{
 		if( IsMoving() )
 		{
@@ -2427,6 +2447,16 @@ public class Panel_unit : MonoBehaviour {
                     }
                 }
                 break;
+            case cHitResult._TYPE._TIRED:
+                {
+                    //pUnit.ShowValueEffect( res.Value1 , 0 ); // CP
+                    if (res.Value1 != 0) 
+                    {
+                        pUnitData.AddTired(res.Value1);
+                    }
+                }
+                break;
+
             case cHitResult._TYPE._ACTTIME:
                 {
                     //pUnit.ShowValueEffect( res.Value1 , 0 ); // SP
@@ -2531,4 +2561,11 @@ public class Panel_unit : MonoBehaviour {
     //		pUnitData.Buffs.DelBuff(nBuffID);
     //	}
 
+    public bool IsHide()
+    {
+        if (pUnitData == null)
+            return false;
+        // 改變顯示
+        return pUnitData.IsTag(_UNITTAG._HIDE);
+    }
 }

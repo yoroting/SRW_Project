@@ -3903,6 +3903,7 @@ public class Panel_StageUI : MonoBehaviour
 
                 for (int j = y; j <= ey && bFind == false; j++)
                 {
+                    x = sx;
                     for (int i = x; i <= ex && bFind == false ; i++)
                     {
                    
@@ -3930,14 +3931,14 @@ public class Panel_StageUI : MonoBehaviour
 
                     }
                     // find next pos to move
-                    if (bFind)
-                    {                        
-                        if (x > ex) {
-                            y = y + 1; // next
-                            x = sx;    // re start x 
-                        }                        
-                        break;
-                    }
+                    //if (bFind)
+                    //{                        
+                    //    if (x > ex) {
+                    //        y = y + 1; // next
+                    //        x = sx;    // re start x 
+                    //    }                        
+                    //    break;
+                    //}
                    
                 }
 
@@ -4596,7 +4597,22 @@ public class Panel_StageUI : MonoBehaviour
         {
             Debug.LogErrorFormat ("OnStageAddBuff {0} on null unit with char {1} , type{2}", nBuffID, nCharID,nDel);
 		}
-	}
+        //保險：有些劇情buff 施放時，如果角色已死亡，則會沒放到，要到倉庫找出來放
+        cUnitData data = GameDataManager.Instance.GetStorageUnit(nCharID);
+        if (data != null)
+        {
+            if (nDel == 0)
+            {
+                data.Buffs.AddBuff(nBuffID, nCastIdent, 0, 0);
+            }
+            else
+            {
+                data.Buffs.DelBuff(nBuffID, true);
+            }
+            data.UpdateAllAttr();
+        }
+
+    }
 
 	public void OnStageCampAddBuff( int nCampID , int nBuffID , int nCastCharID , int nDel = 0 )
 	{
@@ -4757,7 +4773,14 @@ public class Panel_StageUI : MonoBehaviour
 			unit.pUnitData.UpdateAllAttr();
 		}
 
-	}
+        cUnitData data = GameDataManager.Instance.GetStorageUnit(nCharID );
+        if (data != null)
+        {
+            data.LearnSchool(nSchool, nLv);
+            data.ActiveSchool(nSchool);
+            data.UpdateAllAttr();
+        }
+    }
 
     public void OnStageEquipItem(int nCharID, int nItemID )
     {
@@ -4775,7 +4798,12 @@ public class Panel_StageUI : MonoBehaviour
 
             unit.pUnitData.UpdateAllAttr();
         }
-
+        cUnitData data = GameDataManager.Instance.GetStorageUnit(nCharID);
+        if (data != null)
+        {
+            data.EquipItem(_ITEMSLOT._SLOTMAX, nItemID);
+            data.UpdateAllAttr();
+        }
     }
 
     public void OnStageRelive(int nCharID  )

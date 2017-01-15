@@ -524,7 +524,8 @@ private static GameDataManager instance;
 		else{
 			UnitPool.Add( data.n_Ident , data );
 		}
-		return data;
+        data.Relive();
+        return data;
 	}
 
 
@@ -653,9 +654,10 @@ private static GameDataManager instance;
 
 				// remove from storage
 				RemoveStorageUnit( nCharID );
-				//StoragePool.Remove( nCharID );
+                //StoragePool.Remove( nCharID );
+                data.Relive();
 
-				return  data;
+                return  data;
 			}
 		} 
 

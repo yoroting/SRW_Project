@@ -592,7 +592,8 @@ public partial class ActionManager
                             case cHitResult._TYPE._MP:
                             case cHitResult._TYPE._SP:
                             case cHitResult._TYPE._CP:
-                            case cHitResult._TYPE._ACTTIME:                            
+                            case cHitResult._TYPE._ACTTIME:
+                            case cHitResult._TYPE._TIRED:
                                 pUnit.PlayHitResult(res);
                                 break;
 

@@ -447,8 +447,12 @@ public class MyScript {
 			if( pair.Value.eCampID != nCampID )
 				continue;
 			
-            if (!IsCheckIdent(pair.Value.n_Ident))
+          //  if (!IsCheckIdent(pair.Value.n_Ident))
+          if(pair.Value.n_CharID != nCharID)
                 continue;
+            if (pair.Value.IsDead())
+                continue;
+
             return true;
 		}  
 		return false;
@@ -1852,6 +1856,14 @@ public class MyScript {
                 {
                     pool.Add(new HITCP_E(func.I(0)));
                 }
+                else if (func.sFunc == "HITTIRED_I")
+                {
+                    pool.Add(new HITTIRED_I(func.I(0)));
+                }
+                else if (func.sFunc == "HITTIRED_E")
+                {
+                    pool.Add(new HITTIRED_E(func.I(0)));
+                }
                 // BEHIT EFFECT
                 else if (func.sFunc == "BEHITBUFF_I")
                 {
@@ -1948,7 +1960,7 @@ public class MyScript {
                 {
                     pool.Add(new ADD_DEF_E(func.F(0), func.I(1)));
                 }
-                else if (func.sFunc == "ADD_POWER")
+                else if (func.sFunc == "ADD_POWER" || func.sFunc == "ADD_POW")
                 {
                     pool.Add(new ADD_POWER(func.I(0)));
                 }

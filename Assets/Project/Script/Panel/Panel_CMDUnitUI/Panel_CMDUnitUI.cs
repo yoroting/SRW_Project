@@ -286,6 +286,21 @@ public class Panel_CMDUnitUI : MonoBehaviour
                         }
                     }
                 }
+                else {
+                    if (id == _CMD_ID._INFO)
+                    {
+                        if (pCmder != null && pCmder.pUnitData != null)
+                        {
+                            if ( pCmder.pUnitData.IsTriggr() ) {
+                                UIButton b = obj.GetComponent<UIButton>();
+                                if (b != null)
+                                {
+                                    b.isEnabled = false; // disable btn
+                                }
+                            }
+                        }
+                    }
+                }
             }
 		}
         

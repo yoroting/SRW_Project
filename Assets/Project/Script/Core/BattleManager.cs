@@ -36,7 +36,8 @@ public class cHitResult		//
 		_DEF		,		// 增減 DEF
 		_SP			,		// 增減 SP
 		_CP			,		// 增減 CP
-		_ACTTIME	,		// actime
+        _TIRED      ,       // 增減 破綻
+        _ACTTIME	,		// actime
 
 		_ADDBUFF	,
 		_DELBUFF	,
@@ -349,7 +350,14 @@ public partial class BattleManager
                 }
                 break;
 		case 2:
-                {   // def casting
+                {
+                    if (Defer.IsStun()) {
+                        Defer.RemoveStates(_FIGHTSTATE._DEFMODE);
+                        nPhase++;
+                        break;
+                    }
+                    
+                    // def casting
                     uAction pCastingAction = ActionManager.Instance.CreateCastAction(nDeferID, nDeferSkillID, nAtkerID);
                     if (pCastingAction != null)
                     {
@@ -382,10 +390,11 @@ public partial class BattleManager
 			break;
 		case 3:			// atack assist pre show 
 			ShowAtkAssist( nAtkerID,nDeferID );
-			nPhase++;
+            ShowDefAssist(nDeferID);
+                nPhase++;
 			break;
 		case 4:			// def assist pre show 
-			ShowDefAssist( nDeferID );
+			
 			nPhase++;
 			break;
 		case 5:
@@ -449,8 +458,8 @@ public partial class BattleManager
                             }
                         }
                     }
-                    // 被打死不能反擊
-                    if (Defer.IsStates(_FIGHTSTATE._DEAD))
+                    // 被打死或被暈不能反擊
+                    if (Defer.IsStates(_FIGHTSTATE._DEAD)|| Defer.IsStun() )
                     {
                         bCanCounter = false;
                     }
@@ -460,14 +469,22 @@ public partial class BattleManager
 			break;
 		case 6:
 			Panel_StageUI.Instance.ClearAVGObj();
-			if (bCanCounter){
+                // 被打死或被暈不能反擊
+                if (Defer.IsStates(_FIGHTSTATE._DEAD) || Defer.IsStun())
+                {
+                    bCanCounter = false;
+                }
+                if (bCanCounter){
 				ShowAtkAssist( nDeferID , nAtkerID );
-			}
+                    ShowDefAssist(nAtkerID);
+                }
 			nPhase++;
 			break;
 		case 7:
-			if (bCanCounter ){
-				ShowDefAssist( nAtkerID );
+                // 被打死或被暈不能反擊
+              
+                if (bCanCounter ){
+			//	ShowDefAssist( nAtkerID );
 			}
 			nPhase++;
 			break;
@@ -1432,7 +1449,7 @@ public partial class BattleManager
 		{
 			if( pair.Key == nAtkIdent )
 				continue;
-			if( pair.Value.IsDead())
+			if( pair.Value.IsDead() || pair.Value.IsTriggr() )
 				continue;
 
 			if( CanPK( pAtker.eCampID , pair.Value.eCampID )== false )
@@ -1468,7 +1485,7 @@ public partial class BattleManager
 		{
 			if( pair.Key == nDefIdent )
 				continue;
-			if( pair.Value.IsDead() )
+			if( pair.Value.IsDead() || pair.Value.IsTriggr() )
 				continue;
 			if( CanPK( pDefer.eCampID , pair.Value.eCampID )== false )
 			{
@@ -1688,12 +1705,12 @@ public partial class BattleManager
 		float fdroprate = 1.0f + Atker.GetMulDrop();
 
 		//
-		int exp 	= 10; // base exp
+		int exp 	= 5; // base exp
 		int money 	= 0;
 		if( Defer != null ){
 			int nDiffLv = Defer.n_Lv-Atker.n_Lv;
-			exp += (nDiffLv*2);
-			exp = MyTool.ClampInt( exp , 1 , 20 );
+			exp += (nDiffLv);
+			exp = MyTool.ClampInt( exp , 1 , 10 );
 
 			// kill
 			if( Defer.IsStates( _FIGHTSTATE._DEAD ) ){
@@ -1903,7 +1920,7 @@ public partial class BattleManager
 
         fAtkDmg = (fAtkDmg < 0) ? 0 : fAtkDmg;
         // 防禦..
-        if (bDefMode)
+        if (bDefMode  )
         {
             fAtkDmg = (fAtkDmg * Config.DefReduce / 100.0f);
         }
