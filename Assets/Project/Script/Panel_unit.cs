@@ -1100,14 +1100,14 @@ public class Panel_unit : MonoBehaviour {
 
             RotateAttack();
             return;
-        } else if (MyTool.IsSkillTag(skillid, _SKILLTAG._FLASH)) {
+        } else if (MyTool.IsSkillTag(skillid, _SKILLTAG._AOESTEP)) {
             SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(skillid);
             if (skl != null && skl.n_AREA > 0) {
                 // get aoe pool
                 int nTarX = defer.Loc.X;
                 int nTarY = defer.Loc.Y;
                 List<iVec2> lst = MyTool.GetAOEPool(nTarX, nTarY, skl.n_AREA, Loc.X, Loc.Y);
-                FlashAttack(lst);
+                AoeStepAttack(lst);
                 return;
             }
 
@@ -1159,6 +1159,13 @@ public class Panel_unit : MonoBehaviour {
             //List < iVec2 > lst = MyTool.GetAOEPool (nTarX, nTarY, skl.n_AREA, Loc.X, Loc.Y);
             // need some code
 
+        }
+        else if (MyTool.IsSkillTag(skillid, _SKILLTAG._FLASH))
+        { // 
+            int nTarX = defer.Loc.X;
+            int nTarY = defer.Loc.Y;
+            FlashAttack(nTarX, nTarY);
+            return;
 
         }
         //  非攻擊型技能，跳過攻擊動作
@@ -1228,13 +1235,13 @@ public class Panel_unit : MonoBehaviour {
 		} else if (MyTool.IsSkillTag (skillid, _SKILLTAG._ROTATE)) {
 			RotateAttack ();
 			return;
-		} else if (MyTool.IsSkillTag (skillid, _SKILLTAG._FLASH)) {		
+		} else if (MyTool.IsSkillTag (skillid, _SKILLTAG._AOESTEP)) {		
 			if (skl != null && skl.n_AREA > 0) {
 				// get aoe pool
 				int nTarX = GridX;
 				int nTarY = GridY;
 				List < iVec2 > lst = MyTool.GetAOEPool (nTarX, nTarY, skl.n_AREA, Loc.X, Loc.Y);
-				FlashAttack (lst);
+                AoeStepAttack(lst);
 				return;
 			}
 			
@@ -1255,6 +1262,13 @@ public class Panel_unit : MonoBehaviour {
 			AOEMissileAttack (skillid, GridX, GridY);
             return;
 		}
+        else if (MyTool.IsSkillTag(skillid, _SKILLTAG._FLASH))
+        { // 
+          
+            FlashAttack(GridX, GridY);
+            return;
+
+        }
         // exec result directly
         // play FX 
         ShowSkillCastHitFX(ActionSkillID, 0, GridX , GridY );
@@ -1484,7 +1498,7 @@ public class Panel_unit : MonoBehaviour {
         BattleManager.Instance.ShowBattleResValue(this.gameObject, "免疫", 1);
     }
     // Attack action animate
-    public void FlashAttack( List< iVec2> lst  )
+    public void AoeStepAttack( List< iVec2> lst  )
 	{
 		bIsAtking = true;
 		lst.Add( new iVec2( Loc.X , Loc.Y  ) );
@@ -1726,8 +1740,64 @@ public class Panel_unit : MonoBehaviour {
 		}
 
 	}
-	//==============Tween CAll back
-	public void OnTwAtkHit( )
+
+    public void FlashAttack(int GridX, int GridY)
+    {
+        bIsAtking = true;
+        //iVec2 v = new iVec2 (GridX, GridY);
+        Vector3 tar = this.gameObject.transform.localPosition;
+        tar.x = GameScene.Instance.Grids.GetRealX(GridX);
+        tar.y = GameScene.Instance.Grids.GetRealY(GridY);
+
+
+        int iDist = Loc.Dist(GridX, GridY);
+        float during = iDist * (0.2f);
+        if (during < 1.0f)
+            during = 1.0f;
+
+        // cal target location position
+
+        // find final pos to stand
+        //iVec2 tar =  Panel_StageUI.Instance.FindEmptyPos ( v );
+
+        //SetXY (GridX, GridY , false);// record target pos as current pos , don't syn go pos. tween move will do it
+
+        //		Loc = v; 
+        // update pos to unit data
+        //		pUnitData.n_X = Loc.X;
+        //		pUnitData.n_Y = Loc.Y;
+        //改變當前座標
+        // play FX
+        //GameSystem.PlayFX( this.gameObject , 201);
+        Panel_StageUI.Instance.PlayFX(207, Loc.X , Loc.Y );
+
+        TweenPosition tw = TweenPosition.Begin<TweenPosition>(this.gameObject, 0.2f);
+        if (tw != null)
+        {
+            tw.SetStartToCurrentValue();
+            tw.to = tar;
+            //			Debug.LogFormat("ActionAttack from {0} , {1} , locPos {2} , {3} ", tw.from.x, tw.from.y , transform.localPosition.x ,  transform.localPosition.y );
+
+            //			tw.SetOnFinished( OnTweenNotifyMoveEnd );
+            MyTool.TweenSetOneShotOnFinish(tw, OnTweenNotifyJumpEnd); //打完會留在目標附近
+
+          //  bIsMoving = true;
+
+            // scale
+        
+
+            UISprite p = this.gameObject.GetComponent<UISprite>();
+            if (p != null)
+            {
+                SetDepth(p.depth + 1);
+                //p.depth--; // move to hight then other
+            }
+        
+        }
+    }
+
+    //==============Tween CAll back
+    public void OnTwAtkHit( )
 	{
         // move back 
         //		Debug.LogFormat (this.ToString () + " hit Target{0}", TarIdent);
@@ -2126,7 +2196,7 @@ public class Panel_unit : MonoBehaviour {
 
 		iVec2 v = MyTool.SnyLocalPostoGrid ( transform.localPosition , ref GameScene.Instance.Grids );
 
-		iVec2 final =  Panel_StageUI.Instance.FindEmptyPos ( v );
+		iVec2 final =  Panel_StageUI.Instance.FindEmptyPosToAttack( v , Loc );
 
 		// clear all path 
 

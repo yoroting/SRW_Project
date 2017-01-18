@@ -164,7 +164,10 @@ private static GameDataManager instance;
         EvtBlockPool.Clear();
         // special reset
         nSerialNO = 0;
-	}
+
+        BattleManager.Instance.Initial();
+
+    }
 
 	public void EndStage()
 	{

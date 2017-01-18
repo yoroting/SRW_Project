@@ -110,12 +110,16 @@ public partial class BattleManager
 		nDropMoney = 0;
 		nDropExpPool = new Dictionary< int , int >();
 		nDropItemPool = new List<int>();
-	//	bIsBattle = false;
-		//this.GetAudioClipFunc = getAudioClipFunc;
-	//	UnitPool = new Dictionary< int , UNIT_DATA >();
-	//	CampPool = new Dictionary< _CAMP , cCamp >();
+        //	bIsBattle = false;
+        //this.GetAudioClipFunc = getAudioClipFunc;
+        //	UnitPool = new Dictionary< int , UNIT_DATA >();
+        //	CampPool = new Dictionary< _CAMP , cCamp >();
+        nLastAtkerCharID = 0;
+        nLastDeferCharID = 0;
+        nLastAtkerSkillID = 0;
+        nLastDeferSkillID = 0;
 
-	}
+    }
 
 	private static BattleManager instance;
 	public static BattleManager Instance
@@ -132,7 +136,7 @@ public partial class BattleManager
 		}
 	}
 
-	public void Clear()
+    public void Clear()
 	{
        
 

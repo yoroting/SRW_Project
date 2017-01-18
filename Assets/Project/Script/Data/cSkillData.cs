@@ -17,13 +17,14 @@ public enum _SKILLTAG
 
 	_ROTATE		= 6,	// 原地旋轉
 	_JUMP		= 7,	// 跳躍攻擊
-	_FLASH		= 8,	// AOE閃擊
+	_AOESTEP	= 8,	// AOE閃擊
 	_BOW		= 9,	// 拉弓攻擊
 	_NOACT		= 10,	// 無表演直接算傷害
 	_CROSS		= 11,	// 穿過
 	_AOEMISSILE = 12,   // 擴散飛彈
 	_DANCEKILL  = 13,   // 亂舞殺
 	_GHOSTKILL  = 14,   // 瞬獄殺
+    _FLASH      = 15,   // 閃現過去
 
     _HEAL = 20,   //治療
 
