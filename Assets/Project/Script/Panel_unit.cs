@@ -1153,13 +1153,25 @@ public class Panel_unit : MonoBehaviour {
             return;
 
         }
-        else if (MyTool.IsSkillTag(skillid, _SKILLTAG._DANCEKILL)) { // 
+        else if (MyTool.IsSkillTag(skillid, _SKILLTAG._DANCEKILL)) { // 範圍內每個人打一下
             int nTarX = defer.Loc.X;
             int nTarY = defer.Loc.Y;
             //List < iVec2 > lst = MyTool.GetAOEPool (nTarX, nTarY, skl.n_AREA, Loc.X, Loc.Y);
             // need some code
-
+            DanceAttack(skillid,nTarX, nTarY);
+            return;
         }
+        else if (MyTool.IsSkillTag(skillid, _SKILLTAG._GHOSTKILL))  // 同一人打多下
+        { // 
+            int nTarX = defer.Loc.X;
+            int nTarY = defer.Loc.Y;
+            //List < iVec2 > lst = MyTool.GetAOEPool (nTarX, nTarY, skl.n_AREA, Loc.X, Loc.Y);
+            // need some code
+            GhostAttack(skillid,nTarX, nTarY);
+            return;
+        }
+
+
         else if (MyTool.IsSkillTag(skillid, _SKILLTAG._FLASH))
         { // 
             int nTarX = defer.Loc.X;
@@ -1262,6 +1274,20 @@ public class Panel_unit : MonoBehaviour {
 			AOEMissileAttack (skillid, GridX, GridY);
             return;
 		}
+        else if (MyTool.IsSkillTag(skillid, _SKILLTAG._DANCEKILL))
+        { // 範圍內每個人打一下
+           
+            // need some code
+            DanceAttack(skillid, GridX, GridY);
+            return;
+        }
+        else if (MyTool.IsSkillTag(skillid, _SKILLTAG._GHOSTKILL))  // 同一人打多下
+        { // 
+         
+            GhostAttack(skillid, GridX, GridY);
+            return;
+        }
+
         else if (MyTool.IsSkillTag(skillid, _SKILLTAG._FLASH))
         { // 
           
@@ -1740,6 +1766,107 @@ public class Panel_unit : MonoBehaviour {
 		}
 
 	}
+
+    // 每個人打一下
+    public void DanceAttack(int nSkillID, int GridX, int GridY)
+    {
+        bIsAtking = true;
+        //		string missile = "ACT_FLAME";
+        //		Missile missdata = null;
+        List<cUnitData> pool = new List<cUnitData>();
+        BattleManager.GetAffectPool( pUnitData , null , nSkillID, GridX, GridY , ref pool ); // 取出 被攻擊的人
+
+        List<iVec2> lst = new List<iVec2>();
+        foreach (cUnitData data in pool)
+        {
+            lst.Add(new iVec2(data.n_X, data.n_Y) );
+        }
+
+        // start move 
+        lst.Add(new iVec2( Loc.X, Loc.Y));
+        PathList = lst;
+
+        MoveNextAtkPoint();
+
+    }
+
+    // 同一人打多下
+    public void GhostAttack(int nSkillID, int GridX, int GridY)
+    {
+        bIsAtking = true;
+        // 先移動到目標
+        float fdelay = 0.0f;
+        Vector3 vTar = MyTool.SnyGridtoLocalPos(GridX, GridY, ref GameScene.Instance.Grids);
+        TweenPosition tw = TweenPosition.Begin<TweenPosition>(this.gameObject, 0.2f);
+        if (tw != null)
+        {
+            tw.SetStartToCurrentValue();
+            tw.to = vTar;
+
+          //  MyTool.TweenSetOneShotOnFinish(tw, OnTwGhostAtk); // for once only
+        }
+        fdelay += 0.2f;
+        // ↖ ↙ → ↓
+        TweenPosition tw1 = this.gameObject.AddComponent<TweenPosition>(); //  TweenPosition.Begin<TweenPosition>(this.gameObject, fdelay + 0.2f);
+        if (tw1 != null)
+        {            
+            tw1.from = MyTool.SnyGridtoLocalPos(GridX +1 , GridY-1, ref GameScene.Instance.Grids);
+            tw1.to = MyTool.SnyGridtoLocalPos(GridX - 1, GridY + 1, ref GameScene.Instance.Grids);
+            tw1.delay = fdelay;
+            fdelay += 0.1f;
+            tw1.duration = fdelay;
+        }
+
+        TweenPosition tw2 = this.gameObject.AddComponent<TweenPosition>(); //  TweenPosition.Begin<TweenPosition>(this.gameObject, fdelay + 0.2f);
+        if (tw2 != null)
+        {
+            tw2.from = MyTool.SnyGridtoLocalPos(GridX + 1, GridY + 1, ref GameScene.Instance.Grids);
+            tw2.to = MyTool.SnyGridtoLocalPos(GridX - 1, GridY - 1, ref GameScene.Instance.Grids);
+            tw2.delay = fdelay;
+            fdelay += 0.1f;
+            tw2.duration = fdelay;
+        }
+        TweenPosition tw3 = this.gameObject.AddComponent<TweenPosition>(); //  TweenPosition.Begin<TweenPosition>(this.gameObject, fdelay + 0.2f);
+        if (tw3 != null)
+        {
+            tw3.from = MyTool.SnyGridtoLocalPos(GridX - 1, GridY , ref GameScene.Instance.Grids);
+            tw3.to = MyTool.SnyGridtoLocalPos(GridX + 1, GridY , ref GameScene.Instance.Grids);
+            tw3.delay = fdelay;
+            fdelay += 0.1f;
+            tw3.duration = fdelay;
+        }
+        TweenPosition tw4 = this.gameObject.AddComponent<TweenPosition>(); //  TweenPosition.Begin<TweenPosition>(this.gameObject, fdelay + 0.2f);
+        if (tw4 != null)
+        {
+            tw4.from = MyTool.SnyGridtoLocalPos(GridX , GridY+1, ref GameScene.Instance.Grids);
+            tw4.to = MyTool.SnyGridtoLocalPos(GridX , GridY-1, ref GameScene.Instance.Grids);
+            tw4.delay = fdelay;
+            fdelay += 0.1f;
+            tw4.duration = fdelay;
+            MyTool.TweenSetOneShotOnFinish(tw4, OnTwGhostAtk); // for once only
+        }
+
+        //lst.Add(new iVec2(Loc.X, Loc.Y));
+        //PathList = lst;
+
+        //MoveNextAtkPoint();
+
+      
+
+       
+
+    }
+
+    public void OnTwGhostAtk()
+    {
+        // 關閉 ghost 特效
+
+        // 回到原來位置
+        //OnTwAtkEnd();
+        OnTwAtkHit();
+
+    }
+
 
     public void FlashAttack(int GridX, int GridY)
     {
@@ -2302,8 +2429,9 @@ public class Panel_unit : MonoBehaviour {
 		case 4:// play in terrain place
 			Panel_StageUI.Instance.PlayFX (skl.n_CASTOUT_FX, nX, nY);
 			break;
-//		case 5: // change to skilldata
-//			ShowTailFX( fxData.s_FILENAME );
+            //		case 5: // change to skilldata
+            //			ShowTailFX( fxData.s_FILENAME );
+
 		default:
 			GameSystem.PlayFX ( this.gameObject , skl.n_CASTOUT_FX );
 			break;
