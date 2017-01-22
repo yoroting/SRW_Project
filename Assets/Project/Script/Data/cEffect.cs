@@ -60,20 +60,21 @@ public class cEffect
 // Cast Effect
 public class ADDBUFF_I: cEffect
 {
-	public ADDBUFF_I( int buffid ){		iValue = buffid;	}
+	public ADDBUFF_I( int buffid, int num) {		iValue = buffid; nNum = num;     }
+    public int nNum;
 	//public int iValue ;
 	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){
 		if (Atker != null) {
 		
 			int nDefId = 0;			if( Defer != null )nDefId = Defer.n_Ident;
-			list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF , Atker.n_Ident , iValue , Atker.n_Ident, nSkillID ,nDefId  ) );
+			list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF , Atker.n_Ident , iValue , Atker.n_Ident, nSkillID ,nDefId , nNum ) );
 		}
 	}
 }
 public class ADDBUFF_E: cEffect
 {
-	public ADDBUFF_E( int buffid ){		iValue = buffid;;	}
-//	public int iValue ;
+	public ADDBUFF_E( int buffid  , int num ){		iValue = buffid; nNum = num; 	}
+    public int nNum;//	public int iValue ;
 	
 	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 
 		if (Defer != null) {
@@ -82,7 +83,7 @@ public class ADDBUFF_E: cEffect
 
 		//	list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF ,Defer.n_Ident , nBuffID ) );
 			int nAtkId = 0;			if( Atker != null )nAtkId = Atker.n_Ident;
-			list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF , Defer.n_Ident , iValue, nAtkId , nSkillID , Defer.n_Ident  ) );
+			list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF , Defer.n_Ident , iValue, nAtkId , nSkillID , Defer.n_Ident, nNum) );
 		}
 	}
 }
@@ -470,6 +471,41 @@ public class HITBUFF_E: cEffect
 			list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF , Defer.n_Ident , iValue, nAtkId , nSkillID ,Defer.n_Ident  ) );
 		}
 	}
+}
+
+// Hit effect
+public class HITDELBUFF_I : cEffect
+{
+    public HITDELBUFF_I(int buffid) { iValue = buffid; }
+    //public int iValue ;
+    override public void _Hit(cUnitData Atker, cUnitData Defer, ref List<cHitResult> list)
+    {
+        if (Atker != null)
+        {
+            // ( int nBuffID , int nCastIdent , int nSkillID  , int nTargetId )
+            //pData.Buffs.AddBuff( res.Value1 , res.Value2, res.SkillID, res.Value3 );
+            int nDefId = 0; if (Defer != null) nDefId = Defer.n_Ident;
+            list.Add(new cHitResult(cHitResult._TYPE._DELBUFF, Atker.n_Ident, iValue, Atker.n_Ident, nSkillID, nDefId));
+        }
+    }
+}
+
+public class HITDELBUFF_E : cEffect
+{
+    public HITDELBUFF_E(int buffid) { iValue = buffid; ; }
+
+
+    override public void _Hit(cUnitData Atker, cUnitData Defer, ref List<cHitResult> list)
+    {
+        if (Defer != null)
+        {
+            if (Defer.IsStates(_FIGHTSTATE._DODGE))
+                return;
+            //	list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF ,Defer.n_Ident , nBuffID ) );
+            int nAtkId = 0; if (Atker != null) nAtkId = Atker.n_Ident;
+            list.Add(new cHitResult(cHitResult._TYPE._DELBUFF, Defer.n_Ident, iValue, nAtkId, nSkillID, Defer.n_Ident));
+        }
+    }
 }
 
 public class HITHP_I: cEffect

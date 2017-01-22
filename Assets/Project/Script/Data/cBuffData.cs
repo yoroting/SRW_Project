@@ -18,16 +18,21 @@ public class cBuffData
 
 	public BUFF tableData = null ;		// const data reference	
 
-	public cBuffData( BUFF buff , int ident , int skillid , int tarident ){
+	public cBuffData( BUFF buff , int ident , int skillid , int tarident , int num= 1)
+    {
 		tableData = buff;
 		if (tableData == null)
 			return;
 
 		nID = buff.n_ID;
 		nTime = buff.n_DURATION;
-		nNum = 1;
+		nNum = num;
+        if (nNum <= 0)
+        {
+            nNum = 1;
+        }
 
-		nCastIdent = ident;
+        nCastIdent = ident;
 		nSkillID   = skillid;
 		nTargetIdent = tarident;
 
@@ -106,15 +111,15 @@ public class cBuffs
     }
 
     //
-    public cBuffData CreateData( BUFF buff , int Ident , int nSkillID , int nTargetId  )
+    public cBuffData CreateData( BUFF buff , int Ident , int nSkillID , int nTargetId , int nNum=1 )
 	{
-		cBuffData data = new cBuffData( buff , Ident , nSkillID , nTargetId );
+		cBuffData data = new cBuffData( buff , Ident , nSkillID , nTargetId , nNum);
 	
 		return data;
 	}
 
 	//
-	public cBuffData AddBuff( int nBuffID , int nCastIdent , int nSkillID  , int nTargetId ){
+	public cBuffData AddBuff( int nBuffID , int nCastIdent , int nSkillID  , int nTargetId , int nNum=0 ){
 		BUFF buff = ConstDataManager.Instance.GetRow< BUFF > ( nBuffID );
 		if (buff == null)
 			return null;
@@ -127,8 +132,11 @@ public class cBuffs
 		// always re cal next update
 		Owner.SetUpdate ( cAttrData._BUFF );
 
+        // 預設為增加 1 stack
+        if (nNum == 0)
+            nNum = 1;
 
-		cBuffData data = null;
+        cBuffData data = null;
 		cBuffData olddata = null;
 		if (Pool.TryGetValue (buff.n_STACK, out olddata) == true) {
 			// check if need replace
@@ -137,7 +145,7 @@ public class cBuffs
 				STACK stack = ConstDataManager.Instance.GetRow< STACK >( buff.n_STACK );
                 if (stack != null)
                 {
-                    ++olddata.nNum;
+                    olddata.nNum += nNum ;
                     if (olddata.nNum > stack.n_MAX_STACK)
                     {
                         olddata.nNum = stack.n_MAX_STACK;
@@ -171,7 +179,7 @@ public class cBuffs
 		}
 		else {
 			//add buff
-			data = CreateData(buff, nCastIdent , nSkillID ,nTargetId  );
+			data = CreateData(buff, nCastIdent , nSkillID ,nTargetId  , nNum);
 			Pool.Add( buff.n_STACK ,  data );
 		}
 
@@ -432,13 +440,22 @@ public class cBuffs
 			}
 			else if( pair.Value.nTime == -1 ){ 
 				if( Owner.IsStates( _FIGHTSTATE._DAMAGE ) ){// 本次戰鬥有實際造成傷害
-					RemoveList.Add( pair.Key );
-				}
+                    //數量減少一次
+                    if (pair.Value.nNum-- <= 0)
+                    {
+                        RemoveList.Add( pair.Key );// 到零了要刪除
+                    }
+
+
+                }
 			}
 			else if( pair.Value.nTime == -2 ){ //本次戰鬥為防守方
 				if( Owner.IsStates( _FIGHTSTATE._BEDAMAGE ) == true ){
-					RemoveList.Add( pair.Key );
-				}
+                    if (pair.Value.nNum-- <= 0)
+                    {
+                        RemoveList.Add(pair.Key);// 到零了要刪除
+                    }
+                }
 			}
 		}		
 		

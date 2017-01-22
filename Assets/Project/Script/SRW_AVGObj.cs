@@ -288,7 +288,7 @@ public class SRW_AVGObj : MonoBehaviour {
             }
         }
 
-        TweenShake tws = TweenShake.Begin (this.gameObject, 2.0f, 40.0f);
+        TweenShake tws = TweenShake.Begin (this.gameObject, 1.5f, 30.0f);
 		if( tws )
 		{
 			bIsShaking = true;

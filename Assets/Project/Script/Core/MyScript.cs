@@ -1768,10 +1768,10 @@ public class MyScript {
 			{
 				// Fight Effect
 				if( func.sFunc  == "ADDBUFF_E") 				{
-					pool.Add( new ADDBUFF_E( func.I(0) ) );
+					pool.Add( new ADDBUFF_E( func.I(0) , func.I(1) ) );
 				}
 				else if( func.sFunc  == "ADDBUFF_I") 				{
-					pool.Add( new ADDBUFF_I( func.I(0) ) );
+					pool.Add( new ADDBUFF_I( func.I(0) , func.I(1)) );
 				}
 				else if( func.sFunc  == "AURABUFF_E") 				{
 					pool.Add( new AURABUFF_E( func.I(0) , func.I(1)) );
@@ -1823,6 +1823,14 @@ public class MyScript {
                 else if (func.sFunc == "HITBUFF_E")
                 {
                     pool.Add(new HITBUFF_E(func.I(0)));
+                }
+                else if (func.sFunc == "HITDELBUFF_I")
+                {
+                    pool.Add(new HITDELBUFF_I(func.I(0)));
+                }
+                else if (func.sFunc == "HITDELBUFF_E")
+                {
+                    pool.Add(new HITDELBUFF_E(func.I(0)));
                 }
                 else if (func.sFunc == "HITHP_I")
                 {

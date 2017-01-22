@@ -62,7 +62,7 @@ public class cHitResult		//
     };
 
 
-	public cHitResult( _TYPE type , int ident ,int value1 =0,int value2=0,int value3=0,int value4=0 )
+	public cHitResult( _TYPE type , int ident ,int value1 =0,int value2=0,int value3=0,int value4=0 , int value5 = 0)
 	{
 		eHitType = type;
 		Ident = ident; 
@@ -71,7 +71,8 @@ public class cHitResult		//
 		Value2 = value2;
 		Value3 = value3;
 		Value4 = value4;
-	}
+        Value5 = value5;
+    }
 //	public cHitResult( int nAtkIdent , int nDefIdent )
 //	{
 //		AtkIdent = nAtkIdent;
@@ -86,7 +87,7 @@ public class cHitResult		//
 	public int Value2{ set; get;}
 	public int Value3{ set; get;}
 	public int Value4{ set; get;}
-
+    public int Value5 { set; get; }
 
 };
 
@@ -1997,11 +1998,16 @@ public partial class BattleManager
         }
         // check parry / block
         //  if (pDefer.IsStates(_FIGHTSTATE._BLOCK))// 格檔
-        if (fAtkDmg < pDefer.n_DEF )
+        if (PowDmg > 0 )
         {
-            pDefer.AddStates(_FIGHTSTATE._PARRY ); // 還在防禦值內，算格檔
+            if( PowDmg + fAtkDmg < pDefer.n_DEF )
+                pDefer.AddStates(_FIGHTSTATE._PARRY); // 還在防禦值內，算格檔
         }
-
+        else 
+        {
+            if (fAtkDmg < pDefer.n_DEF)
+                pDefer.AddStates(_FIGHTSTATE._PARRY); // 還在防禦值內，算格檔
+        }
 
 
             resPool.Add ( new cHitResult( cHitResult._TYPE._HP ,nDefer , nDefHp  ) );
@@ -2040,10 +2046,7 @@ public partial class BattleManager
 		if ( (pAtker == null) || (pDefer == null) )
 			return null;
 
-        // 機關 單位不處理戰鬥
-        if (pDefer.IsTag(_UNITTAG._TRIGGER)) {
-            return null;
-        }       
+        
 
         // 守方強制迴避- Yoro : 需過濾非攻擊性技能
         bool bIsDamage =  MyTool.IsDamageSkill( nSkillID );
@@ -2055,6 +2058,9 @@ public partial class BattleManager
 
 		List<cHitResult> resPool = new List<cHitResult> ();
 		if (pDefer != null) {
+          
+
+
             int nRes = 0;
 
             if (pDefer.IsStates(_FIGHTSTATE._BLOCK))// 格檔
@@ -2068,9 +2074,15 @@ public partial class BattleManager
 			resPool.Add (new cHitResult (cHitResult._TYPE._BEHIT, pDefer.n_Ident, nSkillID , nRes )); // for play fx
 		}
 
-	
-		//		MyTool.DoSkillEffect( pAtker , pAtker.FightAttr.HitPool , Skill.s_CAST_TRIG ,  pAtker.FightAttr.HitEffPool , ref resPool  );
-		pAtker.DoHitEffect( nSkillID, pDefer , ref resPool );
+
+        // 機關 單位不處理戰鬥效果
+        if (pDefer.IsTag(_UNITTAG._TRIGGER))
+        {
+            return resPool;
+        }
+
+        //		MyTool.DoSkillEffect( pAtker , pAtker.FightAttr.HitPool , Skill.s_CAST_TRIG ,  pAtker.FightAttr.HitEffPool , ref resPool  );
+        pAtker.DoHitEffect( nSkillID, pDefer , ref resPool );
 		if (pDefer != null) {
 			pDefer.DoBeHitEffect( pAtker , ref resPool );
 			

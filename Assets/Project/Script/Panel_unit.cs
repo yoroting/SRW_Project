@@ -2673,7 +2673,7 @@ public class Panel_unit : MonoBehaviour {
                         // cUnitData pData = GameDataManager.Instance.GetUnitDateByIdent(res.Ident);
                         // if (pData != null)
                         // {
-                        pUnitData.Buffs.AddBuff(res.Value1, res.Value2, res.Value3, res.Value4);
+                        pUnitData.Buffs.AddBuff(res.Value1, res.Value2, res.Value3, res.Value4 , res.Value5 );
                         // }
 
                         m_fNextMsgTime = Time.time + 0.5f;

@@ -362,8 +362,11 @@ public class GameSystem : MonoBehaviour {
     public static bool IsSoundPlaying(  string strFile= "" )
     {
         string audioPath = "";
-        if(strFile != "")
+        if (strFile != "")
             audioPath = ResourcesManager.GetAudioClipPath(AudioChannelType.SoundFX, strFile);
+        else {
+            return false;// 當做沒播放處理
+        }
 
         return AudioManager.Instance.IsPlaying(AudioChannelType.SoundFX, audioPath);
     }
