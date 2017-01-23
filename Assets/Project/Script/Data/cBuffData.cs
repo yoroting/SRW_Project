@@ -441,7 +441,7 @@ public class cBuffs
 			else if( pair.Value.nTime == -1 ){ 
 				if( Owner.IsStates( _FIGHTSTATE._DAMAGE ) ){// 本次戰鬥有實際造成傷害
                     //數量減少一次
-                    if (pair.Value.nNum-- <= 0)
+                    if ( -- pair.Value.nNum <= 0)
                     {
                         RemoveList.Add( pair.Key );// 到零了要刪除
                     }
@@ -451,7 +451,7 @@ public class cBuffs
 			}
 			else if( pair.Value.nTime == -2 ){ //本次戰鬥為防守方
 				if( Owner.IsStates( _FIGHTSTATE._BEDAMAGE ) == true ){
-                    if (pair.Value.nNum-- <= 0)
+                    if ( -- pair.Value.nNum <= 0)
                     {
                         RemoveList.Add(pair.Key);// 到零了要刪除
                     }

@@ -1729,7 +1729,8 @@ public partial class BattleManager
                 //int nMaxLv = nIntLV > nExtLV ? nIntLV : nExtLV;
                 //if (nMaxLv < 1)                    nMaxLv = 1;
                 // float fMoneyRatio = Mathf.Pow(1.5f, (nMaxLv-1));
-                float fMoneyRatio = 1.0f + ((nIntLV + nExtLV) * 0.1f);
+                //float fMoneyRatio = 1.0f + ((nIntLV + nExtLV) * 0.1f); // 不受內外功等級影響
+                float fMoneyRatio = 1.0f;
                 money = (int)(money * fMoneyRatio);
 
                 // check drop item
@@ -1738,9 +1739,11 @@ public partial class BattleManager
 				}
 			}
 		}
-		// mul drop
-		money =  MyTool.ClampInt(  money , 0 ,   (int)(money*fdroprate * Defer.cCharData.f_DROP_EXP) );
-		exp   =  MyTool.ClampInt(  exp , 0 ,   (int)(exp*fdroprate * Defer.cCharData.f_DROP_MONEY) );
+        // mul drop
+        money = (int)(money * fdroprate * Defer.cCharData.f_DROP_MONEY);
+        exp = (int)(exp * fdroprate * Defer.cCharData.f_DROP_EXP);
+        money =  MyTool.ClampInt(  money , 0 , money);
+		exp   =  MyTool.ClampInt(  exp , 0 , exp );
 
 		// Add to pool
 		//nExp 	+= exp ; 
