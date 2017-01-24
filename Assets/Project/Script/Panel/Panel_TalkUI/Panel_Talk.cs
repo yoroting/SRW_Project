@@ -462,7 +462,8 @@ public class Panel_Talk : MonoBehaviour
                         return pair.Value;
                     }
                     else // remove exists
-                    {                        
+                    {
+                        nType = pair.Key;
                         pair.Value.ZoomOut();
                         m_idToFace.Remove(pair.Key );
                         break;
