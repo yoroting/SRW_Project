@@ -827,7 +827,7 @@ public partial class BattleManager
 
 		// aoe attack
 
-		if (Atker.IsStates( _FIGHTSTATE._THROUGH ) ) {
+		if (Atker.IsStates( _FIGHTSTATE._THROUGH ) ) {  // 避免自我施法時穿透問題
 			GetThroughPool( Atker , Defer ,nSkillID , gridX , gridY , ref AffectPool );
 		}
 		
@@ -1527,7 +1527,12 @@ public partial class BattleManager
 
 	public void GetThroughPool( cUnitData Atker , cUnitData Defer , int SkillID , int nTarX , int nTarY  , ref List< cUnitData> pool, int nLen=1  )
 	{
-		int nDefer = 0;
+        if (Atker == Defer)
+        {
+            return;
+        }
+        //====
+        int nDefer = 0;
 		if( Defer != null ){
 			nTarX = Defer.n_X;
 			nTarY = Defer.n_Y;
@@ -1707,7 +1712,7 @@ public partial class BattleManager
 		if( Atker == null || Defer == null ) return ;
 		if( Atker.eCampID != _CAMP._PLAYER  ) return;
 
-		float fdroprate = 1.0f + Atker.GetMulDrop();
+		float fdroprate =  Atker.GetMulDrop();
 
 		//
 		int exp 	= 5; // base exp

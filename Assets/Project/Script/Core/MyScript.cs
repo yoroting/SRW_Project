@@ -90,6 +90,11 @@ public class MyScript {
 				// 以下 不可在 戰鬥中檢查
 				if (BattleManager.Instance.IsBattlePhase ())
 					return false;// don't check in battle
+                // 等掉落處理完
+                if (BattleManager.Instance.IsDroping())
+                    return false;
+
+
                 //if ( cCMD.Instance.eCMDSTATUS != _CMD_STATUS._NONE)
                 if (cCMD.Instance.eCMDTYPE != _CMD_TYPE._SYS)
                 {
