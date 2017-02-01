@@ -222,6 +222,25 @@ public class MobAI  {
         }
 
 
+        // check is cast cmd
+        SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(nSkillID);
+        if (skl != null)
+        {
+            // self , 6→自我AOE我方7→自我AOE敵方8→自我AOEALL
+            if (skl.n_TARGET == 0 || skl.n_TARGET == 6 || skl.n_TARGET == 7||  skl.n_TARGET == 8  )
+            {
+                int nTarX = 0;
+                int nTarY = 0;
+                //
+                BattleManager.ConvertSkillTargetXY(mob.pUnitData, nSkillID , Tar.Ident() , ref  nTarX , ref nTarY );
+                // check can atk or not 
+                ActionManager.Instance.CreateCastCMD(mob.Ident(), nTarX, nTarY , nSkillID); // create Attack CMD . need battle manage to run				
+
+                return;   
+            }
+        }
+
+
         // check send atk cmd
         if ((nDist <= nSkillRange) && (nDist >= nMinRange) ) // 可以攻擊
         {
@@ -797,6 +816,12 @@ public class MobAI  {
         List<iVec2> path; ;
         if (_FindToAttackTarget(mob, target, nMove, out nSkillID, out path, false, true))
         {
+            // 先判斷是否要 上 buff
+            if (_AI_CastBuff(mob, nSkillID, nMove))
+            {
+                return ; // 能施展下一個技能的話 先中斷並 重新收尋
+            }
+
             _AI_MakeCmd(mob, target, nSkillID, ref path);
         }
         else {
