@@ -825,22 +825,31 @@ public class MobAI  {
             _AI_MakeCmd(mob, target, nSkillID, ref path);
         }
         else {
-            // 需要移動命令
-            // 移動過去
-            if (path != null && path.Count > 0)
+            //不能攻擊指定目標，則隨意攻擊
+            //  _AI_NormalAttack(mob, nSkillID, nMove);
+            // 在指定地點 看看有沒有人可以攻擊
+            iVec2 last = mob.Loc;
+            Panel_unit tmpTar = null;
+            int tmpSkill = 0;
+
+            if (path!= null && path.Count > 0)
             {
-                _AI_MakeCmd(mob, target, 0, ref path); // 往最近的移動
-                return ;
+                last = path[path.Count - 1];
+                if (_AI_FindTargetAttackbyPos(mob, last, ref tmpSkill, ref tmpTar))
+                {
+                    target = tmpTar; // 變更目標
+                    nSkillID = tmpSkill;
+                }
+
+                _AI_MakeCmd(mob, target, nSkillID, ref path); // 往最近的移動
+                return;
             }
+            //
+            _AI_NormalAttack(mob, nSkillID, nMove);
 
-            ActionManager.Instance.CreateWaitingAction(ident); // 待機
+            //  ActionManager.Instance.CreateWaitingAction(ident); // 與其待機，不如正常攻擊
         }
-            // wait 
-        //    return ;
-                //move 
-
-
-
+     
 
         return;
      
@@ -896,8 +905,45 @@ public class MobAI  {
         ActionManager.Instance.CreateWaitingAction (ident);
 	}
 
-	// tool finc
-	public static List<iVec2> FindPathToTarget( Panel_unit Mob , Panel_unit Target  , int nMove , int nRange =1 )
+    static bool _AI_FindTargetAttackbyPos(Panel_unit mob, iVec2 pos , ref int nSkillID  , ref Panel_unit Tar )
+    {
+
+        iVec2 back = mob.Loc;
+        int nMaxRange = _AI_GetMaxSkillRange(mob.pUnitData);
+
+        mob.Loc = pos;
+        Dictionary<Panel_unit, int> pool = Panel_StageUI.Instance.GetUnitHpPool(mob, true, nMaxRange ); // all unit in                                                                                                            
+        var items = from pair in pool orderby pair.Value ascending select pair;             // Sort HP
+        // 範圍內 低血量
+        foreach (KeyValuePair<Panel_unit, int> pair in items)
+        {
+            Panel_unit target = pair.Key;
+            int nDist = pos.Dist(target.Loc);
+
+            if (CreateSkilTmpList(mob.pUnitData, target.pUnitData, nDist, false)) // create skill pool to atk
+            {
+                foreach (SKILL skl in tmpSklList)
+                {
+                    int nMinRange = skl.n_MINRANGE;
+                    int nSkillRange = skl.n_RANGE;
+
+                    if ((nDist <= nSkillRange) && (nDist >= nMinRange)) // 可以直接攻擊
+                    {
+                        mob.Loc = back;
+                        nSkillID = skl.n_ID;
+                        Tar = target;
+                        return true; // tmpSklList
+                    }
+                }
+            }
+
+        }
+        mob.Loc = back;
+        return false;
+    }
+
+    // tool finc
+    public static List<iVec2> FindPathToTarget( Panel_unit Mob , Panel_unit Target  , int nMove , int nRange =1 )
 	{
 		if( Mob == null || Target == null || nMove ==0 )
         {

@@ -1130,7 +1130,7 @@ namespace MYGRIDS
         }
 
 
-		public List<iVec2> GetZocPool(iVec2 self, ref List<iVec2> enemy)
+		public List<iVec2> GetZocPool(iVec2 self, ref List<iVec2> enemy )
 		{
 			List<iVec2> lst = new List<iVec2>();
 			foreach (iVec2 v2 in enemy)

@@ -1917,20 +1917,6 @@ public partial class BattleManager
 
         // 計算物理護甲減傷
 
-
-        if (pAtker.IsStates(_FIGHTSTATE._BROKEN) == false)// 攻方沒有破甲效果
-        {
-            float DefAC = pDefer.GetArmor();
-
-            //fAtkDmg *= ((100.0f - DefAC) / 100.0f);            
-            fAtkDmg -= DefAC;
-            if (fAtkDmg < 0.0f) {
-                fAtkDmg = 0.0f;
-                // 完全格檔
-                pDefer.AddStates(_FIGHTSTATE._BLOCK);
-            }
-        }
-
         fAtkDmg = (fAtkDmg < 0) ? 0 : fAtkDmg;
         // 防禦..
         if (bDefMode  )
@@ -1972,6 +1958,20 @@ public partial class BattleManager
                     }
                     resPool.Add(new cHitResult(cHitResult._TYPE._HP, nAtker, nAtkHp));
                 }
+            }
+        }
+
+        if (pAtker.IsStates(_FIGHTSTATE._BROKEN) == false)// 攻方沒有破甲效果
+        {
+            float DefAC = pDefer.GetArmor();
+
+            //fAtkDmg *= ((100.0f - DefAC) / 100.0f);            
+            fAtkDmg -= DefAC;
+            if (fAtkDmg < 0.0f)
+            {
+                fAtkDmg = 0.0f;
+                // 完全格檔
+                pDefer.AddStates(_FIGHTSTATE._BLOCK);
             }
         }
 
@@ -2043,6 +2043,11 @@ public partial class BattleManager
 		//有傷害的才會造成掉落
 		if( BattleManager.Instance != null ){
 			BattleManager.Instance.CalDropResult( pAtker , pDefer );
+
+            // 彈死人的要計算掉落
+            if (pAtker.IsStates(_FIGHTSTATE._DEAD) ) {
+                BattleManager.Instance.CalDropResult(pDefer,pAtker );
+            }
 		}
 
 		return resPool;

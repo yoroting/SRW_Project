@@ -1149,6 +1149,11 @@ public class Panel_StageUI : MonoBehaviour
 
 
 		if( bInAtkCell  ){
+            if (unit.pUnitData.IsTag(_UNITTAG._PEACE)) {
+                return;
+            }
+
+
 			if( _PK_MODE._PLAYER ==  MyTool.GetSkillPKmode (cCMD.Instance.nSkillID) ){
                 //cCMD.Instance.pCmder.
 				if(bCanPK)
@@ -3220,16 +3225,28 @@ public class Panel_StageUI : MonoBehaviour
 			Grids.AddIgnorePool (  pkPosPool );  // all is block in first find
 
 			if( false== MyScript.bParsing  ){// no zoc during script parse
-				zocPool = Grids.GetZocPool(unit.Loc , ref pkPosPool );
+				zocPool = Grids.GetZocPool(unit.Loc , ref pkPosPool  );
 #if UNITY_EDITOR
-                //if( Config.GOD ) // always draw in edit
-                {
-                    CreateZocOverEffect( zocPool );
-				}
+                List<iVec2> tmpPool = new List<iVec2>();                
 #endif 
-                Grids.AddIgnorePool( zocPool ); // APPLY ZOC	
-			}
-		}
+                int mov = pData.GetMov();
+                foreach (iVec2 z in zocPool)
+                {
+                    if (unit.Loc.Dist(z) <= mov) // 超過移動範圍的zoc 不處理
+                    {
+                        Grids.AddIgnorePos(z);
+#if UNITY_EDITOR
+                        tmpPool.Add(z);
+#endif
+                    }
+                }
+
+                //Grids.AddIgnorePool( zocPool ); // APPLY ZOC	
+#if UNITY_EDITOR
+                    CreateZocOverEffect(tmpPool);
+#endif
+            }
+        }
 
         // return null if ed in zoc pos
         if( Grids.IsIgnorePos( ed ))
