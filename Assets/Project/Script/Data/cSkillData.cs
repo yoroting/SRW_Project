@@ -27,7 +27,7 @@ public enum _SKILLTAG
     _FLASH      = 15,   // 閃現過去
 
     _HEAL = 20,   //治療
-
+    _WAITING = 21,   //待機技能
     // TAG for mob ai check
     _TIEUP 		= 100,	//牽制
 };

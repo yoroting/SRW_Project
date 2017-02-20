@@ -358,17 +358,37 @@ public class GameSystem : MonoBehaviour {
 		string audioPath = ResourcesManager.GetAudioClipPath( AudioChannelType.SoundFX , strFile );
 		AudioManager.Instance.Play( AudioChannelType.SoundFX ,  audioPath );
 	}
+   
 
     public static bool IsSoundPlaying(  string strFile= "" )
     {
-        string audioPath = "";
-        if (strFile != "")
-            audioPath = ResourcesManager.GetAudioClipPath(AudioChannelType.SoundFX, strFile);
-        else {
-            return false;// 當做沒播放處理
-        }
+        int nIdx;
+        string audioFile = "";
+      
+        if (int.TryParse(strFile, out nIdx))
+        {
 
-        return AudioManager.Instance.IsPlaying(AudioChannelType.SoundFX, audioPath);
+            SOUND sound = ConstDataManager.Instance.GetRow<SOUND>(nIdx);
+            if (sound != null)
+            {
+                audioFile = sound.s_FILENAME;
+               
+            }
+        }
+        else
+        {
+            audioFile = strFile;
+        }
+        //
+        if (audioFile != "")
+        {
+            string  audioPath = ResourcesManager.GetAudioClipPath(AudioChannelType.SoundFX, audioFile);
+            return AudioManager.Instance.IsPlaying(AudioChannelType.SoundFX, audioPath);
+        }
+        // 安全防鎖
+        
+        return false;// 當做沒播放處理
+        
     }
 
     public static void PlayBGM( int nBGMIdx )

@@ -50,8 +50,9 @@ public class MobAI  {
 				_AI_PositionAttack( mob , nSkillID ,  nMove ) ;
 			}break;	
 			default:
-				ActionManager.Instance.CreateWaitingAction (ident);
-			break;
+                _AI_MakeWaitCmd(mob);
+                //ActionManager.Instance.CreateWaitingAction (ident);
+                break;
 		}
 
         // record ai time
@@ -96,9 +97,9 @@ public class MobAI  {
             foreach (SKILL skl in tmpSklList)
             {
                 int nMinRange = skl.n_MINRANGE;
-                int nSkillRange = skl.n_RANGE;
+                int nSkillRange = skl.n_RANGE;          // -1 代表 無距離限制
 
-                if ((nDist <= nSkillRange) && (nDist >= nMinRange)) // 可以直接攻擊
+                if ((nSkillRange== -1) || (  (nDist <= nSkillRange) && (nDist >= nMinRange) ) ) // 可以直接攻擊
                 {
                     nSKillID = skl.n_ID;
                     return true; // tmpSklList
@@ -208,7 +209,8 @@ public class MobAI  {
         }
 
         if ( mob.pUnitData.eComboAI == _AI_COMBO._DEFENCE) {
-            ActionManager.Instance.CreateWaitingAction(mob.Ident());
+            //  ActionManager.Instance.CreateWaitingAction(mob.Ident());
+            _AI_MakeWaitCmd(mob, Tar);
             return;
         }
 
@@ -216,7 +218,8 @@ public class MobAI  {
         if (mob.CanPK(Tar) == false) {
             if (MyTool.IsDamageSkill(nSkillID) == true)
             {
-                ActionManager.Instance.CreateWaitingAction(mob.Ident()); // 不能攻擊我方
+                _AI_MakeWaitCmd(mob, Tar);
+                //ActionManager.Instance.CreateWaitingAction(mob.Ident()); // 不能攻擊我方
                 return;
             }
         }
@@ -250,8 +253,39 @@ public class MobAI  {
         }
         else
         {
-            ActionManager.Instance.CreateWaitingAction(mob.Ident());
+            //將來修正， 如果還能移動，則降低移動力，重新收尋
+            _AI_MakeWaitCmd(mob , Tar  );
+            //ActionManager.Instance.CreateWaitingAction(mob.Ident());
         }       
+    }
+
+    static void _AI_MakeWaitCmd(Panel_unit mob, Panel_unit Tar=null)
+    {
+        // check if wait skill
+        int Dist = 0;
+        int nTarX = 0;
+        int nTarY = 0;
+        cUnitData target = null;
+        if (Tar != null)
+        {
+            target = Tar.pUnitData;
+            nTarX = mob.Loc.X;
+            nTarY = mob.Loc.Y;
+            Dist = mob.Dist(Tar);
+        }
+
+        if (CreateWaitTmpList(mob.pUnitData, target, Dist))
+        {
+            // 
+            foreach (SKILL skl in tmpSklList)
+            {
+                ActionManager.Instance.CreateCastCMD(mob.Ident(), nTarX, nTarY, skl.n_ID); // create Attack CMD . need battle manage to run				
+                return;
+            }
+        }
+
+        //_AI_MakeWaitCmd(mob, Tar);
+        ActionManager.Instance.CreateWaitingAction(mob.Ident());
     }
 
     // tool func hp lowest ver2
@@ -607,8 +641,9 @@ public class MobAI  {
 			}
 			else{ // imort for break loop
 
-				ActionManager.Instance.CreateWaitingAction (mob.Ident ());
-				return true;
+                _AI_MakeWaitCmd(mob);
+                //ActionManager.Instance.CreateWaitingAction (mob.Ident ());
+                return true;
 			}
 			// for next target
 		}
@@ -663,7 +698,8 @@ public class MobAI  {
 
 
         //都不行則待機
-        ActionManager.Instance.CreateWaitingAction(mob.Ident());
+        _AI_MakeWaitCmd(mob);
+        //ActionManager.Instance.CreateWaitingAction(mob.Ident());
         // all target faild.. waiting
 
     }
@@ -682,7 +718,8 @@ public class MobAI  {
 
 
         //都不行則待機
-        ActionManager.Instance.CreateWaitingAction(mob.Ident());
+        _AI_MakeWaitCmd(mob);
+        //ActionManager.Instance.CreateWaitingAction(mob.Ident());
 
 
         return;
@@ -789,8 +826,9 @@ public class MobAI  {
 	static void _AI_Defence(Panel_unit mob , int nSkillID , int nMove ) 
 	{
 		int ident = mob.Ident();
-		ActionManager.Instance.CreateWaitingAction (ident); // always wait in pos
-	}
+        _AI_MakeWaitCmd(mob);
+        //ActionManager.Instance.CreateWaitingAction (ident); // always wait in pos
+    }
 
     // 攻擊指定目標
 	static void _AI_TargetAttack(Panel_unit mob , int nSkillID , int nMove ) 
@@ -902,8 +940,9 @@ public class MobAI  {
 				
 			}
 		}
-        ActionManager.Instance.CreateWaitingAction (ident);
-	}
+        _AI_MakeWaitCmd(mob);
+        //ActionManager.Instance.CreateWaitingAction (ident);
+    }
 
     static bool _AI_FindTargetAttackbyPos(Panel_unit mob, iVec2 pos , ref int nSkillID  , ref Panel_unit Tar )
     {
@@ -1609,6 +1648,49 @@ public class MobAI  {
         return (tmpSklList.Count > 0);
     }
 
+    //建立 待機技能
+    static public bool CreateWaitTmpList(cUnitData pData, cUnitData pTarget, int nDist, bool bCounterMode = false)
+    {
+        if (pData == null)
+            return false;
+
+        int nRealDist = nDist;
+        if (nRealDist < 1)
+            nRealDist = 1;
+
+        tmpSklList.Clear();
+        foreach (int nID in pData.SkillPool)
+        {
+            int nSkillID = nID;
+            nSkillID = pData.Buffs.GetUpgradeSkill(nSkillID); // Get upgrade skill
+            if (nSkillID == 0)
+            {
+                continue;
+            }
+
+            if (CheckSkillCanCast(pData, pTarget, nSkillID, nRealDist, bCounterMode) == false)
+            {
+                continue;
+            }
+
+            SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(nSkillID);
+
+            // 必須不是 精神 技能
+            if (skl.n_SCHOOL == 0)
+                continue;
+            cSkillData skldata = GameDataManager.Instance.GetSkillData(nSkillID);
+            if ( skldata.IsTag(_SKILLTAG._WAITING) )
+            {
+                tmpSklList.Add(skl);
+            }
+
+        }
+        // revert for high skill use fast
+        tmpSklList.Reverse();
+
+        return (tmpSklList.Count > 0);
+    }
+
     // tool func to check skill can use
     static public bool CheckSkillCanCast(cUnitData pData, cUnitData pTarget, int nSkillID, int nDist, bool bCounterMode = false) {
         if (pData == null) {
@@ -1671,7 +1753,7 @@ public class MobAI  {
 				return false; // too near can't cast
 			
 			// counter can't move
-			if( nRange < nDist )
+			if( nRange >=0 &&  nRange < nDist )
 				return false;
 
 			//反擊禁用點地
@@ -1692,7 +1774,7 @@ public class MobAI  {
 			}
 		}
 		// range check
-		if( (skl.n_RANGE < nDist) || ( skl.n_MINRANGE > nDist ) ){
+		if( ( skl.n_RANGE>= 0 && skl.n_RANGE < nDist) || ( skl.n_MINRANGE > nDist ) ){
 			return false;
 		}
 

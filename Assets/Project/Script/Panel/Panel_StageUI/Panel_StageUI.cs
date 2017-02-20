@@ -82,9 +82,10 @@ public class Panel_StageUI : MonoBehaviour
 	bool 							bIsMoveToObj;		// is move camera to obj
 //	public bool	bIsRestoreData;								// this stage is need restore data
 	public bool m_bIsSkipMode;							// skip for script perform
-    public bool m_bWaitSoundPlayDone ;          // need wait sound channel playdone
-	// drag canvas limit								
-	float fMinOffX ;
+    //public bool m_bWaitSoundPlayDone ;          // need wait sound channel playdone
+    public string m_bWaitSoundFile="";
+    // drag canvas limit								
+    float fMinOffX ;
 	float fMaxOffX ;
 	float fMinOffY ;
 	float fMaxOffY ;
@@ -708,7 +709,8 @@ public class Panel_StageUI : MonoBehaviour
         IsEventEnd = false;
 		bIsStageEnd = false;
 		bIsReady = false;
-        m_bWaitSoundPlayDone = false;
+        //m_bWaitSoundPlayDone = false;
+        m_bWaitSoundFile = "";
         bIsMoveToObj = false;
 	}
 
@@ -1906,13 +1908,13 @@ public class Panel_StageUI : MonoBehaviour
 		}
 
         // check waiting sound .. 應該增加一個 判斷旗標 增進效能 
-        if (m_bWaitSoundPlayDone == true)
+        if (m_bWaitSoundFile != "" )
         {
-            if (GameSystem.IsSoundPlaying())
+            if ( GameSystem.IsSoundPlaying(m_bWaitSoundFile) )
             {
                 return true;
             }
-            m_bWaitSoundPlayDone = false; // check complete
+            m_bWaitSoundFile = ""; // check complete
         }
 
         return false;
@@ -4510,7 +4512,7 @@ public class Panel_StageUI : MonoBehaviour
         }
         else {
 
-            m_bWaitSoundPlayDone = true;
+            m_bWaitSoundFile = SoundFile;
 
             int nIdx;
             if (int.TryParse(SoundFile, out nIdx))

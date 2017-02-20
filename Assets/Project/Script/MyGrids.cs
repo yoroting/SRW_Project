@@ -1141,35 +1141,64 @@ namespace MYGRIDS
 					case _DIR._UP:
 						lst.Add(  v2.MoveXY( 1 , 1 ) );
 						lst.Add(  v2.MoveXY( -1 , 1 ) );
-					break;						
+
+                    //    lst.Add(v2.MoveXY(1, 0));
+                    //    lst.Add(v2.MoveXY(-1, 0));
+                        break;						
 					case _DIR._DOWN:
 						lst.Add(  v2.MoveXY( 1 , -1 ) );
 						lst.Add(  v2.MoveXY( -1 , -1 ) );
-					break;						
+
+                   //     lst.Add(v2.MoveXY(1, 0));
+                   //     lst.Add(v2.MoveXY(-1, 0));
+                        break;						
 					case _DIR._LEFT:
 						lst.Add(  v2.MoveXY( -1 , 1 ) );
 						lst.Add(  v2.MoveXY( -1 , -1 ) );
-					break;
+
+                    //    lst.Add(v2.MoveXY(0, 1));
+                    //    lst.Add(v2.MoveXY(0, -1));
+
+                        break;
 					case _DIR._RIGHT:
 						lst.Add(  v2.MoveXY( 1 , 1 ) );
 						lst.Add(  v2.MoveXY( 1 , -1 ) );
-					break;
+
+                   //     lst.Add(v2.MoveXY(0, 1));
+                   //     lst.Add(v2.MoveXY(0, -1));
+                        break;
 					case _DIR._RIGHT_UP:
 						lst.Add(  v2.MoveXY( 0 , 1 ) );
 						lst.Add(  v2.MoveXY( 1 , 0 ) );
-					break;
+
+                        //lst.Add(v2.MoveXY(-1, 1));
+                        //lst.Add(v2.MoveXY(1, -1));
+
+                        break;
 					case _DIR._RIGHT_DOWN:
 						lst.Add(  v2.MoveXY( 0 , -1 ) );
 						lst.Add(  v2.MoveXY( 1 , 0 ) );
-					break;
+
+
+                        //lst.Add(v2.MoveXY(1, 1));
+                        //lst.Add(v2.MoveXY(-1, -1));
+
+                        break;
 					case _DIR._LEFT_UP:
 						lst.Add(  v2.MoveXY( 0 , 1 ) );
 						lst.Add(  v2.MoveXY( -1 , 0 ) );
-					break;
+
+                        //lst.Add(v2.MoveXY(1, 1));
+                        //lst.Add(v2.MoveXY(-1, -1));
+
+                        break;
 					case _DIR._LEFT_DOWN:
 						lst.Add(  v2.MoveXY( 0 , -1 ) );
 						lst.Add(  v2.MoveXY( -1 , 0 ) );
-					break;
+
+                        //lst.Add(v2.MoveXY(-1, 1));
+                        //lst.Add(v2.MoveXY(1, -1));
+                        break;
 				}
 			}
 
