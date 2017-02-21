@@ -1437,7 +1437,7 @@ public partial class BattleManager
 		}
 	}
 
-	public void ShowAtkAssist( int nAtkIdent ,  int nDefIdent , bool bShow = true )
+	public void ShowAtkAssist( int nAtkIdent ,  int nDefIdent , bool bShow = false )
 	{
 		cUnitData pAtker = GameDataManager.Instance.GetUnitDateByIdent ( nAtkIdent );
 		if ( pAtker == null)
@@ -1478,7 +1478,7 @@ public partial class BattleManager
 
 	}
 	
-	public void ShowDefAssist( int nDefIdent , bool bShow = true  )
+	public void ShowDefAssist( int nDefIdent , bool bShow = false  )
 	{
 		cUnitData pDefer = GameDataManager.Instance.GetUnitDateByIdent ( nDefIdent );
 		if (pDefer == null)

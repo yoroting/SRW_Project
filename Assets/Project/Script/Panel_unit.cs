@@ -872,15 +872,27 @@ public class Panel_unit : MonoBehaviour {
 			switch( nSubActFlow )
 			{
 			case 0:
-                // move camera to unit
-              
+                // move camera to atk unit              
                 nSubActFlow++;
 				break;
-			case 1:
-				ActionAttack( CurAction.nTarIdent , CurAction.nSkillID );
-				nSubActFlow++;
+            case 1:
+                // def pop def skill move to def already , wait move camera to atk unit  again
+                Panel_StageUI.Instance.MoveToGameObj(this.gameObject, false);
+                nSubActFlow++;
+                break;
+            case 2:
+                if (Panel_StageUI.Instance.IsTraceObjEnd() == false)
+                {
+                            // 前面的 is
+                }
+                else
+                {
+                    ActionAttack(CurAction.nTarIdent, CurAction.nSkillID);
+                    nSubActFlow++;
+                }
+                        
 				break;
-			case 2:
+			case 3:
 				// wait all hit result preform
 				if( IsAnimate() == false ){
 					ActionManager.Instance.ExecActionEndResult ( CurAction  );                    
@@ -888,7 +900,7 @@ public class Panel_unit : MonoBehaviour {
 				}
 				break;
 
-			case 3:
+			case 4:
 				ActionFinished();
 				break;
 			}
@@ -916,13 +928,24 @@ public class Panel_unit : MonoBehaviour {
 		case _ACTION._CAST:			// casting
 			switch( nSubActFlow )
 			{
-			case 0:
-                
+            case 0:
+                Panel_StageUI.Instance.MoveToGameObj(this.gameObject, false);// wait camera to unit
                 nSubActFlow++;
-				ActionCasting( CurAction.nSkillID  , CurAction.nTarGridX , CurAction.nTarGridY );
-				//ActionMove( CurAction.nTarGridX , CurAction.nTarGridY  );
+                break;
+			case 1:{
+                        if (Panel_StageUI.Instance.IsTraceObjEnd() == false )
+                        {
+                                // 前面的 is
+                        }
+                        else
+                        {
+                                nSubActFlow++;
+                                ActionCasting(CurAction.nSkillID, CurAction.nTarGridX, CurAction.nTarGridY);
+                        }
+                            //ActionMove( CurAction.nTarGridX , CurAction.nTarGridY  );
+                }
 				break;
-			case 1:
+			case 2:
 				if( IsAnimate() == false ){
 					// clear effect cell
 					Panel_StageUI.Instance.ClearAOECellEffect();
@@ -939,7 +962,7 @@ public class Panel_unit : MonoBehaviour {
 //					nSubActFlow++;
 //				}
 				break;
-			case 2:
+			case 3:
 				ActionFinished();
 				break;
 			}
@@ -947,12 +970,15 @@ public class Panel_unit : MonoBehaviour {
 		case _ACTION._HIT:			// castout
 			switch( nSubActFlow )
 			{
-			case 0:
+            case 0:
+                        nSubActFlow++;
+                        break;
+			case 1:
 				nSubActFlow++;
 				ActionHit( CurAction.nSkillID ,CurAction.nTarGridX , CurAction.nTarGridY );
 				//ActionMove( CurAction.nTarGridX , CurAction.nTarGridY  );
 				break;
-			case 1:
+			case 2:
 				if( !IsAnimate() && BattleMsg.nMsgCount == 0 ){// wait all msg complete
 					// clear effect cell
 					Panel_StageUI.Instance.ClearAOECellEffect();
@@ -963,7 +989,7 @@ public class Panel_unit : MonoBehaviour {
 				//ActionMove( CurAction.nTarGridX , CurAction.nTarGridY  );
 				break;
 
-			case 2:
+			case 3:
 				ActionFinished();
 				break;
 			}

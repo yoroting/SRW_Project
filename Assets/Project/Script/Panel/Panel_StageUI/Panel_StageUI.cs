@@ -68,6 +68,7 @@ public class Panel_StageUI : MonoBehaviour
 
 	Panel_unit TarceMoveingUnit; //  Trace the moving unit
     FightBulletFX TraceMovingFightBullet;       // trace fight bullet
+  //  bool bIsTraceObj = false;
 
     public MyGrids	Grids;				// main grids . only one
 
@@ -738,48 +739,24 @@ public class Panel_StageUI : MonoBehaviour
 		// ensure canvrs in screen
 	//	if( TilePlaneObj != null )
 		{
-            if (TarceMoveingUnit != null)
-            {
-
-                //{
-                // force to unit
-                Vector3 v = TarceMoveingUnit.transform.localPosition;
-                v.x *= -1;
-                v.y *= -1;
-
-                //get time from speed 200pix /sec
-                Vector3 d = this.transform.localPosition - v;
-                float time = d.magnitude / 1000;
-                TweenPosition tw = TweenPosition.Begin<TweenPosition>(this.gameObject, time);
-                if (tw)
-                {
-                    tw.SetStartToCurrentValue();
-                    tw.to = v;
-                }
-
-                //TilePlaneObj.transform.localPosition  = v ;
-
-                //}
-                if (TarceMoveingUnit.IsMoving() == false)
-                {
-                    TarceMoveingUnit = null;
-                }
-            }
-            else if(TraceMovingFightBullet != null )
+            if (TraceMovingFightBullet != null)
             {
                 Vector3 v = TraceMovingFightBullet.transform.localPosition;
-                v.x *= -1;
-                v.y *= -1;
+                CameraMoveTo(v.x, v.y);
+                //v.x *= -1;
+                //v.y *= -1;
 
-                //get time from speed 200pix /sec
-                Vector3 d = this.transform.localPosition - v;
-                float time = d.magnitude / 1000;
-                TweenPosition tw = TweenPosition.Begin<TweenPosition>(this.gameObject, time);
-                if (tw)
-                {
-                    tw.SetStartToCurrentValue();
-                    tw.to = v;
-                }
+                ////get time from speed 200pix /sec
+                //Vector3 d = this.transform.localPosition - v;
+                //float time = d.magnitude / 1000;
+                //TweenPosition tw = TweenPosition.Begin<TweenPosition>(this.gameObject, time);
+                //if (tw)
+                //{
+                //    tw.SetStartToCurrentValue();
+                //    bIsMoveToObj = true;
+                //MyTool.TweenSetOneShotOnFinish( tw , MoveToGameObjEnd ); 
+                //    tw.to = v;
+                //}
 
                 FightBulletTween_Direction move = TraceMovingFightBullet.GetComponent<FightBulletTween_Direction>();
                 if (move == null || (move.IsTweenEnd == true))
@@ -788,6 +765,43 @@ public class Panel_StageUI : MonoBehaviour
                 }
 
 
+            }
+            else if (TarceMoveingUnit != null)
+            {
+
+                //{
+                // force to unit
+                Vector3 v = TarceMoveingUnit.transform.localPosition;
+                CameraMoveTo(v.x, v.y);
+                //v.x *= -1;
+                //v.y *= -1;
+
+                ////get time from speed 200pix /sec
+                //Vector3 d = this.transform.localPosition - v;
+                //float time = d.magnitude / 1000;
+                //TweenPosition tw = TweenPosition.Begin<TweenPosition>(this.gameObject, time);
+                //if (tw)
+                //{
+                //    bIsMoveToObj = true;
+                //    tw.SetStartToCurrentValue();
+                //MyTool.TweenSetOneShotOnFinish(tw, MoveToGameObjEnd);
+                //    tw.to = v;
+                //}
+                //TilePlaneObj.transform.localPosition  = v ;
+
+                //}
+                if (TarceMoveingUnit.IsMoving() == false) // 不見得一定在移動，要更改設計
+                {
+                    TarceMoveingUnit = null;         // 有可能目標是停止的，需等鏡頭移動結束
+                }
+            }
+            else if( bIsMoveToObj ){
+                // 如果有 trace 要檢查是否還有移動物件
+                TweenPosition tw = this.gameObject.GetComponent<TweenPosition>();
+                if (tw == null) {
+                    bIsMoveToObj = false;
+                    Debug.LogError("FixPlanePosition blocked with no TweenPosition component");
+                }
             }
 			//float fMouseX = Input.mousePosition.x;
 			//float fMouseY = Input.mousePosition.y;
@@ -819,6 +833,14 @@ public class Panel_StageUI : MonoBehaviour
         }
 
 	}
+
+    public bool IsTraceObjEnd()
+    {
+        if (bIsMoveToObj || TarceMoveingUnit != null || TraceMovingFightBullet != null ) {
+            return false;
+        }
+            return true;
+    }
 
 	void OnReady()
 	{
@@ -2878,10 +2900,9 @@ public class Panel_StageUI : MonoBehaviour
 		if (unit == null || bIsStageEnd )
 			return;
 		if (TarceMoveingUnit != null) // 避免富庶單位移動時會震動
-			return;
-        
+			return;        
 
-		TarceMoveingUnit = unit;
+		TarceMoveingUnit = unit;        
     }
 
     public void TraceFightBullet(FightBulletFX fb)
@@ -2893,7 +2914,10 @@ public class Panel_StageUI : MonoBehaviour
 			return;
 
         TraceMovingFightBullet = fb;
-	}
+
+        TarceMoveingUnit = null; // 飛彈可以取消追蹤目標
+
+    }
 
     public bool CheckNeedTrace(Vector3 vTar, bool force = false )
     {
