@@ -50,13 +50,7 @@ public class MyScript {
 					return false;
 				}	
 			}
-			else if( func.sFunc == "HP"  )
-			{
-				if( ConditionHp( func.I(0), func.S(1)  ,func.F(2) ) == false )
-				{
-					return false;
-				}	
-			}
+			
             else if (func.sFunc == "BUFF")
             {
                 if ( ConditionUnitBuff( func.I(0),func.I(1), func.I(2) ) == false)
@@ -88,12 +82,11 @@ public class MyScript {
             // 以上 可以在 戰鬥中檢查
             else { 
 				// 以下 不可在 戰鬥中檢查
-				if (BattleManager.Instance.IsBattlePhase ())
+				if (BattleManager.Instance.IsBattlePhase ()) // 戰鬥中忽然觸發事件，問題很多
 					return false;// don't check in battle
                 // 等掉落處理完
-                if (BattleManager.Instance.IsDroping())
-                    return false;
-
+               // if (BattleManager.Instance.IsDroping()) // 會卡到 HP ==0 檢查
+               //     return false;
 
                 //if ( cCMD.Instance.eCMDSTATUS != _CMD_STATUS._NONE)
                 if (cCMD.Instance.eCMDTYPE != _CMD_TYPE._SYS)
@@ -104,6 +97,13 @@ public class MyScript {
                 if (func.sFunc == "AFTERCAST")
                 {
                     if (ConditionAfterCast(func.I(0), func.I(1) , func.I(2) ) == false)
+                    {
+                        return false;
+                    }
+                }
+                else if (func.sFunc == "HP")
+                {
+                    if (ConditionHp(func.I(0), func.S(1), func.F(2)) == false)
                     {
                         return false;
                     }

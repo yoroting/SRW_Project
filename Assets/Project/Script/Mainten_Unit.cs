@@ -37,10 +37,16 @@ public class Mainten_Unit : MonoBehaviour
 
     }
 
-    void onEnable()
+    void OnEnable()
     {
 
         ReSize();
+
+    }
+    private void OnDisable()
+    {
+
+        int A = 0;
 
     }
 

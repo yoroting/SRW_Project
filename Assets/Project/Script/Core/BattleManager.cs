@@ -935,6 +935,9 @@ public partial class BattleManager
 
 	public bool ProcessDrop()
 	{
+        if (IsBattlePhase())
+            return false; // 戰鬥中不處理
+
 		if ( HaveDrop() ) {
 			// drop item
 			if( nDropItemPool.Count > 0 )

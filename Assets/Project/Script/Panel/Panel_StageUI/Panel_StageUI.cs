@@ -460,17 +460,25 @@ public class Panel_StageUI : MonoBehaviour
         if (PanelManager.Instance.CheckUIIsOpening(Panel_Talk.Name) == true)
             return;
 
-      
+        // check drop  before event
+        if (BattleManager.Instance.ProcessDrop() == true) // will block event check
+            return;
 
-
-       //==================	
-       if (RunEvent() == true)// this will throw many unit action and interrupt battle.
+        //==================	
+        if (RunEvent() == true)// this will throw many unit action and interrupt battle.
             return;
 
         // if one event need to run battle. it should pause ein event
         if (BattleManager.Instance.IsBattlePhase())
         {// this will throw many unit action
             BattleManager.Instance.Run();
+            return;
+        }
+      
+
+        // 戰鬥結束後 檢查有無事件需要執行，有的話 跳開，讓下一 frame 執行
+        if ( GetEventToRun()  )
+        {
             return;
         }
 
@@ -488,9 +496,7 @@ public class Panel_StageUI : MonoBehaviour
         if (CheckUnitDead() == true) // check here for event_manager  can detect hp ==0 first , some event may relive the deading unit
             return;
 
-        // check drop event
-        if (BattleManager.Instance.ProcessDrop() == true)
-            return;
+      
 
 
         // stage phase
@@ -2270,13 +2276,13 @@ public class Panel_StageUI : MonoBehaviour
 
 	}
 	//
-	void GetEventToRun()
+	bool GetEventToRun()
 	{
 		//if( IsRunningEvent() )
 		if( NextEvent != null )		// avoid double run
-			return ;
+			return true;
 		if( (EvtPool==null) )
-			return  ;
+			return  false;
 
         // prepare event to run
         if (WaitPool.Count > 0)
@@ -2285,21 +2291,21 @@ public class Panel_StageUI : MonoBehaviour
             WaitPool.RemoveAt(0);
 
             PreEcecuteEvent();                  // parser next event to run
-            return;
+            return true;
         }
 
         // check event
         if ( EvtPool.Count<=0)
-			return ;
+			return false;
 
         // warning 用
 		if (bIsStageEnd) {
 			Debug.LogError( " check event when stage end");
-            return;
+            return false ;
 		}
 		if (bIsLoading) {
 			Debug.LogError( " check event when stage loading");
-            return;
+            return false ;
         }
 
         //MyScript.nCheckIdent = 0;  // clear here  .maybe fix in the future
@@ -2337,8 +2343,11 @@ public class Panel_StageUI : MonoBehaviour
 			WaitPool.RemoveAt( 0 );
 			
 			PreEcecuteEvent();					// parser next event to run
+
+            return true;
 		}
 
+        return false;
 		// return (WaitPool.Count > 0 || NextEvent !=null);
 	}
 
@@ -2869,7 +2878,13 @@ public class Panel_StageUI : MonoBehaviour
 
 	public bool CheckUnitDead( bool bAll = false )
 	{
-		foreach ( KeyValuePair<int , cUnitData > pair in GameDataManager.Instance.UnitPool) {
+        // 確保一下事件可以執行 
+        if ( GetEventToRun()== true ) {
+            return true;
+        }
+
+
+        foreach ( KeyValuePair<int , cUnitData > pair in GameDataManager.Instance.UnitPool) {
 			if( pair.Value != null )
 			{
 				// it should die

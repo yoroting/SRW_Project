@@ -306,6 +306,7 @@ public class Panel_Mainten : MonoBehaviour {
             GameObject obj = CharUnit.Spawn(GridUnitList.transform);
             if (obj != null)
             {
+                obj.SetActive(true);
                 Mainten_Unit unit = obj.GetComponent<Mainten_Unit>();
                 if (unit != null)
                 {
