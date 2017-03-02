@@ -666,6 +666,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
         
         v *= MyTool.fScnRatio;
         int fhW = Config.WIDTH / 2;
+        int fhH = Config.HEIGHT / 2;
         if (v.x < fhW )
         {
             Vector3 vTar = this.transform.localPosition;

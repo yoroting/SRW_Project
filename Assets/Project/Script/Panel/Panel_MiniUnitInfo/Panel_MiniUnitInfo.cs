@@ -101,7 +101,7 @@ public class Panel_MiniUnitInfo : MonoBehaviour {
 		UIGrid grid = BuffGrid.GetComponent<UIGrid > ();
 		if (grid != null) {
 			grid.repositionNow = true ;
-			//grid.Reposition();
+			grid.Reposition();
 		}
 
 

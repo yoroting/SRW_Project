@@ -292,7 +292,8 @@ public class Panel_SysCheat : MonoBehaviour {
 		//PanelManager.Instance.OpenUI (Panel_Lost.Name);
 		foreach (KeyValuePair< int , cUnitData> pair in GameDataManager.Instance.UnitPool) {
 			if( pair.Value != null ){
-				if( pair.Value.eCampID == _CAMP._ENEMY ){
+				if( pair.Value.eCampID == _CAMP._ENEMY && (pair.Value.IsTag( _UNITTAG._PEACE )== false) )
+                {
 					pair.Value.AddHp( -2099999999 );
 				}
 			}
