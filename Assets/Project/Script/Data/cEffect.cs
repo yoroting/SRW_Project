@@ -421,6 +421,10 @@ public class BATTLE_ARRAY : cEffect
             {
                 foreach (KeyValuePair<int, cUnitData> pair in GameDataManager.Instance.UnitPool)
                 {
+                    if (Atker == pair.Value) {
+                        continue;
+                    }
+                    //只能與我方結陣
                     if (BattleManager.CanPK(Atker, pair.Value) == false)
                     {
                         if (Atker.Dist(pair.Value) <= nRange)
@@ -1604,6 +1608,17 @@ public class cEffectCondition
                     return false;
 
                 if ( !data_E.IsActiveSchool(schoolid) ) {                    
+                    return false;
+                }
+            }
+            else if (func.sFunc == "NOSCHOOL_E")
+            {
+                int schoolid = func.I(0);
+                if (data_E == null)
+                    return false;
+
+                if (data_E.IsActiveSchool(schoolid))
+                {
                     return false;
                 }
             }

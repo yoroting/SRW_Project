@@ -1848,8 +1848,12 @@ public class cUnitData{
 
         AddTired(-3);           //降低疲勞
 
+        Buffs.BuffRoundEnd();
+        CDs.DecAll();       // CD 降低
+
         uAction act =  ActionManager.Instance.CreateWeakUpAction ( this.n_Ident );
 		if (act != null) {
+           
             Buffs.OnDo( null , ref act.HitResult );
    //         if ( Buffs.BuffRoundEnd( ref act ) ){
 			//	SetUpdate( cAttrData._BUFF );

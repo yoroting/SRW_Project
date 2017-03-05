@@ -1343,8 +1343,9 @@ public class Panel_unit : MonoBehaviour {
 
 	public void ActionWait( )
 	{
-		// select to wait
-		BattleManager.Instance.ShowBattleMsg (this, "waiting");
+        Panel_StageUI.Instance.MoveToGameObj(this.gameObject, false);
+        // select to wait
+        BattleManager.Instance.ShowBattleMsg (this, "waiting");
 	//	ActionFinished ();
 		if ( pUnitData!= null ) {
 			pUnitData.Waiting();
@@ -1353,10 +1354,13 @@ public class Panel_unit : MonoBehaviour {
 	}
 
 	public void ActionWeakup( )
-	{
-		// 如果有數字 要表演// 
-		if( CurAction.HitResult.Count > 0  )
-			ActionManager.Instance.ExecActionEndResult ( CurAction  );
+	{        
+        // 如果有數字 要表演// 
+        if (CurAction.HitResult.Count > 0)
+        {
+            Panel_StageUI.Instance.MoveToGameObj(this.gameObject, false); // show round buff
+            ActionManager.Instance.ExecActionEndResult(CurAction);
+        }
 
 	}
 

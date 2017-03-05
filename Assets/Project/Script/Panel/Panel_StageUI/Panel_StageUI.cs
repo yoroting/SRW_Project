@@ -1927,7 +1927,11 @@ public class Panel_StageUI : MonoBehaviour
         if (PanelManager.Instance.CheckUIIsOpening(Panel_CheckBox.Name) == true)
             return true;
 
-        foreach ( KeyValuePair< int , Panel_unit > pair in IdentToUnit )
+        // 掉落
+      //  if (BattleManager.Instance.IsDroping() == true)
+      //      return true;
+
+            foreach ( KeyValuePair< int , Panel_unit > pair in IdentToUnit )
 		{
 			if( pair.Value == null )
 				continue;
@@ -2062,7 +2066,7 @@ public class Panel_StageUI : MonoBehaviour
         }
 
 
-		if (BattleManager.Instance.HaveDrop ()) {
+		if (BattleManager.Instance.IsDroping ()) {
 			return false;
 		}
 
@@ -5047,17 +5051,17 @@ public class Panel_StageUI : MonoBehaviour
 
     public void OnStageRoundEnd()
     {
-        foreach (KeyValuePair<int, Panel_unit> pair in IdentToUnit)
-        {
-            if (pair.Value != null)
-            {
-                // Buff time -1
-                pair.Value.pUnitData.Buffs.BuffRoundEnd();
-                // CD -1
-                pair.Value.pUnitData.CDs.DecAll();
+        //foreach (KeyValuePair<int, Panel_unit> pair in IdentToUnit)
+        //{
+        //    if (pair.Value != null)
+        //    {
+        //        // Buff time -1
+        //        pair.Value.pUnitData.Buffs.BuffRoundEnd();
+        //        // CD -1
+        //        pair.Value.pUnitData.CDs.DecAll();
 
-            }
-        }
+        //    }
+        //}
     }
     // add star
     public void AddStar( int nStar=1 )

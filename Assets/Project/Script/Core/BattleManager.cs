@@ -27,6 +27,7 @@ public enum _BATTLE
 	_SCRIPT  	 ,			// play a  battle script
 };
 
+
 public class cHitResult		// 
 {
 	public enum _TYPE
@@ -98,11 +99,10 @@ public partial class BattleManager
 	private bool hadInit;
 	public bool HadInit{ get{ return hadInit; } }
 
+    public int nEndPhase = -1; // 不可能到的數
+    //	private Dictionary<int, AudioChannelBase> channels = new Dictionary<int, AudioChannelBase>();
 
-
-//	private Dictionary<int, AudioChannelBase> channels = new Dictionary<int, AudioChannelBase>();
-
-	public void Initial(  ){
+    public void Initial(  ){
 		hadInit = true;
 
 		Clear ();
@@ -266,19 +266,23 @@ public partial class BattleManager
 //			nPhase = 10; // 戰鬥被中斷，直接結束
 //			Debug.Log( " null unit when RunAttack" );
 //		}
-		if( Atker == null ){
-			Debug.LogErrorFormat( "RunAttack with null Atker at {0}", nAtkerID );
-			Clear ();
-			return ;
-		}
-		else if( Defer == null ){
-			Debug.LogErrorFormat( "RunAttack with null Defer at {0}", nDeferID );
-			Clear ();
-			return;
-		}
+		//if( Atker == null ){
+		//	Debug.LogErrorFormat( "RunAttack with null Atker at {0}", nAtkerID );
+		//	Clear ();
+		//	return ;
+		//}
+		//else if( Defer == null ){
+		//	Debug.LogErrorFormat( "RunAttack with null Defer at {0}", nDeferID );
+		//	Clear ();
+		//	return;
+		//}
 
-      
 
+        // 任一方被打死 戰鬥結束
+        if ((Atker == null) || (Defer == null)  || Defer.IsStates(_FIGHTSTATE._DEAD) || Atker.IsStates(_FIGHTSTATE._DEAD))
+        {           
+            nPhase = nEndPhase;   //戰鬥結束           
+        }
         //Panel_unit uDefer = Panel_StageUI.Instance.GetUnitByIdent( nDeferID ); 
 
         switch (nPhase) {
@@ -440,6 +444,18 @@ public partial class BattleManager
                         //				//	Debug.LogFormat( "atk charid{0}, skill{1} , aff{2}", Atker.n_CharID  , nAtkerSkillID ,  AtkAffectPool.Count );
                     }
 
+                    // 打兩下
+                    if (Atker.IsDead() == false && Atker.IsStates(_FIGHTSTATE._TWICE))
+                    {
+
+                        uAction pAtkTwice = ActionManager.Instance.CreateAttackAction(nAtkerID, nDeferID, nAtkerSkillID); // always normal atk
+                        if (pAtkTwice != null)
+                        {
+                            //Atker.FightAttr.fBurstRate -= 0.5f;		// 第二下 傷害降低
+                            GetAtkHitResult(nAtkerID, nDeferID, Atker, Defer, nAtkerSkillID, nTarGridX, nTarGridY, ref pAtkTwice, ref AtkAffectPool);
+                        }
+                    }
+
 
                     // check if can counter at this time
                     if (IsDefMode() == false)
@@ -463,6 +479,9 @@ public partial class BattleManager
                             }
                         }
                     }
+
+
+
                     // 被打死或被暈不能反擊
                     if (Defer.IsStates(_FIGHTSTATE._DEAD)|| Defer.IsStun() )
                     {
@@ -474,13 +493,15 @@ public partial class BattleManager
 			break;
 		case 6:
 			Panel_StageUI.Instance.ClearAVGObj();
-                // 被打死或被暈不能反擊
-                if (Defer.IsStates(_FIGHTSTATE._DEAD) || Defer.IsStun())
+                
+                //被暈不能反擊
+                if ( Defer.IsStun())
                 {
-                    bCanCounter = false;
+                    bCanCounter = false;                    
                 }
+
                 if (bCanCounter){
-				ShowAtkAssist( nDeferID , nAtkerID );
+				    ShowAtkAssist( nDeferID , nAtkerID );
                     ShowDefAssist(nAtkerID);
                 }
 			nPhase++;
@@ -500,83 +521,99 @@ public partial class BattleManager
 				uAction pCountAct = ActionManager.Instance.CreateAttackAction (nDeferID,nAtkerID, nDeferSkillID );
 				GetAtkHitResult( nDeferID , nAtkerID ,  Defer , Atker , nDeferSkillID ,  nTarGridX , nTarGridY , ref pCountAct , ref DefAffectPool );
 
-//				bool bIsDamage =  MyTool.IsDamageSkill( nDeferSkillID );
-//				if (pCountAct != null) {
-//					if( bIsDamage ){
-//						pCountAct.AddHitResult( CalAttackResult( nDeferID , nAtkerID , false ) ); // must not def at this time
-//					}
-//
-//					pCountAct.AddHitResult( CalSkillHitResult( Defer,  Atker , nDeferSkillID ) );
-//				}
-//				if (Defer.IsStates( _FIGHTSTATE._THROUGH ) ) {
-//					GetThroughPool( Defer , Atker ,Defer.FightAttr.SkillID , 0 , 0 , ref DefAffectPool );
-//				}
-//				GetAffectPool( Defer , Atker , Defer.FightAttr.SkillID , 0 , 0 , ref DefAffectPool );
-//				foreach( cUnitData unit in DefAffectPool )
-//				{
-//					//=====================
-//					// checked if this cUnitData can Atk
-//					if( unit !=Defer){
-//						unit.SetFightAttr( Defer.n_Ident  , 0 );
-//					}
-//
-//					ShowDefAssist( unit.n_Ident , false );
-//
-//					if(bIsDamage){
-//						pCountAct.AddHitResult(  CalAttackResult( nDeferID , unit.n_Ident , true ) ) ; // always def for aoe affect
-//					}
-//					pCountAct.AddHitResult( CalSkillHitResult( Defer,  unit , nDeferSkillID ) );
-//				}
+                    //				bool bIsDamage =  MyTool.IsDamageSkill( nDeferSkillID );
+                    //				if (pCountAct != null) {
+                    //					if( bIsDamage ){
+                    //						pCountAct.AddHitResult( CalAttackResult( nDeferID , nAtkerID , false ) ); // must not def at this time
+                    //					}
+                    //
+                    //					pCountAct.AddHitResult( CalSkillHitResult( Defer,  Atker , nDeferSkillID ) );
+                    //				}
+                    //				if (Defer.IsStates( _FIGHTSTATE._THROUGH ) ) {
+                    //					GetThroughPool( Defer , Atker ,Defer.FightAttr.SkillID , 0 , 0 , ref DefAffectPool );
+                    //				}
+                    //				GetAffectPool( Defer , Atker , Defer.FightAttr.SkillID , 0 , 0 , ref DefAffectPool );
+                    //				foreach( cUnitData unit in DefAffectPool )
+                    //				{
+                    //					//=====================
+                    //					// checked if this cUnitData can Atk
+                    //					if( unit !=Defer){
+                    //						unit.SetFightAttr( Defer.n_Ident  , 0 );
+                    //					}
+                    //
+                    //					ShowDefAssist( unit.n_Ident , false );
+                    //
+                    //					if(bIsDamage){
+                    //						pCountAct.AddHitResult(  CalAttackResult( nDeferID , unit.n_Ident , true ) ) ; // always def for aoe affect
+                    //					}
+                    //					pCountAct.AddHitResult( CalSkillHitResult( Defer,  unit , nDeferSkillID ) );
+                    //				}
 
-				//====
-				//Debug.LogFormat( "def charid{0}, skill{1} , aff{2}",Defer.n_CharID  , nDeferSkillID ,  DefAffectPool.Count );
+                    //====
+                    //Debug.LogFormat( "def charid{0}, skill{1} , aff{2}",Defer.n_CharID  , nDeferSkillID ,  DefAffectPool.Count );
 
+                    // 打兩下
+                    if (Defer.IsDead() == false && (bCanCounter == true) && Defer.IsStates(_FIGHTSTATE._TWICE))
+                    {
+                        uAction pDefTwice = ActionManager.Instance.CreateAttackAction(nDeferID, nAtkerID, nDeferSkillID);// always normal atk
+                        if (pDefTwice != null)
+                        {
+                            //	Defer.FightAttr.fBurstRate -= 0.5f;		// 第二下 傷害降低
+                            GetAtkHitResult(nDeferID, nAtkerID, Defer, Atker, nDeferSkillID, nTarGridX, nTarGridY, ref pDefTwice, ref DefAffectPool);
+                        }
+                    }
 
-			}
+                }
 			nPhase++;
 			break;
 		case 9: 	{// atker twice atk
 			//if( Atker.Dist( Defer  )<=2 ){ // need range 2
-				if( Atker.IsDead() == false && Atker.IsStates( _FIGHTSTATE._TWICE)  ){
+				//if( Atker.IsDead() == false && Atker.IsStates( _FIGHTSTATE._TWICE)  ){
 
-					uAction pAtkTwice = ActionManager.Instance.CreateAttackAction(nAtkerID,nDeferID, nAtkerSkillID ); // always normal atk
-					if( pAtkTwice != null ){		
-						//Atker.FightAttr.fBurstRate -= 0.5f;		// 第二下 傷害降低
-						GetAtkHitResult( nAtkerID , nDeferID , Atker , Defer ,  nAtkerSkillID , nTarGridX , nTarGridY , ref pAtkTwice , ref AtkAffectPool );
-					}
-				}
+				//	uAction pAtkTwice = ActionManager.Instance.CreateAttackAction(nAtkerID,nDeferID, nAtkerSkillID ); // always normal atk
+				//	if( pAtkTwice != null ){		
+				//		//Atker.FightAttr.fBurstRate -= 0.5f;		// 第二下 傷害降低
+				//		GetAtkHitResult( nAtkerID , nDeferID , Atker , Defer ,  nAtkerSkillID , nTarGridX , nTarGridY , ref pAtkTwice , ref AtkAffectPool );
+				//	}
+				//}
 				// check defer can twice
-				if( Defer.IsDead()==false && (bCanCounter==true) && Defer.IsStates( _FIGHTSTATE._TWICE)  ){
-					uAction pDefTwice = ActionManager.Instance.CreateAttackAction(nDeferID ,nAtkerID, nDeferSkillID  );// always normal atk
-					if( pDefTwice != null ){
-					//	Defer.FightAttr.fBurstRate -= 0.5f;		// 第二下 傷害降低
-						GetAtkHitResult( nDeferID , nAtkerID ,  Defer , Atker , nDeferSkillID  , nTarGridX , nTarGridY , ref pDefTwice , ref DefAffectPool );
-					}
-				}
+				//if( Defer.IsDead()==false && (bCanCounter==true) && Defer.IsStates( _FIGHTSTATE._TWICE)  ){
+				//	uAction pDefTwice = ActionManager.Instance.CreateAttackAction(nDeferID ,nAtkerID, nDeferSkillID  );// always normal atk
+				//	if( pDefTwice != null ){
+				//	//	Defer.FightAttr.fBurstRate -= 0.5f;		// 第二下 傷害降低
+				//		GetAtkHitResult( nDeferID , nAtkerID ,  Defer , Atker , nDeferSkillID  , nTarGridX , nTarGridY , ref pDefTwice , ref DefAffectPool );
+				//	}
+				//}
 			//}
 			nPhase++;
 		}break;
 		case 10:
 			nPhase++;			// wait all action complete
 			break;
+        case 11:
+                nPhase = nEndPhase;
+                break;
+        default:            // close all 
 
-		case 11:			// close all 
-			nPhase++;
-			// add Exp / Money  action
+                // add Exp / Money  action
 
-			// Fight Finish	
+                // Fight Finish	
+            if (AtkAffectPool != null) {
+                    foreach (cUnitData unit in AtkAffectPool)
+                    {
+                        if ((unit != Atker) && (unit != Defer))
+                            unit.FightEnd();
+                    }
+            }
 
-			foreach( cUnitData unit in AtkAffectPool )
-			{
-				if( (unit!=Atker) && (unit!=Defer) )
-					unit.FightEnd();				
-			}
-
-			foreach( cUnitData unit in DefAffectPool )
-			{
-				if( (unit!=Atker) && (unit!=Defer) )
-					unit.FightEnd();				
-			}
+                if (DefAffectPool != null)
+                {
+                    foreach (cUnitData unit in DefAffectPool)
+                    {
+                        if ((unit != Atker) && (unit != Defer))
+                            unit.FightEnd();
+                    }
+                }
 
 			if( (Defer!=null) && (Defer!=Atker) ){
 				Defer.FightEnd();
@@ -928,17 +965,17 @@ public partial class BattleManager
 
 
     //drop after dead event complete
-    public bool HaveDrop()
-	{
-		return ( nDropExpPool.Count > 0 ) ;
-	}
+ //   public bool HaveDrop()
+	//{
+	//	return ( nDropExpPool.Count > 0 ) ;
+	//}
 
 	public bool ProcessDrop()
 	{
         if (IsBattlePhase())
             return false; // 戰鬥中不處理
 
-		if ( HaveDrop() ) {
+		if (IsDroping() ) {
 			// drop item
 			if( nDropItemPool.Count > 0 )
 			{
@@ -954,9 +991,12 @@ public partial class BattleManager
 
 		foreach( KeyValuePair<int , int> pair in nDropExpPool )
 		{
-			ActionManager.Instance.CreateDropAction( pair.Key , pair.Value , nDropMoney );
-			nDropMoney = 0;
-		}
+            Panel_unit unit = Panel_StageUI.Instance.GetUnitByIdent(pair.Key);
+            unit.ActionDrop(pair.Value , nDropMoney );
+            //ActionDrop
+            //	ActionManager.Instance.CreateDropAction( pair.Key , pair.Value , nDropMoney );
+            //nDropMoney = 0;
+        }
 	//	if (nDropMoney > 0) {
 	//		ActionManager.Instance.CreateDropAction( 0 , 0 , nDropMoney );
 	//	}
@@ -1031,7 +1071,7 @@ public partial class BattleManager
 
 	public int nDropMoney{ get; set; }      // drop money
     public bool IsDroping() {
-        if (nDropExpPool.Count > 0) {
+        if (nDropExpPool.Count > 0 || nDropItemPool.Count > 0 ) {
             return true;
         }
         return false;
