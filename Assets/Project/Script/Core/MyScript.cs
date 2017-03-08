@@ -1007,7 +1007,7 @@ public class MyScript {
             {
                 // check unit in party                
                 if (GameDataManager.Instance.IsCharInParty(func.I(0)) == false) // 0 - check char 
-                    return;
+                    continue;
 
 
                 StagePopUnitEvent evt = new StagePopUnitEvent();
