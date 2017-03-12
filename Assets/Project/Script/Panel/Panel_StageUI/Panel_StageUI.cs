@@ -2474,6 +2474,20 @@ public class Panel_StageUI : MonoBehaviour
     {
         m_bIsSkipMode = bEnable;
         ClearSciptLineCacheData();
+
+
+        if (bEnable)
+        {
+            // stop all moving unit
+            foreach (KeyValuePair<int, Panel_unit> pair in IdentToUnit)
+            {
+                if (pair.Value != null  )
+                {
+                    pair.Value.StopMove();
+                }
+            }            
+        }
+        
     }
 
 	public GameObject CreateUnitByUnitData( cUnitData data )
@@ -2687,7 +2701,9 @@ public class Panel_StageUI : MonoBehaviour
 		{
 			IdentToUnit.Remove( id );
 		}
-	}
+
+        // 是否在 game data 中再找一次
+    }
 
 
 //	void DelChar( _CAMP nCampID , int nCharID )
@@ -3014,7 +3030,7 @@ public class Panel_StageUI : MonoBehaviour
 
     public void OnMoveEnd( Panel_unit unit )
     {
-
+      //  bIsMoveToObj = false;
     }
 
 	public void PlayStageBGM()
@@ -3112,7 +3128,7 @@ public class Panel_StageUI : MonoBehaviour
 		// check unit
 		foreach( KeyValuePair< int , Panel_unit  > pair in IdentToUnit )
 		{
-			if( pair.Value.Loc.Collision( pos ) ){
+			if( !pair.Value.IsDead() &&  pair.Value.Loc.Collision( pos ) ){  // 死人不卡位
 				return false;
 			}
 		}
@@ -3893,8 +3909,11 @@ public class Panel_StageUI : MonoBehaviour
 				pos = FindEmptyPosToAttack  ( pos , unit.Loc );
 			}
 			//
-			if (m_bIsSkipMode) { 
-				unit.SetXY( pos.X , pos.Y );
+			if (m_bIsSkipMode) {
+                // clear unit's current move action
+                //unit.PathList = null;
+                unit.StopMove();
+                unit.SetXY( pos.X , pos.Y );
 			}
 			else {
 				unit.MoveTo( pos.X , pos.Y ); 
@@ -4954,23 +4973,26 @@ public class Panel_StageUI : MonoBehaviour
 	}
 
     public void OnStageSetUnDeadEvent(int nCharID, int nOn = 1)
-    {  
-        
-        foreach (KeyValuePair<int, Panel_unit> pair in IdentToUnit)
+    {
+
+        //foreach (KeyValuePair<int, Panel_unit> pair in IdentToUnit)
+
+        // 必須包含 已經在死亡儲列的人
+        foreach (KeyValuePair<int, cUnitData> pair in GameDataManager.Instance.UnitPool )
         {
             if (pair.Value != null)
             {
-                if (pair.Value.CharID == nCharID)
+                if (pair.Value.n_CharID == nCharID)
                 {
                    // if (pair.Value.bIsDead == false)  ????
                    // {
                         if (nOn > 0)
                         {
-                            pair.Value.pUnitData.AddTag(_UNITTAG._UNDEAD);
+                            pair.Value.AddTag(_UNITTAG._UNDEAD);
                         }
                         else
                         {
-                            pair.Value.pUnitData.RemoveTag(_UNITTAG._UNDEAD);
+                            pair.Value.RemoveTag(_UNITTAG._UNDEAD);
                             
                         }
                    // }

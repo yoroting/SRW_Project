@@ -720,7 +720,8 @@ private static GameDataManager instance;
 		foreach (KeyValuePair< int ,cUnitData > pair in UnitPool) {
 			if( pair.Value != null )
 			{
-				if( (pair.Value.n_X == nX) && (pair.Value.n_Y == nY) ){
+				if( (pair.Value.n_X == nX) && (pair.Value.n_Y == nY) && (pair.Value.IsDead() == false )   ) // 活人才算
+                {
 					return pair.Value;
 				}
 			}
@@ -831,18 +832,28 @@ private static GameDataManager instance;
 
 	public void ReLiveUndeadUnit( _CAMP camp ) // all  undead
 	{
-		foreach (KeyValuePair< int , cUnitData > pair in UnitPool) {
+        List<int> list = new List<int>();
+
+
+        foreach (KeyValuePair< int , cUnitData > pair in UnitPool) {
 			if( camp != pair.Value.eCampID )
 				continue;
 			// relive
 			cUnitData p = pair.Value;
 			if( p.n_HP == 0 ){
+                // 判斷是否還有重生旗標
+                if ( p.IsTag( _UNITTAG._UNDEAD ) ) {
+                    list.Add(pair.Key);
+                    continue;
+                }
+
                 if (p.n_LeaderIdent > 0)
                 {
                     cUnitData pLeader = GetUnitDateByIdent(p.n_LeaderIdent);
-                    if (pLeader == null || pLeader.n_HP == 0)
+                    if (pLeader == null || pLeader.IsDead())
                     {
-                        p.n_LeaderIdent = 0; // 清空 leader
+                        list.Add(pair.Key);
+                       // p.n_LeaderIdent = 0; // 清空 leader
                         continue; // leader 死亡，不重生
                     }
                     p.eCampID = pLeader.eCampID; // change to leader's camp
@@ -855,6 +866,11 @@ private static GameDataManager instance;
 			}
 		}
 
+        // clear  no use undead
+        foreach (int id in list)
+        {
+            UnitPool.Remove( id ); 
+        }
 	}
 	/// <summary>
 	///  AI

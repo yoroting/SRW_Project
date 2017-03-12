@@ -646,7 +646,42 @@ public class Panel_unit : MonoBehaviour {
 		//return bIsMoving;
 	}
 
-	public void MoveNextAtkPoint()
+    public void StopMove()
+    {
+        if (IsMoving() == false  )
+        {
+            return;
+        }
+        iVec2 pos = new iVec2(Loc);
+        if (PathList != null)
+        {
+            pos =  PathList[PathList.Count - 1]; // 最終座標
+        }
+
+        PathList = null;
+        
+
+        TweenPosition [] tws = this.GetComponents<TweenPosition>() ;
+        foreach (TweenPosition tw in tws )
+        {
+            EventDelegate.Remove(  tw.onFinished , OnTweenNotifyMoveEnd);
+            tw.enabled = false;
+        //    Destroy(tw);
+            //   tw.enabled
+        }
+
+
+        Panel_StageUI.Instance.OnMoveEnd(this);
+
+        OnTweenNotifyMoveEnd();
+
+        // 換到最後位置
+        SetXY( pos.X , pos.Y );
+        nTweenMoveCount = 0;
+    }
+
+
+    public void MoveNextAtkPoint()
 	{
 		if ((PathList == null))
 			return ;
@@ -2067,7 +2102,15 @@ public class Panel_unit : MonoBehaviour {
 		bIsShaking = false;
 	}
 
-
+    public bool IsDead()
+    {
+        if (bIsDead || bIsDeading )
+            return true;
+        if (pUnitData!= null ) {
+            return pUnitData.IsDead();
+        }
+        return false;
+    }
 	public void SetDead()
 	{
 		// avoid double run
