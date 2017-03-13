@@ -168,7 +168,15 @@ public class Panel_SysCheat : MonoBehaviour {
         // switch story in mainten only
         if (GameDataManager.Instance.ePhase == _SAVE_PHASE._MAINTEN) {
 			StoryPoplist.SetActive( true );
-		} else {
+
+            //Fill value
+            UIScrollablePopupList storypopList = StoryPoplist.GetComponent<UIScrollablePopupList>();
+            if (storypopList != null)
+            {
+                storypopList.value = MyTool.GetStoryName(GameDataManager.Instance.nStoryID);
+            }
+
+        } else {
 			StoryPoplist.SetActive( false );
 		}
 		// Event list
@@ -230,7 +238,13 @@ public class Panel_SysCheat : MonoBehaviour {
 
 	void OnCloseClick(GameObject go)
 	{
-		PanelManager.Instance.CloseUI( Name );
+        // reenable in main
+        if (GameDataManager.Instance.ePhase == _SAVE_PHASE._MAINTEN)
+        {
+          //  Panel_Mainten p = PanelManager.Instance.JustGetUI<Panel_Mainten>(Panel_Mainten.Name);            
+        }
+
+        PanelManager.Instance.CloseUI( Name );
 	}
 
 	public void OnGODClick(GameObject go)
@@ -422,12 +436,22 @@ public class Panel_SysCheat : MonoBehaviour {
 			}
 		}
 
-//		UIInput min = MoneyInput.GetComponent<UIInput> ();
-//		int money = 0;
-//		if (int.TryParse (min.value, out money)) {
-//			GameDataManager.Instance.nMoney = money;
-//		}
-	}
+        if (GameDataManager.Instance.ePhase == _SAVE_PHASE._MAINTEN)
+        {
+            Panel_Mainten p = PanelManager.Instance.JustGetUI<Panel_Mainten>(Panel_Mainten.Name);
+            if (p != null)
+            {
+                p.SetStoryName();
+            }
+        }
+
+
+        //		UIInput min = MoneyInput.GetComponent<UIInput> ();
+        //		int money = 0;
+        //		if (int.TryParse (min.value, out money)) {
+        //			GameDataManager.Instance.nMoney = money;
+        //		}
+    }
     // Add Item
     public void OnAddItemClick(GameObject go)
     {

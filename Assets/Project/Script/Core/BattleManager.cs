@@ -992,21 +992,37 @@ public partial class BattleManager
 		foreach( KeyValuePair<int , int> pair in nDropExpPool )
 		{
             Panel_unit unit = Panel_StageUI.Instance.GetUnitByIdent(pair.Key);
-            unit.ActionDrop(pair.Value , nDropMoney );
+            if (unit != null)
+            {
+                unit.ActionDrop(pair.Value, nDropMoney);
+                nDropMoney = 0; // avoid double add money
+            }
+           
             //ActionDrop
             //	ActionManager.Instance.CreateDropAction( pair.Key , pair.Value , nDropMoney );
             //nDropMoney = 0;
         }
-	//	if (nDropMoney > 0) {
-	//		ActionManager.Instance.CreateDropAction( 0 , 0 , nDropMoney );
-	//	}
-		nDropMoney = 0;
+		if (nDropMoney > 0) {
+            ShowAddMoney(nDropMoney);
+
+            //		ActionManager.Instance.CreateDropAction( 0 , 0 , nDropMoney );
+            nDropMoney = 0;
+        }
+	
 		if( nDropExpPool.Count > 0  ){
 			nDropExpPool.Clear ();
 			return true;
 		}
 		return false;
 	}
+
+    public void ShowAddMoney( int nMoney )
+    {
+        string sMsg = string.Format(" Money + {0}",  nMoney);        
+
+        GameDataManager.Instance.nMoney += nMoney;
+        BattleManager.Instance.ShowDropMsg(sMsg);
+    }
 
 	// recycle all drop exp when stage end
 	public void RecycleDrop()

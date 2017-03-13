@@ -1421,7 +1421,12 @@ public class MyScript {
             {
                 GameDataManager.Instance.AddItemtoBag( func.I(0) );                
             }
+            else if (func.sFunc == "ADDMONEY")  // Add buff
+            {
+                // GameDataManager.Instance.AddMONEY(func.I(0));
+                BattleManager.Instance.nDropMoney += func.I(0);  // 增加金錢
 
+            }
             else if (func.sFunc == "SETHP")  // Add HP
             {
                 Panel_StageUI.Instance.OnStageSetUnitValue(func.I(0), 0, func.F(1), func.I(2));
