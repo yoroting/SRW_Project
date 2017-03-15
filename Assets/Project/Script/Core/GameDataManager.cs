@@ -842,7 +842,7 @@ private static GameDataManager instance;
 			cUnitData p = pair.Value;
 			if( p.n_HP == 0 ){
                 // 判斷是否還有重生旗標
-                if ( p.IsTag( _UNITTAG._UNDEAD ) ) {
+                if ( p.IsTag( _UNITTAG._UNDEAD ) == false ) {
                     list.Add(pair.Key);
                     continue;
                 }

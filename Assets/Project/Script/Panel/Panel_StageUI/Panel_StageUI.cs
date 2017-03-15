@@ -4655,7 +4655,7 @@ public class Panel_StageUI : MonoBehaviour
 			nCastIdent = GameDataManager.Instance.GetIdentByCharID( nCastCharID );
 		}
 
-
+        // 在 game data 內 add, 以讓 僵屍單位
 		int nTot = 0;
 		foreach (KeyValuePair< int ,Panel_unit> pair in IdentToUnit) {
 			Panel_unit unit = pair.Value;
