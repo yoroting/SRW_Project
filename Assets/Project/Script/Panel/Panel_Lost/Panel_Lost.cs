@@ -34,11 +34,13 @@ public class Panel_Lost : MonoBehaviour {
 	{	
 		Panel_StageUI.Instance.ShowStage (false);
 
-		// open main ten ui
-		PanelManager.Instance.OpenUI ( Panel_Mainten.Name );
-		
-		// Go to Mainten Ui 
-		PanelManager.Instance.DestoryUI ( Name );
+        // open main ten ui
+        PanelManager.Instance.OpenUI ( Panel_Mainten.Name );
+
+
+        GameDataManager.Instance.RestoreFromFail();
+        // Go to Mainten Ui 
+        PanelManager.Instance.DestoryUI ( Name );
 		
 	}
 }

@@ -460,13 +460,16 @@ public class Panel_StageUI : MonoBehaviour
         if (PanelManager.Instance.CheckUIIsOpening(Panel_Talk.Name) == true)
             return;
 
-        // check drop  before event
-        if (BattleManager.Instance.ProcessDrop() == true) // will block event check
-            return;
 
         //==================	
         if (RunEvent() == true)// this will throw many unit action and interrupt battle.
             return;
+
+        // 戰鬥前事件檢查
+        if (GetEventToRun())
+        {
+            return;
+        }
 
         // if one event need to run battle. it should pause ein event
         if (BattleManager.Instance.IsBattlePhase())
@@ -496,7 +499,9 @@ public class Panel_StageUI : MonoBehaviour
         if (CheckUnitDead() == true) // check here for event_manager  can detect hp ==0 first , some event may relive the deading unit
             return;
 
-      
+        // check drop  before event
+        if (BattleManager.Instance.CheckDrop() == true) // will block event check
+            return;
 
 
         // stage phase
@@ -1928,10 +1933,10 @@ public class Panel_StageUI : MonoBehaviour
             return true;
 
         // 掉落
-      //  if (BattleManager.Instance.IsDroping() == true)
-      //      return true;
+        //  if (BattleManager.Instance.IsDroping() == true) // 由 BattleMsg.nMsgCount 判斷 才對
+        //      return true;
 
-            foreach ( KeyValuePair< int , Panel_unit > pair in IdentToUnit )
+        foreach ( KeyValuePair< int , Panel_unit > pair in IdentToUnit )
 		{
 			if( pair.Value == null )
 				continue;
@@ -2065,8 +2070,8 @@ public class Panel_StageUI : MonoBehaviour
             return false;
         }
 
-
-		if (BattleManager.Instance.IsDroping ()) {
+        // 等全部掉落事件 結束 
+		if (BattleManager.Instance.HaveDrop ()) {
 			return false;
 		}
 
@@ -2126,26 +2131,32 @@ public class Panel_StageUI : MonoBehaviour
 	// true : is running
 	bool RunEvent(  )
 	{
-		// always check to wait list
-		//GetEventToRun();
+        // always check to wait list
+        //GetEventToRun();
 
-		// get next event
-		if( NextEvent == null )
+        // 把檢查動作拆出去。讓各時機點檢查
+        // get next event
+        if (NextEvent == null)
+        {
+            GetEventToRun();
+            // get next event to run
+            if (NextEvent != null)
+            {
+                Debug.LogFormat("Get Event{0} to run", NextEvent.n_ID);
+            }
+
+        }
+
+        // if event is running
+
+        //run event
+        if ( NextEvent != null )
 		{
-			GetEventToRun();
-			// get next event to run
-			if( NextEvent!= null ){
-				Debug.LogFormat( "Get Event{0} to run" ,NextEvent.n_ID  );
-			}
+            // 如果發生事件，則先把掉落 處理完
+            if (BattleManager.Instance.CheckDrop() == true) // will block event check
+                return true;                                 // 視同 還在掉落
 
-		}
-
-		// if event is running
-
-		  //run event
-		if( NextEvent != null )
-		{
-			NextLine();                 // execute one line
+            NextLine();                 // execute one line
 
             //NextLine();					// parser event to run
             if (IsNextEventCompleted())
@@ -4655,30 +4666,57 @@ public class Panel_StageUI : MonoBehaviour
 			nCastIdent = GameDataManager.Instance.GetIdentByCharID( nCastCharID );
 		}
 
-        // 在 game data 內 add, 以讓 僵屍單位
-		int nTot = 0;
-		foreach (KeyValuePair< int ,Panel_unit> pair in IdentToUnit) {
-			Panel_unit unit = pair.Value;
-			if (unit.CharID != nCharID)
-				continue;
-			//
-			if (unit.pUnitData == null)
-				continue;
-			nTot++;
-			if( nDel == 0 ){
-				unit.pUnitData.Buffs.AddBuff (nBuffID, nCastIdent, 0, 0);
-			}
-			else{
-				unit.pUnitData.Buffs.DelBuff( nBuffID, true );
-				
-			}
-            unit.pUnitData.FixOverData();
+        // 在 game data 內 add, 以讓 僵屍單位++
+        int nTot = 0;
+        // 必須包含 已經在死亡儲列的人
+        foreach (KeyValuePair<int, cUnitData> pair in GameDataManager.Instance.UnitPool)
+        {
+            if (pair.Value != null)
+            {
+                if (pair.Value.n_CharID == nCharID)
+                {
+                    // if (pair.Value.bIsDead == false)  ????
+                    // {
+                    nTot++;
+                    if (nDel == 0)
+                    {
+                        pair.Value.Buffs.AddBuff(nBuffID, nCastIdent, 0, 0);
+                    }
+                    else
+                    {
+                        pair.Value.Buffs.DelBuff(nBuffID, true);
+
+                    }
+                    pair.Value.FixOverData();
+
+                }
+            }
         }
+
+
+     
+		//foreach (KeyValuePair< int ,Panel_unit> pair in IdentToUnit) {
+		//	Panel_unit unit = pair.Value;
+		//	if (unit.CharID != nCharID)
+		//		continue;
+		//	//
+		//	if (unit.pUnitData == null)
+		//		continue;
+		//	nTot++;
+		//	if( nDel == 0 ){
+		//		unit.pUnitData.Buffs.AddBuff (nBuffID, nCastIdent, 0, 0);
+		//	}
+		//	else{
+		//		unit.pUnitData.Buffs.DelBuff( nBuffID, true );
+				
+		//	}
+  //          unit.pUnitData.FixOverData();
+  //      }
         if (nTot == 0 )
         {
             Debug.LogErrorFormat ("OnStageAddBuff {0} on null unit with char {1} , type{2}", nBuffID, nCharID,nDel);
 		}
-        //保險：有些劇情buff 施放時，如果角色已死亡，則會沒放到，要到倉庫找出來放
+        //保險：有些劇情buff 施放時，如果角色已死亡，則會沒放到，要到倉庫找出來放( 倉庫內一定只有一人 )
         cUnitData data = GameDataManager.Instance.GetStorageUnit(nCharID);
         if (data != null)
         {

@@ -210,13 +210,16 @@ public partial class BattleManager
 
     public bool IsDamagePhase()
     {
+        //       if (MyTool.IsDamageSkill(nAtkerSkillID)) // 裡面有對 0 檢查
+        //           return true;
+
         if (eBattleType == _BATTLE._ATTACK)
         {
             return true;
         }
-        else if (eBattleType == _BATTLE._CAST )
+        else if (eBattleType == _BATTLE._CAST)
         {
-            if (MyTool.IsDamageSkill(nAtkerSkillID) )
+            if (MyTool.IsDamageSkill(nAtkerSkillID))
                 return true;
         }
 
@@ -970,12 +973,18 @@ public partial class BattleManager
 	//	return ( nDropExpPool.Count > 0 ) ;
 	//}
 
-	public bool ProcessDrop()
+	public bool CheckDrop()
 	{
         if (IsBattlePhase())
             return false; // 戰鬥中不處理
 
-		if (IsDroping() ) {
+        
+        if(BattleMsg.nMsgCount > 0 )
+            return false; //訊息中不處理（含自己process 出來的掉落訊息
+
+
+//        if (IsDroping() )
+//        {
 			// drop item
 			if( nDropItemPool.Count > 0 )
 			{
@@ -987,32 +996,35 @@ public partial class BattleManager
 				GameDataManager.Instance.AddItemtoBag( itemid );// Add to item pool
 				return true ;
 			}
-		}
+        //		}
 
-		foreach( KeyValuePair<int , int> pair in nDropExpPool )
-		{
-            Panel_unit unit = Panel_StageUI.Instance.GetUnitByIdent(pair.Key);
-            if (unit != null)
-            {
-                unit.ActionDrop(pair.Value, nDropMoney);
-                nDropMoney = 0; // avoid double add money
-            }
+        if (nDropExpPool.Count > 0)
+        {
+            foreach ( KeyValuePair<int , int> pair in nDropExpPool )
+		    {
+                Panel_unit unit = Panel_StageUI.Instance.GetUnitByIdent(pair.Key);
+                if (unit != null)
+                {
+                    unit.ActionDrop(pair.Value, nDropMoney); // 實際增加經驗值
+                    nDropMoney = 0; // avoid double add money
+                }
            
-            //ActionDrop
-            //	ActionManager.Instance.CreateDropAction( pair.Key , pair.Value , nDropMoney );
-            //nDropMoney = 0;
+                //ActionDrop
+                //	ActionManager.Instance.CreateDropAction( pair.Key , pair.Value , nDropMoney );
+                //nDropMoney = 0;
+            }
+
+            nDropExpPool.Clear();
+            return true;
         }
-		if (nDropMoney > 0) {
+
+        // 如果沒有人獲得經驗，則只顯示增加金錢
+        if (nDropMoney > 0) {
             ShowAddMoney(nDropMoney);
 
             //		ActionManager.Instance.CreateDropAction( 0 , 0 , nDropMoney );
             nDropMoney = 0;
         }
-	
-		if( nDropExpPool.Count > 0  ){
-			nDropExpPool.Clear ();
-			return true;
-		}
 		return false;
 	}
 
@@ -1086,7 +1098,15 @@ public partial class BattleManager
 	public bool bCanCounter{ get; set; }     // def have counter action
 
 	public int nDropMoney{ get; set; }      // drop money
-    public bool IsDroping() {
+    public bool HaveDrop()
+    {
+        if (nDropExpPool.Count > 0 || nDropItemPool.Count > 0)
+        {
+            return true;
+        }
+        return false;
+    }
+    public bool IsDroping() {   // 正在撥 掉落事件            
         if (nDropExpPool.Count > 0 || nDropItemPool.Count > 0 ) {
             return true;
         }

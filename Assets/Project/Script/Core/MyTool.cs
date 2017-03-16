@@ -563,7 +563,7 @@ public class MyTool {
 		foreach( KeyValuePair<int,int> p in pool ){
 			totWidget += p.Value;
 		}
-		int roll = Random.Range( 0 , totWidget );
+		int roll = UnityEngine.Random.Range( 0 , totWidget );
 		// find item
 		int sumWidget = 0;
 		foreach( KeyValuePair<int,int> p2 in pool ){
@@ -915,6 +915,6 @@ public class MyTool {
 		}
 	}
 
-
+   
 
 }

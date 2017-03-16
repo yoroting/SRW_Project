@@ -194,13 +194,15 @@ public class cSaveData{
 
 
 	[JsonName("spool")] public List< cUnitSaveData > 			StoragePool;		// 倉庫腳色
-	[JsonName("cpool")] public List< cUnitSaveData > 			CharPool;
+	[JsonName("cpool")] public List< cUnitSaveData > 			CharPool;           // 戰場上角色
 	[JsonName("ipool")] public List<int>						ItemPool;
 	[JsonName("importpool")] public List<int>					ImportEventPool;   // 已完成的重要事件列表
-    
 
-	// stage special info
-	[JsonName("evtdonepool")] public Dictionary<string,int>		EvtDonePool;   // 已完成的事件列表
+
+    [JsonName("backstr")]    public string sBackJson;         //資料備份 （戰敗還原用 ）
+
+    // stage special info
+    [JsonName("evtdonepool")] public Dictionary<string,int>		EvtDonePool;   // 已完成的事件列表
     [JsonName("flagpool")]    public Dictionary<string, int> FlagPool;   // 特殊紀錄 旗標
 
     //	[JsonName("evtcheckpool")] public List<int>					EvtCheckPool;   // event can run
@@ -238,8 +240,16 @@ public class cSaveData{
 		ItemPool = GameDataManager.Instance.ItemPool;			// item list
 		ImportEventPool = GameDataManager.Instance.ImportEventPool;
 		StoragePool = GameDataManager.Instance.ExportStoragePool();
-
         FlagPool = GameDataManager.Instance.FlagPool; // maybe it is null
+
+        sBackJson = GameDataManager.Instance.sBackJson;
+
+    //       [JsonName("bpool")]
+    //public List<cUnitSaveData> CharBackPool;           // 備份 倉庫角色，戰敗時還原用
+    //[JsonName("bipool")]
+    //public List<int> ItemBackPool;                    // 備份 道具，戰敗時還原用
+
+
 
         ePhase = phase;
 
@@ -261,7 +271,7 @@ public class cSaveData{
           
            //EvtCheckPool = Panel_StageUI.Instance.evt
            // group pool
-           GroupPool   = MyTool.ConvetToStringInt( GameDataManager.Instance.GroupPool );
+            GroupPool   = MyTool.ConvetToStringInt( GameDataManager.Instance.GroupPool );
 			// unit pool
 			CharPool = GameDataManager.Instance.ExportSavePool();
             // block pool
@@ -322,7 +332,7 @@ public class cSaveData{
             GameDataManager.Instance.FlagPool = new Dictionary<string, int>();
         }
 
-        // restore mainta
+        GameDataManager.Instance.sBackJson = sBackJson;
 
         //StartCoroutine(  cSaveData.SaveLoading( this  ) ); // need a mono behacior
 

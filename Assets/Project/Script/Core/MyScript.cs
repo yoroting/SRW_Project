@@ -31,12 +31,16 @@ public class MyScript {
 	{
 		if( line == null )
 			return false;
-      
+
+        // 常試通通 不可在 戰鬥中檢查
+        // 把這行 mark 就會讓特定 檢查可在 戰鬥中執行
+       // if (BattleManager.Instance.IsBattlePhase()) // 戰鬥中忽然觸發事件，問題很多
+       //     return false;// don't check in battle
 
         List<cTextFunc> funcList =line.GetFuncList();
 		foreach( cTextFunc func in funcList )
 		{
-			if( func.sFunc == "COMBAT"  )
+			if( func.sFunc == "COMBAT"  )   // 本條件 是 一定要在戰鬥時 檢查的....
 			{
 				if( ConditionCombat( func.I(0),func.I(1)  ) == false )
 				{
@@ -308,6 +312,9 @@ public class MyScript {
 	}
     public bool ConditionCombat( int nChar1 , int nChar2  )
 	{
+        //if (BattleManager.Instance.nAtkerID == 0 && BattleManager.Instance.nDeferID == 0)
+        //    return false;
+
 		if( BattleManager.Instance.IsDamagePhase() ) // only check 有傷害的戰鬥才算
 		{
 			Panel_unit atker = Panel_StageUI.Instance.GetUnitByIdent( BattleManager.Instance.nAtkerID );
@@ -369,11 +376,11 @@ public class MyScript {
 
     public bool ConditionUnitDead( int nCampID ,int nCharID )
 	{
-        // 等掉落結束
-        if (BattleManager.Instance.IsDroping())
-        {
-            return false;
-        }
+        // 等掉落結束（ 容易阻擋到死亡，不該這邊處理）
+        //if (BattleManager.Instance.IsDroping())
+        //{
+        //    return false;
+        //}
 
         // assign id
 
@@ -397,7 +404,7 @@ public class MyScript {
 			Debug.LogErrorFormat( "script check dead err in char{0}", nCharID );
 			return false;
 		}      
-
+      
         
         return ConditionCount(nCampID, "<=", 0, nCharID);
 
@@ -613,31 +620,13 @@ public class MyScript {
     public bool ConditionHp( int nChar1 , string op , float fValue )
 	{
 		cUnitData unit = GameDataManager.Instance.GetUnitDateByCharID ( nChar1 );
-		if (unit != null) {
-			float fPer = unit.GetHpPercent();
+        float fPer = 0.0f;          // 不存在 視為 0 
 
-			return ConditionFloat( fPer , op , fValue );
-
-//			if( op == "<"){
-//				return (fPer < fValue);
-//			}
-//			else if( op == "<="){
-//				return (fPer <= fValue);
-//			}
-//			else if( op == "=="){
-//				return (fPer == fValue);
-//			}
-//			else if( op == "!="){
-//				return (fPer != fValue);
-//			}
-//			else if( op == ">"){
-//				return (fPer > fValue);
-//			}
-//			else if( op == ">="){
-//				return (fPer >= fValue);
-//			}
+        if (unit != null) {
+			fPer = unit.GetHpPercent();
 		}
-		return false;
+
+        return ConditionFloat(fPer, op, fValue);        
 	}
 
     public bool ConditionAfterCast(int nChar1, int  nSKillID , int nChar2)

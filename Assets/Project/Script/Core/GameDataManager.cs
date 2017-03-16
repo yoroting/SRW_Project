@@ -3,6 +3,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Enum = System.Enum;
+using System.Text;
+using JsonFx.Json;
 //using _SRW;
 using MYGRIDS;
 // All SRW enum list
@@ -109,7 +111,7 @@ public partial class GameDataManager
 		hadInit = true;
 		//this.GetAudioClipFunc = getAudioClipFunc;
 		StoragePool = new Dictionary< int , cUnitData > ();		
-		UnitPool = new Dictionary< int , cUnitData >();
+        UnitPool = new Dictionary< int , cUnitData >();         // 戰場上的角色
 //		CampPool = new Dictionary< _CAMP , cCamp >();
 		EvtDonePool = new Dictionary< int , int > ();			// record event complete round 
         FlagPool = new Dictionary<string, int>();
@@ -491,11 +493,16 @@ private static GameDataManager instance;
 		ItemPool.Remove(nItemID);
 	}
 
-	// 昌庫腳色
-	public Dictionary< int , cUnitData > StoragePool;		//以 < charid , unit > unit data 結構存才能顯示 詳細資訊		
+	// 倉庫腳色
+	public Dictionary< int , cUnitData > StoragePool;       //以 < charid , unit > unit data 結構存才能顯示 詳細資訊		
 
-	// don't public this
-	int nSerialNO;		// object serial NO
+    //public Dictionary<int, cUnitData> BackCharPool;      // 戰敗時 回複用的角色資料    
+
+    public string sBackJson = "" ;         //角色備份    
+    
+
+    // don't public this
+    int nSerialNO;		// object serial NO
 	public int GenerSerialNO( ){ return ++nSerialNO ; }
 //	int GenerMobSerialNO( ){ return (++nSerialNO)*(-1) ; }
 
@@ -830,7 +837,66 @@ private static GameDataManager instance;
 		} 
 	}
 
-	public void ReLiveUndeadUnit( _CAMP camp ) // all  undead
+    public void PrepareEnterStage()
+    {
+        cSaveData save = new cSaveData();
+        save.SetData(0, _SAVE_PHASE._MAINTEN ); // 當作 維修模式 紀錄
+
+      //  string sKeyName = GetKey(nID);
+        // ---- SERIALIZATION ----
+
+        JsonWriterSettings writerSettings = new JsonWriterSettings();
+        writerSettings.TypeHintName = "__type";
+
+        StringBuilder json = new StringBuilder();
+        JsonWriter writer = new JsonWriter(json, writerSettings);
+        writer.Write(save);
+
+
+        sBackJson = json.ToString();
+
+        //List<cUnitSaveData> l = ExportStoragePool();
+
+        //// convert l to string
+        //JsonWriterSettings writerSettings = new JsonWriterSettings();
+        //writerSettings.TypeHintName = "__type";
+
+        //StringBuilder json = new StringBuilder();
+        //JsonWriter writer = new JsonWriter(json, writerSettings);
+        //writer.Write(l);
+        ////  BackCharPool = StoragePool.c
+        //sBackStorageJson = writer.ToString();
+
+
+
+    }
+
+    public void RestoreFromFail()
+    {
+        int nMoneyBack = GameDataManager.instance.nMoney;
+
+
+        JsonReaderSettings readerSettings = new JsonReaderSettings();
+        readerSettings.TypeHintName = "__type";
+
+        JsonReader reader = new JsonReader(sBackJson, readerSettings);
+        cSaveData save = (cSaveData)reader.Deserialize(typeof(cSaveData));
+
+        // 確保倉庫有單位
+        if (save != null && save.StoragePool.Count > 0)
+        {
+            save.RestoreData(_SAVE_PHASE._STAGE);  // 要當作戰場 讀取 來回複 戰前整備結果
+        }
+
+        sBackJson = "";
+
+        // load 時 money 已 重置 所以要 加上 本關的賺的 money>
+
+        GameDataManager.instance.nMoney = nMoneyBack;
+    }
+
+
+    public void ReLiveUndeadUnit( _CAMP camp ) // all  undead
 	{
         List<int> list = new List<int>();
 

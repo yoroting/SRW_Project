@@ -92,19 +92,23 @@ public class Panel_Mainten : MonoBehaviour {
 
 		}
 	}
-	public void ChooseNextStage()
-	{
-		GameDataManager.Instance.nStoryID += 1;
-	}
+	//public void ChooseNextStage()
+	//{
+	//	GameDataManager.Instance.nStoryID += 1;
+	//}
 
 	IEnumerator EnterStory( int nStoryID )
 	{
-		GameDataManager.Instance.nStoryID = nStoryID;
-		
-		PanelManager.Instance.OpenUI( "Panel_Loading");
-		
+        PanelManager.Instance.OpenUI("Panel_Loading");
+
+        // back up char pool
+        GameDataManager.Instance.PrepareEnterStage();
+
+        yield return new WaitForEndOfFrame();
+
+        GameDataManager.Instance.nStoryID = nStoryID;
 		yield return  new WaitForEndOfFrame();
-		
+
 		PanelManager.Instance.OpenUI( StoryUIPanel.Name );
 		yield return  new WaitForEndOfFrame();
 		
