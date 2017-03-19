@@ -1936,6 +1936,9 @@ public class Panel_StageUI : MonoBehaviour
         //  if (BattleManager.Instance.IsDroping() == true) // 由 BattleMsg.nMsgCount 判斷 才對
         //      return true;
 
+        if (IdentToUnit == null)
+            return false;
+
         foreach ( KeyValuePair< int , Panel_unit > pair in IdentToUnit )
 		{
 			if( pair.Value == null )
@@ -2061,7 +2064,12 @@ public class Panel_StageUI : MonoBehaviour
 	// return true
 	public bool CheckPlayerRoundEnd()
 	{
-		//==================
+        //==================
+        // 神模式不檢查
+        if (Config.GOD == true)
+            return false;
+
+
 		if( GameDataManager.Instance.nActiveCamp != _CAMP._PLAYER ){
 			return false;  // don't check in enemy round
 
@@ -2974,9 +2982,12 @@ public class Panel_StageUI : MonoBehaviour
         Vector3 realpos = v + canv;
         if (force == false)
         {
-            int hW = (Config.WIDTH) / 2 - Config.TileW;
-            int hH = (Config.HEIGHT) / 2 - Config.TileH;
-            if ((realpos.x < hW && realpos.x > -hW) && (realpos.y < hH && realpos.y > -hH))
+            //int hW = (Config.WIDTH) / 2 - Config.TileW;
+            //int hH = (Config.HEIGHT) / 2 - Config.TileH;
+            int hW = (Config.WIDTH - Config.TileW ) / 2 ;
+            int hH = (Config.HEIGHT - Config.TileH) / 2 ;
+
+            if ((realpos.x <= hW && realpos.x >= -hW) && (realpos.y <= hH && realpos.y >= -hH))
             {
                 return false; // pass
             }
@@ -3836,7 +3847,19 @@ public class Panel_StageUI : MonoBehaviour
 				}
 			}
 		}
-	}
+    }
+
+    public void OnStageReliveCamp(_CAMP nCampid)
+    {
+        foreach (KeyValuePair<int, Panel_unit> pair in this.IdentToUnit)
+        {
+            
+                if (pair.Value.eCampID != nCampid)
+                {
+                    pair.Value.pUnitData.Relive();
+                }
+        }
+    }
 
     public void OnStageCharSwapEvent(GameEvent evt)
     {

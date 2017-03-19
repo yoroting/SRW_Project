@@ -174,7 +174,11 @@ public class cSaveData{
 	[JsonName("money")] [DefaultValue(0)] public int n_Money;
 	[JsonName("stars")] [DefaultValue(0)] public int n_Stars;			//熟練度
 
-	[JsonName("phase")] [DefaultValue(_SAVE_PHASE._MAINTEN)] public _SAVE_PHASE ePhase = _SAVE_PHASE._MAINTEN;			//  0 - 整備 , 1-戰場上 , 2- sys
+
+    [JsonName("emoney")]    [DefaultValue(0)]    public int n_EarnMoney;
+    [JsonName("smoney")]    [DefaultValue(0)]    public int n_SpendMoney;
+
+    [JsonName("phase")] [DefaultValue(_SAVE_PHASE._MAINTEN)] public _SAVE_PHASE ePhase = _SAVE_PHASE._MAINTEN;			//  0 - 整備 , 1-戰場上 , 2- sys
 
 	[JsonName("pfirst")]public string sPlayerFirst ;			//玩家姓
 	[JsonName("pname")] public string sPlayerName ;			//玩家名
@@ -244,14 +248,16 @@ public class cSaveData{
 
         sBackJson = GameDataManager.Instance.sBackJson;
 
-    //       [JsonName("bpool")]
-    //public List<cUnitSaveData> CharBackPool;           // 備份 倉庫角色，戰敗時還原用
-    //[JsonName("bipool")]
-    //public List<int> ItemBackPool;                    // 備份 道具，戰敗時還原用
+        //       [JsonName("bpool")]
+        //public List<cUnitSaveData> CharBackPool;           // 備份 倉庫角色，戰敗時還原用
+        //[JsonName("bipool")]
+        //public List<int> ItemBackPool;                    // 備份 道具，戰敗時還原用
 
+        // 經濟
+        n_EarnMoney = GameDataManager.Instance.nEarnMoney;
+        n_SpendMoney = GameDataManager.Instance.nSpendMoney;
 
-
-        ePhase = phase;
+         ePhase = phase;
 
 		// save during mainta
 		if (ePhase == _SAVE_PHASE._MAINTEN ) {
@@ -334,6 +340,9 @@ public class cSaveData{
 
         GameDataManager.Instance.sBackJson = sBackJson;
 
+
+        GameDataManager.Instance.nEarnMoney = n_EarnMoney;
+        GameDataManager.Instance.nSpendMoney = n_SpendMoney;
         //StartCoroutine(  cSaveData.SaveLoading( this  ) ); // need a mono behacior
 
         if (phase == _SAVE_PHASE._MAINTEN) {

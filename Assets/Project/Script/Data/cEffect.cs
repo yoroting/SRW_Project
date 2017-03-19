@@ -1343,9 +1343,11 @@ public class cEffectCondition
 
         foreach (cTextFunc func in funcList)
         {
+            // 成功的都是 continue， 不要return true 。會破壞後面的判斷
+
             if (func.sFunc == "GO")
             {
-                return true;        // always true
+               // return true;        // always true
             }
             else if (func.sFunc == "NULL" || func.sFunc == "0")
             {
@@ -1355,8 +1357,11 @@ public class cEffectCondition
             {
                 int Rate = func.I(0);
                 int nRoll = Random.Range(0, 100);
-                return (Rate > nRoll);
-                //return data_I.IsStates( _FIGHTSTATE._DODGE );
+                if (Rate < nRoll)
+                {
+                    return false;
+                }
+                
             }
             else if (func.sFunc == "MRATE")  // 必須比兩者武功差值
             {
@@ -1365,7 +1370,10 @@ public class cEffectCondition
                 int Rate = func.I(0);
                 Rate += (int)((data_I.GetMar() - data_E.GetMar()) * 0.5f);
                 int nRoll = Random.Range(0, 100);
-                return (Rate > nRoll);
+                if(Rate < nRoll)
+                {
+                    return false;
+                }
 
             }
             else if (func.sFunc == "HP_I")
@@ -1576,7 +1584,7 @@ public class cEffectCondition
             else if (func.sFunc == "BUFF_E")
             {
                 int buffid = func.I(0);
-                if (data_E != null )
+                if (data_E != null)
                 {
                     if (!data_E.Buffs.HaveBuff(buffid))
                     {
@@ -1595,11 +1603,11 @@ public class cEffectCondition
                 if (data_I == null)
                     return false;
 
-                if ( !data_I.IsActiveSchool(schoolid) )
+                if (!data_I.IsActiveSchool(schoolid))
                 {
                     return false;
                 }
-                
+
             }
             else if (func.sFunc == "SCHOOL_E")
             {
@@ -1607,7 +1615,8 @@ public class cEffectCondition
                 if (data_E == null)
                     return false;
 
-                if ( !data_E.IsActiveSchool(schoolid) ) {                    
+                if (!data_E.IsActiveSchool(schoolid))
+                {
                     return false;
                 }
             }
@@ -1679,6 +1688,7 @@ public class cEffectCondition
                     break;
 
                 }
+                // check find
                 if (bFind == false)
                 {
                     return false;
@@ -1846,39 +1856,73 @@ public class cEffectCondition
                     return false;
                 }
             }
-
-            // Fight stat check
+            // Fight stat check . need entry battle first
             else if (func.sFunc == "FST_ATKER")
             {
-                return data_I.FightStates(_FIGHTSTATE._ATKER);
+                if (!BattleManager.Instance.IsBattlePhase())
+                    return false;
+
+                if ( data_I.FightStates(_FIGHTSTATE._ATKER) == false)
+                    return false;
             }
             else if (func.sFunc == "FST_DEFER")
             {
-                return data_I.FightStates(_FIGHTSTATE._ATKER) == false;
+                if (!BattleManager.Instance.IsBattlePhase())
+                    return false;
+                if (data_I.FightStates(_FIGHTSTATE._ATKER))
+                    return false;
             }
             else if (func.sFunc == "FST_DAMAGE")
             {
-                return data_I.FightStates(_FIGHTSTATE._DAMAGE);
+                if (!BattleManager.Instance.IsBattlePhase())
+                    return false;
+                bool bIsDamage = data_I.FightStates(_FIGHTSTATE._DAMAGE);
+                if (bIsDamage == false)
+                {
+                    return false;
+                }
+
+            }
+            else if (func.sFunc == "FST_HELP")
+            {
+                if (!BattleManager.Instance.IsBattlePhase())
+                    return false;
+                bool bIsDamage = data_I.FightStates(_FIGHTSTATE._DAMAGE);
+                if (bIsDamage)
+                {
+                    return false;
+                }
             }
             else if (func.sFunc == "FST_KILL")
             {
-                return data_I.FightStates(_FIGHTSTATE._KILL);
+                if (!BattleManager.Instance.IsBattlePhase())
+                    return false;
+                if (data_I.FightStates(_FIGHTSTATE._KILL) == false)
+                    return false;
             }
             else if (func.sFunc == "FST_DEAD")
             {
-                return data_I.FightStates(_FIGHTSTATE._DEAD);
+                if (!BattleManager.Instance.IsBattlePhase())
+                    return false;
+                if (data_I.FightStates(_FIGHTSTATE._DEAD) == false)
+                    return false;
             }
             else if (func.sFunc == "FST_DODGE")
             {
-                return data_I.FightStates(_FIGHTSTATE._DODGE);
+                if (!BattleManager.Instance.IsBattlePhase())
+                    return false;
+                if (data_I.FightStates(_FIGHTSTATE._DODGE) == false)
+                    return false;
             }
-           
-
-            else
+            else 
             {
-                Debug.LogError(string.Format("Error-Can't find script cond func '{0}'", func.sFunc));
+                Debug.LogError(string.Format("Error-Can't find script cond func '{0}' ", func.sFunc));
+              
             }
+            
         }
+
+        // 都過了，傳成功
         return true;
     }
 

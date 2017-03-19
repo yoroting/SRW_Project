@@ -1109,7 +1109,7 @@ public class MyScript {
                     }
                 }
             }
-            else if (func.sFunc == "CHARFACE" || func.sFunc == "SETFACE" ) //變更角色FACE
+            else if (func.sFunc == "CHARFACE" || func.sFunc == "SETFACE") //變更角色FACE
             {
                 int nCharID = func.I(0); // old
                 int nFaceID = func.I(1); // new 
@@ -1143,8 +1143,8 @@ public class MyScript {
                     if (GameDataManager.Instance.IsCharInParty(charid) == false) // 0 - 檢查角色
                     {
                         return;
-                    }                
-                }                
+                    }
+                }
 
                 TalkSayEvent evt = new TalkSayEvent();
                 //evt.nType  = func.I(0);
@@ -1217,7 +1217,7 @@ public class MyScript {
                 evt.nDisable = func.I(1);
                 GameEventManager.DispatchEvent(evt);
                 // del unit . if it on stage
-              //  Panel_StageUI.Instance.OnStageUnitDeadEvent(func.I(0)); // del unit auto
+                //  Panel_StageUI.Instance.OnStageUnitDeadEvent(func.I(0)); // del unit auto
             }
             else if (func.sFunc == "TALKALPHA")
             {
@@ -1335,7 +1335,7 @@ public class MyScript {
 
                 //evt.nAtkSkillID = func.I(2);
                 _CAMP campid = (_CAMP)func.I(0);
-                Panel_StageUI.Instance.OnStageMoveCampEvent( campid, func.I(1), func.I(2), func.I(3), func.I(4));
+                Panel_StageUI.Instance.OnStageMoveCampEvent(campid, func.I(1), func.I(2), func.I(3), func.I(4));
                 //GameEventManager.DispatchEvent ( evt  );
 
             }
@@ -1408,13 +1408,14 @@ public class MyScript {
             }
             else if (func.sFunc == "ADDITEM")  // Add buff
             {
-                GameDataManager.Instance.AddItemtoBag( func.I(0) );                
+                GameDataManager.Instance.AddItemtoBag(func.I(0));
             }
             else if (func.sFunc == "ADDMONEY")  // Add buff
             {
                 // GameDataManager.Instance.AddMONEY(func.I(0));
-                BattleManager.Instance.nDropMoney += func.I(0);  // 增加金錢
-
+                int money = func.I(0);  // 增加金錢
+                BattleManager.Instance.nDropMoney += money;
+                GameDataManager.Instance.nEarnMoney += money;
             }
             else if (func.sFunc == "SETHP")  // Add HP
             {
@@ -1513,6 +1514,10 @@ public class MyScript {
                 Panel_StageUI.Instance.OnStageDelCamp(func.I(0));
 
             }
+            else if (func.sFunc == "RELIVECAMP")  // relive
+            {
+                Panel_StageUI.Instance.OnStageReliveCamp((_CAMP)func.I(0));
+            }
             else if (func.sFunc == "POPMARK") //stage地圖上顯示 mark
             {
                 Panel_StageUI.Instance.OnStagePopMarkEvent(func.I(0), func.I(1), func.I(2), func.I(3));
@@ -1572,8 +1577,8 @@ public class MyScript {
 
             }
             else if (func.sFunc == "SETFLAG")  //set flag
-            {               
-                GameDataManager.Instance.SetFlag(func.S(0) , func.I(1));
+            {
+                GameDataManager.Instance.SetFlag(func.S(0), func.I(1));
             }
             else if (func.sFunc == "ADDFLAG")  // Add flag
             {
@@ -1598,6 +1603,10 @@ public class MyScript {
                     panel.BornBlock(func.I(0), func.I(1), func.I(2), func.I(3));
 
                 }
+            }
+            else if (func.sFunc == "REGAME")  // 一般結局，玩家重新開始
+            {
+                GameDataManager.Instance.ReGame();
             }
             else
             {

@@ -1777,8 +1777,14 @@ public class cUnitData{
 	public void DoHitEffect( int nSkillID  , cUnitData tarunit , ref List< cHitResult > resPool )
 	{
         // 精神指令會 hit 自己
-     //   if (tarunit == this)
-     //       return;
+
+        if (tarunit != null && tarunit.IsStates(_FIGHTSTATE._DODGE))
+        {
+            return;
+        }
+
+        //   if (tarunit == this)
+        //       return;
         cSkillData skilldata = MyTool.GetSkillData ( nSkillID ) ;
 		if (skilldata != null) {
 			skilldata.DoHitEffect (this, tarunit, ref resPool);  
@@ -1792,6 +1798,11 @@ public class cUnitData{
 	{
         if (tarunit == this)
             return;
+
+        if (IsStates(_FIGHTSTATE._DODGE))
+        {
+            return; 
+        }
 
 		if( FightAttr != null && (FightAttr.SkillData!= null)  ){
 			cSkillData skilldata = FightAttr.SkillData ;

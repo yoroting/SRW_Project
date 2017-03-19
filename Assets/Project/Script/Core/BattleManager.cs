@@ -1835,7 +1835,11 @@ public partial class BattleManager
 
 		//====
 		nDropMoney += money;
-		if( nDropExpPool.ContainsKey( Atker.n_Ident )  ){
+
+        // 賺錢
+        GameDataManager.Instance.nEarnMoney += money;
+
+        if ( nDropExpPool.ContainsKey( Atker.n_Ident )  ){
 			nDropExpPool[Atker.n_Ident ] += exp;
 		}
 		else {

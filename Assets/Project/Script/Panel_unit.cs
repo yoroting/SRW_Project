@@ -1447,6 +1447,10 @@ public class Panel_unit : MonoBehaviour {
 
 		GameDataManager.Instance.nMoney += nMoney;
         BattleManager.Instance.ShowDropMsg(sMsg );
+
+        // debug
+       // GameDataManager.Instance.nEarnMoney += nMoney;
+
        // BattleManager.Instance.ShowBattleMsg(null, sMsg);  // show 
     }
 

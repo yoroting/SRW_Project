@@ -129,7 +129,16 @@ public partial class GameDataManager
 
         EvtBlockPool = new List<cEvtBlock>();        // list of event block
 
-    }
+        nMoney = 0;
+        nStars = 0;
+
+        nStoryID = 0;
+        nStageID = 0;
+
+        // Debug 用 算經濟
+        nEarnMoney = 0;// 賺多少
+        nSpendMoney = 0;// 花 多少
+}
 
 private static GameDataManager instance;
 	public static GameDataManager Instance
@@ -228,10 +237,16 @@ private static GameDataManager instance;
 	//
 	public int nMoney{ get; set; } 
 	public int nRound{ get; set; } 
-	public int nStars{ get; set; } 
-//	public _ROUND_STATUS nRoundStatus{ get; set; }    // 0- start ,1- running, 2- end
+	public int nStars{ get; set; }
 
-	public _SAVE_PHASE ePhase{ get; set; } 		// 目前進度狀態
+
+    // Debug 用
+    public int nEarnMoney { get; set; } // 賺多少
+    public int nSpendMoney { get; set; }// 花 多少
+
+    //	public _ROUND_STATUS nRoundStatus{ get; set; }    // 0- start ,1- running, 2- end
+
+    public _SAVE_PHASE ePhase{ get; set; } 		// 目前進度狀態
 
 	// Camp
 	public _CAMP nActiveCamp{ get; set; }  // 
@@ -443,6 +458,36 @@ private static GameDataManager instance;
         
         return false;
     }
+
+    public void ReGame()
+    {
+        // 金錢保留，
+        int nTempMoney = nMoney;
+       // UnitPool.Clear();
+
+        // 主角外全部人移除
+        int nCharID = 1;
+        cUnitData data = null;
+        if (StoragePool.TryGetValue(nCharID, out data)) // 主角 是1 號
+        {
+            // 主角裝備移除
+            data.Items.Initialize();
+            // remove from storage
+            //RemoveStorageUnit(nCharID);
+        }
+
+        // 資料初始化
+        Initial();
+
+        //StoragePool.Clear();
+        
+        // 主角回到倉庫，讓第二輪 有強力 主角
+        AddCharToStorage(data);
+
+        nMoney = nTempMoney; // 金錢回覆
+
+    }
+
     // 目前的紀錄狀態
     //public PLAYER_DATA			cPlayerData;
     //	public cSaveData				SaveData;		

@@ -16,11 +16,12 @@ public class Panel_SysCheat : MonoBehaviour {
 	public GameObject MobAIChk;           // mob aI
     public GameObject ShowLeaveChk;           // show leave aI
 
+    // Money
     public GameObject MoneyInput;           // Kill mode
 	public GameObject MoneyBtn;           // Set money
+    public GameObject MoneyInfo;           // MoneyInfo
 
-
-	public GameObject StoryPoplist;           // StoryPoplist
+    public GameObject StoryPoplist;           // StoryPoplist
 //	public GameObject StoryInput;           // Kill mode
 //	public GameObject StoryBtn;           // Set money
 
@@ -227,9 +228,16 @@ public class Panel_SysCheat : MonoBehaviour {
 				}
 			}
 		}
+        // Debug Info
+
+        UILabel pMoneyInfo = MoneyInfo.GetComponent< UILabel  >();
+        if ( pMoneyInfo != null)
+        {
+            pMoneyInfo.text = string.Format( "+ {0} / - {1} " , GameDataManager.Instance.nEarnMoney , GameDataManager.Instance.nSpendMoney );
+        }
 
 
-	}
+    }
 
 	// Update is called once per frame
 	void Update () {

@@ -109,13 +109,14 @@ public class MainUIPanel : BasicPanel {
 	{
 		// When start button clicked do :
 		Debug.Log("Start click ");
-		// 回到第0 關
-	//	GameDataManager.Instance.nStoryID = Config.StartStory; //回到第一關
+        // 回到第0 關
+        //	GameDataManager.Instance.nStoryID = Config.StartStory; //回到第一關
 
-	//	PanelManager.Instance.OpenUI( "Panel_Loading");
+        //	PanelManager.Instance.OpenUI( "Panel_Loading");
 
-		// clear all game data		
-		GameDataManager.Instance.ClearStorageUnit ();
+        // clear all game data		
+        GameDataManager.Instance.Initial();
+        GameDataManager.Instance.ClearStorageUnit ();
 		GameDataManager.Instance.ResetStage ();
 
 		StartCoroutine ( EnterStory( Config.StartStory ) );

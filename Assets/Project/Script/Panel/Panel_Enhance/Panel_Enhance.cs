@@ -271,6 +271,7 @@ public class Panel_Enhance : MonoBehaviour {
 
         pOrgData.Relive();
 
+        GameDataManager.Instance.nSpendMoney += nCostMoney; // 消費紀錄起來
 
         GameDataManager.Instance.nMoney -= nCostMoney;
          nCostMoney = 0;
