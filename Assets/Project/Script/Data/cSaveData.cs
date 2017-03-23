@@ -391,12 +391,17 @@ public class cSaveData{
 		if (IsLoading ())
 			return false;
 		string sKeyName = GetKey( Idx );
-		string sJson = PlayerPrefs.GetString ( sKeyName , "" );
+        string sBackKeyName = sKeyName + "_bak";
+
+        string sJson = PlayerPrefs.GetString ( sKeyName , "" );
 		if (string.IsNullOrEmpty (sJson)){
 
 			return false;
 		}
-		SetLoading (true);
+        string sBackJson = PlayerPrefs.GetString(sBackKeyName, "");
+
+
+        SetLoading (true);
 		// ---- DESERIALIZATION ----
 		
 		JsonReaderSettings readerSettings = new JsonReaderSettings();
@@ -405,7 +410,9 @@ public class cSaveData{
 		JsonReader reader = new JsonReader(sJson, readerSettings);
 		
 		cSaveData save = (cSaveData)reader.Deserialize ( typeof(cSaveData) );
-		save.RestoreData ( phase );
+        save.sBackJson = sBackJson; // 接回去
+
+        save.RestoreData ( phase );
 		//parameters = (Dictionary<string, object>)reader.Deserialize();
 		return true;
 	}
@@ -414,19 +421,29 @@ public class cSaveData{
 	{
 		cSaveData save = new cSaveData ();
 		save.SetData ( nID , phase );
+        string sBackJson = save.sBackJson;
+        save.sBackJson = "";
 
-		string sKeyName = GetKey( nID );
-		// ---- SERIALIZATION ----
-		
-		JsonWriterSettings writerSettings = new JsonWriterSettings();
+        string sKeyName = GetKey( nID );
+        string sBackKeyName = sKeyName + "_bak";
+
+        // ---- SERIALIZATION ----
+
+        JsonWriterSettings writerSettings = new JsonWriterSettings();
 		writerSettings.TypeHintName = "__type";
 		
 		StringBuilder json = new StringBuilder();
 		JsonWriter writer = new JsonWriter(json, writerSettings);
 		writer.Write(save);
 
-		PlayerPrefs.SetString (sKeyName , json.ToString() );
-		PlayerPrefs.Save ();
+        int nSize = json.ToString().Length;
+
+
+        PlayerPrefs.SetString (sKeyName , json.ToString() ); // 分段存
+        PlayerPrefs.SetString(sBackKeyName, sBackJson );
+
+
+        PlayerPrefs.Save ();
 		return true;
 	}
 

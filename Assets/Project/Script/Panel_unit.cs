@@ -632,7 +632,9 @@ public class Panel_unit : MonoBehaviour {
 		TweenPosition tw = TweenPosition.Begin( this.gameObject , during , tar );
 		if( tw!= null )
 		{
-			nTweenMoveCount++;	
+            tw.delay = 0.0f; // 注意清空 delay，如果有殘留 會有跛腳現像
+
+            nTweenMoveCount++;	
 
 //			tw.SetOnFinished( OnTweenNotifyMoveEnd );
 			MyTool.TweenSetOneShotOnFinish( tw , OnTweenNotifyMoveEnd );

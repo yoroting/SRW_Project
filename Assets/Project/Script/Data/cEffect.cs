@@ -192,8 +192,9 @@ public class ADD_DEF_E : cEffect
 //aura
 public class AURABUFF_I: cEffect
 {
-	public int nRange ;
-	public AURABUFF_I( int range , int buffid ){	nRange = range; 	iValue = buffid;	}
+	public int nRange;
+    public int nCharId;
+    public AURABUFF_I( int range , int buffid, int charid = 0) {	nRange = range; 	iValue = buffid; nCharId = charid; }
 	//public int iValue ;
 	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){
 		if (Atker != null) {
@@ -203,8 +204,12 @@ public class AURABUFF_I: cEffect
 					if( BattleManager.CanPK( Atker ,pair.Value ) == false ){
                         if (pair.Value.IsTriggr())
                             continue; // 機關不上 aura buff
-
-						if ( Atker.Dist( pair.Value ) <= nRange ){
+                        // 有指定 char 則判斷 char
+                        if (nCharId > 0 && pair.Value.n_CharID != nCharId)
+                        {
+                            continue;
+                        }
+                        if ( Atker.Dist( pair.Value ) <= nRange ){
 							list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF , pair.Key , iValue , Atker.n_Ident, nSkillID ,pair.Key  ) );
 						}
 					}
@@ -217,7 +222,8 @@ public class AURABUFF_I: cEffect
 public class AURABUFF_E: cEffect
 {
 	public int nRange ;
-	public AURABUFF_E( int range , int buffid ){	nRange = range; 	iValue = buffid;	}
+    public int nCharId;
+    public AURABUFF_E( int range , int buffid , int charid =0 ){	nRange = range; 	iValue = buffid; nCharId = charid; }
 	//public int iValue ;
 	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){
 		if (Atker != null) {
@@ -227,6 +233,11 @@ public class AURABUFF_E: cEffect
 					if( BattleManager.CanPK( Atker ,pair.Value ) == true ){
                         if (pair.Value.IsTriggr())
                             continue; // 機關不上 aura buff
+                        // 有指定 char 則判斷 char
+                        if (nCharId > 0 && pair.Value.n_CharID != nCharId ) {
+                            continue;
+                        }
+
                         if ( Atker.Dist( pair.Value ) <= nRange ){
 							list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF , pair.Key , iValue , Atker.n_Ident, nSkillID ,pair.Key  ) );
 						}
@@ -240,7 +251,8 @@ public class AURABUFF_E: cEffect
 public class AURA_DELBUFF_I : cEffect
 {
     public int nRange;
-    public AURA_DELBUFF_I(int range, int buffid) { nRange = range; iValue = buffid; }
+    public int nCharId;
+    public AURA_DELBUFF_I(int range, int buffid, int charid = 0) { nRange = range; iValue = buffid; nCharId = charid; }
     //public int iValue ;
     override public void _Do(cUnitData Atker, cUnitData Defer, ref List<cHitResult> list)
     {
@@ -254,6 +266,11 @@ public class AURA_DELBUFF_I : cEffect
                     {
                         if (pair.Value.IsTriggr())
                             continue; // 機關不上 aura buff
+                        // 有指定 char 則判斷 char
+                        if (nCharId > 0 && pair.Value.n_CharID != nCharId)
+                        {
+                            continue;
+                        }
                         if (Atker.Dist(pair.Value) <= nRange)
                         {
                             list.Add(new cHitResult(cHitResult._TYPE._DELBUFF, pair.Key, iValue, Atker.n_Ident, nSkillID, pair.Key));
@@ -268,7 +285,8 @@ public class AURA_DELBUFF_I : cEffect
 public class AURA_DELBUFF_E : cEffect
 {
     public int nRange;
-    public AURA_DELBUFF_E(int range, int buffid) { nRange = range; iValue = buffid; }
+    public int nCharId;
+    public AURA_DELBUFF_E(int range, int buffid, int charid = 0) { nRange = range; iValue = buffid; nCharId = charid; }
     //public int iValue ;
     override public void _Do(cUnitData Atker, cUnitData Defer, ref List<cHitResult> list)
     {
@@ -282,6 +300,11 @@ public class AURA_DELBUFF_E : cEffect
                     {
                         if (pair.Value.IsTriggr())
                             continue; // 機關不上 aura buff
+                        // 有指定 char 則判斷 char
+                        if (nCharId > 0 && pair.Value.n_CharID != nCharId)
+                        {
+                            continue;
+                        }
                         if (Atker.Dist(pair.Value) <= nRange)
                         {
                             list.Add(new cHitResult(cHitResult._TYPE._DELBUFF, pair.Key, iValue, Atker.n_Ident, nSkillID, pair.Key));
@@ -296,7 +319,8 @@ public class AURA_DELBUFF_E : cEffect
 public class AURA_DELSTACK_I : cEffect
 {
     public int nRange;
-    public AURA_DELSTACK_I(int range, int stackid) { nRange = range; iValue = stackid; }
+    public int nCharId;
+    public AURA_DELSTACK_I(int range, int stackid, int charid = 0) { nRange = range; iValue = stackid; nCharId = charid; }
     //public int iValue ;
     override public void _Do(cUnitData Atker, cUnitData Defer, ref List<cHitResult> list)
     {
@@ -310,6 +334,11 @@ public class AURA_DELSTACK_I : cEffect
                     {
                         if (pair.Value.IsTriggr())
                             continue; // 機關不上 aura buff
+                                      // 有指定 char 則判斷 char
+                        if (nCharId > 0 && pair.Value.n_CharID != nCharId)
+                        {
+                            continue;
+                        }
                         if (Atker.Dist(pair.Value) <= nRange)
                         {
                             list.Add(new cHitResult(cHitResult._TYPE._DELSTACK, pair.Key, iValue, Atker.n_Ident, nSkillID, pair.Key));
@@ -324,7 +353,8 @@ public class AURA_DELSTACK_I : cEffect
 public class AURA_DELSTACK_E : cEffect
 {
     public int nRange;
-    public AURA_DELSTACK_E(int range, int stackid) { nRange = range; iValue = stackid; }
+    public int nCharId;
+    public AURA_DELSTACK_E(int range, int stackid, int charid = 0) { nRange = range; iValue = stackid; nCharId = charid; }
     //public int iValue ;
     override public void _Do(cUnitData Atker, cUnitData Defer, ref List<cHitResult> list)
     {
@@ -338,6 +368,11 @@ public class AURA_DELSTACK_E : cEffect
                     {
                         if (pair.Value.IsTriggr())
                             continue; // 機關不上 aura buff
+                                      // 有指定 char 則判斷 char
+                        if (nCharId > 0 && pair.Value.n_CharID != nCharId)
+                        {
+                            continue;
+                        }
                         if (Atker.Dist(pair.Value) <= nRange)
                         {
                             list.Add(new cHitResult(cHitResult._TYPE._DELSTACK, pair.Key, iValue, Atker.n_Ident, nSkillID, pair.Key));
@@ -431,11 +466,11 @@ public class BATTLE_ARRAY : cEffect
                         {
                             if (pair.Value.IsTriggr())
                                 continue; // 機關不上 aura buff
-                            if ( pair.Value.Buffs.HaveBuff( nBuffID))
+                            if ( pair.Value.Buffs.HaveBuff( nBuffID)) // 確定對方是能跟自己結陣的
                             {
-                                //雙方都獲得陣行BUFF
-                               // list.Add(new cHitResult(cHitResult._TYPE._ADDBUFF, Atker.n_Ident, iValue, Atker.n_Ident, nSkillID, pair.Key)); // slef will in unit pool dist check
-                                list.Add(new cHitResult(cHitResult._TYPE._ADDBUFF, pair.Key, iValue, Atker.n_Ident, nSkillID, pair.Key));
+                                // 每有一個人，自己獲得一層 buff
+                                list.Add(new cHitResult(cHitResult._TYPE._ADDBUFF, Atker.n_Ident, iValue, Atker.n_Ident, nSkillID, pair.Key)); // slef will in unit pool dist check
+                               // list.Add(new cHitResult(cHitResult._TYPE._ADDBUFF, pair.Key, iValue, Atker.n_Ident, nSkillID, pair.Key));
                                 //list.Add(new cHitResult(cHitResult._TYPE._ADDBUFF, pair.Key, iValue, Atker.n_Ident, nSkillID, pair.Key));
                             }
                         }
