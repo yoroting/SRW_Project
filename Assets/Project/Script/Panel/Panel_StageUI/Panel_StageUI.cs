@@ -3715,7 +3715,7 @@ public class Panel_StageUI : MonoBehaviour
 			return;
 		// get leader ident
 		int nLeaderCharid = Evt.nLeaderCharID;
-		cUnitData pLeader = GameDataManager.Instance.GetUnitDateByCharID( nLeaderCharid );
+		cUnitData pLeader = GameDataManager.Instance.GetUnitDateByCharID( nLeaderCharid , true ); // 注意不要找到死人來判斷
 		if( pLeader == null ){
 			Debug.Log (string.Format ("OnStagePopGroupEvent Fail with no leader id:{0}) ", nLeaderCharid   )  );			
 			return;
@@ -3973,7 +3973,7 @@ public class Panel_StageUI : MonoBehaviour
 //			}
 		}
 		else{
-			Debug.LogError( " Err! OnStageCharMoveEvent with null unit");
+			Debug.LogErrorFormat( " Err! OnStageCharMoveEvent with null unit({0}) - {1} " , nIdent, Evt.nCharID );
 		}
 		//DelChar( _CAMP._ENEMY , nCharid );
 

@@ -20,6 +20,10 @@ public class Item_SaveData : MonoBehaviour {
 		//string content = "NoData";
 
 		string content = cSaveData.LoadSimpleInfo (nID);
+        if (string.IsNullOrEmpty(content) ) {
+            content = "- - -";
+        }
+
 
 		MyTool.SetLabelText( NameObj , content );
 

@@ -634,8 +634,18 @@ private static GameDataManager instance;
 		unit.Buffs.ImportSavePool ( save.Buffs );
         unit.CDs.ImportSavePool( save.CDs );
 
-		//=== AI
-		unit.eSearchAI = save.eSearchAI;
+        // special tag
+        if (save.Tags != null)
+        {
+            unit.Tags = save.Tags;
+          
+          
+        }
+
+
+
+        //=== AI
+        unit.eSearchAI = save.eSearchAI;
 		unit.eComboAI = save.eComboAI;
 		unit.n_AITarget = save.nAITarget;
 		unit.n_AIX = save.nAIX;
@@ -737,13 +747,17 @@ private static GameDataManager instance;
 
 	}
 
-	public cUnitData GetUnitDateByCharID( int nCharID  ) // stage unit data
+	public cUnitData GetUnitDateByCharID( int nCharID ,bool bLife=false ) // 絕大部分下，死人也要可以選到拿來表演事件
 	{
 		if( nCharID == 0 )			return null;
 
 		foreach (KeyValuePair< int ,cUnitData > pair in UnitPool) {
 			if( pair.Value != null && pair.Value.n_CharID == nCharID )
 			{
+                if (bLife && pair.Value.IsDead() ) { //要確保是活人，卻遇到死人
+                    continue;
+                }
+
 				return pair.Value;
 			}
 		}
@@ -914,6 +928,28 @@ private static GameDataManager instance;
 
 
 
+    }
+
+    public void NextStoryFromWin()
+    {
+        STAGE_DATA stage = ConstDataManager.Instance.GetRow<STAGE_DATA>(nStageID);
+        if (stage != null)
+        {
+            nStoryID = stage.n_NEXT_STORY;
+
+            //	if( stage.n_WIN_TALK > 0 ){
+            //		GameSystem.TalkEvent( stage.n_WIN_TALK );
+            //	}
+            //	else{
+            //		// open main ten ui directly
+            //		PanelManager.Instance.OpenUI ( Panel_Mainten.Name );
+
+            //	}
+
+        }
+        sBackJson = "";
+
+      
     }
 
     public void RestoreFromFail()

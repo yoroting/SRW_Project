@@ -85,9 +85,12 @@ public class cUnitSaveData{
 	// buff pool
 	[JsonName("school")]				public Dictionary< string , int > School;		// current school 
 	[JsonName("buffs")]					public List< cBuffSaveData> Buffs;		// current buffs
-    [JsonName("cds")]					public List< cCDSaveData> CDs;		// current cd
-	//==== AI
-	[JsonName("sai")][DefaultValue(_AI_SEARCH._NORMAL )]	public _AI_SEARCH eSearchAI=_AI_SEARCH._NORMAL ;		// current use 
+    [JsonName("cds")]					public List< cCDSaveData> CDs;      // current cd
+    // TAG 需要存下來。會浮動
+    [JsonName("tag")]                   public List<_UNITTAG> Tags;      // tag
+
+    //==== AI
+    [JsonName("sai")][DefaultValue(_AI_SEARCH._NORMAL )]	public _AI_SEARCH eSearchAI=_AI_SEARCH._NORMAL ;		// current use 
 	[JsonName("cai")][DefaultValue(_AI_COMBO._NORMAL )]	public _AI_COMBO  eComboAI=_AI_COMBO._NORMAL ;		// current use 
 	[JsonName("aitar")][DefaultValue(0 )]	public 	int nAITarget = 0 ;		// current use 
 	[JsonName("aix")][DefaultValue(0 )]		public 	int nAIX = 0 ;		// current use 
@@ -122,7 +125,10 @@ public class cUnitSaveData{
 
 		School = MyTool.ConvetToStringInt ( data.SchoolPool );  // unit school pool
 		Buffs = data.Buffs.ExportSavePool ();					// unit buff pool
-        CDs = data.CDs.ExportSavePool();
+        CDs = data.CDs.ExportSavePool();        
+        Tags = data.Tags;
+
+
 
         eSearchAI = data.eSearchAI;
 		eComboAI = data.eComboAI;
@@ -386,19 +392,37 @@ public class cSaveData{
 		return "save" + Idx.ToString() ;
 	}
 
-	static public bool Load( int Idx , _SAVE_PHASE phase )
+    static public string GetSaveFileName(int Idx)
+    {
+        return Application.persistentDataPath + "/" + GetKey(Idx ) + ".sav";
+    }
+    
+
+    static public bool Load( int nID, _SAVE_PHASE phase )
 	{
 		if (IsLoading ())
 			return false;
-		string sKeyName = GetKey( Idx );
-        string sBackKeyName = sKeyName + "_bak";
+        //string sKeyName = GetKey( Idx );        
+        //        string sBackKeyName = sKeyName + "_bak";
+        string sFileName = GetSaveFileName(nID);
+        if (System.IO.File.Exists(sFileName) == false)            
+        {
+            return false;
+        }
 
-        string sJson = PlayerPrefs.GetString ( sKeyName , "" );
-		if (string.IsNullOrEmpty (sJson)){
 
-			return false;
-		}
-        string sBackJson = PlayerPrefs.GetString(sBackKeyName, "");
+        FileStream fs = new FileStream(sFileName , FileMode.Open);
+        StreamReader sw = new StreamReader(fs);
+
+        // sw.Write(json.ToString());
+        string sJson = sw.ReadToEnd();
+        sw.Close();
+        //      string sJson = PlayerPrefs.GetString ( sKeyName , "" );
+        if (string.IsNullOrEmpty(sJson))
+        {
+            return false;
+        }
+        //      string sBackJson = PlayerPrefs.GetString(sBackKeyName, "");
 
 
         SetLoading (true);
@@ -410,7 +434,7 @@ public class cSaveData{
 		JsonReader reader = new JsonReader(sJson, readerSettings);
 		
 		cSaveData save = (cSaveData)reader.Deserialize ( typeof(cSaveData) );
-        save.sBackJson = sBackJson; // 接回去
+     //   save.sBackJson = sBackJson; // 接回去
 
         save.RestoreData ( phase );
 		//parameters = (Dictionary<string, object>)reader.Deserialize();
@@ -422,10 +446,10 @@ public class cSaveData{
 		cSaveData save = new cSaveData ();
 		save.SetData ( nID , phase );
         string sBackJson = save.sBackJson;
-        save.sBackJson = "";
+//        save.sBackJson = "";
 
         string sKeyName = GetKey( nID );
-        string sBackKeyName = sKeyName + "_bak";
+//        string sBackKeyName = sKeyName + "_bak";
 
         // ---- SERIALIZATION ----
 
@@ -435,25 +459,47 @@ public class cSaveData{
 		StringBuilder json = new StringBuilder();
 		JsonWriter writer = new JsonWriter(json, writerSettings);
 		writer.Write(save);
+        //    PlayerPrefs.SetString (sKeyName , json.ToString() ); // 分段存
+        //    PlayerPrefs.SetString(sBackKeyName, sBackJson );
+        //   PlayerPrefs.Save ();
 
         int nSize = json.ToString().Length;
+//        int nBackSize = sBackJson.Length;
 
+        //換 fileIO 方法才能永遠不擔心 windows size
+        
+        //FileStream fs = File.Create(Application.persistentDataPath + "/"+ sKeyName+".sav");
+        FileStream fs = new FileStream(GetSaveFileName(nID), FileMode.OpenOrCreate);
+        StreamWriter sw = new StreamWriter(fs);
+        sw.Write( json.ToString() );
+        sw.Close();
 
-        PlayerPrefs.SetString (sKeyName , json.ToString() ); // 分段存
-        PlayerPrefs.SetString(sBackKeyName, sBackJson );
-
-
-        PlayerPrefs.Save ();
-		return true;
+        return true;
 	}
 
 
-	static public string LoadSimpleInfo( int Idx )
+	static public string LoadSimpleInfo( int nID)
 	{
-		string sKeyName = GetKey( Idx );
-		string sJson = PlayerPrefs.GetString ( sKeyName , "" );
-		if (string.IsNullOrEmpty (sJson))
-			return "NoData";
+        //string sKeyName = GetKey( nID );
+        //string sJson = PlayerPrefs.GetString ( sKeyName , "" );
+
+        string sFileName = GetSaveFileName(nID);
+        if (System.IO.File.Exists(sFileName) == false)
+        {
+            return "";
+        }
+
+
+        FileStream fs = new FileStream(sFileName, FileMode.Open);
+        StreamReader sw = new StreamReader(fs);
+       
+
+        // sw.Write(json.ToString());
+        string sJson = sw.ReadToEnd();
+        sw.Close();
+
+        if (string.IsNullOrEmpty (sJson))
+			return "";
 		// ---- DESERIALIZATION ----
 		
 		JsonReaderSettings readerSettings = new JsonReaderSettings();

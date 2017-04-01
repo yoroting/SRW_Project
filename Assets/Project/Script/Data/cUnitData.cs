@@ -295,7 +295,7 @@ public class cUnitData{
 
 	// 企劃資料解析出來的特別旗標，支援buff 動態 新增
 
-	List< _UNITTAG > Tags;		
+	public List< _UNITTAG > Tags;		
 	
 	List< _UNITTAG > GetTags()
 	{
@@ -826,8 +826,11 @@ public class cUnitData{
         string[] tags = cCharData.s_EXT_TAG.Split ( ";".ToCharArray() );
 		foreach (string s in tags) {
 			int tag =0;
-			if( int.TryParse( s , out tag ) ){ 
-				AddTag( ( _UNITTAG)tag );
+			if( int.TryParse( s , out tag ) ){
+                if (tag != 0) // 非零才需要新增
+                {
+                    AddTag((_UNITTAG)tag);
+                }
 			}
 			
 		}
