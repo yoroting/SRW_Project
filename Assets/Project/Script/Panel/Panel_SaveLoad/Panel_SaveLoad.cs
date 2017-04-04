@@ -5,7 +5,8 @@ public class Panel_SaveLoad : MonoBehaviour {
 	public const string Name = "Panel_SaveLoad";
 
 	public GameObject lblTitleObj;
-	public GameObject GridObj;
+    public GameObject lblPageObj;
+    public GameObject GridObj;
 	public GameObject CancelButton;
 
 	public GameObject ItemSaveDataObj;
@@ -13,17 +14,21 @@ public class Panel_SaveLoad : MonoBehaviour {
 
 	public _SAVE_PHASE		ePhase;
 
-	int  n_MaxRecords = 4;
+    int n_Mode = 0;     // 0- save , 1- load
+	int  n_MaxRecords = 4; // 一頁多少資料
+
+    int n_Page = 0;  // current
+    int n_MaxPage = 10;
 
 
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
 		if (ItemSaveDataObj != null) {
 			ItemSaveDataObj.SetActive( false );
 		}
 
-		UIEventListener.Get(CancelButton).onClick += OnCancelClick; // 	
+		UIEventListener.Get(CancelButton).onClick = OnCancelClick; // 	
 
 
 	}
@@ -55,46 +60,50 @@ public class Panel_SaveLoad : MonoBehaviour {
 
 	public void SetSave ( _SAVE_PHASE phase )
 	{
-		ePhase = phase;
+        n_Mode = 0; // save mode
+        ePhase = phase;
 		MyTool.SetLabelText (lblTitleObj, "紀錄");
 
 		MyTool.DestoryGridItem ( GridObj );
 
-		for (int i = 1; i <= 4; i++) {
-			GameObject go = ResourcesManager.CreatePrefabGameObj( GridObj , "Prefab/Item_SaveData" ); 
-			if( go == null )
-				continue;
+        Reload();
+        //for (int i = 1; i <= 4; i++) {
+        //	GameObject go = ResourcesManager.CreatePrefabGameObj( GridObj , "Prefab/Item_SaveData" ); 
+        //	if( go == null )
+        //		continue;
 
-			UIEventListener.Get(go).onClick = OnSaveClick; // 			
-			
-			Item_SaveData obj = go.GetComponent<Item_SaveData >();
-			if( obj != null ){
-				obj.SetData( i );
-			}
-		}
+        //	UIEventListener.Get(go).onClick = OnSaveClick; // 			
+
+        //	Item_SaveData obj = go.GetComponent<Item_SaveData >();
+        //	if( obj != null ){
+        //		obj.SetData( i );
+        //	}
+        //}
 
 
-	}
+    }
 	public void SetLoad (  _SAVE_PHASE phase )
 	{
-		ePhase = phase;
+        n_Mode = 1; // Load mode
+        ePhase = phase;
 		MyTool.SetLabelText (lblTitleObj, "讀取");
 		MyTool.DestoryGridItem ( GridObj );
+        Reload();
 
-		for (int i = 1; i <= 4; i++) {
-			GameObject go = ResourcesManager.CreatePrefabGameObj( GridObj , "Prefab/Item_SaveData" ); 
+  //      for (int i = 1; i <= 4; i++) {
+		//	GameObject go = ResourcesManager.CreatePrefabGameObj( GridObj , "Prefab/Item_SaveData" ); 
 
-			if( go == null )
-				continue;
+		//	if( go == null )
+		//		continue;
 
-			UIEventListener.Get(go).onClick = OnLoadClick; // 
+		//	UIEventListener.Get(go).onClick = OnLoadClick; // 
 			
 
-			Item_SaveData obj = go.GetComponent<Item_SaveData >();
-			if( obj != null ){
-				obj.SetData( i );
-			}
-		}
+		//	Item_SaveData obj = go.GetComponent<Item_SaveData >();
+		//	if( obj != null ){
+		//		obj.SetData( i );
+		//	}
+		//}
 
 	}
 	void OnCancelClick(GameObject go)
@@ -121,4 +130,63 @@ public class Panel_SaveLoad : MonoBehaviour {
 			}
 		}
 	}
+
+
+    public void OnNextClick()
+    {
+        //邊界不處理
+        if (n_Page >= (n_MaxPage-1))
+            return;
+
+        if (++n_Page >= n_MaxPage)
+        {
+            n_Page = n_MaxPage-1;
+        }
+        Reload();
+
+
+
+    }
+    public void OnPrevClick()
+    {
+        if (n_Page <= 0)
+            return;
+
+        if (--n_Page < 0)
+        {
+            n_Page = 0;
+        }
+        Reload();
+
+    }
+
+    void Reload()
+    {
+        string spage = string.Format( "{0}/{1}", n_Page+1 , n_MaxPage );
+        MyTool.SetLabelText(lblPageObj, spage);
+        //  n_MaxPage;
+        MyTool.DestoryGridItem(GridObj);
+        int nShift = n_Page * n_MaxRecords;
+        for (int i = 1; i <= n_MaxRecords; i++)
+        {
+            int nIdx = i + (nShift);
+
+            GameObject go = ResourcesManager.CreatePrefabGameObj(GridObj, "Prefab/Item_SaveData");
+
+            if (go == null)
+                continue;
+
+            if(n_Mode == 0 )     // save
+                UIEventListener.Get(go).onClick = OnSaveClick; // 
+            else       // LOAD
+                UIEventListener.Get(go).onClick = OnLoadClick; // 
+
+
+            Item_SaveData obj = go.GetComponent<Item_SaveData>();
+            if (obj != null)
+            {
+                obj.SetData( nIdx );
+            }
+        }
+    }
 }

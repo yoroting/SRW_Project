@@ -396,7 +396,22 @@ public class cSaveData{
     {
         return Application.persistentDataPath + "/" + GetKey(Idx ) + ".sav";
     }
-    
+
+    static public string GetSaveFileContent(int nStoryID )
+    {
+        string nstoryname = MyTool.GetStoryName( nStoryID );
+        string content = "";
+        // 整備
+        if (GameDataManager.Instance.ePhase == _SAVE_PHASE._MAINTEN)
+        {
+            content = nstoryname + " - 整備";
+        }
+        else 
+        { // 關卡中
+            content = nstoryname + " - 回合 " + GameDataManager.Instance.nRound;
+        }
+        return content;
+    }
 
     static public bool Load( int nID, _SAVE_PHASE phase )
 	{
@@ -413,7 +428,9 @@ public class cSaveData{
 
         FileStream fs = new FileStream(sFileName , FileMode.Open);
         StreamReader sw = new StreamReader(fs);
-
+        // 讀簡易資訊
+        string sSimple = sw.ReadLine(); 
+        // 讀完整資訊
         // sw.Write(json.ToString());
         string sJson = sw.ReadToEnd();
         sw.Close();
@@ -471,6 +488,10 @@ public class cSaveData{
         //FileStream fs = File.Create(Application.persistentDataPath + "/"+ sKeyName+".sav");
         FileStream fs = new FileStream(GetSaveFileName(nID), FileMode.OpenOrCreate);
         StreamWriter sw = new StreamWriter(fs);
+
+        // 寫 簡易資訊
+        sw.WriteLine( GetSaveFileContent(GameDataManager.Instance.nStoryID)  );
+        // 寫 完整資訊
         sw.Write( json.ToString() );
         sw.Close();
 
@@ -478,40 +499,48 @@ public class cSaveData{
 	}
 
 
-	static public string LoadSimpleInfo( int nID)
+	static public string LoadSaveSimpleInfo( int nID)
 	{
         //string sKeyName = GetKey( nID );
         //string sJson = PlayerPrefs.GetString ( sKeyName , "" );
 
         string sFileName = GetSaveFileName(nID);
-        if (System.IO.File.Exists(sFileName) == false)
+        string sSimple = "- - - - - - - - - -";
+        if (System.IO.File.Exists(sFileName) == true)
         {
-            return "";
+
+            FileStream fs = new FileStream(sFileName, FileMode.Open);
+            StreamReader sw = new StreamReader(fs);
+
+            string data = sw.ReadLine();
+            if (data != "")
+            {
+                sSimple = data;
+            }
+            // sw.Write(json.ToString());
+            //        string sJson = sw.ReadToEnd();
+            sw.Close();
         }
 
 
-        FileStream fs = new FileStream(sFileName, FileMode.Open);
-        StreamReader sw = new StreamReader(fs);
-       
+        
 
-        // sw.Write(json.ToString());
-        string sJson = sw.ReadToEnd();
-        sw.Close();
+        return sSimple;
+//        if (string.IsNullOrEmpty (sJson))
+//			return null;
+// ---- DESERIALIZATION ----
 
-        if (string.IsNullOrEmpty (sJson))
-			return "";
-		// ---- DESERIALIZATION ----
-		
-		JsonReaderSettings readerSettings = new JsonReaderSettings();
-		readerSettings.TypeHintName = "__type";
-		
-		JsonReader reader = new JsonReader(sJson, readerSettings);
+        //		JsonReaderSettings readerSettings = new JsonReaderSettings();
+        //readerSettings.TypeHintName = "__type";
 
-      //  return "s";
-		cSaveData save = (cSaveData)reader.Deserialize ( typeof(cSaveData) );
-		string sInfo = string.Format ( "STORY {0} " , save.n_StoryID );
-		return sInfo;
+        //		JsonReader reader = new JsonReader(sJson, readerSettings);
 
-	}
+        //  return "s";
+        //        cSaveData save = (cSaveData)reader.Deserialize ( typeof(cSaveData) );
+        //        return save;
+        //		string sInfo = string.Format ( "STORY {0} " , save.n_StoryID );
+        //		return sInfo;
+
+    }
 
 }

@@ -1,11 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Item_SaveData : MonoBehaviour {
-	public GameObject NameObj;
+public class Item_SaveData : MonoBehaviour {	
 	public int nID { set; get; }
-	// Use this for initialization
-	void Start () {
+    public GameObject NoObj;
+  //  public GameObject LvObj;
+
+    public GameObject NameObj;
+
+    // Use this for initialization
+    void Start () {
 	
 	}
 	
@@ -16,17 +20,17 @@ public class Item_SaveData : MonoBehaviour {
 	public void SetData( int nIdx )
 	{
 		nID = nIdx;
-		name = cSaveData.GetKey( nID );
-		//string content = "NoData";
 
-		string content = cSaveData.LoadSimpleInfo (nID);
-        if (string.IsNullOrEmpty(content) ) {
-            content = "- - -";
-        }
+        string sid = nID ==0 ? "自動":string.Format( "{0}." , nID );
+       // string slv = " - ";
+       // string content = "- - - - - - - - -";
+        //string content = "NoData";
 
+        string content = cSaveData.LoadSaveSimpleInfo(nID);
 
-		MyTool.SetLabelText( NameObj , content );
-
+        MyTool.SetLabelText(NoObj, sid);
+       // MyTool.SetLabelText(LvObj, slv);
+        MyTool.SetLabelText( NameObj , content );
 
 	}
 	

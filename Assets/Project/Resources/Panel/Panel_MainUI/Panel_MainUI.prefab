@@ -5,13 +5,13 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 447790}
-  - 114: {fileID: 11455788}
-  - 114: {fileID: 11403064}
-  - 114: {fileID: 11482944}
-  - 54: {fileID: 5427008}
+  - component: {fileID: 447790}
+  - component: {fileID: 11455788}
+  - component: {fileID: 11403064}
+  - component: {fileID: 11482944}
+  - component: {fileID: 5427008}
   m_Layer: 5
   m_Name: Panel_MainUI
   m_TagString: Untagged
@@ -24,10 +24,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 407112}
-  - 114: {fileID: 11403392}
+  - component: {fileID: 407112}
+  - component: {fileID: 11403392}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -40,14 +40,14 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 424842}
-  - 114: {fileID: 11432200}
-  - 114: {fileID: 11443770}
-  - 65: {fileID: 6565176}
-  - 114: {fileID: 11430946}
-  - 114: {fileID: 11448986}
+  - component: {fileID: 424842}
+  - component: {fileID: 11432200}
+  - component: {fileID: 11443770}
+  - component: {fileID: 6565176}
+  - component: {fileID: 11430946}
+  - component: {fileID: 11448986}
   m_Layer: 5
   m_Name: Control - Simple Popup List
   m_TagString: Untagged
@@ -60,10 +60,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 495932}
-  - 114: {fileID: 11482244}
+  - component: {fileID: 495932}
+  - component: {fileID: 11482244}
   m_Layer: 5
   m_Name: Overlay
   m_TagString: Untagged
@@ -76,10 +76,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 479070}
-  - 114: {fileID: 11418066}
+  - component: {fileID: 479070}
+  - component: {fileID: 11418066}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -92,10 +92,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 463520}
-  - 114: {fileID: 11445648}
+  - component: {fileID: 463520}
+  - component: {fileID: 11445648}
   m_Layer: 5
   m_Name: Overlay
   m_TagString: Untagged
@@ -108,10 +108,10 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 425648}
-  - 114: {fileID: 11477784}
+  - component: {fileID: 425648}
+  - component: {fileID: 11477784}
   m_Layer: 5
   m_Name: Control - Background
   m_TagString: Untagged
@@ -124,10 +124,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 490088}
-  - 114: {fileID: 11496294}
+  - component: {fileID: 490088}
+  - component: {fileID: 11496294}
   m_Layer: 5
   m_Name: Overlay
   m_TagString: Untagged
@@ -140,10 +140,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 454134}
-  - 114: {fileID: 11489762}
+  - component: {fileID: 454134}
+  - component: {fileID: 11489762}
   m_Layer: 5
   m_Name: BG - Stripes
   m_TagString: Untagged
@@ -156,10 +156,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 451226}
-  - 114: {fileID: 11449898}
+  - component: {fileID: 451226}
+  - component: {fileID: 11449898}
   m_Layer: 5
   m_Name: Overlay
   m_TagString: Untagged
@@ -172,13 +172,13 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 457552}
-  - 114: {fileID: 11474796}
-  - 114: {fileID: 11436094}
-  - 65: {fileID: 6538890}
-  - 114: {fileID: 11423924}
+  - component: {fileID: 457552}
+  - component: {fileID: 11474796}
+  - component: {fileID: 11436094}
+  - component: {fileID: 6538890}
+  - component: {fileID: 11423924}
   m_Layer: 5
   m_Name: Control - GameEnd Button
   m_TagString: Untagged
@@ -191,13 +191,13 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 447012}
-  - 114: {fileID: 11456932}
-  - 114: {fileID: 11405098}
-  - 65: {fileID: 6530140}
-  - 114: {fileID: 11437842}
+  - component: {fileID: 447012}
+  - component: {fileID: 11456932}
+  - component: {fileID: 11405098}
+  - component: {fileID: 6530140}
+  - component: {fileID: 11437842}
   m_Layer: 5
   m_Name: Control - Load Button
   m_TagString: Untagged
@@ -210,13 +210,13 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 493530}
-  - 114: {fileID: 11409688}
-  - 114: {fileID: 11414816}
-  - 65: {fileID: 6566002}
-  - 114: {fileID: 11467748}
+  - component: {fileID: 493530}
+  - component: {fileID: 11409688}
+  - component: {fileID: 11414816}
+  - component: {fileID: 6566002}
+  - component: {fileID: 11467748}
   m_Layer: 5
   m_Name: Control - Start Button
   m_TagString: Untagged
@@ -229,10 +229,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 409820}
-  - 114: {fileID: 11422484}
+  - component: {fileID: 409820}
+  - component: {fileID: 11422484}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -245,13 +245,13 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 485554}
-  - 114: {fileID: 11422872}
-  - 114: {fileID: 11449526}
-  - 65: {fileID: 6585664}
-  - 114: {fileID: 11488090}
+  - component: {fileID: 485554}
+  - component: {fileID: 11422872}
+  - component: {fileID: 11449526}
+  - component: {fileID: 6585664}
+  - component: {fileID: 11488090}
   m_Layer: 5
   m_Name: Control - Gallery Button
   m_TagString: Untagged
@@ -264,10 +264,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 487976}
-  - 114: {fileID: 11465234}
+  - component: {fileID: 487976}
+  - component: {fileID: 11465234}
   m_Layer: 5
   m_Name: Overlay
   m_TagString: Untagged
@@ -280,10 +280,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 455850}
-  - 114: {fileID: 11437322}
+  - component: {fileID: 455850}
+  - component: {fileID: 11437322}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -296,13 +296,13 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 445542}
-  - 114: {fileID: 11451854}
-  - 114: {fileID: 11420316}
-  - 65: {fileID: 6559510}
-  - 114: {fileID: 11404702}
+  - component: {fileID: 445542}
+  - component: {fileID: 11451854}
+  - component: {fileID: 11420316}
+  - component: {fileID: 6559510}
+  - component: {fileID: 11404702}
   m_Layer: 5
   m_Name: Control - SetUp Button
   m_TagString: Untagged
@@ -315,10 +315,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 446888}
-  - 114: {fileID: 11447074}
+  - component: {fileID: 446888}
+  - component: {fileID: 11447074}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -331,10 +331,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 447580}
-  - 114: {fileID: 11471320}
+  - component: {fileID: 447580}
+  - component: {fileID: 11471320}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -351,10 +351,10 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 493530}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &409820
 Transform:
   m_ObjectHideFlags: 1
@@ -364,10 +364,10 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 485554}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &424842
 Transform:
   m_ObjectHideFlags: 1
@@ -377,11 +377,11 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 162, y: 149, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 479070}
   m_Father: {fileID: 447790}
   m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &425648
 Transform:
   m_ObjectHideFlags: 1
@@ -391,11 +391,11 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 454134}
   m_Father: {fileID: 447790}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &445542
 Transform:
   m_ObjectHideFlags: 1
@@ -403,14 +403,14 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 190486}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -150, z: 0}
+  m_LocalPosition: {x: 0, y: -50, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 446888}
   - {fileID: 451226}
   m_Father: {fileID: 447790}
   m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &446888
 Transform:
   m_ObjectHideFlags: 1
@@ -420,10 +420,10 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 445542}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &447012
 Transform:
   m_ObjectHideFlags: 1
@@ -433,12 +433,12 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 50, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 455850}
   - {fileID: 490088}
   m_Father: {fileID: 447790}
   m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &447580
 Transform:
   m_ObjectHideFlags: 1
@@ -448,10 +448,10 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 457552}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &447790
 Transform:
   m_ObjectHideFlags: 1
@@ -461,7 +461,6 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 425648}
   - {fileID: 493530}
@@ -472,6 +471,7 @@ Transform:
   - {fileID: 457552}
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &451226
 Transform:
   m_ObjectHideFlags: 1
@@ -481,10 +481,10 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 445542}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &454134
 Transform:
   m_ObjectHideFlags: 1
@@ -494,10 +494,10 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 425648}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &455850
 Transform:
   m_ObjectHideFlags: 1
@@ -507,10 +507,10 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 447012}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &457552
 Transform:
   m_ObjectHideFlags: 1
@@ -518,14 +518,14 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 170438}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -250, z: 0}
+  m_LocalPosition: {x: 0, y: -150, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 447580}
   - {fileID: 463520}
   m_Father: {fileID: 447790}
   m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &463520
 Transform:
   m_ObjectHideFlags: 1
@@ -535,10 +535,10 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 457552}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &479070
 Transform:
   m_ObjectHideFlags: 1
@@ -548,10 +548,10 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 8, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 424842}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &485554
 Transform:
   m_ObjectHideFlags: 1
@@ -559,14 +559,14 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 185526}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -50, z: 0}
+  m_LocalPosition: {x: 335, y: -39, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 409820}
   - {fileID: 495932}
   m_Father: {fileID: 447790}
   m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &487976
 Transform:
   m_ObjectHideFlags: 1
@@ -576,10 +576,10 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 493530}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &490088
 Transform:
   m_ObjectHideFlags: 1
@@ -589,10 +589,10 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 447012}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &493530
 Transform:
   m_ObjectHideFlags: 1
@@ -602,12 +602,12 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 150, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 407112}
   - {fileID: 487976}
   m_Father: {fileID: 447790}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &495932
 Transform:
   m_ObjectHideFlags: 1
@@ -617,10 +617,10 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 485554}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &5427008
 Rigidbody:
   m_ObjectHideFlags: 1
@@ -682,7 +682,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 150, y: 48, z: 0}
+  m_Size: {x: 150, y: 58, z: 0}
   m_Center: {x: 75, y: 0, z: 0}
 --- !u!65 &6566002
 BoxCollider:
@@ -752,7 +752,7 @@ MonoBehaviour:
     relative: 1
     absolute: -4
   updateAnchors: 1
-  mColor: {r: 0.23880595, g: 0.19763865, b: 0.12118511, a: 1}
+  mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
   mWidth: 292
   mHeight: 67
@@ -765,21 +765,21 @@ MonoBehaviour:
   mTrueTypeFont: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   mFont: {fileID: 0}
   mText: "\u958B\u59CB"
-  mFontSize: 32
+  mFontSize: 48
   mFontStyle: 1
   mAlignment: 0
   mEncoding: 1
   mMaxLineCount: 0
   mEffectStyle: 1
-  mEffectColor: {r: 0.80597013, g: 0.71486217, b: 0.5533526, a: 1}
+  mEffectColor: {r: 0, g: 0, b: 0, a: 1}
   mSymbols: 1
-  mEffectDistance: {x: 1, y: 1}
+  mEffectDistance: {x: 2, y: 2}
   mOverflow: 0
   mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
   mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
-  mSpacingX: 0
+  mSpacingX: 24
   mSpacingY: -4
   mUseFloatSpacing: 0
   mFloatSpacingX: 0
@@ -878,7 +878,7 @@ MonoBehaviour:
   bottomType: 1
   topType: 1
   mAtlas: {fileID: 11491776, guid: 25576dd4c299fef4f9fc244f1e89bb8b, type: 2}
-  mSpriteName: Button_Yellow
+  mSpriteName: Button_CMD
   mFillCenter: 1
 --- !u!114 &11414816
 MonoBehaviour:
@@ -936,12 +936,12 @@ MonoBehaviour:
   mColor: {r: 0.12686568, g: 0.12686568, b: 0.12686568, a: 1}
   mPivot: 3
   mWidth: 134
-  mHeight: 40
+  mHeight: 50
   mDepth: 11
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 3.35
+  aspectRatio: 2.68
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 5e4f85552dfd4ea46a49ea0044bba09a, type: 3}
   mFont: {fileID: 0}
@@ -1183,12 +1183,12 @@ MonoBehaviour:
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 3
   mWidth: 150
-  mHeight: 48
+  mHeight: 58
   mDepth: 10
   autoResizeBoxCollider: 1
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 3.125
+  aspectRatio: 2.586207
   mType: 1
   mFillDirection: 4
   mFillAmount: 1
@@ -1200,7 +1200,7 @@ MonoBehaviour:
   bottomType: 1
   topType: 1
   mAtlas: {fileID: 11491776, guid: 25576dd4c299fef4f9fc244f1e89bb8b, type: 2}
-  mSpriteName: Button_Blue
+  mSpriteName: icon_cell
   mFillCenter: 1
 --- !u!114 &11436094
 MonoBehaviour:
@@ -1255,7 +1255,7 @@ MonoBehaviour:
     relative: 1
     absolute: -4
   updateAnchors: 1
-  mColor: {r: 0.23880595, g: 0.19763865, b: 0.12118511, a: 1}
+  mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
   mWidth: 292
   mHeight: 67
@@ -1265,24 +1265,24 @@ MonoBehaviour:
   keepAspectRatio: 0
   aspectRatio: 4.358209
   keepCrispWhenShrunk: 0
-  mTrueTypeFont: {fileID: 12800000, guid: 5e4f85552dfd4ea46a49ea0044bba09a, type: 3}
+  mTrueTypeFont: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   mFont: {fileID: 0}
   mText: "\u8B80\u53D6"
-  mFontSize: 32
+  mFontSize: 48
   mFontStyle: 1
   mAlignment: 0
   mEncoding: 1
   mMaxLineCount: 0
   mEffectStyle: 1
-  mEffectColor: {r: 0.80597013, g: 0.71486217, b: 0.5533526, a: 1}
+  mEffectColor: {r: 0, g: 0, b: 0, a: 1}
   mSymbols: 1
-  mEffectDistance: {x: 1, y: 1}
+  mEffectDistance: {x: 2, y: 2}
   mOverflow: 0
   mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
   mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
-  mSpacingX: 0
+  mSpacingX: 24
   mSpacingY: -4
   mUseFloatSpacing: 0
   mFloatSpacingX: 0
@@ -1434,7 +1434,7 @@ MonoBehaviour:
     relative: 1
     absolute: -4
   updateAnchors: 1
-  mColor: {r: 0.23880595, g: 0.19763865, b: 0.12118511, a: 1}
+  mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
   mWidth: 292
   mHeight: 67
@@ -1444,24 +1444,24 @@ MonoBehaviour:
   keepAspectRatio: 0
   aspectRatio: 4.358209
   keepCrispWhenShrunk: 0
-  mTrueTypeFont: {fileID: 12800000, guid: 5e4f85552dfd4ea46a49ea0044bba09a, type: 3}
+  mTrueTypeFont: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   mFont: {fileID: 0}
   mText: "\u8A2D \u5B9A"
-  mFontSize: 32
+  mFontSize: 48
   mFontStyle: 1
   mAlignment: 0
   mEncoding: 1
   mMaxLineCount: 0
   mEffectStyle: 1
-  mEffectColor: {r: 0.80597013, g: 0.71486217, b: 0.5533526, a: 1}
+  mEffectColor: {r: 0, g: 0, b: 0, a: 1}
   mSymbols: 1
-  mEffectDistance: {x: 1, y: 1}
+  mEffectDistance: {x: 2, y: 2}
   mOverflow: 0
   mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
   mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
-  mSpacingX: 0
+  mSpacingX: 10
   mSpacingY: -4
   mUseFloatSpacing: 0
   mFloatSpacingX: 0
@@ -1606,7 +1606,7 @@ MonoBehaviour:
   bottomType: 1
   topType: 1
   mAtlas: {fileID: 11491776, guid: 25576dd4c299fef4f9fc244f1e89bb8b, type: 2}
-  mSpriteName: Button_Yellow
+  mSpriteName: Button_CMD
   mFillCenter: 1
 --- !u!114 &11455788
 MonoBehaviour:
@@ -1701,7 +1701,7 @@ MonoBehaviour:
   bottomType: 1
   topType: 1
   mAtlas: {fileID: 11491776, guid: 25576dd4c299fef4f9fc244f1e89bb8b, type: 2}
-  mSpriteName: Button_Yellow
+  mSpriteName: Button_CMD
   mFillCenter: 1
 --- !u!114 &11465234
 MonoBehaviour:
@@ -1796,7 +1796,7 @@ MonoBehaviour:
     relative: 1
     absolute: -4
   updateAnchors: 1
-  mColor: {r: 0.23880595, g: 0.19763865, b: 0.12118511, a: 1}
+  mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
   mWidth: 292
   mHeight: 67
@@ -1806,7 +1806,7 @@ MonoBehaviour:
   keepAspectRatio: 0
   aspectRatio: 4.358209
   keepCrispWhenShrunk: 0
-  mTrueTypeFont: {fileID: 12800000, guid: 5e4f85552dfd4ea46a49ea0044bba09a, type: 3}
+  mTrueTypeFont: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   mFont: {fileID: 0}
   mText: "\u7D42\u4E86"
   mFontSize: 48
@@ -1815,15 +1815,15 @@ MonoBehaviour:
   mEncoding: 1
   mMaxLineCount: 0
   mEffectStyle: 1
-  mEffectColor: {r: 0.80597013, g: 0.71486217, b: 0.5533526, a: 1}
+  mEffectColor: {r: 0, g: 0, b: 0, a: 1}
   mSymbols: 1
-  mEffectDistance: {x: 1, y: 1}
+  mEffectDistance: {x: 2, y: 2}
   mOverflow: 0
   mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
-  mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
-  mSpacingX: 0
+  mGradientBottom: {r: 0.5955882, g: 0.5955882, b: 0.5955882, a: 1}
+  mSpacingX: 24
   mSpacingY: -4
   mUseFloatSpacing: 0
   mFloatSpacingX: 0
@@ -1882,7 +1882,7 @@ MonoBehaviour:
   bottomType: 1
   topType: 1
   mAtlas: {fileID: 11491776, guid: 25576dd4c299fef4f9fc244f1e89bb8b, type: 2}
-  mSpriteName: Button_Yellow
+  mSpriteName: Button_CMD
   mFillCenter: 1
 --- !u!114 &11477784
 MonoBehaviour:

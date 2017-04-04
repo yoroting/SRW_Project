@@ -5,10 +5,10 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 400000}
-  - 114: {fileID: 11400000}
+  - component: {fileID: 400000}
+  - component: {fileID: 11400000}
   m_Layer: 0
   m_Name: Arimo20
   m_TagString: Untagged
@@ -31,6 +31,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1002 &400001
 EditorExtensionImpl:
   serializedVersion: 6
@@ -49,9 +50,9 @@ MonoBehaviour:
   mUVRect:
     serializedVersion: 2
     x: 0
-    y: .228515625
-    width: .25
-    height: .5
+    y: 0.3828125
+    width: 0.25
+    height: 0.25
   mFont:
     mSize: 20
     mBase: 16

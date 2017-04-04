@@ -711,7 +711,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 447770}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &447716
 Transform:
@@ -724,7 +724,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 447770}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &447770
 Transform:
@@ -733,13 +733,13 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 156318}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 20, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 481662}
   - {fileID: 445522}
-  - {fileID: 447716}
+  - {fileID: 481662}
   - {fileID: 497798}
+  - {fileID: 447716}
   - {fileID: 443444}
   - {fileID: 465316}
   - {fileID: 460126}
@@ -897,7 +897,7 @@ Transform:
   m_Children:
   - {fileID: 476470}
   m_Father: {fileID: 447770}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &483638
 Transform:
@@ -965,7 +965,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 447770}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &499706
 Transform:
@@ -1137,7 +1137,7 @@ MonoBehaviour:
   m_StagePhase: 0
   bIsStageEnd: 0
   m_bIsSkipMode: 0
-  m_bWaitSoundPlayDone: 0
+  m_bWaitSoundFile: 
   nEventTriggerIdent: 0
 --- !u!114 &11402340
 MonoBehaviour:
@@ -2857,7 +2857,7 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 102
+  mWidth: 90
   mHeight: 32
   mDepth: 20
   autoResizeBoxCollider: 0
@@ -2865,7 +2865,7 @@ MonoBehaviour:
   keepAspectRatio: 0
   aspectRatio: 3.1875
   keepCrispWhenShrunk: 1
-  mTrueTypeFont: {fileID: 12800000, guid: 5e4f85552dfd4ea46a49ea0044bba09a, type: 3}
+  mTrueTypeFont: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   mFont: {fileID: 0}
   mText: 1000
   mFontSize: 32

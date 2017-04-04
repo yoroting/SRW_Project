@@ -619,7 +619,7 @@ public class MyScript {
     }
     public bool ConditionHp( int nChar1 , string op , float fValue )
 	{
-		cUnitData unit = GameDataManager.Instance.GetUnitDateByCharID ( nChar1 , false ); //死人也要判斷HP
+		cUnitData unit = GameDataManager.Instance.GetUnitDateByCharID ( nChar1  ); //死人也要判斷HP
         float fPer = 0.0f;          // 不存在 視為 0 
 
         if (unit != null) {

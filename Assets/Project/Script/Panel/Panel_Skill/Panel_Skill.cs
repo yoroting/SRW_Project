@@ -11,16 +11,20 @@ public class Panel_Skill : MonoBehaviour {
 	public GameObject CloseBtn;
 	public GameObject SkillGrid;
 	public GameObject ScrollView;
-	public GameObject SkillContent;
+	public GameObject SkillContent; // 說明
     //public GameObject SkillGridScrollBar;
     public GameObject SkillItemUnit;
 
 
-    public GameObject SkillSprite;
+    public GameObject SkillSprite;  //註解區
 	public GameObject CastNote;
 
 
-	public _SKILL_TYPE eSkillType;
+    public GameObject lblMP;  //玩家能量
+    public GameObject lblCP;  // 玩家真氣
+    public GameObject lblCondition;  // 技能禁止條件
+
+    public _SKILL_TYPE eSkillType;
 
 	public int 	nOpSkillID;			// current select skill ID
 	int nOpIdent;
@@ -41,8 +45,8 @@ public class Panel_Skill : MonoBehaviour {
 		UIEventListener.Get(OkBtn).onClick += OnOkClick; // for trig next line
 		UIEventListener.Get(CloseBtn).onClick += OnCloseClick; // for trig next line
 
-		CastNote.SetActive( true );
-
+        //	CastNote.SetActive( true );
+    //    SkillSprite.SetActive(true);
         SkillItemUnit.SetActive(false);
 
         nOpSkillID = 0;
@@ -62,14 +66,65 @@ public class Panel_Skill : MonoBehaviour {
 			{
 				//CastSkill();
 				if( SkillSprite.activeSelf == false  ){
-					SKILL skl = ConstDataManager.Instance.GetRow< SKILL>( nOpSkillID );
-					SetSkill( skl );
-				}
+					//SKILL skl = ConstDataManager.Instance.GetRow< SKILL>( nOpSkillID );
+					//SetSkill( skl );
+                    SetSkill(nOpSkillID );
+
+                }
 			}
 		}
 	}
-	// 
+    // 
+    public void ShowMpCost( int nSkillID )
+    {
+        int nCost = 0;
+        int nCP = 0;
+        
+        if (nSkillID != 0)
+        {
+            SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(nSkillID);
+            if (skl != null)
+            {
+                if (eSkillType == _SKILL_TYPE._ABILITY)
+                {
+                    nCost = skl.n_SP;
+                }
+                else {
+                    nCost = skl.n_MP;
+                }
 
+                nCP = skl.n_CP;
+            }
+        } 
+
+        string sCP = string.Format("{0}/{1}", nCP, pData.n_CP);
+        string sCond = "";
+
+        if (eSkillType == _SKILL_TYPE._ABILITY)
+        {
+            lblCP.SetActive( false );
+            lblCondition.SetActive(false);
+
+            string sSP = string.Format("{0}/{1}", nCost, pData.n_SP );
+            MyTool.SetLabelText(lblMP, sSP);
+        }
+        else if (eSkillType == _SKILL_TYPE._SKILL)
+        {
+            lblCP.SetActive(true);
+            //lblCondition.SetActive(false);
+
+            string sMP = string.Format("{0}/{1}", nCost, pData.n_MP);
+            MyTool.SetLabelText(lblMP, sMP);
+        }
+        else {
+            lblCP.SetActive(true);
+            //lblCP.SetActive(false);
+            string sMP = string.Format("{0}/{1}", nCost, pData.n_MP);
+            MyTool.SetLabelText(lblMP, sMP);
+        }
+        MyTool.SetLabelText(lblCP, sCP); 
+        MyTool.SetLabelText(lblCondition, sCond); 
+    }
 
 	public void SetData( cUnitData data , _SKILL_TYPE eType  , cUnitData target , _CMD_TYPE cmdType )
 	{
@@ -204,8 +259,11 @@ public class Panel_Skill : MonoBehaviour {
 
         }
 
+        // 無技能
+        ShowMpCost( 0 );
 
-	}
+
+    }
 
 	void ClearData()
 	{
@@ -243,7 +301,14 @@ public class Panel_Skill : MonoBehaviour {
 		return pUI;
 	}
     // show skill deteail
-	void SetSkill( SKILL skl )
+    void SetSkill(int SkillID )
+    {
+        SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(SkillID);
+        SetSkill(skl );
+    }
+
+
+    void SetSkill( SKILL skl )
 	{
 		SkillSprite.SetActive ( (skl != null) );
 		if (skl == null) {
@@ -259,7 +324,10 @@ public class Panel_Skill : MonoBehaviour {
         MyTool.SetLabelText (SkillContent, sName );
 		nOpSkillID = skl.n_ID;
 
-	//	CastNote.SetActive (true);
+        //	CastNote.SetActive (true);
+        // change cost
+        ShowMpCost(skl.n_ID);
+
 	}
 
 	void CastSkill( GameObject go  )
@@ -267,7 +335,10 @@ public class Panel_Skill : MonoBehaviour {
 		Item_Skill  item = go.GetComponent<Item_Skill>();
 		if(item != null) {
 			if( item.bEnable == false ){
-				return ;
+
+                // 不能施展，則視同 查註解
+                SetSkill( nOpSkillID );
+                return ;
 			}
 		}
 
@@ -446,3 +517,4 @@ public class Panel_Skill : MonoBehaviour {
 		return true;
 	}
 }
+
