@@ -198,8 +198,12 @@ public class Panel_Enhance : MonoBehaviour {
         ExtGrid.repositionNow = true ;
         IntGrid.repositionNow = true;
         // show active school
-
-
+        if(ExtScrollView != null)
+            ExtScrollView.ResetPosition();
+        if(IntScrollView != null)
+            IntScrollView.ResetPosition();
+        //MyTool.ResetScrollView(ExtScrollView);
+        //MyTool.ResetScrollView(IntScrollView);
     }
 
     // 

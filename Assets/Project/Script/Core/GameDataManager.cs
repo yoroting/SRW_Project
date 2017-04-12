@@ -22,7 +22,8 @@ using MYGRIDS;
 		_LAST = 0,
 		_ABILITY ,
 		_SKILL 	 ,
-	}
+        _SCHOOL,        // 查詢特定 School 的 全部技能
+    }
 
 	public enum _PK_MODE
 	{

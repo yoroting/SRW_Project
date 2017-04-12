@@ -39,8 +39,8 @@ public class Panel_MiniUnitInfo : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-	
-	}
+        UIEventListener.Get(this.gameObject).onClick += OnCloseClick; // click to close
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -75,7 +75,8 @@ public class Panel_MiniUnitInfo : MonoBehaviour {
         int idx = 0;
         foreach (GameObject o in sprCP)
         {
-            o.SetActive(idx++ < pUnitData.n_CP);
+            //o.SetActive(idx++ < pUnitData.n_CP);
+            o.SetActive(false); // 全關
         }
         
 
@@ -107,5 +108,8 @@ public class Panel_MiniUnitInfo : MonoBehaviour {
 
 	}
 
-
+    void OnCloseClick(GameObject go)
+    {
+        go.SetActive(false);
+    }
 }

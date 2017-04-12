@@ -5,12 +5,13 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 421432}
-  - 114: {fileID: 11410698}
-  - 65: {fileID: 6507016}
-  - 114: {fileID: 11485466}
+  - component: {fileID: 421432}
+  - component: {fileID: 11410698}
+  - component: {fileID: 6507016}
+  - component: {fileID: 11485466}
+  - component: {fileID: 114120292462654022}
   m_Layer: 5
   m_Name: Skill_Simple
   m_TagString: Untagged
@@ -23,10 +24,10 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 404194}
-  - 114: {fileID: 11410582}
+  - component: {fileID: 404194}
+  - component: {fileID: 11410582}
   m_Layer: 5
   m_Name: Label_Name
   m_TagString: Untagged
@@ -46,6 +47,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 421432}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &421432
 Transform:
   m_ObjectHideFlags: 1
@@ -59,6 +61,7 @@ Transform:
   - {fileID: 404194}
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &6507016
 BoxCollider:
   m_ObjectHideFlags: 1
@@ -107,7 +110,7 @@ MonoBehaviour:
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 4.16666651
+  aspectRatio: 4.1666665
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   mFont: {fileID: 0}
@@ -125,7 +128,7 @@ MonoBehaviour:
   mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
-  mGradientBottom: {r: .699999988, g: .699999988, b: .699999988, a: 1}
+  mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
   mSpacingX: 0
   mSpacingY: 0
   mUseFloatSpacing: 0
@@ -173,7 +176,7 @@ MonoBehaviour:
   autoResizeBoxCollider: 1
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 5.26315784
+  aspectRatio: 5.263158
   mType: 1
   mFillDirection: 4
   mFillAmount: 1
@@ -200,6 +203,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lblName: {fileID: 175078}
   nID: 0
+  nIndex: 0
   nType: 0
 --- !u!1001 &100100000
 Prefab:
@@ -224,3 +228,16 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 154584}
   m_IsPrefabParent: 1
+--- !u!114 &114120292462654022
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 154584}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f02842fa4878db54f9587ff4de7d9f2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scrollView: {fileID: 0}
+  draggablePanel: {fileID: 0}

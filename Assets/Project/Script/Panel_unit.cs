@@ -145,7 +145,10 @@ public class Panel_unit : MonoBehaviour {
             Destroy(tw);
         }
         PathList = null; // stop move
-        WaitMsgPool.Clear();
+        if (WaitMsgPool != null)
+        {
+            WaitMsgPool.Clear();
+        }
         m_fNextMsgTime = 0.0f;
 
         bIsDead = false;

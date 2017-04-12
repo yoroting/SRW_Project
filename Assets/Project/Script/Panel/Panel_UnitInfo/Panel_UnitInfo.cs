@@ -22,7 +22,11 @@ public class Panel_UnitInfo : MonoBehaviour {
 	public GameObject DefObj;
 	public GameObject PowObj;
 
-	public GameObject IntSchObj;
+    public GameObject BrustObj;
+    public GameObject ReduceDamageObj;
+    public GameObject ArmorObj;
+
+    public GameObject IntSchObj;
 	public GameObject ExtSchObj;
 
 	public GameObject LvObj;
@@ -36,6 +40,9 @@ public class Panel_UnitInfo : MonoBehaviour {
 	public GameObject BuffGrid;
 	public GameObject PassGrid; // 被動
 
+    public GameObject ExtListGrid; //外功列表
+    public GameObject IntListGrid;
+
     // item obj
     public GameObject[] ItemPool;
     //public GameObject Item1Obj;
@@ -43,18 +50,26 @@ public class Panel_UnitInfo : MonoBehaviour {
 
     // open switch
     public GameObject btnBase;
-    public GameObject btnAbility;
-    public GameObject btnSkill;
-    public GameObject btnItem;
+    public GameObject btnSchool;
+
+ //   public GameObject btnAbility;    
+ //   public GameObject btnItem;
 
 
     // open base
     public GameObject sprBase;
-    public GameObject sprAbility;
-    public GameObject sprSkill;
+    public GameObject sprSchool;
+
+
+    public GameObject sprAbility;    
     public GameObject sprItem;
 
     Dictionary<GameObject, GameObject> SwitchPairPool;
+
+    // scroll view
+    public GameObject ScrollViewPass;
+    public GameObject ScrollViewInt;
+    public GameObject ScrollViewExt;
 
     // close
     public GameObject CloseBtnObj;
@@ -86,24 +101,26 @@ public class Panel_UnitInfo : MonoBehaviour {
 	void Awake()
 	{
         SwitchPairPool = new Dictionary<GameObject, GameObject>();
-        SwitchPairPool.Add(btnBase, sprBase );
-        SwitchPairPool.Add(btnAbility, sprAbility);
-        SwitchPairPool.Add(btnSkill, sprSkill);
-        SwitchPairPool.Add(btnItem, sprItem);
+        SwitchPairPool.Add(btnBase, sprBase);
+        SwitchPairPool.Add(btnSchool, sprSchool);
+        //SwitchPairPool.Add(btnBase, sprBase );
+        //SwitchPairPool.Add(btnAbility, sprAbility);
+        //SwitchPairPool.Add(btnSkill, sprSkill);
+        //SwitchPairPool.Add(btnItem, sprItem);
 
         foreach (var pair in SwitchPairPool)
         {
-            UIEventListener.Get(pair.Key).onClick += OnSwitchSpriteClick; // for trig next line
+            UIEventListener.Get(pair.Key).onClick = OnSwitchSpriteClick; // for trig next line
         }
 
 
-        UIEventListener.Get(CloseBtnObj).onClick += OnCloseClick; // for trig next line
+        UIEventListener.Get(CloseBtnObj).onClick = OnCloseClick; // for trig next line
 
 
-        UIEventListener.Get(FaceObj).onClick += OnCharImgClick; // for trig next line
+        UIEventListener.Get(FaceObj).onClick = OnCharImgClick; // for trig next line
 
-
-        
+        UIEventListener.Get(IntSchObj).onClick = OnSchoolClick;
+        UIEventListener.Get(ExtSchObj).onClick = OnSchoolClick;
     }
 
 
@@ -167,12 +184,10 @@ public class Panel_UnitInfo : MonoBehaviour {
         UpdateBase();
         // school name
         UpdateSchool();
-
-
 		// Set ability
 		UpdateAbility ();
 		// set skill
-		UpdateSkill ();
+	//	UpdateSkill ();
 		
 		// set item 
 		UpdateItem ();
@@ -182,7 +197,11 @@ public class Panel_UnitInfo : MonoBehaviour {
 		UpdateBuff ();
 		//
 		UpdatePass ();
-	}
+
+        // Updateschool
+        UpdateSchoolList();
+
+    }
 
 	// Use this for initialization
 	void Start () {
@@ -260,12 +279,7 @@ public class Panel_UnitInfo : MonoBehaviour {
     {
         foreach (var pair in SwitchPairPool)
         {
-            bool b = false;
-            if (pair.Key == go)
-            {
-                b = true;
-            }
-            pair.Value.SetActive(b);           
+            pair.Value.SetActive( (pair.Key == go) );
         }
 
     }
@@ -294,19 +308,39 @@ public class Panel_UnitInfo : MonoBehaviour {
         MyTool.SetLabelInt(AtkObj, pUnitData.GetAtk());
         // def 
         int nMaxDef = pUnitData.GetMaxDef();
-        MyTool.SetLabelText(DefObj, string.Format("{0}/{1}", pUnitData.n_DEF, nMaxDef));
-
+        // MyTool.SetLabelText(DefObj, string.Format("{0}/{1}", pUnitData.n_DEF, nMaxDef));
+        MyTool.SetLabelInt(DefObj, nMaxDef);
         // pow
         MyTool.SetLabelInt(PowObj, pUnitData.GetPow());
+
+        // 
+        MyTool.SetLabelText(BrustObj, string.Format("{0}％", (pUnitData.GetMulBurst())*100.0f  ));
+        MyTool.SetLabelText( ReduceDamageObj, string.Format("{0}％", 100.0f*(1.0f- pUnitData.GetMulDamage() ) ));
+        MyTool.SetLabelFloat( ArmorObj, pUnitData.GetArmor());
+        //
+
+
 
     }
     void UpdateSchool()
     {
         //SCHOOL inSch = GameDataManager.Instance.GetConstSchoolData( data.nActSch[0] ); // int 
-        MyTool.SetLabelText(IntSchObj, pUnitData.GetSchoolFullName(pUnitData.GetIntSchID()));
+
+        Item_School exSch = ExtSchObj.GetComponent< Item_School >();
+        if (exSch != null) {
+            exSch.SetData(pUnitData.GetExtSchID() , pUnitData.GetExtSchLv()  );
+        }
+
+        Item_School InSch = IntSchObj.GetComponent<Item_School>();
+        if (InSch != null)
+        {
+            InSch.SetData(pUnitData.GetIntSchID(), pUnitData.GetIntSchLv());
+        }
+
+        //    MyTool.SetLabelText(IntSchObj, pUnitData.GetSchoolFullName(pUnitData.GetIntSchID()));
 
         //SCHOOL exSch = ConstDataManager.Instance.GetRow<SCHOOL>( pUnitData.nActSch[1] );//   GameDataManager.Instance.GetConstSchoolData( pUnitData.nActSch[1] ); // ext 
-        MyTool.SetLabelText(ExtSchObj, pUnitData.GetSchoolFullName(pUnitData.GetExtSchID()));
+        //        MyTool.SetLabelText(ExtSchObj, pUnitData.GetSchoolFullName(pUnitData.GetExtSchID()));
 
     }
     void UpdateAbility()
@@ -321,61 +355,66 @@ public class Panel_UnitInfo : MonoBehaviour {
 			GameObject go = ResourcesManager.CreatePrefabGameObj( AbilityGrid , "Prefab/Skill_simple" ); 
 			if( go == null )
 				continue;
-
-
-
 			UIEventListener.Get(go).onClick += OnAbilityClick; // 
 
+            UIWidget wiget = go.GetComponent<UIWidget>();
+            if (wiget != null)
+            {
+                wiget.width = 100;
+            }
 
-			Skill_Simple obj = go.GetComponent<Skill_Simple >();
+            Skill_Simple obj = go.GetComponent<Skill_Simple >();
 			if( obj != null ){
-				obj.nID = pair.Key;
+                obj.nID = pair.Key;
 				obj.nType = 0; // 0 is ability
 				MyTool.SetLabelText( obj.lblName , MyTool.GetSkillName( pair.Key ) );
 			}
 			
 		}
-		//UIGrid grid = AbilityGrid.GetComponent<UIGrid>(); 
-		//grid.repositionNow = true;		// need this for second pop to re pos
+	//	UIGrid grid = AbilityGrid.GetComponent<UIGrid>(); 
+	//	grid.repositionNow = true;		// need this for second pop to re pos
 
 	}
-	void UpdateSkill()
-	{
-		//int nExtSchool = pUnitData.nActSch [cAttrData._EXTSCH];
 
-		MyTool.DestoryGridItem ( SkillGrid );
+ 
+    // 將來只有 update school
+    //	void UpdateSkill()
+    //	{
+    //		//int nExtSchool = pUnitData.nActSch [cAttrData._EXTSCH];
 
-
-		foreach ( int nID in pUnitData.SkillPool ) {
-			int nSkillID = nID;
-			nSkillID = pUnitData.Buffs.GetUpgradeSkill( nSkillID ); // Get upgrade skill
-
-			SKILL skl = ConstDataManager.Instance.GetRow< SKILL > ( nSkillID );
-
-			if(skl.n_SCHOOL == 0 )
-				continue;
-
-			GameObject go = ResourcesManager.CreatePrefabGameObj( SkillGrid , "Prefab/Skill_simple" ); 
-			if( go == null )
-				continue;
-			
-			UIEventListener.Get(go).onClick += OnSkillClick; // 		
+    //		MyTool.DestoryGridItem ( SkillGrid );
 
 
-			Skill_Simple obj = go.GetComponent<Skill_Simple >();
-			if( obj != null ){
-				obj.nID = nSkillID;
-				obj.nType = 1; // 0 is ability
-				MyTool.SetLabelText( obj.lblName , MyTool.GetSkillName( nSkillID) );
-			}
-			
-		}
-//		UIGrid grid = SkillGrid.GetComponent<UIGrid>(); 
-//		grid.repositionNow = true;		// need this for second pop to re pos
+    //		foreach ( int nID in pUnitData.SkillPool ) {
+    //			int nSkillID = nID;
+    //			nSkillID = pUnitData.Buffs.GetUpgradeSkill( nSkillID ); // Get upgrade skill
+
+    //			SKILL skl = ConstDataManager.Instance.GetRow< SKILL > ( nSkillID );
+
+    //			if(skl.n_SCHOOL == 0 )
+    //				continue;
+
+    //			GameObject go = ResourcesManager.CreatePrefabGameObj( SkillGrid , "Prefab/Skill_simple" ); 
+    //			if( go == null )
+    //				continue;
+
+    //			UIEventListener.Get(go).onClick += OnSkillClick; // 		
 
 
-	}
-	void UpdateItem()
+    //			Skill_Simple obj = go.GetComponent<Skill_Simple >();
+    //			if( obj != null ){
+    //				obj.nID = nSkillID;
+    //				obj.nType = 1; // 0 is ability
+    //				MyTool.SetLabelText( obj.lblName , MyTool.GetSkillName( nSkillID) );
+    //			}
+
+    //		}
+    ////		UIGrid grid = SkillGrid.GetComponent<UIGrid>(); 
+    ////		grid.repositionNow = true;		// need this for second pop to re pos
+
+
+    //	}
+    void UpdateItem()
 	{
 
         // item obj
@@ -426,6 +465,7 @@ public class Panel_UnitInfo : MonoBehaviour {
 
     }
 
+    //沒有buff
 	void UpdateBuff()
 	{
         if (BuffGrid == null)
@@ -463,22 +503,89 @@ public class Panel_UnitInfo : MonoBehaviour {
 
 			GameObject go = ResourcesManager.CreatePrefabGameObj( PassGrid , "Prefab/Skill_simple" ); 
 			if( go == null )
-				continue;	
-			UIEventListener.Get(go).onClick += OnBuffClick; // this is a buff
+				continue;
+
+            UIDragScrollView dsv = this.GetComponent<UIDragScrollView>();
+            if (dsv != null)
+            {
+                dsv.scrollView =  ScrollViewPass.GetComponent<UIScrollView>();
+            }
+
+            UIEventListener.Get(go).onClick += OnBuffClick; // this is a buff
 
 			Skill_Simple obj = go.GetComponent<Skill_Simple >();
 			if( obj != null ){
 				obj.nID = pair.Value.nID;
 				obj.nType = 0; // 0 is ability
 				MyTool.SetLabelText( obj.lblName , MyTool.GetBuffName (obj.nID ) ); // this is buff name
-			}
-			
+			}			
 		}
 
-	}
+        MyTool.ResetScrollView(ScrollViewPass);
 
-	// onclick event
-	void OnAbilityClick( GameObject go )
+    }
+
+    // School List
+    void UpdateSchoolList()
+    {
+        MyTool.DestoryGridItem(ExtListGrid);
+        MyTool.DestoryGridItem(IntListGrid);
+
+       // UIScrollView esv = ScrollViewExt.GetComponent<UIScrollView>();
+       // UIScrollView isv = ScrollViewInt.GetComponent<UIScrollView>();
+
+
+        foreach (KeyValuePair<int, int> pair in pUnitData.SchoolPool )
+        {
+            
+            int schid = pair.Key;
+            int schlv = pair.Value;
+            SCHOOL sch = ConstDataManager.Instance.GetRow<SCHOOL>(schid);   //GameDataManager.Instance.GetConstSchoolData ( nSchool );
+            if (sch.n_TYPE == 0) // 內功
+            {
+                GameObject go = ResourcesManager.CreatePrefabGameObj(IntListGrid, "Prefab/Item_School");
+                if (go == null)
+                    continue;
+                Item_School obj = go.GetComponent<Item_School>();
+                if (obj != null)
+                {
+                    obj.SetData(schid, schlv);
+                }
+                obj.SetScrollView(ScrollViewInt );
+
+                UIEventListener.Get(go).onClick += OnSchoolClick; 
+            }
+            else
+            {          // 外功
+                GameObject go = ResourcesManager.CreatePrefabGameObj(ExtListGrid, "Prefab/Item_School");
+                if (go == null)
+                    continue;
+                Item_School obj = go.GetComponent<Item_School>();
+                if (obj != null)
+                {
+                    obj.SetData(schid, schlv);
+                }
+                obj.SetScrollView(ScrollViewExt);
+
+                UIEventListener.Get(go).onClick += OnSchoolClick;
+            }
+        }
+
+        MyTool.ResetScrollView(ScrollViewExt );
+        MyTool.ResetScrollView(ScrollViewInt );
+    }
+
+    void OnSchoolClick(GameObject go)
+    {
+        Item_School obj = go.GetComponent<Item_School>();
+        if (obj != null)
+        {
+            Panel_Skill.OpenSchoolUI( pUnitData, _SKILL_TYPE._SCHOOL, obj.nSchID  );
+        }
+    }
+
+    // onclick event
+    void OnAbilityClick( GameObject go )
 	{
 		Skill_Simple obj = go.GetComponent<Skill_Simple >();
 		if (obj != null) {

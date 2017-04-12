@@ -134,7 +134,15 @@ public class MyTool {
 		if( row != null )
 		{				
 			string content = row.Field<string>( "s_NAME");
-			string sname = string.Format( "第{0}關 {1}" , nID ,content );
+            string sname = "";
+            if (Config.GOD)
+            {
+                sname = string.Format("第{0}關 {1}", nID, content);
+            }
+            else {
+                sname = string.Format("下一關 {0}",  content);
+            }
+			
 			return sname;
 		}
 		return "null";
@@ -494,9 +502,9 @@ public class MyTool {
             NGUITools.Destroy(t.gameObject);
         }
     }
-
-    grid.repositionNow = true;		// need this for second pop to re pos
-		//grid.Reposition ();
+       
+        grid.repositionNow = true;		// need this for second pop to re pos
+		grid.Reposition ();             // for re value
 	}
 
 	public static void DestoryTweens( GameObject go )
@@ -554,7 +562,17 @@ public class MyTool {
 
 		}
 	}
-	public static int RollWidgetPool( Dictionary<int , int > pool )
+
+    public static void ResetScrollView(GameObject go)
+    {
+        UIScrollView sv = go.GetComponent<UIScrollView>();
+        if ( sv != null ) {
+            sv.ResetPosition();
+        }
+    }
+
+
+    public static int RollWidgetPool( Dictionary<int , int > pool )
 	{
 		if( pool == null )
 			return 0;

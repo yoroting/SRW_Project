@@ -126,19 +126,25 @@ public class Panel_Skill : MonoBehaviour {
         MyTool.SetLabelText(lblCondition, sCond); 
     }
 
-	public void SetData( cUnitData data , _SKILL_TYPE eType  , cUnitData target , _CMD_TYPE cmdType )
+	public void SetData( cUnitData data , _SKILL_TYPE eType  , cUnitData target , _CMD_TYPE cmdType  , int schoolid=0 )
 	{
-		if ( eType != _SKILL_TYPE._SKILL && eType != _SKILL_TYPE._ABILITY ) {
+        // 移動後攻擊，不用換（距離不同了不能更新）
+		if ( eType == _SKILL_TYPE._LAST  ) {
 			return ; // don't change data
 		}
 
 		ClearData ();
 		eSkillType = eType;
-		//
-		nOpIdent  = data.n_Ident;
-		nOpCharID = data.n_CharID;
+        //
+        nOpIdent = 0;
+        nOpCharID = 0;
 
-		pData = data;
+        pData = data;
+        if (pData != null)
+        {
+            nOpIdent = data.n_Ident;
+            nOpCharID = data.n_CharID;
+        }
 
 		List< SKILL > sklLst = new List< SKILL > ();
 
@@ -170,45 +176,75 @@ public class Panel_Skill : MonoBehaviour {
         //else
         { // normal
 
-			if (eType == _SKILL_TYPE._SKILL) {
+            if (eType == _SKILL_TYPE._SKILL)
+            {
 
-				foreach(   int  nID in pData.SkillPool ){
-					int nSkillID = nID;
-					nSkillID = pData.Buffs.GetUpgradeSkill( nSkillID ); // Get upgrade skill
-					SKILL skl =  ConstDataManager.Instance.GetRow<SKILL> ( nSkillID );
-					if( skl.n_SCHOOL == 0 )	// == 0 is ability
-						continue;				
-					if( skl.n_PASSIVE == 1 )
-						continue;
+                foreach (int nID in pData.SkillPool)
+                {
+                    int nSkillID = nID;
+                    nSkillID = pData.Buffs.GetUpgradeSkill(nSkillID); // Get upgrade skill
+                    SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(nSkillID);
+                    if (skl.n_SCHOOL == 0)  // == 0 is ability
+                        continue;
+                    if (skl.n_PASSIVE == 1)
+                        continue;
 
-					sklLst.Add(  ConstDataManager.Instance.GetRow<SKILL>(nSkillID) );
-				}
-			}
-			else if (eType == _SKILL_TYPE._ABILITY ) 		
-			{
-				int CLv = pData.n_Lv;
+                    sklLst.Add(ConstDataManager.Instance.GetRow<SKILL>(nSkillID));
+                }
+            }
+            else if (eType == _SKILL_TYPE._ABILITY)
+            {
+                int CLv = pData.n_Lv;
 
-				foreach( KeyValuePair< int , int > pair in pData.AbilityPool )
-				{
-					SKILL skl = ConstDataManager.Instance.GetRow< SKILL >( pair.Key ) ;
-					if( skl == null )
-						continue;
-					if( skl.n_SCHOOL > 0 ) // > 0 is school
-						continue;
-					if( skl.n_PASSIVE == 1 )
-						continue;
-					if( Config.GOD ){
-						sklLst.Add( skl );
-						continue;
-					}
-					if( CLv < pair.Value )
-						continue;
-					sklLst.Add( skl );
-				}
-			}
-		}
+                foreach (KeyValuePair<int, int> pair in pData.AbilityPool)
+                {
+                    SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(pair.Key);
+                    if (skl == null)
+                        continue;
+                    if (skl.n_SCHOOL > 0) // > 0 is school
+                        continue;
+                    if (skl.n_PASSIVE == 1)
+                        continue;
+                    if (Config.GOD)
+                    {
+                        sklLst.Add(skl);
+                        continue;
+                    }
+                    if (CLv < pair.Value)
+                        continue;
+                    sklLst.Add(skl);
+                }
+            }
+            else if (eType == _SKILL_TYPE._SCHOOL) // 察看指定 school
+            {
+                DataTable pTable = ConstDataManager.Instance.GetTable<SKILL>();
+                if (pTable == null)
+                    return;
 
+                foreach (SKILL sklrow in pTable)
+                {
+                    if (sklrow.n_PASSIVE == 1)
+                        continue;
 
+                    if (sklrow.n_SCHOOL != schoolid)  // == 0 is ability
+                        continue;
+                    if(sklrow.n_LEVEL_LEARN < 0) // 進階技能不處理
+                    {
+                        continue;
+                    }
+                    // 取得進階技能
+                    int nSkillID = sklrow.n_ID;
+                    nSkillID = pData.Buffs.GetUpgradeSkill(nSkillID); // Get upgrade skill
+                    SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(nSkillID);
+                    if (skl.n_SCHOOL == 0)  // == 0 is ability
+                        continue;
+                    if (skl.n_PASSIVE == 1)
+                        continue;
+                    sklLst.Add(ConstDataManager.Instance.GetRow<SKILL>(nSkillID));
+                }
+            }
+
+        }
 		// Create UI item
 
 		foreach( SKILL skl in sklLst )
@@ -230,7 +266,11 @@ public class Panel_Skill : MonoBehaviour {
 
             item.SetScrollView( ScrollView );
             //check can use
-			item.SetEnable(  CheckSkillCanUse( pData , skl , target , cmdType ) );
+            
+            // school mode 都是可用的           
+
+			item.SetEnable( eType == _SKILL_TYPE._SCHOOL || 
+                CheckSkillCanUse( pData , skl , target , cmdType ) );
 		//	UIEventListener.Get(go).onClick += OnSkillClick; // for trig next line
 			UIEventListener.Get(go).onPress += OnSkillPress; // 
 
@@ -262,10 +302,15 @@ public class Panel_Skill : MonoBehaviour {
         // 無技能
         ShowMpCost( 0 );
 
-
+        
+        //特定模式才能施展
+        OkBtn.SetActive(eType != _SKILL_TYPE._SCHOOL );
+        
     }
 
-	void ClearData()
+
+
+    void ClearData()
 	{
 		sklPool.Clear ();
 
@@ -300,6 +345,17 @@ public class Panel_Skill : MonoBehaviour {
 		pUI.SetData( data , eType  ,GameDataManager.Instance.GetUnitDateByIdent ( nTarIdent ) , cmdType  );
 		return pUI;
 	}
+
+    public static Panel_Skill OpenSchoolUI(cUnitData data, _SKILL_TYPE eType, int schoolID )
+    {
+        GameObject go = PanelManager.Instance.OpenUI(Name);
+        if (go == null)
+            return null;
+        Panel_Skill pUI = MyTool.GetPanel<Panel_Skill>(go);
+        pUI.SetData(data, _SKILL_TYPE._SCHOOL , null, _CMD_TYPE._SYS , schoolID);
+        return pUI;
+    }
+
     // show skill deteail
     void SetSkill(int SkillID )
     {
@@ -332,6 +388,12 @@ public class Panel_Skill : MonoBehaviour {
 
 	void CastSkill( GameObject go  )
 	{
+        // 察看模式，不能施展
+        if ( eSkillType == _SKILL_TYPE._SCHOOL ) {
+            SetSkill(nOpSkillID);
+            return;
+        }
+
 		Item_Skill  item = go.GetComponent<Item_Skill>();
 		if(item != null) {
 			if( item.bEnable == false ){
@@ -365,6 +427,13 @@ public class Panel_Skill : MonoBehaviour {
 
 	void OnCloseClick(GameObject go)
 	{
+        if (eSkillType == _SKILL_TYPE._SCHOOL)
+        {
+            PanelManager.Instance.CloseUI(Name);
+            return; // 避免施展技能
+        }
+
+
 		Panel_CMDUnitUI panel = MyTool.GetPanel<Panel_CMDUnitUI> ( PanelManager.Instance.OpenUI (Panel_CMDUnitUI.Name) );
 		if (panel != null) {
 			panel.SetSkillID( 0  ); // 0 is cancel
