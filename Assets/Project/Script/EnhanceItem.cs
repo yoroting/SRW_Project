@@ -16,6 +16,7 @@ public class EnhanceItem : MonoBehaviour
 
     public int nSchoolID;
     public int nLv;
+    public int nType;
 
     // Use this for initialization
     void Start()
@@ -43,15 +44,15 @@ public class EnhanceItem : MonoBehaviour
     }
 
     public void SetData( int schid, int lv)
-    {
-        nSchoolID = schid;
-        nLv = lv;
+    {        
         SCHOOL sch = ConstDataManager.Instance.GetRow<SCHOOL>(schid);
         if (sch == null)
         {
             return;
         }
-
+        nSchoolID = schid;
+        nLv = lv;
+        nType = sch.n_TYPE;
         MyTool.SetLabelText(lblName, MyTool.GetSchoolName(schid));
         MyTool.SetLabelInt(lblLv, lv);
         MyTool.SetLabelFloat(lblRank, sch.f_RANK);

@@ -918,8 +918,23 @@ public class MyTool {
 		return v;
 	}
 
-	// 动态的计算出现在manualHeight的高度。
-	static private void AdaptiveUI()
+    static public void SetDepth(GameObject go, int n , GameObject from = null )
+    {
+        UIWidget widget = go.GetComponent<UIWidget>();
+        if (from != null)
+        {
+            UIWidget widget2 = from.GetComponent<UIWidget>();
+            if (widget2 != null)
+            {
+                widget.depth = widget2.depth + n;
+                return;
+            }
+        }
+        widget.depth = n;
+    }
+
+        // 动态的计算出现在manualHeight的高度。
+    static private void AdaptiveUI()
 	{
 		int ManualWidth = 960;
 		int ManualHeight = 640;

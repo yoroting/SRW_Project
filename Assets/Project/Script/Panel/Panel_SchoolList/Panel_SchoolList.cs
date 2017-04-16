@@ -8,9 +8,10 @@ public class Panel_SchoolList : MonoBehaviour {
 
 
     public GameObject GridObj;
-
+    public GameObject sprSchList;
+    UIScrollView svSchList;
     public GameObject ItemObj;
-
+    public GameObject SelectSchObj;
     public GameObject ContentObj;
 
     public int nMode;
@@ -26,15 +27,16 @@ public class Panel_SchoolList : MonoBehaviour {
     // Use this for initialization
     void Awake()
     {
-        ItemObj.CreatePool(8);
+        ItemObj.CreatePool(5);
         ItemObj.SetActive(false);
 
         MyTool.SetLabelText(ContentObj, "");
     }
 
     void Start () {
-	
-	}
+        svSchList = sprSchList.GetComponent<UIScrollView>();
+        SelectSchObj.SetActive(false);
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -57,7 +59,7 @@ public class Panel_SchoolList : MonoBehaviour {
     {
         nMode = mode;
         pUnitData = pData;
-        nVar1 = var1;
+        nVar1 = var1; // schoool type
         nVar2 = var2;
         nVar3 = var3;
         nVar4 = var4;
@@ -69,7 +71,6 @@ public class Panel_SchoolList : MonoBehaviour {
     {
         // create school data item
         ItemObj.RecycleAll();
-
         // clear
         while (GridObj.transform.childCount > 0)
         {
@@ -87,24 +88,34 @@ public class Panel_SchoolList : MonoBehaviour {
             if (sch == null) {
                 continue;
             }
-            // int 
-            if (nMode == 0)
+            if (nVar1 != sch.n_TYPE)
             {
-                if (sch.n_TYPE == 1) {
-                    continue;
-                }
+                continue;
             }
-            // ext
-            else if (nMode == 1) {
-                if (sch.n_TYPE == 0)                {
-                    continue;
-                }
-            }
+            //// int 
+            //if (nMode == 0)
+            //{
+            //    if (sch.n_TYPE == 1) {
+            //        continue;
+            //    }
+            //}
+            //// ext
+            //else if (nMode == 1) {
+            //    if (sch.n_TYPE == 0)                {
+            //        continue;
+            //    }
+            //}
 
             GameObject obj = ItemObj.Spawn(GridObj.transform);
             if (obj != null)
             {
-                ItemList_School item = obj.GetComponent<ItemList_School>();
+                UIDragScrollView drag = obj.GetComponent<UIDragScrollView>();
+                if (drag != null)
+                {
+                    drag.scrollView = svSchList;
+                }
+
+                Item_School item = obj.GetComponent<Item_School>();
                 if (item != null)
                 {
                     item.ReSize();
@@ -119,6 +130,11 @@ public class Panel_SchoolList : MonoBehaviour {
         {
             grid.repositionNow = true;
         }
+        // show active school
+        if (svSchList != null)
+        {
+            svSchList.ResetPosition();
+        }
     }
 
     public void OnCloseClick(GameObject go)
@@ -128,23 +144,78 @@ public class Panel_SchoolList : MonoBehaviour {
 
     public void OnOKClick(GameObject go)
     {
-        if (nSelectID > 0 && (pUnitData != null ) ) {
+       
 
-            pUnitData.ActiveSchool(nSelectID);
-            GameSystem.PlaySound("Audios 00050");
+        switch (nMode)
+        {
+            case 1: // equip
+                {
+                    if (nSelectID > 0 && (pUnitData != null))
+                    {
+
+                        pUnitData.ActiveSchool(nSelectID);
+                        GameSystem.PlaySound("Audios 00050");
+                    }
+                    // 如果有 mini unit 要更新
+                    if (PanelManager.Instance.CheckUIIsOpening(Panel_CMDUnitUI.Name))
+                    {
+                        Panel_CMDUnitUI.CancelCmd(); // 要關命令
+                        //Panel_CMDUnitUI panel = MyTool.GetPanel<Panel_CMDUnitUI>(Panel_CMDUnitUI.Name); //PanelManager.Instance.OpenUI( Panel_UnitInfo.Name );
+                        //if (panel != null)
+                        //{
+                           
+                        //}
+                    }
+                    //if (PanelManager.Instance.CheckUIIsOpening(Panel_UnitInfo.Name))
+                    //{
+
+                    //    //Panel_UnitInfo panel = MyTool.GetPanel<Panel_UnitInfo>(Panel_UnitInfo.Name); //PanelManager.Instance.OpenUI( Panel_UnitInfo.Name );
+                    //    //if (panel != null)
+                    //    //{
+                    //    //    panel.EquipItem(nVar1, itemid); // syn bag
+                    //    //}
+
+                    //}
+                }
+                PanelManager.Instance.CloseUI(Name); // close school
+                break;
+            case 2: // enhance
+                {
+                    if (PanelManager.Instance.CheckUIIsOpening(Panel_Enhance.Name))
+                    {
+
+                        Panel_Enhance panel = MyTool.GetPanel<Panel_Enhance>(Panel_Enhance.Name); //PanelManager.Instance.OpenUI( Panel_UnitInfo.Name );
+                        if (panel != null)
+                        {
+                             panel.EquipSchool( nSelectID ); // syn bag
+                        }
+
+                    }
+                    PanelManager.Instance.CloseUI(Name); // change school
+                };
+                break;
+            default:
+                {
+                    PanelManager.Instance.CloseUI(Name); // change school
+                                                         // Panel_Tip.OpenItemTip(itemid);
+                                                         //    Panel_Tip.OpenUI(MyTool.GetSkillName(itemid));
+                }
+
+                break;
         }
 
-        PanelManager.Instance.CloseUI(Name); // change school
+      
     }
 
 
     public void OnItemClick(GameObject go)
     {
-        ItemList_School item = go.GetComponent<ItemList_School>();
+        //ItemList_School item = go.GetComponent<ItemList_School>();
+        Item_School item = go.GetComponent<Item_School>();
         if (item == null)
             return;
 
-        nSelectID = item.nSchoolID;
+        nSelectID = item.nSchID;
 
         //Panel_TipOpenItemTip(itemid);
         //Panel_Tip.OpenUI(MyTool.GetSkillName(itemid));

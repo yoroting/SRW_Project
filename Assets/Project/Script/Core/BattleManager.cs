@@ -1340,8 +1340,48 @@ public partial class BattleManager
 		}
 
 	}
+    public void ShowCastMsg(int nIdent, string msg)
+    {
+        Panel_unit unit = Panel_StageUI.Instance.GetUnitByIdent(nIdent);
+        ShowCastMsg(unit, msg);
 
-	public void ShowBattleFX( int nIdent , int nFxId )
+    }
+    public void ShowCastMsg(Panel_unit unit, string msg)
+    {
+        GameObject go = null;
+        Vector3 v = Vector3.zero;
+        if (unit != null)
+        {
+            go = ResourcesManager.CreatePrefabGameObj(unit.gameObject, "prefab/CastMsg");
+            // show in screen center
+            v = unit.transform.position;
+            //v = unit.transform.parent.localPosition+unit.transform.localPosition;
+        }
+        else
+        {
+            //
+            go = ResourcesManager.CreatePrefabGameObj(Panel_StageUI.Instance.MaskPanelObj, "prefab/CastMsg");
+        }
+        //GameObject go = ResourcesManager.CreatePrefabGameObj ( Panel_StageUI.Instance.MaskPanelObj , "prefab/BattleMsg" );
+
+        if (go != null)
+        {
+            MyTool.SetDepth( go , 20 , unit.gameObject );
+            //UIWidget widget = go.GetComponent<UIWidget>();
+            //widget.depth = 20;
+
+            go.transform.position = v;
+            //go.transform.localPosition = v;
+            UILabel lbl = go.GetComponentInChildren<UILabel>();
+            if (lbl != null)
+            {
+                lbl.text = msg;
+            }
+        }
+
+    }
+
+    public void ShowBattleFX( int nIdent , int nFxId )
 	{
 		if( nIdent==0 || nFxId==0 )
 			return;

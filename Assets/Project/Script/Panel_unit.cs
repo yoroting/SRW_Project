@@ -1420,7 +1420,7 @@ public class Panel_unit : MonoBehaviour {
 			if( skl != null ){
 
 
-				BattleManager.Instance.ShowBattleMsg( this, skl.s_NAME );
+				BattleManager.Instance.ShowCastMsg( this, skl.s_NAME );
 				
 				// play fx
 				if( skl.n_CAST_FX > 0 ){

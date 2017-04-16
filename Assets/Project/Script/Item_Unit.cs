@@ -14,6 +14,7 @@ public class Item_Unit : MonoBehaviour {
     {
         nID = 0;
         nIndex = -1;
+        // 子物件的 awake 在母物件後。所以要母物件 在 awkae 外 設定index
         //    nType = 0;
     }
 
@@ -44,4 +45,13 @@ public class Item_Unit : MonoBehaviour {
         nID = id;
         MyTool.SetLabelText(lblName, MyTool.GetItemName(nID));
     }
+    public void SetItemSlot(int index )
+    {
+        nIndex = index;
+    }
+    public void SetItemCallBack( UIEventListener.VoidDelegate func  )
+    {
+        UIEventListener.Get(btnEquip).onClick = func;
+    }
+
 }

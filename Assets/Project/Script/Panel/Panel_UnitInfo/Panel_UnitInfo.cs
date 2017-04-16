@@ -162,9 +162,18 @@ public class Panel_UnitInfo : MonoBehaviour {
 
     }
 	void OnEnable()
-	{	
-		//ReloadData();
-	}
+	{
+        //ReloadData();
+        foreach (GameObject o in ItemPool)
+        {         
+            Item_Unit item = o.GetComponent<Item_Unit>();
+            if (item == null)
+                continue;
+            // 非神模式 不能換裝備
+            item.btnEquip.SetActive( (Config.GOD == true ) ); 
+        }
+
+    }
 
 	void OnDisable()
 	{
@@ -214,8 +223,10 @@ public class Panel_UnitInfo : MonoBehaviour {
             Item_Unit item = o.GetComponent<Item_Unit>();
             if (item == null)
                 continue;
-            item.nIndex = idx++;
+            item.SetItemSlot(idx++ );
+            //item.nIndex = idx++;
             UIEventListener.Get(item.btnEquip).onClick = OnEquipItemClick; // 
+            // 非神模式 不能換裝備
         }
     }
 	
@@ -314,7 +325,7 @@ public class Panel_UnitInfo : MonoBehaviour {
         MyTool.SetLabelInt(PowObj, pUnitData.GetPow());
 
         // 
-        MyTool.SetLabelText(BrustObj, string.Format("{0}％", (pUnitData.GetMulBurst())*100.0f  ));
+        MyTool.SetLabelText(BrustObj, string.Format("{0}％", (pUnitData.GetMulBurst()-1.0f)*100.0f  ));
         MyTool.SetLabelText( ReduceDamageObj, string.Format("{0}％", 100.0f*(1.0f- pUnitData.GetMulDamage() ) ));
         MyTool.SetLabelFloat( ArmorObj, pUnitData.GetArmor());
         //

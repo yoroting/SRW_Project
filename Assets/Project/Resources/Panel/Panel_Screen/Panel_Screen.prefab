@@ -5,10 +5,10 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 490478}
-  - 114: {fileID: 11490490}
+  - component: {fileID: 490478}
+  - component: {fileID: 11490490}
   m_Layer: 5
   m_Name: Control - Background
   m_TagString: Untagged
@@ -21,10 +21,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 440990}
-  - 114: {fileID: 11480452}
+  - component: {fileID: 440990}
+  - component: {fileID: 11480452}
   m_Layer: 5
   m_Name: BG - Stripes
   m_TagString: Untagged
@@ -37,10 +37,10 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 462762}
-  - 114: {fileID: 11491852}
+  - component: {fileID: 462762}
+  - component: {fileID: 11491852}
   m_Layer: 5
   m_Name: Label - Name
   m_TagString: Untagged
@@ -53,12 +53,12 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 433752}
-  - 114: {fileID: 11400290}
-  - 114: {fileID: 11435396}
-  - 114: {fileID: 11462226}
+  - component: {fileID: 433752}
+  - component: {fileID: 11400290}
+  - component: {fileID: 11435396}
+  - component: {fileID: 11462226}
   m_Layer: 5
   m_Name: Panel_Screen
   m_TagString: Untagged
@@ -80,6 +80,7 @@ Transform:
   - {fileID: 462762}
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &440990
 Transform:
   m_ObjectHideFlags: 1
@@ -92,6 +93,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 490478}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &462762
 Transform:
   m_ObjectHideFlags: 1
@@ -104,6 +106,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 433752}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &490478
 Transform:
   m_ObjectHideFlags: 1
@@ -117,6 +120,7 @@ Transform:
   - {fileID: 440990}
   m_Father: {fileID: 433752}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &11400290
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -188,6 +192,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfde9d7086000174d88c9ecc596c99ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  BackObj: {fileID: 103046}
   SceneNameObj: {fileID: 139846}
   m_bIsFadeIning: 0
   m_bIsFadeOuting: 0
@@ -219,7 +224,7 @@ MonoBehaviour:
     relative: 1
     absolute: 0
   updateAnchors: 1
-  mColor: {r: .343283594, g: .343283594, b: .343283594, a: .360784322}
+  mColor: {r: 0.3432836, g: 0.3432836, b: 0.3432836, a: 0.36078432}
   mPivot: 4
   mWidth: 960
   mHeight: 640
@@ -327,7 +332,7 @@ MonoBehaviour:
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 6.4000001
+  aspectRatio: 6.4
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   mFont: {fileID: 0}
@@ -345,7 +350,7 @@ MonoBehaviour:
   mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
-  mGradientBottom: {r: .699999988, g: .699999988, b: .699999988, a: 1}
+  mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
   mSpacingX: 0
   mSpacingY: 0
   mUseFloatSpacing: 0

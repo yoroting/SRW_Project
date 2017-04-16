@@ -5,10 +5,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 438200}
-  - 114: {fileID: 11461284}
+  - component: {fileID: 438200}
+  - component: {fileID: 11461284}
   m_Layer: 5
   m_Name: Label-Mar_v
   m_TagString: Untagged
@@ -21,13 +21,13 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 413566}
-  - 114: {fileID: 11472836}
-  - 114: {fileID: 11478814}
-  - 65: {fileID: 6577996}
-  - 114: {fileID: 11447082}
+  - component: {fileID: 413566}
+  - component: {fileID: 11472836}
+  - component: {fileID: 11478814}
+  - component: {fileID: 6577996}
+  - component: {fileID: 11447082}
   m_Layer: 5
   m_Name: Control - Enhance
   m_TagString: Untagged
@@ -40,10 +40,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 402828}
-  - 114: {fileID: 11453492}
+  - component: {fileID: 402828}
+  - component: {fileID: 11453492}
   m_Layer: 5
   m_Name: Label-Name
   m_TagString: Untagged
@@ -56,11 +56,11 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 405364}
-  - 114: {fileID: 11466180}
-  - 65: {fileID: 6542346}
+  - component: {fileID: 405364}
+  - component: {fileID: 11466180}
+  - component: {fileID: 6542346}
   m_Layer: 5
   m_Name: Texture-Face
   m_TagString: Untagged
@@ -73,10 +73,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 475926}
-  - 114: {fileID: 11425402}
+  - component: {fileID: 475926}
+  - component: {fileID: 11425402}
   m_Layer: 5
   m_Name: Label-EXP
   m_TagString: Untagged
@@ -89,10 +89,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 452000}
-  - 114: {fileID: 11434860}
+  - component: {fileID: 452000}
+  - component: {fileID: 11434860}
   m_Layer: 5
   m_Name: Overlay
   m_TagString: Untagged
@@ -105,10 +105,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 415472}
-  - 114: {fileID: 11477206}
+  - component: {fileID: 415472}
+  - component: {fileID: 11477206}
   m_Layer: 5
   m_Name: Label-EXP
   m_TagString: Untagged
@@ -121,9 +121,9 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 445166}
+  - component: {fileID: 445166}
   m_Layer: 5
   m_Name: NGUI Snapshot Point 36
   m_TagString: EditorOnly
@@ -136,10 +136,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 494100}
-  - 114: {fileID: 11454062}
+  - component: {fileID: 494100}
+  - component: {fileID: 11454062}
   m_Layer: 5
   m_Name: Label-EXP_v
   m_TagString: Untagged
@@ -152,10 +152,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 443176}
-  - 114: {fileID: 11497038}
+  - component: {fileID: 443176}
+  - component: {fileID: 11497038}
   m_Layer: 5
   m_Name: Label-Mar
   m_TagString: Untagged
@@ -168,10 +168,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 462788}
-  - 114: {fileID: 11442994}
+  - component: {fileID: 462788}
+  - component: {fileID: 11442994}
   m_Layer: 5
   m_Name: Label-LV_v
   m_TagString: Untagged
@@ -184,10 +184,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 445430}
-  - 114: {fileID: 11477642}
+  - component: {fileID: 445430}
+  - component: {fileID: 11477642}
   m_Layer: 5
   m_Name: Label-LV
   m_TagString: Untagged
@@ -200,11 +200,11 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 406066}
-  - 114: {fileID: 11474186}
-  - 114: {fileID: 11495196}
+  - component: {fileID: 406066}
+  - component: {fileID: 11474186}
+  - component: {fileID: 11495196}
   m_Layer: 5
   m_Name: Scroll View
   m_TagString: Untagged
@@ -217,10 +217,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 430438}
-  - 114: {fileID: 11491630}
+  - component: {fileID: 430438}
+  - component: {fileID: 11491630}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -233,10 +233,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 489502}
-  - 114: {fileID: 11457434}
+  - component: {fileID: 489502}
+  - component: {fileID: 11457434}
   m_Layer: 5
   m_Name: Label-EXP_v
   m_TagString: Untagged
@@ -249,13 +249,13 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 435926}
-  - 114: {fileID: 11492546}
-  - 114: {fileID: 11433740}
-  - 65: {fileID: 6532658}
-  - 114: {fileID: 11490426}
+  - component: {fileID: 435926}
+  - component: {fileID: 11492546}
+  - component: {fileID: 11433740}
+  - component: {fileID: 6532658}
+  - component: {fileID: 11490426}
   m_Layer: 5
   m_Name: Control - Enhance
   m_TagString: Untagged
@@ -268,10 +268,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 421938}
-  - 114: {fileID: 11475746}
+  - component: {fileID: 421938}
+  - component: {fileID: 11475746}
   m_Layer: 5
   m_Name: Label-IntSch
   m_TagString: Untagged
@@ -284,10 +284,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 400352}
-  - 114: {fileID: 11483534}
+  - component: {fileID: 400352}
+  - component: {fileID: 11483534}
   m_Layer: 5
   m_Name: Label-LV
   m_TagString: Untagged
@@ -300,10 +300,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 447702}
-  - 114: {fileID: 11412684}
+  - component: {fileID: 447702}
+  - component: {fileID: 11412684}
   m_Layer: 5
   m_Name: Label-Name
   m_TagString: Untagged
@@ -316,13 +316,13 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 469794}
-  - 114: {fileID: 11435626}
-  - 114: {fileID: 11438312}
-  - 65: {fileID: 6583428}
-  - 114: {fileID: 11487830}
+  - component: {fileID: 469794}
+  - component: {fileID: 11435626}
+  - component: {fileID: 11438312}
+  - component: {fileID: 6583428}
+  - component: {fileID: 11487830}
   m_Layer: 5
   m_Name: Mainten_Unit
   m_TagString: Untagged
@@ -335,10 +335,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 443560}
-  - 114: {fileID: 11491778}
+  - component: {fileID: 443560}
+  - component: {fileID: 11491778}
   m_Layer: 5
   m_Name: Label-LV_v
   m_TagString: Untagged
@@ -351,10 +351,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 414600}
-  - 114: {fileID: 11485582}
+  - component: {fileID: 414600}
+  - component: {fileID: 11485582}
   m_Layer: 5
   m_Name: Overlay
   m_TagString: Untagged
@@ -367,10 +367,10 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 438452}
-  - 114: {fileID: 11415032}
+  - component: {fileID: 438452}
+  - component: {fileID: 11415032}
   m_Layer: 5
   m_Name: Sprite
   m_TagString: Untagged
@@ -383,9 +383,9 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 422204}
+  - component: {fileID: 422204}
   m_Layer: 5
   m_Name: NGUI Snapshot Point 36
   m_TagString: EditorOnly
@@ -398,9 +398,9 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 441264}
+  - component: {fileID: 441264}
   m_Layer: 8
   m_Name: NGUI Snapshot Point 36
   m_TagString: EditorOnly
@@ -413,11 +413,11 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 425162}
-  - 114: {fileID: 11494442}
-  - 65: {fileID: 6539748}
+  - component: {fileID: 425162}
+  - component: {fileID: 11494442}
+  - component: {fileID: 6539748}
   m_Layer: 5
   m_Name: Texture-Face
   m_TagString: Untagged
@@ -430,10 +430,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 446728}
-  - 114: {fileID: 11428858}
+  - component: {fileID: 446728}
+  - component: {fileID: 11428858}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -446,10 +446,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 470314}
-  - 114: {fileID: 11464262}
+  - component: {fileID: 470314}
+  - component: {fileID: 11464262}
   m_Layer: 5
   m_Name: Overlay
   m_TagString: Untagged
@@ -462,10 +462,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 491380}
-  - 114: {fileID: 11404324}
+  - component: {fileID: 491380}
+  - component: {fileID: 11404324}
   m_Layer: 5
   m_Name: Label-Mar
   m_TagString: Untagged
@@ -478,10 +478,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 420960}
-  - 114: {fileID: 11473472}
+  - component: {fileID: 420960}
+  - component: {fileID: 11473472}
   m_Layer: 5
   m_Name: Label-IntSch
   m_TagString: Untagged
@@ -494,10 +494,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 458672}
-  - 114: {fileID: 11404530}
+  - component: {fileID: 458672}
+  - component: {fileID: 11404530}
   m_Layer: 5
   m_Name: Grid_Unit
   m_TagString: Untagged
@@ -510,13 +510,13 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 468702}
-  - 114: {fileID: 11434002}
-  - 114: {fileID: 11492414}
-  - 65: {fileID: 6540492}
-  - 114: {fileID: 11444418}
+  - component: {fileID: 468702}
+  - component: {fileID: 11434002}
+  - component: {fileID: 11492414}
+  - component: {fileID: 6540492}
+  - component: {fileID: 11444418}
   m_Layer: 5
   m_Name: Control - Colored Button
   m_TagString: Untagged
@@ -529,10 +529,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 496932}
-  - 114: {fileID: 11455684}
+  - component: {fileID: 496932}
+  - component: {fileID: 11455684}
   m_Layer: 5
   m_Name: Label-ExtSch
   m_TagString: Untagged
@@ -545,13 +545,13 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 406198}
-  - 114: {fileID: 11458466}
-  - 114: {fileID: 11422716}
-  - 65: {fileID: 6596086}
-  - 114: {fileID: 11450400}
+  - component: {fileID: 406198}
+  - component: {fileID: 11458466}
+  - component: {fileID: 11422716}
+  - component: {fileID: 6596086}
+  - component: {fileID: 11450400}
   m_Layer: 5
   m_Name: Mainten_Unit (1)
   m_TagString: Untagged
@@ -564,10 +564,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 482368}
-  - 114: {fileID: 11484966}
+  - component: {fileID: 482368}
+  - component: {fileID: 11484966}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -580,10 +580,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 499606}
-  - 114: {fileID: 11443194}
+  - component: {fileID: 499606}
+  - component: {fileID: 11443194}
   m_Layer: 5
   m_Name: Label-Mar_v
   m_TagString: Untagged
@@ -596,12 +596,12 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 495086}
-  - 114: {fileID: 11413810}
-  - 114: {fileID: 11446020}
-  - 114: {fileID: 11463636}
+  - component: {fileID: 495086}
+  - component: {fileID: 11413810}
+  - component: {fileID: 11446020}
+  - component: {fileID: 11463636}
   m_Layer: 5
   m_Name: Panel_Dispatch
   m_TagString: Untagged
@@ -614,10 +614,10 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 492282}
-  - 114: {fileID: 11427172}
+  - component: {fileID: 492282}
+  - component: {fileID: 11427172}
   m_Layer: 5
   m_Name: Label-ExtSch
   m_TagString: Untagged
@@ -637,6 +637,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 406198}
   m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &402828
 Transform:
   m_ObjectHideFlags: 1
@@ -649,6 +650,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 406198}
   m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &405364
 Transform:
   m_ObjectHideFlags: 1
@@ -661,6 +663,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 406198}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &406066
 Transform:
   m_ObjectHideFlags: 1
@@ -675,6 +678,7 @@ Transform:
   - {fileID: 458672}
   m_Father: {fileID: 495086}
   m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &406198
 Transform:
   m_ObjectHideFlags: 1
@@ -698,6 +702,7 @@ Transform:
   - {fileID: 496932}
   m_Father: {fileID: 458672}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &413566
 Transform:
   m_ObjectHideFlags: 1
@@ -713,6 +718,7 @@ Transform:
   - {fileID: 470314}
   m_Father: {fileID: 469794}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &414600
 Transform:
   m_ObjectHideFlags: 1
@@ -725,6 +731,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 468702}
   m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &415472
 Transform:
   m_ObjectHideFlags: 1
@@ -737,6 +744,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 406198}
   m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &420960
 Transform:
   m_ObjectHideFlags: 1
@@ -749,6 +757,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 469794}
   m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &421938
 Transform:
   m_ObjectHideFlags: 1
@@ -761,6 +770,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 406198}
   m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &422204
 Transform:
   m_ObjectHideFlags: 1
@@ -773,6 +783,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 413566}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &425162
 Transform:
   m_ObjectHideFlags: 1
@@ -785,6 +796,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 469794}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &430438
 Transform:
   m_ObjectHideFlags: 1
@@ -797,6 +809,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 413566}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &435926
 Transform:
   m_ObjectHideFlags: 1
@@ -812,6 +825,7 @@ Transform:
   - {fileID: 452000}
   m_Father: {fileID: 406198}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &438200
 Transform:
   m_ObjectHideFlags: 1
@@ -824,6 +838,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 406198}
   m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &438452
 Transform:
   m_ObjectHideFlags: 1
@@ -836,6 +851,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 495086}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &441264
 Transform:
   m_ObjectHideFlags: 1
@@ -848,6 +864,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 468702}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &443176
 Transform:
   m_ObjectHideFlags: 1
@@ -860,6 +877,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 406198}
   m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &443560
 Transform:
   m_ObjectHideFlags: 1
@@ -872,6 +890,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 406198}
   m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &445166
 Transform:
   m_ObjectHideFlags: 1
@@ -884,6 +903,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 435926}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &445430
 Transform:
   m_ObjectHideFlags: 1
@@ -896,6 +916,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 469794}
   m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &446728
 Transform:
   m_ObjectHideFlags: 1
@@ -908,6 +929,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 435926}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &447702
 Transform:
   m_ObjectHideFlags: 1
@@ -920,6 +942,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 469794}
   m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &452000
 Transform:
   m_ObjectHideFlags: 1
@@ -932,6 +955,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 435926}
   m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &458672
 Transform:
   m_ObjectHideFlags: 1
@@ -945,6 +969,7 @@ Transform:
   - {fileID: 406198}
   m_Father: {fileID: 406066}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &462788
 Transform:
   m_ObjectHideFlags: 1
@@ -957,6 +982,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 469794}
   m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &468702
 Transform:
   m_ObjectHideFlags: 1
@@ -972,6 +998,7 @@ Transform:
   - {fileID: 414600}
   m_Father: {fileID: 495086}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &469794
 Transform:
   m_ObjectHideFlags: 1
@@ -995,6 +1022,7 @@ Transform:
   - {fileID: 492282}
   m_Father: {fileID: 406066}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &470314
 Transform:
   m_ObjectHideFlags: 1
@@ -1007,6 +1035,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 413566}
   m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &475926
 Transform:
   m_ObjectHideFlags: 1
@@ -1019,6 +1048,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 469794}
   m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &482368
 Transform:
   m_ObjectHideFlags: 1
@@ -1031,6 +1061,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 468702}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &489502
 Transform:
   m_ObjectHideFlags: 1
@@ -1043,6 +1074,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 469794}
   m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &491380
 Transform:
   m_ObjectHideFlags: 1
@@ -1055,6 +1087,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 469794}
   m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &492282
 Transform:
   m_ObjectHideFlags: 1
@@ -1067,6 +1100,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 469794}
   m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &494100
 Transform:
   m_ObjectHideFlags: 1
@@ -1079,6 +1113,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 406198}
   m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &495086
 Transform:
   m_ObjectHideFlags: 1
@@ -1094,6 +1129,7 @@ Transform:
   - {fileID: 406066}
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &496932
 Transform:
   m_ObjectHideFlags: 1
@@ -1106,6 +1142,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 406198}
   m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &499606
 Transform:
   m_ObjectHideFlags: 1
@@ -1118,6 +1155,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 469794}
   m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &6532658
 BoxCollider:
   m_ObjectHideFlags: 1
@@ -1256,7 +1294,7 @@ MonoBehaviour:
   mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
-  mGradientBottom: {r: .699999988, g: .699999988, b: .699999988, a: 1}
+  mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
   mSpacingX: 0
   mSpacingY: 0
   mUseFloatSpacing: 0
@@ -1343,7 +1381,7 @@ MonoBehaviour:
   mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
-  mGradientBottom: {r: .699999988, g: .699999988, b: .699999988, a: 1}
+  mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
   mSpacingX: 0
   mSpacingY: 0
   mUseFloatSpacing: 0
@@ -1436,7 +1474,7 @@ MonoBehaviour:
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 1.37931037
+  aspectRatio: 1.3793104
   mType: 1
   mFillDirection: 4
   mFillAmount: 1
@@ -1447,7 +1485,7 @@ MonoBehaviour:
   rightType: 1
   bottomType: 1
   topType: 1
-  mAtlas: {fileID: 11426408, guid: 25576dd4c299fef4f9fc244f1e89bb8b, type: 2}
+  mAtlas: {fileID: 0}
   mSpriteName: UI_001
   mFillCenter: 1
 --- !u!114 &11422716
@@ -1525,7 +1563,7 @@ MonoBehaviour:
   mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
-  mGradientBottom: {r: .699999988, g: .699999988, b: .699999988, a: 1}
+  mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
   mSpacingX: 0
   mSpacingY: 0
   mUseFloatSpacing: 0
@@ -1591,7 +1629,7 @@ MonoBehaviour:
   mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
-  mGradientBottom: {r: .699999988, g: .699999988, b: .699999988, a: 1}
+  mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
   mSpacingX: 0
   mSpacingY: 0
   mUseFloatSpacing: 0
@@ -1631,7 +1669,7 @@ MonoBehaviour:
     relative: 1
     absolute: -4
   updateAnchors: 1
-  mColor: {r: .23880595, g: .197638646, b: .121185109, a: 1}
+  mColor: {r: 0.23880595, g: 0.19763865, b: 0.12118511, a: 1}
   mPivot: 4
   mWidth: 90
   mHeight: 90
@@ -1650,14 +1688,14 @@ MonoBehaviour:
   mEncoding: 1
   mMaxLineCount: 0
   mEffectStyle: 1
-  mEffectColor: {r: .805970132, g: .714862168, b: .553352594, a: 1}
+  mEffectColor: {r: 0.80597013, g: 0.71486217, b: 0.5533526, a: 1}
   mSymbols: 1
   mEffectDistance: {x: 1, y: 1}
   mOverflow: 0
   mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
-  mGradientBottom: {r: .699999988, g: .699999988, b: .699999988, a: 1}
+  mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
   mSpacingX: 0
   mSpacingY: 0
   mUseFloatSpacing: 0
@@ -1681,10 +1719,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tweenTarget: {fileID: 142686}
-  hover: {r: .882352948, g: .784313738, b: .588235319, a: 1}
-  pressed: {r: .717647076, g: .639215708, b: .482352942, a: 1}
-  disabledColor: {r: .5, g: .5, b: .5, a: 1}
-  duration: .200000003
+  hover: {r: 0.88235295, g: 0.78431374, b: 0.5882353, a: 1}
+  pressed: {r: 0.7176471, g: 0.6392157, b: 0.48235294, a: 1}
+  disabledColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  duration: 0.2
   dragHighlight: 0
   hoverSprite: Flat
   pressedSprite: Button
@@ -1722,7 +1760,7 @@ MonoBehaviour:
     relative: 1
     absolute: 0
   updateAnchors: 1
-  mColor: {r: .690196097, g: .588235319, b: .407843143, a: 1}
+  mColor: {r: 0.6901961, g: 0.5882353, b: 0.40784314, a: 1}
   mPivot: 4
   mWidth: 150
   mHeight: 50
@@ -1772,7 +1810,7 @@ MonoBehaviour:
     relative: 1
     absolute: -3
   updateAnchors: 1
-  mColor: {r: 0, g: 0, b: 0, a: .152941182}
+  mColor: {r: 0, g: 0, b: 0, a: 0.15294118}
   mPivot: 4
   mWidth: 92
   mHeight: 92
@@ -1830,7 +1868,7 @@ MonoBehaviour:
   autoResizeBoxCollider: 1
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 5.83333349
+  aspectRatio: 5.8333335
   mType: 1
   mFillDirection: 4
   mFillAmount: 1
@@ -1919,7 +1957,7 @@ MonoBehaviour:
   mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
-  mGradientBottom: {r: .699999988, g: .699999988, b: .699999988, a: 1}
+  mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
   mSpacingX: 0
   mSpacingY: 0
   mUseFloatSpacing: 0
@@ -1985,7 +2023,7 @@ MonoBehaviour:
   mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
-  mGradientBottom: {r: .699999988, g: .699999988, b: .699999988, a: 1}
+  mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
   mSpacingX: 0
   mSpacingY: 0
   mUseFloatSpacing: 0
@@ -2109,7 +2147,7 @@ MonoBehaviour:
   mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
-  mGradientBottom: {r: .699999988, g: .699999988, b: .699999988, a: 1}
+  mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
   mSpacingX: 0
   mSpacingY: 0
   mUseFloatSpacing: 0
@@ -2175,7 +2213,7 @@ MonoBehaviour:
   mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
-  mGradientBottom: {r: .699999988, g: .699999988, b: .699999988, a: 1}
+  mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
   mSpacingX: 0
   mSpacingY: 0
   mUseFloatSpacing: 0
@@ -2241,7 +2279,7 @@ MonoBehaviour:
   mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
-  mGradientBottom: {r: .699999988, g: .699999988, b: .699999988, a: 1}
+  mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
   mSpacingX: 0
   mSpacingY: 0
   mUseFloatSpacing: 0
@@ -2307,7 +2345,7 @@ MonoBehaviour:
   mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
-  mGradientBottom: {r: .699999988, g: .699999988, b: .699999988, a: 1}
+  mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
   mSpacingX: 0
   mSpacingY: 0
   mUseFloatSpacing: 0
@@ -2355,7 +2393,7 @@ MonoBehaviour:
   autoResizeBoxCollider: 1
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 5.83333349
+  aspectRatio: 5.8333335
   mType: 1
   mFillDirection: 4
   mFillAmount: 1
@@ -2423,7 +2461,7 @@ MonoBehaviour:
   mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
-  mGradientBottom: {r: .699999988, g: .699999988, b: .699999988, a: 1}
+  mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
   mSpacingX: 0
   mSpacingY: 0
   mUseFloatSpacing: 0
@@ -2477,7 +2515,7 @@ MonoBehaviour:
     relative: 1
     absolute: -3
   updateAnchors: 1
-  mColor: {r: 0, g: 0, b: 0, a: .152941182}
+  mColor: {r: 0, g: 0, b: 0, a: 0.15294118}
   mPivot: 4
   mWidth: 92
   mHeight: 92
@@ -2585,7 +2623,7 @@ MonoBehaviour:
     relative: 1
     absolute: 0
   updateAnchors: 1
-  mColor: {r: .690196097, g: .588235319, b: .407843143, a: 1}
+  mColor: {r: 0.6901961, g: 0.5882353, b: 0.40784314, a: 1}
   mPivot: 4
   mWidth: 98
   mHeight: 98
@@ -2661,7 +2699,7 @@ MonoBehaviour:
   mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
-  mGradientBottom: {r: .699999988, g: .699999988, b: .699999988, a: 1}
+  mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
   mSpacingX: 0
   mSpacingY: 0
   mUseFloatSpacing: 0
@@ -2709,7 +2747,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3003
+  startingRenderQueue: 3002
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 3
@@ -2772,7 +2810,7 @@ MonoBehaviour:
   mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
-  mGradientBottom: {r: .699999988, g: .699999988, b: .699999988, a: 1}
+  mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
   mSpacingX: 0
   mSpacingY: 0
   mUseFloatSpacing: 0
@@ -2838,7 +2876,7 @@ MonoBehaviour:
   mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
-  mGradientBottom: {r: .699999988, g: .699999988, b: .699999988, a: 1}
+  mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
   mSpacingX: 0
   mSpacingY: 0
   mUseFloatSpacing: 0
@@ -2904,7 +2942,7 @@ MonoBehaviour:
   mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
-  mGradientBottom: {r: .699999988, g: .699999988, b: .699999988, a: 1}
+  mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
   mSpacingX: 0
   mSpacingY: 0
   mUseFloatSpacing: 0
@@ -2928,10 +2966,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tweenTarget: {fileID: 101762}
-  hover: {r: .882352948, g: .784313738, b: .588235319, a: 1}
-  pressed: {r: .717647076, g: .639215708, b: .482352942, a: 1}
-  disabledColor: {r: .5, g: .5, b: .5, a: 1}
-  duration: .200000003
+  hover: {r: 0.88235295, g: 0.78431374, b: 0.5882353, a: 1}
+  pressed: {r: 0.7176471, g: 0.6392157, b: 0.48235294, a: 1}
+  disabledColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  duration: 0.2
   dragHighlight: 0
   hoverSprite: Flat
   pressedSprite: Button
@@ -2995,7 +3033,7 @@ MonoBehaviour:
   mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
-  mGradientBottom: {r: .699999988, g: .699999988, b: .699999988, a: 1}
+  mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
   mSpacingX: 0
   mSpacingY: 0
   mUseFloatSpacing: 0
@@ -3035,7 +3073,7 @@ MonoBehaviour:
     relative: 1
     absolute: 4
   updateAnchors: 1
-  mColor: {r: .23880595, g: .197638646, b: .121185109, a: 1}
+  mColor: {r: 0.23880595, g: 0.19763865, b: 0.12118511, a: 1}
   mPivot: 4
   mWidth: 142
   mHeight: 58
@@ -3054,14 +3092,14 @@ MonoBehaviour:
   mEncoding: 1
   mMaxLineCount: 0
   mEffectStyle: 1
-  mEffectColor: {r: .805970132, g: .714862168, b: .553352594, a: 1}
+  mEffectColor: {r: 0.80597013, g: 0.71486217, b: 0.5533526, a: 1}
   mSymbols: 1
   mEffectDistance: {x: 1, y: 1}
   mOverflow: 0
   mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
-  mGradientBottom: {r: .699999988, g: .699999988, b: .699999988, a: 1}
+  mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
   mSpacingX: 0
   mSpacingY: 0
   mUseFloatSpacing: 0
@@ -3101,7 +3139,7 @@ MonoBehaviour:
     relative: 1
     absolute: -3
   updateAnchors: 1
-  mColor: {r: 0, g: 0, b: 0, a: .152941182}
+  mColor: {r: 0, g: 0, b: 0, a: 0.15294118}
   mPivot: 4
   mWidth: 144
   mHeight: 44
@@ -3109,7 +3147,7 @@ MonoBehaviour:
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 3.27272725
+  aspectRatio: 3.2727273
   mType: 2
   mFillDirection: 4
   mFillAmount: 1
@@ -3179,7 +3217,7 @@ MonoBehaviour:
     relative: 1
     absolute: -4
   updateAnchors: 1
-  mColor: {r: .23880595, g: .197638646, b: .121185109, a: 1}
+  mColor: {r: 0.23880595, g: 0.19763865, b: 0.12118511, a: 1}
   mPivot: 4
   mWidth: 90
   mHeight: 90
@@ -3198,14 +3236,14 @@ MonoBehaviour:
   mEncoding: 1
   mMaxLineCount: 0
   mEffectStyle: 1
-  mEffectColor: {r: .805970132, g: .714862168, b: .553352594, a: 1}
+  mEffectColor: {r: 0.80597013, g: 0.71486217, b: 0.5533526, a: 1}
   mSymbols: 1
   mEffectDistance: {x: 1, y: 1}
   mOverflow: 0
   mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
-  mGradientBottom: {r: .699999988, g: .699999988, b: .699999988, a: 1}
+  mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
   mSpacingX: 0
   mSpacingY: 0
   mUseFloatSpacing: 0
@@ -3271,7 +3309,7 @@ MonoBehaviour:
   mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
-  mGradientBottom: {r: .699999988, g: .699999988, b: .699999988, a: 1}
+  mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
   mSpacingX: 0
   mSpacingY: 0
   mUseFloatSpacing: 0
@@ -3295,10 +3333,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tweenTarget: {fileID: 170452}
-  hover: {r: .882352948, g: .784313738, b: .588235319, a: 1}
-  pressed: {r: .717647076, g: .639215708, b: .482352942, a: 1}
-  disabledColor: {r: .5, g: .5, b: .5, a: 1}
-  duration: .200000003
+  hover: {r: 0.88235295, g: 0.78431374, b: 0.5882353, a: 1}
+  pressed: {r: 0.7176471, g: 0.6392157, b: 0.48235294, a: 1}
+  disabledColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  duration: 0.2
   dragHighlight: 0
   hoverSprite: Flat
   pressedSprite: Button
@@ -3336,7 +3374,7 @@ MonoBehaviour:
     relative: 1
     absolute: 0
   updateAnchors: 1
-  mColor: {r: .690196097, g: .588235319, b: .407843143, a: 1}
+  mColor: {r: 0.6901961, g: 0.5882353, b: 0.40784314, a: 1}
   mPivot: 4
   mWidth: 98
   mHeight: 98
@@ -3433,7 +3471,7 @@ MonoBehaviour:
   disableDragIfFits: 0
   smoothDragStart: 1
   iOSDragEmulation: 1
-  scrollWheelFactor: .25
+  scrollWheelFactor: 0.25
   momentumAmount: 35
   dampenStrength: 9
   horizontalScrollBar: {fileID: 0}
@@ -3498,7 +3536,7 @@ MonoBehaviour:
   mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
-  mGradientBottom: {r: .699999988, g: .699999988, b: .699999988, a: 1}
+  mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
   mSpacingX: 0
   mSpacingY: 0
   mUseFloatSpacing: 0

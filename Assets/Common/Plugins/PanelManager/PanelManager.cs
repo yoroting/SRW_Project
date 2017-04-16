@@ -378,10 +378,18 @@ public partial class PanelManager : Singleton<PanelManager>
 			//Debug.Log("<color=red>Assign child depth(name = " + childPanelInfo.UIPanel.gameObject.name + ", depth=" + panelDepth.ToString() + ")</color>");
 			SetPanelDepth(childPanelInfo.UIPanel.gameObject, panelDepth);
 		}
-		#endregion
-		
-		if (IsNeedRearrangeDepth(panelSetting.PanelType, maxDepth))
-			maxDepth = RearrangeDepth(panelSetting.PanelType);
+        #endregion
+
+        if (IsNeedRearrangeDepth(panelSetting.PanelType, maxDepth))
+        {
+            maxDepth = RearrangeDepth(panelSetting.PanelType);
+            // 物件  depth 已修正，需重新尋找出他 排序後的深度
+            UIPanel uiPanel = panelSetting.gameObject.GetComponent<UIPanel>();
+            if (uiPanel != null)
+            {
+                newDepth = uiPanel.depth;
+            }
+        }
 		
 		//Debug.Log("<color=red>maxDepth=" + maxDepth.ToString() + "</color>");
 		

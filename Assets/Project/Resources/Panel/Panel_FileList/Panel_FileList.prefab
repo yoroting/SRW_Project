@@ -5,10 +5,10 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 423958}
-  - 114: {fileID: 11473674}
+  - component: {fileID: 423958}
+  - component: {fileID: 11473674}
   m_Layer: 5
   m_Name: Sprite - BG
   m_TagString: Untagged
@@ -21,12 +21,13 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 463526}
-  - 114: {fileID: 11493842}
-  - 114: {fileID: 11423100}
-  - 114: {fileID: 11496736}
+  - component: {fileID: 463526}
+  - component: {fileID: 11493842}
+  - component: {fileID: 11423100}
+  - component: {fileID: 11496736}
+  - component: {fileID: 54529679139759826}
   m_Layer: 5
   m_Name: Panel_FileList
   m_TagString: Untagged
@@ -46,6 +47,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 463526}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &463526
 Transform:
   m_ObjectHideFlags: 1
@@ -59,6 +61,7 @@ Transform:
   - {fileID: 423958}
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &11423100
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -160,7 +163,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3007
+  startingRenderQueue: 3000
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 0
@@ -191,3 +194,18 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 157010}
   m_IsPrefabParent: 1
+--- !u!54 &54529679139759826
+Rigidbody:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 157010}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0

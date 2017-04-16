@@ -5,12 +5,12 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 406830}
-  - 114: {fileID: 11406828}
-  - 114: {fileID: 11406826}
-  - 61: {fileID: 6104310}
+  - component: {fileID: 406830}
+  - component: {fileID: 11406828}
+  - component: {fileID: 11406826}
+  - component: {fileID: 65809185099675514}
   m_Layer: 5
   m_Name: BG
   m_TagString: Untagged
@@ -23,11 +23,11 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 406836}
-  - 114: {fileID: 11406836}
-  - 114: {fileID: 11406834}
+  - component: {fileID: 406836}
+  - component: {fileID: 11406836}
+  - component: {fileID: 11406834}
   m_Layer: 5
   m_Name: Panel_Blocker
   m_TagString: Untagged
@@ -47,6 +47,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 406836}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &406836
 Transform:
   m_ObjectHideFlags: 1
@@ -55,24 +56,12 @@ Transform:
   m_GameObject: {fileID: 106836}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.00017595, y: 1.00017595, z: 1.00017595}
+  m_LocalScale: {x: 1.000176, y: 1.000176, z: 1.000176}
   m_Children:
   - {fileID: 406830}
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!61 &6104310
-BoxCollider2D:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 106830}
-  m_Enabled: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Size: {x: 703, y: 1056}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &11406826
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -88,7 +77,7 @@ MonoBehaviour:
   container: {fileID: 0}
   style: 3
   runOnlyOnce: 1
-  relativeSize: {x: 1.10000002, y: 1.10000002}
+  relativeSize: {x: 1.1, y: 1.1}
   initialSize: {x: 1, y: 1}
   borderPadding: {x: 0, y: 0}
   widgetContainer: {fileID: 0}
@@ -120,7 +109,7 @@ MonoBehaviour:
     relative: 1
     absolute: 0
   updateAnchors: 1
-  mColor: {r: 0, g: 0, b: 0, a: .501960814}
+  mColor: {r: 0, g: 0, b: 0, a: 0.5019608}
   mPivot: 4
   mWidth: 703
   mHeight: 1056
@@ -128,7 +117,7 @@ MonoBehaviour:
   autoResizeBoxCollider: 1
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: .665719688
+  aspectRatio: 0.6657197
   mType: 0
   mFillDirection: 4
   mFillAmount: 1
@@ -139,8 +128,8 @@ MonoBehaviour:
   rightType: 1
   bottomType: 1
   topType: 1
-  mAtlas: {fileID: 0}
-  mSpriteName: U_SHARE_001
+  mAtlas: {fileID: 11400000, guid: 62adb30369acbf943a67cee0f69267a3, type: 2}
+  mSpriteName: Glow - Inner
   mFillCenter: 1
 --- !u!114 &11406834
 MonoBehaviour:
@@ -213,3 +202,15 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 106836}
   m_IsPrefabParent: 1
+--- !u!65 &65809185099675514
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 106830}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 703, y: 1056, z: 0}
+  m_Center: {x: 0, y: 0, z: 0}

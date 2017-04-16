@@ -438,7 +438,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
     {
         if (pCmder != null)
         {
-            Panel_SchoolList.Open(1, pCmder.pUnitData );
+            Panel_SchoolList.Open(1, pCmder.pUnitData , 1 );// 外功列表
         }
     }
 

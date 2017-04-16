@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 11474848}
   - component: {fileID: 11445182}
   m_Layer: 5
-  m_Name: BattleMsg
+  m_Name: CastMsg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -41,8 +41,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 102354}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -77, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 487020}
@@ -90,15 +90,15 @@ MonoBehaviour:
     relative: 1
     absolute: 10
   updateAnchors: 1
-  mColor: {r: 0, g: 0, b: 1, a: 1}
+  mColor: {r: 1, g: 0, b: 0, a: 1}
   mPivot: 4
   mWidth: 212
   mHeight: 52
-  mDepth: 20
+  mDepth: 12
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 4.076923
+  aspectRatio: 3.9038463
   mType: 1
   mFillDirection: 4
   mFillAmount: 1
@@ -110,7 +110,7 @@ MonoBehaviour:
   bottomType: 1
   topType: 1
   mAtlas: {fileID: 11400000, guid: 62adb30369acbf943a67cee0f69267a3, type: 2}
-  mSpriteName: Row Outline
+  mSpriteName: Right Bracket
   mFillCenter: 1
 --- !u!114 &11445182
 MonoBehaviour:
@@ -185,21 +185,21 @@ MonoBehaviour:
     relative: 1
     absolute: 0
   updateAnchors: 1
-  mColor: {r: 0, g: 0, b: 0, a: 1}
+  mColor: {r: 1, g: 0, b: 0, a: 1}
   mPivot: 4
   mWidth: 192
   mHeight: 32
-  mDepth: 21
+  mDepth: 13
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 6
+  aspectRatio: 5
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   mFont: {fileID: 0}
   mText: "\u4E00\u4E8C\u4E09\u56DB\u4E94\u516D"
-  mFontSize: 32
-  mFontStyle: 0
+  mFontSize: 48
+  mFontStyle: 3
   mAlignment: 0
   mEncoding: 1
   mMaxLineCount: 0

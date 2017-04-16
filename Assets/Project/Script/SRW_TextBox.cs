@@ -469,7 +469,7 @@ public class SRW_TextBox : MonoBehaviour
                 sptalkbox.spriteName = "talk_large";
 
                 break;
-            default: sptalkbox.spriteName = "talk_main"; break;
+            default: sptalkbox.spriteName = "CG-1707"; break;
         }
 
         // font color

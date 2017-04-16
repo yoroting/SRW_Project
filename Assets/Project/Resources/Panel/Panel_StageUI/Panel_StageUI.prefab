@@ -2004,7 +2004,7 @@ MonoBehaviour:
   PanelType: 1
   Mutex: 0
   ExclusiveToMutex: 1
-  ShowBlocker: 1
+  ShowBlocker: 0
 --- !u!114 &11457714
 MonoBehaviour:
   m_ObjectHideFlags: 1

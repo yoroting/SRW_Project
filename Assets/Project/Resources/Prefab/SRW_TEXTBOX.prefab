@@ -5,10 +5,10 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 418820}
-  - 114: {fileID: 11460258}
+  - component: {fileID: 418820}
+  - component: {fileID: 11460258}
   m_Layer: 5
   m_Name: Sprite
   m_TagString: Untagged
@@ -21,10 +21,10 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 431436}
-  - 114: {fileID: 11405990}
+  - component: {fileID: 431436}
+  - component: {fileID: 11405990}
   m_Layer: 5
   m_Name: Sprite_talkbox
   m_TagString: Untagged
@@ -37,10 +37,10 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 437118}
-  - 114: {fileID: 11482206}
+  - component: {fileID: 437118}
+  - component: {fileID: 11482206}
   m_Layer: 5
   m_Name: Texture - Face
   m_TagString: Untagged
@@ -53,11 +53,11 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 499668}
-  - 114: {fileID: 11435796}
-  - 114: {fileID: 11435194}
+  - component: {fileID: 499668}
+  - component: {fileID: 11435796}
+  - component: {fileID: 11435194}
   m_Layer: 5
   m_Name: Sprite_talkend
   m_TagString: Untagged
@@ -70,10 +70,10 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 469310}
-  - 114: {fileID: 11433714}
+  - component: {fileID: 469310}
+  - component: {fileID: 11433714}
   m_Layer: 5
   m_Name: SRW_TEXTBOX
   m_TagString: Untagged
@@ -86,11 +86,11 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 450290}
-  - 114: {fileID: 11417996}
-  - 114: {fileID: 11451204}
+  - component: {fileID: 450290}
+  - component: {fileID: 11417996}
+  - component: {fileID: 11451204}
   m_Layer: 5
   m_Name: Label - Text
   m_TagString: Untagged
@@ -110,6 +110,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 469310}
   m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &431436
 Transform:
   m_ObjectHideFlags: 1
@@ -122,6 +123,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 469310}
   m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &437118
 Transform:
   m_ObjectHideFlags: 1
@@ -134,6 +136,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 469310}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &450290
 Transform:
   m_ObjectHideFlags: 1
@@ -146,6 +149,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 469310}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &469310
 Transform:
   m_ObjectHideFlags: 1
@@ -163,6 +167,7 @@ Transform:
   - {fileID: 499668}
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &499668
 Transform:
   m_ObjectHideFlags: 1
@@ -175,6 +180,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 469310}
   m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &11405990
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -211,7 +217,7 @@ MonoBehaviour:
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 3.52459025
+  aspectRatio: 3.5245903
   mType: 0
   mFillDirection: 4
   mFillAmount: 1
@@ -222,7 +228,7 @@ MonoBehaviour:
   rightType: 1
   bottomType: 1
   topType: 1
-  mAtlas: {fileID: 11426408, guid: 25576dd4c299fef4f9fc244f1e89bb8b, type: 2}
+  mAtlas: {fileID: 0}
   mSpriteName: talk_main
   mFillCenter: 1
 --- !u!114 &11417996
@@ -279,7 +285,7 @@ MonoBehaviour:
   mMaterial: {fileID: 0}
   mApplyGradient: 0
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
-  mGradientBottom: {r: .699999988, g: .699999988, b: .699999988, a: 1}
+  mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
   mSpacingX: 0
   mSpacingY: 0
   mUseFloatSpacing: 0
@@ -329,18 +335,21 @@ MonoBehaviour:
   animationCurve:
     serializedVersion: 2
     m_Curve:
-    - time: 0
+    - serializedVersion: 2
+      time: 0
       value: 0
       inSlope: 0
       outSlope: 1
       tangentMode: 0
-    - time: 1
+    - serializedVersion: 2
+      time: 1
       value: 1
       inSlope: 1
       outSlope: 0
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
+    m_RotationOrder: 4
   ignoreTimeScale: 1
   delay: 0
   duration: 1
@@ -453,7 +462,7 @@ MonoBehaviour:
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 5.11111116
+  aspectRatio: 5.111111
   mType: 1
   mFillDirection: 4
   mFillAmount: 1
@@ -464,8 +473,8 @@ MonoBehaviour:
   rightType: 1
   bottomType: 1
   topType: 1
-  mAtlas: {fileID: 11400000, guid: 62adb30369acbf943a67cee0f69267a3, type: 2}
-  mSpriteName: Highlight - Thin
+  mAtlas: {fileID: 11491776, guid: 25576dd4c299fef4f9fc244f1e89bb8b, type: 2}
+  mSpriteName: CG-1707
   mFillCenter: 1
 --- !u!114 &11482206
 MonoBehaviour:

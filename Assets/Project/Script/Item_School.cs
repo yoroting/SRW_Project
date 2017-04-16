@@ -26,6 +26,13 @@ public class Item_School : MonoBehaviour {
 		
 	}
 
+    public void ReSize()
+    {
+
+        transform.localScale = Vector3.one;
+        transform.localRotation = Quaternion.identity;
+    }
+
     public void SetData( int SchID, int SchLV =0)
     {
         LvObj.SetActive((SchLV > 0)); // 有傳值要 顯示
@@ -39,7 +46,8 @@ public class Item_School : MonoBehaviour {
 
         MyTool.SetLabelFloat(RankObj, sch.f_RANK );
         MyTool.SetLabelText(NameObj, MyTool.GetSchoolName( nSchID ) );
-
+        MyTool.SetLabelInt(LvObj, nSchLv);
+        LvObj.SetActive(SchLV>0);
 
     }
 

@@ -131,6 +131,21 @@ public class Panel_ItemList : MonoBehaviour
                 }
                 PanelManager.Instance.CloseUI(Name);
                 break;
+            case 2: // enhance
+                {
+                    if (PanelManager.Instance.CheckUIIsOpening(Panel_Enhance.Name))
+                    {
+
+                        Panel_Enhance panel = MyTool.GetPanel<Panel_Enhance>(Panel_Enhance.Name); //PanelManager.Instance.OpenUI( Panel_UnitInfo.Name );
+                        if (panel != null)
+                        {
+                            panel.EquipItem(nVar1, itemid); // syn bag
+                        }
+
+                    }
+                    PanelManager.Instance.CloseUI(Name);
+                };
+                break;
             default:
                 {
                     Panel_Tip.OpenItemTip(itemid);
