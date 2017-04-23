@@ -1039,6 +1039,12 @@ public class MyScript {
                 int nID = func.I(0);
                 GameSystem.TalkEvent(nID);
             }
+            else if (func.sFunc == "STAGEPHASE") // 切換關卡階段
+            {                            
+                GameDataManager.Instance.n_StagePhase = func.I(0);
+
+            }
+
             else if (func.sFunc == "BGM")
             {
                 int nID = func.I(0);

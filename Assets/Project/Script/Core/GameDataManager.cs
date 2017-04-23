@@ -165,7 +165,8 @@ private static GameDataManager instance;
 	{
 	//	nMoney = 0;  // don't reset money
 		nRound = 0;
-		nActiveCamp = _CAMP._PLAYER;
+        n_StagePhase = 0;
+        nActiveCamp = _CAMP._PLAYER;
 		UnitPool.Clear ();
 		//CampPool.Clear ();
 		EvtDonePool.Clear();
@@ -239,7 +240,7 @@ private static GameDataManager instance;
 	public int nMoney{ get; set; } 
 	public int nRound{ get; set; } 
 	public int nStars{ get; set; }
-
+    public int n_StagePhase { get; set; }
 
     // Debug 用
     public int nEarnMoney { get; set; } // 賺多少
@@ -1283,15 +1284,15 @@ private static GameDataManager instance;
         }
     }
 
-    public void SetBGMPhase( int nPhase )
+    public void SetBGMPhase( int phase )
 	{
 		// 0-正常 , 1-勝利 , 2-緊張 , 3-悲壯 ,4-壓迫
-		if( nPhase < 0 || nPhase >9)
+		if(phase < 0 || phase > 9)
 			return;
 
-		nPlayerBGM = 100 + nPhase ; // from 100-109
-		nEnemyBGM  = 110 + nPhase ; // from 110-119	
-		nFriendBGM  = 120 + nPhase ; // from 120-129	
+		nPlayerBGM = 100 + phase; // from 100-109
+		nEnemyBGM  = 110 + phase; // from 110-119	
+		nFriendBGM  = 120 + phase; // from 120-129	
 	}
 
     //

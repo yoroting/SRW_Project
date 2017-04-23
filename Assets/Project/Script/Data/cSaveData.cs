@@ -179,7 +179,8 @@ public class cSaveData{
 	[JsonName("round")] [DefaultValue(0)] public int n_Round;
 	[JsonName("money")] [DefaultValue(0)] public int n_Money;
 	[JsonName("stars")] [DefaultValue(0)] public int n_Stars;			//熟練度
-
+    [JsonName("stagephase")] [DefaultValue(0)] public int n_StagePhase;			//關卡階段
+    
 
     [JsonName("emoney")]    [DefaultValue(0)]    public int n_EarnMoney;
     [JsonName("smoney")]    [DefaultValue(0)]    public int n_SpendMoney;
@@ -241,8 +242,9 @@ public class cSaveData{
 		e_Camp = GameDataManager.Instance.nActiveCamp;
 		n_Money = GameDataManager.Instance.nMoney;
 		n_Stars = GameDataManager.Instance.nStars;
+        n_StagePhase = GameDataManager.Instance.n_StagePhase;
 
-		nPlayerBGM = GameDataManager.Instance.nPlayerBGM;   //我方
+        nPlayerBGM = GameDataManager.Instance.nPlayerBGM;   //我方
 		nEnemyBGM  = GameDataManager.Instance.nEnemyBGM;	 // 敵方
 		nFriendBGM = GameDataManager.Instance.nFriendBGM;	// 友方
 
@@ -319,21 +321,21 @@ public class cSaveData{
 		GameDataManager.Instance.nStageID = n_StageID;
 		GameDataManager.Instance.nMoney = n_Money;
 		GameDataManager.Instance.nStars = n_Stars;
+        GameDataManager.Instance.n_StagePhase = n_StagePhase;
+        // stage data  set in stage load
+        //		GameDataManager.Instance.nRound   = n_Round;
+        //		GameDataManager.Instance.nActiveCamp = e_Camp ;
 
-		// stage data  set in stage load
-//		GameDataManager.Instance.nRound   = n_Round;
-//		GameDataManager.Instance.nActiveCamp = e_Camp ;
-
-		// need set after stage load
-//		if( nPlayerBGM > 0 )
-//			GameDataManager.Instance.nPlayerBGM = nPlayerBGM ;   //我方
-//		if( nEnemyBGM > 0 )
-//			GameDataManager.Instance.nEnemyBGM  = nEnemyBGM;	 // 敵方
-//		if( nFriendBGM > 0 )
-//			GameDataManager.Instance.nFriendBGM = nFriendBGM;	// 友方
+        // need set after stage load
+        //		if( nPlayerBGM > 0 )
+        //			GameDataManager.Instance.nPlayerBGM = nPlayerBGM ;   //我方
+        //		if( nEnemyBGM > 0 )
+        //			GameDataManager.Instance.nEnemyBGM  = nEnemyBGM;	 // 敵方
+        //		if( nFriendBGM > 0 )
+        //			GameDataManager.Instance.nFriendBGM = nFriendBGM;	// 友方
 
 
-		GameDataManager.Instance.ItemPool = ItemPool ;			// item list
+        GameDataManager.Instance.ItemPool = ItemPool ;			// item list
 		GameDataManager.Instance.ImportEventPool = ImportEventPool;
 		GameDataManager.Instance.ImportStoragePool( StoragePool );
         

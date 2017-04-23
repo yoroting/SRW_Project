@@ -1866,6 +1866,9 @@ public class Panel_StageUI : MonoBehaviour
         if (BattleMsg.nMsgCount > 0)
             return true;
 
+        if (DropMsg.nDropCount > 0)
+            return false;
+
         if (bIsMoveToObj)
             return true;
       
@@ -2214,6 +2217,28 @@ public class Panel_StageUI : MonoBehaviour
 		}
 		return false;
 	}
+    public bool IsTrigEvent(STAGE_EVENT evt)
+    {
+        if (evt != null)
+        {
+            if ((evt.n_TYPE & 2) == 2)  // 1 is trig event
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    public bool IsMissionEvent(STAGE_EVENT evt)
+    {
+        if (evt != null)
+        {
+            if ((evt.n_TYPE & 4) ==4)  // 4 is mission event
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public bool CheckBlockEventToRun( cUnitData unit )
     {
@@ -3486,9 +3511,10 @@ public class Panel_StageUI : MonoBehaviour
 		GameDataManager.Instance.nRound   = save.n_Round;
 		GameDataManager.Instance.nActiveCamp = save.e_Camp ;
 		GameDataManager.Instance.nMoney = save.n_Money ;
+        GameDataManager.Instance.n_StagePhase = save.n_StagePhase;
 
-		// re build done event 
-		GameDataManager.Instance.EvtDonePool = MyTool.ConvetToIntInt( save.EvtDonePool );
+        // re build done event 
+        GameDataManager.Instance.EvtDonePool = MyTool.ConvetToIntInt( save.EvtDonePool );
 		
 		
 		// check if in the same stage
@@ -5153,15 +5179,18 @@ public class Panel_StageUI : MonoBehaviour
 			nStar = 1;
 		}
 		GameDataManager.Instance.nStars +=nStar;
-		string sMsg = string.Format( "星星+ {0}" , nStar );
-		BattleManager.Instance.ShowBattleMsg( null , sMsg );
-	}
+        //	string sMsg = string.Format( "星星+ {0}" , nStar );
+        //	BattleManager.Instance.ShowBattleMsg( null , sMsg );
+        BattleManager.Instance.ShowDropStar(nStar );
+       
+
+    }
     // only drop money
     public void DropMoney( int nMoney)
     {
-        string sMsg = string.Format(" Money + {0}",  nMoney);
-        GameDataManager.Instance.nMoney += nMoney;
-        BattleManager.Instance.ShowDropMsg(sMsg);
+     //   string sMsg = string.Format(" Money + {0}",  nMoney);
+     //   GameDataManager.Instance.nMoney += nMoney;
+        BattleManager.Instance.ShowDropMsg( -1 , nMoney); // battle 內有新增
     }
 
 

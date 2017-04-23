@@ -1,8 +1,8 @@
 ﻿using Playcoo.Common;
 public class TALK_BACK : ConstDataRow<TALK_BACK>
 {
-	public const int TableID = 8;
-	public const int DigitBase = 5;
+	public const int TableID = 10;
+	public const int DigitBase = 10;
 	public int n_ID;
 	public string s_IMAGENAME;
 	public string s_SCENE_NAME;

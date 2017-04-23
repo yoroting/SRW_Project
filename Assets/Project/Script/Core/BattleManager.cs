@@ -982,11 +982,15 @@ public partial class BattleManager
         if(BattleMsg.nMsgCount > 0 )
             return false; //訊息中不處理（含自己process 出來的掉落訊息
 
+        if (DropMsg.nDropCount > 0)
+            return false;
+        // 掉落中不處理
 
-//        if (IsDroping() )
-//        {
-			// drop item
-			if( nDropItemPool.Count > 0 )
+
+        //        if (IsDroping() )
+        //        {
+        // drop item
+        if ( nDropItemPool.Count > 0 )
 			{
 				int itemid = nDropItemPool[0];
 				string str = "獲得 " + MyTool.GetItemName( itemid );
@@ -1030,10 +1034,10 @@ public partial class BattleManager
 
     public void ShowAddMoney( int nMoney )
     {
-        string sMsg = string.Format(" Money + {0}",  nMoney);        
+      //  string sMsg = string.Format(" Money + {0}",  nMoney);        
 
         GameDataManager.Instance.nMoney += nMoney;
-        BattleManager.Instance.ShowDropMsg(sMsg);
+        BattleManager.Instance.ShowDropMsg( -1 , nMoney );
     }
 
 	// recycle all drop exp when stage end
@@ -1284,27 +1288,55 @@ public partial class BattleManager
 
   
 
-    public void ShowDropMsg( string msg)
+    public void ShowDropMsg(int nExp , int nMoney   )
     {
         Vector3 v = Vector3.zero;
-        GameObject go = ResourcesManager.CreatePrefabGameObj(Panel_StageUI.Instance.MaskPanelObj, "prefab/BattleMsg");        
+        GameObject go = ResourcesManager.CreatePrefabGameObj(Panel_StageUI.Instance.MaskPanelObj, "prefab/DropMsg");        
         //GameObject go = ResourcesManager.CreatePrefabGameObj ( Panel_StageUI.Instance.MaskPanelObj , "prefab/BattleMsg" );
 
         if (go != null)
         {
            // bIsDroping = true;
             go.transform.position = v;
-            //go.transform.localPosition = v;
-            UILabel lbl = go.GetComponentInChildren<UILabel>();
-            if (lbl != null)
-            {
-                lbl.text = msg;
+            DropMsg drop =  go.GetComponent<DropMsg>();
+            if (drop != null) {
+                drop.SetData(nExp , nMoney );
             }
+            //go.transform.localPosition = v;
+          //  UILabel lbl = go.GetComponentInChildren<UILabel>();
+          //  if (lbl != null)
+          //  {
+             //   lbl.text = msg;
+          //  }
            
         }
 
     }
+    public void ShowDropStar(int nStar)
+    {
+        Vector3 v = Vector3.zero;
+        GameObject go = ResourcesManager.CreatePrefabGameObj(Panel_StageUI.Instance.MaskPanelObj, "prefab/DropMsg");
+        //GameObject go = ResourcesManager.CreatePrefabGameObj ( Panel_StageUI.Instance.MaskPanelObj , "prefab/BattleMsg" );
 
+        if (go != null)
+        {
+            // bIsDroping = true;
+            go.transform.position = v;
+            DropMsg drop = go.GetComponent<DropMsg>();
+            if (drop != null)
+            {
+                drop.SetStar( nStar );
+            }
+            //go.transform.localPosition = v;
+            //  UILabel lbl = go.GetComponentInChildren<UILabel>();
+            //  if (lbl != null)
+            //  {
+            //   lbl.text = msg;
+            //  }
+
+        }
+
+    }
     public void ShowBattleMsg( int nIdent , string msg )
 	{
 		Panel_unit unit = Panel_StageUI.Instance.GetUnitByIdent( nIdent ); 

@@ -1446,12 +1446,12 @@ public class Panel_unit : MonoBehaviour {
 
 	public void ActionDrop( int nExp , int nMoney )
 	{
-		string sMsg = string.Format( "Exp + {0} , \n Money + {1}" , nExp , nMoney );
+	//	string sMsg = string.Format( "Exp + {0} , \n Money + {1}" , nExp , nMoney );
 
 		pUnitData.AddExp( nExp );
 
 		GameDataManager.Instance.nMoney += nMoney;
-        BattleManager.Instance.ShowDropMsg(sMsg );
+        BattleManager.Instance.ShowDropMsg(nExp ,  nMoney );
 
         // debug
        // GameDataManager.Instance.nEarnMoney += nMoney;

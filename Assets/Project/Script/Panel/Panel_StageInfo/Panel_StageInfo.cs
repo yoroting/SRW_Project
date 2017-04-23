@@ -4,7 +4,9 @@ using System.Collections;
 public class Panel_StageInfo : MonoBehaviour {
 	public const string Name = "Panel_StageInfo";
 
-	public GameObject lblContentObj;
+    public GameObject lblWinObj;
+    public GameObject lblLostObj;
+    public GameObject lblMissionObj;
 
 	public GameObject lblRoundValueObj;
 	public GameObject lblStarValueObj;
@@ -36,22 +38,97 @@ public class Panel_StageInfo : MonoBehaviour {
 		MyTool.SetLabelInt ( lblStarValueObj  , GameDataManager.Instance.nStars );
 		MyTool.SetLabelInt ( lblMoneyValueObj , GameDataManager.Instance.nMoney );
 
-		// 
-		int nStageID = GameDataManager.Instance.nStageID;
-		STAGE_DATA stage = ConstDataManager.Instance.GetRow< STAGE_DATA > (nStageID);
-		if (stage == null)
-			return;
-		// mission
-		UILabel lbl = lblContentObj.GetComponent< UILabel > ();
-		if (lbl != null) {
-			lbl.text = ""; // clear first
+        // stage name
+        MyTool.SetLabelText(lblStageNameObj, MyTool.GetStoryName(GameDataManager.Instance.nStageID));
+        //ConstDataManager.Instance.GetRow ("STORY_NAME" , nStageID );
+        // 
+       // int nStageID = GameDataManager.Instance.nStageID;
+		//STAGE_DATA stage = ConstDataManager.Instance.GetRow< STAGE_DATA > (nStageID);
+		//if (stage == null)
+		//	return;
+        // 改變設計， 透過 phase 取字串
+        STAGE_PHASE phase = ConstDataManager.Instance.GetRow<STAGE_PHASE>( GameDataManager.Instance.n_StagePhase) ;
+        if (phase == null) {
+            return;
+        }
+        char[] split = { ';' };
+        // 勝利
+        string sWin = "";
+        string[] strWins = phase.s_WIN_CONDITION.Split(split);
+        for (int i = 0; i < strWins.Length; i++)
+        {
+            int nID = 0;
+            if (int.TryParse(strWins[i], out nID))
+            {
+                //MISSION_TEXT mText = ConstDataManager.Instance.GetRow<MISSION_TEXT> ( nMissionID );
+                DataRow row = ConstDataManager.Instance.GetRow("MISSION_TEXT", nID);
+                //if( mText != null )
+                if (row != null)
+                {
+                    string content = row.Field<string>("s_CONTENT");
 
-			char[] split = { ';' };
-			string[] strEvent = stage.s_MISSION.Split(split);
-			for (int i = 0; i < strEvent.Length; i++)
+                    if (i > 0)
+                    {
+                        sWin += "\r\n";
+
+                    }
+                    sWin += content;
+                }
+            }
+        }
+        if (sWin != "")
+        {
+            MyTool.SetLabelText(lblWinObj, sWin);
+        }
+        lblWinObj.SetActive(sWin != "");
+
+        // 失敗
+        string sLost = "";
+        string[] strLosts = phase.s_LOST_CONDITION.Split(split);
+        for (int i = 0; i < strLosts.Length; i++)
+        {
+            int nID = 0;
+            if (int.TryParse(strLosts[i], out nID))
+            {
+                //MISSION_TEXT mText = ConstDataManager.Instance.GetRow<MISSION_TEXT> ( nMissionID );
+                DataRow row = ConstDataManager.Instance.GetRow("MISSION_TEXT", nID);
+                //if( mText != null )
+                if (row != null)
+                {
+                    string content = row.Field<string>("s_CONTENT");
+
+                    if (i > 0)
+                    {
+                        sLost += "\r\n";
+
+                    }
+                    sLost += content;
+                }
+            }
+        }
+        if (sLost != "")
+        {
+            MyTool.SetLabelText(lblLostObj, sLost);
+        }
+        lblLostObj.SetActive(sLost != "");
+
+        // mission
+        //        UILabel lbl = lblMissionObj.GetComponent< UILabel > ();
+        //		if (lbl != null)
+        //        {
+        //			lbl.text = ""; // clear first
+
+
+
+
+        // 任務
+        //string[] strEvent = stage.s_MISSION.Split(split);
+        string sMission = "";
+            string[] strMissions = phase.s_MISSION.Split(split);
+            for (int i = 0; i < strMissions.Length; i++)
 			{
 				int nMissionID = 0 ; 
-				if( int.TryParse( strEvent[i] , out nMissionID )  )
+				if( int.TryParse(strMissions[i] , out nMissionID )  )
 				{
 					//MISSION_TEXT mText = ConstDataManager.Instance.GetRow<MISSION_TEXT> ( nMissionID );
 					DataRow row = ConstDataManager.Instance.GetRow( "MISSION_TEXT" , nMissionID);
@@ -59,24 +136,30 @@ public class Panel_StageInfo : MonoBehaviour {
 					if( row != null )
 					{				
 						string content = row.Field<string>( "s_CONTENT");
-						//string sname = string.Format( " {1}" , nID ,content );
-						if( lbl.text.Length > 0  ){
-							lbl.text += "\r\n";
-						}
-						lbl.text += content ;
-					}
+						
+                        if( i > 0 )
+                        {
+                            sMission += "\r\n";
+                        
+                        }
+                        sMission += content;                        
+                    }
 				}
 			}
+            if (sMission != "")
+            {
+                MyTool.SetLabelText(lblMissionObj, sMission);
+            }
+            lblMissionObj.SetActive( sMission != "" );
 
-		}
+
+   //     }
 		//MyTool.SetLabelText (lblStageNameObj, MyTool.GetStoryName (nStageID));
 
 
 
 
-		// stage name
-		MyTool.SetLabelText (lblStageNameObj, MyTool.GetStoryName (nStageID));
-		//ConstDataManager.Instance.GetRow ("STORY_NAME" , nStageID );
+		
 
 	}
 	//=================
