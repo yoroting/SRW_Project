@@ -797,7 +797,7 @@ public class MyScript {
         cUnitData unit = GameDataManager.Instance.GetUnitDateByIdent( nCheckIdent );
         if (unit != null) {
             if (unit.n_CharID == nChar1) {
-              //  nTrigerIdent = nCheckIdent;
+                nTrigerIdent = nCheckIdent;  // 重要，檢查者 確定為 觸發者
                 return true;
             }
         }
@@ -814,7 +814,7 @@ public class MyScript {
         {
             if (unit.eCampID == (_CAMP)nCampID)
             {
-               // nTrigerIdent = nCheckIdent;
+                nTrigerIdent = nCheckIdent;
                 return true;
             }
            
@@ -1040,7 +1040,7 @@ public class MyScript {
                 GameSystem.TalkEvent(nID);
             }
             else if (func.sFunc == "STAGEPHASE") // 切換關卡階段
-            {                            
+            {
                 GameDataManager.Instance.n_StagePhase = func.I(0);
 
             }
@@ -1449,24 +1449,7 @@ public class MyScript {
             }
             else if (func.sFunc == "DELUNIT")
             {
-                //if (nTrigerIdent > 0)
-                //{
-                //    cUnitData data = GameDataManager.Instance.GetUnitDateByIdent(nTrigerIdent);
-                //    if (data != null && (data.n_CharID== func.I(0) )  )
-                //    {
-                //        StageDelUnitByIdentEvent evt = new StageDelUnitByIdentEvent();
-                //        evt.nIdent = nTrigerIdent;
-                //        Panel_StageUI.Instance.OnStageDelUnitByIdentEvent(evt);
-
-                //        if (data.n_CharID != 0)
-                //        {
-                //            TalkSayEndEvent tlkevt = new TalkSayEndEvent();
-                //            tlkevt.nChar = data.n_CharID;
-                //            GameEventManager.DispatchEvent(tlkevt);
-                //        }
-                //        continue;
-                //    }
-                //}
+                
                 // normal
                 {
 
@@ -1488,7 +1471,27 @@ public class MyScript {
                     }
                 }
             }
+            else if (func.sFunc == "DELTRIGUNIT")
+            {
+                if (nTrigerIdent > 0)
+                {
+                    cUnitData data = GameDataManager.Instance.GetUnitDateByIdent(nTrigerIdent);
+                    if (data != null && (data.n_CharID == func.I(0))) // 至少比對 charid
+                    {
+                        StageDelUnitByIdentEvent evt = new StageDelUnitByIdentEvent();
+                        evt.nIdent = nTrigerIdent;
+                        Panel_StageUI.Instance.OnStageDelUnitByIdentEvent(evt);
 
+                        if (data.n_CharID != 0)
+                        {
+                            TalkSayEndEvent tlkevt = new TalkSayEndEvent();
+                            tlkevt.nChar = data.n_CharID;
+                            GameEventManager.DispatchEvent(tlkevt);
+                        }
+                        continue;
+                    }
+                }
+            }
 
             else if (func.sFunc == "JOIN")
             {
@@ -1610,6 +1613,11 @@ public class MyScript {
 
                 }
             }
+            else if (func.sFunc == "EVENT")  // 直接觸發指定事件
+            {
+                Panel_StageUI.Instance.TrigEventToRun(func.I(0));
+            }
+
             else if (func.sFunc == "REGAME")  // 一般結局，玩家重新開始
             {
                 GameDataManager.Instance.ReGame();
@@ -2095,7 +2103,7 @@ public class MyScript {
                     pool.Add(new TAG_STUN());
                 }
                 else if (func.sFunc == "TAG_HIDE")
-                {  // 中立
+                {  // 潛身
                     pool.Add(new TAG_HIDE());
                 }
                 //=============== fight status
@@ -2151,7 +2159,7 @@ public class MyScript {
                 }
                 else if (func.sFunc == "IS_NODMG")//免疫傷害
                 {
-                    pool.Add(new IS_NODMG());
+                    pool.Add(new IS_NODMG( ));
                 }
                 else if (func.sFunc == "IS_ANTIFLY")//免疫飛行道具
                 {

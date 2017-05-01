@@ -1867,7 +1867,7 @@ public class Panel_StageUI : MonoBehaviour
             return true;
 
         if (DropMsg.nDropCount > 0)
-            return false;
+            return true;
 
         if (bIsMoveToObj)
             return true;
@@ -2275,14 +2275,7 @@ public class Panel_StageUI : MonoBehaviour
     }
 	// this is debug tool func
 	public void TrigEventToRun( int nEventID )
-	{
-		if( NextEvent != null )		// avoid double run
-		{
-			Debug.LogError( " TrigEventToRun Err!! nextevent exist");
-			return ;
-		}
-		
-		
+	{		
 		if (bIsStageEnd) {
 			Debug.LogError( " TrigEventToRun Err!! stage is end");
 			return;
@@ -2295,34 +2288,52 @@ public class Panel_StageUI : MonoBehaviour
 		STAGE_EVENT evt;
         if ((EvtPool != null) && EvtPool.TryGetValue( nEventID , out evt ) )
 		{
-			//WaitPool.Add( evt );
-			// check is loop event?
-			if( IsLoopEvent( evt )== false  )
-			{				
-				EvtPool.Remove( nEventID );
+            WaitPool.Add(evt);
 
-				//removeLst.Add( pair.Key );
-			}
-			// run event directly
-			NextEvent = evt;
-			PreEcecuteEvent();					// parser next event to run
-			Debug.LogFormat( " TrigEventToRun ok!! event {0}  " , nEventID );
+            RegEventTriger(nEventID, MyScript.nTrigerIdent);
+            // check is loop event?
+            if (IsLoopEvent(evt) == false)
+            {
+                EvtPool.Remove(nEventID );
+            }
+            
+            return; // return and wait event auto run
+
+            //WaitPool.Add( evt );
+            // check is loop event?
+   //         if ( IsLoopEvent( evt )== false  )
+			//{				
+			//	EvtPool.Remove( nEventID );
+
+			//	//removeLst.Add( pair.Key );
+			//}
+			//// run event directly
+			//NextEvent = evt;
+			//PreEcecuteEvent();					// parser next event to run
+			//Debug.LogFormat( " TrigEventToRun ok!! event {0}  " , nEventID );
 		}
-		else{
+        else
+        {
             // find event from const
-            evt = ConstDataManager.Instance.GetRow<STAGE_EVENT>(nEventID );
+            evt = ConstDataManager.Instance.GetRow<STAGE_EVENT>(nEventID);
             if (evt != null)
             {
-                NextEvent = evt;
-                PreEcecuteEvent();					// parser next event to run
+                WaitPool.Add(evt);
+
+                RegEventTriger(nEventID, MyScript.nTrigerIdent);
+                // check is loop event?
+                if (IsLoopEvent(evt) == false)
+                {
+                    EvtPool.Remove(nEventID);
+                }
             }
             else
             {
                 Debug.LogErrorFormat(" TrigEventToRun Err!! event{0} not exist ", nEventID);
             }
-		}
+        }
 
-	}
+    }
 	//
 	bool GetEventToRun()
 	{

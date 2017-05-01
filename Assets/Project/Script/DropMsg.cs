@@ -12,8 +12,8 @@ public class DropMsg : MonoBehaviour {
     public GameObject lblItemValue;
 
     // Use this for initialization
-    void Start () {      
-
+    void Start () {
+        nDropCount++;
     }
 	
 	// Update is called once per frame

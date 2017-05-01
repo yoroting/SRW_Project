@@ -78,6 +78,9 @@ public class Panel_StageInfo : MonoBehaviour {
         }
         if (sWin != "")
         {
+            sWin = sWin.Replace("$F", Config.PlayerFirst); // replace player name
+            sWin = sWin.Replace("$N", Config.PlayerName); // replace player name
+
             MyTool.SetLabelText(lblWinObj, sWin);
         }
         lblWinObj.SetActive(sWin != "");
@@ -108,6 +111,8 @@ public class Panel_StageInfo : MonoBehaviour {
         }
         if (sLost != "")
         {
+            sLost = sLost.Replace("$F", Config.PlayerFirst); // replace player name
+            sLost = sLost.Replace("$N", Config.PlayerName); // replace player name
             MyTool.SetLabelText(lblLostObj, sLost);
         }
         lblLostObj.SetActive(sLost != "");
@@ -148,6 +153,8 @@ public class Panel_StageInfo : MonoBehaviour {
 			}
             if (sMission != "")
             {
+                sMission = sMission.Replace("$F", Config.PlayerFirst); // replace player name
+                sMission = sMission.Replace("$N", Config.PlayerName); // replace player name
                 MyTool.SetLabelText(lblMissionObj, sMission);
             }
             lblMissionObj.SetActive( sMission != "" );

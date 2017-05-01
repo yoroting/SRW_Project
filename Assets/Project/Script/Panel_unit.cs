@@ -227,26 +227,29 @@ public class Panel_unit : MonoBehaviour {
         if (BattleMsg.nMsgCount > 0)
 			return ;
 
-//        // wait all fx played
-//        if ( WaitFxPool.Count > 0 ) {
-//            if (FxObj != null)
-//            { // detect obj is end
-//                // it will be null when fx playend and auto delete
-////                ParticleSystem ps = FxObj.GetComponent<ParticleSystem>();
-////                if (ps.IsAlive() == true)
-////                {
-//                    //Debug.Log(" ps end ");
-////                }
-//                return; // block
-//            }
+        if (DropMsg.nDropCount > 0)
+            return ;
 
-//            PlayFX( WaitFxPool[0] );
-//            WaitFxPool.RemoveAt(0);
-//            return;
-//        }
-		// check if need to move
-		//if (IsMoveing () == false ) {			// check have null point
-		if ((PathList != null) && (PathList.Count > 0)) {
+        //        // wait all fx played
+        //        if ( WaitFxPool.Count > 0 ) {
+        //            if (FxObj != null)
+        //            { // detect obj is end
+        //                // it will be null when fx playend and auto delete
+        ////                ParticleSystem ps = FxObj.GetComponent<ParticleSystem>();
+        ////                if (ps.IsAlive() == true)
+        ////                {
+        //                    //Debug.Log(" ps end ");
+        ////                }
+        //                return; // block
+        //            }
+
+        //            PlayFX( WaitFxPool[0] );
+        //            WaitFxPool.RemoveAt(0);
+        //            return;
+        //        }
+        // check if need to move
+        //if (IsMoveing () == false ) {			// check have null point
+        if ((PathList != null) && (PathList.Count > 0)) {
 			MoveNextPoint ();			// auto move
 		}
 		//}
@@ -568,11 +571,12 @@ public class Panel_unit : MonoBehaviour {
 
 		if( BattleMsg.nMsgCount > 0 )
 			return true;
+        if (DropMsg.nDropCount > 0)
+            return true;
+        //		if( CFX_AutoDestructShuriken.nFXCount>0 )
+        //			return true;
 
-//		if( CFX_AutoDestructShuriken.nFXCount>0 )
-//			return true;
-
-		if( FxObj != null )
+        if ( FxObj != null )
 			return true;
 
 		return false;

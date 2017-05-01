@@ -1310,7 +1310,7 @@ public class IS_TWICE: cEffect
 
 public class IS_NODMG : cEffect
 {
-    public IS_NODMG() { }
+    public IS_NODMG( ) { }
 
     override public bool _IsStatus(_FIGHTSTATE st)
     {
