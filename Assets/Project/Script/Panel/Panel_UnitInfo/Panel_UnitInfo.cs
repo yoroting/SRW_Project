@@ -303,7 +303,7 @@ public class Panel_UnitInfo : MonoBehaviour {
         //tired
         MyTool.SetLabelInt(TiredObj, pUnitData.nTired);
         // mar
-        MyTool.SetLabelFloat(MarObj, pUnitData.GetMar());
+        MyTool.SetLabelInt(MarObj, (int)pUnitData.GetMar());
         // HP
         int nMaxHp = pUnitData.GetMaxHP();
         MyTool.SetLabelText(HpObj, string.Format("{0}/{1}", pUnitData.n_HP, nMaxHp));

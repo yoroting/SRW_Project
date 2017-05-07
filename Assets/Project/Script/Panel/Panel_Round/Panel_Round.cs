@@ -23,13 +23,13 @@ public class Panel_Round : MonoBehaviour {
 			switch( GameDataManager.Instance.nActiveCamp )
 			{
 				case _CAMP._PLAYER:{
-					lblcont.text = "我方回合";
+					lblcont.text = "我方行動";
 				}break;
 				case _CAMP._ENEMY:{
-					lblcont.text = "敵方回合";
+					lblcont.text = "敵方行動";
 				}break;
 				case _CAMP._FRIEND:{
-					lblcont.text = "友方回合";
+					lblcont.text = "友方行動";
 				}break;
 			}
 		}
@@ -37,7 +37,7 @@ public class Panel_Round : MonoBehaviour {
 		UILabel lblround = RoundObj.GetComponent< UILabel >();
 		if( lblround != null )
 		{
-			string strbase = "Round $V1";
+			string strbase = "回合 $V1";
 			string param = GameDataManager.Instance.nRound.ToString();
 			string round = strbase.Replace( "$V1" , param );
 

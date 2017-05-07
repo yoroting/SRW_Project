@@ -32,7 +32,8 @@ public enum _ACTION
 	_CMD_ATK,
 	_CMD_CAST,
 
-
+    // 
+    _EVT_ATTACK, // 
 };
 
 public class uAction
@@ -46,7 +47,9 @@ public class uAction
 
 	public int nSkillID { set; get;}
 
-	public int nActVar1 { set; get;}
+    public int nResult { set; get; }
+
+    public int nActVar1 { set; get;}
 	public int nActVar2 { set; get;}
 
 	public List<cHitResult> HitResult;
@@ -179,6 +182,19 @@ public partial class ActionManager
 
                         }
                             break;
+                    case _ACTION._EVT_ATTACK:
+                        {
+                            //StageBattleAttackEvent Evt = new StageBattleAttackEvent();
+
+                            //Panel_StageUI.Instance.ScriptAttack( Evt );
+                            Panel_unit unit = Panel_StageUI.Instance.GetUnitByIdent(act.nActIdent);
+                            if ((unit != null))
+                            {
+                                unit.ScriptAttack(act.nTarIdent , act.nSkillID , act.nResult , act.nActVar1 , act.nActVar2 );
+                            }
+                             ActionPool.RemoveAt(0); // remove when setup success
+                        }
+                        break;
                     // normal action
                     default:
 					{	
@@ -717,5 +733,21 @@ public partial class ActionManager
 		}
 		return act;
 	}
+    //== Script perforance
+    public uAction CreateEvtAttackAction(int nAtkIdent, int nDefIdent, int nSkillID, int nResult , int nVar1 = 0, int nVar2 = 0)
+    {
+        uAction act = CreateAction(nAtkIdent, _ACTION._EVT_ATTACK);
+        if (act != null)
+        {
+            act.nTarIdent = nDefIdent;
+            act.nSkillID = nSkillID;
+            act.nResult = nResult;
+            act.nActVar1 = nVar1;
+            act.nActVar2 = nVar2;
+            // script
+
+        }
+        return act;
+    }
 };
 

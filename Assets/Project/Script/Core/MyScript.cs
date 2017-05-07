@@ -264,6 +264,13 @@ public class MyScript {
                         return false;       // always fail
                     }
                 }
+                else if (func.sFunc == "GAP")
+                {
+                    if (MyScript.Instance.ConditionGap(func.I(0), func.I(1), func.S(2), func.I(3) ) == false)
+                    {
+                        return false;       // always fail
+                    }
+                }
                 else
                 {
 					Debug.LogError( string.Format( "Error-Can't find script cond func '{0}'" , func.sFunc ) );
@@ -930,7 +937,23 @@ public class MyScript {
         int n = GameDataManager.Instance.GetFlag(sflag );
         return ConditionInt(n , op , nVar1 );
     }
-        
+
+    public bool ConditionGap(int nEvt1 , int nEvt2 , string op, int nVar1)
+    {
+        // int n = GameDataManager.Instance.GetFlag(sflag);
+        int r1 = 0;
+        if (GameDataManager.Instance.EvtDonePool.TryGetValue(nEvt1, out r1) == false ) {
+            return false;
+        }
+        int r2 = 0;
+        if (GameDataManager.Instance.EvtDonePool.TryGetValue(nEvt2, out r2) == false)
+        {
+            return false;
+        }
+        int n = Mathf.Abs( r1-r2);
+        return ConditionInt(n, op, nVar1);
+    }
+    
     //------------------
     // Stage Run
     //-----------------
@@ -1615,7 +1638,11 @@ public class MyScript {
             }
             else if (func.sFunc == "EVENT")  // 直接觸發指定事件
             {
-                Panel_StageUI.Instance.TrigEventToRun(func.I(0));
+                int id = func.I(0);
+                if (GameDataManager.Instance.EvtDonePool.ContainsKey(id) == false) // 避免重複執行
+                {
+                    Panel_StageUI.Instance.TrigEventToRun(func.I(0));
+                }
             }
 
             else if (func.sFunc == "REGAME")  // 一般結局，玩家重新開始

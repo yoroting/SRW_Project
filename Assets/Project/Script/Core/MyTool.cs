@@ -135,13 +135,13 @@ public class MyTool {
 		{				
 			string content = row.Field<string>( "s_NAME");
             string sname = "";
-            if (Config.GOD)
+          //  if (Config.GOD)
             {
                 sname = string.Format("第{0}關 {1}", nID, content);
             }
-            else {
-                sname = string.Format("下一關 {0}",  content);
-            }
+            //else {
+            //    sname = string.Format("下一關 {0}",  content);
+            //}
 			
 			return sname;
 		}

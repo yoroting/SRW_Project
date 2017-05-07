@@ -222,11 +222,14 @@ public class Panel_StageUI : MonoBehaviour
 
 				STAGE_EVENT evt = ConstDataManager.Instance.GetRow<STAGE_EVENT>(nMissionID);
 				if (evt != null)
-				{      
-					if( EvtPool.ContainsKey( nMissionID ) == false )
-					{
-						EvtPool.Add(nMissionID, evt);
-					}
+				{
+                    if (EvtPool.ContainsKey(nMissionID) == false)
+                    {
+                        EvtPool.Add(nMissionID, evt);
+                    }
+                    else {
+                        Debug.LogFormat("stageloding:double misson ID {0} ", nMissionID );
+                    }
 				}
 			}
 		}
@@ -250,7 +253,11 @@ public class Panel_StageUI : MonoBehaviour
 					{
 						EvtPool.Add(nEventID, evt);
 					}
-				}
+                    else
+                    {
+                        Debug.LogFormat("stageloding:double Event ID {0} ", nEventID);
+                    }
+                }
 			}
 		}
 
@@ -4286,74 +4293,79 @@ public class Panel_StageUI : MonoBehaviour
                     TraceUnit(pair.Value);
 
                     tmpScriptMoveEnd.Add(last ); // avoid double pos
-                    // add to tmp 
+                                                 // add to tmp 
+                    ActionManager.Instance.CreateEvtAttackAction(pair.Value.Ident(), nDefId, nSkillID, nResult);// 登錄一個攻擊動作
+                    
+                    return;
                 }
             }
             // skill hit effect
-            List<cUnitData> pool = new List<cUnitData>();
-            BattleManager.GetAffectPool(pAtker, pDefer, nSkillID, 0, 0, ref pool); // will convert inside
+            pair.Value.ScriptAttack(nDefId, nSkillID, nResult, Evt.nVar1, Evt.nVar2);
 
-            if ((pDefer != null) && pool.Contains(pDefer) == false)
-            {
-                pool.Add(pDefer);
-            }
-            if (m_bIsSkipMode)
-            {
-                // perform pos directly
-                // perform pos directly		
-                foreach (cUnitData d in pool)
-                {
-                    List<cHitResult> HitResult = BattleManager.CalSkillHitResult(pAtker, d, nSkillID);
-                    ActionManager.Instance.ExecActionHitResult(HitResult, m_bIsSkipMode);  // play directly without action to avoid 1 frame error
-                    ActionManager.Instance.ExecActionEndResult(HitResult, m_bIsSkipMode);
-                }
+            //List<cUnitData> pool = new List<cUnitData>();
+            //BattleManager.GetAffectPool(pAtker, pDefer, nSkillID, 0, 0, ref pool); // will convert inside
 
-            }
-            else
-            {
-                ActionManager.Instance.CreateCastAction(nAtkId, Evt.nAtkSkillID, nDefId);      
+            //if ((pDefer != null) && pool.Contains(pDefer) == false)
+            //{
+            //    pool.Add(pDefer);
+            //}
+            //if (m_bIsSkipMode)
+            //{
+            //    // perform pos directly
+            //    // perform pos directly		
+            //    foreach (cUnitData d in pool)
+            //    {
+            //        List<cHitResult> HitResult = BattleManager.CalSkillHitResult(pAtker, d, nSkillID);
+            //        ActionManager.Instance.ExecActionHitResult(HitResult, m_bIsSkipMode);  // play directly without action to avoid 1 frame error
+            //        ActionManager.Instance.ExecActionEndResult(HitResult, m_bIsSkipMode);
+            //    }
 
-                // send attack
-                //Panel_StageUI.Instance.MoveToGameObj(pDefUnit.gameObject , false );  // move to def 
-                uAction act = ActionManager.Instance.CreateAttackAction(nAtkId, nDefId, Evt.nAtkSkillID);
-                if (act != null)
-                {
-                    //act.AddHitResult (new cHitResult (cHitResult._TYPE._HIT, nAtkId, Evt.nAtkSkillID));
+            //}
+            //else
+            //{
+            //    ActionManager.Instance.CreateCastAction(nAtkId, Evt.nAtkSkillID, nDefId);      
 
-                    foreach (cUnitData d in pool)
-                    {
-                        cUnitData Tar = d;
-                        if (1 == nResult)
-                        {
-                            act.AddHitResult(new cHitResult(cHitResult._TYPE._DODGE, d.n_Ident, 0));
-                        }
-                        else if (2 == nResult)
-                        {
-                            act.AddHitResult(new cHitResult(cHitResult._TYPE._MISS, pAtker.n_Ident, 0));
-                        }
-                        else if (3 == nResult)
-                        {
-                            act.AddHitResult(new cHitResult(cHitResult._TYPE._SHIELD, d.n_Ident, 0));
-                        }
-                        else if (4 == nResult) // guard
-                        {                            
-                            Tar = GameDataManager.Instance.GetUnitDateByCharID(Evt.nVar1);
-                            if (Tar != null)
-                            {
-                                act.AddHitResult(new cHitResult(cHitResult._TYPE._GUARD, Tar.n_Ident, d.n_Ident));
-                            }
-                            else {
-                                Tar = d;
-                            }
-                        }
-                        act.AddHitResult(BattleManager.CalSkillHitResult(pAtker, Tar, nSkillID));
-                     
-                    }
-                        
+            //    // send attack
+            //    //Panel_StageUI.Instance.MoveToGameObj(pDefUnit.gameObject , false );  // move to def 
+            //    uAction act = ActionManager.Instance.CreateAttackAction(nAtkId, nDefId, Evt.nAtkSkillID  );
+            //    if (act != null)
+            //    {
+            //        //act.AddHitResult (new cHitResult (cHitResult._TYPE._HIT, nAtkId, Evt.nAtkSkillID));
 
-                }
-            }
-             // check break;
+            //        foreach (cUnitData d in pool)
+            //        {
+            //            cUnitData Tar = d;
+            //            if (1 == nResult)
+            //            {
+            //                act.AddHitResult(new cHitResult(cHitResult._TYPE._DODGE, d.n_Ident, 0));
+            //            }
+            //            else if (2 == nResult)
+            //            {
+            //                act.AddHitResult(new cHitResult(cHitResult._TYPE._MISS, pAtker.n_Ident, 0));
+            //            }
+            //            else if (3 == nResult)
+            //            {
+            //                act.AddHitResult(new cHitResult(cHitResult._TYPE._SHIELD, d.n_Ident, 0));
+            //            }
+            //            else if (4 == nResult) // guard
+            //            {                            
+            //                Tar = GameDataManager.Instance.GetUnitDateByCharID(Evt.nVar1);
+            //                if (Tar != null)
+            //                {
+            //                    act.AddHitResult(new cHitResult(cHitResult._TYPE._GUARD, Tar.n_Ident, d.n_Ident));
+            //                }
+            //                else {
+            //                    Tar = d;
+            //                }
+            //            }
+            //            act.AddHitResult(BattleManager.CalSkillHitResult(pAtker, Tar, nSkillID));
+
+            //        }
+
+
+            //    }
+            //}
+            // check break;
             if (count++ >= nNum && nNum > 0) // nNum = -1 is all
             {
                 break;
@@ -4662,9 +4674,15 @@ public class Panel_StageUI : MonoBehaviour
 
 	public void OnStagePlayFX(int nCharID , int nFXID  )
 	{
-		if (nFXID == 0) {
+        if (m_bIsSkipMode)
+        {
+            return;
+        }
+
+        if (nFXID == 0) {
 			return ;
 		}
+        
         //		TalkSayEndEvent sayevt = new TalkSayEndEvent();
         //		sayevt.nChar = 0;		
         //		GameEventManager.DispatchEvent ( sayevt  );
@@ -4691,7 +4709,11 @@ public class Panel_StageUI : MonoBehaviour
 
     public void OnStagePosPlayFX(int nX, int nY,  int nFXID , int nLayer = 0 ) // true 
     {
-        if (nFXID == 0)
+        if (m_bIsSkipMode)
+        {
+            return;
+        }
+            if (nFXID == 0)
         {
             return;
         }
@@ -4700,7 +4722,8 @@ public class Panel_StageUI : MonoBehaviour
         //		GameEventManager.DispatchEvent ( sayevt  );
         Panel_Talk.Show(false);
 
-        CameraMoveTo(nX, nY);
+        Vector3 v1 = MyTool.SnyGridtoLocalPos(nX, nY, ref Grids);
+        CameraMoveTo(v1.x, v1.y);
 
         PlayFX( nFXID, nX, nY , (0== nLayer) );
     }

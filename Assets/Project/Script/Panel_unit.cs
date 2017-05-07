@@ -2852,4 +2852,87 @@ public class Panel_unit : MonoBehaviour {
         // 改變顯示
         return pUnitData.IsTag(_UNITTAG._HIDE);
     }
+
+    // script 用的表演
+    public void ScriptAttack(int nDefIdent, int nSkillID, int nResult = 0, int nVar1 = 0, int nVar2 = 0)
+    {
+        Panel_unit pDefUnit = Panel_StageUI.Instance.GetUnitByIdent(nDefIdent);
+        if (pDefUnit == null)
+            return;
+        bool bIsSkipMode = Panel_StageUI.Instance.m_bIsSkipMode;
+        cUnitData pDefer = pDefUnit.pUnitData;
+
+        //		int nAtkId = pAtkUnit.Ident ();
+        int nDefId = pDefUnit.Ident();
+        cUnitData pAtker = pUnitData;
+        int nAtkId = Ident();
+
+
+        // skill hit effect
+        List<cUnitData> pool = new List<cUnitData>();
+        BattleManager.GetAffectPool(pAtker, pDefer, nSkillID, 0, 0, ref pool); // will convert inside
+
+        if ((pDefer != null) && pool.Contains(pDefer) == false)
+        {
+            pool.Add(pDefer);
+        }
+        if (bIsSkipMode)
+        {
+            // perform pos directly
+            // perform pos directly		
+            foreach (cUnitData d in pool)
+            {
+                List<cHitResult> HitResult = BattleManager.CalSkillHitResult(pAtker, d, nSkillID);
+                ActionManager.Instance.ExecActionHitResult(HitResult, bIsSkipMode);  // play directly without action to avoid 1 frame error
+                ActionManager.Instance.ExecActionEndResult(HitResult, bIsSkipMode);
+            }
+
+        }
+        else
+        {
+            ActionManager.Instance.CreateCastAction(nAtkId, nSkillID, nDefId);
+
+            // send attack
+            //Panel_StageUI.Instance.MoveToGameObj(pDefUnit.gameObject , false );  // move to def 
+            uAction act = ActionManager.Instance.CreateAttackAction(nAtkId, nDefId, nSkillID);
+            if (act != null)
+            {
+                //act.AddHitResult (new cHitResult (cHitResult._TYPE._HIT, nAtkId, Evt.nAtkSkillID));
+
+                foreach (cUnitData d in pool)
+                {
+                    cUnitData Tar = d;
+                    if (1 == nResult)
+                    {
+                        act.AddHitResult(new cHitResult(cHitResult._TYPE._DODGE, d.n_Ident, 0));
+                    }
+                    else if (2 == nResult)
+                    {
+                        act.AddHitResult(new cHitResult(cHitResult._TYPE._MISS, pAtker.n_Ident, 0));
+                    }
+                    else if (3 == nResult)
+                    {
+                        act.AddHitResult(new cHitResult(cHitResult._TYPE._SHIELD, d.n_Ident, 0));
+                    }
+                    else if (4 == nResult) // guard
+                    {
+                        Tar = GameDataManager.Instance.GetUnitDateByCharID(nVar1);
+                        if (Tar != null)
+                        {
+                            act.AddHitResult(new cHitResult(cHitResult._TYPE._GUARD, Tar.n_Ident, d.n_Ident));
+                        }
+                        else
+                        {
+                            Tar = d;
+                        }
+                    }
+                    act.AddHitResult(BattleManager.CalSkillHitResult(pAtker, Tar, nSkillID));
+
+                }
+
+
+            }
+        }
+    }
+
 }
