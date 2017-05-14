@@ -1890,8 +1890,8 @@ public partial class BattleManager
                 money = (int)(money * fMoneyRatio);
 
                 // check drop item
-                if ( Defer.cCharData.n_ITEM_DROP  > 0 ){
-					nDropItemPool.Add( Defer.cCharData.n_ITEM_DROP );
+                if ( Defer.n_DropItemID > 0 ){
+					nDropItemPool.Add(Defer.n_DropItemID);
 				}
 			}
 		}

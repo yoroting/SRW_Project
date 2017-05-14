@@ -274,11 +274,12 @@ public class cUnitData{
 
 	public int n_AITarget;						// AI目標
 	public int n_AIX;							// AI目標 X
-	public int n_AIY;							// AI目標 Y
-// save end
-
-	// calcul attr
-	Dictionary< int , cAttrData > Attr; 		// 0-內功 , 1-外功  , 2-等級 , 3- buff 
+	public int n_AIY;                           // AI目標 Y
+                                                // save end
+                                                
+    public int n_DropItemID;                      // 掉落物品
+                                                // calcul attr
+    Dictionary< int , cAttrData > Attr; 		// 0-內功 , 1-外功  , 2-等級 , 3- buff 
 
 	// school
 	public Dictionary< int , int >		SchoolPool;			// all study school < school id , lv >
@@ -370,8 +371,9 @@ public class cUnitData{
 
 		Items = new int [ (int)_ITEMSLOT._SLOTMAX ];			// all buffs of unit
 
-		// special insert
-		FightAttr =   new cFightAttr ();
+        n_DropItemID = 0;
+        // special insert
+        FightAttr =   new cFightAttr ();
 		Attr.Add ( cAttrData._FIGHT , FightAttr ); // special insert
 
 		n_Lv = 1; // base lv
@@ -380,7 +382,9 @@ public class cUnitData{
 		//===========
 		eSearchAI = _AI_SEARCH._NORMAL;								// 找怪物
 		eComboAI  = _AI_COMBO._NORMAL;								// 選技能
-	}
+        
+
+    }
 
     public void Copy( cUnitData src )
     {
@@ -421,7 +425,7 @@ public class cUnitData{
 
         // item
         src.Items.CopyTo(Items,0);
-        
+        src.n_DropItemID = n_DropItemID;
 
         n_Lv  = src.n_Lv;
         n_EXP = src.n_EXP;
@@ -722,8 +726,7 @@ public class cUnitData{
         if (n_Lv < cData.n_LV )
         {
             n_Lv = cData.n_LV;
-        }
-       
+        }      
 
         // face ID
         n_FaceID = cData.n_FACEID;
@@ -794,10 +797,12 @@ public class cUnitData{
 		} 
 		if (cData.n_ITEM2 > 0) {
 			EquipItem( _ITEMSLOT._SLOT1 , cData.n_ITEM2 ) ;
-		} 
+		}
 
-		// active school
-		int nIntSchool = cData.n_INT_SCHOOL;
+        n_DropItemID = cData.n_ITEM_DROP;
+
+        // active school
+        int nIntSchool = cData.n_INT_SCHOOL;
 		int nExtSchool = cData.n_EXT_SCHOOL;
 		if (nIntSchool == 0) {
 			nIntSchool = GetNextSchoolID( cAttrData._INTSCH ); // find default value

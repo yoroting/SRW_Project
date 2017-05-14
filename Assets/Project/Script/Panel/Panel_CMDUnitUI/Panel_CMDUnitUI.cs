@@ -532,6 +532,25 @@ public class Panel_CMDUnitUI : MonoBehaviour
 			cUnitData pCmdData  = GameDataManager.Instance.GetUnitDateByIdent( pCmder.Ident() );
 			if( pCmdData != null ){
 				pCmdData.AddHp( -2099999999 );
+                // drop
+                if (pCmdData.eCampID == _CAMP._ENEMY)
+                {
+                    int money = Config.BaseMobMoney;
+                    money = (int)(money * pCmdData.cCharData.f_DROP_MONEY);
+                    money = MyTool.ClampInt(money, 0, money);
+                    BattleManager.Instance.nDropMoney += money;
+                    GameDataManager.Instance.nEarnMoney += money;
+
+                    // check drop item
+                    if (pCmdData.n_DropItemID > 0)
+                    {
+                        BattleManager.Instance.nDropItemPool.Add(pCmdData.n_DropItemID);
+                    }
+                    
+                }
+
+
+
 			}
 			//pCmder.SetDead ();
 		}

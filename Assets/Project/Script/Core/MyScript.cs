@@ -1437,7 +1437,20 @@ public class MyScript {
             }
             else if (func.sFunc == "ADDITEM")  // Add buff
             {
-                GameDataManager.Instance.AddItemtoBag(func.I(0));
+                // 如果是 戰場中則增加掉落
+                if (GameDataManager.Instance.ePhase == _SAVE_PHASE._MAINTEN ||   Panel_StageUI.Instance.bIsStageEnd  )
+                {
+                    // 如果是 main 則直接新增
+                    GameDataManager.Instance.AddItemtoBag(func.I(0));
+                }
+                else //增加掉落
+                {
+                    BattleManager.Instance.nDropItemPool.Add( func.I(0) );
+                }
+            }
+            else if (func.sFunc == "ADDDROP")  // Add buff
+            {
+                Panel_StageUI.Instance.OnStageAddDropItem(func.I(0), func.I(1));
             }
             else if (func.sFunc == "ADDMONEY")  // Add buff
             {

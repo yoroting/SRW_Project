@@ -317,7 +317,23 @@ public class Panel_SysCheat : MonoBehaviour {
 				if( pair.Value.eCampID == _CAMP._ENEMY && (pair.Value.IsTag( _UNITTAG._PEACE )== false) )
                 {
 					pair.Value.AddHp( -2099999999 );
-				}
+                    cUnitData pCmdData = pair.Value;
+                    // drop
+                    if (pCmdData.eCampID == _CAMP._ENEMY)
+                    {
+                        int money = Config.BaseMobMoney;
+                        money = (int)(money * pCmdData.cCharData.f_DROP_MONEY);
+                        money = MyTool.ClampInt(money, 0, money);
+                        BattleManager.Instance.nDropMoney += money;
+                        GameDataManager.Instance.nEarnMoney += money;
+
+                        // check drop item
+                        if (pCmdData.n_DropItemID > 0)
+                        {
+                            BattleManager.Instance.nDropItemPool.Add(pCmdData.n_DropItemID);
+                        }
+                    }
+                }
 			}
 		}
 		Panel_StageUI.Instance.CheckUnitDead (true);

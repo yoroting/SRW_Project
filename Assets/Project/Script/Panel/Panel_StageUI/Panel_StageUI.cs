@@ -4984,6 +4984,31 @@ public class Panel_StageUI : MonoBehaviour
         }
     }
 
+    public void OnStageAddDropItem(int nCharID, int nItemID)
+    {
+        foreach (KeyValuePair<int, Panel_unit> pair in IdentToUnit)
+        {
+            Panel_unit unit = pair.Value;
+            if (unit == null)
+                continue;
+            if (unit.CharID != nCharID)
+                continue;            
+            if (unit.pUnitData == null)
+                continue;
+            // 一定是敵人
+            if (unit.eCampID != _CAMP._ENEMY )
+                continue;
+
+            unit.pUnitData.n_DropItemID = nItemID;
+        }
+        //cUnitData data = GameDataManager.Instance.GetStorageUnit(nCharID);
+        //if (data != null)
+        //{
+        //    data.EquipItem(_ITEMSLOT._SLOTMAX, nItemID);
+        //    data.UpdateAllAttr();
+        //}
+    }
+    
     public void OnStageEquipItem(int nCharID, int nItemID )
     {
         foreach (KeyValuePair<int, Panel_unit> pair in IdentToUnit)

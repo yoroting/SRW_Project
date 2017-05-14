@@ -82,8 +82,9 @@ public class cUnitSaveData{
 	//====data pool
 	[JsonName("actsch")]				public int [] nActSch;		// current use 
 	[JsonName("items")]					public int [] Items;		// current items 
-	// buff pool
-	[JsonName("school")]				public Dictionary< string , int > School;		// current school 
+    [JsonName("drop")]                  public int nDropItemID;     // current items 
+                            // buff pool
+    [JsonName("school")]				public Dictionary< string , int > School;		// current school 
 	[JsonName("buffs")]					public List< cBuffSaveData> Buffs;		// current buffs
     [JsonName("cds")]					public List< cCDSaveData> CDs;      // current cd
     // TAG 需要存下來。會浮動
@@ -119,8 +120,9 @@ public class cUnitSaveData{
 
 		nActSch = data.nActSch;
 		Items = data.Items;
+        nDropItemID = data.n_DropItemID;
 
-		nActionTime = data.nActionTime;
+        nActionTime = data.nActionTime;
         nTired = data.nTired;
 
 		School = MyTool.ConvetToStringInt ( data.SchoolPool );  // unit school pool

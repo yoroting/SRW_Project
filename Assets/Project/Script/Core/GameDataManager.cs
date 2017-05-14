@@ -630,6 +630,7 @@ private static GameDataManager instance;
 		unit.n_LeaderIdent	= save.n_LeaderIdent;
 
 		unit.Items 	 = save.Items;
+        unit.n_DropItemID = save.nDropItemID;
 		// school
 		unit.SchoolPool = MyTool.ConvetToIntInt ( save.School );
 		// buff
