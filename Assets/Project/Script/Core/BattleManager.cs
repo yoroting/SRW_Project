@@ -1028,6 +1028,7 @@ public partial class BattleManager
 
             //		ActionManager.Instance.CreateDropAction( 0 , 0 , nDropMoney );
             nDropMoney = 0;
+            return true;
         }
 		return false;
 	}
@@ -1337,22 +1338,22 @@ public partial class BattleManager
         }
 
     }
-    public void ShowBattleMsg( int nIdent , string msg )
+    public GameObject ShowBattleMsg( int nIdent , string msg )
 	{
 		Panel_unit unit = Panel_StageUI.Instance.GetUnitByIdent( nIdent ); 
-		ShowBattleMsg (unit , msg );
+		return ShowBattleMsg (unit.gameObject , msg );
 
 	}
 
-	public void ShowBattleMsg( Panel_unit unit , string msg )
+	public GameObject ShowBattleMsg(GameObject plane , string msg )
 	{
         GameObject go = null;
         Vector3 v = Vector3.zero;
-        if (unit != null)
+        if (plane != null)
         {
-            go = ResourcesManager.CreatePrefabGameObj(unit.gameObject, "prefab/BattleMsg");
+            go = ResourcesManager.CreatePrefabGameObj(plane, "prefab/BattleMsg");
             // show in screen center
-            v = unit.transform.position;
+            v = plane.transform.position;
             //v = unit.transform.parent.localPosition+unit.transform.localPosition;
         }
         else {
@@ -1370,7 +1371,7 @@ public partial class BattleManager
 				lbl.text = msg;
 			}
 		}
-
+        return go;
 	}
     public void ShowCastMsg(int nIdent, string msg)
     {
@@ -1892,7 +1893,9 @@ public partial class BattleManager
                 // check drop item
                 if ( Defer.n_DropItemID > 0 ){
 					nDropItemPool.Add(Defer.n_DropItemID);
-				}
+                    Defer.n_DropItemID = 0; // 避免死亡重複掉落
+
+                }
 			}
 		}
         // mul drop

@@ -1437,8 +1437,29 @@ public class MyScript {
             }
             else if (func.sFunc == "ADDITEM")  // Add buff
             {
+                if (PanelManager.Instance.CheckUIIsOpening(Panel_Talk.Name))
+                {
+                    //只能改成 talk UI create 了
+                    Panel_Talk pTalk = PanelManager.Instance.JustGetUI<Panel_Talk>(Panel_Talk.Name);
+                    // 對話中                
+                    int itemid = func.I(0);
+                    string str = "獲得 " + MyTool.GetItemName(itemid);
+                    GameObject go = BattleManager.Instance.ShowBattleMsg(pTalk.gameObject, str);
+                    if (go != null) {
+
+                        BattleMsg msg = go.GetComponent<BattleMsg >();
+                        if (msg != null) {
+                            msg.SetDepth(200);
+                        }
+                        //MyTool.SetDepth(go, 200);
+                    }
+
+
+                    GameDataManager.Instance.AddItemtoBag(itemid);// Add to item pool
+
+                }
                 // 如果是 戰場中則增加掉落
-                if (GameDataManager.Instance.ePhase == _SAVE_PHASE._MAINTEN ||   Panel_StageUI.Instance.bIsStageEnd  )
+                else if (GameDataManager.Instance.ePhase == _SAVE_PHASE._MAINTEN ||   Panel_StageUI.Instance.bIsStageEnd  )
                 {
                     // 如果是 main 則直接新增
                     GameDataManager.Instance.AddItemtoBag(func.I(0));

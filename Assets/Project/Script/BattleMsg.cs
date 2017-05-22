@@ -20,4 +20,15 @@ public class BattleMsg : MonoBehaviour {
 
 	}
 
+    public void SetDepth(int nDepth )
+    {
+        MyTool.SetDepth( gameObject, nDepth );
+
+        UILabel lbl = this.gameObject.GetComponentInChildren<UILabel>();
+        if (lbl != null)
+        {
+            MyTool.SetDepth(lbl.gameObject, nDepth +1 );
+        }
+    }
+
 }

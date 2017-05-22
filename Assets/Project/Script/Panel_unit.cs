@@ -1389,7 +1389,7 @@ public class Panel_unit : MonoBehaviour {
 	{
         Panel_StageUI.Instance.MoveToGameObj(this.gameObject, false);
         // select to wait
-        BattleManager.Instance.ShowBattleMsg (this, "waiting");
+        BattleManager.Instance.ShowBattleMsg (this.gameObject, "waiting");
 	//	ActionFinished ();
 		if ( pUnitData!= null ) {
 			pUnitData.Waiting();

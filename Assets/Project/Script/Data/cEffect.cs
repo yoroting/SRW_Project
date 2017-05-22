@@ -1616,12 +1616,42 @@ public class cEffectCondition
                     return false;       // always fail
                 }
             }
+            else if (func.sFunc == "NOBUFF_I")
+            {
+                int buffid = func.I(0);
+                if (data_I != null)
+                {
+                    if (data_I.Buffs.HaveBuff(buffid))
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;       // always fail
+                }
+            }
             else if (func.sFunc == "BUFF_E")
             {
                 int buffid = func.I(0);
                 if (data_E != null)
                 {
                     if (!data_E.Buffs.HaveBuff(buffid))
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;       // always fail
+                }
+            }
+            else if (func.sFunc == "NOBUFF_E")
+            {
+                int buffid = func.I(0);
+                if (data_E != null)
+                {
+                    if (data_E.Buffs.HaveBuff(buffid))
                     {
                         return false;
                     }
@@ -1643,6 +1673,18 @@ public class cEffectCondition
                     return false;
                 }
 
+            }
+            else if (func.sFunc == "NOSCHOOL_I")
+            {
+                int schoolid = func.I(0);
+                // if (data_I.nActSch[0] != schoolid && data_I.nActSch[1] != schoolid)
+                if (data_I == null)
+                    return false;
+
+                if (data_I.IsActiveSchool(schoolid))
+                {
+                    return false;
+                }
             }
             else if (func.sFunc == "SCHOOL_E")
             {

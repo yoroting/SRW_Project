@@ -331,6 +331,7 @@ public class Panel_SysCheat : MonoBehaviour {
                         if (pCmdData.n_DropItemID > 0)
                         {
                             BattleManager.Instance.nDropItemPool.Add(pCmdData.n_DropItemID);
+                            pCmdData.n_DropItemID = 0;
                         }
                     }
                 }
