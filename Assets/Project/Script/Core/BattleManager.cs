@@ -1341,9 +1341,12 @@ public partial class BattleManager
     public GameObject ShowBattleMsg( int nIdent , string msg )
 	{
 		Panel_unit unit = Panel_StageUI.Instance.GetUnitByIdent( nIdent ); 
-		return ShowBattleMsg (unit.gameObject , msg );
+        if(unit!= null )
+		    return ShowBattleMsg (unit.gameObject , msg );
+        else
+            return ShowBattleMsg(null, msg);
 
-	}
+    }
 
 	public GameObject ShowBattleMsg(GameObject plane , string msg )
 	{

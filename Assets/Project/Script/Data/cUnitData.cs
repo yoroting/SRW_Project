@@ -550,14 +550,12 @@ public class cUnitData{
 		// change
 		RemoveSkillBySchool( nOldSchId );
 
-		// set new school
-		//SetSchool(SchID , lv ); // for ability / Skill
+        // set new school
+        //SetSchool(SchID , lv ); // for ability / Skill
 
-		AddSkillBySchool ( SchID );
+        nActSch[nIdx] = SchID;      // active schoo; first for addskill effect
 
-		//	
-		nActSch [nIdx] = SchID;		// active
-
+        AddSkillBySchool ( SchID );
 		// update
 		SetUpdate( nIdx );
 
