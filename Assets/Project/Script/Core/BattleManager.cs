@@ -463,48 +463,67 @@ public partial class BattleManager
                     // check if can counter at this time
                     if (IsDefMode() == false)
                     {
-                        // check range
-                        int nRange = 1; // default range
-                        SKILL defskill = ConstDataManager.Instance.GetRow<SKILL>(nDeferSkillID);
-                        if (defskill != null)
-                        {
-                            nRange = defskill.n_RANGE;
-                        }
-                        if (Defer.IsStates(_FIGHTSTATE._DEAD) == false)
-                        {
-                            bool bIsDamage = MyTool.IsDamageSkill(nDeferSkillID); // check damage skill 
-                            if (bIsDamage == true)
-                            {
-                                if (iVec2.Dist(Atker.n_X, Atker.n_Y, Defer.n_X, Defer.n_Y) <= nRange)
-                                {
-                                    bCanCounter = true;
-                                }
-                            }
-                        }
+                        bCanCounter = true;  
                     }
 
+                        //if (IsDefMode() == false)
+                        //{
+                        //    // check range
+                        //    int nRange = 1; // default range
+                        //    SKILL defskill = ConstDataManager.Instance.GetRow<SKILL>(nDeferSkillID);
+                        //    if (defskill != null)
+                        //    {
+                        //        nRange = defskill.n_RANGE;
+                        //    }
+                        //    if (Defer.IsStates(_FIGHTSTATE._DEAD) == false)
+                        //    {
+                        //        bool bIsDamage = MyTool.IsDamageSkill(nDeferSkillID); // check damage skill 
+                        //        if (bIsDamage == true)
+                        //        {
+                        //            if (iVec2.Dist(Atker.n_X, Atker.n_Y, Defer.n_X, Defer.n_Y) <= nRange)
+                        //            {
+                        //                bCanCounter = true;
+                        //            }
+                        //        }
+                        //    }
+                        //}
 
 
-                    // 被打死或被暈不能反擊
-                    if (Defer.IsStates(_FIGHTSTATE._DEAD)|| Defer.IsStun() )
-                    {
-                        bCanCounter = false;
-                    }
+
+                        // 被打死或被暈不能反擊
+                        //if (Defer.IsStates(_FIGHTSTATE._DEAD)|| Defer.IsStun() )
+                        //{
+                        //    bCanCounter = false;
+                        //}
 
                     nPhase++;
                 }
 			break;
-		case 6:
-			Panel_StageUI.Instance.ClearAVGObj();
-                
+		case 6: // 受擊表演結束
+			    Panel_StageUI.Instance.ClearAVGObj();
                 //被暈不能反擊
-                if ( Defer.IsStun())
+                if (Defer.IsStates(_FIGHTSTATE._DEAD) || Defer.IsStun())
                 {
-                    bCanCounter = false;                    
+                    bCanCounter = false;
+                }
+                // 判斷 射程   
+                int nRange = 1; // default range
+                SKILL defskill = ConstDataManager.Instance.GetRow<SKILL>(nDeferSkillID);
+                if (defskill != null)
+                {
+                    nRange = defskill.n_RANGE;
+                }
+                if (MyTool.IsDamageSkill(nDeferSkillID))
+                {
+                    if (iVec2.Dist(Atker.n_X, Atker.n_Y, Defer.n_X, Defer.n_Y) > nRange)
+                    {
+                        bCanCounter = false;
+                    }
                 }
 
-                if (bCanCounter){
-				    ShowAtkAssist( nDeferID , nAtkerID );
+                if (bCanCounter){                   
+                    // 判斷 反擊者是否還能反擊
+                    ShowAtkAssist( nDeferID , nAtkerID );
                     ShowDefAssist(nAtkerID);
                 }
 			nPhase++;
@@ -512,7 +531,7 @@ public partial class BattleManager
 		case 7:
                 // 被打死或被暈不能反擊
               
-                if (bCanCounter ){
+            if (bCanCounter ){
 			//	ShowDefAssist( nAtkerID );
 			}
 			nPhase++;
@@ -1402,7 +1421,7 @@ public partial class BattleManager
 
         if (go != null)
         {
-            MyTool.SetDepth( go , 20 , unit.gameObject );
+            MyTool.SetDepth( go , 100 , unit.gameObject );
             //UIWidget widget = go.GetComponent<UIWidget>();
             //widget.depth = 20;
 
@@ -1411,6 +1430,7 @@ public partial class BattleManager
             UILabel lbl = go.GetComponentInChildren<UILabel>();
             if (lbl != null)
             {
+                MyTool.SetDepth(lbl.gameObject, 1, go );
                 lbl.text = msg;
             }
         }
@@ -2043,18 +2063,22 @@ public partial class BattleManager
         float DefPow = fDefPowFactor * (pDefer.GetPow() + DefPowPlus);
         float fAtkBrust = pAtker.GetMulBurst();  //攻方爆發
         float fDefReduce = pDefer.GetMulDamage();  //守方減免
-        int PowDmg = (int)(HitRate * (AtkPow - DefPow)); // 
 
-        if (PowDmg > 0) {
-            nDefHp -= (int)(PowDmg * fAtkBrust * fDefReduce);
+        // 氣勁
+        float fPowDmg = (HitRate * (AtkPow - DefPow)); //  氣勁傷害
+        
+        if (fPowDmg > 0) {
+            fPowDmg = (fPowDmg * fAtkBrust * fDefReduce); // 一般攻擊。 攻方氣勁大。則打穿護盾
+            nDefHp -= (int)fPowDmg; 
         }
-        else if (PowDmg < 0) { // 氣勁傷害反彈
+        else if (fPowDmg < 0) { // 氣勁傷害反彈
             if (pAtker.FightAttr.SkillData.IsTag(_SKILLTAG._FLY) || bAffect)
             {
                 //暗器不造成反彈，AOE坡及的也不造成反彈
             }
             else {
-                nAtkHp += (int)(PowDmg * pDefer.GetMulBurst() * pAtker.GetMulDamage()); // it is neg value already
+                fPowDmg = (fPowDmg * pDefer.GetMulBurst() * pAtker.GetMulDamage()); // it is neg value already
+                nAtkHp += (int)fPowDmg; // it is neg value already
                 if (nAtkHp < 0) {
                     if (((pAtker.n_HP + pAtker.n_DEF) < Mathf.Abs(nAtkHp))) {
                         if (pDefer.IsStates(_FIGHTSTATE._MERCY)) {
@@ -2071,10 +2095,10 @@ public partial class BattleManager
         }
 
         // buff effect
+        // 攻擊係數
         float Atk = (pAtker.GetAtk() + AtkPlus) * fAtkFactor;
+        float fAtkDmg = (HitRate * Atk) * fAtkBrust * fDefReduce; //物理傷害
 
-
-        float fAtkDmg = (HitRate * Atk) * fAtkBrust * fDefReduce;
 
         // 計算物理護甲減傷
 
@@ -2091,7 +2115,8 @@ public partial class BattleManager
             fAtkDmg *= Config.CiritRatio;
             resPool.Add(new cHitResult(cHitResult._TYPE._CIRIT, nAtker, 0));
         }
-
+        // shield happpen       
+     
 
         //守方反彈傷害 1/2
         if (pDefer.IsStates(_FIGHTSTATE._RETURN)) {
@@ -2143,6 +2168,20 @@ public partial class BattleManager
             }
         }
 
+        // 守方護盾
+        int shieldpow = 0;
+        if (pDefer.IsStates(_FIGHTSTATE._SHIELD))  // 有護盾
+        {
+            shieldpow = pDefer.GetPow() + DefPowPlus;
+            fAtkDmg -= shieldpow; // 護盾 抵銷傷害
+            if (fAtkDmg < 0)
+            {
+                fAtkDmg = 0;
+                
+            }
+            resPool.Add(new cHitResult(cHitResult._TYPE._SHIELD, nDefer, 0));
+        }
+
 
         nDefHp -= (int)(fAtkDmg);
 
@@ -2167,15 +2206,19 @@ public partial class BattleManager
         }
         // check parry / block
         //  if (pDefer.IsStates(_FIGHTSTATE._BLOCK))// 格檔
-        if (PowDmg > 0 )
+        if (fPowDmg > 0 )
         {
-            if( PowDmg + fAtkDmg < pDefer.n_DEF )
+            if (fPowDmg + fAtkDmg < pDefer.n_DEF)
+            {
                 pDefer.AddStates(_FIGHTSTATE._PARRY); // 還在防禦值內，算格檔
+            }
         }
         else 
         {
             if (fAtkDmg < pDefer.n_DEF)
+            {
                 pDefer.AddStates(_FIGHTSTATE._PARRY); // 還在防禦值內，算格檔
+            }
         }
 
 

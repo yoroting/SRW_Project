@@ -243,6 +243,8 @@ public class Panel_Skill : MonoBehaviour {
                     sklLst.Add(ConstDataManager.Instance.GetRow<SKILL>(nSkillID));
                 }
             }
+            // UI SLIDER 到1.0
+
 
         }
 		// Create UI item

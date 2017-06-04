@@ -257,7 +257,7 @@ public class Panel_unit : MonoBehaviour {
 		RunAction ();
 
 		// process mask
-		if (this.eCampID == GameDataManager.Instance.nActiveCamp) {
+		if (this.eCampID == GameDataManager.Instance.nActiveCamp &&  (CurAction == null) ) { // 沒有動作
 			if (CanDoCmd ()) {
 				MaskObj.SetActive (false);
 			} else {
