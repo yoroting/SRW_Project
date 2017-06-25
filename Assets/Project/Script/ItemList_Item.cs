@@ -42,7 +42,9 @@ public class ItemList_Item : MonoBehaviour {
 
         MyTool.SetLabelText(lblName, MyTool.GetItemName(nItemID));
         MyTool.SetLabelInt( lblCount, nCount);
-
+        if (itemid == 0) {
+            MyTool.SetLabelText(lblCount, "- -");
+        }
 
     }
 

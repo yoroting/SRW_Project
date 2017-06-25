@@ -404,16 +404,24 @@ public class cSaveData{
     static public string GetSaveFileContent(int nStoryID )
     {
         string nstoryname = MyTool.GetStoryName( nStoryID );
-        string content = "";
+       
+        string name = Config.PlayerFirst + Config.PlayerName;
+        string status = "";
+
         // 整備
         if (GameDataManager.Instance.ePhase == _SAVE_PHASE._MAINTEN)
         {
-            content = nstoryname + " - 整備";
+            status = "整備";
         }
         else 
         { // 關卡中
-            content = nstoryname + " - 回合 " + GameDataManager.Instance.nRound;
+            status = "回合 " + GameDataManager.Instance.nRound;
         }
+        // 時間
+        string stime = System.DateTime.Now.ToString("yyyy/MM/dd HH:mm");
+        // 組合
+        string  content = String.Format("{0};{1};{2};{3};", nstoryname , name , status , stime );
+
         return content;
     }
 

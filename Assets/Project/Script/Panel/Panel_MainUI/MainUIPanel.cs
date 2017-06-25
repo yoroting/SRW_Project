@@ -115,19 +115,24 @@ public class MainUIPanel : BasicPanel {
         //	PanelManager.Instance.OpenUI( "Panel_Loading");
 
         // clear all game data		
-        GameDataManager.Instance.Initial();
-        GameDataManager.Instance.ClearStorageUnit ();
-		GameDataManager.Instance.ResetStage ();
 
-		StartCoroutine ( EnterStory( Config.StartStory ) );
-
-		//StartCoroutine ( "EnterStory" );
+        GameObject obj = PanelManager.Instance.OpenUI(Panel_CreateName.Name );
 
 
-		//GameObject obj = PanelManager.Instance.OpenUI( StoryUIPanel.Name );
-	}
+       // StartGame();
+        // 進入第一關
+        //      GameDataManager.Instance.Initial();
+        //      GameDataManager.Instance.ClearStorageUnit ();
+        //GameDataManager.Instance.ResetStage ();
 
-	void OnLoadButtonClick(GameObject go)
+        //StartCoroutine ( EnterStory( Config.StartStory ) );
+
+
+
+
+    }
+
+    void OnLoadButtonClick(GameObject go)
 	{
 		// When load button clicked do :
 		Debug.Log("Load");
@@ -205,4 +210,14 @@ public class MainUIPanel : BasicPanel {
 //		PanelManager.Instance.CloseUI( Name );  			// close main 
 
 	}
+
+    public void StartGame()
+    {
+        // 進入第一關
+        GameDataManager.Instance.Initial();
+        GameDataManager.Instance.ClearStorageUnit();
+        GameDataManager.Instance.ResetStage();
+
+        StartCoroutine(EnterStory(Config.StartStory));
+    }
 }

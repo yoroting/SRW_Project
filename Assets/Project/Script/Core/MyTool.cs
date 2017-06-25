@@ -116,7 +116,7 @@ public class MyTool {
 	public static string GetItemName( int nID )
 	{
         if (nID == 0){
-            return "EMPTY";
+            return "- 無 -";
         }
 		//BUFF buff = ConstDataManager.Instance.GetRow< BUFF > ( nID );
 		//if (buff == null)

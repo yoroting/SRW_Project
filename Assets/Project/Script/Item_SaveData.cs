@@ -4,9 +4,13 @@ using System.Collections;
 public class Item_SaveData : MonoBehaviour {	
 	public int nID { set; get; }
     public GameObject NoObj;
-  //  public GameObject LvObj;
+    //  public GameObject LvObj;
 
+    public GameObject ContentObj;
     public GameObject NameObj;
+    public GameObject StatusObj;
+    public GameObject TimeObj;
+
 
     // Use this for initialization
     void Start () {
@@ -22,16 +26,38 @@ public class Item_SaveData : MonoBehaviour {
 		nID = nIdx;
 
         string sid = nID ==0 ? "自動":string.Format( "{0}." , nID );
-       // string slv = " - ";
-       // string content = "- - - - - - - - -";
-        //string content = "NoData";
-
-        string content = cSaveData.LoadSaveSimpleInfo(nID);
 
         MyTool.SetLabelText(NoObj, sid);
-       // MyTool.SetLabelText(LvObj, slv);
-        MyTool.SetLabelText( NameObj , content );
+        // string slv = " - ";
+        // string content = "- - - - - - - - -";
+        //string content = "NoData";
+        char[] split = { ';' };
+        string content = cSaveData.LoadSaveSimpleInfo(nID);
+        string[] strContents = content.Split(split);
 
-	}
+        if (strContents.Length > 0)
+        {
+            MyTool.SetLabelText(ContentObj, strContents[0]);
+        }        
+
+        if (strContents.Length > 1)
+        {
+            MyTool.SetLabelText(NameObj, strContents[1]);
+        }        
+
+        if (strContents.Length > 2)
+        {
+            MyTool.SetLabelText(StatusObj, strContents[2]);
+        }       
+
+        if (strContents.Length > 3)
+        {
+            MyTool.SetLabelText(TimeObj, strContents[3]);
+        }
+        
+        // MyTool.SetLabelText(LvObj, slv);
+
+
+    }
 	
 }

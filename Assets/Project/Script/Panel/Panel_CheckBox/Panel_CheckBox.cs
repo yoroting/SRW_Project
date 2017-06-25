@@ -6,6 +6,8 @@ public class Panel_CheckBox : MonoBehaviour {
 	public GameObject lblText;
 	public GameObject btnOK;
 	public GameObject btnNO;
+    // callback func
+
 
 	int nCheckType ; 
 	// Use this for initialization
@@ -17,6 +19,8 @@ public class Panel_CheckBox : MonoBehaviour {
 	void OnEnable(){
         btnOK.SetActive(true);
         btnNO.SetActive(true);
+
+
     }
 
 
@@ -78,4 +82,13 @@ public class Panel_CheckBox : MonoBehaviour {
 
 		PanelManager.Instance.CloseUI (Name );
 	}
+    static public void MessageBox(string msg)
+    {
+        Panel_CheckBox panel = GameSystem.OpenCheckBox();
+        if (panel)
+        {
+            panel.SetMessageCheck( msg );
+
+        }
+    }
 }

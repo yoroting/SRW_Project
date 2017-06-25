@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Panel_ItemList : MonoBehaviour
 {
@@ -65,22 +66,25 @@ public class Panel_ItemList : MonoBehaviour
 
             DestroyImmediate(GridObj.transform.GetChild(0).gameObject);
         }
-        // create list
+
+        // 先整理各 item pool
+       // Dictionary < int , int > tmpItems = new Dictionary<int, int>();
+        Dictionary<int, int> items = new Dictionary<int, int>();
         foreach (int itemid in GameDataManager.Instance.ItemPool)
         {
-            GameObject obj = ItemObj.Spawn(GridObj.transform);
-            if (obj != null)
+            if (items.ContainsKey(itemid) == false)
             {
-                ItemList_Item item = obj.GetComponent<ItemList_Item>();
-                if (item != null)
-                {
-                    item.ReSize();
-                    item.SetData(itemid, 1);
-
-                    UIEventListener.Get(obj).onClick = OnItemClick; //
-                }
+                // insert
+                items.Add(itemid , 1 );
             }
+            else {
+                // update
+                items[itemid] += 1;
+            }
+
         }
+
+        // create list
         //create a empty null 
         GameObject nullobj = ItemObj.Spawn(GridObj.transform);
         if (nullobj != null)
@@ -93,6 +97,24 @@ public class Panel_ItemList : MonoBehaviour
                 UIEventListener.Get(nullobj).onClick = OnItemClick; //
             }
         }
+
+
+        foreach (KeyValuePair<int, int> pair in items)
+            {
+            GameObject obj = ItemObj.Spawn(GridObj.transform);
+            if (obj != null)
+            {
+                ItemList_Item item = obj.GetComponent<ItemList_Item>();
+                if (item != null)
+                {
+                    item.ReSize();
+                    item.SetData(pair.Key, pair.Value );
+
+                    UIEventListener.Get(obj).onClick = OnItemClick; //
+                }
+            }
+        }
+       
 
         // rescroll 
         UIGrid grid = GridObj.GetComponent<UIGrid>();
