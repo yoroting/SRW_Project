@@ -517,7 +517,12 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		PanelManager.Instance.OpenUI( MainUIPanel.Name );
 	}
 
-	public void StageInfoCmd()
+    public void GameOption()
+    {
+        PanelManager.Instance.OpenUI(Panel_SystemSetting.Name);
+    }
+
+    public void StageInfoCmd()
 	{
 		PanelManager.Instance.CloseUI ( Panel_StageInfo.Name );
 		PanelManager.Instance.OpenUI ( Panel_StageInfo.Name );
@@ -1077,9 +1082,13 @@ public class Panel_CMDUnitUI : MonoBehaviour
 			SaveCmd ();
 		} else if (name == _CMD_ID._LOAD.ToString ()) {
 			LoadCmd ();
-		}	else if (name == _CMD_ID._GAMEEND.ToString ()) {
+		} else if (name == _CMD_ID._GAMEEND.ToString ()) {
 			GameEndCmd ();
 		}
+        else if (name == _CMD_ID._OPTION.ToString())
+        {
+            GameOption();
+        }
 		else if (name == _CMD_ID._STAGEINFO.ToString ()) {
 			StageInfoCmd();
 		}

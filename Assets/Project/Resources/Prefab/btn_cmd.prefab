@@ -5,16 +5,16 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 493660}
-  - 114: {fileID: 11418934}
-  - 114: {fileID: 11460624}
-  - 65: {fileID: 6562278}
-  - 114: {fileID: 11408148}
-  - 114: {fileID: 11400198}
+  - component: {fileID: 493660}
+  - component: {fileID: 11418934}
+  - component: {fileID: 11460624}
+  - component: {fileID: 6562278}
+  - component: {fileID: 11408148}
+  - component: {fileID: 11400198}
   m_Layer: 5
-  m_Name: CMD_BTN
+  m_Name: btn_cmd
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -25,10 +25,10 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 451272}
-  - 114: {fileID: 11417708}
+  - component: {fileID: 451272}
+  - component: {fileID: 11417708}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -41,9 +41,9 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 452128}
+  - component: {fileID: 452128}
   m_Layer: 5
   m_Name: NGUI Snapshot Point 36
   m_TagString: EditorOnly
@@ -56,10 +56,10 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 428442}
-  - 114: {fileID: 11499126}
+  - component: {fileID: 428442}
+  - component: {fileID: 11499126}
   m_Layer: 5
   m_Name: Overlay
   m_TagString: Untagged
@@ -79,6 +79,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 493660}
   m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &451272
 Transform:
   m_ObjectHideFlags: 1
@@ -91,6 +92,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 493660}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &452128
 Transform:
   m_ObjectHideFlags: 1
@@ -103,6 +105,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 493660}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &493660
 Transform:
   m_ObjectHideFlags: 1
@@ -118,6 +121,7 @@ Transform:
   - {fileID: 428442}
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &6562278
 BoxCollider:
   m_ObjectHideFlags: 1
@@ -192,7 +196,7 @@ MonoBehaviour:
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 2.11940289
+  aspectRatio: 2.119403
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 5e4f85552dfd4ea46a49ea0044bba09a, type: 3}
   mFont: {fileID: 0}
@@ -203,14 +207,14 @@ MonoBehaviour:
   mEncoding: 1
   mMaxLineCount: 0
   mEffectStyle: 1
-  mEffectColor: {r: .805970132, g: .714862168, b: .553352594, a: 1}
+  mEffectColor: {r: 0.80597013, g: 0.71486217, b: 0.5533526, a: 1}
   mSymbols: 1
   mEffectDistance: {x: 1, y: 1}
   mOverflow: 0
   mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
-  mGradientBottom: {r: .699999988, g: .699999988, b: .699999988, a: 1}
+  mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
   mSpacingX: 0
   mSpacingY: 0
   mUseFloatSpacing: 0
@@ -269,7 +273,7 @@ MonoBehaviour:
   rightType: 1
   bottomType: 1
   topType: 1
-  mAtlas: {fileID: 11426408, guid: 25576dd4c299fef4f9fc244f1e89bb8b, type: 2}
+  mAtlas: {fileID: 0}
   mSpriteName: button
   mFillCenter: 1
 --- !u!114 &11460624
@@ -284,10 +288,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tweenTarget: {fileID: 100068}
-  hover: {r: .882352948, g: .784313738, b: .588235319, a: 1}
+  hover: {r: 0.88235295, g: 0.78431374, b: 0.5882353, a: 1}
   pressed: {r: 1, g: 1, b: 1, a: 1}
-  disabledColor: {r: .5, g: .5, b: .5, a: 1}
-  duration: .200000003
+  disabledColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  duration: 0.2
   dragHighlight: 0
   hoverSprite: button
   pressedSprite: button_press
@@ -325,7 +329,7 @@ MonoBehaviour:
     relative: 1
     absolute: -3
   updateAnchors: 1
-  mColor: {r: 0, g: 0, b: 0, a: .152941182}
+  mColor: {r: 0, g: 0, b: 0, a: 0.15294118}
   mPivot: 4
   mWidth: 144
   mHeight: 69

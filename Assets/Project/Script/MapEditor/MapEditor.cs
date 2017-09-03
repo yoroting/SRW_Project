@@ -390,7 +390,7 @@ public class MapEditor : MonoBehaviour
                     continue;
             }
 
-            Transform thingTransform = cell.transform.FindChild(layer.ToString());
+            Transform thingTransform = cell.transform.Find(layer.ToString());
             if (thingTransform == null)
             {
                 GameObject thing = ResourcesManager.CreatePrefabGameObj(cell.gameObject, "Prefab/Thing");

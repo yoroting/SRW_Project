@@ -108,7 +108,7 @@ public class MainUIPanel : BasicPanel {
 	void OnStartButtonClick(GameObject go)
 	{
 		// When start button clicked do :
-		Debug.Log("Start click ");
+//		Debug.Log("Start click ");
         // 回到第0 關
         //	GameDataManager.Instance.nStoryID = Config.StartStory; //回到第一關
 
@@ -135,7 +135,7 @@ public class MainUIPanel : BasicPanel {
     void OnLoadButtonClick(GameObject go)
 	{
 		// When load button clicked do :
-		Debug.Log("Load");
+	//	Debug.Log("Load");
 
 		Panel_SaveLoad.OpenLoadMode ( _SAVE_PHASE._STARTUP );
 		//cSaveData.Load (1, _SAVE_PHASE._STARTUP );
@@ -144,14 +144,15 @@ public class MainUIPanel : BasicPanel {
 	void OnGalleryButtonClick(GameObject go)
 	{
 		// When gallery button clicked do :
-		Debug.Log("Gallery");
+//		Debug.Log("Gallery");
 	}
 
 	void OnSetUpButtonClick(GameObject go)
 	{
 		// When setup button clicked do :
-		Debug.Log("SetUp");
-	}
+	//	Debug.Log("SetUp");
+        PanelManager.Instance.OpenUI(Panel_SystemSetting.Name);
+    }
 
 
 	public IEnumerator SaveLoading( cSaveData save )

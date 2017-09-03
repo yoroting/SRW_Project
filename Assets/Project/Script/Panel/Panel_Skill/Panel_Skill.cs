@@ -18,6 +18,7 @@ public class Panel_Skill : MonoBehaviour {
 
     public GameObject SkillSprite;  //註解區
 	public GameObject CastNote;
+    public GameObject SelOverObj; // 標示選擇
 
 
     public GameObject lblMP;  //玩家能量
@@ -45,10 +46,11 @@ public class Panel_Skill : MonoBehaviour {
 		UIEventListener.Get(OkBtn).onClick += OnOkClick; // for trig next line
 		UIEventListener.Get(CloseBtn).onClick += OnCloseClick; // for trig next line
 
-        //	CastNote.SetActive( true );
-    //    SkillSprite.SetActive(true);
+        UIEventListener.Get(SkillSprite).onClick = OnConentClick; // for trig next line
+                                                               //	CastNote.SetActive( true );
+                                                               //    SkillSprite.SetActive(true);
         SkillItemUnit.SetActive(false);
-
+        SelOverObj.SetActive(false);
         nOpSkillID = 0;
 	}
 
@@ -178,7 +180,6 @@ public class Panel_Skill : MonoBehaviour {
 
             if (eType == _SKILL_TYPE._SKILL)
             {
-
                 foreach (int nID in pData.SkillPool)
                 {
                     int nSkillID = nID;
@@ -187,6 +188,10 @@ public class Panel_Skill : MonoBehaviour {
                     if (skl.n_SCHOOL == 0)  // == 0 is ability
                         continue;
                     if (skl.n_PASSIVE == 1)
+                        continue;
+
+                    int nSLv = data.GetSchoolLv(skl.n_SCHOOL ); // 
+                    if (skl.n_LEVEL_LEARN > nSLv)
                         continue;
 
                     sklLst.Add(ConstDataManager.Instance.GetRow<SKILL>(nSkillID));
@@ -273,8 +278,8 @@ public class Panel_Skill : MonoBehaviour {
 
 			item.SetEnable( eType == _SKILL_TYPE._SCHOOL || 
                 CheckSkillCanUse( pData , skl , target , cmdType ) );
-		//	UIEventListener.Get(go).onClick += OnSkillClick; // for trig next line
-			UIEventListener.Get(go).onPress += OnSkillPress; // 
+			UIEventListener.Get(go).onClick += OnSkillClick; // 雙擊 施放模式
+		//	UIEventListener.Get(go).onPress += OnSkillPress; //  直接施放 模式
 
 			sklPool.Add(  go , skl );
 		}
@@ -316,7 +321,11 @@ public class Panel_Skill : MonoBehaviour {
 	{
 		sklPool.Clear ();
 
-		MyTool.DestoryGridItem ( SkillGrid );
+        SelOverObj.SetActive(false);
+
+        nOpSkillID = 0;
+
+        MyTool.DestoryGridItem ( SkillGrid );
 //		UIGrid grid = SkillGrid.GetComponent<UIGrid>(); 
 //		if (grid == null) {
 //			return ;
@@ -363,6 +372,7 @@ public class Panel_Skill : MonoBehaviour {
     {
         SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(SkillID);
         SetSkill(skl );
+        
     }
 
 
@@ -370,9 +380,12 @@ public class Panel_Skill : MonoBehaviour {
 	{
 		SkillSprite.SetActive ( (skl != null) );
 		if (skl == null) {
-
 			return;
 		}
+        // 
+
+    //    Panel_Tip.OpenSkillTip(skl.n_ID );
+
         string sName = skl.s_NAME;
 
 #if DEBUG
@@ -386,7 +399,9 @@ public class Panel_Skill : MonoBehaviour {
         // change cost
         ShowMpCost(skl.n_ID);
 
-	}
+      
+
+    }
 
 	void CastSkill( GameObject go  )
 	{
@@ -452,18 +467,37 @@ public class Panel_Skill : MonoBehaviour {
 		//PanelManager.Instance.CloseUI ( Name );
 
 	}
+    void OnConentClick(GameObject go)
+    {
+        SkillSprite.SetActive(false);
+    }
+    
 
-	void OnSkillClick(GameObject go)
+    void OnSkillClick(GameObject go)
 	{
 		SKILL skl = null;
 		if (sklPool.TryGetValue (go, out skl) == false) {
 			return ;
 		}
-		// show skill detail
-		SetSkill ( skl );
+        // double click 壓則為施展
+        if (skl.n_ID == nOpSkillID) {
+        //    SelOverObj.SetActive(false);
+            OnOkClick(go);
+            return;
+        }
 
-		// 
-		OnOkClick (go);
+        // show skill detail
+        SetSkill ( skl );
+
+        if (SelOverObj != null) {
+            SelOverObj.transform.position = go.transform.position;
+            SelOverObj.SetActive(true);
+        }
+        
+        // 切換選到的座標
+
+        // 
+        
 	}
 	void OnSkillPress(GameObject go , bool pressed )
 	{

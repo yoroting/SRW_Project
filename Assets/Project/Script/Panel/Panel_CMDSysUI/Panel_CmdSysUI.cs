@@ -10,7 +10,8 @@ public class Panel_CmdSysUI : MonoBehaviour
 	public GameObject LoadButton;
 	public GameObject RoundEndButton;
 	public GameObject GameEndButton;
-	public GameObject CancelButton;
+    public GameObject SystemSettingButton;
+    public GameObject CancelButton;
 
 	void Awake()
 	{
@@ -18,7 +19,9 @@ public class Panel_CmdSysUI : MonoBehaviour
 		UIEventListener.Get(SaveButton).onClick += OnSaveButtonClick;;
 		UIEventListener.Get(LoadButton).onClick += OnLoadButtonClick;;
 		UIEventListener.Get(RoundEndButton).onClick += OnRoundEndButtonClick;;
-		UIEventListener.Get(GameEndButton).onClick += OnGameEndButtonClick;
+        UIEventListener.Get(SystemSettingButton).onClick = OnSystemSettingClick; ;
+
+        UIEventListener.Get(GameEndButton).onClick += OnGameEndButtonClick;
 		UIEventListener.Get(CancelButton).onClick += OnCancelButtonClick;;
 
 	}
@@ -68,4 +71,10 @@ public class Panel_CmdSysUI : MonoBehaviour
 		// 取消
 		PanelManager.Instance.CloseUI( Name );
 	}
+    void OnSystemSettingClick(GameObject go)
+    {
+        // 取消
+        PanelManager.Instance.CloseUI(Name);
+    }
+    
 }
