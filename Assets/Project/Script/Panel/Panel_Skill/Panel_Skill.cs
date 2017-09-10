@@ -392,8 +392,13 @@ public class Panel_Skill : MonoBehaviour {
         sName += "-"+ skl.n_ID;
 #endif//DEBUG
 
-        MyTool.SetLabelText (SkillContent, sName );
-		nOpSkillID = skl.n_ID;
+        //    MyTool.SetLabelText (SkillContent, sName );
+        Skill_unit sklunit = SkillSprite.GetComponent<Skill_unit>();
+        if (sklunit != null) {
+            sklunit.SetUnitSkillData( nOpIdent, skl.n_ID );
+        }
+        //
+        nOpSkillID = skl.n_ID;
 
         //	CastNote.SetActive (true);
         // change cost

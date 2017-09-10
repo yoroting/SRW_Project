@@ -7,6 +7,7 @@ public class Panel_SystemSetting : MonoBehaviour {
     public const string Name = "Panel_SystemSetting";
 
     public GameObject Btn_Close;
+    public GameObject Btn_Return;
 
     public GameObject Btn_SoundOn;
     public GameObject Btn_SoundOff;
@@ -59,6 +60,7 @@ public class Panel_SystemSetting : MonoBehaviour {
         UIEventListener.Get(Btn_MusicOff).onClick = OnMusicOffClicked; // for trig next line
 
         UIEventListener.Get(Btn_Close).onClick = OnCloseClicked; // for trig next line
+        UIEventListener.Get(Btn_Return).onClick = OnReturnClicked; // for trig next line
     }
 
     void SetPlayerPrefsKey(string sKey, bool bOn = true)
@@ -132,6 +134,29 @@ public class Panel_SystemSetting : MonoBehaviour {
     void OnCloseClicked(GameObject btn)
     {
         PanelManager.Instance.CloseUI(Name);
+    }
+    void OnReturnClicked(GameObject btn)
+    {
+        //  PanelManager.Instance.CloseUI(Name);
+        if (PanelManager.Instance.CheckUIIsOpening(Panel_StageUI.Name))
+        {
+            // close stage ui            
+            // entry endstage
+            Panel_StageUI.Instance.EndStage();
+
+            Panel_StageUI.Instance.ShowStage(false);
+            // free here waill cause some  StartCoroutine of stageUI break 
+            PanelManager.Instance.DestoryUI(Panel_StageUI.Name);
+            
+            // reopen main UI
+            PanelManager.Instance.OpenUI(MainUIPanel.Name);
+
+          
+        }
+        
+        // 一定會關閉
+         PanelManager.Instance.CloseUI(Name);
+           
     }
     
 

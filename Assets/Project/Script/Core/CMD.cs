@@ -101,7 +101,7 @@ public class cCMD{
 		CmdlistArray [idx].Add ( _CMD_ID._LOAD ); 
 		CmdlistArray [idx].Add ( _CMD_ID._ROUNDEND ); 
 		CmdlistArray [idx].Add ( _CMD_ID._OPTION ); 
-		CmdlistArray [idx].Add ( _CMD_ID._GAMEEND ); 
+	//	CmdlistArray [idx].Add ( _CMD_ID._GAMEEND );  // 改成在 option 內 啟動
 		CmdlistArray [idx].Add ( _CMD_ID._CANCEL ); 
 
 		if (Debug.isDebugBuild) {

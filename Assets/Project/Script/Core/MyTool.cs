@@ -97,7 +97,19 @@ public class MyTool {
 		return skl.s_NAME;
 	}
 
-	public static string GetBuffName( int nID )
+    // 取得 技能說明
+    public static string GetSkillTip(int nID)
+    {
+        DataRow row = ConstDataManager.Instance.GetRow((int)ConstDataTables.SKILL_TEXT, nID);
+        if (row != null)
+        {
+            string content = row.Field<string>("s_TIP");
+            return content;
+        }
+        return "";
+    }
+
+    public static string GetBuffName( int nID )
 	{
 		DataRow row = ConstDataManager.Instance.GetRow( (int)ConstDataTables.BUFF_TIP , nID );
 		if( row != null )

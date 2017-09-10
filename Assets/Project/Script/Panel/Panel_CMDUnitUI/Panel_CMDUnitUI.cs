@@ -519,6 +519,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
     public void GameOption()
     {
+        EndCMDUI(); // really close
         PanelManager.Instance.OpenUI(Panel_SystemSetting.Name);
     }
 
