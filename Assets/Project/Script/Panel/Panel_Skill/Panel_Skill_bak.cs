@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using MyClassLibrary;			// for parser string
 //using _SRW;
 
-public class Panel_Skill : MonoBehaviour {
+public class Panel_Skill_bak : MonoBehaviour {
 	public const string Name = "Panel_Skill";
 
 	public GameObject OkBtn;
@@ -49,10 +49,8 @@ public class Panel_Skill : MonoBehaviour {
         UIEventListener.Get(SkillSprite).onClick = OnConentClick; // for trig next line
                                                                //	CastNote.SetActive( true );
                                                                //    SkillSprite.SetActive(true);
-        if(SkillItemUnit != null )                                                        
-            SkillItemUnit.SetActive(false);
-        if (SelOverObj != null)
-            SelOverObj.SetActive(false);
+        SkillItemUnit.SetActive(false);
+        SelOverObj.SetActive(false);
         nOpSkillID = 0;
 	}
 
@@ -258,38 +256,32 @@ public class Panel_Skill : MonoBehaviour {
 
 		foreach( SKILL skl in sklLst )
 		{
-            // add this skill
-            //GameObject go = ResourcesManager.CreatePrefabGameObj( SkillGrid , "Prefab/Item_Skill" ); 
-            GameObject go = ResourcesManager.CreatePrefabGameObj(SkillGrid, "Prefab/Skill_unit");
-            if ( go == null )
+				// add this skill
+			GameObject go = ResourcesManager.CreatePrefabGameObj( SkillGrid , "Prefab/Item_Skill" ); 
+			if( go == null )
 				continue;
-            Skill_unit  unit= go.GetComponent<Skill_unit>();
-            unit.SetUnitSkillData( data , skl.n_ID);
-            unit.SetScrollView( ScrollView );
-            unit.SetEnable(eType == _SKILL_TYPE._SCHOOL || CheckSkillCanUse(pData, skl, target, cmdType));
-            UIEventListener.Get(go).onClick = OnCastSkill; // 直接施放模式
 
-            //  unit.set
-            //    Item_Skill item = go.GetComponent<Item_Skill> ();
-            //int nCost = (skl.n_SCHOOL > 0) ? skl.n_MP : skl.n_SP;
+			Item_Skill item = go.GetComponent<Item_Skill> ();
+            int nCost = (skl.n_SCHOOL > 0) ? skl.n_MP : skl.n_SP;
 
-            //item.SetItemData( MyTool.GetSkillName( skl.n_ID )  , skl.n_MINRANGE , skl.n_RANGE , nCost);
-            //if (skl.n_SCHOOL != 0)  // == 0 is ability
-            //{
-            //    item.SetItemDmgData( skl.f_ATK , skl.f_POW );
-            //}
-            //item.SetItemCD( data.CDs.GetCD( skl.n_ID ) , skl.n_CD );
+            item.SetItemData( MyTool.GetSkillName( skl.n_ID )  , skl.n_MINRANGE , skl.n_RANGE , nCost);
+            if (skl.n_SCHOOL != 0)  // == 0 is ability
+            {
+                item.SetItemDmgData( skl.f_ATK , skl.f_POW );
+            }
+            item.SetItemCD( data.CDs.GetCD( skl.n_ID ) , skl.n_CD );
 
-            //  item.SetScrollView( ScrollView );
+            item.SetScrollView( ScrollView );
             //check can use
-
+            
             // school mode 都是可用的           
 
-            //    item.SetEnable( eType == _SKILL_TYPE._SCHOOL || CheckSkillCanUse( pData , skl , target , cmdType ) );
-            //	UIEventListener.Get(go).onClick += OnSkillClick; // 雙擊 施放模式
-            //	UIEventListener.Get(go).onPress += OnSkillPress; //  直接施放 模式
+			item.SetEnable( eType == _SKILL_TYPE._SCHOOL || 
+                CheckSkillCanUse( pData , skl , target , cmdType ) );
+			UIEventListener.Get(go).onClick += OnSkillClick; // 雙擊 施放模式
+		//	UIEventListener.Get(go).onPress += OnSkillPress; //  直接施放 模式
 
-            sklPool.Add(  go , skl );
+			sklPool.Add(  go , skl );
 		}
 
 		// default to 1 st skill
@@ -319,7 +311,7 @@ public class Panel_Skill : MonoBehaviour {
 
         
         //特定模式才能施展
-    //    OkBtn.SetActive(eType != _SKILL_TYPE._SCHOOL );
+        OkBtn.SetActive(eType != _SKILL_TYPE._SCHOOL );
         
     }
 
@@ -416,38 +408,7 @@ public class Panel_Skill : MonoBehaviour {
 
     }
 
-
-    void OnCastSkill(GameObject go)
-    {
-        // 察看模式，不能施展
-        if (eSkillType == _SKILL_TYPE._SCHOOL)
-        {
-          //  SetSkill(nOpSkillID);
-            return;
-        }
-        // 正常施法
-        Skill_unit item = go.GetComponent<Skill_unit>();
-        if (item != null)
-        {
-            if (item.m_bEnable == false)
-            {
-                // 不能施展 ，播放 失敗音效                
-                //SetSkill(nOpSkillID);
-                return;
-            }
-        }
-
-
-        Panel_CMDUnitUI panel = MyTool.GetPanel<Panel_CMDUnitUI>(PanelManager.Instance.OpenUI(Panel_CMDUnitUI.Name));
-        if (panel != null)
-        {
-            panel.SetSkillID(item.m_nSKillID);
-        }
-
-        PanelManager.Instance.CloseUI(Name);
-    }
-
-    void CastSkill( GameObject go  )
+	void CastSkill( GameObject go  )
 	{
         // 察看模式，不能施展
         if ( eSkillType == _SKILL_TYPE._SCHOOL ) {

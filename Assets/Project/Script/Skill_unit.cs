@@ -4,15 +4,21 @@ using UnityEngine;
 
 public class Skill_unit : MonoBehaviour {
 
-    int m_nType;
-    int m_nIdent;
-    int m_nSKillID;
+    public int m_nType;
+    public int m_nIdent;
+    public int m_nSKillID;
+
+    public bool m_bEnable = true;
+
     public GameObject spr_Icon;
 
     public GameObject lbl_Name;
     public GameObject lbl_Comm;
 
     public GameObject lbl_Ban;  // 禁止 屬性
+
+    public GameObject spr_Aoe;
+
     // Cost
     public GameObject spr_MP;
     public GameObject spr_SP;
@@ -44,7 +50,14 @@ public class Skill_unit : MonoBehaviour {
 
     void Initialized()
     {
+        m_bEnable = true;
+        m_nType = 0;
+        m_nIdent =0;
+        m_nSKillID=0;
+
+
         lbl_Ban.SetActive(false);
+        spr_Aoe.SetActive(false);
 
         spr_MP.SetActive( false );
         spr_SP.SetActive(false);
@@ -58,21 +71,33 @@ public class Skill_unit : MonoBehaviour {
 
 
     }
-
-    public void SetUnitSkillData( int nIdent , int nSkillID )
+    public void SetUnitSkillData(int nIdent, int nSkillID)
     {
-        Initialized();
+        cUnitData unit = GameDataManager.Instance.GetUnitDateByIdent(nIdent);
+        SetUnitSkillData(unit , nSkillID);
+    }
 
+    public void SetUnitSkillData(cUnitData unit, int nSkillID )
+    {
+        Initialized();        
         cSkillData skl =  GameDataManager.Instance.GetSkillData(nSkillID);
-        cUnitData unit = GameDataManager.Instance.GetUnitDateByIdent( nIdent );
+       
         // 開始設定資料
         SKILL conSkl = skl.skill;
         if (conSkl == null) {
             return;
         }
+        m_nSKillID = nSkillID;
+        m_nIdent = unit.n_Ident;
+
         MyTool.SetLabelText( lbl_Name , MyTool.GetSkillName(nSkillID) );
         MyTool.SetLabelText( lbl_Comm, MyTool.GetSkillTip(nSkillID) );
-        
+
+        // check AOE
+        if (conSkl.n_AREA > 0) {
+            spr_Aoe.SetActive( true );
+        }
+
         // set cost
         spr_MP.SetActive(conSkl.n_MP != 0);
         MyTool.SetLabelInt(lbl_MP_value , conSkl.n_MP );
@@ -94,7 +119,7 @@ public class Skill_unit : MonoBehaviour {
         {
             MyTool.SetLabelText(lbl_Range_value, "無限");
         }        
-        else if ((conSkl.n_MINRANGE == conSkl.n_RANGE))
+        else if ((conSkl.n_MINRANGE == conSkl.n_RANGE) || (conSkl.n_MINRANGE==0))
         {
             MyTool.SetLabelInt(lbl_Range_value, conSkl.n_RANGE);
         }
@@ -160,8 +185,35 @@ public class Skill_unit : MonoBehaviour {
 
     }
 
+    public void SetEnable(bool enable)
+    {
+        m_bEnable = enable;
+        Color c = Color.white; // 黑色
+        if (m_bEnable == false)
+        {
+            c =  Color.gray;
+        }
+
+        //if (lbl_Name != null)
+        {
+            UISprite sp = this.gameObject.GetComponent<UISprite>();
+            if (sp != null) {
+                sp.color = c;
+            }
+           // MyTool.SetLabelColor(lbl_Name, c);
+        }
+    }
+
     public void CastSkill( )
     {
     }
 
+    public void SetScrollView(GameObject go)
+    {
+        UIDragScrollView dsv = this.GetComponent<UIDragScrollView>();
+        if (dsv != null)
+        {
+            dsv.scrollView = go.GetComponent<UIScrollView>();
+        }
+    }
 }
