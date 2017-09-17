@@ -77,7 +77,7 @@ public class MyTool {
 		if (chardata != null) {
 			return chardata.s_NAME;
 		}
-		return "null";
+		return "無名";
 	}
 
 
@@ -87,14 +87,19 @@ public class MyTool {
 		if( row != null )
 		{				
 			string content = row.Field<string>( "s_TITLE");
-			return content;
+            if (content.ToUpper() == "NULL")
+            {
+                return "";
+            }
+            return content;
 			
 		}
 
 		SKILL skl = ConstDataManager.Instance.GetRow< SKILL > ( nID );
-		if (skl == null)
-			return "null";
-		return skl.s_NAME;
+        if (skl != null) {
+            return skl.s_NAME;
+        }
+		return "";
 	}
 
     // 取得 技能說明
@@ -104,6 +109,9 @@ public class MyTool {
         if (row != null)
         {
             string content = row.Field<string>("s_TIP");
+            if (content.ToUpper() == "NULL") {
+                return "";
+            }
             return content;
         }
         return "";
@@ -115,7 +123,11 @@ public class MyTool {
 		if( row != null )
 		{				
 			string content = row.Field<string>( "s_TITLE");
-			return content;
+            if (content.ToUpper() == "NULL")
+            {
+                return "";
+            }
+            return content;
 
 		}
 		// try get in buff data
@@ -123,7 +135,7 @@ public class MyTool {
 		if (buff != null) {
 			return buff.s_NAME;
 		}
-		return "null";
+		return "";
 	}
 	public static string GetItemName( int nID )
 	{
