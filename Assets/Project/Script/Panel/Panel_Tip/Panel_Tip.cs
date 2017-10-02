@@ -80,7 +80,10 @@ public class Panel_Tip : MonoBehaviour {
 		{				
 			sTip = row.Field<string>( "s_TIP");		
 		}
-		if (Config.GOD) {
+        sTip = sTip.Replace( "\\n" , System.Environment.NewLine );
+
+
+        if (Config.GOD) {
 
 			sTip += "\n(ID:"+nBuffID.ToString() +")";
 		}
@@ -108,7 +111,8 @@ public class Panel_Tip : MonoBehaviour {
 		{				
 			sTip = row.Field<string>( "s_TIP");		
 		}
-		if (Config.GOD) {
+        sTip = sTip.Replace("\\n", System.Environment.NewLine);
+        if (Config.GOD) {
 			
 			sTip += "\n(ID:"+nSkillID.ToString() +")";
 		}
@@ -134,7 +138,8 @@ public class Panel_Tip : MonoBehaviour {
 		{				
 			sTip = row.Field<string>( "s_COMMON");		
 		}
-		if (Config.GOD) {
+        sTip = sTip.Replace("\\n", System.Environment.NewLine);
+        if (Config.GOD) {
 			
 			sTip += "\n(ID:"+nItemID.ToString() +")";
 		}
