@@ -75,7 +75,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 132732}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -45, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 481164}
@@ -88,7 +88,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 177562}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -9, z: 0}
+  m_LocalPosition: {x: 0, y: 24, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 481164}
@@ -101,7 +101,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 162992}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 499500}
@@ -117,7 +117,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 135478}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 62, z: 0}
+  m_LocalPosition: {x: 0, y: 104, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 481164}
@@ -148,7 +148,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 960, y: 216, z: 0}
+  m_Size: {x: 882, y: 208, z: 0}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &11429664
 MonoBehaviour:
@@ -174,33 +174,33 @@ MonoBehaviour:
     relative: 0
     absolute: 0
   topAnchor:
-    target: {fileID: 499500}
-    relative: 0
+    target: {fileID: 0}
+    relative: 1
     absolute: -8
   updateAnchors: 1
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 940
-  mHeight: 163
+  mWidth: 882
+  mHeight: 160
   mDepth: 5
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 4.4131455
+  aspectRatio: 2.142857
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   mFont: {fileID: 0}
   mText: "\u4F7F\u7528\u3010\u7368\u5B64\u528D\u6CD5\u3011\u6642\uFF0C\u6B66\u529F\uFF0B20\uFF0C\u653B\u64CA\u529B+30\uFF05\uFF0C\u9632\u79A6\u529B+30\uFF05\n\u653B\u64CA\u6642\u771F\u6C23\uFF0B1\uFF0C\u751F\u547D\u5438\u53D630\uFF05\uFF0C\u5806\u7A4D\u4E00\u5C64\u3010\u55DC\u8840\u3011\n2\n9\n"
   mFontSize: 32
   mFontStyle: 0
-  mAlignment: 2
+  mAlignment: 1
   mEncoding: 1
   mMaxLineCount: 0
   mEffectStyle: 0
   mEffectColor: {r: 0, g: 0, b: 0, a: 1}
   mSymbols: 1
   mEffectDistance: {x: 1, y: 1}
-  mOverflow: 3
+  mOverflow: 2
   mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
@@ -290,29 +290,29 @@ MonoBehaviour:
   leftAnchor:
     target: {fileID: 424440}
     relative: 0
-    absolute: -10
+    absolute: 0
   rightAnchor:
     target: {fileID: 424440}
     relative: 1
-    absolute: 10
+    absolute: 0
   bottomAnchor:
     target: {fileID: 424440}
     relative: 0
-    absolute: 10
+    absolute: 0
   topAnchor:
-    target: {fileID: 0}
+    target: {fileID: 499500}
     relative: 1
     absolute: 0
   updateAnchors: 1
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 960
-  mHeight: 216
+  mWidth: 882
+  mHeight: 208
   mDepth: 3
   autoResizeBoxCollider: 1
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 4.266667
+  aspectRatio: 4.519231
   mType: 1
   mFillDirection: 4
   mFillAmount: 1
@@ -338,31 +338,31 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   leftAnchor:
-    target: {fileID: 0}
+    target: {fileID: 424440}
     relative: 0
-    absolute: 40
+    absolute: 0
   rightAnchor:
-    target: {fileID: 0}
+    target: {fileID: 424440}
     relative: 1
-    absolute: -40
+    absolute: 0
   bottomAnchor:
-    target: {fileID: 0}
+    target: {fileID: 424440}
     relative: 1
-    absolute: -60
+    absolute: 0
   topAnchor:
-    target: {fileID: 426990}
+    target: {fileID: 424440}
     relative: 1
-    absolute: -20
+    absolute: 48
   updateAnchors: 1
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 400
-  mHeight: 35
+  mWidth: 882
+  mHeight: 48
   mDepth: 5
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 200
+  aspectRatio: 18.375
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   mFont: {fileID: 0}

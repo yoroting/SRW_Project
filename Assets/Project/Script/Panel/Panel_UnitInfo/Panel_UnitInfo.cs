@@ -619,7 +619,7 @@ public class Panel_UnitInfo : MonoBehaviour {
         Item_Unit obj = go.GetComponent<Item_Unit>();
 		if (obj != null) {
             Panel_Tip.OpenItemTip( obj.nID );
-            Panel_Tip.OpenUI( MyTool.GetSkillName( obj.nID )   ); 
+         //   Panel_Tip.OpenUI( MyTool.GetSkillName( obj.nID )   ); 
             // open item list
            //Panel_ItemList.Open(1 , obj.nIndex );           
 		}

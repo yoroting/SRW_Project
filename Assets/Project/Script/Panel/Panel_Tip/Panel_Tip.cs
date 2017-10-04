@@ -55,11 +55,32 @@ public class Panel_Tip : MonoBehaviour {
 	
 	static public void OpenUI( string strTitle , string strContext )
 	{
-		Panel_Tip pTip = MyTool.GetPanel< Panel_Tip > (PanelManager.Instance.OpenUI (Name));
+        
+
+        Panel_Tip pTip = MyTool.GetPanel< Panel_Tip > (PanelManager.Instance.OpenUI (Name));
 		if (pTip) {
-			MyTool.SetLabelText ( pTip.lblTitle , strTitle );
+            UILabel lbl = pTip.lblText.GetComponent<UILabel>();
+            lbl.overflowMethod = UILabel.Overflow.ResizeFreely;
+
+            MyTool.SetLabelText ( pTip.lblTitle , strTitle );
 			MyTool.SetLabelText ( pTip.lblText , strContext );
-		}
+
+            // 如果寬度太少，則放大            
+
+
+            UIWidget wid = pTip.lblText.GetComponent<UIWidget>();
+            
+
+            if (wid.width < 480) {
+                //wid.width = 480;
+                
+                lbl.overflowMethod = UILabel.Overflow.ResizeHeight;
+                lbl.width = 480;
+            }
+
+
+
+        }
 		
 	}
 

@@ -15014,7 +15014,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 481164, guid: daab65faa0fd56d4581bad702aad57c0, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 4
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 481164, guid: daab65faa0fd56d4581bad702aad57c0, type: 2}
       propertyPath: m_LocalPosition.y
@@ -15048,37 +15048,13 @@ Prefab:
       propertyPath: m_Name
       value: Panel - Tip
       objectReference: {fileID: 0}
-    - target: {fileID: 11471724, guid: daab65faa0fd56d4581bad702aad57c0, type: 2}
-      propertyPath: mHeight
-      value: 214
-      objectReference: {fileID: 0}
-    - target: {fileID: 11471724, guid: daab65faa0fd56d4581bad702aad57c0, type: 2}
-      propertyPath: aspectRatio
-      value: 4.4859815
-      objectReference: {fileID: 0}
-    - target: {fileID: 11429664, guid: daab65faa0fd56d4581bad702aad57c0, type: 2}
-      propertyPath: mHeight
-      value: 160
-      objectReference: {fileID: 0}
     - target: {fileID: 11429664, guid: daab65faa0fd56d4581bad702aad57c0, type: 2}
       propertyPath: aspectRatio
-      value: 5.8024693
+      value: 5.5125
       objectReference: {fileID: 0}
-    - target: {fileID: 11480186, guid: daab65faa0fd56d4581bad702aad57c0, type: 2}
+    - target: {fileID: 11471724, guid: daab65faa0fd56d4581bad702aad57c0, type: 2}
       propertyPath: aspectRatio
-      value: 11.428572
-      objectReference: {fileID: 0}
-    - target: {fileID: 6566174, guid: daab65faa0fd56d4581bad702aad57c0, type: 2}
-      propertyPath: m_Size.y
-      value: 214
-      objectReference: {fileID: 0}
-    - target: {fileID: 424440, guid: daab65faa0fd56d4581bad702aad57c0, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: -44
-      objectReference: {fileID: 0}
-    - target: {fileID: 426990, guid: daab65faa0fd56d4581bad702aad57c0, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: -8
+      value: 4.2403846
       objectReference: {fileID: 0}
     - target: {fileID: 162992, guid: daab65faa0fd56d4581bad702aad57c0, type: 2}
       propertyPath: m_IsActive
