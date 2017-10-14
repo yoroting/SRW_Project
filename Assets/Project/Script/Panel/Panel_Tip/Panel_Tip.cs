@@ -60,26 +60,38 @@ public class Panel_Tip : MonoBehaviour {
         Panel_Tip pTip = MyTool.GetPanel< Panel_Tip > (PanelManager.Instance.OpenUI (Name));
 		if (pTip) {
             UILabel lbl = pTip.lblText.GetComponent<UILabel>();
-            lbl.overflowMethod = UILabel.Overflow.ResizeFreely;
-
-            MyTool.SetLabelText ( pTip.lblTitle , strTitle );
-			MyTool.SetLabelText ( pTip.lblText , strContext );
-
-            // 如果寬度太少，則放大            
-
-
             UIWidget wid = pTip.lblText.GetComponent<UIWidget>();
-            
+            lbl.overflowMethod = UILabel.Overflow.ResizeFreely;
+            MyTool.SetLabelText(pTip.lblText, ""); // 清空來確保每次 文字都異動
+            lbl.width = 240;
 
-            if (wid.width < 480) {
+            // 設定文字
+            MyTool.SetLabelText ( pTip.lblTitle , strTitle );
+			MyTool.SetLabelText ( pTip.lblText , strContext );  //文字必須有異動，才能觸發 寬度重算
+
+            // 如果寬度太少，則放大    
+
+            if (wid.width <= 240)
+            {
+                //wid.width = 480;
+                lbl.overflowMethod = UILabel.Overflow.ResizeHeight;
+                lbl.width = 240;
+            }else if (wid.width <= 480) {
                 //wid.width = 480;
                 
                 lbl.overflowMethod = UILabel.Overflow.ResizeHeight;
                 lbl.width = 480;
             }
+            else if (wid.width > 900)
+            {
+                //wid.width = 480;
 
+                lbl.overflowMethod = UILabel.Overflow.ResizeHeight;
+                lbl.width = 900;
+            }
 
-
+            // 座標修正
+            lbl.transform.localPosition = Vector3.zero;
         }
 		
 	}
@@ -144,6 +156,9 @@ public class Panel_Tip : MonoBehaviour {
 	}
 	static public void OpenItemTip( int nItemID )
 	{
+        if (nItemID == 0)
+            return;
+
 		//Panel_Tip.OpenUI( MyTool.GetSkillName( obj.nID )   ); 
 		if (nItemID == nTipID  && nTipType == _TIPTYPE._ITEM ) {
 			CloseUI();

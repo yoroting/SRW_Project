@@ -118,23 +118,43 @@ public class Panel_SysCheat : MonoBehaviour {
         }
 
         // Item List
-        UIPopupList itemList = ItemPoplist.GetComponent<UIPopupList>();
+        //UIPopupList itemList = ItemPoplist.GetComponent<UIPopupList>();
+        //if (itemList != null)
+        //{
+        //    //添加触发事件
+        //    //	EventDelegate.Add (popList.onChange, label.SetCurrentSelection);
+        //    //  EventDelegate.Add(popList.onChange, StoryComboboxChange);
+
+        //    itemList.Clear();
+        //    DataTable Table = ConstDataManager.Instance.GetTable("ITEM_MISC");
+        //    if (Table != null)
+        //    {
+        //        foreach ( ITEM_MISC item in Table)
+        //        {
+        //            itemList.AddItem(MyTool.GetItemName(item.n_ID), item.n_ID);
+        //        }
+        //    }
+        //}
+
+        UIScrollablePopupList itemList = ItemPoplist.GetComponent<UIScrollablePopupList>();
         if (itemList != null)
         {
             //添加触发事件
             //	EventDelegate.Add (popList.onChange, label.SetCurrentSelection);
-            //  EventDelegate.Add(popList.onChange, StoryComboboxChange);
+           // EventDelegate.Add(popList.onChange, StoryComboboxChange);
 
             itemList.Clear();
             DataTable Table = ConstDataManager.Instance.GetTable("ITEM_MISC");
             if (Table != null)
             {
-                foreach ( ITEM_MISC item in Table)
+                foreach (ITEM_MISC item in Table)
                 {
                     itemList.AddItem(MyTool.GetItemName(item.n_ID), item.n_ID);
                 }
             }
         }
+
+
         // round 
         UIEventListener.Get(RoundBtn).onClick = OnSetRoundClick;
 
@@ -480,7 +500,9 @@ public class Panel_SysCheat : MonoBehaviour {
     // Add Item
     public void OnAddItemClick(GameObject go)
     {
-        UIPopupList popList = ItemPoplist.GetComponent<UIPopupList>();
+        //        UIPopupList popList = ItemPoplist.GetComponent<UIPopupList>();
+
+        UIScrollablePopupList popList = ItemPoplist.GetComponent<UIScrollablePopupList>();
         if (popList != null)
         {
             if (popList.data != null)
@@ -496,7 +518,8 @@ public class Panel_SysCheat : MonoBehaviour {
 
     public void OnDelItemClick(GameObject go)
     {
-        UIPopupList popList = ItemPoplist.GetComponent<UIPopupList>();
+        //   UIPopupList popList = ItemPoplist.GetComponent<UIPopupList>();
+        UIScrollablePopupList popList = ItemPoplist.GetComponent<UIScrollablePopupList>();
         if (popList != null)
         {
             if (popList.data != null)

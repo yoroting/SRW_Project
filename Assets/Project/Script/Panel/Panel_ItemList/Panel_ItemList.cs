@@ -170,8 +170,8 @@ public class Panel_ItemList : MonoBehaviour
                 break;
             default:
                 {
-                    Panel_Tip.OpenItemTip(itemid);
-                    Panel_Tip.OpenUI( MyTool.GetSkillName(itemid)   ); 
+                    Panel_Tip.OpenItemTip(itemid);;
+                 //   Panel_Tip.OpenUI( MyTool.GetSkillName(itemid)   ); 
                 }
 
                 break;
