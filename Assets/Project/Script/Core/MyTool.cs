@@ -578,11 +578,11 @@ public class MyTool {
 		}
 	}
 
-	public static void SetBuffIcon( GameObject go ,int nID , int nNum )
+	public static void SetBuffIcon( GameObject go ,int nID , int nTime , int nNum )
 	{
 		BuffIcon icon = go.GetComponent<BuffIcon>();
 		if( icon != null ){
-			icon.SetBuffData( nID ,nNum );
+			icon.SetBuffData( nID , nTime , nNum);
 
 		}
 	}

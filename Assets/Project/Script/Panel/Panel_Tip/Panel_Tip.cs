@@ -45,10 +45,10 @@ public class Panel_Tip : MonoBehaviour {
 
 	static public void OpenUI( string str )
 	{
-		Panel_Tip pTip = MyTool.GetPanel< Panel_Tip > (PanelManager.Instance.OpenUI (Name));
+        Panel_Tip pTip = MyTool.GetPanel< Panel_Tip > (PanelManager.Instance.OpenUI (Name));
 		if (pTip) {
-
-			MyTool.SetLabelText ( pTip.lblText , str );
+            pTip.lblTitle.SetActive(false);
+            MyTool.SetLabelText ( pTip.lblText , str );
 		}
 
 	}
@@ -66,6 +66,7 @@ public class Panel_Tip : MonoBehaviour {
             lbl.width = 240;
 
             // 設定文字
+            pTip.lblTitle.SetActive(true);
             MyTool.SetLabelText ( pTip.lblTitle , strTitle );
 			MyTool.SetLabelText ( pTip.lblText , strContext );  //文字必須有異動，才能觸發 寬度重算
 

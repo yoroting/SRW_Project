@@ -7,11 +7,12 @@
 
 using UnityEngine;
 using System.Collections;
+//using UnityEngine.SceneManagement;
 
 public class AppStartup : MonoBehaviour {
 	
 	// Load next level
-	void Start () {
-		Application.LoadLevel( Application.loadedLevel + 1 );
+	void Start () {       
+        Application.LoadLevel( Application.loadedLevel + 1 );
 	}
 }

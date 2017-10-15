@@ -492,11 +492,12 @@ public class Panel_UnitInfo : MonoBehaviour {
 
 			GameObject go = ResourcesManager.CreatePrefabGameObj( BuffGrid , "Prefab/Bufficon" ); 
 			if( go == null )
-				continue;		
-			
-			BuffIcon icon = go.GetComponent< BuffIcon >();
-			if( icon != null )
-				icon.SetBuffData( pair.Value.nID , pair.Value.nNum  );
+				continue;
+
+            MyTool.SetBuffIcon(go, pair.Value.nID, pair.Value.nTime, pair.Value.nNum);
+   //         BuffIcon icon = go.GetComponent< BuffIcon >();
+			//if( icon != null )
+			//	icon.SetBuffData( pair.Value.nID , pair.Value.nTime ,  pair.Value.nNum  );
 		//	UIEventListener.Get(go).onClick += OnBuffClick; // 
 
 		}
