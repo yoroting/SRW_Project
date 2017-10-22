@@ -6,66 +6,24 @@ public class BattleValue : MonoBehaviour {
 //	static public int nValueCount=0;  // no more need
 //	float fOffset = 16.0f;
 	float fOriginY = 0.0f;
+    public int nMode = 0; // 顯示方式， 0- 正常， 1- 爆擊
 
 	void OnEnable()
 	{
 		transform.localRotation = new Quaternion(); 
-		transform.localScale = new Vector3( 1.5f, 1.5f , 1.5f);
-		// clear all twr
-
-		//float x = transform.localPosition.x;
-		float y = transform.localPosition.y;
-		fOriginY = y;
-
-	//	MyTool.DestoryTweens (this.gameObject);
-
-//		TweenX twx = TweenX.Begin<TweenX> ( gameObject , 0.25f);
-//		if (twx != null) {
-//			twx.from = x ; 
-//			twx.to = x - 16;
-//			MyTool.TweenSetOneShotOnFinish( twx , OnTweenXFinish );
-//			twx.Play( );
-//		}
-		TweenY twy = TweenY.Begin<TweenY> ( gameObject , 0.5f);
-		if (twy != null) {
-			twy.delay = 1.5f;
-			twy.from = y ; 
-			twy.to = y + 64;
-			twy.style = UITweener.Style.Once;
-			//MyTool.TweenSetOneShotOnFinish( twy , OnTweenXFinish );
-			//twy.Play( );
-		}
+		transform.localScale = new Vector3( 1.0f, 1.0f , 1.0f);        
+        fOriginY = transform.localPosition.y;
+        // clear all twr
 
 
 
-
-		TweenScale tws = TweenScale.Begin< TweenScale > ( gameObject , 0.1f );
-		if (tws != null) {
-			tws.SetStartToCurrentValue(); 
-			tws.to = new Vector3( 1.0f, 1.0f ,1.0f);
-		}
-
-		// re start to twa
-//		TweenAlpha twa = gameObject.GetComponent<TweenAlpha>(); // TweenAlpha.Begin<TweenAlpha> (this.gameObject, 1.0f );
-//		if (twa != null) {
-//		//	twa.Play();
-//		}
-
-		TweenAlpha twa = TweenAlpha.Begin<TweenAlpha> (this.gameObject, 0.5f );
-		if (twa != null) {
-//			twa.from = 1.0f;
-			twa.to = 0.0f;
-			twa.delay = 1.5f;
-	//		MyTool.TweenSetOneShotOnFinish( twx , OnAlphaFinish );
-		}
-
-		//reset object alpha
-		MyTool.SetAlpha (this.gameObject , 1.0f);
+        //reset object alpha
 
 
-//		nValueCount++;
-		
-	}
+
+        //		nValueCount++;
+
+    }
 	// Use this for initialization
 	void Start () {
 	//	nValueCount++;
@@ -76,7 +34,75 @@ public class BattleValue : MonoBehaviour {
 		
 	}
 
-	void PlayTweenY( )
+    public void SetMode( int mode = 0 )
+    {
+        nMode = mode;
+        //float x = transform.localPosition.x;
+        float y = fOriginY;
+
+        MyTool.DestoryTweens (this.gameObject);
+
+       
+        float delaytime = 0.0f;
+
+        if (nMode == 0)
+        {
+            TweenY twy = TweenY.Begin<TweenY>(gameObject, 0.5f);
+            if (twy != null)
+            {
+                twy.from = y;
+                twy.to = y + 64;
+                twy.style = UITweener.Style.Once;
+            }
+            delaytime = 0.5f;
+        }
+        else if (nMode == 1)
+        {
+            TweenScale tws = TweenScale.Begin<TweenScale>(gameObject, 0.2f);
+            if (tws != null)
+            {
+                transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+                tws.SetStartToCurrentValue();
+                //tws.from = new Vector3(0.5f, 0.5f, 0.5f);
+                tws.to = new Vector3(1.0f, 1.0f, 1.0f);
+                tws.style = UITweener.Style.Once;
+            }
+
+            TweenY twy = TweenY.Begin<TweenY>(gameObject, 0.5f);
+            if (twy != null)
+            {
+                twy.delay = 0.5f;
+                twy.from = y;
+                twy.to = y + 64;
+                twy.style = UITweener.Style.Once;
+            }
+
+
+            delaytime = 1f;
+        }
+
+
+
+        // re start to twa
+        //		TweenAlpha twa = gameObject.GetComponent<TweenAlpha>(); // TweenAlpha.Begin<TweenAlpha> (this.gameObject, 1.0f );
+        //		if (twa != null) {
+        //		//	twa.Play();
+        //		}
+
+        MyTool.SetAlpha(this.gameObject, 1.0f);
+        TweenAlpha twa = TweenAlpha.Begin<TweenAlpha>(this.gameObject, 0.5f);
+        if (twa != null)
+        {
+            twa.delay = delaytime;
+            //			twa.from = 1.0f;
+            twa.to = 0.0f;
+
+            MyTool.TweenSetOneShotOnFinish(twa, OnAlphaFinish);
+        }
+    }
+
+
+    void PlayTweenY( )
 	{
 		TweenY twy = TweenY.Begin<TweenY> ( gameObject , 0.25f);
 		if (twy != null) {

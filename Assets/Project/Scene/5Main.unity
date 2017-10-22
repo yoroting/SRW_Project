@@ -1406,7 +1406,7 @@ Prefab:
 --- !u!4 &717951943 stripped
 Transform:
   m_PrefabParentObject: {fileID: 400688, guid: ccf0632d1162ac441b5ee6b6f2eaf406, type: 2}
-  m_PrefabInternal: {fileID: 1804131000}
+  m_PrefabInternal: {fileID: 1261266804}
 --- !u!4 &745047567 stripped
 Transform:
   m_PrefabParentObject: {fileID: 441654, guid: 92106737e36d4784db4cb53d2dd39879, type: 2}
@@ -2346,6 +2346,56 @@ Transform:
   m_Father: {fileID: 1926083950}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1261266804
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 161096790}
+    m_Modifications:
+    - target: {fileID: 400688, guid: ccf0632d1162ac441b5ee6b6f2eaf406, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400688, guid: ccf0632d1162ac441b5ee6b6f2eaf406, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400688, guid: ccf0632d1162ac441b5ee6b6f2eaf406, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400688, guid: ccf0632d1162ac441b5ee6b6f2eaf406, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400688, guid: ccf0632d1162ac441b5ee6b6f2eaf406, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400688, guid: ccf0632d1162ac441b5ee6b6f2eaf406, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400688, guid: ccf0632d1162ac441b5ee6b6f2eaf406, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400688, guid: ccf0632d1162ac441b5ee6b6f2eaf406, type: 2}
+      propertyPath: m_RootOrder
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 187324, guid: ccf0632d1162ac441b5ee6b6f2eaf406, type: 2}
+      propertyPath: m_Name
+      value: Panel - UnitInfo
+      objectReference: {fileID: 0}
+    - target: {fileID: 187324, guid: ccf0632d1162ac441b5ee6b6f2eaf406, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: ccf0632d1162ac441b5ee6b6f2eaf406, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1001 &1294841465
 Prefab:
   m_ObjectHideFlags: 0
@@ -3158,56 +3208,6 @@ Transform:
   m_PrefabParentObject: {fileID: 4920199957790726, guid: 9089ae8689925944082ede3964183d91,
     type: 2}
   m_PrefabInternal: {fileID: 919931795}
---- !u!1001 &1804131000
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 161096790}
-    m_Modifications:
-    - target: {fileID: 400688, guid: ccf0632d1162ac441b5ee6b6f2eaf406, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400688, guid: ccf0632d1162ac441b5ee6b6f2eaf406, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400688, guid: ccf0632d1162ac441b5ee6b6f2eaf406, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400688, guid: ccf0632d1162ac441b5ee6b6f2eaf406, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400688, guid: ccf0632d1162ac441b5ee6b6f2eaf406, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400688, guid: ccf0632d1162ac441b5ee6b6f2eaf406, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400688, guid: ccf0632d1162ac441b5ee6b6f2eaf406, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 400688, guid: ccf0632d1162ac441b5ee6b6f2eaf406, type: 2}
-      propertyPath: m_RootOrder
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 187324, guid: ccf0632d1162ac441b5ee6b6f2eaf406, type: 2}
-      propertyPath: m_Name
-      value: Panel - UnitInfo
-      objectReference: {fileID: 0}
-    - target: {fileID: 187324, guid: ccf0632d1162ac441b5ee6b6f2eaf406, type: 2}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: ccf0632d1162ac441b5ee6b6f2eaf406, type: 2}
-  m_IsPrefabParent: 0
 --- !u!4 &1856180019 stripped
 Transform:
   m_PrefabParentObject: {fileID: 467750, guid: 3508c4b316a520743a3beb9f94b65194, type: 2}
@@ -3312,22 +3312,6 @@ Prefab:
     - target: {fileID: 156318, guid: cfa057b5163a60741bb67ec2db63f91c, type: 2}
       propertyPath: m_Name
       value: Panel - StageUI
-      objectReference: {fileID: 0}
-    - target: {fileID: 11457714, guid: cfa057b5163a60741bb67ec2db63f91c, type: 2}
-      propertyPath: aspectRatio
-      value: 11.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 11418250, guid: cfa057b5163a60741bb67ec2db63f91c, type: 2}
-      propertyPath: aspectRatio
-      value: 11.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 11463782, guid: cfa057b5163a60741bb67ec2db63f91c, type: 2}
-      propertyPath: aspectRatio
-      value: 11.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 11465338, guid: cfa057b5163a60741bb67ec2db63f91c, type: 2}
-      propertyPath: aspectRatio
-      value: 11.5
       objectReference: {fileID: 0}
     - target: {fileID: 156318, guid: cfa057b5163a60741bb67ec2db63f91c, type: 2}
       propertyPath: m_IsActive
@@ -3691,13 +3675,10 @@ Prefab:
       propertyPath: m_Name
       value: Panel - Tip
       objectReference: {fileID: 0}
-    - target: {fileID: 11429664, guid: daab65faa0fd56d4581bad702aad57c0, type: 2}
+    - target: {fileID: 114985566232382436, guid: daab65faa0fd56d4581bad702aad57c0,
+        type: 2}
       propertyPath: aspectRatio
-      value: 5.5125
-      objectReference: {fileID: 0}
-    - target: {fileID: 11471724, guid: daab65faa0fd56d4581bad702aad57c0, type: 2}
-      propertyPath: aspectRatio
-      value: 4.2403846
+      value: 3.9561403
       objectReference: {fileID: 0}
     - target: {fileID: 162992, guid: daab65faa0fd56d4581bad702aad57c0, type: 2}
       propertyPath: m_IsActive

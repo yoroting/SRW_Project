@@ -2063,7 +2063,7 @@ public class Panel_unit : MonoBehaviour {
 	}
 
 
-	public void ShowValueEffect( int nValue , int nMode )
+	public void ShowValueEffect( int nValue , int nMode , int nVar1=0 , int nVar2 = 0)
 	{
 		//nMode : 0 - hp , 1- def , 2 - mp , 3 -sp
 		if (nValue < 0) {
@@ -2071,11 +2071,11 @@ public class Panel_unit : MonoBehaviour {
 
 			SetShake();
 
-			BattleManager.Instance.ShowBattleResValue( this.gameObject , nValue , nMode );
+			BattleManager.Instance.ShowBattleResValue( this.gameObject , nValue , nMode , nVar1 , nVar2 );
 		} else if (nValue > 0) {
 			// heal
 
-			BattleManager.Instance.ShowBattleResValue( this.gameObject , nValue , nMode );
+			BattleManager.Instance.ShowBattleResValue( this.gameObject , nValue , nMode , nVar1 , nVar2 );
 		}
         // show dmg effect
         m_fNextMsgTime = Time.time + 0.5f; // next can play time

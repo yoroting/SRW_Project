@@ -1524,9 +1524,13 @@ public class Panel_StageUI : MonoBehaviour
     //    return obj;
     //}
 
-    public GameObject SpwanBattleValueObj(GameObject Obj ,  Vector3 vPos  )
+    public GameObject SpwanBattleValueObj(GameObject Obj ,  Vector3 vPos , int mode )
 	{
 		GameObject go = ValueEftObj.Spawn( Obj.transform  , vPos );
+        BattleValue bt = go.GetComponent<BattleValue>();
+        if (bt != null) {
+            bt.SetMode( mode );
+        }
 		go.SetActive (true);
 		return go;
 	}

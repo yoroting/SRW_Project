@@ -1454,14 +1454,14 @@ public partial class BattleManager
 		}
 	}
 
-	public void ShowBattleResValue( int nIdent , int nValue , int nMode)
+	public void ShowBattleResValue( int nIdent , int nValue , int nMode, int nVar1 = 0, int nVar2 = 0)
 	{
 		Panel_unit unit = Panel_StageUI.Instance.GetUnitByIdent( nIdent ); 
 		if (unit == null)
 			return;
-		ShowBattleResValue ( unit.gameObject , nValue , nMode );
+		ShowBattleResValue ( unit.gameObject , nValue , nMode, nVar1 , nVar2 );
 	}
-	public void ShowBattleResValue( GameObject obj , int nValue , int nMode )
+	public void ShowBattleResValue( GameObject obj , int nValue , int nMode, int nVar1 = 0, int nVar2 = 0)
 	{	
 		//nMode : 0 - hp , 1- def , 2 - mp , 3 -sp , 4 
 		Vector3 v = Vector3.zero;
@@ -1491,7 +1491,7 @@ public partial class BattleManager
 			
 
 		//GameObject go = ResourcesManager.CreatePrefabGameObj ( Panel_StageUI.Instance.MaskPanelObj , "Prefab/BattleValue" );
-		GameObject go = Panel_StageUI.Instance.SpwanBattleValueObj (Panel_StageUI.Instance.MaskPanelObj , obj.transform.localPosition ); // this will affect initial pos in enable
+		GameObject go = Panel_StageUI.Instance.SpwanBattleValueObj (Panel_StageUI.Instance.MaskPanelObj , obj.transform.localPosition , nVar1); // this will affect initial pos in enable
 		if (go != null) {
             //go.transform.position = obj.transform.position ;
             //go.transform.localPosition = v;
@@ -1517,7 +1517,7 @@ public partial class BattleManager
 						lbl.gradientTop = new Color( 0.0f, 1.0f , 0.0f );	// green
 					}
 					else{
-						lbl.gradientTop = new Color( 1.0f, 0.0f , 0.0f );	// red
+                            lbl.gradientTop = Color.red;// new Color( 1.0f, 0.0f , 0.0f );	// red
 					}
 					break;
 
@@ -1525,25 +1525,25 @@ public partial class BattleManager
 
                      //   lbl.text = "防禦";
                         if ( nValue > 0 ){
-							lbl.gradientTop = new Color( 1.0f, 1.0f , 0.0f );  // yellow
+                            lbl.gradientTop = Color.white;  // yellow
 						}
 						else{
-							lbl.gradientTop = new Color( 0.0f, 1.0f , 0.0f );	// red
+							lbl.gradientTop = Color.red; ;// new Color( 0.0f, 1.0f , 0.0f );	// red
 						}
 					break;
 					case 2:  // mp 
                      //   lbl.text = "內力";
                         if ( nValue > 0 ){
-						lbl.gradientTop = new Color( 0.0f, 0.0f , 1.0f );  // blue 
+                            lbl.gradientTop = Color.yellow;//  new Color( 0.0f, 0.0f , 1.0f );  // blue 
 						}
 						else{
-						lbl.gradientTop = new Color( 1.0f, 0.0f , 1.0f );	// purple
+                            lbl.gradientTop = Color.blue;//  new Color( 1.0f, 0.0f , 1.0f );	// purple
 						}
 					break;
 					case 3:  // sp 
 					if( nValue > 0 ){
-						lbl.gradientTop = new Color( 1.0f, 1.0f , 1.0f );  // white
-					}
+						lbl.gradientTop = new Color(1.0f, 0.0f, 1.0f);  // purple
+                        }
 					else{
 						lbl.gradientTop = new Color( 0.0f, 0.0f , 0.0f );	// black
 					}
@@ -1557,24 +1557,28 @@ public partial class BattleManager
 					}
 					break;
 				}
-//
-//				if( nValue > 0 )
-//				{
-//					if( nMode == 1 ){
-//						lbl.gradientTop = new Color( 1.0f, 1.0f , 0.0f );
-//					}
-//					else {
-//						lbl.gradientTop = new Color( 0.0f, 1.0f , 0.0f );
-//					}
-//				}
-//				else{ 
-//					// damage
-//					lbl.gradientTop = new Color( 1.0f, 0.0f , 0.0f );
-//				}
-//
-//
+                //
+                //				if( nValue > 0 )
+                //				{
+                //					if( nMode == 1 ){
+                //						lbl.gradientTop = new Color( 1.0f, 1.0f , 0.0f );
+                //					}
+                //					else {
+                //						lbl.gradientTop = new Color( 0.0f, 1.0f , 0.0f );
+                //					}
+                //				}
+                //				else{ 
+                //					// damage
+                //					lbl.gradientTop = new Color( 1.0f, 0.0f , 0.0f );
+                //				}
+                //
+                //
 
-				lbl.text += nValue.ToString();
+                if (nValue > 0) {
+                    lbl.text += "+";
+                }
+
+                lbl.text += nValue.ToString();
 			}
 		}
 	}
@@ -1585,7 +1589,7 @@ public partial class BattleManager
 //		if ( obj != null) {
 	//		v = obj.transform.parent.localPosition+obj.transform.localPosition;
 		//}
-		GameObject go = Panel_StageUI.Instance.SpwanBattleValueObj (Panel_StageUI.Instance.MaskPanelObj ,  v ); // show on mask 
+		GameObject go = Panel_StageUI.Instance.SpwanBattleValueObj (Panel_StageUI.Instance.MaskPanelObj ,  v , 0 ); // show on mask 
 		
 		if (go != null) {
             //go.transform.position = v;

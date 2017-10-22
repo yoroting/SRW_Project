@@ -74,7 +74,10 @@ public class Panel_UnitInfo : MonoBehaviour {
     // close
     public GameObject CloseBtnObj;
 
-	private cUnitData pUnitData;
+    public int m_nAbilityWidth = 130;
+    public int m_nPassAbilityWidth = 260 ;
+
+    private cUnitData pUnitData;
 
 	// open info by identify
 	//static public int nCharIdent;
@@ -219,7 +222,7 @@ public class Panel_UnitInfo : MonoBehaviour {
         int idx = 0;
         foreach (GameObject o in ItemPool)
         {
-            UIEventListener.Get(o).onClick += OnItemClick;
+            UIEventListener.Get(o).onClick = OnItemClick;
             Item_Unit item = o.GetComponent<Item_Unit>();
             if (item == null)
                 continue;
@@ -366,19 +369,25 @@ public class Panel_UnitInfo : MonoBehaviour {
 			GameObject go = ResourcesManager.CreatePrefabGameObj( AbilityGrid , "Prefab/Skill_simple" ); 
 			if( go == null )
 				continue;
-			UIEventListener.Get(go).onClick += OnAbilityClick; // 
+			UIEventListener.Get(go).onClick = OnAbilityClick; // 
 
             UIWidget wiget = go.GetComponent<UIWidget>();
             if (wiget != null)
             {
-                wiget.width = 100;
+                wiget.width = m_nAbilityWidth;
             }
 
             Skill_Simple obj = go.GetComponent<Skill_Simple >();
 			if( obj != null ){
                 obj.nID = pair.Key;
 				obj.nType = 0; // 0 is ability
-				MyTool.SetLabelText( obj.lblName , MyTool.GetSkillName( pair.Key ) );
+                // get cost 
+                string sname = MyTool.GetSkillName(pair.Key);
+                SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(obj.nID);
+                if (skl != null) {                    
+                    sname += " " + skl.n_SP;
+                }
+                MyTool.SetLabelText( obj.lblName , sname);
 			}
 			
 		}
@@ -517,13 +526,20 @@ public class Panel_UnitInfo : MonoBehaviour {
 			if( go == null )
 				continue;
 
+            UIWidget wiget = go.GetComponent<UIWidget>();
+            if (wiget != null)
+            {
+                wiget.width = m_nPassAbilityWidth; // set width
+            }
+
+
             UIDragScrollView dsv = this.GetComponent<UIDragScrollView>();
             if (dsv != null)
             {
                 dsv.scrollView =  ScrollViewPass.GetComponent<UIScrollView>();
             }
 
-            UIEventListener.Get(go).onClick += OnBuffClick; // this is a buff
+            UIEventListener.Get(go).onClick = OnBuffClick; // this is a buff
 
 			Skill_Simple obj = go.GetComponent<Skill_Simple >();
 			if( obj != null ){

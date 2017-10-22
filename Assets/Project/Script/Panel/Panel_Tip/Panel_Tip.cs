@@ -32,9 +32,25 @@ public class Panel_Tip : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-	}
+        // 底圖 size 修正
+        UISprite s = spBG.GetComponent<UISprite>();
+        if ( s != null ) {
+            if ( lblTitle.activeSelf == false ) {
+                s.topAnchor.target = lblText.transform;
+            }
+            else {
+                s.topAnchor.target = lblTitle.transform;
+            }
+        }
+        //UIAnchor anc = spBG.GetComponent<UIAnchor>();
+        //if (anc != null)
+        //{
+        //    anc
+        //}
 
-	static public void CloseUI(  )
+    }
+
+    static public void CloseUI(  )
 	{
 		nTipType = _TIPTYPE._NONE;
 		nTipID = 0;
@@ -43,13 +59,53 @@ public class Panel_Tip : MonoBehaviour {
 		}
 	}
 
+    public void SetContent(string str )
+    {
+        UILabel lbl = lblText.GetComponent<UILabel>();
+        UIWidget wid = lblText.GetComponent<UIWidget>();
+        lbl.overflowMethod = UILabel.Overflow.ResizeFreely;
+        MyTool.SetLabelText(lblText, ""); // 清空來確保每次 文字都異動
+        lbl.width = 240;
+
+        MyTool.SetLabelText(lblText, str);
+        if (wid.width <= 240)
+        {
+            //wid.width = 480;
+            lbl.overflowMethod = UILabel.Overflow.ResizeHeight;
+            lbl.width = 240;
+        }
+        else if (wid.width <= 480)
+        {
+            //wid.width = 480;
+
+            lbl.overflowMethod = UILabel.Overflow.ResizeHeight;
+            lbl.width = 480;
+        }
+        else if (wid.width > 900)
+        {
+            //wid.width = 480;
+
+            lbl.overflowMethod = UILabel.Overflow.ResizeHeight;
+            lbl.width = 900;
+        }
+
+        // 座標修正
+        lbl.transform.localPosition = Vector3.zero;
+
+       
+
+    }
+
 	static public void OpenUI( string str )
 	{
         Panel_Tip pTip = MyTool.GetPanel< Panel_Tip > (PanelManager.Instance.OpenUI (Name));
 		if (pTip) {
             pTip.lblTitle.SetActive(false);
-            MyTool.SetLabelText ( pTip.lblText , str );
-		}
+
+            pTip.SetContent( str );
+           // MyTool.SetLabelText ( pTip.lblText , str );
+
+        }
 
 	}
 	
@@ -59,40 +115,44 @@ public class Panel_Tip : MonoBehaviour {
 
         Panel_Tip pTip = MyTool.GetPanel< Panel_Tip > (PanelManager.Instance.OpenUI (Name));
 		if (pTip) {
-            UILabel lbl = pTip.lblText.GetComponent<UILabel>();
-            UIWidget wid = pTip.lblText.GetComponent<UIWidget>();
-            lbl.overflowMethod = UILabel.Overflow.ResizeFreely;
-            MyTool.SetLabelText(pTip.lblText, ""); // 清空來確保每次 文字都異動
-            lbl.width = 240;
-
-            // 設定文字
             pTip.lblTitle.SetActive(true);
-            MyTool.SetLabelText ( pTip.lblTitle , strTitle );
-			MyTool.SetLabelText ( pTip.lblText , strContext );  //文字必須有異動，才能觸發 寬度重算
+            MyTool.SetLabelText(pTip.lblTitle, strTitle);
 
-            // 如果寬度太少，則放大    
+            pTip.SetContent(strContext);
 
-            if (wid.width <= 240)
-            {
-                //wid.width = 480;
-                lbl.overflowMethod = UILabel.Overflow.ResizeHeight;
-                lbl.width = 240;
-            }else if (wid.width <= 480) {
-                //wid.width = 480;
+   //         UILabel lbl = pTip.lblText.GetComponent<UILabel>();
+   //         UIWidget wid = pTip.lblText.GetComponent<UIWidget>();
+   //         lbl.overflowMethod = UILabel.Overflow.ResizeFreely;
+   //         MyTool.SetLabelText(pTip.lblText, ""); // 清空來確保每次 文字都異動
+   //         lbl.width = 240;
+
+   //         // 設定文字
+           
+			//MyTool.SetLabelText ( pTip.lblText , strContext );  //文字必須有異動，才能觸發 寬度重算
+
+   //         // 如果寬度太少，則放大    
+
+   //         if (wid.width <= 240)
+   //         {
+   //             //wid.width = 480;
+   //             lbl.overflowMethod = UILabel.Overflow.ResizeHeight;
+   //             lbl.width = 240;
+   //         }else if (wid.width <= 480) {
+   //             //wid.width = 480;
                 
-                lbl.overflowMethod = UILabel.Overflow.ResizeHeight;
-                lbl.width = 480;
-            }
-            else if (wid.width > 900)
-            {
-                //wid.width = 480;
+   //             lbl.overflowMethod = UILabel.Overflow.ResizeHeight;
+   //             lbl.width = 480;
+   //         }
+   //         else if (wid.width > 900)
+   //         {
+   //             //wid.width = 480;
 
-                lbl.overflowMethod = UILabel.Overflow.ResizeHeight;
-                lbl.width = 900;
-            }
+   //             lbl.overflowMethod = UILabel.Overflow.ResizeHeight;
+   //             lbl.width = 900;
+   //         }
 
-            // 座標修正
-            lbl.transform.localPosition = Vector3.zero;
+   //         // 座標修正
+   //         lbl.transform.localPosition = Vector3.zero;
         }
 		
 	}

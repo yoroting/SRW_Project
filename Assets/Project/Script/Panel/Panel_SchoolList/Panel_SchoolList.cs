@@ -135,6 +135,8 @@ public class Panel_SchoolList : MonoBehaviour {
         {
             svSchList.ResetPosition();
         }
+
+        MyTool.SetLabelText(ContentObj, "");
     }
 
     public void OnCloseClick(GameObject go)
