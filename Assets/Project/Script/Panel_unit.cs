@@ -2070,8 +2070,17 @@ public class Panel_unit : MonoBehaviour {
 
 
 			SetShake();
-
-			BattleManager.Instance.ShowBattleResValue( this.gameObject , nValue , nMode , nVar1 , nVar2 );
+            // HP 運算還在防禦值內
+            if (nMode == 0)
+            {
+                if (pUnitData.n_DEF + nValue > 0)
+                {
+                    nMode = 1; // 只顯示 白色傷害
+                }
+            }
+            
+            BattleManager.Instance.ShowBattleResValue(this.gameObject, nValue, nMode, nVar1, nVar2);
+            
 		} else if (nValue > 0) {
 			// heal
 
@@ -2685,7 +2694,7 @@ public class Panel_unit : MonoBehaviour {
         {
             case cHitResult._TYPE._HP:
                 {
-                    ShowValueEffect(res.Value1, 0); // HP
+                    ShowValueEffect(res.Value1, 0, res.Value2); // HP
                     if (res.Value1 != 0) // maybe change data in  battle manage
                     {
                         pUnitData.AddHp(res.Value1);
@@ -2696,7 +2705,7 @@ public class Panel_unit : MonoBehaviour {
             case cHitResult._TYPE._DEF:
                 {
 
-                    ShowValueEffect(res.Value1, 1); // DEF
+                    ShowValueEffect(res.Value1, 1,  res.Value2); // DEF
                     if (res.Value1 != 0) // maybe change data in  battle manage
                     {
                         pUnitData.AddDef(res.Value1);
@@ -2706,7 +2715,7 @@ public class Panel_unit : MonoBehaviour {
                 break;
             case cHitResult._TYPE._MP:
                 {
-                    ShowValueEffect(res.Value1, 2); // MP
+                    ShowValueEffect(res.Value1, 2, res.Value2); // MP
                     if (res.Value1 != 0) // maybe change data in  battle manage
                     {
                         pUnitData.AddMp(res.Value1);
@@ -2715,7 +2724,7 @@ public class Panel_unit : MonoBehaviour {
                 break;
             case cHitResult._TYPE._SP:
                 {
-                    ShowValueEffect(res.Value1, 3); // SP
+                    ShowValueEffect(res.Value1, 3, res.Value2); // SP
                     if (res.Value1 != 0) // maybe change data in  battle manage
                     {
                         pUnitData.AddSp(res.Value1);
@@ -2724,7 +2733,7 @@ public class Panel_unit : MonoBehaviour {
                 break;
             case cHitResult._TYPE._CP:
                 {
-                    //pUnit.ShowValueEffect( res.Value1 , 0 ); // CP
+                    //pUnit.ShowValueEffect( res.Value1 , 4 ); // CP
                     if (res.Value1 != 0) // maybe change data in  battle manage
                     {
                         pUnitData.AddCp(res.Value1);
@@ -2733,7 +2742,7 @@ public class Panel_unit : MonoBehaviour {
                 break;
             case cHitResult._TYPE._TIRED:
                 {
-                    //pUnit.ShowValueEffect( res.Value1 , 0 ); // CP
+                    //pUnit.ShowValueEffect( res.Value1 , 5 ); // CP
                     if (res.Value1 != 0) 
                     {
                         pUnitData.AddTired(res.Value1);

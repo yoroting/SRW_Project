@@ -764,33 +764,35 @@ public partial class BattleManager
 
 	}
 
-	public void RollBaseCirit( cUnitData Atker, cUnitData Defer )
+	static public bool RollBaseCirit( cUnitData Atker, cUnitData Defer )
 	{
 		if (Atker == null || Defer == null) {
-			return;
+			return false;
 		}
-		
+       
 		float fRate = Config.BaseCirit + ( ( Atker.GetMar()-Defer.GetMar() ) / Config.BaseDodge );
 		float  fRoll = Random.Range (0.0f, 100.0f );	
 		if( fRoll < fRate ){
-			Atker.AddStates( _FIGHTSTATE._CIRIT );
+            //	Atker.AddStates( _FIGHTSTATE._CIRIT );
+            return true;
 		}
+        return false;
 
+    }
 
-	}
-
-	public void RollBaseDodge( cUnitData Atker, cUnitData Defer )
+	static public bool RollBaseDodge( cUnitData Atker, cUnitData Defer )
 	{
 		if (Atker == null || Defer == null) {
-			return;
+			return false;
 		}
 
 		float fRate = Config.BaseDodge + ( (Defer.GetMar() - Atker.GetMar() ) / Config.BaseDodge );
 		float  fRoll = Random.Range (0.0f, 100.0f );	
 		if( Atker.IsStates( _FIGHTSTATE._HIT ) || fRoll < fRate ){
-			Defer.AddStates( _FIGHTSTATE._DODGE );
+            // Defer.AddStates( _FIGHTSTATE._DODGE );
+            return true;
 		}
-
+        return false;
 	}
 
 
@@ -830,6 +832,7 @@ public partial class BattleManager
 
 		// check is damage 
 		bool bIsDamage =  MyTool.IsDamageSkill( nSkillID );
+        
 		int nGuarderID   = 0;
 		// single atk
 		if( Defer != null ){
@@ -840,11 +843,13 @@ public partial class BattleManager
 
 			if( bIsDamage ){
 
-				// check if base cirit happen
-				//RollBaseCirit ( Atker , Defer ); // cancel cirit to avoid mob be overkill
-				
-				// check if base dodge happen
-				RollBaseDodge ( Atker , Defer );
+                // check if base cirit happen
+                //RollBaseCirit ( Atker , Defer ); // cancel cirit to avoid mob be overkill
+
+                // check if base dodge happen
+                if (RollBaseDodge(Atker, Defer)) {
+                    Defer.AddStates(_FIGHTSTATE._DODGE);
+                }
 				// 
 				nGuarderID = Defer.Buffs.GetGuarder();
                 //if( Defer.IsStates( _FIGHTSTATE._GUARD ) )
@@ -901,34 +906,24 @@ public partial class BattleManager
 			if( Defer == unit ){
 				continue;
 			}
+
+            // 迴避
+            if (RollBaseDodge(Atker, unit))
+            {
+                unit.AddStates(_FIGHTSTATE._DODGE); // 迴避
+                
+            }
+
+          
+
 			int 	  nRealTarId   = unit.n_Ident;
 			cUnitData cRealTarData = unit;
    //         nGuarderID = 0;
             if ( bIsDamage ){
-				// change atk target to guard
-				// can't guard aoe affect
-
-				//cUnitData Guarder = GameDataManager.Instance.GetUnitDateByIdent( nGuarderID );
-    //            if (Guarder != null)
-    //            {
-    //                Guarder.SetFightAttr(atk, 0); // maybe change to def skill
-
-    //                action.AddHitResult(new cHitResult(cHitResult._TYPE._GUARD, Guarder.n_Ident, def));
-
-    //                if (!AffectPool.Contains(Guarder))
-    //                {
-    //                    AffectPool.Add(Guarder);
-    //                }
-
-    //                cRealTarData = Guarder;     // change defer
-    //                nRealTarId = Guarder.n_Ident;
-    //            }
-    //            else
-    //            {
+				
                     unit.SetFightAttr(Atker.n_Ident, 0);
                     ShowDefAssist(unit.n_Ident, false);
-                    action.AddHitResult(CalAttackResult(atk, nRealTarId, false, true));// no def at this time
-    //            }
+                    action.AddHitResult(CalAttackResult(atk, nRealTarId, false, true));// no def at this time    
 			}
             
             action.AddHitResult(CalSkillHitResult(Atker, cRealTarData, nSkillID));
@@ -1465,6 +1460,7 @@ public partial class BattleManager
 	{	
 		//nMode : 0 - hp , 1- def , 2 - mp , 3 -sp , 4 
 		Vector3 v = Vector3.zero;
+        string slbl = "";
 		if ( obj != null) {
 			// show in screen center
 //			Vector3 vp = obj.transform.parent.localPosition;
@@ -1517,7 +1513,9 @@ public partial class BattleManager
 						lbl.gradientTop = new Color( 0.0f, 1.0f , 0.0f );	// green
 					}
 					else{
-                            lbl.gradientTop = Color.red;// new Color( 1.0f, 0.0f , 0.0f );	// red
+
+                        lbl.gradientTop = Color.red;// new Color( 1.0f, 0.0f , 0.0f );	// red                       
+
 					}
 					break;
 
@@ -1528,7 +1526,7 @@ public partial class BattleManager
                             lbl.gradientTop = Color.white;  // yellow
 						}
 						else{
-							lbl.gradientTop = Color.red; ;// new Color( 0.0f, 1.0f , 0.0f );	// red
+							lbl.gradientTop = Color.white; ;// new Color( 0.0f, 1.0f , 0.0f );	// red
 						}
 					break;
 					case 2:  // mp 
@@ -1574,11 +1572,20 @@ public partial class BattleManager
                 //
                 //
 
-                if (nValue > 0) {
-                    lbl.text += "+";
+                // 發生 爆擊
+                if (1 == nVar1)
+                {
+                    slbl += "爆擊";
                 }
 
-                lbl.text += nValue.ToString();
+                if (nValue > 0) {
+                    slbl += "+";
+                }
+
+                slbl += nValue.ToString();
+
+                // final
+                lbl.text += slbl;
 			}
 		}
 	}
@@ -1589,12 +1596,15 @@ public partial class BattleManager
 //		if ( obj != null) {
 	//		v = obj.transform.parent.localPosition+obj.transform.localPosition;
 		//}
-		GameObject go = Panel_StageUI.Instance.SpwanBattleValueObj (Panel_StageUI.Instance.MaskPanelObj ,  v , 0 ); // show on mask 
+		GameObject go = Panel_StageUI.Instance.SpwanBattleValueObj (Panel_StageUI.Instance.MaskPanelObj , obj.transform.localPosition, 0 ); // show on mask 
 		
 		if (go != null) {
+            //改為在 swpan 指定座標
+
             //go.transform.position = v;
             //go.transform.localPosition = v;			
-            go.transform.position = obj.transform.position;
+
+            //go.transform.position = obj.transform.position;
 
             UILabel lbl = go.GetComponent< UILabel >();
 			if( lbl )
@@ -2027,6 +2037,7 @@ public partial class BattleManager
         float fDefPowFactor = 1.0f;
         float fAtkFactor = 1.0f;
 
+        int nShowMode = 0;  // 0 - 正常， 1-爆擊
         //		float fDefFactor = 1.0f;
 
         //float fAtkBurst  = 1.0f + pAtker.GetMulBurst ();
@@ -2114,10 +2125,13 @@ public partial class BattleManager
         }
 
         // cirit happpen       
-        if (pAtker.IsStates(_FIGHTSTATE._CIRIT)) {
+        bool bIsCirit = RollBaseCirit(pAtker, pDefer);
+
+        if (pAtker.IsStates(_FIGHTSTATE._CIRIT) || bIsCirit ) {
 
             fAtkDmg *= Config.CiritRatio;
-            resPool.Add(new cHitResult(cHitResult._TYPE._CIRIT, nAtker, 0));
+            // resPool.Add(new cHitResult(cHitResult._TYPE._CIRIT, nAtker, 0));
+            nShowMode = 1; // 爆級文字
         }
         // shield happpen       
      
@@ -2226,7 +2240,7 @@ public partial class BattleManager
         }
 
 
-            resPool.Add ( new cHitResult( cHitResult._TYPE._HP ,nDefer , nDefHp  ) );
+            resPool.Add ( new cHitResult( cHitResult._TYPE._HP ,nDefer , nDefHp , nShowMode) );
 	//	resPool.Add ( new cHitResult( cHitResult._TYPE._CP ,nDefer , 1  ) ); // def add 1 cp
 
 		// drain hp / mp

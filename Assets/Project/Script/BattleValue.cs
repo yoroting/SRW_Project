@@ -11,8 +11,8 @@ public class BattleValue : MonoBehaviour {
 	void OnEnable()
 	{
 		transform.localRotation = new Quaternion(); 
-		transform.localScale = new Vector3( 1.0f, 1.0f , 1.0f);        
-        fOriginY = transform.localPosition.y;
+		transform.localScale = new Vector3( 1.0f, 1.0f , 1.0f);
+        //fOriginY = transform.localPosition.y; // 此時會是 上次的數值未更新
         // clear all twr
 
 
@@ -34,10 +34,12 @@ public class BattleValue : MonoBehaviour {
 		
 	}
 
+    // 這裡是 spwan 後， 座標位置正確
     public void SetMode( int mode = 0 )
     {
         nMode = mode;
         //float x = transform.localPosition.x;
+        fOriginY = transform.localPosition.y;
         float y = fOriginY;
 
         MyTool.DestoryTweens (this.gameObject);
