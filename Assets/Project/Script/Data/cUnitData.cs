@@ -1312,7 +1312,7 @@ public class cUnitData{
         nTired = MyTool.ClampInt( n, 0, Config.CharMaxTired );
     }
 
-    public void AddHp( int nhp )
+    public void AddHp( int nhp , int nMode=0 )
 	{
 		// this cheat always hard to balance battle value. mark it
 //		if ( (Config.GOD==true) && nhp < 0 ) {
@@ -1336,13 +1336,21 @@ public class cUnitData{
 		}
 		else 
 		{
-			// damg
-			n_DEF += nhp;
-			if(	n_DEF < 0)
-			{
-				n_HP +=n_DEF;
-				n_DEF = 0;
-			}
+            // damg
+            if (nMode == 0)
+            {
+                n_DEF += nhp;  // 先扣 防禦
+                if (n_DEF < 0)
+                {
+                    n_HP += n_DEF;
+                    n_DEF = 0;
+                }
+            }
+            else // 直接傷害
+            {
+                n_HP += nhp;
+            }
+			
 
 			if( n_HP <= 0 )
 			{

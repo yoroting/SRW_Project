@@ -2071,7 +2071,7 @@ public class Panel_unit : MonoBehaviour {
 
 			SetShake();
             // HP 運算還在防禦值內
-            if (nMode == 0)
+            if (nMode == 0 && (nVar2 ==0) )  // 非真實傷害才需要轉換 防禦 的顏色
             {
                 if (pUnitData.n_DEF + nValue > 0)
                 {
@@ -2694,10 +2694,10 @@ public class Panel_unit : MonoBehaviour {
         {
             case cHitResult._TYPE._HP:
                 {
-                    ShowValueEffect(res.Value1, 0, res.Value2); // HP
+                    ShowValueEffect(res.Value1, 0, res.Value3, res.Value4); // HP
                     if (res.Value1 != 0) // maybe change data in  battle manage
                     {
-                        pUnitData.AddHp(res.Value1);
+                        pUnitData.AddHp(res.Value1, res.Value4);
                     }
 
                 }
@@ -2705,7 +2705,7 @@ public class Panel_unit : MonoBehaviour {
             case cHitResult._TYPE._DEF:
                 {
 
-                    ShowValueEffect(res.Value1, 1,  res.Value2); // DEF
+                    ShowValueEffect(res.Value1, 1,  res.Value3); // DEF
                     if (res.Value1 != 0) // maybe change data in  battle manage
                     {
                         pUnitData.AddDef(res.Value1);
@@ -2715,7 +2715,7 @@ public class Panel_unit : MonoBehaviour {
                 break;
             case cHitResult._TYPE._MP:
                 {
-                    ShowValueEffect(res.Value1, 2, res.Value2); // MP
+                    ShowValueEffect(res.Value1, 2, res.Value3); // MP
                     if (res.Value1 != 0) // maybe change data in  battle manage
                     {
                         pUnitData.AddMp(res.Value1);
@@ -2724,7 +2724,7 @@ public class Panel_unit : MonoBehaviour {
                 break;
             case cHitResult._TYPE._SP:
                 {
-                    ShowValueEffect(res.Value1, 3, res.Value2); // SP
+                    ShowValueEffect(res.Value1, 3, res.Value3); // SP
                     if (res.Value1 != 0) // maybe change data in  battle manage
                     {
                         pUnitData.AddSp(res.Value1);

@@ -769,7 +769,7 @@ public partial class BattleManager
 		if (Atker == null || Defer == null) {
 			return false;
 		}
-       
+      
 		float fRate = Config.BaseCirit + ( ( Atker.GetMar()-Defer.GetMar() ) / Config.BaseDodge );
 		float  fRoll = Random.Range (0.0f, 100.0f );	
 		if( fRoll < fRate ){
@@ -2104,7 +2104,7 @@ public partial class BattleManager
                             pAtker.AddStates(_FIGHTSTATE._DEAD);
                         }
                     }
-                    resPool.Add(new cHitResult(cHitResult._TYPE._HP, nAtker, nAtkHp));
+                    resPool.Add(new cHitResult(cHitResult._TYPE._HP, nAtker, nAtkHp, nDefer));
                 }
             }
         }
@@ -2160,7 +2160,7 @@ public partial class BattleManager
                             pAtker.AddStates(_FIGHTSTATE._DEAD);
                         }
                     }
-                    resPool.Add(new cHitResult(cHitResult._TYPE._HP, nAtker, nAtkHp));
+                    resPool.Add(new cHitResult(cHitResult._TYPE._HP, nAtker, nAtkHp, nDefer));
                 }
             }
         }
@@ -2197,7 +2197,7 @@ public partial class BattleManager
                 fAtkDmg = 0;
                 
             }
-            resPool.Add(new cHitResult(cHitResult._TYPE._SHIELD, nDefer, 0));
+            resPool.Add(new cHitResult(cHitResult._TYPE._SHIELD, nDefer, 0, nAtker));
         }
 
 
@@ -2240,7 +2240,7 @@ public partial class BattleManager
         }
 
 
-            resPool.Add ( new cHitResult( cHitResult._TYPE._HP ,nDefer , nDefHp , nShowMode) );
+            resPool.Add ( new cHitResult( cHitResult._TYPE._HP ,nDefer , nDefHp , nAtker, nShowMode) );
 	//	resPool.Add ( new cHitResult( cHitResult._TYPE._CP ,nDefer , 1  ) ); // def add 1 cp
 
 		// drain hp / mp
@@ -2249,7 +2249,7 @@ public partial class BattleManager
 		if( (nDefHp < 0) &&  fDrainHpRate > 0.0f ){
 			int nDrainHP = -(int)(nDefHp*fDrainHpRate);
 			if( nDrainHP != 0 ){
-				resPool.Add ( new cHitResult( cHitResult._TYPE._HP ,nAtker , nDrainHP  ) );
+				resPool.Add ( new cHitResult( cHitResult._TYPE._HP ,nAtker , nDrainHP , nDefer ) );
 			}
 		}
 
@@ -2257,8 +2257,8 @@ public partial class BattleManager
 		{
 			int nDrainMp = (int)(pDefer.GetMaxMP()*fDrainMpRate);
 			if( nDrainMp != 0 ){
-				resPool.Add ( new cHitResult( cHitResult._TYPE._MP ,nDefer , -nDrainMp  ) );  	// drain mp
-				resPool.Add ( new cHitResult( cHitResult._TYPE._MP ,nAtker , nDrainMp  ) );		// restory mp
+				resPool.Add ( new cHitResult( cHitResult._TYPE._MP ,nDefer , -nDrainMp , nAtker) );  	// drain mp
+				resPool.Add ( new cHitResult( cHitResult._TYPE._MP ,nAtker , nDrainMp , nDefer) );		// restory mp
 			}
 		}
 
