@@ -147,13 +147,19 @@ public class Panel_SystemSetting : MonoBehaviour {
             Panel_StageUI.Instance.ShowStage(false);
             // free here waill cause some  StartCoroutine of stageUI break 
             PanelManager.Instance.DestoryUI(Panel_StageUI.Name);
-            
+
             // reopen main UI
             PanelManager.Instance.OpenUI(MainUIPanel.Name);
 
-          
+
         }
-        
+        else if (PanelManager.Instance.CheckUIIsOpening(Panel_Mainten.Name)) {
+
+            PanelManager.Instance.OpenUI(MainUIPanel.Name);
+
+            PanelManager.Instance.CloseUI(Panel_Mainten.Name);
+
+        }
         // 一定會關閉
          PanelManager.Instance.CloseUI(Name);
            

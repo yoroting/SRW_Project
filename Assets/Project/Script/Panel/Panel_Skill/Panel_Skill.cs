@@ -25,6 +25,9 @@ public class Panel_Skill : MonoBehaviour {
     public GameObject lblCP;  // 玩家真氣
     public GameObject lblCondition;  // 技能禁止條件
 
+    public GameObject progMP;  // MP 進度
+
+
     public _SKILL_TYPE eSkillType;
 
 	public int 	nOpSkillID;			// current select skill ID
@@ -99,26 +102,38 @@ public class Panel_Skill : MonoBehaviour {
 
                 nCP = skl.n_CP;
             }
-        } 
+        }
 
-        string sCP = string.Format("{0}/{1}", nCP, pData.n_CP);
+        //string sCP = string.Format("{0}/{1}", nCP, pData.n_CP);
+        string sCP = string.Format("{0}", pData.n_CP);
         string sCond = "";
 
         if (eSkillType == _SKILL_TYPE._ABILITY)
         {
             lblCP.SetActive( false );
-            lblCondition.SetActive(false);
+          //  lblCondition.SetActive(false);
 
-            string sSP = string.Format("{0}/{1}", nCost, pData.n_SP );
+            string sSP = string.Format("{0}/{1}", pData.n_SP , pData.GetMaxSP());
             MyTool.SetLabelText(lblMP, sSP);
+
+          
+
         }
         else if (eSkillType == _SKILL_TYPE._SKILL)
         {
             lblCP.SetActive(true);
             //lblCondition.SetActive(false);
 
-            string sMP = string.Format("{0}/{1}", nCost, pData.n_MP);
+            string sMP = string.Format("{0}/{1}", pData.n_MP , pData.GetMaxMP() );
             MyTool.SetLabelText(lblMP, sMP);
+
+            UISlider mpbar = progMP.GetComponent<UISlider>();
+            if (mpbar != null)
+            {             
+                mpbar.value = pData.n_MP / pData.GetMaxMP() ;
+            }
+
+
         }
         else {
             lblCP.SetActive(true);
@@ -127,7 +142,7 @@ public class Panel_Skill : MonoBehaviour {
             MyTool.SetLabelText(lblMP, sMP);
         }
         MyTool.SetLabelText(lblCP, sCP); 
-        MyTool.SetLabelText(lblCondition, sCond); 
+     //   MyTool.SetLabelText(lblCondition, sCond); 
     }
 
 	public void SetData( cUnitData data , _SKILL_TYPE eType  , cUnitData target , _CMD_TYPE cmdType  , int schoolid=0 )

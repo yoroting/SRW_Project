@@ -617,10 +617,11 @@ public class Panel_StageUI : MonoBehaviour
 		AtkEftObj.CreatePool( st_CellObjPoolSize );
 		AoeEftObj.CreatePool( st_CellObjPoolSize /4 );
 
-        ValueEftObj.transform.localPosition = Vector3.zero; 
-        ValueEftObj.CreatePool( st_CellObjPoolSize / 10  );
+        ValueEftObj.transform.localPosition = Vector3.zero;
+        //  ValueEftObj.CreatePool( st_CellObjPoolSize / 10  );
+        ValueEftObj.CreatePool(2);
 
-		AvgObj.CreatePool ( st_CellObjPoolSize / 10 );
+        AvgObj.CreatePool ( st_CellObjPoolSize / 10 );
 
 	}
 

@@ -7,22 +7,16 @@ public class BattleValue : MonoBehaviour {
 //	float fOffset = 16.0f;
 	float fOriginY = 0.0f;
     public int nMode = 0; // 顯示方式， 0- 正常， 1- 爆擊
+    float fUpdateTime = 0.0f;
 
 	void OnEnable()
 	{
 		transform.localRotation = new Quaternion(); 
 		transform.localScale = new Vector3( 1.0f, 1.0f , 1.0f);
+        fUpdateTime = 0.0f;
         //fOriginY = transform.localPosition.y; // 此時會是 上次的數值未更新
         // clear all twr
-
-
-
-        //reset object alpha
-
-
-
         //		nValueCount++;
-
     }
 	// Use this for initialization
 	void Start () {
@@ -31,8 +25,26 @@ public class BattleValue : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
-	}
+
+        // 防呆，避免沒正確關閉 訊息
+        fUpdateTime += Time.deltaTime;
+        if (fUpdateTime > 3.0f) {
+            TweenAlpha[] tws = this.gameObject.GetComponents<TweenAlpha>();
+            if (tws.Length == 0 ) {
+                TweenAlpha twa = TweenAlpha.Begin<TweenAlpha>(this.gameObject, 0.5f);
+                if (twa != null)
+                {
+                    twa.delay = 0.0f;
+                    twa.from = 1.0f;
+                    twa.to = 0.0f;
+
+                    MyTool.TweenSetOneShotOnFinish(twa, OnAlphaFinish);
+                }
+                Debug.LogErrorFormat("don't close BattleValue correct");
+            }
+
+        }
+    }
 
     // 這裡是 spwan 後， 座標位置正確
     public void SetMode( int mode = 0 )
@@ -41,10 +53,8 @@ public class BattleValue : MonoBehaviour {
         //float x = transform.localPosition.x;
         fOriginY = transform.localPosition.y;
         float y = fOriginY;
+        // MyTool.DestoryTweens(this.gameObject); // 不會立刻刪除物件，將造成新建立的 tween 於update 前被刪除
 
-        MyTool.DestoryTweens (this.gameObject);
-
-       
         float delaytime = 0.0f;
 
         if (nMode == 0)
@@ -135,8 +145,8 @@ public class BattleValue : MonoBehaviour {
 	public void OnAlphaFinish()
 	{
 //		nValueCount--;
-		this.Recycle ();
-		//NGUITools.Destroy ( this.gameObject );
-		
-	}
+		this.Recycle ();        
+        MyTool.DestoryTweens(this.gameObject); // 於 關閉前把全部 alpha 刪除是最好的
+
+    }
 }

@@ -45,9 +45,10 @@ public class Panel_Mainten : MonoBehaviour {
 		UIEventListener.Get(btnSave).onClick += OnSaveClick; // for trig next lineev
 		UIEventListener.Get(btnLoad).onClick += OnLoadClick; // for trig next lineev
         UIEventListener.Get(btnItem).onClick += OnItemClick; //
-        UIEventListener.Get(btnGameEnd).onClick += OnEndClick; // for trig next lineev
+        //UIEventListener.Get(btnGameEnd).onClick += OnEndClick; // for trig next lineev
+        UIEventListener.Get(btnGameEnd).onClick += OnSetupClick; // for trig next lineev
 
-		UIEventListener.Get(btnCheat).onClick += OnCheatClick; // cheat
+        UIEventListener.Get(btnCheat).onClick += OnCheatClick; // cheat
 
         CharUnit.CreatePool(5);
 
@@ -149,6 +150,11 @@ public class Panel_Mainten : MonoBehaviour {
     void OnItemClick(GameObject go)
     {
         Panel_ItemList.Open(0);
+    }
+
+    void OnSetupClick(GameObject go)
+    {
+        PanelManager.Instance.OpenUI(Panel_SystemSetting.Name);
     }
     
 

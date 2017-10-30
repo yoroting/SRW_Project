@@ -5,6 +5,8 @@ public class Mainten_Unit : MonoBehaviour
 {
 
     public GameObject EnhanceBtn;
+    public GameObject InfoBtn;
+
     private cUnitData pUnitData;
 
 
@@ -15,9 +17,15 @@ public class Mainten_Unit : MonoBehaviour
 
     public GameObject IntSchObj;
     public GameObject ExtSchObj;
+    public GameObject IntLvObj;
+    public GameObject ExtLvObj;
+
 
     public GameObject LvObj;
     public GameObject ExpObj;
+    public GameObject HpObj;
+    public GameObject MpObj;
+
 
     public GameObject FuncObj;  // 功能名稱
 
@@ -27,7 +35,7 @@ public class Mainten_Unit : MonoBehaviour
     void Start()
     {
 
-        UIEventListener.Get(FaceObj).onClick = OnUnitInfoClick;
+        UIEventListener.Get(InfoBtn).onClick = OnUnitInfoClick;
 
     }
 
@@ -124,11 +132,11 @@ public class Mainten_Unit : MonoBehaviour
         // mar
         MyTool.SetLabelFloat(MarObj, pUnitData.GetMar());
         //// HP
-        //int nMaxHp = pUnitData.GetMaxHP();
-        //MyTool.SetLabelText(HpObj, string.Format("{0}/{1}", pUnitData.n_HP, nMaxHp));
+        int nMaxHp = pUnitData.GetMaxHP();
+        MyTool.SetLabelInt(HpObj,  nMaxHp);
         //// MP
-        //int nMaxMp = pUnitData.GetMaxMP();
-        //MyTool.SetLabelText(MpObj, string.Format("{0}/{1}", pUnitData.n_MP, nMaxMp));
+        int nMaxMp = pUnitData.GetMaxMP();
+        MyTool.SetLabelInt(MpObj,  nMaxMp);
         //// SP
         //int nMaxSp = pUnitData.GetMaxSP();
         //MyTool.SetLabelText(SpObj, string.Format("{0}/{1}", pUnitData.n_SP, nMaxSp));
@@ -146,10 +154,12 @@ public class Mainten_Unit : MonoBehaviour
         // school name
 
         //SCHOOL inSch = GameDataManager.Instance.GetConstSchoolData( data.nActSch[0] ); // int 
-        MyTool.SetLabelText(IntSchObj, pUnitData.GetSchoolFullName(pUnitData.GetIntSchID()));
-
+        MyTool.SetLabelText(IntSchObj, MyTool.GetSchoolName(pUnitData.GetIntSchID()));
+        MyTool.SetLabelText(IntLvObj, "Lv "+ pUnitData.GetIntSchLv() );
         //SCHOOL exSch = ConstDataManager.Instance.GetRow<SCHOOL>( pUnitData.nActSch[1] );//   GameDataManager.Instance.GetConstSchoolData( pUnitData.nActSch[1] ); // ext 
-        MyTool.SetLabelText(ExtSchObj, pUnitData.GetSchoolFullName(pUnitData.GetExtSchID()));
+        MyTool.SetLabelText(ExtSchObj, MyTool.GetSchoolName(pUnitData.GetExtSchID()));
+        MyTool.SetLabelText(ExtLvObj, "Lv " + pUnitData.GetExtSchLv());
+
 
 
         // Set ability

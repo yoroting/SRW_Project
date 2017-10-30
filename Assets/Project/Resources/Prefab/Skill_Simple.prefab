@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 11410698}
   - component: {fileID: 6507016}
   - component: {fileID: 11485466}
-  - component: {fileID: 114120292462654022}
   m_Layer: 5
   m_Name: Skill_Simple
   m_TagString: Untagged
@@ -55,7 +54,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 154584}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -124, y: -27, z: 0}
+  m_LocalPosition: {x: 0, y: -0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 404194}
@@ -72,7 +71,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 200, y: 38, z: 0}
+  m_Size: {x: 140, y: 48, z: 0}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &11410582
 MonoBehaviour:
@@ -104,19 +103,19 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 200
+  mWidth: 130
   mHeight: 48
-  mDepth: 1
+  mDepth: 4
   mMat: {fileID: 0}
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 4.1666665
+  aspectRatio: 2.7083333
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   mFont: {fileID: 0}
-  mText: "\u62DB\u5F0F"
-  mFontSize: 36
+  mText: "\u62DB\u5F0F 99"
+  mFontSize: 32
   mFontStyle: 0
   mAlignment: 2
   mEncoding: 1
@@ -129,7 +128,7 @@ MonoBehaviour:
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
   mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
-  mSpacingX: 0
+  mSpacingX: 4
   mSpacingY: 0
   mUseFloatSpacing: 0
   mFloatSpacingX: 0
@@ -172,14 +171,14 @@ MonoBehaviour:
   updateAnchors: 0
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 200
+  mWidth: 140
   mHeight: 48
   mDepth: 0
   mMat: {fileID: 0}
   autoResizeBoxCollider: 1
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 4.1666665
+  aspectRatio: 2.9166667
   mType: 1
   mFillDirection: 4
   mFillAmount: 1
@@ -194,7 +193,7 @@ MonoBehaviour:
   bottomType: 1
   topType: 1
   mAtlas: {fileID: 11400000, guid: 62adb30369acbf943a67cee0f69267a3, type: 2}
-  mSpriteName: Highlight - Shadowed
+  mSpriteName: Highlight - Thin
   mFillCenter: 1
 --- !u!114 &11485466
 MonoBehaviour:
@@ -234,16 +233,3 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 154584}
   m_IsPrefabParent: 1
---- !u!114 &114120292462654022
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 154584}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f02842fa4878db54f9587ff4de7d9f2d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  scrollView: {fileID: 0}
-  draggablePanel: {fileID: 0}
