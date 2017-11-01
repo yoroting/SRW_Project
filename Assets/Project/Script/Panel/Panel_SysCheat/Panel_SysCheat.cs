@@ -109,9 +109,9 @@ public class Panel_SysCheat : MonoBehaviour {
 			
 			campList.Clear ();
 			 
-			campList.AddItem(_CAMP._PLAYER.ToString()  );
+			campList.AddItem(_CAMP._PLAYER.ToString() );
 			campList.AddItem(_CAMP._ENEMY.ToString() );
-			campList.AddItem(_CAMP._FRIEND.ToString());
+			campList.AddItem(_CAMP._FRIEND.ToString() );
 
             // set select value
             campList.value = _CAMP._PLAYER.ToString();
@@ -256,7 +256,23 @@ public class Panel_SysCheat : MonoBehaviour {
             pMoneyInfo.text = string.Format( "+ {0} / - {1} " , GameDataManager.Instance.nEarnMoney , GameDataManager.Instance.nSpendMoney );
         }
 
+        // camp
+        UIPopupList campList = CampPoplist.GetComponent<UIPopupList>();
+        if (campList != null)
+        {
+            //添加触发事件
+            //	EventDelegate.Add (popList.onChange, label.SetCurrentSelection);
+            //EventDelegate.Add (popList.onChange, StoryComboboxChange);
 
+            campList.Clear();
+
+            campList.AddItem(_CAMP._PLAYER.ToString());
+            campList.AddItem(_CAMP._ENEMY.ToString());
+            campList.AddItem(_CAMP._FRIEND.ToString());
+
+            // set select value
+            campList.value = _CAMP._PLAYER.ToString();
+        }
     }
 
 	// Update is called once per frame

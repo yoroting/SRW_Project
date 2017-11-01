@@ -10,7 +10,7 @@ public class Panel_Dispatch : MonoBehaviour
     public const string Name = "Panel_Dispatch";
 
     public GameObject btnDispatch;
-
+    public GameObject lblNum;
     public GameObject GridUnitList;
     public GameObject CharUnit;
 
@@ -21,13 +21,13 @@ public class Panel_Dispatch : MonoBehaviour
 
     int nDispatchNum=5;
 
-    List<int> DispatchList;
+    List<int> DispatchList ;
 
 
     // Use this for initialization
     void Start()
     {
-        DispatchList = new List<int>();
+       // DispatchList = new List<int>();
         UIEventListener.Get(btnDispatch).onClick = OnDispatch; // cheat
         CharUnit.CreatePool(5);
 
@@ -40,6 +40,10 @@ public class Panel_Dispatch : MonoBehaviour
 
     public void OnEnable()
     {
+        if (DispatchList == null) {
+            DispatchList = new List<int>();
+        }
+        DispatchList.Clear();
         // calcul current unit
         nDispatchNum = Config.MaxStageUnit -  Panel_StageUI.Instance.GetCampNum(_CAMP._PLAYER);
 
@@ -79,9 +83,10 @@ public class Panel_Dispatch : MonoBehaviour
         if (DispatchList.Contains(nCharID) == false)
         {
             DispatchList.Add(nCharID );
+            UpdateUnitNum();
             return true;
         }
-
+        
         return false;
     }
 
@@ -91,8 +96,10 @@ public class Panel_Dispatch : MonoBehaviour
         if (DispatchList.Contains(nCharID) == true)
         {
             DispatchList.Remove(nCharID);
+            UpdateUnitNum();
             return true;
         }
+        
         return true;
     }
 
@@ -153,6 +160,7 @@ public class Panel_Dispatch : MonoBehaviour
 
     public void ReloadUnitList(int nCharID = 0) // 0- all
     {
+        
         //if (nCharID != 0) {
         List<int> avoidList = new List<int>();
         STAGE_DATA StageData = ConstDataManager.Instance.GetRow<STAGE_DATA>(GameDataManager.Instance.nStageID);
@@ -235,5 +243,15 @@ public class Panel_Dispatch : MonoBehaviour
         grid.repositionNow = true;  // for re pos
         grid.Reposition();
 
+        UpdateUnitNum();
+    }
+
+    void UpdateUnitNum()
+    {
+        if (lblNum != null)
+        {  
+            string snum = string.Format("{0}/{1}" , DispatchList.Count, nDispatchNum );
+            MyTool.SetLabelText(lblNum , snum );
+        }
     }
 }

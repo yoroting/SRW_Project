@@ -8,6 +8,32 @@ using UnityEngine;
 using System.Collections.Generic;
 
 /// <summary>
+//"Installation" instructions:
+//Just like every other UI component, just drop the files in some proper folders.You can use a regular PopupList prefab, and just replace the default list script with this one.
+//However, one modification should be made to the UILabel class in order to allow the labels to handle updates from this specific kind of list. Open up the label file, and find the SetCurrentSelection() function and add the part after my comment from the excerpt below:
+/// <summary>
+/// Convenience function, in case you wanted to automatically set some label's text
+/// by selecting a value in the UIPopupList.
+/// </summary>
+//public void SetCurrentSelection()
+//{
+//    if (UIPopupList.current != null)
+//    {
+//        text = UIPopupList.current.isLocalized ?
+//            Localization.Get(UIPopupList.current.value) :
+//            UIPopupList.current.value;
+//    }
+//    // Lumos: Scrollable popup lists
+//    else if (UIScrollablePopupList.current != null)
+//    {
+//        text = UIScrollablePopupList.current.isLocalized ?
+//            Localization.Get(UIScrollablePopupList.current.value) :
+//            UIScrollablePopupList.current.value;
+//    }
+//}
+/// </summary>
+
+/// <summary>
 /// A scrollable edition of the standard PopupList. Allows for the displaying of many options in the same list; includes a scrollbar.
 /// </summary>
 
