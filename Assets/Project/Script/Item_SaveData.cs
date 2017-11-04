@@ -10,7 +10,7 @@ public class Item_SaveData : MonoBehaviour {
     public GameObject NameObj;
     public GameObject StatusObj;
     public GameObject TimeObj;
-
+    public GameObject LvObj;
 
     // Use this for initialization
     void Start () {

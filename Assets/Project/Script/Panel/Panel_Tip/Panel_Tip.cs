@@ -166,15 +166,15 @@ public class Panel_Tip : MonoBehaviour {
 
 
 		string nBuffName = MyTool.GetBuffName ( nBuffID );
-		
-		string sTip = "";
+
+        string sTip = MyTool.GetBuffTip( nBuffID );
 		// get content
-		DataRow row = ConstDataManager.Instance.GetRow( (int)ConstDataTables.BUFF_TIP , nBuffID );
-		if( row != null )
-		{				
-			sTip = row.Field<string>( "s_TIP");		
-		}
-        sTip = sTip.Replace( "\\n" , System.Environment.NewLine );
+		//DataRow row = ConstDataManager.Instance.GetRow( (int)ConstDataTables.BUFF_TIP , nBuffID );
+		//if( row != null )
+		//{				
+		//	sTip = row.Field<string>( "s_TIP");		
+		//}
+  //      sTip = sTip.Replace( "\\n" , System.Environment.NewLine );
 
 
         if (Config.GOD) {

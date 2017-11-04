@@ -137,6 +137,7 @@ public class MyTool {
 		}
 		return "";
 	}
+
 	public static string GetItemName( int nID )
 	{
         if (nID == 0){
@@ -173,6 +174,18 @@ public class MyTool {
 
 	}
 
+    public static string GetBuffTip( int nBuffID )
+    {
+        string sTip = "";
+        // get content
+        DataRow row = ConstDataManager.Instance.GetRow((int)ConstDataTables.BUFF_TIP, nBuffID);
+        if (row != null)
+        {
+            sTip = row.Field<string>("s_TIP");
+        }
+        sTip = sTip.Replace("\\n", System.Environment.NewLine);
+        return sTip;
+    }
     // 0-small , 1- Large
     public static Texture GetCharTexture( int nFaceID, int nSize=0)
     {

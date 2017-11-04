@@ -184,15 +184,18 @@ public class Panel_UnitInfo : MonoBehaviour {
 
 	}
 
-	void ReloadData()
+	public void ReloadData()
 	{
 		if( pUnitData == null )
 			return;
 
+        // 更新資料
 		pUnitData.UpdateAllAttr ();
 		pUnitData.UpdateAttr ();
 		pUnitData.UpdateBuffConditionAttr ();
+        pUnitData.FixOverData();
 
+        // 更新介面
         UpdateBase();
         // school name
         UpdateSchool();
@@ -342,13 +345,31 @@ public class Panel_UnitInfo : MonoBehaviour {
 
         Item_School exSch = ExtSchObj.GetComponent< Item_School >();
         if (exSch != null) {
-            exSch.SetData(pUnitData.GetExtSchID() , pUnitData.GetExtSchLv()  );
+            exSch.SetData(pUnitData , pUnitData.GetExtSchID() , pUnitData.GetExtSchLv()  );
+            // 如果是整備 則切換 模式
+            if (GameDataManager.Instance.ePhase == _SAVE_PHASE._MAINTEN)
+            {
+                exSch.SetMode(1);
+            }
+            else { // 一般為 察看模式
+                exSch.SetMode(0);
+            }
+
         }
 
         Item_School InSch = IntSchObj.GetComponent<Item_School>();
         if (InSch != null)
         {
-            InSch.SetData(pUnitData.GetIntSchID(), pUnitData.GetIntSchLv());
+            InSch.SetData(pUnitData, pUnitData.GetIntSchID(), pUnitData.GetIntSchLv());
+            // 如果是整備 則切換 模式
+            if (GameDataManager.Instance.ePhase == _SAVE_PHASE._MAINTEN)
+            {
+                InSch.SetMode(1);
+            }
+            else
+            { // 一般為 察看模式
+                InSch.SetMode(0);
+            }
         }
 
         //    MyTool.SetLabelText(IntSchObj, pUnitData.GetSchoolFullName(pUnitData.GetIntSchID()));
@@ -577,7 +598,7 @@ public class Panel_UnitInfo : MonoBehaviour {
                 Item_School obj = go.GetComponent<Item_School>();
                 if (obj != null)
                 {
-                    obj.SetData(schid, schlv);
+                    obj.SetData(pUnitData,schid, schlv);
                 }
                 obj.SetScrollView(ScrollViewInt );
 
@@ -591,7 +612,7 @@ public class Panel_UnitInfo : MonoBehaviour {
                 Item_School obj = go.GetComponent<Item_School>();
                 if (obj != null)
                 {
-                    obj.SetData(schid, schlv);
+                    obj.SetData(pUnitData,schid, schlv);
                 }
                 obj.SetScrollView(ScrollViewExt);
 

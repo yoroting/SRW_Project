@@ -3,7 +3,11 @@ using System.Collections;
 
 public class CMD_BTN : MonoBehaviour {
 
-   // public UIWidget wiget;
+    public int m_BtnID;
+    public int m_nVar1;
+    public int m_fVar1;
+
+    // public UIWidget wiget;
     // Use this for initialization
     void Start () {
         //    wiget = this.GetComponent<UIWidget>();
@@ -15,11 +19,11 @@ public class CMD_BTN : MonoBehaviour {
     {
         ReSize();
 
-        UIButton b = this.gameObject.GetComponent<UIButton>();
-        if (b != null)
-        {
-            b.isEnabled = true; // disable btn
-        }
+        //UIButton b = this.gameObject.GetComponent<UIButton>();
+        //if (b != null)
+        //{
+        //    b.isEnabled = true; // disable btn
+        //}
     }
 
     void OnDisable()
@@ -37,12 +41,12 @@ public class CMD_BTN : MonoBehaviour {
 
     public void ReSize()
     {
-        UIWidget wiget = GetComponent<UIWidget>();
-        if (wiget != null)
-        {
-            wiget.width = 150;  // size fix to correct wh
-            wiget.height = 75;
-        }
+        //UIWidget wiget = GetComponent<UIWidget>();
+        //if (wiget != null)
+        //{
+        //    wiget.width = 150;  // size fix to correct wh
+        //    wiget.height = 75;
+        //}
         //Vector3 v = this.transform.localScale;
         //v = new Vector3(1.0f, 1.0f, 1.0f);
         transform.localScale = Vector3.one;

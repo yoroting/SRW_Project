@@ -867,7 +867,18 @@ public class cUnitData{
 		}
 		return nLv;
 	}
-	public int GetIntSchID(  )
+    public int GetSchIDbyType(int nType)
+    {
+        if (nType == 0)
+            return GetIntSchID();
+        else {
+            return GetExtSchID();
+        }
+
+    }
+
+
+    public int GetIntSchID(  )
 	{
 		return  nActSch[ cAttrData._INTSCH ];
 	}
@@ -1150,7 +1161,46 @@ public class cUnitData{
 
 	}
 
-	void UpdateSchoolAttr( int nIdx , int nSchool )
+    static public void CalSchoolAttr(cAttrData attr , int nSchool, int nLv )
+    {
+        attr.Reset();
+        SCHOOL sch = ConstDataManager.Instance.GetRow<SCHOOL>(nSchool); //GameDataManager.Instance.GetConstSchoolData ( nSchool );
+        if (sch == null)
+        {
+            Debug.LogErrorFormat("UpdateSchoolAttr err! can't get School{0} ",  nSchool);
+            return;
+        }
+
+        nLv = MyTool.ClampInt(nLv , 0 , sch.n_MAXLV );
+
+        float rank = sch.f_RANK;
+
+        attr.f_MAR = rank * (sch.f_MAR + (sch.f_MAR_LVUP * nLv));
+
+        float fHpGrow = Mathf.Pow(1.3f, nLv);
+        attr.n_HP = (int)(rank * (sch.n_HP + (sch.n_HP_LVUP * fHpGrow)));  // HP 成長率較高
+
+        float fGrow = Mathf.Pow(1.2f, nLv);
+
+        attr.n_MP = (int)(rank * (sch.n_MP + (sch.n_MP_LVUP * fGrow)));
+        attr.n_ATK = (int)(rank * (sch.n_ATK + (sch.n_ATK_LVUP * fGrow)));
+        attr.n_DEF = (int)(rank * (sch.n_DEF + (sch.n_DEF_LVUP * fGrow)));
+        attr.n_POW = (int)(rank * (sch.n_POW + (sch.n_POW_LVUP * fGrow)));
+
+
+        //		attr.n_HP 	 = rank * ( sch.n_HP + (sch.n_HP_LVUP * nLv) );
+        //		attr.n_MP 	 = rank * ( sch.n_MP + (sch.n_MP_LVUP * nLv) );
+        //		attr.n_ATK 	 = rank * ( sch.n_ATK+ (sch.n_ATK_LVUP * nLv) );
+        //		attr.n_DEF 	 = rank * ( sch.n_DEF+ (sch.n_DEF_LVUP * nLv) );
+        //		attr.n_POW 	 = rank * ( sch.n_POW+ (sch.n_POW_LVUP * nLv) );
+
+        attr.n_SP = 0;
+        attr.n_MOV = sch.n_MOV;
+
+
+    }
+
+    void UpdateSchoolAttr( int nIdx , int nSchool )
 	{	
 		int nLv = 0;
 		if (SchoolPool.TryGetValue (nSchool, out nLv) == false ) {

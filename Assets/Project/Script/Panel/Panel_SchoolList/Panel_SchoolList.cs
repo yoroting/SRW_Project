@@ -14,20 +14,20 @@ public class Panel_SchoolList : MonoBehaviour {
     public GameObject SelectSchObj;
     public GameObject ContentObj;
 
-    public int nMode;
-    public int nVar1;
-    public int nVar2;
-    public int nVar3;
+    public int nMode; // 0 - 察看, 1- 換武功 , 2- 強化
+    public int nVar1;  // id
+    public int nVar2;  // lv
+    public int nVar3;  // sch type
     public int nVar4;
 
     public cUnitData pUnitData;
 
-    public int nSelectID;
+  //  public int nSelectID;
 
     // Use this for initialization
     void Awake()
     {
-        ItemObj.CreatePool(5);
+        ItemObj.CreatePool(3);
         ItemObj.SetActive(false);
 
         MyTool.SetLabelText(ContentObj, "");
@@ -63,7 +63,7 @@ public class Panel_SchoolList : MonoBehaviour {
         nVar2 = var2;
         nVar3 = var3;
         nVar4 = var4;
-        nSelectID = 0;
+     //   nSelectID = 0;
     }
 
 
@@ -80,6 +80,7 @@ public class Panel_SchoolList : MonoBehaviour {
         if (pUnitData == null)
             return;
 
+        int nCount=0;
         foreach ( KeyValuePair< int , int > pair in pUnitData.SchoolPool)
         {
             int schoolid = pair.Key;
@@ -88,7 +89,15 @@ public class Panel_SchoolList : MonoBehaviour {
             if (sch == null) {
                 continue;
             }
-            if (nVar1 != sch.n_TYPE)
+            // 不是指定的 sch id
+            if (nVar1 > 0 && (nVar1!= schoolid) )
+            {
+                continue;
+            }
+            // 不用管等級
+
+            // 不是指定的 sch type
+            if ( (nVar3>=0) &&  (nVar3!=sch.n_TYPE) )
             {
                 continue;
             }
@@ -115,13 +124,26 @@ public class Panel_SchoolList : MonoBehaviour {
                     drag.scrollView = svSchList;
                 }
 
-                Item_School item = obj.GetComponent<Item_School>();
+                Item_school_detail item = obj.GetComponent<Item_school_detail>();
                 if (item != null)
                 {
                     item.ReSize();
                     item.SetData(schoolid , lv );
-                    UIEventListener.Get(obj).onClick = OnItemClick; //
+                    // 判斷是否為 裝備中武學
+                    if (pUnitData != null) {
+                        if (schoolid == pUnitData.GetSchIDbyType(sch.n_TYPE))
+                        {
+                            item.SetChecked(true);
+                        }
+                        else {
+                            item.SetChecked(false);
+                        }
+                    }
+
+                    //  UIEventListener.Get(obj).onClick = OnItemClick; //
+                    UIEventListener.Get(obj).onClick = OnOKClick;
                 }
+                nCount++;
             }
         }
         // rescroll 
@@ -137,6 +159,11 @@ public class Panel_SchoolList : MonoBehaviour {
         }
 
         MyTool.SetLabelText(ContentObj, "");
+
+        if (nCount <= 0) {
+            // close
+        }
+
     }
 
     public void OnCloseClick(GameObject go)
@@ -146,19 +173,19 @@ public class Panel_SchoolList : MonoBehaviour {
 
     public void OnOKClick(GameObject go)
     {
-       
-
+        Item_school_detail item = go.GetComponent<Item_school_detail>();
+        int schid = item.m_nSchId;
         switch (nMode)
         {
             case 1: // equip
                 {
-                    if (nSelectID > 0 && (pUnitData != null))
+                    if (schid > 0 && (pUnitData != null))
                     {
 
-                        pUnitData.ActiveSchool(nSelectID);
+                        pUnitData.ActiveSchool(schid);
                         GameSystem.PlaySound("Audios 00050");
                     }
-                    // 如果有 mini unit 要更新
+                    // 有命令UI 要 關閉
                     if (PanelManager.Instance.CheckUIIsOpening(Panel_CMDUnitUI.Name))
                     {
                         Panel_CMDUnitUI.CancelCmd(); // 要關命令
@@ -168,16 +195,31 @@ public class Panel_SchoolList : MonoBehaviour {
                            
                         //}
                     }
-                    //if (PanelManager.Instance.CheckUIIsOpening(Panel_UnitInfo.Name))
-                    //{
+                    // 有資訊UI 要 更新
+                    if (PanelManager.Instance.CheckUIIsOpening(Panel_UnitInfo.Name))
+                    {
 
-                    //    //Panel_UnitInfo panel = MyTool.GetPanel<Panel_UnitInfo>(Panel_UnitInfo.Name); //PanelManager.Instance.OpenUI( Panel_UnitInfo.Name );
-                    //    //if (panel != null)
-                    //    //{
-                    //    //    panel.EquipItem(nVar1, itemid); // syn bag
-                    //    //}
+                        Panel_UnitInfo panel = MyTool.GetPanel<Panel_UnitInfo>(Panel_UnitInfo.Name); //PanelManager.Instance.OpenUI( Panel_UnitInfo.Name );
+                        if (panel != null)
+                        {
+                            panel.ReloadData();
+                            //panel.EquipItem(nVar1, itemid); // syn bag
+                        }
+                    }
+                    // 整備時 需reload list
+                    if (PanelManager.Instance.CheckUIIsOpening(Panel_Mainten.Name))
+                    {
 
-                    //}
+                        Panel_Mainten panel = MyTool.GetPanel<Panel_Mainten>(Panel_Mainten.Name); 
+                        if (panel != null)
+                        {
+                            panel.ReloadUnitList();
+                            //panel.EquipItem(nVar1, itemid); // syn bag
+                        }
+                    }
+
+
+
                 }
                 PanelManager.Instance.CloseUI(Name); // close school
                 break;
@@ -189,7 +231,7 @@ public class Panel_SchoolList : MonoBehaviour {
                         Panel_Enhance panel = MyTool.GetPanel<Panel_Enhance>(Panel_Enhance.Name); //PanelManager.Instance.OpenUI( Panel_UnitInfo.Name );
                         if (panel != null)
                         {
-                             panel.EquipSchool( nSelectID ); // syn bag
+                             panel.EquipSchool(schid); // syn bag
                         }
 
                     }
@@ -217,13 +259,13 @@ public class Panel_SchoolList : MonoBehaviour {
         if (item == null)
             return;
 
-        nSelectID = item.nSchID;
+    //    nSelectID = item.nSchID;
 
         //Panel_TipOpenItemTip(itemid);
         //Panel_Tip.OpenUI(MyTool.GetSkillName(itemid));
 
         ;
-        MyTool.SetLabelText(ContentObj, MyTool.GetSchoolName(nSelectID) );
+     //   MyTool.SetLabelText(ContentObj, MyTool.GetSchoolName(nSelectID) );
     }
 
 }
