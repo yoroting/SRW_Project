@@ -443,7 +443,6 @@ MonoBehaviour:
   nVar2: 0
   nVar3: 0
   nVar4: 0
-  nSelectID: 0
 --- !u!114 &11410700
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -778,7 +777,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3003
+  startingRenderQueue: 3016
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 3
@@ -949,7 +948,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3000
+  startingRenderQueue: 3007
   mClipTexture: {fileID: 0}
   mAlpha: 1
   mClipping: 0
@@ -987,9 +986,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movement: 1
-  dragEffect: 2
+  dragEffect: 1
   restrictWithinPanel: 1
-  constrainOnDrag: 0
+  constrainOnDrag: 1
   disableDragIfFits: 0
   smoothDragStart: 1
   iOSDragEmulation: 1
@@ -3345,6 +3344,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9dcbb4a74f5820044b17d026642261f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_nSchId: 0
+  m_nSchLv: 0
+  m_nSchType: 0
   m_lbl_star: {fileID: 114676896430915696}
   m_lbl_name: {fileID: 114766732899476462}
   m_lbl_lv: {fileID: 114820813126599656}
@@ -3900,6 +3902,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9dcbb4a74f5820044b17d026642261f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_nSchId: 0
+  m_nSchLv: 0
+  m_nSchType: 0
   m_lbl_star: {fileID: 114559955858356514}
   m_lbl_name: {fileID: 114269650871394308}
   m_lbl_lv: {fileID: 114661810612146982}
@@ -4479,6 +4484,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9dcbb4a74f5820044b17d026642261f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_nSchId: 0
+  m_nSchLv: 0
+  m_nSchType: 0
   m_lbl_star: {fileID: 114874198012704690}
   m_lbl_name: {fileID: 114346409880489142}
   m_lbl_lv: {fileID: 114287249620215840}

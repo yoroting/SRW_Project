@@ -21,12 +21,14 @@ public class Panel_Skill : MonoBehaviour {
     public GameObject SelOverObj; // 標示選擇
 
 
-    public GameObject lblMP;  //玩家能量
-    public GameObject lblCP;  // 玩家真氣
-    public GameObject lblCondition;  // 技能禁止條件
+    public UILabel lblMP;  //玩家能量
+    public UILabel lblSP;
+    public UILabel lblCP;  // 玩家真氣
 
-    public GameObject progMP;  // MP 進度
+    public UILabel lblCondition;  // 技能禁止條件
 
+    public UIProgressBar progMP;  // MP 進度
+    public UIProgressBar progSP;  // SP 進度
 
     public _SKILL_TYPE eSkillType;
 
@@ -106,43 +108,66 @@ public class Panel_Skill : MonoBehaviour {
 
         //string sCP = string.Format("{0}/{1}", nCP, pData.n_CP);
         string sCP = string.Format("{0}", pData.n_CP);
+        progMP.value = pData.n_MP / pData.GetMaxMP()  ;
+
+        //UISlider mpbar = progMP.GetComponent<UISlider>();
+        //if (mpbar != null)
+        //{
+
+        //    mpbar.value = 
+        //}
+        progSP.value = pData.n_SP / pData.GetMaxSP()  ;
+        //UISlider spbar = progSP.GetComponent<UISlider>();
+        //if (spbar != null)
+        //{
+        //    spbar.value = pData.n_SP / pData.GetMaxSP();
+        //}
+
+
+     
+
+        string sSP = string.Format("{0}/{1}", pData.n_SP, pData.GetMaxSP());
+        string sMP = string.Format("{0}/{1}", pData.n_MP, pData.GetMaxMP());
+        lblSP.text = sSP;
+        lblMP.text = sMP;
+
+        lblCP.text = pData.n_CP.ToString();
         string sCond = "";
+        //if (eSkillType == _SKILL_TYPE._ABILITY)
+        //{
+        //    lblCP.SetActive( false );
+        //  //  lblCondition.SetActive(false);
 
-        if (eSkillType == _SKILL_TYPE._ABILITY)
-        {
-            lblCP.SetActive( false );
-          //  lblCondition.SetActive(false);
-
-            string sSP = string.Format("{0}/{1}", pData.n_SP , pData.GetMaxSP());
-            MyTool.SetLabelText(lblMP, sSP);
-
-          
-
-        }
-        else if (eSkillType == _SKILL_TYPE._SKILL)
-        {
-            lblCP.SetActive(true);
-            //lblCondition.SetActive(false);
-
-            string sMP = string.Format("{0}/{1}", pData.n_MP , pData.GetMaxMP() );
-            MyTool.SetLabelText(lblMP, sMP);
-
-            UISlider mpbar = progMP.GetComponent<UISlider>();
-            if (mpbar != null)
-            {             
-                mpbar.value = pData.n_MP / pData.GetMaxMP() ;
-            }
+        //    string sSP = string.Format("{0}/{1}", pData.n_SP , pData.GetMaxSP());
+        //    MyTool.SetLabelText(lblMP, sSP);
 
 
-        }
-        else {
-            lblCP.SetActive(true);
-            //lblCP.SetActive(false);
-            string sMP = string.Format("{0}/{1}", nCost, pData.n_MP);
-            MyTool.SetLabelText(lblMP, sMP);
-        }
-        MyTool.SetLabelText(lblCP, sCP); 
-     //   MyTool.SetLabelText(lblCondition, sCond); 
+
+        //}
+        //else if (eSkillType == _SKILL_TYPE._SKILL)
+        //{
+        //    lblCP.SetActive(true);
+        //    //lblCondition.SetActive(false);
+
+        //    string sMP = string.Format("{0}/{1}", pData.n_MP , pData.GetMaxMP() );
+        //    MyTool.SetLabelText(lblMP, sMP);
+
+        //    UISlider mpbar = progMP.GetComponent<UISlider>();
+        //    if (mpbar != null)
+        //    {             
+        //        mpbar.value = pData.n_MP / pData.GetMaxMP() ;
+        //    }
+
+
+        //}
+        //else {
+        //    lblCP.SetActive(true);
+        //    //lblCP.SetActive(false);
+        //    string sMP = string.Format("{0}/{1}", nCost, pData.n_MP);
+        //    MyTool.SetLabelText(lblMP, sMP);
+        //}
+        //   MyTool.SetLabelText(lblCP, sCP); 
+        //   MyTool.SetLabelText(lblCondition, sCond); 
     }
 
 	public void SetData( cUnitData data , _SKILL_TYPE eType  , cUnitData target , _CMD_TYPE cmdType  , int schoolid=0 )

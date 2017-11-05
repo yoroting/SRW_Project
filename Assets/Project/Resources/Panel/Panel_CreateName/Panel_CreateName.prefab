@@ -591,9 +591,9 @@ MonoBehaviour:
   disabledColor: {r: 1, g: 1, b: 1, a: 1}
   duration: 0.2
   dragHighlight: 0
-  hoverSprite: Btn_R_over
-  pressedSprite: Btn_R_press
-  disabledSprite: Btn_R_disable
+  hoverSprite: btn_green1
+  pressedSprite: btn_green2
+  disabledSprite: btn_green3
   hoverSprite2D: {fileID: 0}
   pressedSprite2D: {fileID: 0}
   disabledSprite2D: {fileID: 0}
@@ -621,6 +621,7 @@ MonoBehaviour:
   onReturnKey: 0
   keyboardType: 0
   hideInput: 1
+  submitOnUnselect: 0
   validation: 0
   characterLimit: 3
   savedAs: 
@@ -665,6 +666,8 @@ MonoBehaviour:
   updateAnchors: 1
   showInPanelTool: 1
   generateNormals: 0
+  generateUV2: 0
+  shadowMode: 0
   widgetsAreStatic: 0
   cullWhileDragging: 1
   alwaysOnScreen: 0
@@ -679,7 +682,9 @@ MonoBehaviour:
   mClipSoftness: {x: 4, y: 4}
   mDepth: 2
   mSortingOrder: 0
+  mSortingLayerName: 
   mClipOffset: {x: 0, y: 0}
+  useSortingOrder: 0
 --- !u!114 &114150870704601538
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -713,6 +718,7 @@ MonoBehaviour:
   mWidth: 184
   mHeight: 46
   mDepth: 1
+  mMat: {fileID: 0}
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
@@ -731,7 +737,6 @@ MonoBehaviour:
   mSymbols: 1
   mEffectDistance: {x: 1, y: 1}
   mOverflow: 1
-  mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
   mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
@@ -741,6 +746,8 @@ MonoBehaviour:
   mFloatSpacingX: 0
   mFloatSpacingY: 0
   mOverflowEllipsis: 0
+  mOverflowWidth: 0
+  mModifier: 0
   mShrinkToFit: 0
   mMaxLineWidth: 0
   mMaxLineHeight: 0
@@ -762,6 +769,7 @@ MonoBehaviour:
   onReturnKey: 0
   keyboardType: 0
   hideInput: 1
+  submitOnUnselect: 0
   validation: 0
   characterLimit: 2
   savedAs: 
@@ -809,6 +817,7 @@ MonoBehaviour:
   mWidth: 150
   mHeight: 80
   mDepth: 4
+  mMat: {fileID: 0}
   autoResizeBoxCollider: 1
   hideIfOffScreen: 0
   keepAspectRatio: 0
@@ -818,13 +827,16 @@ MonoBehaviour:
   mFillAmount: 1
   mInvert: 0
   mFlip: 0
+  mApplyGradient: 0
+  mGradientTop: {r: 1, g: 1, b: 1, a: 1}
+  mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
   centerType: 1
   leftType: 1
   rightType: 1
   bottomType: 1
   topType: 1
   mAtlas: {fileID: 11491776, guid: 25576dd4c299fef4f9fc244f1e89bb8b, type: 2}
-  mSpriteName: Btn_R
+  mSpriteName: btn_green0
   mFillCenter: 1
 --- !u!114 &114356869965888312
 MonoBehaviour:
@@ -869,11 +881,12 @@ MonoBehaviour:
     relative: 1
     absolute: -4
   updateAnchors: 1
-  mColor: {r: 0, g: 0, b: 0, a: 1}
+  mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
   mWidth: 142
   mHeight: 72
   mDepth: 7
+  mMat: {fileID: 0}
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
@@ -887,21 +900,22 @@ MonoBehaviour:
   mAlignment: 0
   mEncoding: 1
   mMaxLineCount: 0
-  mEffectStyle: 1
-  mEffectColor: {r: 1, g: 1, b: 1, a: 1}
+  mEffectStyle: 2
+  mEffectColor: {r: 0.7137255, g: 0.3254902, b: 0.16862746, a: 1}
   mSymbols: 1
-  mEffectDistance: {x: 1, y: 1}
+  mEffectDistance: {x: 2, y: 2}
   mOverflow: 0
-  mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
-  mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
-  mSpacingX: 0
+  mGradientBottom: {r: 1, g: 1, b: 0.627451, a: 1}
+  mSpacingX: 8
   mSpacingY: 0
   mUseFloatSpacing: 0
   mFloatSpacingX: 0
   mFloatSpacingY: 0
   mOverflowEllipsis: 0
+  mOverflowWidth: 0
+  mModifier: 0
   mShrinkToFit: 0
   mMaxLineWidth: 0
   mMaxLineHeight: 0
@@ -940,6 +954,7 @@ MonoBehaviour:
   mWidth: 184
   mHeight: 46
   mDepth: 1
+  mMat: {fileID: 0}
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
@@ -958,7 +973,6 @@ MonoBehaviour:
   mSymbols: 1
   mEffectDistance: {x: 1, y: 1}
   mOverflow: 1
-  mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
   mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
@@ -968,6 +982,8 @@ MonoBehaviour:
   mFloatSpacingX: 0
   mFloatSpacingY: 0
   mOverflowEllipsis: 0
+  mOverflowWidth: 0
+  mModifier: 0
   mShrinkToFit: 0
   mMaxLineWidth: 0
   mMaxLineHeight: 0
@@ -1006,6 +1022,7 @@ MonoBehaviour:
   mWidth: 100
   mHeight: 80
   mDepth: 1
+  mMat: {fileID: 0}
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
@@ -1024,7 +1041,6 @@ MonoBehaviour:
   mSymbols: 1
   mEffectDistance: {x: 1, y: 1}
   mOverflow: 0
-  mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
   mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
@@ -1034,6 +1050,8 @@ MonoBehaviour:
   mFloatSpacingX: 0
   mFloatSpacingY: 0
   mOverflowEllipsis: 0
+  mOverflowWidth: 0
+  mModifier: 0
   mShrinkToFit: 0
   mMaxLineWidth: 0
   mMaxLineHeight: 0
@@ -1072,6 +1090,7 @@ MonoBehaviour:
   mWidth: 200
   mHeight: 70
   mDepth: 0
+  mMat: {fileID: 0}
   autoResizeBoxCollider: 1
   hideIfOffScreen: 0
   keepAspectRatio: 0
@@ -1081,6 +1100,9 @@ MonoBehaviour:
   mFillAmount: 1
   mInvert: 0
   mFlip: 0
+  mApplyGradient: 0
+  mGradientTop: {r: 1, g: 1, b: 1, a: 1}
+  mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
   centerType: 1
   leftType: 1
   rightType: 1
@@ -1106,9 +1128,9 @@ MonoBehaviour:
   disabledColor: {r: 1, g: 1, b: 1, a: 1}
   duration: 0.2
   dragHighlight: 0
-  hoverSprite: Btn_G_over
-  pressedSprite: Btn_G_press
-  disabledSprite: Btn_G_disable
+  hoverSprite: btn_blue1
+  pressedSprite: btn_blue2
+  disabledSprite: btn_blue3
   hoverSprite2D: {fileID: 0}
   pressedSprite2D: {fileID: 0}
   disabledSprite2D: {fileID: 0}
@@ -1153,6 +1175,7 @@ MonoBehaviour:
   mWidth: 300
   mHeight: 80
   mDepth: 1
+  mMat: {fileID: 0}
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
@@ -1171,7 +1194,6 @@ MonoBehaviour:
   mSymbols: 1
   mEffectDistance: {x: 1, y: 1}
   mOverflow: 0
-  mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
   mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
@@ -1181,6 +1203,8 @@ MonoBehaviour:
   mFloatSpacingX: 0
   mFloatSpacingY: 0
   mOverflowEllipsis: 0
+  mOverflowWidth: 0
+  mModifier: 0
   mShrinkToFit: 0
   mMaxLineWidth: 0
   mMaxLineHeight: 0
@@ -1219,6 +1243,7 @@ MonoBehaviour:
   mWidth: 100
   mHeight: 80
   mDepth: 1
+  mMat: {fileID: 0}
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
@@ -1237,7 +1262,6 @@ MonoBehaviour:
   mSymbols: 1
   mEffectDistance: {x: 1, y: 1}
   mOverflow: 0
-  mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
   mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
@@ -1247,6 +1271,8 @@ MonoBehaviour:
   mFloatSpacingX: 0
   mFloatSpacingY: 0
   mOverflowEllipsis: 0
+  mOverflowWidth: 0
+  mModifier: 0
   mShrinkToFit: 0
   mMaxLineWidth: 0
   mMaxLineHeight: 0
@@ -1295,11 +1321,12 @@ MonoBehaviour:
     relative: 1
     absolute: -4
   updateAnchors: 1
-  mColor: {r: 0, g: 0, b: 0, a: 1}
+  mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
   mWidth: 142
   mHeight: 72
   mDepth: 7
+  mMat: {fileID: 0}
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
@@ -1313,21 +1340,22 @@ MonoBehaviour:
   mAlignment: 0
   mEncoding: 1
   mMaxLineCount: 0
-  mEffectStyle: 1
-  mEffectColor: {r: 1, g: 1, b: 1, a: 1}
+  mEffectStyle: 2
+  mEffectColor: {r: 0.7137255, g: 0.3254902, b: 0.16862746, a: 1}
   mSymbols: 1
-  mEffectDistance: {x: 1, y: 1}
+  mEffectDistance: {x: 2, y: 2}
   mOverflow: 0
-  mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
-  mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
+  mGradientBottom: {r: 1, g: 1, b: 0.627451, a: 1}
   mSpacingX: 0
   mSpacingY: 0
   mUseFloatSpacing: 0
   mFloatSpacingX: 0
   mFloatSpacingY: 0
   mOverflowEllipsis: 0
+  mOverflowWidth: 0
+  mModifier: 0
   mShrinkToFit: 0
   mMaxLineWidth: 0
   mMaxLineHeight: 0
@@ -1366,6 +1394,7 @@ MonoBehaviour:
   mWidth: 150
   mHeight: 80
   mDepth: 4
+  mMat: {fileID: 0}
   autoResizeBoxCollider: 1
   hideIfOffScreen: 0
   keepAspectRatio: 0
@@ -1375,13 +1404,16 @@ MonoBehaviour:
   mFillAmount: 1
   mInvert: 0
   mFlip: 0
+  mApplyGradient: 0
+  mGradientTop: {r: 1, g: 1, b: 1, a: 1}
+  mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
   centerType: 1
   leftType: 1
   rightType: 1
   bottomType: 1
   topType: 1
   mAtlas: {fileID: 11491776, guid: 25576dd4c299fef4f9fc244f1e89bb8b, type: 2}
-  mSpriteName: Btn_G
+  mSpriteName: btn_blue0
   mFillCenter: 1
 --- !u!114 &114914756820202656
 MonoBehaviour:
@@ -1416,6 +1448,7 @@ MonoBehaviour:
   mWidth: 200
   mHeight: 70
   mDepth: 0
+  mMat: {fileID: 0}
   autoResizeBoxCollider: 1
   hideIfOffScreen: 0
   keepAspectRatio: 0
@@ -1425,6 +1458,9 @@ MonoBehaviour:
   mFillAmount: 1
   mInvert: 0
   mFlip: 0
+  mApplyGradient: 0
+  mGradientTop: {r: 1, g: 1, b: 1, a: 1}
+  mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
   centerType: 1
   leftType: 1
   rightType: 1
@@ -1466,6 +1502,7 @@ MonoBehaviour:
   mWidth: 600
   mHeight: 400
   mDepth: 0
+  mMat: {fileID: 0}
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
@@ -1475,11 +1512,14 @@ MonoBehaviour:
   mFillAmount: 1
   mInvert: 0
   mFlip: 0
+  mApplyGradient: 0
+  mGradientTop: {r: 1, g: 1, b: 1, a: 1}
+  mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
   centerType: 1
   leftType: 1
   rightType: 1
   bottomType: 1
   topType: 1
   mAtlas: {fileID: 11491776, guid: 25576dd4c299fef4f9fc244f1e89bb8b, type: 2}
-  mSpriteName: check_box
+  mSpriteName: UI_001
   mFillCenter: 1

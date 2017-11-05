@@ -8,8 +8,8 @@ public class Panel_ItemList : MonoBehaviour
 
 
     public GameObject GridObj;
-
     public GameObject ItemObj;
+    public UISlider m_SB_Ver;
 
     public int nMode;
     public int nVar1;
@@ -114,14 +114,15 @@ public class Panel_ItemList : MonoBehaviour
                 }
             }
         }
-       
+
 
         // rescroll 
+        m_SB_Ver.value = 0.0f;
         UIGrid grid = GridObj.GetComponent<UIGrid>();
         if ( grid!= null ) {
             grid.repositionNow = true;
         }
-
+        
 
 
     }
@@ -137,9 +138,14 @@ public class Panel_ItemList : MonoBehaviour
         if (item == null)
             return;
         
-        int itemid = item.nItemID;
+        int itemid = item.m_nItemID;
 
         switch (nMode) {
+            case 0:// list
+                {
+                     // list only
+                }break;
+
             case 1: // equip
                 {
                     if(PanelManager.Instance.CheckUIIsOpening(Panel_UnitInfo.Name) ) {

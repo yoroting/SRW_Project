@@ -284,12 +284,15 @@ public class Panel_Mainten : MonoBehaviour {
 
         // clear all
         CharUnit.RecycleAll();
+        
+
         UIGrid grid = GridUnitList.GetComponent<UIGrid>();
         if (grid != null) {
-            while (grid.transform.childCount > 0)
-            {
-                DestroyImmediate(grid.transform.GetChild(0).gameObject);
-            }
+            MyTool.DestoryGridItem(grid);
+            //while (grid.transform.childCount > 0)
+            //{
+            //    DestroyImmediate(grid.transform.GetChild(0).gameObject);
+            //}
         }
 
         // sort by mar

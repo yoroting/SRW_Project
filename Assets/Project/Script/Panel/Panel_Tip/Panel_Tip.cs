@@ -197,15 +197,15 @@ public class Panel_Tip : MonoBehaviour {
 		}
 
 		string nSkillName = MyTool.GetSkillName( nSkillID );
-		
-		string sTip = "";
-		// get content
-		DataRow row = ConstDataManager.Instance.GetRow( (int)ConstDataTables.SKILL_TEXT , nSkillID );
-		if( row != null )
-		{				
-			sTip = row.Field<string>( "s_TIP");		
-		}
-        sTip = sTip.Replace("\\n", System.Environment.NewLine);
+        string sTip = MyTool.GetSkillTip(nSkillID);
+  //      string sTip = "";
+		//// get content
+		//DataRow row = ConstDataManager.Instance.GetRow( (int)ConstDataTables.SKILL_TEXT , nSkillID );
+		//if( row != null )
+		//{				
+		//	sTip = row.Field<string>( "s_TIP");		
+		//}
+  //      sTip = sTip.Replace("\\n", System.Environment.NewLine);
         if (Config.GOD) {
 			
 			sTip += "\n(ID:"+nSkillID.ToString() +")";
@@ -228,14 +228,14 @@ public class Panel_Tip : MonoBehaviour {
 		
 		string nItemName = MyTool.GetItemName ( nItemID ); 
 		
-		string sTip = "";
-		// get content
-		DataRow row = ConstDataManager.Instance.GetRow( "ITEM_MISC_TIP" , nItemID );
-		if( row != null )
-		{				
-			sTip = row.Field<string>( "s_COMMON");		
-		}
-        sTip = sTip.Replace("\\n", System.Environment.NewLine);
+		string sTip = MyTool.GetItemTip(nItemID);
+        //// get content
+        //DataRow row = ConstDataManager.Instance.GetRow( "ITEM_MISC_TIP" , nItemID );
+        //if( row != null )
+        //{				
+        //	sTip = row.Field<string>( "s_COMMON");		
+        //}
+        //      sTip = sTip.Replace("\\n", System.Environment.NewLine);
         if (Config.GOD) {
 			
 			sTip += "\n(ID:"+nItemID.ToString() +")";

@@ -6547,7 +6547,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1423910481093104}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 444240}
@@ -7526,9 +7526,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movement: 1
-  dragEffect: 2
+  dragEffect: 1
   restrictWithinPanel: 1
-  constrainOnDrag: 0
+  constrainOnDrag: 1
   disableDragIfFits: 0
   smoothDragStart: 1
   iOSDragEmulation: 1
@@ -7539,7 +7539,7 @@ MonoBehaviour:
   verticalScrollBar: {fileID: 0}
   showScrollBars: 1
   customMovement: {x: 1, y: 0}
-  contentPivot: 0
+  contentPivot: 1
   scale: {x: 0, y: 0, z: 0}
   relativePositionOnReset: {x: 0, y: 0}
   centerOnChild: {fileID: 0}
@@ -11536,7 +11536,7 @@ MonoBehaviour:
   mDepth: 14
   mSortingOrder: 0
   mSortingLayerName: 
-  mClipOffset: {x: 0, y: 0}
+  mClipOffset: {x: 0, y: 4}
   useSortingOrder: 0
 --- !u!114 &114827507500398284
 MonoBehaviour:

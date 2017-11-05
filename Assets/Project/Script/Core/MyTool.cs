@@ -102,20 +102,7 @@ public class MyTool {
 		return "";
 	}
 
-    // 取得 技能說明
-    public static string GetSkillTip(int nID)
-    {
-        DataRow row = ConstDataManager.Instance.GetRow((int)ConstDataTables.SKILL_TEXT, nID);
-        if (row != null)
-        {
-            string content = row.Field<string>("s_TIP");
-            if (content.ToUpper() == "NULL") {
-                return "";
-            }
-            return content;
-        }
-        return "";
-    }
+   
 
     public static string GetBuffName( int nID )
 	{
@@ -141,7 +128,7 @@ public class MyTool {
 	public static string GetItemName( int nID )
 	{
         if (nID == 0){
-            return "- 無 -";
+            return "—— 空 ——";
         }
 		//BUFF buff = ConstDataManager.Instance.GetRow< BUFF > ( nID );
 		//if (buff == null)
@@ -174,6 +161,25 @@ public class MyTool {
 
 	}
 
+
+    // 取得 技能說明
+    public static string GetSkillTip(int nID)
+    {
+        string sTip = "";
+        DataRow row = ConstDataManager.Instance.GetRow((int)ConstDataTables.SKILL_TEXT, nID);
+        if (row != null)
+        {
+            sTip = row.Field<string>("s_TIP");
+            if (sTip.ToUpper() == "NULL")
+            {
+                return "";
+            }
+            sTip = sTip.Replace("\\n", System.Environment.NewLine);
+            
+        }
+        return sTip;
+    }
+
     public static string GetBuffTip( int nBuffID )
     {
         string sTip = "";
@@ -182,6 +188,21 @@ public class MyTool {
         if (row != null)
         {
             sTip = row.Field<string>("s_TIP");
+        }
+        sTip = sTip.Replace("\\n", System.Environment.NewLine);
+        return sTip;
+    }
+
+    public static string GetItemTip(int nItemID)
+    {
+        string nItemName = MyTool.GetItemName(nItemID);
+
+        string sTip = "";
+        // get content
+        DataRow row = ConstDataManager.Instance.GetRow("ITEM_MISC_TIP", nItemID);
+        if (row != null)
+        {
+            sTip = row.Field<string>("s_COMMON");
         }
         sTip = sTip.Replace("\\n", System.Environment.NewLine);
         return sTip;
@@ -510,7 +531,42 @@ public class MyTool {
         }
     }
 
-	public static void DestoryGridItem( GameObject go )
+    public static void DestoryGridItem(UIGrid grid)
+    {
+        if (grid == null) {
+            return;
+        }
+        // 销毁现有元素
+        //while (grid.transform.childCount > 0)
+        //{
+        //	NGUITools.DestroyImmediate(grid.transform.GetChild(0).gameObject); // this func don't works in PC mode and cause infin loop crash
+        //}
+
+        List<Transform> lst = grid.GetChildList();
+        //		//List< GameObject > CmdBtnList = MyTool.GetChildPool( NGuiGrids );
+        //		
+        if (lst != null)
+        {
+            foreach (Transform t in lst)
+            {
+
+                ///UIEventListener.Get(obj).onClick -= OnCMDButtonClick;;  // no need.. destory soon
+                NGUITools.Destroy(t.gameObject);
+            }
+        }
+        UIScrollView sv = grid.transform.parent.GetComponent<UIScrollView>();
+        if (sv != null) {
+            if (sv.verticalScrollBar != null) {
+                sv.verticalScrollBar.value = 0.0f;
+            }
+        }
+
+
+
+        grid.repositionNow = true;      // need this for second pop to re pos
+        grid.Reposition();             // for re value
+    }
+    public static void DestoryGridItem( GameObject go )
 	{
 		if ( go == null)
 			return ;
@@ -520,29 +576,8 @@ public class MyTool {
 			return ;
 		}
 
-		// 销毁现有元素
-		//while (grid.transform.childCount > 0)
-		//{
-		//	NGUITools.DestroyImmediate(grid.transform.GetChild(0).gameObject); // this func don't works in PC mode and cause infin loop crash
-		//}
-
-
-		
-		List< Transform > lst = grid.GetChildList ();
-        //		//List< GameObject > CmdBtnList = MyTool.GetChildPool( NGuiGrids );
-        //		
-    if (lst != null) {
-        foreach (Transform t in lst)
-        {
-
-            ///UIEventListener.Get(obj).onClick -= OnCMDButtonClick;;  // no need.. destory soon
-            NGUITools.Destroy(t.gameObject);
-        }
+        DestoryGridItem(grid);
     }
-       
-        grid.repositionNow = true;		// need this for second pop to re pos
-		grid.Reposition ();             // for re value
-	}
 
 	public static void DestoryTweens( GameObject go )
 	{

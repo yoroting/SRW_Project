@@ -647,7 +647,7 @@ MonoBehaviour:
     relative: 1
     absolute: 0
   updateAnchors: 1
-  mColor: {r: 0, g: 0, b: 0, a: 1}
+  mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
   mWidth: 240
   mHeight: 36
@@ -662,18 +662,18 @@ MonoBehaviour:
   mFont: {fileID: 0}
   mText: New Label
   mFontSize: 36
-  mFontStyle: 0
+  mFontStyle: 1
   mAlignment: 0
   mEncoding: 1
   mMaxLineCount: 0
-  mEffectStyle: 0
-  mEffectColor: {r: 0, g: 0, b: 0, a: 1}
+  mEffectStyle: 2
+  mEffectColor: {r: 0.7137255, g: 0.3254902, b: 0.16862746, a: 1}
   mSymbols: 1
   mEffectDistance: {x: 1, y: 1}
   mOverflow: 0
   mApplyGradient: 1
-  mGradientTop: {r: 1, g: 1, b: 1, a: 1}
-  mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
+  mGradientTop: {r: 1, g: 1, b: 0.627451, a: 1}
+  mGradientBottom: {r: 1, g: 0.78431374, b: 0, a: 1}
   mSpacingX: 0
   mSpacingY: 0
   mUseFloatSpacing: 0
@@ -1025,6 +1025,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb9e11d99f0f6484b9b72ca457b96071, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_BtnID: 0
+  m_nVar1: 0
+  m_fVar1: 0
 --- !u!114 &11468234
 MonoBehaviour:
   m_ObjectHideFlags: 1
