@@ -268,10 +268,10 @@ MonoBehaviour:
     y: 1453
     width: 618
     height: 167
-    borderLeft: 0
-    borderRight: 0
-    borderTop: 0
-    borderBottom: 0
+    borderLeft: 16
+    borderRight: 16
+    borderTop: 16
+    borderBottom: 16
     paddingLeft: 0
     paddingRight: 0
     paddingTop: 0
