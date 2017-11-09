@@ -16,6 +16,12 @@ public class Panel_Enhance : MonoBehaviour
     public GameObject BtnOk;
     public GameObject ExtObj;
     public GameObject IntObj;
+
+    public ItemList_School school_ext_item;
+    public ItemList_School school_int_item;
+    public item_param[] lbl_param_item;
+    public enhance_param_item [] enhance_param_item;
+
     //  public GameObject GridExt; // GRID obj
     //  public GameObject GridInt;
 
