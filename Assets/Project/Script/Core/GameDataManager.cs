@@ -587,93 +587,98 @@ private static GameDataManager instance;
 
 
 
-	public cUnitData CreateCharbySaveData( cUnitSaveData save , bool bAddtoPool = false )
-	{
-		cUnitData unit  = new cUnitData();
-		unit.n_Ident 	= save.n_Ident;  //GenerSerialNO( );
-		unit.n_CharID 	= save.n_CharID;
-		unit.bEnable 	= save.b_Enable;
+	//public cUnitData CreateCharbySaveData( cUnitSaveData save , bool bAddtoPool = false )
+	//{
 
-		if (unit.n_Ident > nSerialNO) {
-			nSerialNO = unit.n_Ident;  // update serial NO if need 
-		}
-		
-		CHARS cdata = ConstDataManager.Instance.GetRow< CHARS > (unit.n_CharID);
-		if (cdata == null) {
-			Debug.LogErrorFormat( "CreateCharbysave data with null data {0}" , unit.n_CharID );
-			
-		}
-		unit.SetContData( cdata  );
-
-        // 調整
-        unit.n_FaceID = save.n_FaceID;
-      //  if (0 == unit.n_FaceID) {
-      //      unit.n_FaceID = unit.n_CharID; // default value
-      //  }
-
-		unit.eCampID = save.eCampID;
-
-		unit.n_Lv	 = save.n_Lv;
-		unit.n_EXP   = save.n_EXP;
-		unit.n_HP  	 = save.n_HP;
-		unit.n_MP	 = save.n_MP;
-		unit.n_SP	 = save.n_SP;
-        unit.n_CP    = save.n_CP;
-        unit.n_DEF   = save.n_DEF;
-		unit.nActionTime = save.nActionTime;
-        unit.nTired = save.nTired;
-		unit.n_X	 = save.n_X;
-		unit.n_Y	 = save.n_Y;
-
-		unit.n_BornX = save.n_BornX;
-		unit.n_BornY = save.n_BornY;
-		unit.n_LeaderIdent	= save.n_LeaderIdent;
-
-		unit.Items 	 = save.Items;
-        unit.n_DropItemID = save.nDropItemID;
-		// school
-		unit.SchoolPool = MyTool.ConvetToIntInt ( save.School );
-		// buff
-		unit.Buffs.ImportSavePool ( save.Buffs );
-        unit.CDs.ImportSavePool( save.CDs );
-
-        // special tag
-        if (save.Tags != null)
-        {
-            unit.Tags = save.Tags;
-          
-          
-        }
+        //       cUnitData unit  = new cUnitData();
+        //	unit.n_Ident 	= save.n_Ident;  //GenerSerialNO( );
+        //	unit.n_CharID 	= save.n_CharID;
+        //	unit.bEnable 	= save.b_Enable;
 
 
 
-        //=== AI
-        unit.eSearchAI = save.eSearchAI;
-		unit.eComboAI = save.eComboAI;
-		unit.n_AITarget = save.nAITarget;
-		unit.n_AIX = save.nAIX;
-		unit.n_AIY = save.nAIY;
+        //	CHARS cdata = ConstDataManager.Instance.GetRow< CHARS > (unit.n_CharID);
+        //	if (cdata == null) {
+        //		Debug.LogErrorFormat( "CreateCharbysave data with null data {0}" , unit.n_CharID );
 
-		// reactive school for skill data. take care old school must const data default school
-		foreach ( int nSchID in save.nActSch) {
-			unit.ActiveSchool ( nSchID );					
-		}
-		//unit.nActSch = save.nActSch;
-		//unit.ActiveSchool ( unit.GetExtSchID() );
-		//unit.ActiveSchool ( unit.GetIntSchID() );
+        //	}
+        //	unit.SetContData( cdata  );
+
+        //       // 調整
+        //       unit.n_FaceID = save.n_FaceID;
+        //     //  if (0 == unit.n_FaceID) {
+        //     //      unit.n_FaceID = unit.n_CharID; // default value
+        //     //  }
+
+        //	unit.eCampID = save.eCampID;
+
+        //	unit.n_Lv	 = save.n_Lv;
+        //	unit.n_EXP   = save.n_EXP;
+        //	unit.n_HP  	 = save.n_HP;
+        //	unit.n_MP	 = save.n_MP;
+        //	unit.n_SP	 = save.n_SP;
+        //       unit.n_CP    = save.n_CP;
+        //       unit.n_DEF   = save.n_DEF;
+        //	unit.nActionTime = save.nActionTime;
+        //       unit.nTired = save.nTired;
+        //	unit.n_X	 = save.n_X;
+        //	unit.n_Y	 = save.n_Y;
+
+        //	unit.n_BornX = save.n_BornX;
+        //	unit.n_BornY = save.n_BornY;
+        //	unit.n_LeaderIdent	= save.n_LeaderIdent;
+
+        //	unit.Items 	 = save.Items;
+        //       unit.n_DropItemID = save.nDropItemID;
+
+        //       // enhance
+        //       if (save.Enhance != null)
+        //       {
+        //           unit.EnhancePool = MyTool.ConvetToIntInt(save.Enhance);
+        //       }
+        //	// school
+        //	unit.SchoolPool = MyTool.ConvetToIntInt ( save.School );
+        //	// buff
+        //	unit.Buffs.ImportSavePool ( save.Buffs );
+        //       unit.CDs.ImportSavePool( save.CDs );
+
+        //       // special tag
+        //       if (save.Tags != null)
+        //       {
+        //           unit.Tags = save.Tags;
 
 
-		unit.UpdateAllAttr ();
-	//	unit.UpdateAttr (); // sometime will cause fail when other ident not ready
+        //       }
 
-		if (bAddtoPool) {
-			AddCharToPool( unit );
-		} else { // add to storge
-			AddCharToStorage( unit );
-		}
 
-		return unit;
-	}
+
+        //       //=== AI
+        //       unit.eSearchAI = save.eSearchAI;
+        //	unit.eComboAI = save.eComboAI;
+        //	unit.n_AITarget = save.nAITarget;
+        //	unit.n_AIX = save.nAIX;
+        //	unit.n_AIY = save.nAIY;
+
+        //	// reactive school for skill data. take care old school must const data default school
+        //	foreach ( int nSchID in save.nActSch) {
+        //		unit.ActiveSchool ( nSchID );					
+        //	}
+        //	//unit.nActSch = save.nActSch;
+        //	//unit.ActiveSchool ( unit.GetExtSchID() );
+        //	//unit.ActiveSchool ( unit.GetIntSchID() );
+
+
+        //	unit.UpdateAllAttr ();
+        ////	unit.UpdateAttr (); // sometime will cause fail when other ident not ready
+
+        //if (bAddtoPool) {
+        //	AddCharToPool( unit );
+        //} else { // add to storge
+        //	AddCharToStorage( unit );
+        //}
+
+        //return unit;
+   // }
 
 	public bool AddCharToPool( cUnitData unit )
 	{
@@ -684,7 +689,13 @@ private static GameDataManager instance;
 			//}
 			
 		} else {
-			UnitPool.Add( unit.n_Ident , unit );
+            //  // update serial NO  to avoid new pop with double ident
+            if (unit.n_Ident > nSerialNO)
+            {
+                nSerialNO = unit.n_Ident; 
+            }
+
+            UnitPool.Add( unit.n_Ident , unit );
 		}		
 		
 		return true;
@@ -1226,14 +1237,26 @@ private static GameDataManager instance;
 		
 		foreach( cUnitSaveData save in pool ) {
 			// add to char 
-			cUnitData data = CreateCharbySaveData( save );
-			if( data != null ){
-
-				//Panel_StageUI.Instance.CreateUnitByUnitData( data ) ;
-				//CreateCharbySaveData( save )	
-			}
+			//cUnitData data = CreateCharbySaveData( save );
+            cUnitData data = save.CreateUnitData();
+            if ( data != null ){               
+                AddCharToStorage( data );
+                //Panel_StageUI.Instance.CreateUnitByUnitData( data ) ;
+                //CreateCharbySaveData( save )	
+            }
 		}
-	}
+
+        // 必須全部新增完畢後 才可以 運算更新
+        foreach (KeyValuePair<int, cUnitData> pair in StoragePool)
+        {
+            if (pair.Value != null)
+            {
+                pair.Value.UpdateAttr();
+            }
+        }
+
+
+    }
 
 	public void ImportSavePool( List< cUnitSaveData > pool)
 	{
@@ -1245,15 +1268,18 @@ private static GameDataManager instance;
             return;
         }
         foreach ( cUnitSaveData save in pool ) {
-			// add to char 
-			cUnitData data = CreateCharbySaveData( save  , true );
-			if( data != null ){
-				//UnitPool.Add( data.n_Ident , data ); // add to unit pool first
-			//	Panel_StageUI.Instance.CreateUnitByUnitData( data ) ; // need create panel_unit
+            // add to char 
+            //cUnitData data = CreateCharbySaveData( save  , true );
+            cUnitData data = save.CreateUnitData();
+            if ( data != null ){
+                
+                AddCharToPool( data );
+                //UnitPool.Add( data.n_Ident , data ); // add to unit pool first
+                //	Panel_StageUI.Instance.CreateUnitByUnitData( data ) ; // need create panel_unit
 
-			}
+            }
 		}
-        // update all attr
+        // 必須全部新增完畢後 才可以 運算更新
         foreach (KeyValuePair<int , cUnitData > pair in UnitPool )
         {
             if (pair.Value != null ) {

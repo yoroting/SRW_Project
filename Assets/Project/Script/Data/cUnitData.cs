@@ -4,6 +4,28 @@ using System.Collections.Generic;
 using MyClassLibrary;
 //using _SRW;
 
+    // 屬性值列舉
+public enum _ePARAMIDX
+{
+    _NULL = 0,  
+    _LV   = 1, //1   等級
+    _EXP  = 2, //2	經驗
+    _MAR  = 3, //3	武功
+    _HP   = 4, //4	生命
+    _MP   = 5, //5	內力
+    _SP   = 6, //6	精神
+    _ATK  = 7, //7	攻擊
+    _DEF  = 8, //8	防禦
+    _POW  = 9, //9	氣勁
+    _MOV  = 10,//10	移動
+    _BRU  = 11,//11	爆發
+    _RED  = 12,//12	減免
+    _ARM  = 13,//13	護甲
+    _TIRED = 14,//14	破綻
+    _MAX    // Max
+}
+
+
 // 戰鬥零時摻數
 public enum _FIGHTSTATE
 {
@@ -89,7 +111,8 @@ public class cAttrData
 	public static int _BUFF   = _ITEM+1;
 	public static int _CONDBUFF   = _BUFF+1;
 	public static int _FIGHT   = _CONDBUFF+1;
-	public static int _MAX 	  = _FIGHT+1; // not use
+    public static int _ENHANCE = _FIGHT + 1;
+    public static int _MAX 	  = _ENHANCE + 1; // not use
 
 	//========================
 
@@ -281,8 +304,10 @@ public class cUnitData{
                                                 // calcul attr
     Dictionary< int , cAttrData > Attr; 		// 0-內功 , 1-外功  , 2-等級 , 3- buff 
 
-	// school
-	public Dictionary< int , int >		SchoolPool;			// all study school < school id , lv >
+
+    public Dictionary<int, int> EnhancePool;         // 強化紀錄
+                                                    // school
+    public Dictionary< int , int >		SchoolPool;			// all study school < school id , lv >
 	public Dictionary< int , int >		AbilityPool;		// all ability school < ability id , lv can use >
 
 	// current skill data pool
@@ -354,7 +379,9 @@ public class cUnitData{
 	public cUnitData()
 	{
 		bEnable = true;         // true as default
-		SchoolPool  = new Dictionary< int , int > ();
+
+        EnhancePool = new Dictionary<int, int>();
+        SchoolPool  = new Dictionary< int , int > ();
 		AbilityPool = new Dictionary< int , int > ();
 		SkillPool 	= new List< int > ();
 
@@ -403,6 +430,13 @@ public class cUnitData{
         {
             cBuffData data = p.Value;
             Buffs.AddBuff(data.nID, data.nID, data.nSkillID, data.nTargetIdent);
+        }
+
+        // 強化表
+        EnhancePool.Clear();
+        foreach (var p in src.EnhancePool)
+        {
+            EnhancePool.Add(p.Key, p.Value);
         }
 
         SchoolPool.Clear();
@@ -1047,9 +1081,44 @@ public class cUnitData{
 		}
 		return false;
 	}
+    // 強化 相關
+    public void AddEnhance(_ePARAMIDX idx) {
+        int nLv = 0;
+        if (EnhancePool.TryGetValue( (int)idx, out nLv) == true)
+        {
+            EnhancePool[(int)idx] = nLv + 1;
+        }
+        else {
+            EnhancePool.Add((int)idx , 1 );
+        }
+        UpdateEnhanceAttr();
+    }
+
+    public void SetEnhanceLv(_ePARAMIDX idx , int nLv)
+    {  
+        if (EnhancePool.ContainsKey((int)idx) == true)
+        {
+            EnhancePool[(int)idx] = nLv ;
+        }
+        else
+        {
+            EnhancePool.Add((int)idx, nLv);
+        }
+        UpdateEnhanceAttr();
+    }
+
+    public int GetEnhanceLv(_ePARAMIDX idx )
+    {
+        int nLv = 0 ;
+        if (EnhancePool.TryGetValue((int)idx, out nLv) == true)
+        {
+            return nLv;
+        }
+        return 0;
+    }
 
 
-	public void AddExp( int nExp )
+    public void AddExp( int nExp )
 	{
 		n_EXP  += nExp;
 		// check level up
@@ -1107,13 +1176,21 @@ public class cUnitData{
 			UpdateBuffAttr ();		// maybe Recursive here
 		}
 
-		// don't update each frame for performance . call condition update for each calcul
-//		if( bUpCond )
-//			UpdateBuffConditionAttr ();		// always check condition and update
+        // 強化個人
+        if (bUpdateFlag[cAttrData._ENHANCE] == true)
+        {
+            bUpdateFlag[cAttrData._ENHANCE] = false;
+            UpdateEnhanceAttr();     
+        }
+
+
+        // don't update each frame for performance . call condition update for each calcul
+        //		if( bUpCond )
+        //			UpdateBuffConditionAttr ();		// always check condition and update
 
         // FIX hp / mp / def / sp     
 
-	}
+    }
 
 
 	void UpdateLevelAttr(  )
@@ -1126,38 +1203,14 @@ public class cUnitData{
 		if ( nLV > Config.MaxCharLevel ) {
 			nLV = Config.MaxCharLevel;
 		}
-		attr.n_SP = Config.CharBaseSp + nLV * Config.CharSpLVUp;
+		attr.n_SP = Config.CharBaseSp + (nLV * Config.CharSpLVUp);
 		attr.f_MAR = Config.CharMarLVUp * nLV;
 
 		//float fGrow = (float)nLV;//Mathf.Pow( 1.2f , nLV );
 
-		attr.n_HP  = (int)(Config.CharAtkLVUp*nLV * 2) ;
-		attr.n_ATK = (int)( Config.CharAtkLVUp*nLV) ;
-		attr.n_DEF = (int) (Config.CharAtkLVUp*nLV / 2.0f) ;
-
-
-
-		// For Ability attr
-		foreach( KeyValuePair< int , int > pair in  AbilityPool)
-		{
-			if(  pair.Key == 0 )
-				continue;
-			// refresh  skill
-//			RemoveSkill( pair.Key );
-
-			if( pair.Value > nLV )
-				continue;
-
-
-//			AddSkill( pair.Key );
-		}
-
-		// update passiv skill attr
-//		foreach( KeyValuePair< int , cSkillData >  pair in SkillPool )
-//		{
-//		//	if( pair.Value. )
-//
-//		}
+		attr.n_HP  = (int)(Config.CharHpLVUp * nLV ) ;
+		attr.n_ATK = (int)( Config.CharAtkLVUp * nLV) ;
+		attr.n_DEF = (int) (Config.CharDefLVUp * nLV) ;
 
 	}
 
@@ -1209,38 +1262,42 @@ public class cUnitData{
 		}	
 		 
 		cAttrData attr = GetAttrData (nIdx);
-		attr.Reset();
-		//===========================================================================
-		SCHOOL sch = ConstDataManager.Instance.GetRow<SCHOOL>( nSchool ); //GameDataManager.Instance.GetConstSchoolData ( nSchool );
-		if (sch == null) {
-			Debug.LogErrorFormat( "UpdateSchoolAttr err! Unit{0} can't get School{1} , " , n_CharID ,nSchool );
-			return;
-		}
-		if (nLv > sch.n_MAXLV)
-			nLv = sch.n_MAXLV;
-		float rank = sch.f_RANK;
 
-		attr.f_MAR 	 = rank * ( sch.f_MAR+ (sch.f_MAR_LVUP * nLv) );
+        CalSchoolAttr(attr , nSchool , nLv );
 
-		float fHpGrow = Mathf.Pow( 1.3f , nLv );
-		attr.n_HP    = (int)(rank * ( sch.n_HP + (sch.n_HP_LVUP * fHpGrow ) ));  // HP 成長率較高
+        return;
 
-		float fGrow = Mathf.Pow( 1.2f , nLv );
+//        attr.Reset();
+//		//===========================================================================
+//		SCHOOL sch = ConstDataManager.Instance.GetRow<SCHOOL>( nSchool ); //GameDataManager.Instance.GetConstSchoolData ( nSchool );
+//		if (sch == null) {
+//			Debug.LogErrorFormat( "UpdateSchoolAttr err! Unit{0} can't get School{1} , " , n_CharID ,nSchool );
+//			return;
+//		}
+//		if (nLv > sch.n_MAXLV)
+//			nLv = sch.n_MAXLV;
+//		float rank = sch.f_RANK;
 
-		attr.n_MP 	 = (int)( rank * ( sch.n_MP + (sch.n_MP_LVUP * fGrow ) ));
-		attr.n_ATK 	 = (int)( rank * ( sch.n_ATK+ (sch.n_ATK_LVUP * fGrow ) ));
-		attr.n_DEF 	 = (int) (rank * ( sch.n_DEF+ (sch.n_DEF_LVUP * fGrow ) ));
-		attr.n_POW 	 = (int) (rank * ( sch.n_POW+ (sch.n_POW_LVUP * fGrow ) ));
+//		attr.f_MAR 	 = rank * ( sch.f_MAR+ (sch.f_MAR_LVUP * nLv) );
+
+//		float fHpGrow = Mathf.Pow( 1.3f , nLv );
+//		attr.n_HP    = (int)(rank * ( sch.n_HP + (sch.n_HP_LVUP * fHpGrow ) ));  // HP 成長率較高
+
+//		float fGrow = Mathf.Pow( 1.2f , nLv );
+
+//		attr.n_MP 	 = (int)( rank * ( sch.n_MP + (sch.n_MP_LVUP * fGrow ) ));
+//		attr.n_ATK 	 = (int)( rank * ( sch.n_ATK+ (sch.n_ATK_LVUP * fGrow ) ));
+//		attr.n_DEF 	 = (int) (rank * ( sch.n_DEF+ (sch.n_DEF_LVUP * fGrow ) ));
+//		attr.n_POW 	 = (int) (rank * ( sch.n_POW+ (sch.n_POW_LVUP * fGrow ) ));
 
 
-//		attr.n_HP 	 = rank * ( sch.n_HP + (sch.n_HP_LVUP * nLv) );
-//		attr.n_MP 	 = rank * ( sch.n_MP + (sch.n_MP_LVUP * nLv) );
-//		attr.n_ATK 	 = rank * ( sch.n_ATK+ (sch.n_ATK_LVUP * nLv) );
-//		attr.n_DEF 	 = rank * ( sch.n_DEF+ (sch.n_DEF_LVUP * nLv) );
-//		attr.n_POW 	 = rank * ( sch.n_POW+ (sch.n_POW_LVUP * nLv) );
-
-		attr.n_SP = 0;
-		attr.n_MOV = sch.n_MOV;
+////		attr.n_HP 	 = rank * ( sch.n_HP + (sch.n_HP_LVUP * nLv) );
+////		attr.n_MP 	 = rank * ( sch.n_MP + (sch.n_MP_LVUP * nLv) );
+////		attr.n_ATK 	 = rank * ( sch.n_ATK+ (sch.n_ATK_LVUP * nLv) );
+////		attr.n_DEF 	 = rank * ( sch.n_DEF+ (sch.n_DEF_LVUP * nLv) );
+////		attr.n_POW 	 = rank * ( sch.n_POW+ (sch.n_POW_LVUP * nLv) );
+//		attr.n_SP = 0;
+//		attr.n_MOV = sch.n_MOV;
 	}
 
 	void UpdateItemAttr( )
@@ -1285,6 +1342,51 @@ public class cUnitData{
     ////			MyTool.AttrSkillEffect( this , FightAttr.SkillData.CastPool , FightAttr.SkillData.CastCond , FightAttr.SkillData.CastCondEffectPool );
     ////		}
     //	}
+
+        // 計算 強化值
+    static public void CalEnhanceAttr(cAttrData attr, Dictionary<int, int> enpool )
+    {
+        if (attr == null)
+            return;
+
+        attr.Reset();
+        foreach (_ePARAMIDX idx in System.Enum.GetValues(typeof(_ePARAMIDX)))
+        {
+            if (idx == _ePARAMIDX._NULL || idx == _ePARAMIDX._MAX)
+            {
+                continue;
+            }
+            // param
+            int nLv = 0;
+            if (enpool.TryGetValue( (int)(idx), out nLv) == false) {
+                continue; // 沒有強化的不處理
+            }
+
+
+            switch (idx)
+            {
+                case _ePARAMIDX._MAR: { attr.f_MAR = (nLv * Config.EnhanceMarLVUp);   } break;
+                case _ePARAMIDX._HP: { attr.n_HP = (nLv * Config.EnhanceHpLVUp); } break;
+                case _ePARAMIDX._MP: { attr.n_MP = (nLv * Config.EnhanceMpLVUp); } break;
+                case _ePARAMIDX._SP: { attr.n_SP = (nLv * Config.EnhanceSpLVUp); } break;
+                case _ePARAMIDX._ATK: { attr.n_ATK = (nLv * Config.EnhanceAtkLVUp); } break;
+                case _ePARAMIDX._DEF: { attr.n_DEF = (nLv * Config.EnhanceDefLVUp); } break;
+                case _ePARAMIDX._POW: { attr.n_POW = (nLv * Config.EnhancePowLVUp); } break;
+                default:  {
+                        // do nothing
+                    }break;
+            }
+
+        }
+
+    }
+        // 更新強化數據
+    public void UpdateEnhanceAttr()
+    {
+        cAttrData attr = GetAttrData(cAttrData._ENHANCE);
+        CalEnhanceAttr(attr , EnhancePool ); // 計算強化表
+    }
+
     // 修正過大 數值
     public void FixOverData()
     {

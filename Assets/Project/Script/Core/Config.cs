@@ -35,12 +35,29 @@ public class Config
     public static int   MaxStageUnit = 10;       // 最大出擊數
     public static int	MaxCharLevel = 99;
 	public static int	MaxCP = 5;
-	public static float CharMarLVUp = 1.0f;
-	public static int 	CharBaseSp = 40;
-	public static int 	CharSpLVUp = 8;
-	public static int 	CharAtkLVUp = 50;
 
-	public static float HIT	=100.0f;                // 命中基礎傷害率
+    public static int CharBaseSp = 40;
+
+    public static float CharMarLVUp = 1.0f;
+    public static int   CharHpLVUp = 100;    
+    public static int 	CharSpLVUp = 8;
+	public static int 	CharAtkLVUp = 50;
+    public static int   CharDefLVUp = 50;
+
+
+    public static float EnhanceMarLVUp = 2.0f;
+    public static int EnhanceHpLVUp = 200;
+    public static int EnhanceMpLVUp = 20;
+    public static int EnhanceSpLVUp = 4;
+    public static int EnhanceAtkLVUp = 100;
+    public static int EnhanceDefLVUp = 100;
+    public static int EnhancePowLVUp = 50;
+
+
+    
+
+
+    public static float HIT	=100.0f;                // 命中基礎傷害率
 	public static float DefReduce	=50.0f;			// 純防禦的減傷
 	public static float AssistRate = 8.0f;
 

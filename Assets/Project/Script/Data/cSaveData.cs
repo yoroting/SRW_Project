@@ -83,7 +83,9 @@ public class cUnitSaveData{
 	[JsonName("actsch")]				public int [] nActSch;		// current use 
 	[JsonName("items")]					public int [] Items;		// current items 
     [JsonName("drop")]                  public int nDropItemID;     // current items 
-                            // buff pool
+
+    [JsonName("enhance")] public Dictionary<string, int> Enhance;     // Enhance Data
+                                                                      // buff pool
     [JsonName("school")]				public Dictionary< string , int > School;		// current school 
 	[JsonName("buffs")]					public List< cBuffSaveData> Buffs;		// current buffs
     [JsonName("cds")]					public List< cCDSaveData> CDs;      // current cd
@@ -125,7 +127,10 @@ public class cUnitSaveData{
         nActionTime = data.nActionTime;
         nTired = data.nTired;
 
-		School = MyTool.ConvetToStringInt ( data.SchoolPool );  // unit school pool
+
+        Enhance = MyTool.ConvetToStringInt(data.EnhancePool);  // unit enhance pool
+        School = MyTool.ConvetToStringInt ( data.SchoolPool );  // unit school pool
+
 		Buffs = data.Buffs.ExportSavePool ();					// unit buff pool
         CDs = data.CDs.ExportSavePool();        
         Tags = data.Tags;
@@ -138,6 +143,88 @@ public class cUnitSaveData{
 		nAIX = data.n_AIX;
 		nAIY = data.n_AIY;
 	}
+
+    public cUnitData CreateUnitData()
+    {
+        cUnitData unit = new cUnitData();
+        unit.n_Ident = n_Ident;  //GenerSerialNO( );
+        unit.n_CharID = n_CharID;
+        unit.bEnable = b_Enable;        
+
+        CHARS cdata = ConstDataManager.Instance.GetRow<CHARS>(unit.n_CharID);
+        if (cdata == null)
+        {
+            Debug.LogErrorFormat("CreateUnitData data with null data {0}", unit.n_CharID);
+
+        }
+        unit.SetContData(cdata);
+
+        // 調整
+        unit.n_FaceID = n_FaceID;
+        //  if (0 == unit.n_FaceID) {
+        //      unit.n_FaceID = unit.n_CharID; // default value
+        //  }
+
+        unit.eCampID = eCampID;
+
+        unit.n_Lv = n_Lv;
+        unit.n_EXP = n_EXP;
+        unit.n_HP = n_HP;
+        unit.n_MP = n_MP;
+        unit.n_SP = n_SP;
+        unit.n_CP = n_CP;
+        unit.n_DEF = n_DEF;
+        unit.nActionTime = nActionTime;
+        unit.nTired = nTired;
+        unit.n_X = n_X;
+        unit.n_Y = n_Y;
+
+        unit.n_BornX = n_BornX;
+        unit.n_BornY = n_BornY;
+        unit.n_LeaderIdent = n_LeaderIdent;
+
+        unit.Items = Items;
+        unit.n_DropItemID = nDropItemID;
+
+        // enhance
+        if (Enhance != null)
+        {
+            unit.EnhancePool = MyTool.ConvetToIntInt(Enhance);
+        }
+        // school
+        unit.SchoolPool = MyTool.ConvetToIntInt(School);
+        // buff
+        unit.Buffs.ImportSavePool(Buffs);
+        unit.CDs.ImportSavePool(CDs);
+
+        // special tag
+        if (Tags != null)
+        {
+            unit.Tags = Tags;
+        }
+
+        //=== AI
+        unit.eSearchAI = eSearchAI;
+        unit.eComboAI = eComboAI;
+        unit.n_AITarget = nAITarget;
+        unit.n_AIX = nAIX;
+        unit.n_AIY = nAIY;
+
+        // reactive school for skill data. take care old school must const data default school
+        foreach (int nSchID in nActSch)
+        {
+            unit.ActiveSchool(nSchID);
+        }
+        //unit.nActSch = save.nActSch;
+        //unit.ActiveSchool ( unit.GetExtSchID() );
+        //unit.ActiveSchool ( unit.GetIntSchID() );
+
+        unit.UpdateAllAttr(); // 設定 更新旗標
+        // 此時做實際更新運算，在 buff 時會有問題，要等全部 pop 好再整體更新
+        //	unit.UpdateAttr (); // sometime will cause fail when other ident not ready
+
+        return unit;
+    }
 
 }
 
