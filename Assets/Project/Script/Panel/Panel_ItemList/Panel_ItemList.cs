@@ -159,7 +159,7 @@ public class Panel_ItemList : MonoBehaviour
                 }
                 PanelManager.Instance.CloseUI(Name);
                 break;
-            case 2: // enhance
+            case 2: // enhance - 本操作取消
                 {
                     if (PanelManager.Instance.CheckUIIsOpening(Panel_Enhance.Name))
                     {
@@ -167,7 +167,7 @@ public class Panel_ItemList : MonoBehaviour
                         Panel_Enhance panel = MyTool.GetPanel<Panel_Enhance>(Panel_Enhance.Name); //PanelManager.Instance.OpenUI( Panel_UnitInfo.Name );
                         if (panel != null)
                         {
-                            panel.EquipItem(nVar1, itemid); // syn bag
+                           // panel.EquipItem(nVar1, itemid); // syn bag
                         }
 
                     }

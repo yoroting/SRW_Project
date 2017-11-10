@@ -19,8 +19,8 @@ public class Panel_Enhance : MonoBehaviour
 
     public ItemList_School school_ext_item;
     public ItemList_School school_int_item;
-    public item_param[] lbl_param_item;
-    public enhance_param_item [] enhance_param_item;
+    public item_param[] lbl_param_list;
+    public enhance_param_item [] enhance_param_list;
 
     //  public GameObject GridExt; // GRID obj
     //  public GameObject GridInt;
@@ -69,15 +69,20 @@ public class Panel_Enhance : MonoBehaviour
 //    public int nOpSchType;          // 操作的武學
 
     // 裝備道具
-    public GameObject[] ItemPool;
+  //  public GameObject[] ItemPool;
 
 
-    public int nOpCharID;
+    public int nOpCharID=0;
 
     public cUnitData pOrgData;
     public cUnitData pTmpData;
 
-    public int nCostMoney;
+
+    public int nCostExt=0;
+    public int nCostInt=0;
+
+
+    //public int nCostMoney=0;
 
 
     // 以下將放棄
@@ -104,22 +109,22 @@ public class Panel_Enhance : MonoBehaviour
         //IntGrid = IntObj.GetComponentInChildren<UIGrid>();
 
 
-        svSchList = sprSchList.GetComponent<UIScrollView>();
-        gridSchList = sprSchList.GetComponentInChildren<UIGrid>();
+     //   svSchList = sprSchList.GetComponent<UIScrollView>();
+     //   gridSchList = sprSchList.GetComponentInChildren<UIGrid>();
 
 
-        UIEventListener.Get(btnChangeExt).onClick = OnChangeExtClick;
-        UIEventListener.Get(btnChangeInt).onClick = OnChangeIntClick;
+     //   UIEventListener.Get(btnChangeExt).onClick = OnChangeExtClick;
+     //   UIEventListener.Get(btnChangeInt).onClick = OnChangeIntClick;
 
         UIEventListener.Get(btnAddExt).onClick = OnExtSchAddClick;
         UIEventListener.Get(btnAddInt).onClick = OnIntSchAddClick;
 
 
-        SchItemObj.CreatePool(4);
-        SchItemObj.SetActive(false);
+    //    SchItemObj.CreatePool(4);
+    //    SchItemObj.SetActive(false);
 
         pTmpData = new cUnitData();             // new for temp
-        nCostMoney = 0;
+        nCostExt = nCostInt = 0 ;
 
         // 道具裝備相關
         //int idx = 0;
@@ -133,16 +138,16 @@ public class Panel_Enhance : MonoBehaviour
     void Start()
     {
         // 在 awake 後 設定 index
-        for (int idx = 0; idx < ItemPool.Length; idx++)
-        {
-            GameObject o = ItemPool[idx];
-            Item_Unit item = o.GetComponent<Item_Unit>();
-            if (item != null)
-            {
-                item.SetItemSlot(idx);
-                item.SetItemCallBack(OnSetItemEquipClick);
-            }
-        }
+        //for (int idx = 0; idx < ItemPool.Length; idx++)
+        //{
+        //    GameObject o = ItemPool[idx];
+        //    Item_Unit item = o.GetComponent<Item_Unit>();
+        //    if (item != null)
+        //    {
+        //        item.SetItemSlot(idx);
+        //        item.SetItemCallBack(OnSetItemEquipClick);
+        //    }
+        //}
 
     }
 
@@ -152,7 +157,7 @@ public class Panel_Enhance : MonoBehaviour
         UpdateAttr();
 
         MyTool.SetLabelInt(lblTotMoney, GameDataManager.Instance.nMoney);
-        MyTool.SetLabelInt(lblCostMoney, nCostMoney);
+        MyTool.SetLabelInt(lblCostMoney, ( GetSumCostPrice() ) );
 
     }
 
@@ -168,11 +173,17 @@ public class Panel_Enhance : MonoBehaviour
             tex.mainTexture = MyTool.GetCharTexture(pOrgData.n_FaceID);
         }
 
+        foreach ( enhance_param_item item in enhance_param_list )
+        {
+            item.LinkUnit(pTmpData ); // 連接 操作資料
+        }
 
-        ResetSchLv();
+
+
+        ResetAll();
         Reload();
     }
-    public void ResetSchLv()
+    public void ResetAll()
     {
         if (pOrgData != null)
         {
@@ -195,11 +206,23 @@ public class Panel_Enhance : MonoBehaviour
                 // pTmpData.ActiveSchool(nTmpIntId);
                 pTmpData.LearnSchool(nTmpIntId, OrgIntLv);
             }
+            // 重置 強化
+
+            //foreach (  ) {
+
+            //}
+            //pOrgData.EnhancePool;
+            foreach (enhance_param_item item in enhance_param_list)
+            {
+                item.ReSet(); // 更新介面
+            }
 
         }
-        nCostMoney = 0;
+
+        ZeroCostPrice();
 
     }
+   
     public void Reload()
     {
         sprSchList.SetActive(false);
@@ -227,17 +250,22 @@ public class Panel_Enhance : MonoBehaviour
             inItem.SetData(pTmpData.GetIntSchID(), pTmpData.GetIntSchLv());
         }
 
-        //
-        for (int idx = 0; idx < ItemPool.Length; idx++)
+        foreach (enhance_param_item item in enhance_param_list)
         {
-            GameObject o = ItemPool[idx];
-            Item_Unit item = o.GetComponent<Item_Unit>();
-            if (item != null && idx < pTmpData.Items.Length)
-            {
-                item.SetItemID(pTmpData.Items[idx]);
-
-            }
+            item.ReSet(); // 更新介面
         }
+
+        //
+        //for (int idx = 0; idx < ItemPool.Length; idx++)
+        //{
+        //    GameObject o = ItemPool[idx];
+        //    Item_Unit item = o.GetComponent<Item_Unit>();
+        //    if (item != null && idx < pTmpData.Items.Length)
+        //    {
+        //        item.SetItemID(pTmpData.Items[idx]);
+
+        //    }
+        //}
 
         // clear
         //while (ExtGrid.transform.childCount > 0)
@@ -321,18 +349,23 @@ public class Panel_Enhance : MonoBehaviour
         //if (intAttr == null || extAttr == null )
         //    return;
         pTmpData.Relive();
+        
+        foreach (item_param item in lbl_param_list )
+        {
+            item.SetUnit(pTmpData, 1); // 更新資訊
+        }
 
-        MyTool.SetLabelInt(lblOrgMar, (int)pTmpData.GetMar());
-        MyTool.SetLabelInt(lblOrgHp, pTmpData.GetMaxHP());
-        MyTool.SetLabelInt(lblOrgMp, pTmpData.GetMaxMP());
-        MyTool.SetLabelInt(lblOrgAtk, pTmpData.GetAtk());
-        MyTool.SetLabelInt(lblOrgDef, pTmpData.GetMaxDef());
-        MyTool.SetLabelInt(lblOrgPow, pTmpData.GetPow());
-        MyTool.SetLabelInt(lblOrgMov, pTmpData.GetMov());
+        //MyTool.SetLabelInt(lblOrgMar, (int)pTmpData.GetMar());
+        //MyTool.SetLabelInt(lblOrgHp, pTmpData.GetMaxHP());
+        //MyTool.SetLabelInt(lblOrgMp, pTmpData.GetMaxMP());
+        //MyTool.SetLabelInt(lblOrgAtk, pTmpData.GetAtk());
+        //MyTool.SetLabelInt(lblOrgDef, pTmpData.GetMaxDef());
+        //MyTool.SetLabelInt(lblOrgPow, pTmpData.GetPow());
+        //MyTool.SetLabelInt(lblOrgMov, pTmpData.GetMov());
 
-        MyTool.SetLabelText(lblOrgBrust, string.Format("{0}％", (pTmpData.GetMulBurst() - 1.0f) * 100.0f));
-        MyTool.SetLabelText(lblOrgReduce, string.Format("{0}％", 100.0f * (1.0f - pTmpData.GetMulDamage())));
-        MyTool.SetLabelFloat(lblOrgArmor, pTmpData.GetArmor());
+        //MyTool.SetLabelText(lblOrgBrust, string.Format("{0}％", (pTmpData.GetMulBurst() - 1.0f) * 100.0f));
+        //MyTool.SetLabelText(lblOrgReduce, string.Format("{0}％", 100.0f * (1.0f - pTmpData.GetMulDamage())));
+        //MyTool.SetLabelFloat(lblOrgArmor, pTmpData.GetArmor());
 
     }
 
@@ -342,7 +375,7 @@ public class Panel_Enhance : MonoBehaviour
     }
     public void OnChangeIntClick(GameObject go)
     {
-        ResetSchLv();
+        ResetAll();
         Reload();
         Panel_SchoolList.Open(2, pTmpData, 0);
         // PopSchList(0);
@@ -350,7 +383,7 @@ public class Panel_Enhance : MonoBehaviour
     public void OnChangeExtClick(GameObject go)
     {
         // 放棄 當前設定
-        ResetSchLv();
+        ResetAll();
         Reload();
         Panel_SchoolList.Open(2, pTmpData ,1);
         //PopSchList(1);
@@ -418,28 +451,35 @@ public class Panel_Enhance : MonoBehaviour
     // 確定更換
     public void OnChangeItemClick(GameObject go)
     {
-        EnhanceItem enItem = go.GetComponent<EnhanceItem>();
-        if (enItem != null)
-        {
-            // 異動武學
-            if (enItem.nSchoolID > 0)
-            {
-                pTmpData.ActiveSchool(enItem.nSchoolID);
-                Reload();       // 參數重讀      
-                // 原始資料的使用技能也更動
-                pOrgData.ActiveSchool(enItem.nSchoolID);
-            }
-        }
-        sprSchList.SetActive(false); // 關閉
+        //EnhanceItem enItem = go.GetComponent<EnhanceItem>();
+        //if (enItem != null)
+        //{
+        //    // 異動武學
+        //    if (enItem.nSchoolID > 0)
+        //    {
+        //        pTmpData.ActiveSchool(enItem.nSchoolID);
+        //        Reload();       // 參數重讀      
+        //        // 原始資料的使用技能也更動
+        //        pOrgData.ActiveSchool(enItem.nSchoolID);
+        //    }
+        //}
+        //sprSchList.SetActive(false); // 關閉
     }
     public void OnResetClick(GameObject go)
     {
-        ResetSchLv();
+        ResetAll();        
         Reload();       // 參數重讀                
     }
     public void OnOkClick(GameObject go)
     {
-        if (GameDataManager.Instance.nMoney < nCostMoney)
+        int nsum = GetSumCostPrice();
+
+        if (nsum == 0) {
+            return; // 表示沒有強化
+        }
+
+
+        if (GameDataManager.Instance.nMoney < nsum )
         {
             // message Money not enough
             //Panel_CheckBox.            
@@ -461,28 +501,40 @@ public class Panel_Enhance : MonoBehaviour
             //pTmpData.SchoolPool.Add(pair.Key, pair.Value);
         }
 
+        // 設定 強化 參數
+        foreach (enhance_param_item item in enhance_param_list)
+        {
+            pOrgData.SetEnhanceLv( item.m_eParamIdx , item.m_nCurLv );
+            // 重設 link
+            item.LinkUnit( pTmpData );
+        }
+
+
         // 道具怎麼辦？
 
         // store to char
 
-
-
         UpdateAttr();
 
         pOrgData.Relive();
+       
 
-        GameDataManager.Instance.nSpendMoney += nCostMoney; // 消費紀錄起來
+        GameDataManager.Instance.nSpendMoney += nsum; // 消費紀錄起來
 
-        GameDataManager.Instance.nMoney -= nCostMoney;
-        nCostMoney = 0;
+        GameDataManager.Instance.nMoney -= nsum;
+        
+        ZeroCostPrice();
+        //nCostMoney = 0;
 
         //main ten UI  要reload unit list        
-        Panel_Mainten panel = MyTool.GetPanel<Panel_Mainten>(PanelManager.Instance.OpenUI(Panel_Mainten.Name));
-        if (panel != null)
-        {
-            panel.ReloadUnitList();
-        }
+        //Panel_Mainten panel = MyTool.GetPanel<Panel_Mainten>(PanelManager.Instance.OpenUI(Panel_Mainten.Name));
+        //if (panel != null)
+        //{
+        //    panel.ReloadUnitList();
+        //}
 
+        // 播放音效
+        GameSystem.PlaySound("Audios 00050");
     }
     public void OnCloseClick(GameObject go)
     {
@@ -502,25 +554,29 @@ public class Panel_Enhance : MonoBehaviour
     }
 
     // On Add School
-    public void OnExtSchAddClick(GameObject go)
-    {
-        int nSchID = pTmpData.GetExtSchID();
-        int nLv = pTmpData.GetExtSchLv();
-        OnSchLvAddClick(nSchID, nLv);
-        Reload();
-
-    }
     public void OnIntSchAddClick(GameObject go)
     {
         int nSchID = pTmpData.GetIntSchID();
         int nLv = pTmpData.GetIntSchLv();
-        OnSchLvAddClick(nSchID, nLv);
+        OnSchLvAddClick(nSchID, nLv, 0);
         Reload();
     }
 
+    public void OnExtSchAddClick(GameObject go)
+    {
+        int nSchID = pTmpData.GetExtSchID();
+        int nLv = pTmpData.GetExtSchLv();        // 計算 金錢
+
+
+        OnSchLvAddClick(nSchID, nLv , 1);
+        Reload();
+
+    }
+    
+
 
     //public void OnSchLvAddClick(GameObject go)
-    public void OnSchLvAddClick(int nSchID, int nLv)
+    public void OnSchLvAddClick(int nSchID, int nLv , int nSchType )
     {
         //EnhanceItem enItem = go.GetComponentInParent <EnhanceItem> ();
         //if (enItem != null)
@@ -535,10 +591,21 @@ public class Panel_Enhance : MonoBehaviour
         if (nLv >= sch.n_MAXLV)
             return;
 
-        float fRate = Mathf.Pow(1.5f, nLv);
-        int nCost = (int)(Config.LevelUPMoney * sch.f_RANK * fRate); // 用當前等級算才不會太高
-        nCostMoney += nCost;
+        //float fRate = Mathf.Pow(1.5f, nLv);
+        float fRate = (nLv-1)* 2.0f ;  // 一顆星 2000
 
+        // int nCost = (int)(Config.LevelUPMoney * sch.f_RANK * fRate); // 用當前等級算才不會太高
+        //   nCostMoney += nCost;
+
+        int nCost = (int)(Config.LevelUPMoney * sch.f_RANK * fRate); // 用當前等級算才不會太高
+        if (nSchType == 0) // 內功
+        {
+            nCostInt += nCost;
+        }
+        else if (nSchType == 1)// 外功
+        {
+            nCostExt += nCost;
+        }
 
         nLv++;
 
@@ -548,70 +615,70 @@ public class Panel_Enhance : MonoBehaviour
         pTmpData.ActiveSchool(nSchID);
 
         UpdateAttr();
+
+        GameSystem.PlaySound( 170 );
         // }
     }
 
-    public Item_Unit GetItemObj(int nIdx)
-    {
-        if (nIdx < 0 || nIdx >= ItemPool.Length)
-        {
-            return null;
-        }
-        GameObject obj = ItemPool[nIdx];
+    //public Item_Unit GetItemObj(int nIdx)
+    //{
+    //    if (nIdx < 0 || nIdx >= ItemPool.Length)
+    //    {
+    //        return null;
+    //    }
+    //    GameObject obj = ItemPool[nIdx];
 
-        if (obj == null)
-            return null;
+    //    if (obj == null)
+    //        return null;
 
-        return obj.GetComponent<Item_Unit>();
-    }
+    //    return obj.GetComponent<Item_Unit>();
+    //}
 
-    // 變更裝備
-    public void OnSetItemEquipClick(GameObject go)
-    {
-        Item_Unit item = go.transform.parent.GetComponent<Item_Unit>();
-        if (item != null)
-        {
-            // open item list
-            Panel_ItemList.Open(2, item.nIndex);
+    //// 變更裝備
+    //public void OnSetItemEquipClick(GameObject go)
+    //{
+    //    Item_Unit item = go.transform.parent.GetComponent<Item_Unit>();
+    //    if (item != null)
+    //    {
+    //        // open item list
+    //        Panel_ItemList.Open(2, item.nIndex);
 
-        }
-    }
+    //    }
+    //}
 
-    public void EquipItem(int nIdx, int nItemID)
-    {
-        //檢查是否可以裝備
-        if (pTmpData.IsTag(_UNITTAG._BLOCKITEM))
-        {
-            ITEM_MISC itemData = ConstDataManager.Instance.GetRow<ITEM_MISC>(nItemID);
-            if (itemData == null || (itemData.n_ITEMLV < 5))
-            {
-                string smsg = MyTool.GetMsgText(11);
-                smsg = smsg.Replace("$V1", MyTool.GetCharName(pTmpData.n_CharID));
-                Panel_CheckBox chkBox = GameSystem.OpenCheckBox();
-                if (chkBox != null)
-                {
-                    chkBox.SetMessageCheck(smsg);
-                }
-                return;
-            }
-        }
+    //public void EquipItem(int nIdx, int nItemID)
+    //{
+    //    //檢查是否可以裝備
+    //    if (pTmpData.IsTag(_UNITTAG._BLOCKITEM))
+    //    {
+    //        ITEM_MISC itemData = ConstDataManager.Instance.GetRow<ITEM_MISC>(nItemID);
+    //        if (itemData == null || (itemData.n_ITEMLV < 5))
+    //        {
+    //            string smsg = MyTool.GetMsgText(11);
+    //            smsg = smsg.Replace("$V1", MyTool.GetCharName(pTmpData.n_CharID));
+    //            Panel_CheckBox chkBox = GameSystem.OpenCheckBox();
+    //            if (chkBox != null)
+    //            {
+    //                chkBox.SetMessageCheck(smsg);
+    //            }
+    //            return;
+    //        }
+    //    }
 
-        // 同步 穿戴裝備
-        pTmpData.EquipItem((_ITEMSLOT)nIdx, nItemID, false); // 不要同步背包
-        pOrgData.EquipItem((_ITEMSLOT)nIdx, nItemID, true);
-        // update UI
-        //  GameObject obj = null;
-        Item_Unit item = GetItemObj(nIdx); // 變更裝備顯示
-        if (item != null)
-        {
-            item.SetItemID(nItemID);
-        }
-
-
-        pTmpData.UpdateAllAttr();
-        //pTmpData();
-        Reload();
-    }
+    //    // 同步 穿戴裝備
+    //    pTmpData.EquipItem((_ITEMSLOT)nIdx, nItemID, false); // 不要同步背包
+    //    pOrgData.EquipItem((_ITEMSLOT)nIdx, nItemID, true);
+    //    // update UI
+    //    //  GameObject obj = null;
+    //    Item_Unit item = GetItemObj(nIdx); // 變更裝備顯示
+    //    if (item != null)
+    //    {
+    //        item.SetItemID(nItemID);
+    //    }
+    //    pTmpData.UpdateAllAttr();
+    //    //pTmpData();
+    //    Reload();
+    //}
 
     public void EquipSchool(int nSchoolID)
     {
@@ -622,4 +689,28 @@ public class Panel_Enhance : MonoBehaviour
         pTmpData.UpdateAllAttr();
         Reload();
     }
+
+    public int  GetSumCostPrice()
+    {
+        int sum = nCostExt + nCostInt;        
+
+        foreach (enhance_param_item item in enhance_param_list)
+        {
+            sum += item.m_nCost;
+        }          
+
+        //MyTool.SetLabelInt(lblCostMoney , nTotal);
+        return sum;
+    }
+    public void ZeroCostPrice()
+    {
+        nCostExt = nCostInt =0;
+
+        foreach (enhance_param_item item in enhance_param_list)
+        {
+            item.m_nCost=0;
+        }
+
+    }
+    
 }

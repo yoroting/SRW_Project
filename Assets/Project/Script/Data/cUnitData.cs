@@ -1082,16 +1082,27 @@ public class cUnitData{
 		return false;
 	}
     // 強化 相關
-    public void AddEnhance(_ePARAMIDX idx) {
+    public void AddEnhance(_ePARAMIDX idx)
+    {
         int nLv = 0;
-        if (EnhancePool.TryGetValue( (int)idx, out nLv) == true)
+        if (EnhancePool.TryGetValue((int)idx, out nLv) == true)
         {
             EnhancePool[(int)idx] = nLv + 1;
         }
-        else {
-            EnhancePool.Add((int)idx , 1 );
+        else
+        {
+            EnhancePool.Add((int)idx, 1);
         }
         UpdateEnhanceAttr();
+    }
+
+    public int GetEnhanceLimit(_ePARAMIDX idx)
+    {
+        int nLimit = 99;
+        if (cCharData != null) {
+            nLimit = cCharData.n_RANK;
+        }
+        return nLimit;
     }
 
     public void SetEnhanceLv(_ePARAMIDX idx , int nLv)
