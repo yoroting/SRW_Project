@@ -130,6 +130,7 @@ public class Panel_ItemList : MonoBehaviour
     public void OnCloseClick(GameObject go)
     {
         PanelManager.Instance.CloseUI(Name);
+        GameSystem.BtnSound(1);
     }
 
     public void OnItemClick(GameObject go)
@@ -152,9 +153,9 @@ public class Panel_ItemList : MonoBehaviour
 
                         Panel_UnitInfo panel = MyTool.GetPanel<Panel_UnitInfo>( Panel_UnitInfo.Name ); //PanelManager.Instance.OpenUI( Panel_UnitInfo.Name );
                         if (panel != null) {
+                            GameSystem.PlaySound(146);
                             panel.EquipItem(nVar1 , itemid  ); // syn bag
                         }
-
                     }
                 }
                 PanelManager.Instance.CloseUI(Name);
@@ -167,7 +168,8 @@ public class Panel_ItemList : MonoBehaviour
                         Panel_Enhance panel = MyTool.GetPanel<Panel_Enhance>(Panel_Enhance.Name); //PanelManager.Instance.OpenUI( Panel_UnitInfo.Name );
                         if (panel != null)
                         {
-                           // panel.EquipItem(nVar1, itemid); // syn bag
+                            GameSystem.PlaySound(146);
+                            // panel.EquipItem(nVar1, itemid); // syn bag
                         }
 
                     }

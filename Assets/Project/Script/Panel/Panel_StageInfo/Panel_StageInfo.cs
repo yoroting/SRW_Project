@@ -173,7 +173,8 @@ public class Panel_StageInfo : MonoBehaviour {
 
 	void OnCloseClick(GameObject go)
 	{
-		PanelManager.Instance.CloseUI (Panel_StageInfo.Name);
+        GameSystem.BtnSound(1);
+        PanelManager.Instance.CloseUI (Panel_StageInfo.Name);
 	}
 
 }

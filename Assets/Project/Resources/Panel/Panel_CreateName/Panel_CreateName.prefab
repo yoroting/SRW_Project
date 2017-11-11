@@ -591,9 +591,9 @@ MonoBehaviour:
   disabledColor: {r: 1, g: 1, b: 1, a: 1}
   duration: 0.2
   dragHighlight: 0
-  hoverSprite: btn_green1
-  pressedSprite: btn_green2
-  disabledSprite: btn_green3
+  hoverSprite: btn_red1
+  pressedSprite: btn_red2
+  disabledSprite: btn_red3
   hoverSprite2D: {fileID: 0}
   pressedSprite2D: {fileID: 0}
   disabledSprite2D: {fileID: 0}
@@ -836,7 +836,7 @@ MonoBehaviour:
   bottomType: 1
   topType: 1
   mAtlas: {fileID: 11491776, guid: 25576dd4c299fef4f9fc244f1e89bb8b, type: 2}
-  mSpriteName: btn_green0
+  mSpriteName: btn_red0
   mFillCenter: 1
 --- !u!114 &114356869965888312
 MonoBehaviour:

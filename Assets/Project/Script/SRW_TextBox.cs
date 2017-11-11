@@ -203,17 +203,21 @@ public class SRW_TextBox : MonoBehaviour
             return;
         }
 
-        Config.TextSpeed = 3;    // lable 
-
-        // text pop speed
-        if (++m_nTextSpeed < Config.TextSpeed)
-        {
-            return;
-        }
         if (nTweenObjCount > 0)
             return;
 
-        m_nTextSpeed = 0;
+        // 是否pass 文字
+        if (Config.TextFast == false)
+        { 
+            Config.TextSpeed = 3;    // lable 
+
+            // text pop speed
+            if (++m_nTextSpeed < Config.TextSpeed)
+            {
+                return;
+            }
+            m_nTextSpeed = 0;
+        }
 
         // use text list
         // new method use text list
@@ -448,28 +452,25 @@ public class SRW_TextBox : MonoBehaviour
         if (sptalkbox == null)
             return;
 
-        sptalkbox.width = 860;
-        if (2 == nMode)
-        {
-            sptalkbox.width = 960;                  // only this is more big
-        }
-
         // background
 
         switch (nMode)
         {
             case 0:
+                sptalkbox.width = 860;                  // only this is more big
                 sptalkbox.spriteName = "talk_say";
-
                 break;
             case 1:
+                sptalkbox.width = 860;                  // only this is more big
                 sptalkbox.spriteName = "talk_think"; break;
             case 2:
-
+                sptalkbox.width = 860;                  // only this is more big
                 sptalkbox.spriteName = "talk_large";
 
                 break;
-            default: sptalkbox.spriteName = "CG-1707"; break;
+            default:
+                sptalkbox.width = 960;                  // only this is more big
+                sptalkbox.spriteName = "01017"; break;
         }
 
         // font color

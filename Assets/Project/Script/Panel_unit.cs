@@ -624,7 +624,7 @@ public class Panel_unit : MonoBehaviour {
 		int iDist = Loc.Dist (v);
 		float during = iDist * (0.2f);
 
-		if (Config.GOD == true) {
+		if (Config.MoveFast == true ) {
 			during = 0.1f; // always 0.2f
 		}
 		// cal target location position
@@ -1389,7 +1389,7 @@ public class Panel_unit : MonoBehaviour {
 	{
         Panel_StageUI.Instance.MoveToGameObj(this.gameObject, false);
         // select to wait
-        BattleManager.Instance.ShowBattleMsg (this.gameObject, "waiting");
+        BattleManager.Instance.ShowBattleMsg (this.gameObject, "待機");
 	//	ActionFinished ();
 		if ( pUnitData!= null ) {
 			pUnitData.Waiting();

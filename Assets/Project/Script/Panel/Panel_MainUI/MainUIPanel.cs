@@ -119,7 +119,7 @@ public class MainUIPanel : BasicPanel {
         GameObject obj = PanelManager.Instance.OpenUI(Panel_CreateName.Name );
 
 
-       // StartGame();
+        // StartGame();
         // 進入第一關
         //      GameDataManager.Instance.Initial();
         //      GameDataManager.Instance.ClearStorageUnit ();
@@ -129,7 +129,7 @@ public class MainUIPanel : BasicPanel {
 
 
 
-
+        GameSystem.BtnSound();
     }
 
     void OnLoadButtonClick(GameObject go)
@@ -138,20 +138,23 @@ public class MainUIPanel : BasicPanel {
 	//	Debug.Log("Load");
 
 		Panel_SaveLoad.OpenLoadMode ( _SAVE_PHASE._STARTUP );
-		//cSaveData.Load (1, _SAVE_PHASE._STARTUP );
-	}
+        //cSaveData.Load (1, _SAVE_PHASE._STARTUP );
+        GameSystem.BtnSound();
+    }
 
 	void OnGalleryButtonClick(GameObject go)
 	{
-		// When gallery button clicked do :
-//		Debug.Log("Gallery");
-	}
+        // When gallery button clicked do :
+        //		Debug.Log("Gallery");
+        GameSystem.BtnSound();
+    }
 
 	void OnSetUpButtonClick(GameObject go)
 	{
-		// When setup button clicked do :
-	//	Debug.Log("SetUp");
-        PanelManager.Instance.OpenUI(Panel_SystemSetting.Name);
+        // When setup button clicked do :
+        //	Debug.Log("SetUp");
+        Panel_SystemSetting.OpenUI();
+        GameSystem.BtnSound();
     }
 
 
@@ -196,21 +199,21 @@ public class MainUIPanel : BasicPanel {
 			return;
 		StartCoroutine (  SaveLoading( save  ) );
 
-//		if (save.ePhase == _SAVE_PHASE._MAINTEN) {
-//			
-//			PanelManager.Instance.OpenUI ( Panel_Mainten.Name );
-//
-//		} else if (save.ePhase == _SAVE_PHASE._STAGE) {
-//			
-//			StartCoroutine ( LoadStage( cSaveData save) );
-//			//Panel_StageUI.Instance.RestoreBySaveData ();
-//
-//		}
+        //		if (save.ePhase == _SAVE_PHASE._MAINTEN) {
+        //			
+        //			PanelManager.Instance.OpenUI ( Panel_Mainten.Name );
+        //
+        //		} else if (save.ePhase == _SAVE_PHASE._STAGE) {
+        //			
+        //			StartCoroutine ( LoadStage( cSaveData save) );
+        //			//Panel_StageUI.Instance.RestoreBySaveData ();
+        //
+        //		}
 
 
-//		PanelManager.Instance.CloseUI( Name );  			// close main 
-
-	}
+        //		PanelManager.Instance.CloseUI( Name );  			// close main 
+        GameSystem.BtnSound();
+    }
 
     public void StartGame()
     {
@@ -220,5 +223,6 @@ public class MainUIPanel : BasicPanel {
         GameDataManager.Instance.ResetStage();
 
         StartCoroutine(EnterStory(Config.StartStory));
+        GameSystem.PlaySound(157);
     }
 }

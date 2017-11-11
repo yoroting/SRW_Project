@@ -108,12 +108,15 @@ public class Panel_SaveLoad : MonoBehaviour {
 	}
 	void OnCancelClick(GameObject go)
 	{
-		PanelManager.Instance.CloseUI (Name);
-	}
+        GameSystem.BtnSound(1);
+        PanelManager.Instance.CloseUI (Name);
+       
+    }
 
 	void OnSaveClick(GameObject go)
 	{
-		Item_SaveData obj = go.GetComponent<Item_SaveData >();
+        GameSystem.BtnSound();
+        Item_SaveData obj = go.GetComponent<Item_SaveData >();
 		if (obj != null) {
 			cSaveData.Save( obj.nID , ePhase );
 
@@ -123,7 +126,8 @@ public class Panel_SaveLoad : MonoBehaviour {
 
 	void OnLoadClick(GameObject go)
 	{
-		Item_SaveData obj = go.GetComponent<Item_SaveData >();
+        GameSystem.BtnSound();
+        Item_SaveData obj = go.GetComponent<Item_SaveData >();
 		if (obj != null) {
 			if( cSaveData.Load( obj.nID , ePhase ) ){
 				PanelManager.Instance.CloseUI (Name);
@@ -135,9 +139,12 @@ public class Panel_SaveLoad : MonoBehaviour {
     public void OnNextClick()
     {
         //邊界不處理
-        if (n_Page >= (n_MaxPage-1))
+        if (n_Page >= (n_MaxPage - 1))
+        {
+            GameSystem.BtnSound(2);
             return;
-
+        }
+        GameSystem.BtnSound();
         if (++n_Page >= n_MaxPage)
         {
             n_Page = n_MaxPage-1;
@@ -150,8 +157,11 @@ public class Panel_SaveLoad : MonoBehaviour {
     public void OnPrevClick()
     {
         if (n_Page <= 0)
+        {
+            GameSystem.BtnSound(2);
             return;
-
+        }
+        GameSystem.BtnSound(0);
         if (--n_Page < 0)
         {
             n_Page = 0;

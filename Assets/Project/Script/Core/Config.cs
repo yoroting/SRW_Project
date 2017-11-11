@@ -19,7 +19,7 @@ public class Config
 	public static int StartStory = 1;
 
 
-	public static int TextSpeed = 0;			// 0 is very fast
+	
 	// Cache value
 	public static float fScnRatio = 1.0f;       // screen (active/ real ) ratio. for cal mouse in local pos
 
@@ -77,6 +77,10 @@ public class Config
 	public static bool FREE_MP = false;
     public static bool SHOW_LEAVE = false;          // 顯示離隊成員
 
+    // Setting
+    public static int TextSpeed = 0;			    // 0 is very fast
+    public static bool TextFast = false;           // 是否停止平滑處理
+    public static bool MoveFast = false;           // 快速移動
 
     public static int  WIDTH = 960;
 	public static int  HEIGHT = 640;

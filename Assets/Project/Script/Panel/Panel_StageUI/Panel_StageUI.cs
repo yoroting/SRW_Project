@@ -943,14 +943,18 @@ public class Panel_StageUI : MonoBehaviour
 					}
 					
 				}
-				else { 
-					// this is impossible
-					if( bIsAtkCell == false )
-					{
-						Panel_CMDUnitUI.RollBackCMDUIWaitTargetMode();
-						//Panel_CMDUnitUI.BackWaitCmd();		// back if the cmd is not exists	
-					}
+				else {
+                    // this is impossible
+                    if (bIsAtkCell == false)
+                    {
+                        Panel_CMDUnitUI.RollBackCMDUIWaitTargetMode();
+                        //Panel_CMDUnitUI.BackWaitCmd();		// back if the cmd is not exists	
+                    }
+                    else {
+                        GameSystem.BtnSound(2); // 失敗音效
+                    }
 				}
+                
 				return ;
 			}
 			else if( cCMD.Instance.eCMDTYPE == _CMD_TYPE._WAITATK && cCMD.Instance.eCMDID == _CMD_ID._NONE ) // special case for fast attack
@@ -1141,6 +1145,7 @@ public class Panel_StageUI : MonoBehaviour
                         //cCMD.Instance.pCmder.
                         if (bCanPK)
                         {
+                            GameSystem.BtnSound(2);
                             return;
                         }
                     }
@@ -1148,6 +1153,7 @@ public class Panel_StageUI : MonoBehaviour
                     {
                         if (!bCanPK)
                         {
+                            GameSystem.BtnSound(2);
                             return;
                         }
                     }
@@ -1201,13 +1207,15 @@ public class Panel_StageUI : MonoBehaviour
                 //cCMD.Instance.pCmder.
 				if(bCanPK)
                 {
-					return ;
+                    GameSystem.BtnSound(2);
+                    return ;
 				}
 			}
 			else{
 				if(!bCanPK)
                 {
-					return ;
+                    GameSystem.BtnSound(2);
+                    return ;
 				}
 			}
 		}

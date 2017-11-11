@@ -289,7 +289,8 @@ public class Panel_UnitInfo : MonoBehaviour {
 
 	void OnCloseClick( GameObject go )
 	{
-		PanelManager.Instance.CloseUI( Name );
+        GameSystem.BtnSound(1);
+        PanelManager.Instance.CloseUI( Name );
 	}
 
     void OnSwitchSpriteClick(GameObject go)
@@ -629,6 +630,7 @@ public class Panel_UnitInfo : MonoBehaviour {
         Item_School obj = go.GetComponent<Item_School>();
         if (obj != null)
         {
+            GameSystem.BtnSound();
             Panel_Skill.OpenSchoolUI( pUnitData, _SKILL_TYPE._SCHOOL, obj.nSchID  );
         }
     }
@@ -637,8 +639,8 @@ public class Panel_UnitInfo : MonoBehaviour {
     void OnAbilityClick( GameObject go )
 	{
 		Skill_Simple obj = go.GetComponent<Skill_Simple >();
-		if (obj != null) {
-			Panel_Tip.OpenSkillTip( obj.nID );
+		if (obj != null) {           
+            Panel_Tip.OpenSkillTip( obj.nID );
 			//Panel_Tip.OpenUI( MyTool.GetSkillName( obj.nID )   ); 
 		}
 		
@@ -667,6 +669,7 @@ public class Panel_UnitInfo : MonoBehaviour {
     {
         Item_Unit obj = go.GetComponentInParent<Item_Unit>();
         if (obj != null) {
+            GameSystem.BtnSound();
             Panel_ItemList.Open(1, obj.nIndex);
         }
     }

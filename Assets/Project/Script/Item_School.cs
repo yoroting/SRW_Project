@@ -77,13 +77,14 @@ public class Item_School : MonoBehaviour {
         if (m_nMode != 0 ) { // 如果是 檢視 以外 都是可以切換的
             schid = 0;
         }
-
+        GameSystem.BtnSound();
         Panel_SchoolList.Open(m_nMode, m_pUnitdata , schid, nSchLv , nSchType); 
     }
 
     // on change
     public void OnSKillClick(GameObject go)
-    {        
+    {
+        GameSystem.BtnSound();
         Panel_Skill.OpenSchoolUI(m_pUnitdata, _SKILL_TYPE._SCHOOL, nSchID);
     }
 }

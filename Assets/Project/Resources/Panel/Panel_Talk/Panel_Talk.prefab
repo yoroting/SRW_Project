@@ -138,7 +138,6 @@ GameObject:
   - component: {fileID: 11422468}
   - component: {fileID: 11423426}
   - component: {fileID: 6545192}
-  - component: {fileID: 11446212}
   m_Layer: 5
   m_Name: Control - Colored Button
   m_TagString: Untagged
@@ -1058,21 +1057,6 @@ MonoBehaviour:
   mShader: {fileID: 4800000, guid: e75727d9555d9d14ca51d91908c681bc, type: 3}
   mBorder: {x: 0, y: 0, z: 0, w: 0}
   mFixedAspect: 0
---- !u!114 &11446212
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 141488}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7d44bc69c2ca5f943b845318866dc1bd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  audioClip: {fileID: 8300000, guid: b5083cfe83bb875479bd797c61594131, type: 3}
-  trigger: 0
-  volume: 1
-  pitch: 1
 --- !u!114 &11451444
 MonoBehaviour:
   m_ObjectHideFlags: 1

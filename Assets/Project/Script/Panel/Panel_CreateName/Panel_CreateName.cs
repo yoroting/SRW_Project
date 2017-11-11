@@ -102,6 +102,7 @@ public class Panel_CreateName : MonoBehaviour {
     {        
         // 關閉UI
         PanelManager.Instance.CloseUI(Name);
+        GameSystem.BtnSound(1);
     }
 
 

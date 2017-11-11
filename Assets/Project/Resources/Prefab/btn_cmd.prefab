@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 11418934}
   - component: {fileID: 11460624}
   - component: {fileID: 6562278}
-  - component: {fileID: 11408148}
   - component: {fileID: 11400198}
   m_Layer: 5
   m_Name: btn_cmd
@@ -115,21 +114,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb9e11d99f0f6484b9b72ca457b96071, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &11408148
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100068}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7d44bc69c2ca5f943b845318866dc1bd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  audioClip: {fileID: 8300000, guid: e069e521d7ca2eb4cb4ba24344c505a3, type: 3}
-  trigger: 0
-  volume: 1
-  pitch: 1
+  m_BtnID: 0
+  m_nVar1: 0
+  m_fVar1: 0
 --- !u!114 &11417708
 MonoBehaviour:
   m_ObjectHideFlags: 1

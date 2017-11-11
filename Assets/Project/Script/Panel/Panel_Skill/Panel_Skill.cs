@@ -473,6 +473,7 @@ public class Panel_Skill : MonoBehaviour {
             {
                 // 不能施展 ，播放 失敗音效                
                 //SetSkill(nOpSkillID);
+                GameSystem.BtnSound(2);
                 return;
             }
         }
@@ -483,7 +484,7 @@ public class Panel_Skill : MonoBehaviour {
         {
             panel.SetSkillID(item.m_nSKillID);
         }
-
+        GameSystem.BtnSound();
         PanelManager.Instance.CloseUI(Name);
     }
 
@@ -528,6 +529,7 @@ public class Panel_Skill : MonoBehaviour {
 
 	void OnCloseClick(GameObject go)
 	{
+        GameSystem.BtnSound(1);
         if (eSkillType == _SKILL_TYPE._SCHOOL)
         {
             PanelManager.Instance.CloseUI(Name);

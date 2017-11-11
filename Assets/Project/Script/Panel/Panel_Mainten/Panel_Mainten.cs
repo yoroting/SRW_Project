@@ -122,13 +122,14 @@ public class Panel_Mainten : MonoBehaviour {
 
 	void OnNextStageClick( GameObject go )
 	{
-	//	GameDataManager.Instance.nStoryID += 1;
-		//GameDataManager.Instance.nStageID += 1;
-//		PanelManager.Instance.OpenUI ( StoryUIPanel.Name );
-//		PanelManager.Instance.CloseUI ( Name );			// close this ui
+        //	GameDataManager.Instance.nStoryID += 1;
+        //GameDataManager.Instance.nStageID += 1;
+        //		PanelManager.Instance.OpenUI ( StoryUIPanel.Name );
+        //		PanelManager.Instance.CloseUI ( Name );			// close this ui
 
-//		ChooseNextStage();
-		StartCoroutine ( EnterStory( GameDataManager.Instance.nStoryID ) );
+        //		ChooseNextStage();
+        GameSystem.PlaySound(141);
+        StartCoroutine ( EnterStory( GameDataManager.Instance.nStoryID ) );
 
 	}
 	void OnUnitClick( GameObject go )
@@ -138,23 +139,27 @@ public class Panel_Mainten : MonoBehaviour {
 	void OnSaveClick( GameObject go )
 	{
 		Panel_SaveLoad.OpenSaveMode ( _SAVE_PHASE._MAINTEN );
-	//	cSaveData.Save ( 1 , _SAVE_PHASE._MAINTEN );
-	}
+        GameSystem.BtnSound();
+        //	cSaveData.Save ( 1 , _SAVE_PHASE._MAINTEN );
+    }
 	void OnLoadClick( GameObject go )
 	{
 		Panel_SaveLoad.OpenLoadMode ( _SAVE_PHASE._MAINTEN );
-	//	cSaveData.Load ( 1 , _SAVE_PHASE._MAINTEN );
-		//StartCoroutine ( SaveLoading( save) 
+        GameSystem.BtnSound();
+        //	cSaveData.Load ( 1 , _SAVE_PHASE._MAINTEN );
+        //StartCoroutine ( SaveLoading( save) 
 
-	}
+    }
     void OnItemClick(GameObject go)
     {
         Panel_ItemList.Open(0);
+        GameSystem.BtnSound();
     }
 
     void OnSetupClick(GameObject go)
     {
-        PanelManager.Instance.OpenUI(Panel_SystemSetting.Name);
+        Panel_SystemSetting.OpenUI();
+        GameSystem.BtnSound();
     }
     
 
@@ -164,13 +169,15 @@ public class Panel_Mainten : MonoBehaviour {
 		PanelManager.Instance.OpenUI( MainUIPanel.Name );
 
 		PanelManager.Instance.CloseUI( Name );
-	}
+        GameSystem.BtnSound(3);
+    }
 
 	void OnCheatClick( GameObject go )
 	{
 		PanelManager.Instance.OpenUI( Panel_SysCheat.Name );
-	
-	}
+        GameSystem.BtnSound();
+
+    }
 
 	//===========================================================
 	IEnumerator SaveLoading( cSaveData save )

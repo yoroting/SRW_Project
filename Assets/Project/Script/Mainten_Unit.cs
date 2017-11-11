@@ -175,7 +175,7 @@ public class Mainten_Unit : MonoBehaviour
             Debug.LogError("OnUnitInfoClick with null data");
             return;
         }
-
+        GameSystem.BtnSound();
         Panel_UnitInfo.OpenUI(pUnitData);
 
 

@@ -155,7 +155,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
         //		pUnit.OnSelected( true );
         //	}
         // ==================================
-        GameSystem.PlaySound("Se00");
+       
     }
 
 	void OnDisable()
@@ -345,8 +345,8 @@ public class Panel_CMDUnitUI : MonoBehaviour
        
         // fix pos
         FixCmderPos( );
-
-	}
+        GameSystem.BtnSound();
+    }
 
 //	void NormalCloseCmdUI()
 //	{
@@ -374,8 +374,8 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		}
 	
 		plane.EndCMDUI (); // really close
-
-	}
+        GameSystem.BtnSound(1);
+    }
 
 
 	public void WaitCmd( )
@@ -392,8 +392,8 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
 	
 		EndCMDUI (); // really close
-
-	}
+        GameSystem.BtnSound();
+    }
 
 	public void CharInfoCmd( )
 	{
@@ -404,7 +404,8 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		//Clear ();
 		//NormalCloseCmdUI ();.
 		EndCMDUI (); // really close
-	}
+        GameSystem.BtnSound();
+    }
 
 	public void AttackCmd( )
 	{
@@ -419,27 +420,31 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		Panel_StageUI.Instance.ClearOverCellEffect ();
 		Panel_StageUI.Instance.CreateAttackOverEffect (pCmder);
 		PanelManager.Instance.CloseUI( Name );
-	}
+        GameSystem.BtnSound();
+    }
 
 	public void AbilityCmd( )
 	{
 		if (pCmder != null) {
 			Panel_Skill.OpenUI (pCmder.Ident () , _SKILL_TYPE._ABILITY , nAtkerId , cCMD.Instance.eCMDTYPE);
 		}
-	}
+        GameSystem.BtnSound();
+    }
 
 	public void SkillCmd( )
 	{
 		if (pCmder != null) {
 			Panel_Skill.OpenUI (pCmder.Ident () , _SKILL_TYPE._SKILL ,nAtkerId , cCMD.Instance.eCMDTYPE );
 		}
-	}
+        GameSystem.BtnSound();
+    }
     public void SchoolCmd()
     {
         if (pCmder != null)
         {
             Panel_SchoolList.Open(1, pCmder.pUnitData , 1 );// 外功列表
         }
+        GameSystem.BtnSound();
     }
 
     public void CounterCmd( ) // counter atk
@@ -462,22 +467,25 @@ public class Panel_CMDUnitUI : MonoBehaviour
         // 正常反擊
 		BattleManager.Instance.nDeferSkillID = 0; // counter normaly
 		BattleManager.Instance.eDefCmdID	= _CMD_ID._COUNTER;	
-		EndCMDUI ();					
-	}
+		EndCMDUI ();
+        GameSystem.BtnSound();
+    }
 	public void  RoundEndCmd(  )
 	{
 		GameDataManager.Instance.NextCamp();
 
 		// restore all allay cmd times;
 		EndCMDUI (); // really close
-	}
+        GameSystem.BtnSound();
+    }
 
 	public void DefCmd( ) // only in count mode
 	{
 		BattleManager.Instance.eDefCmdID = _CMD_ID._DEF;
 
 		EndCMDUI (); // really close
-	}
+        GameSystem.BtnSound();
+    }
 
 	public void SaveCmd( ) // only in count mode
 	{
@@ -486,7 +494,8 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		Panel_SaveLoad.OpenSaveMode ( _SAVE_PHASE._STAGE );
 
 		EndCMDUI (); // really close
-	}
+        GameSystem.BtnSound();
+    }
 
 	public void LoadCmd( ) // only in count mode
 	{
@@ -497,7 +506,8 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		Panel_SaveLoad.OpenLoadMode ( _SAVE_PHASE._STAGE );
 
 		EndCMDUI (); // really close
-	}
+        GameSystem.BtnSound();
+    }
 
 	public void GameEndCmd ()
 	{
@@ -515,20 +525,23 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
 		// reopen main UI
 		PanelManager.Instance.OpenUI( MainUIPanel.Name );
-	}
+        GameSystem.BtnSound();
+    }
 
     public void GameOption()
     {
         EndCMDUI(); // really close
-        PanelManager.Instance.OpenUI(Panel_SystemSetting.Name);
+        Panel_SystemSetting.OpenUI();
+        GameSystem.BtnSound();
     }
 
     public void StageInfoCmd()
 	{
 		PanelManager.Instance.CloseUI ( Panel_StageInfo.Name );
 		PanelManager.Instance.OpenUI ( Panel_StageInfo.Name );
+        GameSystem.BtnSound();
 
-	}
+    }
 
 	public void  RunSuicide(  )
 	{
@@ -1249,8 +1262,9 @@ public class Panel_CMDUnitUI : MonoBehaviour
 	
 	public static void RollBackCMDUIWaitTargetMode()
 	{
-		// always clear all effect
-		Panel_StageUI.Instance.ClearOverCellEffect (); // for atk cell
+        GameSystem.BtnSound(1);
+        // always clear all effect
+        Panel_StageUI.Instance.ClearOverCellEffect (); // for atk cell
 
 		if (cCMD.Instance.nSkillID > 0) {
 			Panel_Skill.OpenUI( Panel_CMDUnitUI.JustGetCMDUI().pCmder.Ident() , _SKILL_TYPE._LAST , 0 , cCMD.Instance.eCMDTYPE);
@@ -1279,7 +1293,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		} else {
 			Panel_StageUI.Instance.CreateMoveOverEffect ( panel.pCmder ); // recreate
 		}
-
+       
 	}
 
 	// really close Cmd UI . all param be clear

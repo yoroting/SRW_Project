@@ -25,6 +25,11 @@ public enum _ePARAMIDX
     _MAX    // Max
 }
 
+public enum _eSCHIDX
+{
+    _INT = 0, // 內功
+    _EXT = 1, // 外功
+}
 
 // 戰鬥零時摻數
 public enum _FIGHTSTATE

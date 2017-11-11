@@ -169,6 +169,7 @@ public class Panel_SchoolList : MonoBehaviour {
     public void OnCloseClick(GameObject go)
     {
         PanelManager.Instance.CloseUI(Name);
+        GameSystem.BtnSound(1);
     }
 
     public void OnOKClick(GameObject go)
@@ -183,7 +184,7 @@ public class Panel_SchoolList : MonoBehaviour {
                     {
 
                         pUnitData.ActiveSchool(schid);
-                        GameSystem.PlaySound("Audios 00050");
+                        GameSystem.PlaySound(201);
                     }
                     // 有命令UI 要 關閉
                     if (PanelManager.Instance.CheckUIIsOpening(Panel_CMDUnitUI.Name))
@@ -227,7 +228,7 @@ public class Panel_SchoolList : MonoBehaviour {
                 {
                     if (PanelManager.Instance.CheckUIIsOpening(Panel_Enhance.Name))
                     {
-
+                        GameSystem.BtnSound();
                         Panel_Enhance panel = MyTool.GetPanel<Panel_Enhance>(Panel_Enhance.Name); //PanelManager.Instance.OpenUI( Panel_UnitInfo.Name );
                         if (panel != null)
                         {
@@ -240,6 +241,7 @@ public class Panel_SchoolList : MonoBehaviour {
                 break;
             default:
                 {
+                    GameSystem.BtnSound();
                     PanelManager.Instance.CloseUI(Name); // change school
                                                          // Panel_Tip.OpenItemTip(itemid);
                                                          //    Panel_Tip.OpenUI(MyTool.GetSkillName(itemid));

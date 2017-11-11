@@ -5,67 +5,49 @@ public class Panel_Enhance : MonoBehaviour
 {
     public const string Name = "Panel_Enhance";
 
-
-
-
     public GameObject lblName;
     public GameObject FaceObj;
 
     public GameObject BtnReset;
     public GameObject BtnClose;
     public GameObject BtnOk;
-    public GameObject ExtObj;
-    public GameObject IntObj;
 
-    public ItemList_School school_ext_item;
-    public ItemList_School school_int_item;
+    public enhance_school_item school_ext_item;
+    public enhance_school_item school_int_item;
     public item_param[] lbl_param_list;
     public enhance_param_item [] enhance_param_list;
 
     //  public GameObject GridExt; // GRID obj
     //  public GameObject GridInt;
 
-    public GameObject SchItemObj;  // school item
+//    public GameObject SchItemObj;  // school item
 
-    public GameObject lblOrgMar;
-    public GameObject lblOrgHp;
-    public GameObject lblOrgMp;
-    public GameObject lblOrgAtk;
-    public GameObject lblOrgDef;
-    public GameObject lblOrgPow;
-    public GameObject lblOrgMov;
-    public GameObject lblOrgBrust;
-    public GameObject lblOrgReduce;
-    public GameObject lblOrgArmor;
+    //public GameObject lblOrgMar;
+    //public GameObject lblOrgHp;
+    //public GameObject lblOrgMp;
+    //public GameObject lblOrgAtk;
+    //public GameObject lblOrgDef;
+    //public GameObject lblOrgPow;
+    //public GameObject lblOrgMov;
+    //public GameObject lblOrgBrust;
+    //public GameObject lblOrgReduce;
+    //public GameObject lblOrgArmor;
 
-    public GameObject lblAddMar;
-    public GameObject lblAddHp;
-    public GameObject lblAddMp;
-    public GameObject lblAddAtk;
-    public GameObject lblAddDef;
-    public GameObject lblAddPow;
-    public GameObject lblAddMov;
-    public GameObject lblAddBrust;
-    public GameObject lblAddReduce;
-    public GameObject lblAddArmor;
+    //public GameObject lblAddMar;
+    //public GameObject lblAddHp;
+    //public GameObject lblAddMp;
+    //public GameObject lblAddAtk;
+    //public GameObject lblAddDef;
+    //public GameObject lblAddPow;
+    //public GameObject lblAddMov;
+    //public GameObject lblAddBrust;
+    //public GameObject lblAddReduce;
+    //public GameObject lblAddArmor;
 
 
     public GameObject lblTotMoney;
     public GameObject lblCostMoney;
 
-    // 開啟後的 武學列表
-    public GameObject sprSchList;
-    UIScrollView svSchList;
-    UIGrid gridSchList;
-    public int nOpSchoolType; // 操作的武學類型
-    public GameObject ExtSchItemObj;  // 外功school item
-    public GameObject IntSchItemObj;  // 內功school item
-
-    public GameObject btnChangeExt;  // 更換外功school item
-    public GameObject btnChangeInt;  // 更換內功school item
-
-    public GameObject btnAddExt;  // 更換外功school item
-    public GameObject btnAddInt;  // 更換內功school item
 //    public int nOpSchType;          // 操作的武學
 
     // 裝備道具
@@ -78,8 +60,8 @@ public class Panel_Enhance : MonoBehaviour
     public cUnitData pTmpData;
 
 
-    public int nCostExt=0;
-    public int nCostInt=0;
+  //  public int nCostExt=0;
+  //  public int nCostInt=0;
 
 
     //public int nCostMoney=0;
@@ -116,16 +98,15 @@ public class Panel_Enhance : MonoBehaviour
      //   UIEventListener.Get(btnChangeExt).onClick = OnChangeExtClick;
      //   UIEventListener.Get(btnChangeInt).onClick = OnChangeIntClick;
 
-        UIEventListener.Get(btnAddExt).onClick = OnExtSchAddClick;
-        UIEventListener.Get(btnAddInt).onClick = OnIntSchAddClick;
+     //   UIEventListener.Get(btnAddExt).onClick = OnExtSchAddClick;
+     //   UIEventListener.Get(btnAddInt).onClick = OnIntSchAddClick;
 
 
     //    SchItemObj.CreatePool(4);
     //    SchItemObj.SetActive(false);
 
         pTmpData = new cUnitData();             // new for temp
-        nCostExt = nCostInt = 0 ;
-
+      
         // 道具裝備相關
         //int idx = 0;
         //foreach (GameObject o in ItemPool)
@@ -173,9 +154,13 @@ public class Panel_Enhance : MonoBehaviour
             tex.mainTexture = MyTool.GetCharTexture(pOrgData.n_FaceID);
         }
 
+        // school
+        school_ext_item.LinkUnit( pTmpData );
+        school_int_item.LinkUnit( pTmpData );
+
         foreach ( enhance_param_item item in enhance_param_list )
         {
-            item.LinkUnit(pTmpData ); // 連接 操作資料
+            item.LinkUnit( pTmpData ); // 連接 操作資料
         }
 
 
@@ -192,20 +177,22 @@ public class Panel_Enhance : MonoBehaviour
 
             //改為等級重置
             //  pTmpData.Copy(pOrgData); // 道具怎麼辦？
+            school_int_item.ReSet();
+            school_ext_item.ReSet();
 
-            if (nTmpExtId > 0)
-            {
-                int OrgExtLv = pOrgData.GetSchoolLv(nTmpExtId);
-                pTmpData.LearnSchool(nTmpExtId, OrgExtLv);
-                // pTmpData.ActiveSchool(nTmpExtId);
-            }
+            //if (nTmpExtId > 0)
+            //{
+            //    int OrgExtLv = pOrgData.GetSchoolLv(nTmpExtId);
+            //    pTmpData.LearnSchool(nTmpExtId, OrgExtLv);
+            //    // pTmpData.ActiveSchool(nTmpExtId);
+            //}
 
-            if (nTmpIntId > 0)
-            {
-                int OrgIntLv = pOrgData.GetSchoolLv(nTmpIntId);
-                // pTmpData.ActiveSchool(nTmpIntId);
-                pTmpData.LearnSchool(nTmpIntId, OrgIntLv);
-            }
+            //if (nTmpIntId > 0)
+            //{
+            //    int OrgIntLv = pOrgData.GetSchoolLv(nTmpIntId);
+            //    // pTmpData.ActiveSchool(nTmpIntId);
+            //    pTmpData.LearnSchool(nTmpIntId, OrgIntLv);
+            //}
             // 重置 強化
 
             //foreach (  ) {
@@ -223,9 +210,10 @@ public class Panel_Enhance : MonoBehaviour
 
     }
    
+    // Uidate UI
     public void Reload()
     {
-        sprSchList.SetActive(false);
+    //    sprSchList.SetActive(false);
         if (pTmpData != null)
         {
             // remove item?
@@ -236,23 +224,26 @@ public class Panel_Enhance : MonoBehaviour
         }
 
         // create school data item
-        SchItemObj.RecycleAll();
+        // SchItemObj.RecycleAll();
 
         // Set School Data
-        EnhanceItem exItem = ExtSchItemObj.GetComponent<EnhanceItem>();// 外功school item
-        EnhanceItem inItem = IntSchItemObj.GetComponent<EnhanceItem>();// 外功school item
-        if (exItem != null)
-        {
-            exItem.SetData(pTmpData.GetExtSchID(), pTmpData.GetExtSchLv());
-        }
-        if (inItem != null)
-        {
-            inItem.SetData(pTmpData.GetIntSchID(), pTmpData.GetIntSchLv());
-        }
+        //EnhanceItem exItem = ExtSchItemObj.GetComponent<EnhanceItem>();// 外功school item
+        //EnhanceItem inItem = IntSchItemObj.GetComponent<EnhanceItem>();// 外功school item
+        //if (exItem != null)
+        //{
+        //    exItem.SetData(pTmpData.GetExtSchID(), pTmpData.GetExtSchLv());
+        //}
+        //if (inItem != null)
+        //{
+        //    inItem.SetData(pTmpData.GetIntSchID(), pTmpData.GetIntSchLv());
+        //}
+        school_int_item.ReLoad();
+        school_ext_item.ReLoad();
+
 
         foreach (enhance_param_item item in enhance_param_list)
         {
-            item.ReSet(); // 更新介面
+            item.ReLoad(); // 更新介面
         }
 
         //
@@ -467,6 +458,7 @@ public class Panel_Enhance : MonoBehaviour
     }
     public void OnResetClick(GameObject go)
     {
+        GameSystem.BtnSound(2);
         ResetAll();        
         Reload();       // 參數重讀                
     }
@@ -475,6 +467,7 @@ public class Panel_Enhance : MonoBehaviour
         int nsum = GetSumCostPrice();
 
         if (nsum == 0) {
+            GameSystem.BtnSound(2);
             return; // 表示沒有強化
         }
 
@@ -482,7 +475,8 @@ public class Panel_Enhance : MonoBehaviour
         if (GameDataManager.Instance.nMoney < nsum )
         {
             // message Money not enough
-            //Panel_CheckBox.            
+            //Panel_CheckBox.           
+            GameSystem.BtnSound(2);
             return;
         }
 
@@ -532,7 +526,7 @@ public class Panel_Enhance : MonoBehaviour
         //{
         //    panel.ReloadUnitList();
         //}
-
+        Reload(); // refresh UI
         // 播放音效
         GameSystem.PlaySound("Audios 00050");
     }
@@ -548,77 +542,68 @@ public class Panel_Enhance : MonoBehaviour
             }
         }
 
-
+        GameSystem.BtnSound(1);
 
         PanelManager.Instance.CloseUI(Name);
     }
 
     // On Add School
-    public void OnIntSchAddClick(GameObject go)
-    {
-        int nSchID = pTmpData.GetIntSchID();
-        int nLv = pTmpData.GetIntSchLv();
-        OnSchLvAddClick(nSchID, nLv, 0);
-        Reload();
-    }
+    //public void OnIntSchAddClick(GameObject go)
+    //{
+    //    int nSchID = pTmpData.GetIntSchID();
+    //    int nLv = pTmpData.GetIntSchLv();
+    //    OnSchLvAddClick(nSchID, nLv, 0);
+    //    Reload();
+    //}
 
-    public void OnExtSchAddClick(GameObject go)
-    {
-        int nSchID = pTmpData.GetExtSchID();
-        int nLv = pTmpData.GetExtSchLv();        // 計算 金錢
+    //public void OnExtSchAddClick(GameObject go)
+    //{
+    //    int nSchID = pTmpData.GetExtSchID();
+    //    int nLv = pTmpData.GetExtSchLv();        // 計算 金錢
 
 
-        OnSchLvAddClick(nSchID, nLv , 1);
-        Reload();
+    //    OnSchLvAddClick(nSchID, nLv , 1);
+    //    Reload();
 
-    }
+    //}
     
 
 
     //public void OnSchLvAddClick(GameObject go)
-    public void OnSchLvAddClick(int nSchID, int nLv , int nSchType )
-    {
-        //EnhanceItem enItem = go.GetComponentInParent <EnhanceItem> ();
-        //if (enItem != null)
-        //{
-        //  int nSchID = enItem.nSchoolID;
-        //  int nLv = enItem.nLv  ;
+    //public void OnSchLvAddClick(int nSchID, int nLv , int nSchType )
+    //{
+    //    //EnhanceItem enItem = go.GetComponentInParent <EnhanceItem> ();
+    //    //if (enItem != null)
+    //    //{
+    //    //  int nSchID = enItem.nSchoolID;
+    //    //  int nLv = enItem.nLv  ;
 
-        SCHOOL sch = ConstDataManager.Instance.GetRow<SCHOOL>(nSchID);
-        if (sch == null)
-            return;
-        // check max lv
-        if (nLv >= sch.n_MAXLV)
-            return;
+    //    SCHOOL sch = ConstDataManager.Instance.GetRow<SCHOOL>(nSchID);
+    //    if (sch == null)
+    //        return;
+    //    // check max lv
+    //    if (nLv >= sch.n_MAXLV)
+    //        return;
 
-        //float fRate = Mathf.Pow(1.5f, nLv);
-        float fRate = (nLv-1)* 2.0f ;  // 一顆星 2000
+    //    //float fRate = Mathf.Pow(1.5f, nLv);
+    //    float fRate = (nLv-1)* 2.0f ;  // 一顆星 2000
 
-        // int nCost = (int)(Config.LevelUPMoney * sch.f_RANK * fRate); // 用當前等級算才不會太高
-        //   nCostMoney += nCost;
+    //    int nCost = (int)(Config.LevelUPMoney * sch.f_RANK * fRate); // 用當前等級算才不會太高
+    //     //nCostMoney += nCost;
 
-        int nCost = (int)(Config.LevelUPMoney * sch.f_RANK * fRate); // 用當前等級算才不會太高
-        if (nSchType == 0) // 內功
-        {
-            nCostInt += nCost;
-        }
-        else if (nSchType == 1)// 外功
-        {
-            nCostExt += nCost;
-        }
 
-        nLv++;
+    //    nLv++;
 
-        pTmpData.LearnSchool(nSchID, nLv);
-        //   enItem.SetData( nSchID, nLv);
-        // update lab value
-        pTmpData.ActiveSchool(nSchID);
+    //    pTmpData.LearnSchool(nSchID, nLv);
+    //    //   enItem.SetData( nSchID, nLv);
+    //    // update lab value
+    //    pTmpData.ActiveSchool(nSchID);
 
-        UpdateAttr();
+    //    UpdateAttr();
 
-        GameSystem.PlaySound( 170 );
-        // }
-    }
+    //    GameSystem.PlaySound( 170 );
+    //    // }
+    //}
 
     //public Item_Unit GetItemObj(int nIdx)
     //{
@@ -692,7 +677,7 @@ public class Panel_Enhance : MonoBehaviour
 
     public int  GetSumCostPrice()
     {
-        int sum = nCostExt + nCostInt;        
+        int sum = school_int_item.m_nCost + school_ext_item.m_nCost;        
 
         foreach (enhance_param_item item in enhance_param_list)
         {
@@ -703,9 +688,8 @@ public class Panel_Enhance : MonoBehaviour
         return sum;
     }
     public void ZeroCostPrice()
-    {
-        nCostExt = nCostInt =0;
-
+    {   
+        school_int_item.m_nCost = school_ext_item.m_nCost=0;
         foreach (enhance_param_item item in enhance_param_list)
         {
             item.m_nCost=0;

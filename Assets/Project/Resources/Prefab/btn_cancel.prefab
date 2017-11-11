@@ -181,7 +181,7 @@ MonoBehaviour:
   tweenTarget: {fileID: 1576968424862542}
   hover: {r: 1, g: 1, b: 1, a: 1}
   pressed: {r: 1, g: 1, b: 1, a: 1}
-  disabledColor: {r: 1, g: 1, b: 1, a: 1}
+  disabledColor: {r: 0.5019608, g: 0.5019608, b: 0.5019608, a: 1}
   duration: 0.2
   dragHighlight: 0
   hoverSprite: btn_red1

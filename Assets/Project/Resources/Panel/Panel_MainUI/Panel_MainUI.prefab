@@ -178,7 +178,6 @@ GameObject:
   - component: {fileID: 11474796}
   - component: {fileID: 11436094}
   - component: {fileID: 6538890}
-  - component: {fileID: 11423924}
   m_Layer: 5
   m_Name: Control - GameEnd Button
   m_TagString: Untagged
@@ -197,7 +196,6 @@ GameObject:
   - component: {fileID: 11456932}
   - component: {fileID: 11405098}
   - component: {fileID: 6530140}
-  - component: {fileID: 11437842}
   m_Layer: 5
   m_Name: Control - Load Button
   m_TagString: Untagged
@@ -216,7 +214,6 @@ GameObject:
   - component: {fileID: 11409688}
   - component: {fileID: 11414816}
   - component: {fileID: 6566002}
-  - component: {fileID: 11467748}
   m_Layer: 5
   m_Name: Control - Start Button
   m_TagString: Untagged
@@ -302,7 +299,6 @@ GameObject:
   - component: {fileID: 11451854}
   - component: {fileID: 11420316}
   - component: {fileID: 6559510}
-  - component: {fileID: 11404702}
   m_Layer: 5
   m_Name: Control - SetUp Button
   m_TagString: Untagged
@@ -792,21 +788,6 @@ MonoBehaviour:
   mMaxLineHeight: 0
   mLineWidth: 0
   mMultiline: 1
---- !u!114 &11404702
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 190486}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7d44bc69c2ca5f943b845318866dc1bd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  audioClip: {fileID: 8300000, guid: b5083cfe83bb875479bd797c61594131, type: 3}
-  trigger: 0
-  volume: 1
-  pitch: 1
 --- !u!114 &11405098
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1126,21 +1107,6 @@ MonoBehaviour:
   mAtlas: {fileID: 11400000, guid: 62adb30369acbf943a67cee0f69267a3, type: 2}
   mSpriteName: Button
   mFillCenter: 1
---- !u!114 &11423924
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 170438}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7d44bc69c2ca5f943b845318866dc1bd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  audioClip: {fileID: 8300000, guid: b5083cfe83bb875479bd797c61594131, type: 3}
-  trigger: 0
-  volume: 1
-  pitch: 1
 --- !u!114 &11430946
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1313,21 +1279,6 @@ MonoBehaviour:
   mMaxLineHeight: 0
   mLineWidth: 0
   mMultiline: 1
---- !u!114 &11437842
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 172390}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7d44bc69c2ca5f943b845318866dc1bd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  audioClip: {fileID: 8300000, guid: b5083cfe83bb875479bd797c61594131, type: 3}
-  trigger: 0
-  volume: 1
-  pitch: 1
 --- !u!114 &11443770
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1805,21 +1756,6 @@ MonoBehaviour:
   mAtlas: {fileID: 11400000, guid: 62adb30369acbf943a67cee0f69267a3, type: 2}
   mSpriteName: Stripes 3
   mFillCenter: 1
---- !u!114 &11467748
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 174076}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7d44bc69c2ca5f943b845318866dc1bd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  audioClip: {fileID: 8300000, guid: b5083cfe83bb875479bd797c61594131, type: 3}
-  trigger: 0
-  volume: 1
-  pitch: 1
 --- !u!114 &11471320
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -43,8 +43,8 @@ MonoBehaviour:
   material: {fileID: 2100000, guid: 6374d72801500d9488aaff85565b7c11, type: 2}
   mSprites:
   - name: 00012
-    x: 1188
-    y: 991
+    x: 1784
+    y: 865
     width: 80
     height: 23
     borderLeft: 4
@@ -56,8 +56,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: 00013
-    x: 1107
-    y: 991
+    x: 1932
+    y: 881
     width: 80
     height: 23
     borderLeft: 4
@@ -69,8 +69,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: 00014
-    x: 1436
-    y: 963
+    x: 1488
+    y: 1014
     width: 80
     height: 23
     borderLeft: 4
@@ -95,8 +95,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 1
   - name: 00021
-    x: 0
-    y: 957
+    x: 828
+    y: 1640
     width: 176
     height: 36
     borderLeft: 0
@@ -108,8 +108,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 1
   - name: 00022
-    x: 828
-    y: 1640
+    x: 1593
+    y: 1008
     width: 176
     height: 36
     borderLeft: 50
@@ -121,8 +121,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 1
   - name: 00125
-    x: 1813
-    y: 1652
+    x: 1739
+    y: 986
     width: 24
     height: 21
     borderLeft: 0
@@ -134,8 +134,8 @@ MonoBehaviour:
     paddingTop: 4
     paddingBottom: 5
   - name: 00127
-    x: 2024
-    y: 1102
+    x: 1569
+    y: 1018
     width: 22
     height: 19
     borderLeft: 0
@@ -160,8 +160,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: 159_00024
-    x: 1903
-    y: 1085
+    x: 1362
+    y: 1117
     width: 120
     height: 28
     borderLeft: 12
@@ -173,19 +173,6 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: 159_00025
-    x: 1093
-    y: 1296
-    width: 120
-    height: 28
-    borderLeft: 12
-    borderRight: 12
-    borderTop: 12
-    borderBottom: 12
-    paddingLeft: 0
-    paddingRight: 0
-    paddingTop: 0
-    paddingBottom: 0
-  - name: 159_00026
     x: 470
     y: 1442
     width: 120
@@ -198,9 +185,22 @@ MonoBehaviour:
     paddingRight: 0
     paddingTop: 0
     paddingBottom: 0
+  - name: 159_00026
+    x: 1093
+    y: 1296
+    width: 120
+    height: 28
+    borderLeft: 12
+    borderRight: 12
+    borderTop: 12
+    borderBottom: 12
+    paddingLeft: 0
+    paddingRight: 0
+    paddingTop: 0
+    paddingBottom: 0
   - name: bar_green
-    x: 1525
-    y: 1087
+    x: 1488
+    y: 981
     width: 188
     height: 26
     borderLeft: 8
@@ -212,8 +212,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: bar_light_blue
-    x: 1714
-    y: 1087
+    x: 1483
+    y: 954
     width: 188
     height: 26
     borderLeft: 8
@@ -225,8 +225,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: bar_shadow
-    x: 252
-    y: 915
+    x: 1294
+    y: 1007
     width: 193
     height: 30
     borderLeft: 8
@@ -238,8 +238,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: bar_yellow
-    x: 1525
-    y: 1060
+    x: 1294
+    y: 980
     width: 188
     height: 26
     borderLeft: 8
@@ -251,8 +251,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: bg1
-    x: 1131
-    y: 1084
+    x: 900
+    y: 1008
     width: 247
     height: 61
     borderLeft: 36
@@ -341,9 +341,22 @@ MonoBehaviour:
     paddingRight: 0
     paddingTop: 0
     paddingBottom: 0
+  - name: bg8
+    x: 0
+    y: 984
+    width: 534
+    height: 85
+    borderLeft: 4
+    borderRight: 4
+    borderTop: 4
+    borderBottom: 4
+    paddingLeft: 0
+    paddingRight: 0
+    paddingTop: 0
+    paddingBottom: 0
   - name: btn_add
     x: 1182
-    y: 1635
+    y: 1656
     width: 20
     height: 20
     borderLeft: 4
@@ -355,8 +368,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: btn_add_disable
-    x: 470
-    y: 1421
+    x: 1242
+    y: 980
     width: 20
     height: 20
     borderLeft: 0
@@ -368,8 +381,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: btn_add_over
-    x: 1107
-    y: 1049
+    x: 1813
+    y: 1622
     width: 20
     height: 20
     borderLeft: 0
@@ -381,8 +394,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: btn_add_press
-    x: 533
-    y: 1421
+    x: 1182
+    y: 1635
     width: 20
     height: 20
     borderLeft: 0
@@ -394,8 +407,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: btn_add0
-    x: 970
-    y: 969
+    x: 2013
+    y: 873
     width: 33
     height: 33
     borderLeft: 0
@@ -407,8 +420,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: btn_add1
-    x: 1714
-    y: 1015
+    x: 2003
+    y: 1156
     width: 33
     height: 33
     borderLeft: 0
@@ -420,8 +433,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: btn_add2
-    x: 936
-    y: 969
+    x: 2003
+    y: 1122
     width: 33
     height: 33
     borderLeft: 0
@@ -433,8 +446,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: btn_add3
-    x: 1004
-    y: 970
+    x: 590
+    y: 1037
     width: 32
     height: 32
     borderLeft: 0
@@ -446,8 +459,8 @@ MonoBehaviour:
     paddingTop: 1
     paddingBottom: 0
   - name: Btn_B
-    x: 1438
-    y: 988
+    x: 1736
+    y: 902
     width: 49
     height: 34
     borderLeft: 24
@@ -459,8 +472,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 6
   - name: Btn_B_disable
-    x: 1277
-    y: 985
+    x: 1954
+    y: 940
     width: 49
     height: 34
     borderLeft: 24
@@ -472,8 +485,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 6
   - name: Btn_B_over
-    x: 1388
-    y: 988
+    x: 1954
+    y: 905
     width: 49
     height: 34
     borderLeft: 24
@@ -485,8 +498,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 6
   - name: Btn_B_press
-    x: 1488
-    y: 987
+    x: 1786
+    y: 902
     width: 49
     height: 34
     borderLeft: 24
@@ -498,8 +511,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 6
   - name: btn_blue0
-    x: 754
-    y: 948
+    x: 1148
+    y: 1001
     width: 145
     height: 68
     borderLeft: 16
@@ -511,8 +524,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: btn_blue1
-    x: 608
-    y: 948
+    x: 973
+    y: 939
     width: 145
     height: 68
     borderLeft: 16
@@ -524,8 +537,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: btn_blue2
-    x: 462
-    y: 932
+    x: 535
+    y: 948
     width: 145
     height: 68
     borderLeft: 16
@@ -537,8 +550,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: btn_blue3
-    x: 1819
-    y: 1857
+    x: 1593
+    y: 1047
     width: 144
     height: 66
     borderLeft: 16
@@ -550,8 +563,8 @@ MonoBehaviour:
     paddingTop: 2
     paddingBottom: 0
   - name: btn_close0
-    x: 1450
-    y: 1023
+    x: 1298
+    y: 926
     width: 55
     height: 53
     borderLeft: 0
@@ -563,8 +576,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: btn_close1
-    x: 62
-    y: 855
+    x: 1242
+    y: 926
     width: 55
     height: 53
     borderLeft: 0
@@ -576,8 +589,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: btn_close2
-    x: 1394
-    y: 1023
+    x: 1354
+    y: 926
     width: 55
     height: 53
     borderLeft: 0
@@ -589,8 +602,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: btn_close3
-    x: 1338
-    y: 1023
+    x: 1410
+    y: 926
     width: 55
     height: 53
     borderLeft: 0
@@ -602,8 +615,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: btn_del
-    x: 512
-    y: 1421
+    x: 2022
+    y: 1015
     width: 20
     height: 20
     borderLeft: 0
@@ -615,8 +628,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: btn_del_disable
-    x: 491
-    y: 1421
+    x: 2017
+    y: 1685
     width: 20
     height: 20
     borderLeft: 0
@@ -628,8 +641,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: btn_del_over
-    x: 1107
-    y: 1028
+    x: 1263
+    y: 980
     width: 20
     height: 20
     borderLeft: 0
@@ -641,8 +654,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: btn_del_press
-    x: 1182
-    y: 1656
+    x: 1932
+    y: 906
     width: 20
     height: 20
     borderLeft: 0
@@ -654,8 +667,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: Btn_G
-    x: 1879
-    y: 1047
+    x: 1576
+    y: 916
     width: 54
     height: 37
     borderLeft: 24
@@ -667,8 +680,8 @@ MonoBehaviour:
     paddingTop: 4
     paddingBottom: 7
   - name: Btn_G_disable
-    x: 1989
-    y: 1047
+    x: 1794
+    y: 937
     width: 54
     height: 37
     borderLeft: 24
@@ -680,8 +693,8 @@ MonoBehaviour:
     paddingTop: 4
     paddingBottom: 7
   - name: Btn_G_over
-    x: 1506
-    y: 1022
+    x: 535
+    y: 1032
     width: 54
     height: 37
     borderLeft: 24
@@ -693,8 +706,8 @@ MonoBehaviour:
     paddingTop: 4
     paddingBottom: 7
   - name: Btn_G_press
-    x: 1769
-    y: 1049
+    x: 1466
+    y: 916
     width: 54
     height: 37
     borderLeft: 24
@@ -706,8 +719,8 @@ MonoBehaviour:
     paddingTop: 4
     paddingBottom: 7
   - name: btn_green0
-    x: 1379
-    y: 1077
+    x: 827
+    y: 939
     width: 145
     height: 68
     borderLeft: 16
@@ -719,8 +732,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: btn_green1
-    x: 1131
-    y: 1015
+    x: 681
+    y: 948
     width: 145
     height: 68
     borderLeft: 12
@@ -732,8 +745,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: btn_green2
-    x: 462
-    y: 1001
+    x: 1738
+    y: 1045
     width: 145
     height: 68
     borderLeft: 12
@@ -745,8 +758,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: btn_green3
-    x: 900
-    y: 1003
+    x: 1819
+    y: 1857
     width: 144
     height: 66
     borderLeft: 12
@@ -758,8 +771,8 @@ MonoBehaviour:
     paddingTop: 2
     paddingBottom: 0
   - name: btn_orange0
-    x: 2003
-    y: 1122
+    x: 2010
+    y: 1036
     width: 35
     height: 34
     borderLeft: 4
@@ -771,8 +784,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: btn_purple0
-    x: 900
-    y: 968
+    x: 2004
+    y: 907
     width: 35
     height: 34
     borderLeft: 4
@@ -784,8 +797,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: Btn_R
-    x: 1714
-    y: 1049
+    x: 1849
+    y: 937
     width: 54
     height: 37
     borderLeft: 24
@@ -797,8 +810,8 @@ MonoBehaviour:
     paddingTop: 4
     paddingBottom: 7
   - name: Btn_R_disable
-    x: 1824
-    y: 1049
+    x: 1739
+    y: 937
     width: 54
     height: 37
     borderLeft: 24
@@ -810,8 +823,8 @@ MonoBehaviour:
     paddingTop: 4
     paddingBottom: 7
   - name: Btn_R_over
-    x: 1934
-    y: 1047
+    x: 1631
+    y: 905
     width: 54
     height: 37
     borderLeft: 24
@@ -823,8 +836,8 @@ MonoBehaviour:
     paddingTop: 4
     paddingBottom: 7
   - name: Btn_R_press
-    x: 1561
-    y: 1022
+    x: 1521
+    y: 916
     width: 54
     height: 37
     borderLeft: 24
@@ -849,8 +862,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: btn_red1
-    x: 0
-    y: 844
+    x: 1180
+    y: 936
     width: 61
     height: 64
     borderLeft: 16
@@ -862,8 +875,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 1
   - name: btn_red2
-    x: 1045
-    y: 1005
+    x: 1677
+    y: 943
     width: 61
     height: 64
     borderLeft: 16
@@ -875,8 +888,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 1
   - name: btn_red3
-    x: 1277
-    y: 1020
+    x: 1119
+    y: 937
     width: 60
     height: 63
     borderLeft: 16
@@ -888,8 +901,8 @@ MonoBehaviour:
     paddingTop: 2
     paddingBottom: 0
   - name: btn_skip_press
-    x: 1666
-    y: 1012
+    x: 1736
+    y: 854
     width: 47
     height: 47
     borderLeft: 4
@@ -901,45 +914,6 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: btn2_blue
-    x: 126
-    y: 903
-    width: 125
-    height: 47
-    borderLeft: 0
-    borderRight: 0
-    borderTop: 0
-    borderBottom: 0
-    paddingLeft: 0
-    paddingRight: 0
-    paddingTop: 0
-    paddingBottom: 0
-  - name: btn2_green
-    x: 329
-    y: 946
-    width: 125
-    height: 47
-    borderLeft: 0
-    borderRight: 0
-    borderTop: 0
-    borderBottom: 0
-    paddingLeft: 0
-    paddingRight: 0
-    paddingTop: 0
-    paddingBottom: 0
-  - name: btn2_purple
-    x: 0
-    y: 909
-    width: 125
-    height: 47
-    borderLeft: 0
-    borderRight: 0
-    borderTop: 0
-    borderBottom: 0
-    paddingLeft: 0
-    paddingRight: 0
-    paddingTop: 0
-    paddingBottom: 0
-  - name: btn2_red
     x: 1093
     y: 1325
     width: 125
@@ -952,7 +926,33 @@ MonoBehaviour:
     paddingRight: 0
     paddingTop: 0
     paddingBottom: 0
-  - name: btn2_yellow
+  - name: btn2_green
+    x: 1884
+    y: 1023
+    width: 125
+    height: 47
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
+    paddingLeft: 0
+    paddingRight: 0
+    paddingTop: 0
+    paddingBottom: 0
+  - name: btn2_purple
+    x: 1770
+    y: 975
+    width: 125
+    height: 47
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
+    paddingLeft: 0
+    paddingRight: 0
+    paddingTop: 0
+    paddingBottom: 0
+  - name: btn2_red
     x: 1093
     y: 1373
     width: 125
@@ -965,9 +965,22 @@ MonoBehaviour:
     paddingRight: 0
     paddingTop: 0
     paddingBottom: 0
+  - name: btn2_yellow
+    x: 1896
+    y: 975
+    width: 125
+    height: 47
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
+    paddingLeft: 0
+    paddingRight: 0
+    paddingTop: 0
+    paddingBottom: 0
   - name: button
-    x: 1538
-    y: 974
+    x: 1836
+    y: 889
     width: 47
     height: 47
     borderLeft: 8
@@ -979,8 +992,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: Button_Blue
-    x: 1541
-    y: 1114
+    x: 1131
+    y: 1070
     width: 230
     height: 75
     borderLeft: 0
@@ -1018,8 +1031,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: Button_Green
-    x: 0
-    y: 994
+    x: 1362
+    y: 1038
     width: 230
     height: 75
     borderLeft: 0
@@ -1031,8 +1044,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: button_press
-    x: 1388
-    y: 940
+    x: 1884
+    y: 879
     width: 47
     height: 47
     borderLeft: 8
@@ -1044,7 +1057,7 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: Button_Red
-    x: 1772
+    x: 1541
     y: 1114
     width: 230
     height: 75
@@ -1057,8 +1070,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: Button_Yellow
-    x: 231
-    y: 994
+    x: 1772
+    y: 1114
     width: 230
     height: 75
     borderLeft: 0
@@ -1083,8 +1096,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: cell2
-    x: 1977
-    y: 1675
+    x: 1483
+    y: 1115
     width: 52
     height: 30
     borderLeft: 15
@@ -1148,8 +1161,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: cycle_greed
-    x: 1338
-    y: 975
+    x: 1686
+    y: 895
     width: 49
     height: 47
     borderLeft: 0
@@ -1161,8 +1174,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: cycle_red
-    x: 1616
-    y: 1012
+    x: 1904
+    y: 927
     width: 49
     height: 47
     borderLeft: 0
@@ -1174,8 +1187,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: icon_buff
-    x: 1045
-    y: 981
+    x: 1294
+    y: 1046
     width: 56
     height: 23
     borderLeft: 10
@@ -1187,8 +1200,8 @@ MonoBehaviour:
     paddingTop: 1
     paddingBottom: 0
   - name: icon_cell
-    x: 2003
-    y: 1157
+    x: 2004
+    y: 942
     width: 40
     height: 32
     borderLeft: 16
@@ -1213,8 +1226,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: lbl_bg
-    x: 177
-    y: 951
+    x: 1884
+    y: 1071
     width: 151
     height: 42
     borderLeft: 0
@@ -1232,6 +1245,19 @@ MonoBehaviour:
     height: 40
     borderLeft: 0
     borderRight: 42
+    borderTop: 0
+    borderBottom: 0
+    paddingLeft: 0
+    paddingRight: 0
+    paddingTop: 0
+    paddingBottom: 0
+  - name: lv
+    x: 1977
+    y: 1682
+    width: 39
+    height: 23
+    borderLeft: 0
+    borderRight: 0
     borderTop: 0
     borderBottom: 0
     paddingLeft: 0
@@ -1318,7 +1344,7 @@ MonoBehaviour:
     paddingBottom: 0
   - name: star
     x: 1813
-    y: 1621
+    y: 1643
     width: 31
     height: 30
     borderLeft: 0

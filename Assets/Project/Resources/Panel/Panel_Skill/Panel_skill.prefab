@@ -3197,7 +3197,6 @@ GameObject:
   - component: {fileID: 114040061548459148}
   - component: {fileID: 114045771933628048}
   - component: {fileID: 65521015866064212}
-  - component: {fileID: 114435880555840592}
   m_Layer: 5
   m_Name: btn_close
   m_TagString: Untagged
@@ -9233,21 +9232,6 @@ MonoBehaviour:
   mAtlas: {fileID: 11491776, guid: 25576dd4c299fef4f9fc244f1e89bb8b, type: 2}
   mSpriteName: Button_Blue
   mFillCenter: 1
---- !u!114 &114435880555840592
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1864439334566046}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7d44bc69c2ca5f943b845318866dc1bd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  audioClip: {fileID: 8300000, guid: b5083cfe83bb875479bd797c61594131, type: 3}
-  trigger: 0
-  volume: 1
-  pitch: 1
 --- !u!114 &114437274391034526
 MonoBehaviour:
   m_ObjectHideFlags: 1

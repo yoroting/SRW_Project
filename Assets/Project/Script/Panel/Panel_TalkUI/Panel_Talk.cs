@@ -317,6 +317,8 @@ public class Panel_Talk : MonoBehaviour
         {
             NextLine(); // 
         }
+
+        GameSystem.BtnSound(1);
         EndTalk();
 
         Panel_StageUI.Instance.SetScriptSkipMode( false);

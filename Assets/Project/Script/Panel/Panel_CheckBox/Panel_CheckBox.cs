@@ -70,7 +70,8 @@ public class Panel_CheckBox : MonoBehaviour {
 			MyTool.CMDUI().RoundEndCmd();
 		}
 		PanelManager.Instance.CloseUI (Name );
-	}
+        GameSystem.BtnSound();
+    }
 
 	void OnCloseClick( GameObject go )
 	{
@@ -81,7 +82,8 @@ public class Panel_CheckBox : MonoBehaviour {
 		}
 
 		PanelManager.Instance.CloseUI (Name );
-	}
+        GameSystem.BtnSound(1);
+    }
     static public void MessageBox(string msg)
     {
         Panel_CheckBox panel = GameSystem.OpenCheckBox();

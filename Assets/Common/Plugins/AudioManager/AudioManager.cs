@@ -169,14 +169,20 @@ public class AudioManager : Singleton<AudioManager>
 		return true;
 	}
 
-
-	/// <summary>
-	/// 建立聲音頻道
-	/// </summary>
-	/// <returns><c>true</c>, if channel was created, <c>false</c> otherwise.</returns>
-	/// <param name="channel">Channel.</param>
-	/// <typeparam name="T">The 1st type parameter.</typeparam>
-	public bool CreateChannel<T>(AudioChannelType channelType) where T : AudioChannelBase { return CreateChannel<T>((int)channelType); }
+    public bool IsChannelMute(AudioChannelType channelType) { return IsChannelMute((int)channelType); }
+    public bool IsChannelMute(int channel)
+    {
+        AudioChannelBase audioChannel = FindChannel(channel);
+        if (audioChannel == null) return false;
+        return audioChannel.IsMute;
+    }
+    /// <summary>
+    /// 建立聲音頻道
+    /// </summary>
+    /// <returns><c>true</c>, if channel was created, <c>false</c> otherwise.</returns>
+    /// <param name="channel">Channel.</param>
+    /// <typeparam name="T">The 1st type parameter.</typeparam>
+    public bool CreateChannel<T>(AudioChannelType channelType) where T : AudioChannelBase { return CreateChannel<T>((int)channelType); }
 	public bool CreateChannel<T>(int channel) where T : AudioChannelBase
 	{
 		if (channels.ContainsKey(channel))

@@ -132,8 +132,14 @@ public class GameSystem : MonoBehaviour {
 		{
 			ResourcesManager.LoadLevel("5Main");
 		}
-		//ResourcesManager.LoadLevel(Application.loadedLevel + 1);
-	}
+        //ResourcesManager.LoadLevel(Application.loadedLevel + 1);
+
+        // 讀入config data
+
+        Panel_SystemSetting.LoadConfig();
+
+
+    }
 	
 	void OnLevelWasLoaded(int levelIndex)
 	{
@@ -148,6 +154,8 @@ public class GameSystem : MonoBehaviour {
 		#endif
 		isApplicationQuit = true;
 	}
+
+ 
 
 	// 目前操作
 	public static void ShakeCamera( float fDelay =0.2f ){
@@ -484,6 +492,24 @@ public class GameSystem : MonoBehaviour {
 		return null;	
 	}
 
+    public static void BtnSound( int nType = 0 )
+    {
+        if (nType == 0) { // 確定
+            PlaySound( 137 );
+        }
+        else if (nType == 1) // 取消
+        {
+            PlaySound( 138 );
+        }
+        else if (nType == 2) // 失敗
+        {
+            PlaySound( 139 );
+        }
+        else if (nType == 3) // ？？
+        {
+            PlaySound( 140 );
+        }
 
+    }
 
 }

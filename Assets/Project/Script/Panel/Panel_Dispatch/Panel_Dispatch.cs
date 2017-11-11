@@ -77,16 +77,20 @@ public class Panel_Dispatch : MonoBehaviour
 
     public bool AddUnit( int nCharID )
     {
-        if ( CheckSlot() == false)
+        if (CheckSlot() == false)
+        {
+           
             return false;
+        }
 
         if (DispatchList.Contains(nCharID) == false)
         {
             DispatchList.Add(nCharID );
             UpdateUnitNum();
+           
             return true;
         }
-        
+       
         return false;
     }
 
@@ -149,6 +153,7 @@ public class Panel_Dispatch : MonoBehaviour
         }  ;
 
 
+        GameSystem.PlaySound(201);
 
         PanelManager.Instance.CloseUI(Panel_Dispatch.Name);
     }

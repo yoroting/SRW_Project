@@ -57,7 +57,8 @@ public class Panel_Tip : MonoBehaviour {
 		if (PanelManager.Instance != null) {
 			PanelManager.Instance.CloseUI (Name);
 		}
-	}
+        GameSystem.PlaySound("Tap");
+    }
 
     public void SetContent(string str )
     {
@@ -98,6 +99,7 @@ public class Panel_Tip : MonoBehaviour {
 
 	static public void OpenUI( string str )
 	{
+        GameSystem.PlaySound("Tap");
         Panel_Tip pTip = MyTool.GetPanel< Panel_Tip > (PanelManager.Instance.OpenUI (Name));
 		if (pTip) {
             pTip.lblTitle.SetActive(false);
@@ -111,8 +113,8 @@ public class Panel_Tip : MonoBehaviour {
 	
 	static public void OpenUI( string strTitle , string strContext )
 	{
-        
 
+        GameSystem.PlaySound("Tap");
         Panel_Tip pTip = MyTool.GetPanel< Panel_Tip > (PanelManager.Instance.OpenUI (Name));
 		if (pTip) {
             pTip.lblTitle.SetActive(true);
