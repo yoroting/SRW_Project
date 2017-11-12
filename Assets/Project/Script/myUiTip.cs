@@ -10,7 +10,7 @@ public class myUiTip : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        UIEventListener.Get(this.gameObject).onClick = OnTipClick; // 
+        UIEventListener.Get(this.gameObject).onPress += OnTipPress;
     }
 
     // Update is called once per frame
@@ -19,8 +19,15 @@ public class myUiTip : MonoBehaviour
 
     }
 
-    void OnTipClick(GameObject go)
-    {
+    void OnTipPress(GameObject go, bool pressed)
+    {   
+        if (pressed == false ) {
+            // CLOSE TIP
+            Panel_Tip.CloseUI();
+            return;
+        }
+        // pop tip
+
         string sTipSub = "";
         string sTip = nTipString;
 

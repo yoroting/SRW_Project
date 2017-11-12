@@ -22,6 +22,12 @@ public enum _ePARAMIDX
     _RED  = 12,//12	減免
     _ARM  = 13,//13	護甲
     _TIRED = 14,//14	破綻
+    _MAXHP = 15,//15	生命上限
+    _MAXMP = 16,//16	內力上限
+    _MAXSP = 17,//17	精神上限
+    _MAXDEF = 18,//18	防禦上限
+    _CP = 19,//19	真氣
+
     _MAX    // Max
 }
 

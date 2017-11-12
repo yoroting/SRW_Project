@@ -24,11 +24,18 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
 	public GameObject CmdButton;
 
-    public GameObject pUnitObj;        // cmder
-    public GameObject pMobObj;         // Atker
+ //   public GameObject pUnitObj;        // cmder
+  //  public GameObject pMobObj;         // Atker
 
-    Panel_MiniUnitInfo pUnitInfo;
-    Panel_MiniUnitInfo pMobInfo;
+ //   Panel_MiniUnitInfo pUnitInfo;
+  //  Panel_MiniUnitInfo pMobInfo;
+
+
+    public mini_unitinfo m_pSelf;
+    public mini_unitinfo m_pTarget;
+
+
+
     //	public GameObject InfoButton;
     //	public GameObject MoveButton;
     //	public GameObject AttackButton;
@@ -69,11 +76,14 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		CmdButton.SetActive (false);
 
 
-        pUnitObj.SetActive(false);
-        pMobObj.SetActive( false );
+        //pUnitObj.SetActive(false);
+        //pMobObj.SetActive( false );
 
-        pUnitInfo = pUnitObj.GetComponent<Panel_MiniUnitInfo>();
-        pMobInfo = pMobObj.GetComponent<Panel_MiniUnitInfo>();
+        //pUnitInfo = pUnitObj.GetComponent<Panel_MiniUnitInfo>();
+        //pMobInfo = pMobObj.GetComponent<Panel_MiniUnitInfo>();
+
+        m_pTarget.gameObject.SetActive(false);
+        m_pSelf.gameObject.SetActive(false);
         //==============================		
         ClearCmdPool ();
 	}
@@ -154,8 +164,9 @@ public class Panel_CMDUnitUI : MonoBehaviour
         //	if (pUnit != null) {
         //		pUnit.OnSelected( true );
         //	}
-        // ==================================
-       
+        // ==================================      
+
+      
     }
 
 	void OnDisable()
@@ -201,7 +212,9 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
 		CmdButton.RecycleAll ();
 
-       // pUnitInfo = null;
+        // pUnitInfo = null;
+        m_pTarget.gameObject.SetActive(false);
+        m_pSelf.gameObject.SetActive(false);
     }
 
 	void CreateCMDList( _CMD_TYPE eType )
@@ -224,10 +237,11 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
 
             // record cmd type
-            CMD.eLASTCMDTYPE = CMD.eCMDTYPE;
+        CMD.eLASTCMDTYPE = CMD.eCMDTYPE;
 		CMD.eCMDTYPE = eType;
 
-      
+        // 攻擊者
+        cUnitData pAtker = GameDataManager.Instance.GetUnitDateByIdent(nAtkerId);
 
         UIGrid grid = NGuiGrids.GetComponent<UIGrid>();
 
@@ -268,9 +282,9 @@ public class Panel_CMDUnitUI : MonoBehaviour
                     if (id == _CMD_ID._COUNTER)
                     {
                         // 距離太遠的不能反擊
-                        if (nAtkerId > 0)
-                        {
-                            cUnitData pAtker = GameDataManager.Instance.GetUnitDateByIdent(nAtkerId);
+                        //if (nAtkerId > 0)
+                        //{
+                        //     pAtker = GameDataManager.Instance.GetUnitDateByIdent(nAtkerId);
                             if (pAtker != null)
                             {
                                 int nDist = MYGRIDS.iVec2.Dist(pAtker.n_X, pAtker.n_Y, pCmder.Loc.X, pCmder.Loc.Y);
@@ -283,7 +297,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
                                     }
                                 }
                             }
-                        }
+                     //   }
                     }
                 }
                 else {
@@ -326,22 +340,39 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		if (pCmder != null && pCmder.pUnitData != null ) {
             if (pCmder.pUnitData.eCampID == _CAMP._ENEMY)
             {
-                pMobInfo.gameObject.SetActive(true);
-                pMobInfo.SetData(pCmder.pUnitData);
+                //pMobInfo.gameObject.SetActive(true);
+                //pMobInfo.SetData(pCmder.pUnitData);
+                m_pTarget.gameObject.SetActive(true);
+                m_pTarget.SetData(pCmder.pUnitData);
+
             }
             else {
-                pUnitInfo.gameObject.SetActive(true);
-                pUnitInfo.SetData(pCmder.pUnitData);
+                // pUnitInfo.gameObject.SetActive(true);
+                // pUnitInfo.SetData(pCmder.pUnitData);
+                m_pSelf.gameObject.SetActive(true);
+                m_pSelf.SetData( pCmder.pUnitData );
+
             }
             // pUnitInfo = Panel_MiniUnitInfo.OpenUI (pCmder.pUnitData);
         }
 		else {
-            pUnitInfo.gameObject.SetActive(false);
-            pMobInfo.gameObject.SetActive(false);
+            //pUnitInfo.gameObject.SetActive(false);
+            //pMobInfo.gameObject.SetActive(false);
+
+            m_pTarget.gameObject.SetActive(false);
+            m_pSelf.gameObject.SetActive(false);
+
             //pUnitInfo = null;
             //Panel_MiniUnitInfo.CloseUI();            
         }
 
+
+        //  show - attacker
+        if (pAtker != null)
+        {
+            m_pTarget.gameObject.SetActive(true);
+            m_pTarget.SetData(pAtker);
+        }
        
         // fix pos
         FixCmderPos( );
@@ -374,7 +405,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		}
 	
 		plane.EndCMDUI (); // really close
-        GameSystem.BtnSound(1);
+       
     }
 
 
@@ -392,7 +423,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
 	
 		EndCMDUI (); // really close
-        GameSystem.BtnSound();
+     
     }
 
 	public void CharInfoCmd( )
@@ -404,7 +435,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		//Clear ();
 		//NormalCloseCmdUI ();.
 		EndCMDUI (); // really close
-        GameSystem.BtnSound();
+     
     }
 
 	public void AttackCmd( )
@@ -420,7 +451,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		Panel_StageUI.Instance.ClearOverCellEffect ();
 		Panel_StageUI.Instance.CreateAttackOverEffect (pCmder);
 		PanelManager.Instance.CloseUI( Name );
-        GameSystem.BtnSound();
+     
     }
 
 	public void AbilityCmd( )
@@ -428,7 +459,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		if (pCmder != null) {
 			Panel_Skill.OpenUI (pCmder.Ident () , _SKILL_TYPE._ABILITY , nAtkerId , cCMD.Instance.eCMDTYPE);
 		}
-        GameSystem.BtnSound();
+     
     }
 
 	public void SkillCmd( )
@@ -436,7 +467,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		if (pCmder != null) {
 			Panel_Skill.OpenUI (pCmder.Ident () , _SKILL_TYPE._SKILL ,nAtkerId , cCMD.Instance.eCMDTYPE );
 		}
-        GameSystem.BtnSound();
+     
     }
     public void SchoolCmd()
     {
@@ -444,7 +475,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
         {
             Panel_SchoolList.Open(1, pCmder.pUnitData , 1 );// 外功列表
         }
-        GameSystem.BtnSound();
+     
     }
 
     public void CounterCmd( ) // counter atk
@@ -468,7 +499,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		BattleManager.Instance.nDeferSkillID = 0; // counter normaly
 		BattleManager.Instance.eDefCmdID	= _CMD_ID._COUNTER;	
 		EndCMDUI ();
-        GameSystem.BtnSound();
+     
     }
 	public void  RoundEndCmd(  )
 	{
@@ -476,7 +507,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
 		// restore all allay cmd times;
 		EndCMDUI (); // really close
-        GameSystem.BtnSound();
+      
     }
 
 	public void DefCmd( ) // only in count mode
@@ -484,7 +515,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		BattleManager.Instance.eDefCmdID = _CMD_ID._DEF;
 
 		EndCMDUI (); // really close
-        GameSystem.BtnSound();
+     
     }
 
 	public void SaveCmd( ) // only in count mode
@@ -494,7 +525,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		Panel_SaveLoad.OpenSaveMode ( _SAVE_PHASE._STAGE );
 
 		EndCMDUI (); // really close
-        GameSystem.BtnSound();
+    
     }
 
 	public void LoadCmd( ) // only in count mode
@@ -506,7 +537,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		Panel_SaveLoad.OpenLoadMode ( _SAVE_PHASE._STAGE );
 
 		EndCMDUI (); // really close
-        GameSystem.BtnSound();
+     
     }
 
 	public void GameEndCmd ()
@@ -525,21 +556,21 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
 		// reopen main UI
 		PanelManager.Instance.OpenUI( MainUIPanel.Name );
-        GameSystem.BtnSound();
+    
     }
 
     public void GameOption()
     {
         EndCMDUI(); // really close
         Panel_SystemSetting.OpenUI();
-        GameSystem.BtnSound();
+    
     }
 
     public void StageInfoCmd()
 	{
 		PanelManager.Instance.CloseUI ( Panel_StageInfo.Name );
 		PanelManager.Instance.OpenUI ( Panel_StageInfo.Name );
-        GameSystem.BtnSound();
+    
 
     }
 
@@ -708,44 +739,60 @@ public class Panel_CMDUnitUI : MonoBehaviour
         int fhH = Config.HEIGHT / 2;
         if (v.x < fhW )
         {
-            Vector3 vTar = this.transform.localPosition;
+            Vector3 vTar = NGuiGrids.transform.localPosition;
             vTar.x = (Config.WIDTH / 4 * 3) - fhW;
-            transform.localPosition = vTar;
+            NGuiGrids.transform.localPosition = vTar;
 
-            if (pUnitInfo) {
-                Vector3 vPos = pUnitInfo.transform.localPosition;
-                vPos.x = -550;
-               // vPos.x = (340 / 2) - fhW;
-                pUnitInfo.transform.localPosition = vPos;
+            if (m_pTarget) {
+                m_pTarget.SetPostType( true , true );
             }
-            if (pMobInfo)
+            if (m_pSelf)
             {
-                Vector3 vPos = pMobInfo.transform.localPosition;
-                vPos.x = -550;
-                // vPos.x = (340 / 2) - fhW;
-                pMobInfo.transform.localPosition = vPos;
+                m_pSelf.SetPostType(true , false);
             }
+            //if (pUnitInfo) {
+            //    Vector3 vPos = pUnitInfo.transform.localPosition;
+            //    vPos.x = -550;
+            //   // vPos.x = (340 / 2) - fhW;
+            //    pUnitInfo.transform.localPosition = vPos;
+            //}
+            //if (pMobInfo)
+            //{
+            //    Vector3 vPos = pMobInfo.transform.localPosition;
+            //    vPos.x = -550;
+            //    // vPos.x = (340 / 2) - fhW;
+            //    pMobInfo.transform.localPosition = vPos;
+            //}
         }
         else
         {
-            Vector3 vTar = this.transform.localPosition;
+            Vector3 vTar = NGuiGrids.transform.localPosition;
             vTar.x = (Config.WIDTH / 4) - fhW ;
-            transform.localPosition = vTar;
+            NGuiGrids.transform.localPosition = vTar;
 
-            if (pUnitInfo)
+            if (m_pTarget)
             {
-                Vector3 vPos = pUnitInfo.transform.localPosition;
-                vPos.x = 550;
-              //  vPos.x = fhW - (340/2) ;
-                pUnitInfo.transform.localPosition = vPos;
+                m_pTarget.SetPostType(false , true);
             }
-            if (pMobInfo)
+            if (m_pSelf)
             {
-                Vector3 vPos = pMobInfo.transform.localPosition;
-                vPos.x = 550;
-                // vPos.x = (340 / 2) - fhW;
-                pMobInfo.transform.localPosition = vPos;
+                m_pSelf.SetPostType(false , false);
             }
+
+            //if (pUnitInfo)
+            //{
+            //    Vector3 vPos = pUnitInfo.transform.localPosition;
+            //    vPos.x = 550;
+            //  //  vPos.x = fhW - (340/2) ;
+            //    pUnitInfo.transform.localPosition = vPos;
+            //}
+            //if (pMobInfo)
+            //{
+            //    Vector3 vPos = pMobInfo.transform.localPosition;
+            //    vPos.x = 550;
+            //    // vPos.x = (340 / 2) - fhW;
+            //    pMobInfo.transform.localPosition = vPos;
+            //}
         }
 
     }
@@ -759,13 +806,17 @@ public class Panel_CMDUnitUI : MonoBehaviour
         {
             Panel_StageUI.Instance.OnStageUnitActMask(unit.gameObject, true);
             // show sample info
-            pMobInfo.gameObject.SetActive(true);
-            pMobInfo.SetData(unit.pUnitData);
+
+//            m_pTarget.gameObject.SetActive(true);
+ //           m_pTarget.SetData(unit.pUnitData);
+        //    pMobInfo.gameObject.SetActive(true);
+        //    pMobInfo.SetData(unit.pUnitData);
             // pUnitInfo = Panel_MiniUnitInfo.OpenUI (pCmder.pUnitData);
           
         }
         else {
-            pMobInfo.gameObject.SetActive(false);
+   //         m_pTarget.gameObject.SetActive(false);
+    //            pMobInfo.gameObject.SetActive(false);
         }
 	}
 
@@ -995,7 +1046,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 					//MakeCmd();
 					//Panel_StageUI.Instance.ClearOverCellEffect ();
 					//CMD.Clear ();				// clear cmd status
-					break;
+				
 
 				}
 				break;
@@ -1068,9 +1119,18 @@ public class Panel_CMDUnitUI : MonoBehaviour
 	void OnCMDButtonClick(GameObject go)
 	{
 		string name = go.name;
+        // sound
+        if (name == _CMD_ID._CANCEL.ToString())
+        {
+            GameSystem.BtnSound(1);
+        }
+        else {
+            GameSystem.BtnSound();
+        }
+       
 
-		//_CMD_ID id = MyTool.GetCMDIDByName ( name );
-		if (name == _CMD_ID._INFO.ToString ()) {
+        //_CMD_ID id = MyTool.GetCMDIDByName ( name );
+        if (name == _CMD_ID._INFO.ToString ()) {
 			CharInfoCmd ();
 		} else if (name == _CMD_ID._MOVE.ToString ()) {
 			// no need 
@@ -1312,8 +1372,8 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		}
 		CMD.Clear ();
         //
-        pUnitInfo.gameObject.SetActive(false);
-        pMobInfo.gameObject.SetActive(false);
+    //    pUnitInfo.gameObject.SetActive(false);
+    //    pMobInfo.gameObject.SetActive(false);
 
     }
 }

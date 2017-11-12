@@ -556,9 +556,10 @@ public class MyTool {
         }
         UIScrollView sv = grid.transform.parent.GetComponent<UIScrollView>();
         if (sv != null) {
-            if (sv.verticalScrollBar != null) {
-                sv.verticalScrollBar.value = 0.0f;
-            }
+            sv.ResetPosition();
+            //if (sv.verticalScrollBar != null) {
+            //    sv.verticalScrollBar.value = 0.0f;
+            //}
         }
 
 

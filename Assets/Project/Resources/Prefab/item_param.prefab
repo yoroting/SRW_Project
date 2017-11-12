@@ -102,13 +102,13 @@ MonoBehaviour:
   mColor: {r: 1, g: 0.6413793, b: 0, a: 1}
   mPivot: 4
   mWidth: 50
-  mHeight: 20
+  mHeight: 24
   mDepth: 5
   mMat: {fileID: 0}
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 2.5
+  aspectRatio: 2.0833333
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   mFont: {fileID: 0}
@@ -150,6 +150,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09421353f684e874883fea0fb0543b4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_eParam_idx: 0
   m_nType: 0
   m_nVar1: 0
   m_lblname: {fileID: 114038142216387890}
@@ -185,13 +186,13 @@ MonoBehaviour:
   mColor: {r: 0, g: 1, b: 0, a: 1}
   mPivot: 4
   mWidth: 84
-  mHeight: 20
+  mHeight: 24
   mDepth: 6
   mMat: {fileID: 0}
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 4.2
+  aspectRatio: 3.5
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   mFont: {fileID: 0}

@@ -57,7 +57,7 @@ public class Panel_Tip : MonoBehaviour {
 		if (PanelManager.Instance != null) {
 			PanelManager.Instance.CloseUI (Name);
 		}
-        GameSystem.PlaySound("Tap");
+       // GameSystem.PlaySound("Tap"); // will error in close app
     }
 
     public void SetContent(string str )

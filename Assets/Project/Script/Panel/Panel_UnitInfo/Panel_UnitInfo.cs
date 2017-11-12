@@ -172,8 +172,8 @@ public class Panel_UnitInfo : MonoBehaviour {
             Item_Unit item = o.GetComponent<Item_Unit>();
             if (item == null)
                 continue;
-            // 非神模式 不能換裝備
-            item.btnEquip.SetActive( (Config.GOD == true ) ); 
+            // 非神模式或 戰場中 不能換裝備
+            item.btnEquip.SetActive( (Config.GOD == true ) || (GameDataManager.Instance.ePhase == _SAVE_PHASE._MAINTEN) ); 
         }
 
     }

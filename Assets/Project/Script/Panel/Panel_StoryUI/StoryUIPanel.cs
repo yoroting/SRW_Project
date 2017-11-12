@@ -136,6 +136,8 @@ public class StoryUIPanel : MonoBehaviour {
 
 		bIsLoading = false;
 
+
+        GameSystem.PlaySound(0); // stop current wav
 		// end
 		PanelManager.Instance.CloseUI( "Panel_Loading");
 	}

@@ -125,10 +125,24 @@ public class GameSystem : MonoBehaviour {
         {
             Config.GOD = false; // default is close
         }
+
+
     }
 	void Start()
 	{
-		if(Application.loadedLevel == 1)
+        //  關閉 plan main. UI 會建立新的
+        //this.gameObject.SetActive(false);
+        UIPanel[] panels =  this.gameObject.GetComponentsInChildren<UIPanel>();
+        foreach (UIPanel p in panels )
+        {
+            p.gameObject.SetActive( false );
+        }
+
+
+
+
+
+        if (Application.loadedLevel == 1)
 		{
 			ResourcesManager.LoadLevel("5Main");
 		}
@@ -137,8 +151,6 @@ public class GameSystem : MonoBehaviour {
         // 讀入config data
 
         Panel_SystemSetting.LoadConfig();
-
-
     }
 	
 	void OnLevelWasLoaded(int levelIndex)

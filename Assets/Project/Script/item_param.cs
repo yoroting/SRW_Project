@@ -92,6 +92,12 @@ public class item_param : MonoBehaviour {
             case _ePARAMIDX._RED: { SetValue(string.Format("{0}％", 100.0f * (1.0f - unit.GetMulDamage())), nType); } break;  //12	減免
             case _ePARAMIDX._ARM: { SetValue(unit.GetArmor(), nType); } break; //13	護甲
             case _ePARAMIDX._TIRED:{ SetValue(unit.nTired, nType); }break;  //14	破綻
+            case _ePARAMIDX._MAXHP:{ SetValue(unit.GetMaxHP(), nType); }break;
+            case _ePARAMIDX._MAXMP:{ SetValue(unit.GetMaxMP(), nType); }break;
+            case _ePARAMIDX._MAXSP:{ SetValue(unit.GetMaxSP(), nType); }break;
+            case _ePARAMIDX._MAXDEF:{ SetValue(unit.GetMaxDef(), nType); }break;
+            case _ePARAMIDX._CP:{ SetValue(unit.n_CP, nType); }break;
+                
             default:
                 Debug.LogErrorFormat("item_param error idx : charid={0} : {1} " , unit.n_CharID, m_eParam_idx.ToString() );
                 break;    

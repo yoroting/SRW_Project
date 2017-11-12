@@ -275,7 +275,7 @@ public class Panel_StageUI : MonoBehaviour
 		Panel_UnitInfo.OpenUI (0);
         
         //PanelManager.Instance.OpenUI(Panel_UnitInfo.Name);
-		Panel_MiniUnitInfo.OpenUI (null);
+		//Panel_MiniUnitInfo.OpenUI (null);
 
 
 
