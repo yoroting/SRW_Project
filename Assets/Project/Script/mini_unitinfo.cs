@@ -84,37 +84,46 @@ public class mini_unitinfo : MonoBehaviour {
 
     public void SetPostType( bool bLeft = false , bool bTop = false) // 設定顯示方式 （要變換座標）
     {
+      //  float fRatio = (float)Screen.width / (float)Config.WIDTH;
         // screen width
-        int scw = Screen.width;
-        int sch = Screen.height;
+        int scw = Config.WIDTH;
+        int sch = Config.HEIGHT;
 
         Vector3 vFrom = this.transform.localPosition;
-
         Vector3 vTar = this.transform.localPosition;
-        
 
         UIWidget widget = this.gameObject.GetComponent<UIWidget>();
         if ( widget != null ) {
-            
+
+            int w = widget.width;
+            int h = widget.height;
+            //w = (int)(widget.width * fRatio );
+            //h = (int)(widget.height * fRatio) ;
+
             if (bLeft == false) // 右
             {
-                vFrom.x = (scw + widget.width) / 2;
-                vTar.x = (scw - widget.width) / 2;                
+                vFrom.x = (scw + w) / 2;
+                vTar.x = (scw - w ) / 2;                
             }
             else
             {
-                vFrom.x = -1 * (scw + widget.width) / 2;
-                vTar.x  = -1 * (scw - widget.width) / 2;
+                vFrom.x = -1 * (scw + w) / 2;
+                vTar.x  = -1 * (scw - w) / 2;
             }
 
             if (bTop == false)
             {
-                vFrom.y = vTar.y = -1 * (sch - widget.height) / 2;
+                vFrom.y = vTar.y = -1 * (sch - h) / 2;
             }
             else {
-                vFrom.y = vTar.y = (sch - widget.height) / 2;
+                vFrom.y = vTar.y = (sch -h) / 2;
             }
         }
+        //vFrom.x /= fRatio;
+        //vFrom.y /= fRatio;
+        //vTar.x /= fRatio;
+        //vTar.y /= fRatio;
+
         this.transform.localPosition = vFrom;
         TweenPosition.Begin(this.gameObject, 0.2f , vTar);
 

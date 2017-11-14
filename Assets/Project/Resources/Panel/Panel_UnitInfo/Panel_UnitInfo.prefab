@@ -4490,6 +4490,7 @@ GameObject:
   - component: {fileID: 114642550894337042}
   - component: {fileID: 65912518311866514}
   - component: {fileID: 114383546572663426}
+  - component: {fileID: 114679661859459164}
   m_Layer: 5
   m_Name: Item_Unit0
   m_TagString: Untagged
@@ -7516,6 +7517,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80c2f53516cdb614aae80923c955a0e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_nTipType: 0
   nTipID: 6
   nTipString: 
 --- !u!114 &114082264469413744
@@ -7665,6 +7667,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80c2f53516cdb614aae80923c955a0e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_nTipType: 0
   nTipID: 1
   nTipString: 
 --- !u!114 &114147878873279996
@@ -8238,6 +8241,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80c2f53516cdb614aae80923c955a0e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_nTipType: 0
   nTipID: 5
   nTipString: 
 --- !u!114 &114240527374023288
@@ -8773,6 +8777,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80c2f53516cdb614aae80923c955a0e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_nTipType: 0
   nTipID: 9
   nTipString: 
 --- !u!114 &114383546572663426
@@ -8923,6 +8928,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80c2f53516cdb614aae80923c955a0e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_nTipType: 0
   nTipID: 7
   nTipString: 
 --- !u!114 &114447180734872616
@@ -9180,7 +9186,7 @@ MonoBehaviour:
   tweenTarget: {fileID: 1265664838468910}
   hover: {r: 1, g: 1, b: 1, a: 1}
   pressed: {r: 1, g: 1, b: 1, a: 1}
-  disabledColor: {r: 0.5019608, g: 0.5019608, b: 0.5019608, a: 1}
+  disabledColor: {r: 1, g: 1, b: 1, a: 1}
   duration: 0.2
   dragHighlight: 0
   hoverSprite: btn_close1
@@ -9338,6 +9344,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80c2f53516cdb614aae80923c955a0e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_nTipType: 0
   nTipID: 11
   nTipString: 
 --- !u!114 &114520932237608324
@@ -9806,6 +9813,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80c2f53516cdb614aae80923c955a0e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_nTipType: 0
   nTipID: 10
   nTipString: 
 --- !u!114 &114552800763673884
@@ -9943,6 +9951,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80c2f53516cdb614aae80923c955a0e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_nTipType: 0
   nTipID: 12
   nTipString: 
 --- !u!114 &114568532834517400
@@ -10417,6 +10426,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80c2f53516cdb614aae80923c955a0e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_nTipType: 0
   nTipID: 13
   nTipString: 
 --- !u!114 &114625647666651564
@@ -10776,7 +10786,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80c2f53516cdb614aae80923c955a0e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_nTipType: 0
   nTipID: 4
+  nTipString: 
+--- !u!114 &114679661859459164
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1296905144768316}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80c2f53516cdb614aae80923c955a0e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_nTipType: 2
+  nTipID: 0
   nTipString: 
 --- !u!114 &114685005961492228
 MonoBehaviour:
@@ -10857,6 +10882,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80c2f53516cdb614aae80923c955a0e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_nTipType: 0
   nTipID: 3
   nTipString: 
 --- !u!114 &114689978225902246
@@ -11154,6 +11180,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80c2f53516cdb614aae80923c955a0e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_nTipType: 0
   nTipID: 8
   nTipString: 
 --- !u!114 &114730021934277502
@@ -11167,6 +11194,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80c2f53516cdb614aae80923c955a0e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_nTipType: 0
   nTipID: 14
   nTipString: 
 --- !u!114 &114743256211357148
@@ -12334,6 +12362,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80c2f53516cdb614aae80923c955a0e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_nTipType: 0
   nTipID: 2
   nTipString: 
 --- !u!114 &114982367507671174

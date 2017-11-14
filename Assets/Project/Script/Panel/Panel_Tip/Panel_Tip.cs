@@ -159,7 +159,37 @@ public class Panel_Tip : MonoBehaviour {
 		
 	}
 
-	static public void OpenBuffTip( int nBuffID )
+    static public void OpenUITip(int nTipID)
+    {
+        string sTipSub = "";
+        string sTip = "";
+
+       // if (nTipString == "")
+        {
+            // 透過 ID 去 查表          
+            // get content
+            DataRow row = ConstDataManager.Instance.GetRow((int)ConstDataTables.TIP_MESSAGE, nTipID);
+            if (row != null)
+            {
+                sTip = row.Field<string>("s_TIP_WORDS");
+                sTipSub = row.Field<string>("s_TIP_SUBJECT");
+            }
+            sTip = sTip.Replace("\\n", System.Environment.NewLine);
+            if (Config.GOD)
+            {
+                sTip += "\n(ID:" + nTipID.ToString() + ")";
+            }
+        }
+
+        // 有tip 則 秀出
+        if (string.IsNullOrEmpty(sTip) == false)
+        {
+            Panel_Tip.OpenUI(sTip);
+        }
+    }
+
+
+    static public void OpenBuffTip( int nBuffID )
 	{
 		if (nBuffID == nTipID  && nTipType == _TIPTYPE._BUFF ) {
 			CloseUI();
@@ -248,8 +278,24 @@ public class Panel_Tip : MonoBehaviour {
 
 		Panel_Tip.OpenUI( nItemName , sTip );
 	}
-	// close
-	void OnClick( GameObject go )
+
+    static public void OpenSchoolTip(int nSchoolID)
+    {
+        string nSchoolName = MyTool.GetSchoolName(nSchoolID);
+
+        int nBuffID = 0;
+        string sTip = "";
+        SCHOOL sch = ConstDataManager.Instance.GetRow<SCHOOL>(nSchoolID);   //GameDataManager.Instance.GetConstSchoolData ( nSchool );
+        if (sch == null) {
+
+            sTip = MyTool.GetBuffTip(sch.n_BUFF); // 武學buff
+        }
+
+        Panel_Tip.OpenUI(nSchoolName, sTip);
+    }
+    
+    // close
+    void OnClick( GameObject go )
 	{
 		CloseUI ();
 		//PanelManager.Instance.CloseUI ( Name );

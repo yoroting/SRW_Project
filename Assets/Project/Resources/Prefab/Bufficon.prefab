@@ -121,7 +121,8 @@ MonoBehaviour:
   NameObj: {fileID: 148718}
   TimeObj: {fileID: 1300551739655010}
   nBuffID: 0
-  nTime: 0
+  nBuffTime: 0
+  nBuffNum: 0
 --- !u!114 &11418644
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -174,7 +175,7 @@ MonoBehaviour:
   bottomType: 1
   topType: 1
   mAtlas: {fileID: 11491776, guid: 25576dd4c299fef4f9fc244f1e89bb8b, type: 2}
-  mSpriteName: icon_buff
+  mSpriteName: bar_shadow
   mFillCenter: 1
 --- !u!114 &11425330
 MonoBehaviour:

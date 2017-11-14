@@ -12,11 +12,22 @@ public class BuffIcon : MonoBehaviour {
     public int 	nBuffID;
     public int nBuffTime;
     public int nBuffNum;
+    myUiTip m_Tip;
+    void Awake()
+    {
+        m_Tip = this.gameObject.GetComponent<myUiTip>();
+        if (m_Tip == null)
+        {
+            m_Tip = this.gameObject.AddComponent<myUiTip>();
+        }
+    }
 
     // Use this for initialization
     void Start () {
-		UIEventListener.Get(this.gameObject).onClick = OnBuffClick; // for trig next line
-	}
+        //	UIEventListener.Get(this.gameObject).onClick = OnBuffClick; // for trig next line
+
+       
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -63,7 +74,10 @@ public class BuffIcon : MonoBehaviour {
 
 		MyTool.SetLabelText (NameObj, MyTool.GetBuffName (nBuffID));
 
-	}
+        m_Tip.SetTip(nBuffID , myUiTip._TIP_TYPE._BUFF );
+
+
+    }
 	
 	
 	void OnBuffClick( GameObject go )

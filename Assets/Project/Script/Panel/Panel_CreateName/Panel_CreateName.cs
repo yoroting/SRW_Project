@@ -30,16 +30,41 @@ public class Panel_CreateName : MonoBehaviour {
     public GameObject NameInput;           // 輸入名 input
 
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
         // setting in unity edit
-     //   UIEventListener.Get(OkBtn).onClick = OnOkClick;
-     //   UIEventListener.Get(CloseBtn).onClick = OnCloseClick;
+        //   UIEventListener.Get(OkBtn).onClick = OnOkClick;
+        //   UIEventListener.Get(CloseBtn).onClick = OnCloseClick;
+
+        UIInput finput = FirstInput.GetComponent<UIInput>();
+        if (finput != null)
+        {
+         //   EventDelegate.Add(finput.onChange, this.OnInputChange);
+        }
+    
+
+     
     }
 	
 	// Update is called once per frame
 	void Update () {
-		
-	}
+        //UIInput finput = FirstInput.GetComponent<UIInput>();
+        //if (finput != null)
+        //{
+        //    if (finput.value.Length > 2) {
+        //        finput.value = finput.value.Substring(0, 2);
+        //    }
+        //}
+        //UIInput ninput = NameInput.GetComponent<UIInput>();
+        //if (ninput != null)
+        //{
+        //    if (ninput.value.Length > 3)
+        //    {
+        //        ninput.value = ninput.value.Substring(0, 3);
+        //    }
+        //}
+
+    }
 
     private void OnEnable()
     {
@@ -60,6 +85,27 @@ public class Panel_CreateName : MonoBehaviour {
         }
      
 
+    }
+
+    private void OnInputChange()
+    {
+        int characterLimit = 4;
+        UIInput finput = FirstInput.GetComponent<UIInput>();
+        string str = finput.value;
+        if (characterLimit > 0 && this.GetStringByteLength(str) > characterLimit)
+        {
+            do
+            {
+                str = str.Substring(0, str.Length - 1);
+            } while (this.GetStringByteLength(str) > characterLimit);
+            finput.value = str;
+        }
+
+    }
+    private int GetStringByteLength(string str)
+    {
+        byte[] bytestr = System.Text.Encoding.Default.GetBytes(str);
+        return bytestr.Length;
     }
 
     public void OnOkClick(GameObject go)

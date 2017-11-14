@@ -225,7 +225,7 @@ public class Panel_UnitInfo : MonoBehaviour {
         int idx = 0;
         foreach (GameObject o in ItemPool)
         {
-            UIEventListener.Get(o).onClick = OnItemClick;
+        //    UIEventListener.Get(o).onClick = OnItemClick;
             Item_Unit item = o.GetComponent<Item_Unit>();
             if (item == null)
                 continue;
@@ -391,7 +391,7 @@ public class Panel_UnitInfo : MonoBehaviour {
 			GameObject go = ResourcesManager.CreatePrefabGameObj( AbilityGrid , "Prefab/Skill_simple" ); 
 			if( go == null )
 				continue;
-			UIEventListener.Get(go).onClick = OnAbilityClick; // 
+		//	UIEventListener.Get(go).onClick = OnAbilityClick; // 
 
             UIWidget wiget = go.GetComponent<UIWidget>();
             if (wiget != null)
@@ -401,15 +401,11 @@ public class Panel_UnitInfo : MonoBehaviour {
 
             Skill_Simple obj = go.GetComponent<Skill_Simple >();
 			if( obj != null ){
-                obj.nID = pair.Key;
-				obj.nType = 0; // 0 is ability
+                obj.SetSkillD(pair.Key , 0 );
+             //   obj.nID = pair.Key;
+			//	obj.nType = 0; // 0 is ability
                 // get cost 
-                string sname = MyTool.GetSkillName(pair.Key);
-                SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(obj.nID);
-                if (skl != null) {                    
-                    sname += " " + skl.n_SP;
-                }
-                MyTool.SetLabelText( obj.lblName , sname);
+                
 			}
 			
 		}
@@ -561,14 +557,15 @@ public class Panel_UnitInfo : MonoBehaviour {
                 dsv.scrollView =  ScrollViewPass.GetComponent<UIScrollView>();
             }
 
-            UIEventListener.Get(go).onClick = OnBuffClick; // this is a buff
+          //  UIEventListener.Get(go).onClick = OnBuffClick; // this is a buff
 
 			Skill_Simple obj = go.GetComponent<Skill_Simple >();
 			if( obj != null ){
-				obj.nID = pair.Value.nID;
-				obj.nType = 0; // 0 is ability
-				MyTool.SetLabelText( obj.lblName , MyTool.GetBuffName (obj.nID ) ); // this is buff name
-			}			
+                obj.SetSkillD(pair.Value.nID , 1 ); // 1 is buff
+                //obj.nID = pair.Value.nID;
+                //obj.nType = 0; // 0 is ability
+                //MyTool.SetLabelText( obj.lblName , MyTool.GetBuffName (obj.nID ) ); // this is buff name
+            }			
 		}
 
         MyTool.ResetScrollView(ScrollViewPass);

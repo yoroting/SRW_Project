@@ -207,6 +207,8 @@ public class MyTool {
         sTip = sTip.Replace("\\n", System.Environment.NewLine);
         return sTip;
     }
+
+  
     // 0-small , 1- Large
     public static Texture GetCharTexture( int nFaceID, int nSize=0)
     {

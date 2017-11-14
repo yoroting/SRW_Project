@@ -4,6 +4,17 @@ using UnityEngine;
 
 public class myUiTip : MonoBehaviour
 {
+    public enum _TIP_TYPE
+    {
+        _UI =0,
+        _BUFF,
+        _ITEM,
+        _SKILL,
+        _SCHOOL,
+        _STRING,
+    }
+
+    public _TIP_TYPE m_nTipType;
     public int nTipID=0;
     public string nTipString="";
 
@@ -18,6 +29,11 @@ public class myUiTip : MonoBehaviour
     {
 
     }
+    public void SetTip( int id , _TIP_TYPE type )
+    {
+        nTipID = id;
+        m_nTipType = type;
+    }
 
     void OnTipPress(GameObject go, bool pressed)
     {   
@@ -27,19 +43,43 @@ public class myUiTip : MonoBehaviour
             return;
         }
         // pop tip
+        ShowTip();
 
+
+    }
+
+
+    public void ShowTip()
+    {
+        switch (m_nTipType ) {
+            case _TIP_TYPE._UI: { ShowUITip(); } break;
+            case _TIP_TYPE._BUFF: { Panel_Tip.OpenBuffTip(nTipID);  } break;
+            case _TIP_TYPE._ITEM: { Panel_Tip.OpenItemTip(nTipID); } break;
+            case _TIP_TYPE._SKILL: { Panel_Tip.OpenSkillTip(nTipID); } break;
+            case _TIP_TYPE._SCHOOL: { Panel_Tip.OpenSchoolTip(nTipID); } break;
+            case _TIP_TYPE._STRING: {
+                    if (string.IsNullOrEmpty(nTipString) == false)
+                    {
+                        Panel_Tip.OpenUI(nTipString);
+                    }
+                } break;
+        }
+    }
+
+    void ShowUITip()
+    {
         string sTipSub = "";
         string sTip = nTipString;
 
-        if (nTipString == "") {
-            // 透過 ID 去 查表
-            
+        if (nTipString == "")
+        {
+            // 透過 ID 去 查表          
             // get content
             DataRow row = ConstDataManager.Instance.GetRow((int)ConstDataTables.TIP_MESSAGE, nTipID);
             if (row != null)
             {
                 sTip = row.Field<string>("s_TIP_WORDS");
-                sTipSub = row.Field<string>("s_TIP_SUBJECT");                
+                sTipSub = row.Field<string>("s_TIP_SUBJECT");
             }
             sTip = sTip.Replace("\\n", System.Environment.NewLine);
             if (Config.GOD)
@@ -54,4 +94,7 @@ public class myUiTip : MonoBehaviour
             Panel_Tip.OpenUI(sTip);
         }
     }
+
+   
+
 }
