@@ -26,32 +26,32 @@ public class MainUIPanel : BasicPanel {
 		UIEventListener.Get(LoadButton).onClick += OnLoadButtonClick;
 		UIEventListener.Get(GalleryButton).onClick += OnGalleryButtonClick;
 		UIEventListener.Get(SetUpButton).onClick += OnSetUpButtonClick;
+        UIEventListener.Get(GameEndButton).onClick += OnGameEndButtonClick;
+        // Game Event
+        //GameEventManager.AddEventListener( "startgame" , OnStartGameEvent );
 
-		// Game Event
-		//GameEventManager.AddEventListener( "startgame" , OnStartGameEvent );
-
-		// start bgm
-		/*1.拿到特定的table
+        // start bgm
+        /*1.拿到特定的table
 			DataTable table = ConstDataManager.Instance.GetTable( X );//		 可以傳Name或tableID
 			foreach(ConstDataRow row in table.RowList)
 		  2.ConstDataRow row = ConstDataManager.Instance.GetRow("SKILL", 1);	
 		*/
 
-	
-//		DataRow row = ConstDataManager.Instance.GetRow("MUSIC", 1);
-//		if( row != null )
-//		{
-//			string strFile = row.Field< string >("s_FILENAME");
-//			if( !String.IsNullOrEmpty( strFile ))
-//			{
-//				string audioPath = ResourcesManager.GetAudioClipPath( AudioChannelType.BGM ,  strFile );
-//				AudioManager.Instance.Play( AudioChannelType.BGM ,  audioPath );
-//			}
-//		}
 
-		
+        //		DataRow row = ConstDataManager.Instance.GetRow("MUSIC", 1);
+        //		if( row != null )
+        //		{
+        //			string strFile = row.Field< string >("s_FILENAME");
+        //			if( !String.IsNullOrEmpty( strFile ))
+        //			{
+        //				string audioPath = ResourcesManager.GetAudioClipPath( AudioChannelType.BGM ,  strFile );
+        //				AudioManager.Instance.Play( AudioChannelType.BGM ,  audioPath );
+        //			}
+        //		}
 
-	}
+
+
+    }
 
 	// set up startup 
 	void OnEnable()
@@ -73,6 +73,10 @@ public class MainUIPanel : BasicPanel {
         //{
         //    MyTool.fScnRatio = (float)mRoot.activeHeight / Screen.height;
         //}
+        //Output the current screen window height in the console
+        Debug.Log("Screen Height : " + Screen.height);
+        Debug.Log("Screen Width : " + Screen.width);
+
     }
 
 	// release game event 
@@ -82,10 +86,10 @@ public class MainUIPanel : BasicPanel {
 		UIEventListener.Get(LoadButton).onClick -= OnLoadButtonClick;
 		UIEventListener.Get(GalleryButton).onClick -= OnGalleryButtonClick;
 		UIEventListener.Get(SetUpButton).onClick -= OnSetUpButtonClick;
+        UIEventListener.Get(GameEndButton).onClick -= OnGameEndButtonClick;
+        //	GameEventManager.RemoveEventListener( "startgame" , OnStartGameEvent );
 
-	//	GameEventManager.RemoveEventListener( "startgame" , OnStartGameEvent );
-
-	}
+    }
 
 
 	IEnumerator EnterStory( int nStoryID )
@@ -156,9 +160,20 @@ public class MainUIPanel : BasicPanel {
         Panel_SystemSetting.OpenUI();
         GameSystem.BtnSound();
     }
+    void OnGameEndButtonClick(GameObject go )
+    {
+        // save any game data here
+#if UNITY_EDITOR
+        // Application.Quit() does not work in the editor so
+        // UnityEditor.EditorApplication.isPlaying need to be set to false to end the game
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+         Application.Quit();
+#endif
 
+    }
 
-	public IEnumerator SaveLoading( cSaveData save )
+    public IEnumerator SaveLoading( cSaveData save )
 	{
 		//GameDataManager.Instance.nStoryID = nStoryID;
 		//GameDataManager.Instance.nStageID = save.n_StageID;
