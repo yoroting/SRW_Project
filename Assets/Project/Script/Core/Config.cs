@@ -41,17 +41,17 @@ public class Config
     public static float CharMarLVUp = 1.0f;
     public static int   CharHpLVUp = 100;    
     public static int 	CharSpLVUp = 8;
-	public static int 	CharAtkLVUp = 50;
-    public static int   CharDefLVUp = 50;
+	public static int 	CharAtkLVUp = 25;
+    public static int   CharDefLVUp = 25;
 
 
     public static float EnhanceMarLVUp = 2.0f;
-    public static int EnhanceHpLVUp = 200;
+    public static int EnhanceHpLVUp = 300;
     public static int EnhanceMpLVUp = 20;
     public static int EnhanceSpLVUp = 4;
-    public static int EnhanceAtkLVUp = 100;
-    public static int EnhanceDefLVUp = 100;
-    public static int EnhancePowLVUp = 50;
+    public static int EnhanceAtkLVUp = 80;
+    public static int EnhanceDefLVUp = 80;
+    public static int EnhancePowLVUp = 20;
 
 
     

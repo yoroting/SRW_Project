@@ -24,11 +24,11 @@ public class enhance_param_item : MonoBehaviour {
         if (CheckCanEnhance() == false)
         {
             // disable btn
-            btnAdd.enabled = false;
+            btnAdd.isEnabled = false;
         }
         else
         {
-            btnAdd.enabled = true;
+            btnAdd.isEnabled = true;
         }
     }
 

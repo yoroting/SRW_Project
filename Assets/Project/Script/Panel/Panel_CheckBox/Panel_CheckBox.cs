@@ -6,21 +6,23 @@ public class Panel_CheckBox : MonoBehaviour {
 	public GameObject lblText;
 	public GameObject btnOK;
 	public GameObject btnNO;
+    public GameObject btnClose;
+    public int nCheckType = 0;
     // callback func
-
-
-	int nCheckType ; 
+    
 	// Use this for initialization
 	void Start () {
 		UIEventListener.Get(btnOK).onClick += OnOkClick;
 		UIEventListener.Get(btnNO).onClick += OnCloseClick;
-	}
+
+        UIEventListener.Get(btnClose).onClick += OnCloseClick;
+
+    }
 
 	void OnEnable(){
         btnOK.SetActive(true);
         btnNO.SetActive(true);
-
-
+        btnClose.SetActive(false);
     }
 
 
@@ -32,10 +34,10 @@ public class Panel_CheckBox : MonoBehaviour {
 	public void SetAoeCheck()
 	{
 		nCheckType = 1;
-		SetMsg ( "確定施展嗎？" );
+		SetMsg ( "確定施展嗎？" );       
+        btnClose.SetActive(false);
 
-
-	}
+    }
 	public void SetRoundEndCheck()
 	{
 		nCheckType = 2;
@@ -43,7 +45,10 @@ public class Panel_CheckBox : MonoBehaviour {
 	}
 
     public void SetMessageCheck( int nMsgID )
-    {   
+    {
+        btnOK.SetActive(false);
+        btnNO.SetActive(false);
+        btnClose.SetActive(true);
         string msg = MyTool.GetMsgText(nMsgID);
         SetMsg(msg);
     }
@@ -52,11 +57,14 @@ public class Panel_CheckBox : MonoBehaviour {
     {
         nCheckType = 3;
 
+        btnOK.SetActive(false);
         btnNO.SetActive(false);
+        btnClose.SetActive(true);
+
         SetMsg(sMsg);
     }
 
-    public void SetMsg( string msg ){
+    void SetMsg( string msg ){
 		MyTool.SetLabelText ( lblText , msg );
 	}
 

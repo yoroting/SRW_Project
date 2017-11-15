@@ -1011,8 +1011,8 @@ public class MyTool {
         // 动态的计算出现在manualHeight的高度。
     static private void AdaptiveUI()
 	{
-		int ManualWidth = 960;
-		int ManualHeight = 640;
+		int ManualWidth = Config.WIDTH;
+		int ManualHeight = Config.HEIGHT;
 		UIRoot uiRoot = GameObject.FindObjectOfType<UIRoot>();
 		if (uiRoot != null)
 		{

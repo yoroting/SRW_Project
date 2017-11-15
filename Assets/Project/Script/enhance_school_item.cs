@@ -32,10 +32,10 @@ public class enhance_school_item : MonoBehaviour {
         if (CheckCanEnhance() == false)
         {
             // disable btn
-            btnAdd.enabled = false;
+            btnAdd.isEnabled = false;
         }
         else {
-            btnAdd.enabled = true;
+            btnAdd.isEnabled = true;
         }
     }
 
@@ -101,6 +101,7 @@ public class enhance_school_item : MonoBehaviour {
 
             SetData(id, lv);
            // SetLv(m_pLinkUnit.GetEnhanceLv(m_eParamIdx));// 更新lv 狀態
+
         }
         // 更新介面
         ReLoad();
@@ -118,6 +119,15 @@ public class enhance_school_item : MonoBehaviour {
 
     public bool CheckCanEnhance()
     {
+        // 被角色誤性卡住
+        if (m_pLinkUnit != null) {
+            if ( m_pLinkUnit.cCharData.n_RANK != 0 && m_pLinkUnit.cCharData.n_RANK<= m_nCurLv)
+            {
+                return false;
+            }
+
+        }
+
         return ((m_nMaxLv == 0) || (m_nMaxLv > m_nCurLv));
     }
 

@@ -87,21 +87,20 @@ public class Panel_CreateName : MonoBehaviour {
 
     }
 
-    private void OnInputChange()
-    {
-        int characterLimit = 4;
-        UIInput finput = FirstInput.GetComponent<UIInput>();
-        string str = finput.value;
-        if (characterLimit > 0 && this.GetStringByteLength(str) > characterLimit)
-        {
-            do
-            {
-                str = str.Substring(0, str.Length - 1);
-            } while (this.GetStringByteLength(str) > characterLimit);
-            finput.value = str;
-        }
-
-    }
+    //private void OnInputChange()
+    //{
+    //    int characterLimit = 4;
+    //    UIInput finput = FirstInput.GetComponent<UIInput>();
+    //    string str = finput.value;
+    //    if (characterLimit > 0 && this.GetStringByteLength(str) > characterLimit)
+    //    {
+    //        do
+    //        {
+    //            str = str.Substring(0, str.Length - 1);
+    //        } while (this.GetStringByteLength(str) > characterLimit);
+    //        finput.value = str;
+    //    }
+    //}
     private int GetStringByteLength(string str)
     {
         byte[] bytestr = System.Text.Encoding.Default.GetBytes(str);
@@ -119,6 +118,12 @@ public class Panel_CreateName : MonoBehaviour {
                 Panel_CheckBox.MessageBox( ErrorMessage );
                 return;
             }
+            if (CheckInputNameLimit(finput.value, 3) == false)
+            {
+                Panel_CheckBox.MessageBox("姓氏長度過長 ");
+                return;
+            }
+
 
             Config.PlayerFirst = finput.value;
         }
@@ -130,6 +135,11 @@ public class Panel_CreateName : MonoBehaviour {
             {
                 ninput.value = "";
                 Panel_CheckBox.MessageBox(ErrorMessage);
+                return;
+            }
+            if (CheckInputNameLimit(ninput.value, 3)== false)
+            {
+                Panel_CheckBox.MessageBox("名字長度過長 ");
                 return;
             }
             Config.PlayerName = ninput.value;
@@ -151,9 +161,23 @@ public class Panel_CreateName : MonoBehaviour {
         GameSystem.BtnSound(1);
     }
 
+    private bool CheckInputNameLimit(string str, int nLimit) // return ErrorMessage
+    {
+        int characterLimit = nLimit*2 ;
+        //    UIInput finput = FirstInput.GetComponent<UIInput>();
 
-    #region check special char
-    private string CheckInputNameHandler(string str) // return ErrorMessage
+        if (characterLimit > 0 && this.GetStringByteLength(str) > (nLimit * 2) )
+        {
+            return false;
+
+        }
+        return true;
+     }
+
+
+        #region check special char
+
+        private string CheckInputNameHandler(string str) // return ErrorMessage
     {
         char[] strArray = str.ToCharArray();
 
@@ -164,7 +188,7 @@ public class Panel_CreateName : MonoBehaviour {
                 && !ChineseCheckHandelr(c)
                 && !JapaneseCheckHandelr(c)
                 && !KoreanCheckHandelr(c))
-                return "輸入文字中有不被接受的字元[1fe6df]$V1[-]，請重新輸入！".Replace("$V1", "");
+                return "輸入文字中有不被接受的字元[1fe6df]$V1[-]，請重新輸入！".Replace("$V1", c.ToString());
             else
             {
                 if (!IsIllegalText(c))
