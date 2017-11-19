@@ -65,9 +65,9 @@ public class ADDBUFF_I: cEffect
 	//public int iValue ;
 	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){
 		if (Atker != null) {
-		
-			int nDefId = 0;			if( Defer != null )nDefId = Defer.n_Ident;
-			list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF , Atker.n_Ident , iValue , Atker.n_Ident, nSkillID ,nDefId , nNum ) );
+
+            int defid = (Defer != null) ? Defer.n_Ident : 0;
+            list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF , Atker.n_Ident , iValue ,defid, nSkillID ,defid , nNum ) );
 		}
 	}
 }
@@ -94,9 +94,9 @@ public class ADDACTTIME_I: cEffect
 	//public int iValue ;
 	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){
 		if (Atker != null) {
-			
-			int nDefId = 0;			if( Defer != null )nDefId = Defer.n_Ident;
-			list.Add( new cHitResult( cHitResult._TYPE._ACTTIME , Atker.n_Ident , iValue , Atker.n_Ident, nSkillID ,nDefId  ) );
+
+            int defid = (Defer != null) ? Defer.n_Ident : 0;
+            list.Add( new cHitResult( cHitResult._TYPE._ACTTIME , Atker.n_Ident , iValue ,defid, nSkillID ,defid  ) );
 		}
 	}
 }
@@ -125,8 +125,8 @@ public class ADD_DEF_I : cEffect
     override public void _Do(cUnitData Atker, cUnitData Defer, ref List<cHitResult> list)
     {
         int def =  (int)(Atker.GetMaxDef() * fValue) + iValue;
-
-        list.Add(new cHitResult(cHitResult._TYPE._DEF, Atker.n_Ident, def, Atker.n_Ident, nSkillID, nBuffID));
+        int defid = (Defer != null)? Defer.n_Ident: 0 ;
+        list.Add(new cHitResult(cHitResult._TYPE._DEF, Atker.n_Ident, def, defid , nSkillID, nBuffID));
     }
 }
 public class ADD_DEF_E : cEffect
@@ -886,7 +886,8 @@ public class HEALHP : cEffect
     {
         float fHp = Atker.GetPow() * fValue ;
         //	list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF ,Defer.n_Ident , nBuffID ) );
-        list.Add(new cHitResult(cHitResult._TYPE._HP, Defer.n_Ident, (int)fHp + iValue, Atker.n_Ident));
+        int defid = (Defer != null) ? Defer.n_Ident : 0;
+        list.Add(new cHitResult(cHitResult._TYPE._HP, defid , (int)fHp + iValue, Atker.n_Ident));
     }
 }
 
@@ -895,10 +896,11 @@ public class ADDHP_I: cEffect
 {
 	public ADDHP_I( float f , int i ){	fValue = f;	iValue = i; }
 
-	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 
-			float fHp = Atker.GetMaxHP() * fValue ;
-			//	list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF ,Defer.n_Ident , nBuffID ) );
-		list.Add( new cHitResult( cHitResult._TYPE._HP , Atker.n_Ident , (int)fHp + iValue , Atker.n_Ident ,0,1  ) );
+	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){
+		float fHp = Atker.GetMaxHP() * fValue ;
+        int defid = (Defer != null) ? Defer.n_Ident : 0;
+        //	list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF ,Defer.n_Ident , nBuffID ) );
+        list.Add( new cHitResult( cHitResult._TYPE._HP , Atker.n_Ident , (int)fHp + iValue , defid ,0,1  ) );
 	}
 }
 public class ADDMP_I: cEffect
@@ -907,25 +909,26 @@ public class ADDMP_I: cEffect
 	
 	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 	
 		float fMp = Atker.GetMaxMP() * fValue ;
-		list.Add( new cHitResult( cHitResult._TYPE._MP , Atker.n_Ident , (int)fMp +iValue  , Atker.n_Ident   ) );
+        int defid = (Defer != null) ? Defer.n_Ident : 0;
+        list.Add( new cHitResult( cHitResult._TYPE._MP , Atker.n_Ident , (int)fMp +iValue  ,defid   ) );
 	}
 }
 public class ADDSP_I: cEffect
 {
 	public ADDSP_I( int i ){	iValue = i;	}
 	
-	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 
-
-		list.Add( new cHitResult( cHitResult._TYPE._SP , Atker.n_Ident , iValue  , Atker.n_Ident   ) );
+	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){
+        int defid = (Defer != null) ? Defer.n_Ident : 0;
+        list.Add( new cHitResult( cHitResult._TYPE._SP , Atker.n_Ident , iValue  ,defid   ) );
 	}
 }
 public class ADDCP_I: cEffect
 {
 	public ADDCP_I( int i ){	iValue = i;	}
 	
-	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 
-		
-		list.Add( new cHitResult( cHitResult._TYPE._CP , Atker.n_Ident , iValue  , Atker.n_Ident   ) );
+	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){
+        int defid = (Defer != null) ? Defer.n_Ident : 0;
+        list.Add( new cHitResult( cHitResult._TYPE._CP , Atker.n_Ident , iValue  , defid   ) );
 	}
 }
 public class ADDHP_E: cEffect

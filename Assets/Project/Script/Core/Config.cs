@@ -48,7 +48,7 @@ public class Config
     public static float EnhanceMarLVUp = 2.0f;
     public static int EnhanceHpLVUp = 300;
     public static int EnhanceMpLVUp = 20;
-    public static int EnhanceSpLVUp = 4;
+    public static int EnhanceSpLVUp = 5;
     public static int EnhanceAtkLVUp = 80;
     public static int EnhanceDefLVUp = 80;
     public static int EnhancePowLVUp = 20;

@@ -20,6 +20,7 @@ public class Panel_SaveLoad : MonoBehaviour {
     int n_Page = 0;  // current
     int n_MaxPage = 10;
 
+    
 
 
     // Use this for initialization
@@ -62,10 +63,9 @@ public class Panel_SaveLoad : MonoBehaviour {
 	{
         n_Mode = 0; // save mode
         ePhase = phase;
-		MyTool.SetLabelText (lblTitleObj, "紀錄");
-
+        
+        MyTool.SetLabelText (lblTitleObj, "紀錄");
 		MyTool.DestoryGridItem ( GridObj );
-
         Reload();
         //for (int i = 1; i <= 4; i++) {
         //	GameObject go = ResourcesManager.CreatePrefabGameObj( GridObj , "Prefab/Item_SaveData" ); 
@@ -86,26 +86,27 @@ public class Panel_SaveLoad : MonoBehaviour {
 	{
         n_Mode = 1; // Load mode
         ePhase = phase;
-		MyTool.SetLabelText (lblTitleObj, "讀取");
+        
+        MyTool.SetLabelText (lblTitleObj, "讀取");
 		MyTool.DestoryGridItem ( GridObj );
         Reload();
-
+        
   //      for (int i = 1; i <= 4; i++) {
-		//	GameObject go = ResourcesManager.CreatePrefabGameObj( GridObj , "Prefab/Item_SaveData" ); 
+  //	GameObject go = ResourcesManager.CreatePrefabGameObj( GridObj , "Prefab/Item_SaveData" ); 
 
-		//	if( go == null )
-		//		continue;
+        //	if( go == null )
+        //		continue;
 
-		//	UIEventListener.Get(go).onClick = OnLoadClick; // 
-			
+        //	UIEventListener.Get(go).onClick = OnLoadClick; // 
 
-		//	Item_SaveData obj = go.GetComponent<Item_SaveData >();
-		//	if( obj != null ){
-		//		obj.SetData( i );
-		//	}
-		//}
 
-	}
+        //	Item_SaveData obj = go.GetComponent<Item_SaveData >();
+        //	if( obj != null ){
+        //		obj.SetData( i );
+        //	}
+        //}
+
+    }
 	void OnCancelClick(GameObject go)
 	{
         GameSystem.BtnSound(1);
@@ -114,7 +115,7 @@ public class Panel_SaveLoad : MonoBehaviour {
     }
 
 	void OnSaveClick(GameObject go)
-	{
+	{        
         GameSystem.BtnSound();
         Item_SaveData obj = go.GetComponent<Item_SaveData >();
 		if (obj != null) {
@@ -124,8 +125,10 @@ public class Panel_SaveLoad : MonoBehaviour {
 		}
 	}
 
-	void OnLoadClick(GameObject go)
-	{
+    void OnLoadClick(GameObject go)
+    {   
+        if (cSaveData.IsLoading()){ return; }
+
         GameSystem.BtnSound();
         Item_SaveData obj = go.GetComponent<Item_SaveData >();
 		if (obj != null) {

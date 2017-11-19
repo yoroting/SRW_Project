@@ -56,9 +56,19 @@ public class MainUIPanel : BasicPanel {
 	// set up startup 
 	void OnEnable()
 	{
-		GameDataManager.Instance.ePhase = _SAVE_PHASE._STARTUP;		
-		// 播放  mian BGM
-		GameSystem.PlayBGM ( 1 );
+		GameDataManager.Instance.ePhase = _SAVE_PHASE._STARTUP;
+
+
+
+        // pre load FX
+
+
+        // pre load music 
+        GameSystem.PlayBGM(5); // 勝利 BGM
+
+
+        // 播放  mian BGM
+        GameSystem.PlayBGM ( 1 );
 
        
 

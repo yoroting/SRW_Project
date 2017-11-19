@@ -9,6 +9,8 @@ public class STAGE_DATA : ConstDataRow<STAGE_DATA>
 	public string s_WIN_CONDITION;
 	public string s_LOST_CONDITION;
 	public int n_MOB_LV;
+	public int n_MOB_ENHANCE;
+	public int n_MONEY;
 	public int n_NEXT_STORY;
 	public string s_BEFORE_EVENT;
 	public string s_AFTER_EVENT;

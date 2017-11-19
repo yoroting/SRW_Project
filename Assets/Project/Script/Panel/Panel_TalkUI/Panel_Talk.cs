@@ -338,6 +338,13 @@ public class Panel_Talk : MonoBehaviour
             return;
         }
 
+        // destory all battle msg
+        BattleMsg[] msg = this.gameObject.GetComponentsInChildren<BattleMsg>();
+        foreach (BattleMsg o in msg ) {
+            NGUITools.Destroy(o);
+        }
+
+
 
         // if stage is end .. open main ten ui
         if ((Panel_StageUI.Instance != null) && (Panel_StageUI.Instance.bIsStageEnd == true))

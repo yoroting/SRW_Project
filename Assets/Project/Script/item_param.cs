@@ -85,7 +85,7 @@ public class item_param : MonoBehaviour {
             case _ePARAMIDX._MP: { SetValue(unit.n_MP, nType); } break;  //5   內力
             case _ePARAMIDX._SP: { SetValue(unit.n_SP, nType); } break; //6	精神
             case _ePARAMIDX._ATK: { SetValue(unit.GetAtk(), nType); } break;  //7	攻擊
-            case _ePARAMIDX._DEF: { SetValue(unit.GetMaxDef(), nType); } break;  //8   防禦
+            case _ePARAMIDX._DEF: { SetValue(unit.n_DEF, nType); } break;  //8   防禦
             case _ePARAMIDX._POW: { SetValue(unit.GetPow(), nType); } break; //9	氣勁
             case _ePARAMIDX._MOV: { SetValue(unit.GetMov(), nType); } break;  //10	移動
             case _ePARAMIDX._BRU: { SetValue(string.Format("{0}％", (unit.GetMulBurst() - 1.0f) * 100.0f) , nType); } break;  //11	爆發

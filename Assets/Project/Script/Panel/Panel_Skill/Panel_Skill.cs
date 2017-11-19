@@ -52,10 +52,15 @@ public class Panel_Skill : MonoBehaviour {
 		UIEventListener.Get(CloseBtn).onClick += OnCloseClick; // for trig next line
 
         UIEventListener.Get(SkillSprite).onClick = OnConentClick; // for trig next line
-                                                               //	CastNote.SetActive( true );
-                                                               //    SkillSprite.SetActive(true);
-        if(SkillItemUnit != null )                                                        
+                                                                  //	CastNote.SetActive( true );
+                                                                  //    SkillSprite.SetActive(true);
+
+        SkillItemUnit.CreatePool(10);
+
+
+        if (SkillItemUnit != null)                                                          
             SkillItemUnit.SetActive(false);
+
         if (SelOverObj != null)
             SelOverObj.SetActive(false);
         nOpSkillID = 0;
@@ -108,7 +113,7 @@ public class Panel_Skill : MonoBehaviour {
 
         //string sCP = string.Format("{0}/{1}", nCP, pData.n_CP);
         string sCP = string.Format("{0}", pData.n_CP);
-        progMP.value = pData.n_MP / pData.GetMaxMP()  ;
+        progMP.value = (float)pData.n_MP / (float)pData.GetMaxMP()  ;
 
         //UISlider mpbar = progMP.GetComponent<UISlider>();
         //if (mpbar != null)
@@ -116,7 +121,7 @@ public class Panel_Skill : MonoBehaviour {
 
         //    mpbar.value = 
         //}
-        progSP.value = pData.n_SP / pData.GetMaxSP()  ;
+        progSP.value = (float)pData.n_SP / (float)pData.GetMaxSP()  ;
         //UISlider spbar = progSP.GetComponent<UISlider>();
         //if (spbar != null)
         //{
@@ -300,9 +305,12 @@ public class Panel_Skill : MonoBehaviour {
 		{
             // add this skill
             //GameObject go = ResourcesManager.CreatePrefabGameObj( SkillGrid , "Prefab/Item_Skill" ); 
-            GameObject go = ResourcesManager.CreatePrefabGameObj(SkillGrid, "Prefab/Skill_unit");
+            //GameObject go = ResourcesManager.CreatePrefabGameObj(SkillGrid, "Prefab/Skill_unit");
+            GameObject go = SkillItemUnit.Spawn(SkillGrid.transform);
             if ( go == null )
 				continue;
+          
+
             Skill_unit  unit= go.GetComponent<Skill_unit>();
             unit.SetUnitSkillData( data , skl.n_ID);
             unit.SetScrollView( ScrollView );
@@ -373,23 +381,26 @@ public class Panel_Skill : MonoBehaviour {
 
         nOpSkillID = 0;
 
-        MyTool.DestoryGridItem ( SkillGrid );
-//		UIGrid grid = SkillGrid.GetComponent<UIGrid>(); 
-//		if (grid == null) {
-//			return ;
-//		}
-//
-//		List< Transform > lst = grid.GetChildList ();
-//		//List< GameObject > CmdBtnList = MyTool.GetChildPool( NGuiGrids );
-//		
-//		if (lst != null) {
-//			foreach (Transform t in lst) {
-//			
-//				///UIEventListener.Get(obj).onClick -= OnCMDButtonClick;;  // no need.. destory soon
-//				NGUITools.Destroy (t.gameObject);
-//			}
-//		}
-	}
+        SkillItemUnit.RecycleAll(); 
+
+        MyTool.DestoryGridItem(SkillGrid);// 回收完畢， 清空
+
+        //		UIGrid grid = SkillGrid.GetComponent<UIGrid>(); 
+        //		if (grid == null) {
+        //			return ;
+        //		}
+        //
+        //		List< Transform > lst = grid.GetChildList ();
+        //		//List< GameObject > CmdBtnList = MyTool.GetChildPool( NGuiGrids );
+        //		
+        //		if (lst != null) {
+        //			foreach (Transform t in lst) {
+        //			
+        //				///UIEventListener.Get(obj).onClick -= OnCMDButtonClick;;  // no need.. destory soon
+        //				NGUITools.Destroy (t.gameObject);
+        //			}
+        //		}
+    }
 
 	public static Panel_Skill OpenUI( int nIdent , _SKILL_TYPE eType , int nTarIdent , _CMD_TYPE cmdType  )
 	{
@@ -411,6 +422,11 @@ public class Panel_Skill : MonoBehaviour {
         if (go == null)
             return null;
         Panel_Skill pUI = MyTool.GetPanel<Panel_Skill>(go);
+        if (data == null) {
+            PanelManager.Instance.CloseUI(go);
+            return null;
+        }
+
         pUI.SetData(data, _SKILL_TYPE._SCHOOL , null, _CMD_TYPE._SYS , schoolID);
         return pUI;
     }

@@ -556,7 +556,7 @@ private static GameDataManager instance;
 	// public  unit data
 	public Dictionary< int , cUnitData > UnitPool;			// add  < ident , unit >  event id  
 
-	public cUnitData CreateChar( int nCharID , _CAMP camp , int bornx , int borny , int nLv , int nLeaderId )
+	public cUnitData CreateChar( int nCharID , _CAMP camp , int bornx , int borny , int nLv , int nEnhance ,  int nLeaderId )
 	{
 		cUnitData data = new cUnitData();
 		data.n_Ident = GenerSerialNO( );
@@ -567,7 +567,11 @@ private static GameDataManager instance;
 			Debug.LogErrorFormat( "CreateChar with null data {0}" , nCharID );
 
 		}
-		data.n_Lv = nLv;
+
+        data.SetEnhanceLv( _ePARAMIDX._NULL , nEnhance );
+
+
+        data.n_Lv = nLv;
 		data.SetContData( cdata  );
 		data.eCampID = camp;
 
@@ -714,7 +718,7 @@ private static GameDataManager instance;
 		return true;
 	}
 	// for stage pop unit
-	public cUnitData StagePopUnit ( int nCharID, _CAMP eCamp,  int nBX, int nBY , int nLv = 1, int nLeaderID =0 )
+	public cUnitData StagePopUnit ( int nCharID, _CAMP eCamp,  int nBX, int nBY , int nLv , int nEnhance , int nLeaderID  )
 	{
 		if (eCamp == _CAMP._PLAYER) {
 			cUnitData data = null;
@@ -740,7 +744,7 @@ private static GameDataManager instance;
 			}
 		} 
 
-		return  CreateChar( nCharID , eCamp, nBX , nBY , nLv , nLeaderID ); // already add to pool
+		return  CreateChar( nCharID , eCamp, nBX , nBY , nLv , nEnhance ,  nLeaderID ); // already add to pool
 
 	}
 
@@ -881,7 +885,7 @@ private static GameDataManager instance;
         else {  // 不存在
             if (bEnable == true) // 不存在又要新增時。 建立一個新的
             {
-                cUnitData unit = CreateChar(nCharID, _CAMP._PLAYER, 0, 0, 0 , 0 );
+                cUnitData unit = CreateChar(nCharID, _CAMP._PLAYER, 0, 0, 0 , 0 , 0 );
                 BackUnitToStorage( unit.n_Ident );
                 //AddUnitToStorage(unit);
                 //DelUnit(unit);

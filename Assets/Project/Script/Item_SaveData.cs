@@ -54,7 +54,12 @@ public class Item_SaveData : MonoBehaviour {
         {
             MyTool.SetLabelText(TimeObj, strContents[3]);
         }
-        
+
+        if (strContents.Length > 4)
+        {
+            MyTool.SetLabelText(LvObj,  strContents[4]);
+
+        }
         // MyTool.SetLabelText(LvObj, slv);
 
 

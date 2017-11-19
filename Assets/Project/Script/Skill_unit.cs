@@ -54,6 +54,11 @@ public class Skill_unit : MonoBehaviour {
 	void Update () {
 		
 	}
+    private void OnEnable()
+    {
+        ReSize();
+    }
+
 
     void Initialized()
     {
@@ -79,6 +84,14 @@ public class Skill_unit : MonoBehaviour {
 
 
     }
+
+    public void ReSize()
+    {
+        transform.localScale = Vector3.one;
+
+        transform.localRotation = Quaternion.identity;
+    }
+
     public void SetUnitSkillData(int nIdent, int nSkillID)
     {
         cUnitData unit = GameDataManager.Instance.GetUnitDateByIdent(nIdent);

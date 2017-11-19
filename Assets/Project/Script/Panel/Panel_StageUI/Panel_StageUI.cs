@@ -91,6 +91,7 @@ public class Panel_StageUI : MonoBehaviour
 	float fMinOffY ;
 	float fMaxOffY ;
 
+    float fBatMsgPlayTime;                      //特效播放時間強制解鎖用
     float fFxPlayTime;                      //特效播放時間強制解鎖用
 
 	// widget
@@ -272,10 +273,14 @@ public class Panel_StageUI : MonoBehaviour
         RegeditGameEvent(true);
         // create sub panel?
 
+        //preload ui
 		Panel_UnitInfo.OpenUI (0);
-        
+
+        Panel_Skill.OpenSchoolUI( null, _SKILL_TYPE._ABILITY , 0  );
         //PanelManager.Instance.OpenUI(Panel_UnitInfo.Name);
-		//Panel_MiniUnitInfo.OpenUI (null);
+        //Panel_MiniUnitInfo.OpenUI (null);
+
+
 
 
 
@@ -732,7 +737,12 @@ public class Panel_StageUI : MonoBehaviour
         //m_bWaitSoundPlayDone = false;
         m_bWaitSoundFile = "";
         bIsMoveToObj = false;
-	}
+
+         // 容易 造成錯誤！
+        // BattleMsg.nMsgCount = 0; // 清空
+
+
+    }
 
 //	IEnumerator StageLoading(  )
 //	{
@@ -1884,7 +1894,17 @@ public class Panel_StageUI : MonoBehaviour
         }
 
         if (BattleMsg.nMsgCount > 0)
+        {
+            fBatMsgPlayTime += Time.deltaTime;
+            if (fBatMsgPlayTime >= 5.0f)
+            {
+                Debug.LogError("Battle MSG dead locked over 5sec . release it");
+                BattleMsg.nMsgCount = 0; // 釋放
+            }
+            
             return true;
+        }
+        fBatMsgPlayTime = 0;
 
         if (DropMsg.nDropCount > 0)
             return true;
@@ -3625,10 +3645,13 @@ public class Panel_StageUI : MonoBehaviour
 		}
 
 
-//		Debug.Log("stageloding:create event Pool complete");
+        //		Debug.Log("stageloding:create event Pool complete");
+
+      
 
 
-		GameDataManager.Instance.SetBGMPhase( 0 );
+
+        GameDataManager.Instance.SetBGMPhase( 0 );
 //		GameDataManager.Instance.nPlayerBGM = StageData.n_PLAYER_BGM;
 //		GameDataManager.Instance.nEnemyBGM = StageData.n_ENEMY_BGM;
 //		GameDataManager.Instance.nFriendBGM = StageData.n_FRIEND_BGM;
@@ -3747,7 +3770,7 @@ public class Panel_StageUI : MonoBehaviour
             }
 
 
-            cUnitData cData = GameDataManager.Instance.StagePopUnit( Evt.nCharID,Evt.eCamp, nX, nY , StageData.n_MOB_LV ); 
+            cUnitData cData = GameDataManager.Instance.StagePopUnit( Evt.nCharID,Evt.eCamp, nX, nY , StageData.n_MOB_LV ,StageData.n_MOB_ENHANCE  , 0 ); 
 
 			GameObject obj = CreateUnitByUnitData (  cData );
 			if (obj != null) {		
@@ -3801,7 +3824,7 @@ public class Panel_StageUI : MonoBehaviour
                     }
 
 					//cUnitData cData =  GameDataManager.Instance.StagePopUnit( Evt.nCharID,Evt.eCamp, i , j ,nLeaderIdent  ); 
-					cUnitData cData = GameDataManager.Instance.StagePopUnit( Evt.nCharID  , pLeader.eCampID , i , j  , StageData.n_MOB_LV , nLeaderIdent );
+					cUnitData cData = GameDataManager.Instance.StagePopUnit( Evt.nCharID  , pLeader.eCampID , i , j  , StageData.n_MOB_LV , StageData.n_MOB_ENHANCE ,  nLeaderIdent );
 					if( cData == null ){
 						continue ;
 					}

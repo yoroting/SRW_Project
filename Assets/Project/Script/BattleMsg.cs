@@ -4,10 +4,22 @@ using System.Collections;
 public class BattleMsg : MonoBehaviour {
 	static public int nMsgCount=0;
     float fUpdateTime = 0.0f;
+    public UILabel m_lblText;
+
     // Use this for initialization
+    void Awake()
+    {
+        nMsgCount++;  // call when construct
+    }
+
     void Start () {
-		nMsgCount++;
+		// nMsgCount++;   // call when first update ( enable/disable)
 	}
+
+    void OnDestroy() // 直接 關閉 場警對話，會有 pop的道具沒關到         
+    {
+        nMsgCount--;
+    }
 
     void OnEnable()
     {
@@ -44,11 +56,17 @@ public class BattleMsg : MonoBehaviour {
 
 	public void OnAlphaFinish()
 	{
-		nMsgCount--;
+	//	nMsgCount--;
 		NGUITools.Destroy ( this.gameObject );
 
 	}
 
+
+    public void SetText( string str , int nType = 0 )
+    {
+        m_lblText.text = str;
+
+    }
     public void SetDepth(int nDepth )
     {
         MyTool.SetDepth( gameObject, nDepth );

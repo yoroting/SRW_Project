@@ -19,11 +19,11 @@ public class CMD_BTN : MonoBehaviour {
     {
         ReSize();
 
-        //UIButton b = this.gameObject.GetComponent<UIButton>();
-        //if (b != null)
-        //{
-        //    b.isEnabled = true; // disable btn
-        //}
+        UIButton b = this.gameObject.GetComponent<UIButton>();
+        if (b != null)
+        {
+            b.isEnabled = true; // Enable btn
+        }
     }
 
     void OnDisable()

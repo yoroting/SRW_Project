@@ -555,13 +555,15 @@ public class cBuffs
 		if (Pool.Count == 0)
 			return;
 		foreach( KeyValuePair< int , cBuffData > pair in Pool )
-		{
-			// normal 
-			foreach( cEffect eft in pair.Value.EffectPool )
+		{          
+            cUnitData unit_cast = GameDataManager.Instance.GetUnitDateByIdent(pair.Value.nCastIdent);
+          
+            // normal 
+            foreach ( cEffect eft in pair.Value.EffectPool )
 			{
 				if( eft != null )
 				{
-					eft._Do( Owner , unit_e , ref resPool );
+					eft._Do( Owner , unit_cast  , ref resPool );
 				}
 			}
 			cUnitData unit = null ;

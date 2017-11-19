@@ -2698,8 +2698,22 @@ public class Panel_unit : MonoBehaviour {
                     if (res.Value1 != 0) // maybe change data in  battle manage
                     {
                         pUnitData.AddHp(res.Value1, res.Value4);
-                    }
+                        if (pUnitData.n_HP <= 0 )
+                        {
+                            pUnitData.AddStates(_FIGHTSTATE._DEAD); // 標記死亡，讓掉落處理
 
+                            if (res.Value2 != Ident())
+                            {
+                                    if (pUnitData.eCampID == _CAMP._ENEMY)
+                                    {
+                                        cUnitData pAtker = GameDataManager.Instance.GetUnitDateByIdent(res.Value2);
+                                        BattleManager.Instance.CalDropResult(pAtker, pUnitData);
+                                      
+                                    }
+
+                            }
+                        }
+                    }
                 }
                 break;
             case cHitResult._TYPE._DEF:
@@ -2767,7 +2781,7 @@ public class Panel_unit : MonoBehaviour {
                     {
                         // cUnitData pData = GameDataManager.Instance.GetUnitDateByIdent(res.Ident);
                         // if (pData != null)
-                        // {
+                        // {                  int nBuffID , int nCastIdent , int nSkillID  , int nTargetId , int nNum=0
                         pUnitData.Buffs.AddBuff(res.Value1, res.Value2, res.Value3, res.Value4 , res.Value5 );
                         // }
 

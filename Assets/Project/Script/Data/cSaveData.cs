@@ -494,6 +494,11 @@ public class cSaveData{
        
         string name = Config.PlayerFirst + Config.PlayerName;
         string status = "";
+        string slv = "";
+        cUnitData pUnit = GameDataManager.Instance.GetUnitDateByCharID(1);
+        if (pUnit == null) {
+            pUnit = GameDataManager.Instance.GetStorageUnit( 1 );
+        }
 
         // 整備
         if (GameDataManager.Instance.ePhase == _SAVE_PHASE._MAINTEN)
@@ -506,8 +511,14 @@ public class cSaveData{
         }
         // 時間
         string stime = System.DateTime.Now.ToString("yyyy/MM/dd HH:mm");
+
+        // 主角等級
+        if ( pUnit != null ) {
+            slv = "Lv. " + pUnit.n_Lv.ToString() ;
+        }
+
         // 組合
-        string  content = String.Format("{0};{1};{2};{3};", nstoryname , name , status , stime );
+        string  content = String.Format("{0};{1};{2};{3};{4};", nstoryname , name , status , stime , slv );
 
         return content;
     }

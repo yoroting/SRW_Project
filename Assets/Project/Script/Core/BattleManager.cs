@@ -1007,7 +1007,7 @@ public partial class BattleManager
         if ( nDropItemPool.Count > 0 )
 			{
 				int itemid = nDropItemPool[0];
-				string str = "獲得 " + MyTool.GetItemName( itemid );
+				string str = MyTool.GetItemName( itemid ) + " ＋ 1";
 				nDropItemPool.RemoveAt(0);
 				ShowBattleMsg( 0 , str );
 
@@ -1381,12 +1381,18 @@ public partial class BattleManager
         
         if (go != null) {
 			go.transform.position = v;
+
+            BattleMsg obj = go.GetComponent<BattleMsg>();
+            if (obj != null) {
+                obj.SetText( msg );
+            }
+
 			//go.transform.localPosition = v;
-			UILabel lbl = go.GetComponentInChildren<UILabel>();
-			if( lbl != null )
-			{
-				lbl.text = msg;
-			}
+			//UILabel lbl = go.GetComponentInChildren<UILabel>();
+			//if( lbl != null )
+			//{
+			//	lbl.text = msg;
+			//}
 		}
         return go;
 	}
@@ -1894,71 +1900,95 @@ public partial class BattleManager
 
 	}
 
-	public void CalDropResult( cUnitData Atker , cUnitData Defer )
-	{
-		//return;
+    public void CalDropResult( cUnitData Atker , cUnitData Defer )
+	{   
+        if (Defer == null){
+            return;
+        }
+        if (Defer.eCampID != _CAMP._ENEMY) {
+            return;
+        }
+        // 避免重複掉
+        if (Defer.IsTag(_UNITTAG._DROP))
+        {
+            return;
+        }
 
-		if( Atker == null || Defer == null ) return ;
-		if( Atker.eCampID != _CAMP._PLAYER  ) return;
+        float fdroprate = 1.0f;
+        int   exp = 5; // base exp
 
-		float fdroprate =  Atker.GetMulDrop();
+        float fMoneyRatio = 1.0f;
+        float fExpRation = 1.0f;     
 
-		//
-		int exp 	= 5; // base exp
-		int money 	= 0;
-		if( Defer != null ){
-			int nDiffLv = Defer.n_Lv-Atker.n_Lv;
-			exp += (nDiffLv);
-			exp = MyTool.ClampInt( exp , 1 , 10 );
+        //	if( Atker == null || Defer == null ) return ;
+        if (Atker != null) {
+            if (Atker.eCampID == _CAMP._ENEMY) {
+                return; // 怪物 擊殺 怪物也不掉落
+            }
+            fdroprate = Atker.GetMulDrop();
 
-			// kill
-			if( Defer.IsStates( _FIGHTSTATE._DEAD ) ){
+            if (Atker.eCampID == _CAMP._FRIEND)
+            {
+            //    fdroprate *= 0.5f; // 友方 擊殺，效益減 50％
+            }
 
-				exp = (exp*3) ;
-                money = Config.BaseMobMoney;
-                // 怪物 武功等級影響掉落資金
-                
-                int nIntLV = Defer.GetIntSchLv();
-                int nExtLV = Defer.GetExtSchLv();
-                //int nMaxLv = nIntLV > nExtLV ? nIntLV : nExtLV;
-                //if (nMaxLv < 1)                    nMaxLv = 1;
-                // float fMoneyRatio = Mathf.Pow(1.5f, (nMaxLv-1));
-                //float fMoneyRatio = 1.0f + ((nIntLV + nExtLV) * 0.1f); // 不受內外功等級影響
-                float fMoneyRatio = 1.0f;
-                money = (int)(money * fMoneyRatio);
+        }
 
-                // check drop item
-                if ( Defer.n_DropItemID > 0 ){
-					nDropItemPool.Add(Defer.n_DropItemID);
-                    Defer.n_DropItemID = 0; // 避免死亡重複掉落
+		
+            fMoneyRatio *= Defer.cCharData.f_DROP_MONEY;
+            fExpRation *= Defer.cCharData.f_DROP_EXP;
 
+        if (Atker != null) {
+
+            //玩家的攻擊才會 產生經驗
+            if (Atker.eCampID == _CAMP._PLAYER)
+            {
+                int nDiffLv = Defer.n_Lv - Atker.n_Lv;
+                exp += (nDiffLv);
+                exp = MyTool.ClampInt(exp, 1, 10);
+
+                // kill 時 經驗 3 倍
+                if (Defer.IsStates(_FIGHTSTATE._DEAD))
+                {
+                    exp = (exp * 3);
+                    // 怪物 武功等級影響掉落資金
                 }
-			}
-		}
-        // mul drop
-        money = (int)(money * fdroprate * Defer.cCharData.f_DROP_MONEY);
-        exp = (int)(exp * fdroprate * Defer.cCharData.f_DROP_EXP);
-        money =  MyTool.ClampInt(  money , 0 , money);
-		exp   =  MyTool.ClampInt(  exp , 0 , exp );
 
-		// Add to pool
-		//nExp 	+= exp ; 
-		//nMoney 	+= money;
+                exp = (int)(exp * fdroprate * fExpRation);
+                exp = MyTool.ClampInt(exp, 0, exp);
+                if (nDropExpPool.ContainsKey(Atker.n_Ident))
+                {
+                    nDropExpPool[ Atker.n_Ident ] += exp;
+                }
+                else
+                {
+                    nDropExpPool.Add(Atker.n_Ident , exp);
+                }
+            }
+        }
+            // 受擊者死亡有掉落
+        if (Defer.IsStates(_FIGHTSTATE._DEAD) && ( Defer.eCampID == _CAMP._ENEMY) )
+        {
+           
 
-		//====
-		nDropMoney += money;
+            Defer.AddTag(_UNITTAG._DROP); // 註記 掉落過
 
-        // 賺錢
-        GameDataManager.Instance.nEarnMoney += money;
+            // check drop item
+            if (Defer.n_DropItemID > 0)
+            {
+                nDropItemPool.Add(Defer.n_DropItemID);
+                Defer.n_DropItemID = 0; // 避免死亡重複掉落
+            }
 
-        if ( nDropExpPool.ContainsKey( Atker.n_Ident )  ){
-			nDropExpPool[Atker.n_Ident ] += exp;
-		}
-		else {
-			nDropExpPool.Add( Atker.n_Ident , exp );
-		}
+            // check drop money
+            int money = Config.BaseMobMoney;
+            money = (int)(money * fdroprate * fMoneyRatio);
+            money = MyTool.ClampInt(money, 0, money);
+            nDropMoney += money;
+            GameDataManager.Instance.nEarnMoney += money;// 賺錢
+        }
 
-	}
+    }
 
 
     static public List<cHitResult> CalAttackResult(int nAtker, int nDefer, bool bDefMode = false, bool bAffect = false)

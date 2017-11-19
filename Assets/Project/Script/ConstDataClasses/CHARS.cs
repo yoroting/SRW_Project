@@ -12,6 +12,7 @@ public class CHARS : ConstDataRow<CHARS>
 	public int n_LV;
 	public int n_RANK;
 	public int n_GENDER;
+	public int n_ENHANCE;
 	public int n_MOBAI;
 	public int n_COMBOAI;
 	public int n_BORN_FX;

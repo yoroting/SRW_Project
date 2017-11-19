@@ -40,13 +40,16 @@ public class ResourcesManager {
 
 	public static AudioClip LoadClip(string audioPath)
 	{
-		AudioClip clip = Resources.Load<AudioClip>(audioPath);
-		if(clip == null){
-			Debug.LogError("音效資源讀取失敗:" + audioPath);
-		}
-		//clip.loadInBackground = true;
-		return clip; 
-	}
+        AudioClip clip = Resources.Load<AudioClip>(audioPath);
+        if (clip == null)
+        {
+            Debug.LogError("音效資源讀取失敗:" + audioPath);
+        }
+        //  clip.loadInBackground = true;
+        return clip;
+
+       
+    }
 
 	public static GameObject LoadFightBulletFx(string fxName){
 		string path = "FX/FightBullet/" + fxName;

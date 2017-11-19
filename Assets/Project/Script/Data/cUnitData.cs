@@ -82,7 +82,7 @@ public enum _UNITTAG
     _BLOCKITEM=7,       // 不能變更裝備道具
     _STUN     =8,     //暈眩，點穴
     _HIDE = 9,     //隱身
-
+    _DROP = 10 , // 已經處理過掉落
 }
 //
 public enum _ITEMSLOT
@@ -1104,7 +1104,8 @@ public class cUnitData{
         {
             EnhancePool.Add((int)idx, 1);
         }
-        UpdateEnhanceAttr();
+        SetUpdate(cAttrData._ENHANCE);
+       // UpdateEnhanceAttr();
     }
 
     public int GetEnhanceLimit(_ePARAMIDX idx)
@@ -1117,16 +1118,29 @@ public class cUnitData{
     }
 
     public void SetEnhanceLv(_ePARAMIDX idx , int nLv)
-    {  
-        if (EnhancePool.ContainsKey((int)idx) == true)
+    {
+        if (idx == _ePARAMIDX._NULL) // enhance all 
         {
-            EnhancePool[(int)idx] = nLv ;
+            SetEnhanceLv( _ePARAMIDX._MAR , nLv );
+            SetEnhanceLv( _ePARAMIDX._HP , nLv);
+            SetEnhanceLv( _ePARAMIDX._MP, nLv);
+            SetEnhanceLv(_ePARAMIDX._SP, nLv);
+            SetEnhanceLv(_ePARAMIDX._ATK, nLv);
+            SetEnhanceLv(_ePARAMIDX._DEF, nLv);
+            SetEnhanceLv(_ePARAMIDX._POW, nLv);
         }
         else
         {
-            EnhancePool.Add((int)idx, nLv);
+            if (EnhancePool.ContainsKey((int)idx) == true)
+            {
+                EnhancePool[(int)idx] = nLv;
+            }
+            else
+            {
+                EnhancePool.Add((int)idx, nLv);
+            }
         }
-        UpdateEnhanceAttr();
+        SetUpdate(cAttrData._ENHANCE);
     }
 
     public int GetEnhanceLv(_ePARAMIDX idx )
