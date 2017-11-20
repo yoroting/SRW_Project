@@ -37,6 +37,9 @@ public class Panel_Mainten : MonoBehaviour {
         SetStoryName();
         // re list
         ReloadUnitList();
+        //
+        Resources.UnloadUnusedAssets();
+     //   System.GC.Collect();			// Free memory resource here
     }
 
 	void Start () {

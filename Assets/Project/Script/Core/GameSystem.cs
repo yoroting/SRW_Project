@@ -126,7 +126,14 @@ public class GameSystem : MonoBehaviour {
             Config.GOD = false; // default is close
         }
 
+        // 調整螢幕比例
+        float screenrate = (float)Screen.width / (float)Screen.height;
+        float defaultrate = (float)Config.WIDTH / (float)Config.HEIGHT;
+        if (screenrate > defaultrate) // 寬度需拉長
+        {
+            Config.WIDTH = (int)(Config.HEIGHT * screenrate);
 
+        }
     }
 	void Start()
 	{

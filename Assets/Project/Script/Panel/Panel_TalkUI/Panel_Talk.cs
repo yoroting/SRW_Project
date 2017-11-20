@@ -104,6 +104,11 @@ public class Panel_Talk : MonoBehaviour
 
 
         m_WaitQueue = new List<int>();              // wait to execute queue
+
+       
+
+
+
 #if DEBUG && UNITY_EDITOR
         //		GameDataManager.Instance.nTalkID = 803; // set here this will cause some issue
 #endif
@@ -571,8 +576,10 @@ public class Panel_Talk : MonoBehaviour
         if (tex == null)
             return;
 
+        tex.width = Config.WIDTH;
+        tex.height = Config.HEIGHT;
 
-    //    GameSystem.bFXPlayMode = false; // no more play fx
+        //    GameSystem.bFXPlayMode = false; // no more play fx
 
         //SCENE_NAME scene = ConstDataManager.Instance.GetRow<SCENE_NAME> ( nSceneID );
         //if (scene == null)

@@ -8,9 +8,11 @@ using MyClassLibrary;
 public class MobAI  {    
 
     public static List<SKILL> tmpSklList  =  new List<SKILL>();
+    static Dictionary<iVec2, int> distpool = new Dictionary<iVec2, int>();
+    static Dictionary<int, int> sklPool = new Dictionary<int, int>();
+    
 
-
-	public static void Run( Panel_unit mob )
+    public static void Run( Panel_unit mob )
 	{
         long tick = System.DateTime.Now.Ticks;
 
@@ -982,7 +984,7 @@ public class MobAI  {
     }
 
     // tool finc
-    public static List<iVec2> FindPathToTarget( Panel_unit Mob , Panel_unit Target  , int nMove , int nRange =1 )
+    public static List<iVec2> FindPathToTarget( Panel_unit Mob , Panel_unit Target  , int nMove , int nRange =1  )
 	{
 		if( Mob == null || Target == null || nMove ==0 )
         {
@@ -993,7 +995,7 @@ public class MobAI  {
         //int ident = Mob.Ident();
 
         List< iVec2 > nearList = Target.Loc.AdjacentList ( nRange ); // the 4 pos can't stand ally
-		Dictionary< iVec2 , int > distpool = new Dictionary< iVec2 , int > ();
+        distpool.Clear();
 		foreach (iVec2 v in nearList) {
 			if (Panel_StageUI.Instance.CheckIsEmptyPos (v) == true) {// 目標 pos 不可以站人 也不可以是ZOC
 				int d =v.Dist (Mob.Loc);
@@ -1163,8 +1165,9 @@ public class MobAI  {
 
         long tick = System.DateTime.Now.Ticks;
         //int ident = Mob.Ident();
+
         iVec2 vTar = new iVec2(nTarX , nTarY);
-        Dictionary<iVec2, int> distpool = new Dictionary<iVec2, int>();
+        distpool.Clear();        
         if (Panel_StageUI.Instance.CheckIsEmptyPos(vTar) == true)
         {
             distpool.Add(vTar, 0);
@@ -1409,11 +1412,13 @@ public class MobAI  {
 				return 0;				// select normal attack
 			}
 		}
-		// 全部權重
-		//int nTotalWidget = 0;
-		// list skill 
-		//List< SKILL> sklLst = new List< SKILL>();	
-		Dictionary< int , int > sklPool  = new Dictionary< int , int >();
+        // 全部權重
+        //int nTotalWidget = 0;
+        // list skill 
+        //List< SKILL> sklLst = new List< SKILL>();	
+        //Dictionary< int , int > sklPool  = new Dictionary< int , int >();
+
+        sklPool.Clear();
 		// normal attack
 
 		//sklPool.Add( 0 , (pData.GetMaxCP() - pData.n_CP) +1 ); // 普攻永遠有機會 ,CP 越高，普攻機會越低

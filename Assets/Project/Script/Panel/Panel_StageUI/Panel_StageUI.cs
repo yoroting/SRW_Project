@@ -173,8 +173,8 @@ public class Panel_StageUI : MonoBehaviour
     void Start()
     {
 
-  //      long tick = System.DateTime.Now.Ticks;
-
+        //      long tick = System.DateTime.Now.Ticks;
+        Resources.UnloadUnusedAssets();
         System.GC.Collect();			// Free memory resource here
 
         // create pool
@@ -1413,22 +1413,22 @@ public class Panel_StageUI : MonoBehaviour
 	{	
 		Grids.SetPixelWH (Config.TileW, Config.TileH);  // re size
 
-		fMaxOffX  =  (Grids.TotalW - Screen.width )/2; 
-		if (fMaxOffX < 0)
-			//fMaxOffX = 0;
-			fMaxOffX = Screen.width/2;
+        fMaxOffX = (Grids.TotalW - Screen.width) / 2;
+        if (fMaxOffX < 0)
+            //fMaxOffX = 0;
+            fMaxOffX = Screen.width / 2;
 
-		fMinOffX  =  -1*fMaxOffX;		
+        fMinOffX = -1 * fMaxOffX;
 
-		//===============
-		fMaxOffY  =  (Grids.TotalH - Screen.height )/2; 
-		if (fMaxOffY < 0)
-			//fMaxOffY = 0;
-			fMaxOffY = Screen.height/2;
+        //===============
+        fMaxOffY = (Grids.TotalH - Screen.height) / 2;
+        if (fMaxOffY < 0)
+            //fMaxOffY = 0;
+            fMaxOffY = Screen.height / 2;
 
-		fMinOffY  =  -1*fMaxOffY;		
-		
-	}
+        fMinOffY = -1 * fMaxOffY;
+
+    }
 
 	GameObject GetTileCellPrefab( int x , int y , _TILE t , GameObject tiles )
 	{
@@ -1674,6 +1674,54 @@ public class Panel_StageUI : MonoBehaviour
 //		Debug.Log( "create moveeffect cell with ticket:" + during );
 	}
 
+    public bool CheckBeBlock(Panel_unit unit , iVec2 vTar )
+    {
+        if (unit == null)
+            return false;
+        // 距離一的不會被阻擋
+        int nDist = unit.Loc.Dist(vTar);
+        if (nDist <= 1)
+            return false;
+
+
+        iVec2 vDir = new iVec2(vTar- unit.Loc);
+        float x = Mathf.Abs(vDir.X);
+        float y = Mathf.Abs(vDir.Y);
+
+        float r = Mathf.Max(x, y);
+
+
+
+        //正規 化
+        float dx = 0.0f;
+        float dy = 0.0f;
+        if (r != 0.0f) {
+            dx = vDir.X / r;
+            dy = vDir.Y / r;
+        }
+
+        for (int i = 1; i <= nDist; i++)
+        {
+            iVec2 vTmp = unit.Loc.MoveXY( (int)(dx*i) , (int)(dy*i) );
+
+            // 到達目的地
+            if (vTmp.Collision(vTar))
+                return false;
+
+            Panel_unit tar = GetUnitByPos( vTmp.X , vTmp.Y );
+            if (tar != null)
+            {
+                if (unit.CanPK(tar))
+                {
+                    return true;
+                }
+            }
+        }
+        
+
+        return false; // 沒被直線阻擋
+    }
+
 	public void CreateAttackOverEffect( Panel_unit unit , int nSkillID=0 )
 	{
 		foreach( KeyValuePair< string , GameObject> pair in OverCellAtkPool )
@@ -1707,14 +1755,18 @@ public class Panel_StageUI : MonoBehaviour
             AtkList = Grids.GetRangePool(unit.Loc, nRange, nMinRange);
         }
 
-
 		
 		//AtkList.RemoveAt (0); // remove self pos
 
 		foreach( iVec2 v in AtkList )
 		{
-			//GameObject over = ResourcesManager.CreatePrefabGameObj(TilePlaneObj, "Prefab/AttackOverEffect");
-			GameObject over = AtkEftObj.Spawn( MaskPanelObj.transform );
+            // 這是 實際攻擊 pool 。 開始過濾 正阻擋
+            if ( CheckBeBlock( unit, v )) {
+                continue;
+            }
+
+            //GameObject over = ResourcesManager.CreatePrefabGameObj(TilePlaneObj, "Prefab/AttackOverEffect");
+            GameObject over = AtkEftObj.Spawn( MaskPanelObj.transform );
 			if( over != null )
 			{
 				over.name = string.Format("ATK Over({0},{1},{2})", v.X , v.Y , 0 );
@@ -2027,10 +2079,26 @@ public class Panel_StageUI : MonoBehaviour
 		}
 		return null;
 	}
+    // find unit by pos
+    public Panel_unit GetUnitByPos(int nX , int nY)
+    {
+        foreach (KeyValuePair<int, Panel_unit> pair in IdentToUnit)
+        {
+            if (pair.Value != null)
+            {
+                if (pair.Value.Loc.Collision(nX , nY ))
+                {
+                    return pair.Value;
+                }
+            }
+        }
+        return null;
+    }
 
 
-	// Faction AI
-	public List<Panel_unit> GetUnitListByCamp( _CAMP nCamp )
+
+    // Faction AI
+    public List<Panel_unit> GetUnitListByCamp( _CAMP nCamp )
 	{
 		List<Panel_unit> lst = new List<Panel_unit> ();
 		foreach (KeyValuePair< int ,Panel_unit > pair in IdentToUnit) {
@@ -3058,10 +3126,10 @@ public class Panel_StageUI : MonoBehaviour
         Vector3 realpos = v + canv;
         if (force == false)
         {
-            //int hW = (Config.WIDTH) / 2 - Config.TileW;
-            //int hH = (Config.HEIGHT) / 2 - Config.TileH;
-            int hW = (Config.WIDTH - Config.TileW ) / 2 ;
-            int hH = (Config.HEIGHT - Config.TileH) / 2 ;
+            int hW = (Config.WIDTH) / 2 - Config.TileW;
+            int hH = (Config.HEIGHT) / 2 - Config.TileH;
+//            int hW = (Config.WIDTH - Config.TileW ) / 2 ;
+  //          int hH = (Config.HEIGHT - Config.TileH) / 2 ;
 
             if ((realpos.x <= hW && realpos.x >= -hW) && (realpos.y <= hH && realpos.y >= -hH))
             {
