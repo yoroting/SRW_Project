@@ -1674,6 +1674,7 @@ public class Panel_StageUI : MonoBehaviour
 //		Debug.Log( "create moveeffect cell with ticket:" + during );
 	}
 
+    // 判斷是否有被 敵方單位阻擋，雖完成判斷，但最後因AI太難 而不做阻擋
     public bool CheckBeBlock(Panel_unit unit , iVec2 vTar )
     {
         if (unit == null)
@@ -1760,10 +1761,11 @@ public class Panel_StageUI : MonoBehaviour
 
 		foreach( iVec2 v in AtkList )
 		{
-            // 這是 實際攻擊 pool 。 開始過濾 正阻擋
-            if ( CheckBeBlock( unit, v )) {
-                continue;
-            }
+            //  放棄 肉身阻擋， AI 太難寫了
+            //// 這是 實際攻擊 pool 。 開始過濾 正阻擋
+            //if ( CheckBeBlock( unit, v )) {
+            //    continue;
+            //}
 
             //GameObject over = ResourcesManager.CreatePrefabGameObj(TilePlaneObj, "Prefab/AttackOverEffect");
             GameObject over = AtkEftObj.Spawn( MaskPanelObj.transform );

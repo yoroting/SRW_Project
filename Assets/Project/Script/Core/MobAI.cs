@@ -79,7 +79,7 @@ public class MobAI  {
     // return : true - can attack , false - cant attack
     public static bool _FindToAttackTarget( Panel_unit mob, Panel_unit taget, int nMove , out int nSKillID , out List<iVec2> pathList , bool bCounterMode = false , bool ative = false)
     {
-        nSKillID = 0;
+        nSKillID = -1;
         pathList = null;
 
         if (taget == null) return false;
@@ -127,8 +127,8 @@ public class MobAI  {
                 List<iVec2> path = FindPathToTarget(mob, taget, nMove, nSkillRange); // need a AI to move
                 if ((path != null) && (path.Count > 0))
                 {
-                    pathList = path;
-                    nSKillID = skl.n_ID; // assign skill id
+                   
+                   
 
                     // 研原路徑找到一個 可以攻擊的位置 
                     iVec2 last = path[path.Count - 1];
@@ -137,6 +137,8 @@ public class MobAI  {
                         int nDist2 = last.Dist(taget.Loc);
                         if ((nDist2 <= nSkillRange) && (nDist2 >= nMinRange)) // 可以攻擊
                         {
+                            pathList = path;
+                            nSKillID = skl.n_ID; // assign skill id
                             return true; // tmpSklList
                         }
                     }
@@ -162,18 +164,16 @@ public class MobAI  {
 
             List<iVec2> path = FindPathToTarget(mob, taget , nMove, 1 ); // melee is 1
             if ( (path != null) && (path.Count > 0) )
-            {
-                // out put to make cmd
-                pathList = path;
-                nSKillID = 0;
-
-
+            {                // out put to make cmd
+                
                 iVec2 last = path[path.Count - 1];
                 if (last != null)
                 {
                     int nDist2 = last.Dist(taget.Loc);
                     if (nDist2 <= 1) // 可以攻擊
-                    {                 
+                    {
+                        pathList = path;
+                        nSKillID = 0;
                         return true; // tmpSklList
                     }
                     return false; // // can't atk directly
@@ -305,7 +305,13 @@ public class MobAI  {
             int nSkillID ;
             List<iVec2> path ;            ;
             if (_FindToAttackTarget(mob, pair.Key, nMove , out nSkillID , out path, false , ative )) // 確定可以打到
-            {
+            {              
+                if (nSkillID == -1 ) {
+                    // 沒有技能可以攻擊 。在 此模式會放棄找下一個
+                    continue;
+
+                }
+
 
                 // 先判斷是否要 上 buff
                 if (_AI_CastBuff(mob, nSkillID, nMove ))
@@ -336,8 +342,12 @@ public class MobAI  {
             List<iVec2> path = null;
             if(  _FindToAttackTarget(mob, pair.Key, nMove, out nSkillID, out path, false, false ) )         
             {
+                if (nSkillID == -1)
+                {
+                    // 沒有技能可以攻擊，在此模式 一樣會前進
+                }
 
-                // 先判斷是否要 上 buff
+                    // 先判斷是否要 上 buff
                 if (_AI_CastBuff(mob, nSkillID, 0))
                 {
                     return true; // 有 buff 先中斷並 重新收尋
@@ -1818,7 +1828,15 @@ public class MobAI  {
             {
                 continue;
             }
+            // 必須檢查能否施展技能
+            
+
             SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(nSkillID);
+
+            // 看 MP 能不能施展
+            if (pData.CheckSkillCanUse(skl) == false)
+                continue;
+
             if (skl.n_RANGE > nRange) {
                 nRange = skl.n_RANGE;
             }            
