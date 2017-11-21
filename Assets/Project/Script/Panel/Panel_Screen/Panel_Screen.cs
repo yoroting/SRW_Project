@@ -22,9 +22,15 @@ public class Panel_Screen : MonoBehaviour {
 	}
     void OnEnable()
     {
-     
-        // auto hide background when reopen
-        m_bIsFadeIning = false;
+        UIWidget widget = BackObj.GetComponent<UIWidget>();
+        if (widget != null)
+        {
+            widget.width = Config.WIDTH;
+            widget.height = Config.HEIGHT;
+        }
+
+           // auto hide background when reopen
+           m_bIsFadeIning = false;
         m_bIsFadeOuting = false;
 
         FadeIn();

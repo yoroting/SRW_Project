@@ -39,6 +39,7 @@ public class GameSystem : MonoBehaviour {
 
 	static public bool bFXPlayMode{ set; get; }         // 特效 播放模式 0 - normal
 
+    bool isPaused = false;
     //===============================
     protected virtual void Awake()
     {
@@ -174,10 +175,33 @@ public class GameSystem : MonoBehaviour {
 		isApplicationQuit = true;
 	}
 
- 
+    void OnGUI()
+    {
+        //if (isPaused)
+        //    GUI.Label(new Rect(100, 100, 200, 30), "Game paused");
+    }
 
-	// 目前操作
-	public static void ShakeCamera( float fDelay =0.2f ){
+
+    void OnApplicationFocus(bool hasFocus)
+    {
+#if DEBUG
+        Debug.Log("OnApplicationFocus");
+#endif
+        isPaused = !hasFocus;
+        System.GC.Collect();			// Free memory resource here
+    }
+
+    void OnApplicationPause(bool pauseStatus)
+    {
+#if DEBUG
+        Debug.Log("OnApplicationPause");
+#endif
+        isPaused = pauseStatus;        
+        System.GC.Collect();			// Free memory resource here
+    }
+
+    // 目前操作
+    public static void ShakeCamera( float fDelay =0.2f ){
 
         if ( (Panel_StageUI.Instance!= null)  && Panel_StageUI.Instance.m_bIsSkipMode )
             return;

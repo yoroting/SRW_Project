@@ -1383,7 +1383,9 @@ public class Panel_unit : MonoBehaviour {
 
 
 		MoveTo ( GridX , GridY );
-	}
+
+    //    Panel_StageUI.Instance.TraceUnit(this); // no good here
+    }
 
 	public void ActionWait( )
 	{

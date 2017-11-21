@@ -135,7 +135,7 @@ public class MobAI  {
                     if (last != null)
                     {
                         int nDist2 = last.Dist(taget.Loc);
-                        if ((nDist2 <= nSkillRange) && (nDist2 >= nMinRange)) // 可以攻擊
+                        if ( ative || ((nDist2 <= nSkillRange) && (nDist2 >= nMinRange)) ) // 可以攻擊
                         {
                             pathList = path;
                             nSKillID = skl.n_ID; // assign skill id
@@ -170,7 +170,7 @@ public class MobAI  {
                 if (last != null)
                 {
                     int nDist2 = last.Dist(taget.Loc);
-                    if (nDist2 <= 1) // 可以攻擊
+                    if ( ative ||  (nDist2 <= 1) ) // 可以攻擊
                     {
                         pathList = path;
                         nSKillID = 0;

@@ -151,6 +151,8 @@ MonoBehaviour:
   updateAnchors: 1
   showInPanelTool: 1
   generateNormals: 0
+  generateUV2: 0
+  shadowMode: 0
   widgetsAreStatic: 0
   cullWhileDragging: 1
   alwaysOnScreen: 0
@@ -165,7 +167,9 @@ MonoBehaviour:
   mClipSoftness: {x: 4, y: 4}
   mDepth: 20
   mSortingOrder: 0
+  mSortingLayerName: 
   mClipOffset: {x: 0, y: 0}
+  useSortingOrder: 0
 --- !u!114 &11435396
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -229,6 +233,7 @@ MonoBehaviour:
   mWidth: 960
   mHeight: 640
   mDepth: -2
+  mMat: {fileID: 0}
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
@@ -238,6 +243,9 @@ MonoBehaviour:
   mFillAmount: 1
   mInvert: 0
   mFlip: 0
+  mApplyGradient: 0
+  mGradientTop: {r: 1, g: 1, b: 1, a: 1}
+  mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
   centerType: 1
   leftType: 1
   rightType: 1
@@ -279,6 +287,7 @@ MonoBehaviour:
   mWidth: 960
   mHeight: 640
   mDepth: -3
+  mMat: {fileID: 0}
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
@@ -288,6 +297,9 @@ MonoBehaviour:
   mFillAmount: 1
   mInvert: 0
   mFlip: 0
+  mApplyGradient: 0
+  mGradientTop: {r: 1, g: 1, b: 1, a: 1}
+  mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
   centerType: 1
   leftType: 1
   rightType: 1
@@ -329,6 +341,7 @@ MonoBehaviour:
   mWidth: 640
   mHeight: 100
   mDepth: 1
+  mMat: {fileID: 0}
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
@@ -347,7 +360,6 @@ MonoBehaviour:
   mSymbols: 1
   mEffectDistance: {x: 1, y: 1}
   mOverflow: 0
-  mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
   mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
@@ -357,6 +369,8 @@ MonoBehaviour:
   mFloatSpacingX: 0
   mFloatSpacingY: 0
   mOverflowEllipsis: 0
+  mOverflowWidth: 0
+  mModifier: 0
   mShrinkToFit: 0
   mMaxLineWidth: 0
   mMaxLineHeight: 0

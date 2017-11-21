@@ -5211,18 +5211,20 @@ public class Panel_StageUI : MonoBehaviour
 		//距離過大要算最大值
 		//	if (force == true) {
 		if (during > 1.0f) 
-			during = 1.0f;		// 不管多遠都不要超過1 秒
-		//	}
-		
-		TweenPosition tw = TweenPosition.Begin<TweenPosition> (gameObject, during);
-		if (tw != null) {
-			tw.SetStartToCurrentValue();
-			tw.to = -v;
-			bIsMoveToObj = true;
-			MyTool.TweenSetOneShotOnFinish( tw , MoveToGameObjEnd ); 
-			
-		}
-	}
+			during = 1.0f;      // 不管多遠都不要超過1 秒
+                                //	}       
+
+        // gameObject.transform.localPosition = -v;
+        TweenPosition tw = TweenPosition.Begin<TweenPosition>(gameObject, during);
+        if (tw != null)
+        {
+            tw.SetStartToCurrentValue();
+            tw.to = -v;
+            bIsMoveToObj = true;
+            MyTool.TweenSetOneShotOnFinish(tw, MoveToGameObjEnd);
+            tw.PlayForward();
+        }
+    }
 
     public void OnStageSetUnDeadEvent(int nCharID, int nOn = 1)
     {
