@@ -1675,6 +1675,10 @@ Prefab:
       propertyPath: m_Name
       value: Panel - Lost
       objectReference: {fileID: 0}
+    - target: {fileID: 11471910, guid: 763b1568f85e93545964d4600f393284, type: 2}
+      propertyPath: aspectRatio
+      value: 1.7777778
+      objectReference: {fileID: 0}
     - target: {fileID: 140214, guid: 763b1568f85e93545964d4600f393284, type: 2}
       propertyPath: m_IsActive
       value: 0

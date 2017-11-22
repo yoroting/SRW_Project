@@ -151,7 +151,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 960, y: 640, z: 0}
+  m_Size: {x: 1280, y: 720, z: 0}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &11408726
 MonoBehaviour:
@@ -290,14 +290,14 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 0, g: 0, b: 0, a: 0.5019608}
   mPivot: 4
-  mWidth: 960
-  mHeight: 640
+  mWidth: 1280
+  mHeight: 720
   mDepth: 0
   mMat: {fileID: 0}
   autoResizeBoxCollider: 1
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 1.5
+  aspectRatio: 1.7777778
   mType: 1
   mFillDirection: 4
   mFillAmount: 1
@@ -344,8 +344,8 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 0.3432836, g: 0.3432836, b: 0.3432836, a: 0.36078432}
   mPivot: 4
-  mWidth: 960
-  mHeight: 640
+  mWidth: 1280
+  mHeight: 720
   mDepth: -2
   mMat: {fileID: 0}
   autoResizeBoxCollider: 0

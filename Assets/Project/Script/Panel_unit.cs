@@ -557,10 +557,19 @@ public class Panel_unit : MonoBehaviour {
 
 	public bool IsAnimate()
 	{
-//		if( nTweenMoveCount != 0 )
-//			return true;
+        //		if( nTweenMoveCount != 0 )
+        //			return true;
+        if (bIsGuarding) {
+            // 判斷是否還有 tween 在執行，沒有的話則 直接釋放
+            TweenPosition[] tws = this.GetComponents<TweenPosition>();
+            if (tws.Length <=0 )
+            {
+                bIsGuarding = false; // 防呆釋放
+            }
+        }
 
-		if( bIsAtking || bIsShaking || bIsCasting || bIsBorning || bIsDeading || bIsLeaving || bIsDodgeing || bIsMissing || bIsGuarding )
+
+		if( bIsAtking || bIsShaking || bIsCasting || bIsBorning || bIsDeading || bIsLeaving || bIsDodgeing || bIsMissing  )
 			return true;
 
 		if (IsMoving ())
@@ -1086,17 +1095,18 @@ public class Panel_unit : MonoBehaviour {
 			case 0:
 				nSubActFlow++;
 				ActionWeakup(   ); // exp / money
-				//ActionHit( CurAction.nSkillID ,CurAction.nTarGridX , CurAction.nTarGridY );
-				//ActionMove( CurAction.nTarGridX , CurAction.nTarGridY  );
-				break;
-			case 1:
-				if( IsAnimate() == false ){
-					nSubActFlow++;
-				}
-				break;
-			case 2:
-				ActionFinished();
-				break;
+                                   //ActionHit( CurAction.nSkillID ,CurAction.nTarGridX , CurAction.nTarGridY );
+                                   //ActionMove( CurAction.nTarGridX , CurAction.nTarGridY  );
+                        ActionFinished(); // no waiting
+                        break;
+			//case 1:
+			//	if( IsAnimate() == false ){
+			//		nSubActFlow++;
+			//	}
+			//	break;
+			//case 2:
+			//	ActionFinished();
+			//	break;
 			}
 			break;
 
@@ -1404,7 +1414,7 @@ public class Panel_unit : MonoBehaviour {
         // 如果有數字 要表演// 
         if (CurAction.HitResult.Count > 0)
         {
-            Panel_StageUI.Instance.MoveToGameObj(this.gameObject, false); // show round buff
+         //   Panel_StageUI.Instance.MoveToGameObj(this.gameObject, false); // show round buff
             ActionManager.Instance.ExecActionEndResult(CurAction);
         }
 
@@ -1477,9 +1487,11 @@ public class Panel_unit : MonoBehaviour {
 	}
 	public void HitBackTo( int GridX , int GridY )
 	{
-		// maybe need some other process in the future
-		// Panel_StageUI.Instance.TraceUnit (this); // no good here
-		
+        // maybe need some other process in the future
+        // Panel_StageUI.Instance.TraceUnit (this); // no good here
+        if (bIsGuarding) // guard 的人，不會被 擊飛
+            return; 
+
 		
 		//MoveTo ( GridX , GridY );
 		TarPos = new iVec2 (GridX, GridY);
@@ -2720,8 +2732,12 @@ public class Panel_unit : MonoBehaviour {
                 break;
             case cHitResult._TYPE._DEF:
                 {
+                  //  if (res.Value1 < 0) // 扣的才需要顯示
+                    {
+                        ShowValueEffect(res.Value1, 1, res.Value3); // DEF
+                    }
 
-                    ShowValueEffect(res.Value1, 1,  res.Value3); // DEF
+
                     if (res.Value1 != 0) // maybe change data in  battle manage
                     {
                         pUnitData.AddDef(res.Value1);

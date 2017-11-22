@@ -38,10 +38,10 @@ public class MobAI  {
                     if (mobdata.eComboAI == _AI_COMBO._DEFENCE)
                     {
                         _AI_Defence( mob , nSkillID ,  0 ) ;
-                    }
+                    }                    
                     else
                     {                                       
-                        _AI_PassiveAttack(mob, nSkillID, 0);
+                        _AI_PassiveAttack(mob, nSkillID, 0); // 還是會攻擊
                     }
             }
                 break;
@@ -340,7 +340,7 @@ public class MobAI  {
         {
             int nSkillID = 0;
             List<iVec2> path = null;
-            if(  _FindToAttackTarget(mob, pair.Key, nMove, out nSkillID, out path, false, false ) )         
+            if(  _FindToAttackTarget(mob, pair.Key, nMove, out nSkillID, out path, false, ative) )         
             {
                 if (nSkillID == -1)
                 {
@@ -686,28 +686,19 @@ public class MobAI  {
 
     static void _AI_NormalAttack(Panel_unit mob, int nSkillID, int nMove)
     {
-        // 先判斷是否要 上 buff
-        //if (_AI_CastBuff(mob, nSkillID , nMove))
-        //{
-        //    return;
-        //}
-
-        if (_AI_LowstAttack2(mob, nMove, true))
+       
+        // 範圍內 優先找 血少
+        if (_AI_LowstAttack2(mob, nMove, false))
         {
             return;
         }
-        //if (mob.Ident() == 31)
-        //{
-        //    int a = 0;
-             
-        //}
+       
 
-        // 找距離近的攻擊
+        // 1. 找範圍內 可攻擊目標 , 2. 主動尋找 最近目標
         if (_AI_NearestAttack2(mob, nMove, true))
         {
             return;
         }
-
 
         //都不行則待機
         _AI_MakeWaitCmd(mob);
@@ -718,7 +709,7 @@ public class MobAI  {
 
     static  void _AI_PassiveAttack( Panel_unit mob , int nSkillID , int nMove )
 	{
-        if (_AI_LowstAttack2(mob, nMove))
+        if (_AI_LowstAttack2(mob, nMove, false ))
         {
             return;
         }
