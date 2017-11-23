@@ -46,42 +46,10 @@ public class SRW_TextBox : MonoBehaviour
     bool m_bAutoClose = false;
 
     bool m_bOnClickMode;        //
-    public void SetClickMode()
-    {
-        m_bOnClickMode = true;
-        UIEventListener.Get(_TextLineObj).onClick += OnTextBoxClick; // click event
-    }
-
-    public void ClearText()
-    {
-        m_nCurLineCount = 0;
-        m_sPopText = "";
-        m_sShowText = "";
-        UILabel lbl = _TextLineObj.GetComponentInChildren<UILabel>();
-        if (lbl)
-        {
-            lbl.text = "";
-        }
-        UITextList list = _TextLineObj.GetComponent<UITextList>();
-        if (list)
-            list.Clear();
-        //	m_lstsContextAll.Clear();
-        m_lstsContextWait.Clear();
-
-        if(_TalkEndObj)
-            _TalkEndObj.SetActive(false);
-    }
-
-    public void SetEnable(bool bActive)
-    {
-        ClearText();
-        this.gameObject.SetActive(bActive);
-
-    }
-
+  
     void Awake()
     { // construct
-        Debug.Log("TextBox:awake");
+       // Debug.Log("TextBox:awake");
 
         if (_TextLineObj != null)
         {
@@ -99,7 +67,7 @@ public class SRW_TextBox : MonoBehaviour
             }
         }
         if (_FaceTexObj != null)
-        {
+        {          
             NGUITools.SetActive(_FaceTexObj, false);
         }
         //	m_lstsContextAll  = new List<string> ();
@@ -261,6 +229,39 @@ public class SRW_TextBox : MonoBehaviour
             m_bAutoClose = false;
             SetEnable(false);
         }
+    }
+
+    public void SetClickMode()
+    {
+        m_bOnClickMode = true;
+        UIEventListener.Get(_TextLineObj).onClick += OnTextBoxClick; // click event
+    }
+
+    public void ClearText()
+    {
+        m_nCurLineCount = 0;
+        m_sPopText = "";
+        m_sShowText = "";
+        UILabel lbl = _TextLineObj.GetComponentInChildren<UILabel>();
+        if (lbl)
+        {
+            lbl.text = "";
+        }
+        UITextList list = _TextLineObj.GetComponent<UITextList>();
+        if (list)
+            list.Clear();
+        //	m_lstsContextAll.Clear();
+        m_lstsContextWait.Clear();
+
+        if (_TalkEndObj)
+            _TalkEndObj.SetActive(false);
+    }
+
+    public void SetEnable(bool bActive)
+    {
+        ClearText();
+        this.gameObject.SetActive(bActive);
+
     }
 
     // is all performance end

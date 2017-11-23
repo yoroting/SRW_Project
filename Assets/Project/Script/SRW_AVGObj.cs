@@ -16,14 +16,22 @@ public class SRW_AVGObj : MonoBehaviour {
 
 	static public Color clrEnable 	  = new Color( 1.0f , 1.0f , 1.0f )   ;
 	static public Color clrDisEnable  = new Color( 0.65f , 0.65f , 0.65f );
-	// Use this for initialization
+    // Use this for initialization
 
-	void Awake(){ // construct
+    void SetMaterialParamCB(Material mat)
+    {
+      //  mat.SetFloat("_xx", 1.0f);
+    }
+
+    void Awake(){ // construct
 		CharID = 0;
         FaceID = 0;
-        _FaceTexObj = this.gameObject.GetComponent<UITexture>(); 
-
-	}
+        if (_FaceTexObj == null)
+        {
+            _FaceTexObj = this.gameObject.GetComponent<UITexture>();
+        }
+        _FaceTexObj.onRender = SetMaterialParamCB; // 設定render shader
+    }
 
 	void OnEnable()
 	{

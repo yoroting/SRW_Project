@@ -432,6 +432,9 @@ public class Panel_StageUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (GameSystem.IsPause())
+            return;
+
 
         // check if first run
         if (bIsReady == false)

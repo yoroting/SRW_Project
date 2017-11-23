@@ -176,6 +176,14 @@ public class Panel_unit : MonoBehaviour {
         WaitMsgPool = new List<cHitResult>();
    //     WaitFxPool = new List<int>(); 
         m_fNextMsgTime = 0.0f;
+
+        UITexture tex = FaceObj.GetComponent<UITexture>();
+        if (tex != null)
+        {
+            tex.onRender = SetMaterialParamCB;
+        }
+
+
         //ParticleSystemRenderer
 
         //		GameObject instance = ResourcesManager.CreatePrefabGameObj ( this.gameObject ,"FX/Cartoon FX/CFXM4 Splash" );
@@ -199,9 +207,13 @@ public class Panel_unit : MonoBehaviour {
 		// change Texture
 	
 	}
-	
-	// Update is called once per frame
-	void Update () {
+    void SetMaterialParamCB(Material mat)
+    {
+      //  mat.shader
+       // mat.SetFloat("_xx", 1.0f);
+    }
+    // Update is called once per frame
+    void Update () {
 
 
         // process show value 
@@ -312,10 +324,6 @@ public class Panel_unit : MonoBehaviour {
             SetAlpha(1.0f);
         }
 
-	}
-
-	void OnDestory () {
-	//	GameDataManager.Instance.DelUnit( Ident() ); // no more destory
 	}
 
 	void OnDisable () 
