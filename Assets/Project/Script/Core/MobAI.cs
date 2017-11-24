@@ -297,7 +297,8 @@ public class MobAI  {
         //int ident = mob.Ident();
         int nMaxRange = _AI_GetMaxSkillRange( mob.pUnitData );
 
-        Dictionary<Panel_unit, int> pool = Panel_StageUI.Instance.GetUnitHpPool(mob, true, (nMove + nMaxRange)); // all unit in                                                                                                            
+        Panel_StageUI.Instance.GetUnitHpPool(mob, true, (nMove + nMaxRange)); // all unit in 
+        Dictionary<Panel_unit, int> pool = Panel_StageUI.Instance.m_tmpHpPool  ; // all unit in 
         var items = from pair in pool orderby pair.Value ascending select pair;             // Sort HP
         // 範圍內 低血量
         foreach (KeyValuePair<Panel_unit, int> pair in items)
@@ -332,7 +333,8 @@ public class MobAI  {
 
     static bool _AI_NearestAttack2(Panel_unit mob, int nMove, bool ative = false) // 是否 主動攻擊
     {
-        Dictionary<Panel_unit, int> pool = Panel_StageUI.Instance.GetUnitDistPool(mob, true);
+        Panel_StageUI.Instance.GetUnitDistPool(mob, true);
+        Dictionary<Panel_unit, int> pool = Panel_StageUI.Instance.m_tmpDistPool;
       //  int ident = mob.Ident();
         // Sort dist
         var items = from pair in pool orderby pair.Value ascending select pair;
@@ -413,10 +415,10 @@ public class MobAI  {
 		int nSkillRange ;
         
         MyTool.GetSkillRange ( nSkillID , out nSkillRange , out nMinRange);
-
-		Dictionary< Panel_unit , int > pool = Panel_StageUI.Instance.GetUnitHpPool(mob, true , (nMove+nSkillRange) );
-		// Sort HP
-		var items = from pair in pool orderby pair.Value ascending select pair;
+        Panel_StageUI.Instance.GetUnitHpPool(mob, true, (nMove + nSkillRange));
+        Dictionary<Panel_unit, int> pool = Panel_StageUI.Instance.m_tmpHpPool;
+        // Sort HP
+        var items = from pair in pool orderby pair.Value ascending select pair;
 		// 範圍內 低血量
 		foreach (KeyValuePair<Panel_unit , int> pair in items) {
 			// try path to target
@@ -494,8 +496,10 @@ public class MobAI  {
 
 	static  bool _AI_NearestAttack( Panel_unit mob , int nSkillID , int nMove  , bool bHold = false )
 	{
-		Dictionary< Panel_unit , int > pool = Panel_StageUI.Instance.GetUnitDistPool(mob, true);
-		int ident = mob.Ident ();
+        Panel_StageUI.Instance.GetUnitDistPool(mob, true);
+        Dictionary<Panel_unit, int> pool = Panel_StageUI.Instance.m_tmpDistPool;
+
+        int ident = mob.Ident ();
 		
 		// get skill range
 		int nMinRange ;
@@ -954,7 +958,8 @@ public class MobAI  {
         int nMaxRange = _AI_GetMaxSkillRange(mob.pUnitData);
 
         mob.Loc = pos;
-        Dictionary<Panel_unit, int> pool = Panel_StageUI.Instance.GetUnitHpPool(mob, true, nMaxRange ); // all unit in                                                                                                            
+        Panel_StageUI.Instance.GetUnitHpPool(mob, true, nMaxRange); // all unit in                                                                                                            
+        Dictionary<Panel_unit, int> pool = Panel_StageUI.Instance.m_tmpHpPool;
         var items = from pair in pool orderby pair.Value ascending select pair;             // Sort HP
         // 範圍內 低血量
         foreach (KeyValuePair<Panel_unit, int> pair in items)

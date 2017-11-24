@@ -133,7 +133,12 @@ public class Panel_StageUI : MonoBehaviour
 
 	List< iVec2 >	tmpScriptMoveEnd;					// script 用的單位移動 mrak pool 防止 script 讓不同單位移動到 同樣座標
 
-	//Dictionary< int , UNIT_DATA > UnitDataPool;			// ConstData pool
+    // 判斷用容器，先宣告，不要一直new 
+    public List<Panel_unit> m_tmpCampList;
+    public Dictionary<Panel_unit, int> m_tmpDistPool;
+    public Dictionary<Panel_unit, int> m_tmpHpPool;
+
+    //Dictionary< int , UNIT_DATA > UnitDataPool;			// ConstData pool
 
     void Awake()
     {
@@ -617,6 +622,11 @@ public class Panel_StageUI : MonoBehaviour
 		OverCellMarkPool = new Dictionary< string , GameObject >();		// mark cell
 
 		tmpScriptMoveEnd = new List< iVec2 >();                 // script 用的單位移動 mrak pool 防止 script 讓不同單位移動到 同樣座標
+
+        m_tmpCampList = new List<Panel_unit>(); 
+        m_tmpDistPool = new Dictionary<Panel_unit, int>(); 
+        m_tmpHpPool   = new Dictionary<Panel_unit, int>();
+
 
         //List < iVec2 >
         UnitSpiteObj.CreatePool( 1);//st_CellObjPoolSize / 2 
@@ -2103,10 +2113,16 @@ public class Panel_StageUI : MonoBehaviour
 
 
     // Faction AI
-    public List<Panel_unit> GetUnitListByCamp( _CAMP nCamp )
+    public void GetUnitListByCamp( _CAMP nCamp , ref List<Panel_unit> lst )
 	{
-		List<Panel_unit> lst = new List<Panel_unit> ();
-		foreach (KeyValuePair< int ,Panel_unit > pair in IdentToUnit) {
+        if (lst == null)
+        {
+           lst = new List<Panel_unit>();
+        }
+
+        lst.Clear();
+
+        foreach (KeyValuePair< int ,Panel_unit > pair in IdentToUnit) {
 			if( pair.Value!= null )
 			{
 				if( pair.Value.eCampID == nCamp )
@@ -2116,27 +2132,40 @@ public class Panel_StageUI : MonoBehaviour
 				}
 			}
 		}
-		return lst;
+		//return lst;
 	}
 
 	// get nearest pk unit
-	public Dictionary< Panel_unit , int > GetUnitDistPool( Panel_unit unit , bool bCanPK )
+	public void GetUnitDistPool( Panel_unit unit , bool bCanPK )
 	{
-		Dictionary< Panel_unit , int > pool = new Dictionary< Panel_unit , int > (); // unit , dist
-		foreach( KeyValuePair<int ,Panel_unit > pair in IdentToUnit )
+        if (m_tmpDistPool == null)
+        {
+            m_tmpDistPool = new Dictionary<Panel_unit, int>();
+        }
+
+        m_tmpDistPool.Clear();
+
+        //Dictionary< Panel_unit , int > pool = new Dictionary< Panel_unit , int > (); // unit , dist
+        foreach ( KeyValuePair<int ,Panel_unit > pair in IdentToUnit )
 		{
 			if( unit.CanPK( pair.Value ) == bCanPK )
 			{
 				int nDist = pair.Value.Loc.Dist( unit.Loc );
-				pool.Add( pair.Value , nDist );
+                m_tmpDistPool.Add( pair.Value , nDist );
 			}
 		}
-		return pool;
+		//return pool;
 	}
 	// get nearest pk unit
-	public Dictionary< Panel_unit , int > GetUnitHpPool( Panel_unit unit , bool bCanPK , int nLimit=999)
+	public void GetUnitHpPool( Panel_unit unit , bool bCanPK ,  int nLimit=999)
 	{
-		Dictionary< Panel_unit , int > pool = new Dictionary< Panel_unit , int > (); // unit , dist
+        if (m_tmpHpPool == null)
+        {
+            m_tmpHpPool = new Dictionary<Panel_unit, int>();
+        }
+
+        m_tmpHpPool.Clear();
+       // Dictionary< Panel_unit , int > pool = new Dictionary< Panel_unit , int > (); // unit , dist
 		foreach( KeyValuePair<int ,Panel_unit > pair in IdentToUnit )
 		{
 			if( unit.CanPK( pair.Value ) == bCanPK )
@@ -2147,13 +2176,13 @@ public class Panel_StageUI : MonoBehaviour
 
 				//  int nDist = pair.Value.Loc.Dist( unit.Loc );
 				int nHP = pair.Value.pUnitData.n_HP;
-				pool.Add( pair.Value , nHP );
+                m_tmpHpPool.Add( pair.Value , nHP );
 			}
 		}
-		return pool;
+		//return pool;
 	}
 
-	bool RunCampAI( _CAMP nCamp )
+	bool RunCampAI( _CAMP nCamp ) // frame 呼叫的都要注意效能
 	{
 		// our faction don't need AI process
 		if (nCamp == _CAMP._PLAYER) {
@@ -2161,10 +2190,13 @@ public class Panel_StageUI : MonoBehaviour
 			return true; // player is playing 
 		}
 
-		// change faction if all unit moved or dead.
-		List<Panel_unit> lst = GetUnitListByCamp (nCamp);
-		foreach (Panel_unit unit in lst ) {
-			if( bIsStageEnd == true ){  // 每個敵方單位行動後都可能觸發，關卡結束 要避免AI 繼續運算
+        // change faction if all unit moved or dead.
+        GetUnitListByCamp(nCamp, ref m_tmpCampList);  // 避免重複 new  list
+        foreach (Panel_unit unit in m_tmpCampList)
+        {
+            //List<Panel_unit> lst = GetUnitListByCamp (nCamp , ref m_tmpUnitList);
+            //foreach (Panel_unit unit in lst ) {
+            if ( bIsStageEnd == true ){  // 每個敵方單位行動後都可能觸發，關卡結束 要避免AI 繼續運算
 				return true; // block all ai here
 			}
 
@@ -2200,11 +2232,13 @@ public class Panel_StageUI : MonoBehaviour
 		}
 
 
-		// change faction if all unit moved or dead.
-		List<Panel_unit> lst = GetUnitListByCamp (_CAMP._PLAYER);
-
-		foreach (Panel_unit unit in lst ) {
-			if( bIsStageEnd == true ){  // 每個敵方單位行動後都可能觸發，關卡結束 要避免AI 繼續運算
+        // change faction if all unit moved or dead.
+        GetUnitListByCamp(_CAMP._PLAYER , ref m_tmpCampList);
+        foreach (Panel_unit unit in m_tmpCampList)
+        {
+            //List<Panel_unit> lst = GetUnitListByCamp (_CAMP._PLAYER);
+            //foreach (Panel_unit unit in lst ) {
+            if ( bIsStageEnd == true ){  // 每個敵方單位行動後都可能觸發，關卡結束 要避免AI 繼續運算
 				return true; // block all ai here
 			}
 			
@@ -2481,35 +2515,60 @@ public class Panel_StageUI : MonoBehaviour
         }
 
         //MyScript.nCheckIdent = 0;  // clear here  .maybe fix in the future
-        List< int > removeLst = new List< int >();
-		// get next event to run
-		foreach( KeyValuePair< int ,STAGE_EVENT > pair in EvtPool ) 
-		{
-            if (CheckEventCanRun(pair.Value) == true)
-            {       // check if this event need run
-                    //NextEvent = pair.Value ; 		// run in next loop
-                WaitPool.Add(pair.Value);
 
-                RegEventTriger(pair.Key, MyScript.nTrigerIdent );
+
+
+        // get next event to run
+
+        // try remove in Dictionary inside
+        for ( int i = 0; i < EvtPool.Count; i++  )
+        //foreach (KeyValuePair<int, STAGE_EVENT> pair in EvtPool)
+        {
+            KeyValuePair<int, STAGE_EVENT> pair = EvtPool.ElementAt(i);
+            
+            if (CheckEventCanRun(pair.Value) == true)
+            {
+                WaitPool.Add(pair.Value);
+                RegEventTriger(pair.Key, MyScript.nTrigerIdent);
                 // check is loop event?
                 if (IsLoopEvent(pair.Value) == false)
                 {
-                    removeLst.Add(pair.Key);
+                    EvtPool.Remove(pair.Key);
+                    i--;  // 重新判斷 當前 index                    
                 }
             }
-           
-		}
+        }
 
-		// remove key , never check it again
-		foreach( int key in removeLst )
-		{
-			if( EvtPool.ContainsKey( key ) )
-			{
-				EvtPool.Remove( key );
-			}
-		}
-		// inst run event
-		if( WaitPool.Count > 0 )
+
+
+        //      List< int > removeLst = new List< int >();
+        //// get next event to run
+        //foreach( KeyValuePair< int ,STAGE_EVENT > pair in EvtPool ) 
+        //{
+        //          if (CheckEventCanRun(pair.Value) == true)
+        //          {       
+        //              WaitPool.Add(pair.Value);
+        //              RegEventTriger(pair.Key, MyScript.nTrigerIdent );
+        //              // check is loop event?
+        //              if (IsLoopEvent(pair.Value) == false)
+        //              {
+        //                  removeLst.Add(pair.Key);
+        //              }
+        //          }
+        //}
+
+        //// remove key , never check it again
+        //foreach( int key in removeLst )
+        //{
+        //	if( EvtPool.ContainsKey( key ) )
+        //	{
+        //		EvtPool.Remove( key );
+        //	}
+        //}
+
+
+        // inst run event
+        if ( WaitPool.Count > 0 )
 		{
 			NextEvent =  WaitPool[0];
 			WaitPool.RemoveAt( 0 );
@@ -4144,114 +4203,88 @@ public class Panel_StageUI : MonoBehaviour
     public void OnStageMoveCampEvent( _CAMP eCampID , int stX , int stY , int edX , int edY )
     {
         // 建立  pool
-        List<Panel_unit> pool = GetUnitListByCamp(eCampID );
-        if (pool == null || pool.Count == 0)
-            return;
+     //   GetUnitListByCamp(eCampID, ref m_tmpUnitList);
+      //  List<Panel_unit> pool = m_tmpUnitList;
+        //List<Panel_unit> pool = GetUnitListByCamp(eCampID , ref m_tmpUnitList );
+    //    if (pool == null || pool.Count == 0)
+     //       return;
 
-
-        int sx = stX < edX ? stX : edX;
-        int sy = stY < edY ? stY : edY;
-        int ex = stX > edX ? stX : edX;
-        int ey = stY > edY ? stY : edY;
-
-        int x = sx;
-        int y = sy;
-
-        while (pool.Count > 0)
+        foreach (KeyValuePair<int, Panel_unit> pair in IdentToUnit)
         {
-            Panel_unit unit = pool[0];
-            if (unit != null)
-            {
-                bool bFind = false;
-                // check if in rect.
-                if (MyTool.CheckInRect(unit.X() , unit.Y() , sx, sy, (ex-sx), (ey-sy) ))
-                {
-                    bFind = true;
-                }
+            if (pair.Value.eCampID != eCampID)
+                continue;
 
-                for (int j = y; j <= ey && bFind == false; j++)
+
+            int sx = stX < edX ? stX : edX;
+            int sy = stY < edY ? stY : edY;
+            int ex = stX > edX ? stX : edX;
+            int ey = stY > edY ? stY : edY;
+
+            int x = sx;
+            int y = sy;
+
+            Panel_unit unit = pair.Value;
+//            while (pool.Count > 0)
+//            {
+//                Panel_unit unit = pool[0];
+                if (unit != null)
                 {
-                    x = sx;
-                    for (int i = x; i <= ex && bFind == false ; i++)
+                    bool bFind = false;
+                    // check if in rect.
+                    if (MyTool.CheckInRect(unit.X(), unit.Y(), sx, sy, (ex - sx), (ey - sy)))
                     {
-                   
-                        iVec2 pos = new iVec2(i, j);
+                        bFind = true;
+                    }
 
-                        if (CheckIsEmptyPos(pos) == false)
+                    for (int j = y; j <= ey && bFind == false; j++)
+                    {
+                        x = sx;
+                        for (int i = x; i <= ex && bFind == false; i++)
                         {
-                           continue;
-                        }
+
+                            iVec2 pos = new iVec2(i, j);
+
+                            if (CheckIsEmptyPos(pos) == false)
+                            {
+                                continue;
+                            }
                             // iVec2 tar = FindEmptyPos(pos);
+                            StageCharMoveEvent Evt = new StageCharMoveEvent();
+                            if (Evt == null)
+                                continue; ;
+                            Evt.nIdent = unit.Ident();
+                            Evt.nX = i;
+                            Evt.nY = j;
+                            OnStageCharMoveEvent(Evt);
+
+                            // avoid loop too manay
+                            x = i + 1;
+                            y = j;
+                            bFind = true;
+                            break;
+                            // unit.MoveTo(tar.X, tar.Y);
+
+                        }
+                      
+                    }
+
+                    // 都沒位置的最後處理
+                    if (bFind == false)
+                    {
+                        iVec2 pos = new iVec2(x, y);
+                        iVec2 tar = FindEmptyPos(pos);
                         StageCharMoveEvent Evt = new StageCharMoveEvent();
                         if (Evt == null)
                             continue; ;
-                        Evt.nIdent = unit.Ident() ;
-                        Evt.nX = i;
-                        Evt.nY = j;
-                        OnStageCharMoveEvent( Evt );
-
-                        // avoid loop too manay
-                        x = i + 1;
-                        y = j;
-                        bFind = true;
-                        break;
-                       // unit.MoveTo(tar.X, tar.Y);
-
+                        Evt.nIdent = unit.Ident();
+                        Evt.nX = tar.X;
+                        Evt.nY = tar.Y;
+                        OnStageCharMoveEvent(Evt);
                     }
-                    // find next pos to move
-                    //if (bFind)
-                    //{                        
-                    //    if (x > ex) {
-                    //        y = y + 1; // next
-                    //        x = sx;    // re start x 
-                    //    }                        
-                    //    break;
-                    //}
-                   
                 }
-
-                // 都沒位置的最後處理
-                if (bFind == false)
-                {
-                    iVec2 pos = new iVec2(x, y);
-                    iVec2 tar = FindEmptyPos( pos);
-                    StageCharMoveEvent Evt = new StageCharMoveEvent();
-                    if (Evt == null)
-                        continue; ;
-                    Evt.nIdent = unit.Ident();
-                    Evt.nX = tar.X;
-                    Evt.nY = tar.Y;
-                    OnStageCharMoveEvent(Evt);
-                }
-            }
-            pool.RemoveAt(0);
+            //    pool.RemoveAt(0);
+            //}
         }
-
-
-        //for (int i = sx; i <= ex; i++)
-        //{
-        //    for (int j = sy; j <= ey; j++)
-        //    {
-        //        // avoid over range
-        //        if (pool.Count <= 0)
-        //            break;
-
-        //         // 1 - check empty
-        //         iVec2 pos = new iVec2(i, j);
-        //         if (CheckIsEmptyPos(pos) == false)
-        //         {
-        //                continue;
-        //         }
-        //        // 把單位一個個move過去   
-        //        Panel_unit unit = pool[0];
-        //        if (unit != null) {
-        //            unit.MoveTo( i , j );
-        //        }
-
-        //        pool.RemoveAt(0); 
-        //    }
-        //}
-
 
     }
 //	public void OnStageUnitActionFinishEvent(GameEvent evt)
@@ -4279,10 +4312,12 @@ public class Panel_StageUI : MonoBehaviour
 		GameDataManager.Instance.ReLiveUndeadUnit (Evt.nCamp);
 
 
-		// weakup  
-		List< Panel_unit > lst = GetUnitListByCamp ( Evt.nCamp );
-		foreach( Panel_unit unit in lst )
-		{
+        // weakup  
+        GetUnitListByCamp(Evt.nCamp ,ref m_tmpCampList);
+        foreach (Panel_unit unit in m_tmpCampList)
+        //List< Panel_unit > lst = GetUnitListByCamp ( Evt.nCamp );
+        //foreach( Panel_unit unit in lst )
+        {
 			//unit.pUnitData.AddActionTime( 1 );
 			unit.pUnitData.WeakUp();
 			//unit.AddActionTime( 1 ); // al add 1 time to action

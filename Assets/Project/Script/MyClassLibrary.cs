@@ -85,6 +85,7 @@ namespace MyClassLibrary
         public CTextLine()
         {
             m_kTextPool = new List<string>();
+            m_funcList = null;
         }
         public int GetRowNum() { return m_kTextPool.Count; }
         public List<string> m_kTextPool;
@@ -99,25 +100,30 @@ namespace MyClassLibrary
         // 動態產生 ary list
         public List<cTextFunc> GetFuncList()
         {
-            List<cTextFunc> funclist = new List<cTextFunc>();
-
-            for (int i = 0; i < m_kTextPool.Count; i++)
+            if (m_funcList == null)
             {
-                string sFunc = m_kTextPool[i];
-                string sParam = m_kTextPool[++i];
-                if (sFunc == null || sParam == null) {
-                    break;
-                }
-                cTextFunc func = new cTextFunc();
-                func.sFunc = sFunc.ToUpper();
+                m_funcList = new List<cTextFunc>();
+                for (int i = 0; i < m_kTextPool.Count; i++)
+                {
+                    string sFunc = m_kTextPool[i];
+                    string sParam = m_kTextPool[++i];
+                    if (sFunc == null || sParam == null)
+                    {
+                        break;
+                    }
+                    cTextFunc func = new cTextFunc();
+                    func.sFunc = sFunc.ToUpper();
 
-                func.SetArg(sParam);
-                funclist.Add (func );
-            
+                    func.SetArg(sParam);
+                    m_funcList.Add(func);
+
+                }
             }
 
-            return funclist;
+            return m_funcList;
         }
+
+        List<cTextFunc> m_funcList;
     }
 
 

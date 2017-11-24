@@ -40,7 +40,7 @@ public class MyScript {
         List<cTextFunc> funcList =line.GetFuncList();
 		foreach( cTextFunc func in funcList )
 		{
-			if( func.sFunc == "COMBAT"  )   // 本條件 是 一定要在戰鬥時 檢查的....
+            if ( func.sFunc == "COMBAT"  )   // 本條件 是 一定要在戰鬥時 檢查的....
 			{
 				if( ConditionCombat( func.I(0),func.I(1)  ) == false )
 				{

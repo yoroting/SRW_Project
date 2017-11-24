@@ -111,8 +111,7 @@ public class Panel_Skill : MonoBehaviour {
             }
         }
 
-        //string sCP = string.Format("{0}/{1}", nCP, pData.n_CP);
-        string sCP = string.Format("{0}", pData.n_CP);
+      
         progMP.value = (float)pData.n_MP / (float)pData.GetMaxMP()  ;
 
         //UISlider mpbar = progMP.GetComponent<UISlider>();
@@ -136,7 +135,9 @@ public class Panel_Skill : MonoBehaviour {
         lblSP.text = sSP;
         lblMP.text = sMP;
 
-        lblCP.text = pData.n_CP.ToString();
+        //string sCP = string.Format("{0}/{1}", nCP, pData.n_CP);
+        string sCP = string.Format("{0}", pData.n_CP);
+        lblCP.text = sCP;
         string sCond = "";
         //if (eSkillType == _SKILL_TYPE._ABILITY)
         //{
