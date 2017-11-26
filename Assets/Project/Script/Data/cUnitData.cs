@@ -785,7 +785,7 @@ public class cUnitData{
 			{
 				int nBuffID = 0;
 				if( int.TryParse( strBorn[i] , out nBuffID ) ){
-					Buffs.AddBuff( nBuffID , n_Ident , 0 , 0 );
+					Buffs.AddBuff( nBuffID , 0 , 0 , 0 ); // ident ==0  代表自己
 				}
 			}
 		}
@@ -1792,7 +1792,7 @@ public class cUnitData{
 		foreach( KeyValuePair< int ,cAttrData > pair  in Attr ){
 			f +=pair.Value.fBurstRate;
 		}
-		if (f < 0.0f )			f = 0.0f;
+	//	if (f < 0.0f )			f = 0.0f;
 		return f;
 	}
     public float GetArmor()

@@ -708,6 +708,8 @@ public class Panel_StageUI : MonoBehaviour
 
 	void Clear()  // public for gamedatamanage to load 
 	{
+        // clear script cache
+        MyScript.Instance.ClearCache();
         //
         MobActEffObj.SetActive(false);
 
@@ -2618,7 +2620,7 @@ public class Panel_StageUI : MonoBehaviour
 		//==========
 		IsEventEnd = false;
 		// record event script 
-		m_cScript = new cTextArray( );
+		m_cScript = new cTextArray( );  // 不會每個 frame 執行 。較無 記憶體問題
 		m_cScript.SetText( NextEvent.s_BEHAVIOR );	
 
 		m_nFlowIdx = 0;

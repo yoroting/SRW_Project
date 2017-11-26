@@ -1754,7 +1754,7 @@ MonoBehaviour:
   maxPerLine: 0
   cellWidth: 700
   cellHeight: 115
-  animateSmoothly: 0
+  animateSmoothly: 1
   hideInactive: 0
   keepWithinPanel: 1
   sorted: 0

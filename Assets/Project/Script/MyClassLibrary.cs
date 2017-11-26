@@ -22,6 +22,7 @@ namespace MyClassLibrary
     // Script unit
     public class cTextFunc
     {
+        static char[] split = { ',' };
         public cTextFunc()
         {
             sFunc = "";                      // avoid null
@@ -66,7 +67,7 @@ namespace MyClassLibrary
         {
 			//nArg.Clear();
 			sArg.Clear();
-            char[] split = { ',' };
+           
 			string[] list = arg.Split(split );
             foreach (string s in list)
             {
@@ -130,23 +131,24 @@ namespace MyClassLibrary
     // Text Arry
     public class cTextArray
     {
-        
-
+        static char[] rowChars = { '\n' };
+        static char[] colChars = { '(', ')', ';', '\t' };
+        static char[] cParamCol = { ',', ':' }; // ();(); 用參數拆解
         //==============================
-		public cTextArray( )
+        public cTextArray( )
 		{ 
-			char[] rowChars = { '\n' };	
-			char[] colChars = { '(', ')',';', '\t' };
+//			static char[] rowChars = { '\n' };	
+//			static char[] colChars = { '(', ')',';', '\t' };
 
-			m_sRawToken =  new string( rowChars );
-			m_sColToken =  new string( colChars );
+//			m_sRawToken =  new string( rowChars );
+//			m_sColToken =  new string( colChars );
 			m_kTextLinePool = new List<CTextLine>();
 		}
 
 		public cTextArray(char[] cRawToken, char[] cColToken  )
         { 
-             m_sRawToken =  new string( cRawToken );
-             m_sColToken =  new string( cColToken );
+//             m_sRawToken =  new string( cRawToken );
+//             m_sColToken =  new string( cColToken );
              m_kTextLinePool = new List<CTextLine>();
         }
         public void Clear()
@@ -168,7 +170,8 @@ namespace MyClassLibrary
 
 
             // 拆解 lines
-            string[] lines = sText.Split( m_sRawToken.ToCharArray() );            
+            //string[] lines = sText.Split( m_sRawToken.ToCharArray() );            
+            string[] lines = sText.Split(rowChars);
             foreach (string s in lines)
             {
                 if (String.IsNullOrEmpty(s))
@@ -176,7 +179,8 @@ namespace MyClassLibrary
 
                 //拆解 Rows
                 CTextLine newline = new CTextLine();
-                string [] rows = s.Split(m_sColToken.ToCharArray());
+                string[] rows = s.Split(colChars);
+                //string [] rows = s.Split(m_sColToken.ToCharArray());
                 foreach (string r in rows)
                 {
                     if (String.IsNullOrEmpty(r))
@@ -240,7 +244,8 @@ namespace MyClassLibrary
 
             //拆解 Rows
             CTextLine newline = new CTextLine();
-            string[] rows = s.Split(m_sColToken.ToCharArray());
+            string[] rows = s.Split(colChars);
+            //string[] rows = s.Split(m_sColToken.ToCharArray());
             foreach (string r in rows)
             {
                 if (String.IsNullOrEmpty(r))
@@ -261,8 +266,8 @@ namespace MyClassLibrary
 		// Get param char ary
 		public static List<string> GetParamLst( string s )
 		{		
-			char [] cCol = { ',' , ':' };
-			string [] rows = s.Split( cCol );
+			
+			string [] rows = s.Split( cParamCol );
 			List<string> lst = new List<string>();
 			foreach( string s2 in rows )
 			{
@@ -292,10 +297,10 @@ namespace MyClassLibrary
 
         private List< CTextLine> m_kTextLinePool;
 
-        private string m_sRawToken;
-	    private string m_sColToken;
+        //    private string m_sRawToken;
+        //    private string m_sColToken;
 
-
+       
 
     }
 

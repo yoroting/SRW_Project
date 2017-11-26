@@ -5,6 +5,8 @@ using Enum = System.Enum;
 using MYGRIDS;
 //using _SRW;
 using MyClassLibrary;			// for parser string
+
+
 // 
 public class MyScript {
 
@@ -26,6 +28,38 @@ public class MyScript {
 	public static bool bParsing = false;
     public static int nCheckIdent= 0;   // 指定檢查 執行事件者
     public static int nTrigerIdent = 0;   // 事件觸發者
+
+    Dictionary<int, cTextArray> cacheCondPool;			// allyPool . to avoid  mem hash crash
+
+    public cTextArray GetEventCond(STAGE_EVENT evt) {
+        cTextArray cCond=null;
+        if (cacheCondPool == null) {
+            cacheCondPool = new Dictionary<int, cTextArray>();
+        }
+        // avoid null crash
+        if (evt == null) {
+            return null;
+        }
+
+        // find in cache
+        if (cacheCondPool.TryGetValue(evt.n_ID, out cCond ) ) {
+            return cCond;
+        }
+        // can't find cond. new and push to pool
+        cCond = new cTextArray();
+        cCond.SetText( evt.s_CONDITION);
+        cacheCondPool.Add(evt.n_ID , cCond );
+
+        return cCond;
+    }
+
+    public void ClearCache()
+    {
+        if (cacheCondPool != null) {
+            cacheCondPool.Clear();
+        }
+    }
+
 
     public bool CheckEventCondition( CTextLine line  )
 	{
@@ -295,11 +329,12 @@ public class MyScript {
         nCheckIdent = checkIdent; // check target
         nTrigerIdent = 0;
 
-          cTextArray sCond = new cTextArray( );
-		sCond.SetText( evt.s_CONDITION );
-		// check all line . if one line success . this event check return true
-		
-		int nCol = sCond.GetMaxCol();
+        cTextArray sCond = GetEventCond(evt);
+        //cTextArray sCond = new cTextArray( );
+        //sCond.SetText( evt.s_CONDITION );
+        // check all line . if one line success . this event check return true
+
+        int nCol = sCond.GetMaxCol();
 		for( int i= 0 ; i <nCol ; i++ )
 		{
 			if( CheckEventCondition( sCond.GetTextLine( i ) ) )
@@ -2247,15 +2282,7 @@ public class MyScript {
 
 	public cEffectCondition CreateEffectCondition( string str )
 	{
-		cEffectCondition pCon = new cEffectCondition ();
-		cTextArray sCond = new cTextArray( );
-		sCond.SetText( str );
-		int nCol = sCond.GetMaxCol();
-		for (int i= 0; i <nCol; i++) {
-			CTextLine line = sCond.GetTextLine (i);
-			//List<cTextFunc> funcList = line.GetFuncList ();
-			pCon.Add( line );
-		}
+		cEffectCondition pCon = new cEffectCondition (str ); 		
 		return pCon;
 
 	}

@@ -36,7 +36,19 @@ public class Panel_Mainten : MonoBehaviour {
        
         SetStoryName();
         // re list
-        ReloadUnitList();
+
+        // clear all
+        CharUnit.RecycleAll();
+        UIGrid grid = GridUnitList.GetComponent<UIGrid>();
+        if (grid != null)
+        {
+            MyTool.DestoryGridItem(grid);
+            //while (grid.transform.childCount > 0)
+            //{
+            //    DestroyImmediate(grid.transform.GetChild(0).gameObject);
+            //}
+        }
+        // ReloadUnitList();
         //
         Resources.UnloadUnusedAssets();
      //   System.GC.Collect();			// Free memory resource here
@@ -76,7 +88,7 @@ public class Panel_Mainten : MonoBehaviour {
 
 	public void OnPopReady()
 	{
-		// on ready
+		// on ready alpha done
 		GameDataManager.Instance.ePhase = _SAVE_PHASE._MAINTEN;		// save to mainta phase
 
 		GameSystem.bFXPlayMode = true;								// start play fx
@@ -95,7 +107,10 @@ public class Panel_Mainten : MonoBehaviour {
 			}
 
 		}
-	}
+
+        ReloadUnitList();
+
+    }
 	//public void ChooseNextStage()
 	//{
 	//	GameDataManager.Instance.nStoryID += 1;

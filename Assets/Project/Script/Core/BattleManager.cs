@@ -781,13 +781,13 @@ public partial class BattleManager
     }
 
 	static public bool RollBaseDodge( cUnitData Atker, cUnitData Defer )
-	{
+	{        
 		if (Atker == null || Defer == null) {
 			return false;
 		}
 
 		float fRate = Config.BaseDodge + ( (Defer.GetMar() - Atker.GetMar() ) / Config.BaseDodge );
-		float  fRoll = Random.Range (0.0f, 100.0f );	
+        float  fRoll = Random.Range (0.0f, 100.0f );	
 		if( Atker.IsStates( _FIGHTSTATE._HIT ) || fRoll < fRate ){
             // Defer.AddStates( _FIGHTSTATE._DODGE );
             return true;
@@ -2352,11 +2352,15 @@ public partial class BattleManager
 			pDefer.DoBeHitEffect( pAtker , ref resPool );
 			
 		}
-		//	MyScript.Instance.RunSkillEffect ( pAtker , null , pAtker.FightAttr.Skill.s_HIT_EFFECT , ref resPool ); // bad frame work
-
-		if (pDefer.IsStates (_FIGHTSTATE._DODGE)) {		
-			return resPool;
+        //	MyScript.Instance.RunSkillEffect ( pAtker , null , pAtker.FightAttr.Skill.s_HIT_EFFECT , ref resPool ); // bad frame work
+        if (bIsDamage)
+        {
+            if (pDefer.IsStates(_FIGHTSTATE._DODGE))
+            {       // script 表演
+                return resPool;
+            }
 		}
+
 		//--- hit back 
 		if ( nSkillID != 0 ) {
 			SKILL skl = ConstDataManager.Instance.GetRow<SKILL> ( nSkillID );

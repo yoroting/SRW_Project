@@ -1355,30 +1355,60 @@ public class cEffectCondition
     //		MAR_E,
     //	};
     //	public _CON eType;
+    // List<CTextLine> CondLst;      // multi array.
 
-    List<List<cTextFunc>> CondLst;      // multi array.
+
+    cTextArray cCond;
+
+    public cEffectCondition(string str) {
+        cCond = new cTextArray();
+        cCond.SetText(str);
+    }
+
     public void Clear()
     {
-        if (CondLst != null)
+        if (cCond != null)
         {
-            CondLst.Clear();
+            cCond.Clear();
         }
     }
-
-    public void Add(CTextLine line)
+    public void SetCond( string sCond )
     {
-        if (CondLst == null)
-            CondLst = new List<List<cTextFunc>>();
-        if (line == null)
-            return;
-        CondLst.Add(line.GetFuncList());
+        if (cCond == null)
+            cCond = new cTextArray();
+        cCond.SetText( sCond );
     }
 
-    private bool CheckCond(cBuffData buff, cUnitData data_I, cUnitData data_E, List<cTextFunc> funcList, int nSkillID, int nBuffID)
-    {
-        if (funcList == null)
-            return false;
+    //public void Add(CTextLine line)
+    //{
+    //    if (CondLst == null)
+    //        CondLst = new List<CTextLine>();
+    //    if (line == null)
+    //        return;
+    //    CondLst.Add(line);
+    //}
 
+    private bool CheckCond(cBuffData buff, cUnitData data_I, cUnitData data_E, int nSkillID, int nBuffID)
+    {
+        int nCol = cCond.GetMaxCol();
+        for (int i = 0; i < nCol; i++)
+        {
+            CTextLine line = cCond.GetTextLine(i);            
+            if (CheckCondLine(buff, data_I, data_E, line, nSkillID, nBuffID) == true) {
+                return true;
+            }            
+        }
+        return false;
+    }
+
+
+
+    private bool CheckCondLine(cBuffData buff, cUnitData data_I, cUnitData data_E , CTextLine line,  int nSkillID, int nBuffID)
+    {   
+
+        if (line == null)
+            return false;
+        List<cTextFunc> funcList = line.GetFuncList();
         foreach (cTextFunc func in funcList)
         {
             // 成功的都是 continue， 不要return true 。會破壞後面的判斷
@@ -2009,17 +2039,11 @@ public class cEffectCondition
 
     public bool Check(cBuffData buff, cUnitData data_I, cUnitData data_E, int nSkillID, int nBuffID)
     {
-
-        if (CondLst == null)
-            return false;
-
-        foreach (List<cTextFunc> funcList in CondLst)
+        if (CheckCond(buff, data_I, data_E, nSkillID, nBuffID) == true)
         {
-            if (CheckCond(buff, data_I, data_E, funcList, nSkillID, nBuffID) == true)
-            {
-                return true;            // any one passed. all passed
-            }
+            return true;            // any one passed. all passed
         }
+
         return false;
     }
 

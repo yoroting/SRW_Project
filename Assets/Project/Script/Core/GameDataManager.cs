@@ -759,7 +759,7 @@ private static GameDataManager instance;
 		}
 		else
 		{
-			Debug.LogErrorFormat( "gamedata manager.GetUnitDateByIdent with no key {0}" ,  nIdent  );
+			//Debug.LogWarningFormat( "gamedata manager.GetUnitDateByIdent with no key {0}" ,  nIdent  ); // 改為warning
 			return null;
 		}
 
