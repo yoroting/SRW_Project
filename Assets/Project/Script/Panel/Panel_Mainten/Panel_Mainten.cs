@@ -146,6 +146,12 @@ public class Panel_Mainten : MonoBehaviour {
         //		PanelManager.Instance.CloseUI ( Name );			// close this ui
 
         //		ChooseNextStage();
+
+        if (GameDataManager.Instance.nStoryID == 0)
+        {
+            GameDataManager.Instance.nStoryID = 1;
+        }
+
         GameSystem.PlaySound(141);
         StartCoroutine ( EnterStory( GameDataManager.Instance.nStoryID ) );
 

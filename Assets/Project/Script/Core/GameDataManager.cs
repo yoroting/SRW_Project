@@ -132,9 +132,10 @@ public partial class GameDataManager
 
         nMoney = 0;
         nStars = 0;
-
-        nStoryID = 0;
-        nStageID = 0;
+        
+        // start from 1
+        nStoryID = 1;
+        nStageID = 1;
 
         // Debug 用 算經濟
         nEarnMoney = 0;// 賺多少

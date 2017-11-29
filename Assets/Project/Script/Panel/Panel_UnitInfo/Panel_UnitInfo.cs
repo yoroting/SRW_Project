@@ -388,25 +388,21 @@ public class Panel_UnitInfo : MonoBehaviour {
 		foreach (KeyValuePair< int , int > pair in pUnitData.AbilityPool ) {
 			if( pair.Value > nCharlv )
 				continue;
-			GameObject go = ResourcesManager.CreatePrefabGameObj( AbilityGrid , "Prefab/Skill_simple" ); 
+			GameObject go = ResourcesManager.CreatePrefabGameObj( AbilityGrid , "Prefab/item_ability"); 
 			if( go == null )
 				continue;
-		//	UIEventListener.Get(go).onClick = OnAbilityClick; // 
+            //	UIEventListener.Get(go).onClick = OnAbilityClick; // 
 
-            UIWidget wiget = go.GetComponent<UIWidget>();
-            if (wiget != null)
-            {
-                wiget.width = m_nAbilityWidth;
-            }
+            //UIWidget wiget = go.GetComponent<UIWidget>();
+            //if (wiget != null)
+            //{
+            //    wiget.width = m_nAbilityWidth;
+            //}
 
-            Skill_Simple obj = go.GetComponent<Skill_Simple >();
+            item_ability obj = go.GetComponent<item_ability>();
 			if( obj != null ){
-                obj.SetSkillD(pair.Key , 0 );
-             //   obj.nID = pair.Key;
-			//	obj.nType = 0; // 0 is ability
-                // get cost 
-                
-			}
+                obj.SetSkillD(pair.Key, 0);
+            }
 			
 		}
 	//	UIGrid grid = AbilityGrid.GetComponent<UIGrid>(); 
