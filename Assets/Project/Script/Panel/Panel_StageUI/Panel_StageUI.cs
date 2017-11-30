@@ -909,11 +909,11 @@ public class Panel_StageUI : MonoBehaviour
 		PanelManager.Instance.CloseUI( Panel_MiniUnitInfo.Name );
 
 		// close loadint UI
-		PanelManager.Instance.CloseUI( "Panel_Loading");
+	//	PanelManager.Instance.CloseUI( "Panel_Loading");
 
 		GameDataManager.Instance.ePhase = _SAVE_PHASE._STAGE;		// save to stage phase
 
-		GameSystem.bFXPlayMode = true;								// start play fx
+	//	GameSystem.bFXPlayMode = true;								// start play fx
 
 		bIsReady = true;		// all ready .. close the loading ui
 	}
@@ -2042,6 +2042,9 @@ public class Panel_StageUI : MonoBehaviour
             return true;
 
         if (PanelManager.Instance.CheckUIIsOpening(Panel_CheckBox.Name) == true)
+            return true;
+
+        if (PanelManager.Instance.CheckUIIsOpening(Panel_Loading.Name) == true)
             return true;
 
         // 掉落
@@ -3664,9 +3667,15 @@ public class Panel_StageUI : MonoBehaviour
 		this.bIsStageEnd = true;
 
 
-		StartCoroutine (  SaveLoading( save  ) );
-		
-	}
+        Panel_Loading.StartLoad(save, Panel_Loading._LOAD_TYPE._SAVE_DATA);
+
+        //StartCoroutine (  SaveLoading( save  ) );
+        if (save.ePhase != _SAVE_PHASE._STAGE)
+        {
+            PanelManager.Instance.DestoryUI(Name);
+            //PanelManager.Instance.CloseUI (Name);  			// close stage when mainten
+        }
+    }
 	
 	public bool RestoreBySaveData( cSaveData save )
 	{

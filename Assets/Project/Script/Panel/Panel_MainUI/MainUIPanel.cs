@@ -185,12 +185,12 @@ public class MainUIPanel : BasicPanel {
 
     public IEnumerator SaveLoading( cSaveData save )
 	{
-		//GameDataManager.Instance.nStoryID = nStoryID;
-		//GameDataManager.Instance.nStageID = save.n_StageID;
-		
-		PanelManager.Instance.OpenUI( "Panel_Loading");
-		
-		yield return  new WaitForEndOfFrame();
+        //GameDataManager.Instance.nStoryID = nStoryID;
+        //GameDataManager.Instance.nStageID = save.n_StageID;
+
+        //PanelManager.Instance.OpenUI( "Panel_Loading");
+        System.Threading.Thread.Sleep(1000);
+        yield return  new WaitForEndOfFrame();
 
 		if (save.ePhase == _SAVE_PHASE._MAINTEN) {
 			Panel_Mainten panel  = MyTool.GetPanel<Panel_Mainten>( PanelManager.Instance.OpenUI ( Panel_Mainten.Name ) );
@@ -207,14 +207,15 @@ public class MainUIPanel : BasicPanel {
 
 			Panel_StageUI.Instance.RestoreBySaveData ( save );
 		}
-		yield return  new WaitForEndOfFrame();
+        System.Threading.Thread.Sleep(1000);
+        yield return  new WaitForEndOfFrame();
 
 		PanelManager.Instance.CloseUI( Name );
 		cSaveData.SetLoading (false);
 
-		PanelManager.Instance.CloseUI( "Panel_Loading");
-
-		yield break;
+        //	PanelManager.Instance.CloseUI( "Panel_Loading");
+        System.Threading.Thread.Sleep(1000);
+        yield break;
 		
 	}
 
@@ -222,8 +223,20 @@ public class MainUIPanel : BasicPanel {
 	{
 		if (save  == null)
 			return;
-		StartCoroutine (  SaveLoading( save  ) );
 
+        Panel_Loading.StartLoad( save, Panel_Loading._LOAD_TYPE._SAVE_DATA );
+
+
+
+        //    Loading = MyTool.GetPanel<Panel_Loading>(PanelManager.Instance.OpenUI("Panel_Loading"));
+        //if (Loading != null)
+        //{
+        //    Loading.save = save;
+        //}
+
+        ;
+    //    StartCoroutine (  SaveLoading( save  ) );
+    //    PanelManager.Instance.CloseUI("Panel_Loading");
         //		if (save.ePhase == _SAVE_PHASE._MAINTEN) {
         //			
         //			PanelManager.Instance.OpenUI ( Panel_Mainten.Name );
@@ -236,7 +249,7 @@ public class MainUIPanel : BasicPanel {
         //		}
 
 
-        //		PanelManager.Instance.CloseUI( Name );  			// close main 
+        PanelManager.Instance.CloseUI( Name );  			// close main 
         GameSystem.BtnSound();
     }
 
@@ -247,7 +260,11 @@ public class MainUIPanel : BasicPanel {
         GameDataManager.Instance.ClearStorageUnit();
         GameDataManager.Instance.ResetStage();
 
-        StartCoroutine(EnterStory(Config.StartStory));
+      //  StartCoroutine(EnterStory(Config.StartStory));
         GameSystem.PlaySound(157);
+
+        Panel_Loading.StartLoad(null, Panel_Loading._LOAD_TYPE._STORY);
+        PanelManager.Instance.CloseUI(Name);            // close this ui
+
     }
 }

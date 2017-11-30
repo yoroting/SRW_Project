@@ -239,8 +239,13 @@ public class Panel_Skill : MonoBehaviour {
                         continue;
 
                     int nSLv = data.GetSchoolLv(skl.n_SCHOOL ); // 
-                    if (skl.n_LEVEL_LEARN > nSLv)
-                        continue;
+                    if (skl.n_LEVEL_LEARN > nSLv) // 等級夠 或 神模式
+                    {
+                        if( Config.GOD == false)
+                        {
+                            continue;
+                        }   
+                    }
 
                     sklLst.Add(ConstDataManager.Instance.GetRow<SKILL>(nSkillID));
                 }

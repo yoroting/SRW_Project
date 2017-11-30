@@ -93,24 +93,6 @@ public class StoryUIPanel : MonoBehaviour {
 		}
 	}
 
-//	IEnumerator StoryLoading()
-//	{
-//		// Custom Update Routine which repeats forever
-//		do
-//		{
-//			// wait one frame and continue
-//			yield return 1;
-//			
-//			if ( bIsLoading == false )
-//			{
-//				// end
-//				PanelManager.Instance.CloseUI( "Panel_Loading");
-//				yield break;
-//			}			
-//			
-//		} while (true);
-//	}
-
 	// Use this for initialization
 	void Start () {
 		Debug.Log("StoryUIPanel:start");
@@ -139,7 +121,7 @@ public class StoryUIPanel : MonoBehaviour {
 
         GameSystem.PlaySound(0); // stop current wav
 		// end
-		PanelManager.Instance.CloseUI( "Panel_Loading");
+	//	PanelManager.Instance.CloseUI( "Panel_Loading");
 	}
 
     public bool IsAllEnd()
@@ -238,50 +220,26 @@ public class StoryUIPanel : MonoBehaviour {
       
     }
 
-	// Game event 
-//	public void OnStoryStartStageEvent(GameEvent evt)
-//	{
-//		Debug.Log ("OnStoryStartStageEvent");
-//		// setup global stage =1;
-//		//string str = evt.ToString ();
-//		//int stageid = int.Parse (str);
-//		StoryStartStageEvent Evt = evt as StoryStartStageEvent;
-//		if (Evt == null)
-//			return;
-//
-//		GameDataManager.Instance.nStageID = Evt.StageID;
-//		GameObject obj = PanelManager.Instance.OpenUI( Panel_StageUI.Name );//"Panel_StageUI"
-//		// 回到第0 關
-//
-//		//GameDataManager.Instance.nStageID = Config.StartStage;  //設定為 第一關
-//		// open story panel 
-//
-//	//		if (obj != null) {
-//			PanelManager.Instance.CloseUI (Name);
-//	//		}
-//	}
+	
 
-	IEnumerator EnterStage( int nStageID )
-	{
-		GameDataManager.Instance.nStageID = nStageID;
+	//IEnumerator EnterStage( int nStageID )
+	//{
+	//	GameDataManager.Instance.nStageID = nStageID;
 
-		GameObject obj = PanelManager.Instance.OpenUI( "Panel_Loading");
-		if (obj != null) {
-			Panel_Loading ploading = MyTool.GetPanel<Panel_Loading>( obj );
-			if( ploading != null )	{
-				ploading.ShowStoryName();
-			}	
-		}
+	//	GameObject obj = PanelManager.Instance.OpenUI( "Panel_Loading");
+	//	if (obj != null) {
+	//		Panel_Loading ploading = MyTool.GetPanel<Panel_Loading>( obj );
+	//		if( ploading != null )	{
+	//			ploading.ShowStoryName();
+	//		}	
+	//	}		
+	//	yield return false;
+	//	PanelManager.Instance.OpenUI( Panel_StageUI.Name );//"Panel_StageUI"
+	//	yield return false;
 
-		
-		yield return false;
-
-		PanelManager.Instance.OpenUI( Panel_StageUI.Name );//"Panel_StageUI"
-		yield return false;
-
-		PanelManager.Instance.DestoryUI (Name ); // destory this ui will broken this Coroutine soon
-		yield return true;
-	}
+	//	PanelManager.Instance.DestoryUI (Name ); // destory this ui will broken this Coroutine soon
+	//	yield return true;
+	//}
 
 	// end to enter next stage
 	public void End()
@@ -297,23 +255,27 @@ public class StoryUIPanel : MonoBehaviour {
 		Debug.LogFormat("StoryEnd go StartStage{0}" , m_StoryData.n_NEXT_STAGE );
 
 
-		// start loading ui
-		// need a cartan
+        // start loading ui
+        // need a cartan
 
 
-		//GameDataManager.Instance.nStageID =  m_StoryData.n_NEXT_STAGE;
-
-		StartCoroutine ( EnterStage( m_StoryData.n_NEXT_STAGE ) );
-
-		// go to talk or stage
-//		StoryStartStageEvent evt = new StoryStartStageEvent ();
-//		evt.StageID = m_StoryData.n_NEXT_STAGE;
-//		GameEventManager.DispatchEvent ( evt );
-		// GameEventManager.DispatchEventByName( StoryStartStageEvent.Name  , evt );  
+        //GameDataManager.Instance.nStageID =  m_StoryData.n_NEXT_STAGE;
+        GameDataManager.Instance.nStageID = m_StoryData.n_NEXT_STAGE;
 
 
-		//PanelManager.Instance.DestoryUI (Name );
-	}
+        Panel_Loading.StartLoad(null, Panel_Loading._LOAD_TYPE._STAGE);
+        //PanelManager.Instance.CloseUI(Name);            // close this ui
+                                                        //  StartCoroutine ( EnterStage( m_StoryData.n_NEXT_STAGE ) );
+
+        // go to talk or stage
+        //		StoryStartStageEvent evt = new StoryStartStageEvent ();
+        //		evt.StageID = m_StoryData.n_NEXT_STAGE;
+        //		GameEventManager.DispatchEvent ( evt );
+        // GameEventManager.DispatchEventByName( StoryStartStageEvent.Name  , evt );  
+
+
+        PanelManager.Instance.DestoryUI (Name );
+    }
 
 	public Panel_char AddChar( int nCharId , float fPosX , float fPosY )
 	{

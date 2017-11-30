@@ -91,7 +91,7 @@ public class Panel_Mainten : MonoBehaviour {
 		// on ready alpha done
 		GameDataManager.Instance.ePhase = _SAVE_PHASE._MAINTEN;		// save to mainta phase
 
-		GameSystem.bFXPlayMode = true;								// start play fx
+	//	GameSystem.bFXPlayMode = true;								// start play fx
 		// close stage UI!!
 		if (PanelManager.Instance.CheckUIIsOpening (Panel_StageUI.Name)) {
 
@@ -153,9 +153,12 @@ public class Panel_Mainten : MonoBehaviour {
         }
 
         GameSystem.PlaySound(141);
-        StartCoroutine ( EnterStory( GameDataManager.Instance.nStoryID ) );
+        //  StartCoroutine ( EnterStory( GameDataManager.Instance.nStoryID ) );
+        Panel_Loading.StartLoad(null, Panel_Loading._LOAD_TYPE._STORY);
 
-	}
+        PanelManager.Instance.CloseUI(Name);            // close this ui
+
+    }
 	void OnUnitClick( GameObject go )
 	{
 
@@ -203,49 +206,54 @@ public class Panel_Mainten : MonoBehaviour {
 
     }
 
-	//===========================================================
-	IEnumerator SaveLoading( cSaveData save )
-	{
-		//GameDataManager.Instance.nStoryID = nStoryID;
-		//GameDataManager.Instance.nStageID = save.n_StageID;
+//	//===========================================================
+//	IEnumerator SaveLoading( cSaveData save )
+//	{
+//		//GameDataManager.Instance.nStoryID = nStoryID;
+//		//GameDataManager.Instance.nStageID = save.n_StageID;
 		
-		PanelManager.Instance.OpenUI( "Panel_Loading");
-		
-		yield return  new WaitForEndOfFrame();
-		
-		if (save.ePhase == _SAVE_PHASE._MAINTEN) {
-			//PanelManager.Instance.OpenUI ( Panel_Mainten.Name );
+//		PanelManager.Instance.OpenUI( "Panel_Loading");
 
-			RestoreBySaveData( save );
+//    //    System.Threading.Thread.Sleep(5000);
 
-		} else if (save.ePhase == _SAVE_PHASE._STAGE) {
+//		yield return  new WaitForEndOfFrame();
+		
+//		if (save.ePhase == _SAVE_PHASE._MAINTEN) {
+//			//PanelManager.Instance.OpenUI ( Panel_Mainten.Name );
+
+//			RestoreBySaveData( save );
+
+//		} else if (save.ePhase == _SAVE_PHASE._STAGE) {
 			
-			PanelManager.Instance.OpenUI( Panel_StageUI.Name );  // don't run start() during open
-//			Panel_StageUI.Instance.bIsRestoreData = true;
-			yield return  new WaitForEndOfFrame();
-			Panel_StageUI.Instance.RestoreBySaveData ( save );
-			yield return  new WaitForEndOfFrame ();
-		}		
-		// close loadint UI
-		PanelManager.Instance.CloseUI( "Panel_Loading");
+//			PanelManager.Instance.OpenUI( Panel_StageUI.Name );  // don't run start() during open
+////			Panel_StageUI.Instance.bIsRestoreData = true;
+//			yield return  new WaitForEndOfFrame();
+//			Panel_StageUI.Instance.RestoreBySaveData ( save );
+//			yield return  new WaitForEndOfFrame ();
+//		}		
+//		// close loadint UI
+//		PanelManager.Instance.CloseUI( "Panel_Loading");
 
-		cSaveData.SetLoading (false);
+//		cSaveData.SetLoading (false);
 
-		if (save.ePhase != _SAVE_PHASE._MAINTEN) {
-			PanelManager.Instance.DestoryUI (Name);  			// close main 
-		}
-
-		yield break;
-		
-	}
+//		if (save.ePhase != _SAVE_PHASE._MAINTEN) {
+//			PanelManager.Instance.DestoryUI (Name);  			// close main 
+//		}
+//		yield break;
+//	}
 
 	public void LoadSaveGame( cSaveData save )
 	{
 		if (save  == null)
 			return;
-		StartCoroutine ( SaveLoading( save) );		
+        //   PanelManager.Instance.OpenUI("Panel_Loading");
 
-	}
+        Panel_Loading.StartLoad(save, Panel_Loading._LOAD_TYPE._SAVE_DATA);
+        //StartCoroutine ( SaveLoading( save) );
+
+        PanelManager.Instance.CloseUI(Name); // close self
+        //   PanelManager.Instance.CloseUI("Panel_Loading");
+    }
 
 	public bool RestoreBySaveData( cSaveData save  )
 	{
