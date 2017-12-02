@@ -786,8 +786,7 @@ public partial class BattleManager
 			return false;
 		}
 
-		float fRate = Config.BaseDodge + ( (Defer.GetMar() - Atker.GetMar() ) / Config.BaseDodge );
-        fRate = 50;
+		float fRate = Config.BaseDodge + ( (Defer.GetMar() - Atker.GetMar() ) / Config.BaseDodge );       
         float  fRoll = Random.Range (0.0f, 100.0f );	
 		if( Atker.IsStates( _FIGHTSTATE._HIT ) || fRoll < fRate ){
             // Defer.AddStates( _FIGHTSTATE._DODGE );

@@ -27,10 +27,16 @@ public class MyTool {
 
 	public static Vector3 LocToScreenX( GameObject obj )
 	{
-		return  UICamera.currentCamera.WorldToScreenPoint( obj.transform.position );
+		return LocToScreenX( obj.transform.position );
 	}
 
-	public static Vector3 SnyGridtoLocalPos( int x , int y ,  ref MyGrids grids  )
+    public static Vector3 LocToScreenX(Vector3 v)
+    {
+        return UICamera.currentCamera.WorldToScreenPoint(v);
+    }
+
+
+    public static Vector3 SnyGridtoLocalPos( int x , int y ,  ref MyGrids grids  )
 	{
 		Vector3 v = new Vector3();
 		v.x = grids.GetRealX( x );
@@ -1009,7 +1015,7 @@ public class MyTool {
     }
 
         // 动态的计算出现在manualHeight的高度。
-    static private void AdaptiveUI()
+    static public void AdaptiveUI()
 	{
 		int ManualWidth = Config.WIDTH;
 		int ManualHeight = Config.HEIGHT;

@@ -51,7 +51,16 @@ public class Panel_Mainten : MonoBehaviour {
         // ReloadUnitList();
         //
         Resources.UnloadUnusedAssets();
-     //   System.GC.Collect();			// Free memory resource here
+        //   System.GC.Collect();			// Free memory resource here
+        TweenAlpha twAlpha = TweenAlpha.Begin<TweenAlpha> (this.gameObject, 0.5f );
+        if (twAlpha != null ) {
+            twAlpha.from = 0.0f;
+            twAlpha.to = 1.0f;
+            MyTool.TweenSetOneShotOnFinish(twAlpha , OnPopReady );
+            //twAlpha.SetOnFinished(OnPopReady);            
+            twAlpha.PlayForward();
+        }
+
     }
 
 	void Start () {
@@ -277,7 +286,7 @@ public class Panel_Mainten : MonoBehaviour {
 
         SetStoryName();
         // re list
-        ReloadUnitList();
+       // ReloadUnitList(); // re in pop ready
 
 
         return true;

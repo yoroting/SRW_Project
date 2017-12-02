@@ -20,7 +20,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
 	public int 	nAtkerId; 					// counter attacker
 
-	public GameObject NGuiGrids;
+	public UIGrid NGuiGrids;
 
 	public GameObject CmdButton;
 
@@ -182,14 +182,8 @@ public class Panel_CMDUnitUI : MonoBehaviour
 
 	void ClearCmdPool()
 	{
-		if (NGuiGrids == null) {
-			return ;
-		}
-		UIGrid grid = NGuiGrids.GetComponent<UIGrid>(); 
-		if (grid == null) {
-			return ;
-		}
-		List< Transform > lst = grid.GetChildList ();
+
+		
         //List< GameObject > CmdBtnList = MyTool.GetChildPool( NGuiGrids );
 
 
@@ -203,12 +197,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
   //      if (lst == null || lst.Count <= 0 )
 		//	return;
 
-		foreach ( Transform t in lst) {
 
-//			UIEventListener.Get(t.gameObject).onClick -= OnCMDButtonClick;;  // need for objpool 
-  //                                                                           //	NGUITools.Destroy( t.gameObject );
-  //          grid.RemoveChild(t);
-        }
 
 		CmdButton.RecycleAll ();
 
@@ -224,8 +213,8 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		if (cmdList == null)
 			return;
 	
-		if (NGuiGrids == null)
-			return;
+	//	if (NGuiGrids == null)
+	//		return;
 
         //if (eType != _CMD_TYPE._CELL )
         //{
@@ -243,14 +232,14 @@ public class Panel_CMDUnitUI : MonoBehaviour
         // 攻擊者
         cUnitData pAtker = GameDataManager.Instance.GetUnitDateByIdent(nAtkerId);
 
-        UIGrid grid = NGuiGrids.GetComponent<UIGrid>();
+      //  UIGrid grid = NGuiGrids.GetComponent<UIGrid>();
 
         foreach ( _CMD_ID id in cmdList )
 		{	
 			//GameObject obj = ResourcesManager.CreatePrefabGameObj( this.NGuiGrids , "Prefab/CMD_BTN" ); // create cmd and add to grid
             //GameObject obj = Resources.Load("Prefab/CMD_BTN") as GameObject;           
 
-            GameObject obj = CmdButton.Spawn(  NGuiGrids.transform ) ;
+            GameObject obj = CmdButton.Spawn(NGuiGrids.transform ) ;
             if ( obj != null )
 			{
                 //CMD_BTN cmdBtn = obj.GetComponent<CMD_BTN>();
@@ -276,52 +265,53 @@ public class Panel_CMDUnitUI : MonoBehaviour
 				UIEventListener.Get(obj).onClick = OnCMDButtonClick;
 
 
-                // 如果是 防禦CMD～注意counter btn
-                if (_CMD_TYPE._COUNTER == CMD.eCMDTYPE)
-                {
-                    if (id == _CMD_ID._COUNTER)
-                    {
-                        // 距離太遠的不能反擊
-                        //if (nAtkerId > 0)
-                        //{
-                        //     pAtker = GameDataManager.Instance.GetUnitDateByIdent(nAtkerId);
-                            if (pAtker != null)
-                            {
-                                int nDist = MYGRIDS.iVec2.Dist(pAtker.n_X, pAtker.n_Y, pCmder.Loc.X, pCmder.Loc.Y);
-                                if (nDist > 1)
-                                {
-                                    UIButton b = obj.GetComponent<UIButton>();
-                                    if (b != null)
-                                    {
-                                        b.isEnabled = false; // disable btn
-                                    }
-                                }
-                            }
-                     //   }
-                    }
-                }
-                else {
-                    if (id == _CMD_ID._INFO)
-                    {
-                        if (pCmder != null && pCmder.pUnitData != null)
-                        {
-                            if ( pCmder.pUnitData.IsTriggr() ) {
-                                UIButton b = obj.GetComponent<UIButton>();
-                                if (b != null)
-                                {
-                                    b.isEnabled = false; // disable btn
-                                }
-                            }
-                        }
-                    }
-                }
+                //// 如果是 防禦CMD～注意counter btn
+                //if (_CMD_TYPE._COUNTER == CMD.eCMDTYPE)
+                //{
+                //    if (id == _CMD_ID._COUNTER)
+                //    {
+                //        // 距離太遠的不能反擊
+                //        //if (nAtkerId > 0)
+                //        //{
+                //        //     pAtker = GameDataManager.Instance.GetUnitDateByIdent(nAtkerId);
+                //            if (pAtker != null)
+                //            {
+                //                int nDist = MYGRIDS.iVec2.Dist(pAtker.n_X, pAtker.n_Y, pCmder.Loc.X, pCmder.Loc.Y);
+                //                if (nDist > 1)
+                //                {
+                //                    UIButton b = obj.GetComponent<UIButton>();
+                //                    if (b != null)
+                //                    {
+                //                        b.isEnabled = false; // disable btn
+                //                    }
+                //                }
+                //            }
+                //     //   }
+                //    }
+                //}
+                //else {
+                //    if (id == _CMD_ID._INFO)
+                //    {
+                //        if (pCmder != null && pCmder.pUnitData != null)
+                //        {
+                //            if ( pCmder.pUnitData.IsTriggr() ) {
+                //                UIButton b = obj.GetComponent<UIButton>();
+                //                if (b != null)
+                //                {
+                //                    b.isEnabled = false; // disable btn
+                //                }
+                //            }
+                //        }
+                //    }
+                //}
             }
 		}
-        
+
+        DisableCmdBtn();
         // update
-       
-       
-		grid.repositionNow = true;		// need this for second pop to re pos
+
+
+        NGuiGrids.repositionNow = true;		// need this for second pop to re pos
 	//	grid.Reposition ();             // this will called twice when start . don't use
 
 
@@ -377,6 +367,58 @@ public class Panel_CMDUnitUI : MonoBehaviour
         // fix pos
         FixCmderPos( );
         GameSystem.BtnSound();
+    }
+
+    public void DisableCmdBtn()
+    {        
+        
+        List<Transform> lst = NGuiGrids.GetChildList();
+        foreach (Transform t in lst)
+        {
+            if (_CMD_TYPE._COUNTER == CMD.eCMDTYPE)
+            {
+                if (t.name == _CMD_ID._COUNTER.ToString())
+                {
+                    bool enable = false; // defaul is dis
+                    cUnitData pAtker = GameDataManager.Instance.GetUnitDateByIdent(nAtkerId);
+                    if (pAtker != null)
+                    {
+                        int nDist = MYGRIDS.iVec2.Dist(pAtker.n_X, pAtker.n_Y, pCmder.Loc.X, pCmder.Loc.Y);
+                        if (nDist <= 1)
+                        {
+                            enable = true;
+                        }
+                    }
+
+
+                    UIButton b = t.GetComponent<UIButton>();
+                    if (b != null)
+                    {
+                        b.isEnabled = enable; // disable btn
+                    }
+
+                }
+            }
+            else
+            {
+                if (t.name == _CMD_ID._INFO.ToString())
+                {
+                    if (pCmder != null && pCmder.pUnitData != null)
+                    {
+                        if (pCmder.pUnitData.IsTriggr())
+                        {
+                            UIButton b = t.GetComponent<UIButton>();
+                            if (b != null)
+                            {
+                                b.isEnabled = false; // disable btn
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+
     }
 
 //	void NormalCloseCmdUI()
@@ -473,7 +515,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
     {
         if (pCmder != null)
         {
-            Panel_SchoolList.Open(1, pCmder.pUnitData , 1 );// 外功列表
+            Panel_SchoolList.Open(1, pCmder.pUnitData , 0,0,1 );// 外功列表
         }
      
     }
@@ -1345,16 +1387,22 @@ public class Panel_CMDUnitUI : MonoBehaviour
 		// need reopen ui only . don't change any param
 		GameObject obj = PanelManager.Instance.OpenUI ( Name );    // need areopen here 
 		Panel_CMDUnitUI panel = obj.GetComponent<Panel_CMDUnitUI>();
+        if (panel != null)
+        {
+            //= PanelManager.Instance.OpenUI( Panel_CMDUnitUI.Name );
+            if (cCMD.Instance.eCMDTYPE == _CMD_TYPE._WAITATK)
+            {
+                Panel_StageUI.Instance.CreateAttackOverEffect(panel.pCmder);
+            }
+            else
+            {
+                Panel_StageUI.Instance.CreateMoveOverEffect(panel.pCmder); // recreate
+            }
 
+            panel.DisableCmdBtn();
+        }
 
-		 //= PanelManager.Instance.OpenUI( Panel_CMDUnitUI.Name );
-		if (cCMD.Instance.eCMDTYPE == _CMD_TYPE._WAITATK) {
-			Panel_StageUI.Instance.CreateAttackOverEffect( panel.pCmder );
-		} else {
-			Panel_StageUI.Instance.CreateMoveOverEffect ( panel.pCmder ); // recreate
-		}
-       
-	}
+    }
 
 	// really close Cmd UI . all param be clear
 	void EndCMDUI(  )

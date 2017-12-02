@@ -20,7 +20,7 @@ public class Panel_Loading : MonoBehaviour {
     public cSaveData save;
     public _LOAD_TYPE m_Type;
     bool m_LoadComplete;
-    float m_fLoadingTime;
+  
     void OnEnable()
 	{
 		if (lblName != null) {
@@ -28,6 +28,9 @@ public class Panel_Loading : MonoBehaviour {
 		}
         m_LoadComplete = false;
         GameSystem.bFXPlayMode = false;
+    //    m_fLoadingTime = 0.0f;
+
+
     }
 
     void OnDisable()
@@ -42,29 +45,34 @@ public class Panel_Loading : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
-        m_fLoadingTime += Time.deltaTime;
         
+        //    StartCoroutine (  SaveLoading( save  ) );
 
+        if (m_LoadComplete)
+        {
+            // close this
+            PanelManager.Instance.CloseUI(Name);
+        }
+        else {
+          
+        }
+
+    }
+
+    public void Start_Coroutine()
+    {
         if (m_Type == _LOAD_TYPE._SAVE_DATA)
         {
             StartCoroutine(SaveLoading(save));
         }
         else if (m_Type == _LOAD_TYPE._STORY)
         {
-            StartCoroutine( EnterStory(GameDataManager.Instance.nStoryID ));
+            StartCoroutine(EnterStory(GameDataManager.Instance.nStoryID));
         }
         else if (m_Type == _LOAD_TYPE._STAGE)
         {
             StartCoroutine(EnterStage(GameDataManager.Instance.nStageID));
         }
-            //    StartCoroutine (  SaveLoading( save  ) );
-
-        if (m_LoadComplete && (m_fLoadingTime>3.0f) ) {
-            // close this
-            PanelManager.Instance.CloseUI(Name);
-        }
-
     }
 
     public void ShowStoryName()
@@ -83,26 +91,27 @@ public class Panel_Loading : MonoBehaviour {
         {
             Loading.save = save;
             Loading.m_Type = type;
+
+            Loading.Start_Coroutine(); // 宣告在 這裡才不會因別的plane 關閉而影響到
         }
     }
 
+    // func
     IEnumerator EnterStory(int nStoryID)
     {
-     //   PanelManager.Instance.OpenUI("Panel_Loading");
-
+        //   PanelManager.Instance.OpenUI("Panel_Loading");
+     
         // back up char pool
         GameDataManager.Instance.PrepareEnterStage();
 
         yield return new WaitForEndOfFrame();
-
+     
         GameDataManager.Instance.nStoryID = nStoryID;
         yield return new WaitForEndOfFrame();
-
-        PanelManager.Instance.OpenUI(StoryUIPanel.Name);
-        yield return new WaitForEndOfFrame();
-
-      
-
+     
+        PanelManager.Instance.OpenUI(StoryUIPanel.Name);        
+     
+        yield return new WaitForSeconds(3);
         //   PanelManager.Instance.DestoryUI(Name);              // close main 
         m_LoadComplete = true;
         yield break;
@@ -110,7 +119,7 @@ public class Panel_Loading : MonoBehaviour {
     }
 
     IEnumerator EnterStage(int nStageID)
-    {
+    {        
         GameDataManager.Instance.nStageID = nStageID;
 
         GameObject obj = PanelManager.Instance.OpenUI("Panel_Loading");
@@ -125,14 +134,13 @@ public class Panel_Loading : MonoBehaviour {
 
 
         yield return false;
-
+        
         PanelManager.Instance.OpenUI(Panel_StageUI.Name);//"Panel_StageUI"
         yield return false;
-
-     
-
+        
         //   PanelManager.Instance.DestoryUI(Name); // destory this ui will broken this Coroutine soon
         //   yield return true;
+        yield return new WaitForSeconds(3);
         m_LoadComplete = true;
         yield break;
     }
@@ -143,45 +151,38 @@ public class Panel_Loading : MonoBehaviour {
             cSaveData.SetLoading(false);
             m_LoadComplete = true;
             yield break;
-        }
-
+        }        
         //GameDataManager.Instance.nStoryID = nStoryID;
         //GameDataManager.Instance.nStageID = save.n_StageID;
 
         //PanelManager.Instance.OpenUI( "Panel_Loading");
      //   System.Threading.Thread.Sleep(100);
-        yield return new WaitForEndOfFrame();
-
+        yield return new WaitForEndOfFrame();        
         if (save.ePhase == _SAVE_PHASE._MAINTEN)
         {
+            
             Panel_Mainten panel = MyTool.GetPanel<Panel_Mainten>(PanelManager.Instance.OpenUI(Panel_Mainten.Name));
-            yield return new WaitForEndOfFrame();
-
+            yield return new WaitForEndOfFrame();            
             panel.RestoreBySaveData(save);
-
-
+          
         }
         else if (save.ePhase == _SAVE_PHASE._STAGE)
-        {
+        {            
             if (PanelManager.Instance.CheckUIIsOpening(Panel_StageUI.Name) == false)
             {
                 PanelManager.Instance.OpenUI(Panel_StageUI.Name);  // don't run start() during open
             }
                                                                //			Panel_StageUI.Instance.bIsRestoreData = true;
-            yield return new WaitForEndOfFrame();
-
+            yield return new WaitForEndOfFrame();        
             Panel_StageUI.Instance.RestoreBySaveData(save); // will start stage update
 
         }
         //   System.Threading.Thread.Sleep(100);
         //   yield return new WaitForEndOfFrame();
- 
 
         //  PanelManager.Instance.CloseUI(Name);
         cSaveData.SetLoading(false);
-
-        //	PanelManager.Instance.CloseUI( "Panel_Loading");
-     //   System.Threading.Thread.Sleep(100);
+        // yield return new WaitForSeconds(3); // no need wait second
         m_LoadComplete = true;
         yield break;
 

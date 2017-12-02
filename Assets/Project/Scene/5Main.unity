@@ -825,21 +825,21 @@ Prefab:
       propertyPath: m_RootOrder
       value: 5
       objectReference: {fileID: 0}
-    - target: {fileID: 95789015846214500, guid: 92106737e36d4784db4cb53d2dd39879,
-        type: 2}
-      propertyPath: m_Controller
-      value: 
-      objectReference: {fileID: 9100000, guid: 0e7dece9598301b418a6c4900b5f129a, type: 2}
-    - target: {fileID: 95115824977054384, guid: 92106737e36d4784db4cb53d2dd39879,
-        type: 2}
-      propertyPath: m_Controller
-      value: 
-      objectReference: {fileID: 9100000, guid: 3887fc190c94d9d4fa18c2520f0e5e33, type: 2}
     - target: {fileID: 95822497723171760, guid: 92106737e36d4784db4cb53d2dd39879,
         type: 2}
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 3887fc190c94d9d4fa18c2520f0e5e33, type: 2}
+    - target: {fileID: 95115824977054384, guid: 92106737e36d4784db4cb53d2dd39879,
+        type: 2}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 3887fc190c94d9d4fa18c2520f0e5e33, type: 2}
+    - target: {fileID: 95789015846214500, guid: 92106737e36d4784db4cb53d2dd39879,
+        type: 2}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 0e7dece9598301b418a6c4900b5f129a, type: 2}
     - target: {fileID: 162070, guid: 92106737e36d4784db4cb53d2dd39879, type: 2}
       propertyPath: m_Name
       value: Panel - CmdUnitUI

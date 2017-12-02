@@ -1425,22 +1425,28 @@ public class Panel_StageUI : MonoBehaviour
 		return true;
 	}
 	public void Resize( )
-	{	
-		Grids.SetPixelWH (Config.TileW, Config.TileH);  // re size
+	{
+        // 必須計算 螢幕的UI 縮放率
+        float fShitX = Config.TileW;
+        float fShitY = Config.TileH;
 
-        fMaxOffX = (Grids.TotalW - Screen.width) / 2;
+        // best
+        fMaxOffX = (Grids.TotalW - Config.WIDTH) / 2 ;
         if (fMaxOffX < 0)
-            //fMaxOffX = 0;
-            fMaxOffX = Screen.width / 2;
-
-        fMinOffX = -1 * fMaxOffX;
-
-        //===============
-        fMaxOffY = (Grids.TotalH - Screen.height) / 2;
+        {            
+            fMaxOffX = 0; 
+        }        
+        fMaxOffY = (Grids.TotalH - Config.HEIGHT) / 2 ;
         if (fMaxOffY < 0)
-            //fMaxOffY = 0;
-            fMaxOffY = Screen.height / 2;
+        {            
+            fMaxOffY = 0;
+        }
+        // shift
+        fMaxOffX += fShitX;
+        fMaxOffY += fShitY;
 
+        // min value
+        fMinOffX = -1 * fMaxOffX;
         fMinOffY = -1 * fMaxOffY;
 
     }

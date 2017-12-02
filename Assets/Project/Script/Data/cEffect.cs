@@ -78,8 +78,12 @@ public class ADDBUFF_E: cEffect
 	
 	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 
 		if (Defer != null) {
-			if( Defer.IsStates( _FIGHTSTATE._DODGE ) )
-				return ;
+            // check if dmg skill
+            if (MyTool.IsDamageSkill(nSkillID))
+            {
+                if (Defer.IsStates(_FIGHTSTATE._DODGE))
+                    return;
+            }
 
 		//	list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF ,Defer.n_Ident , nBuffID ) );
 			int nAtkId = 0;			if( Atker != null )nAtkId = Atker.n_Ident;
@@ -107,11 +111,14 @@ public class ADDACTTIME_E: cEffect
 	
 	override public void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 
 		if (Defer != null) {
-			if( Defer.IsStates( _FIGHTSTATE._DODGE ) )
-				return ;
-			
-			//	list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF ,Defer.n_Ident , nBuffID ) );
-			int nAtkId = 0;			if( Atker != null )nAtkId = Atker.n_Ident;
+            if (MyTool.IsDamageSkill(nSkillID))
+            {
+                if (Defer.IsStates(_FIGHTSTATE._DODGE))
+                    return;
+            }
+
+            //	list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF ,Defer.n_Ident , nBuffID ) );
+            int nAtkId = 0;			if( Atker != null )nAtkId = Atker.n_Ident;
 			list.Add( new cHitResult( cHitResult._TYPE._ACTTIME , Defer.n_Ident , iValue, nAtkId , nSkillID , Defer.n_Ident  ) );
 		}
 	}
