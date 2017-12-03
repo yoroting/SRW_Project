@@ -4328,20 +4328,24 @@ public class Panel_StageUI : MonoBehaviour
 		// relive undead
 		GameDataManager.Instance.ReLiveUndeadUnit (Evt.nCamp);
 
-
-        // weakup  
-        GetUnitListByCamp(Evt.nCamp ,ref m_tmpCampList);
-        foreach (Panel_unit unit in m_tmpCampList)
-        //List< Panel_unit > lst = GetUnitListByCamp ( Evt.nCamp );
-        //foreach( Panel_unit unit in lst )
+       
+        foreach (KeyValuePair<int, Panel_unit> pair in IdentToUnit)
         {
-			//unit.pUnitData.AddActionTime( 1 );
-			unit.pUnitData.WeakUp();
-			//unit.AddActionTime( 1 ); // al add 1 time to action
-		}
-        // run weakup event  。注意只觸發一次的問題
+            if (pair.Value != null)
+            {
+                // 全單位的buff 作用
+                pair.Value.pUnitData.Buffs.BuffTimeToDel( Evt.nCamp );
 
-      //  RunEvent();
+                // 指定陣營 才 weakup
+                if (pair.Value.eCampID == Evt.nCamp)
+                {
+                    pair.Value.pUnitData.WeakUp();
+                    //return pair.Value;
+                }
+            }
+        }
+
+
 
 	}
 

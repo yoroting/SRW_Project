@@ -386,7 +386,7 @@ public class cBuffs
 	}
 
 	// run 1 round .  buff time-1 with all >= 1 . remove buff if time become 0
-	public bool BuffRoundEnd( )
+	public bool BuffTimeToDel( _CAMP ecamp )
 	{
         // 作用一次 buff
         //OnDo( null , ref act.HitResult);
@@ -397,6 +397,20 @@ public class cBuffs
             KeyValuePair<int, cBuffData> pair = Pool.ElementAt(i);
             if (pair.Value.nTime > 0)
             {
+                // 以下判斷 是否為 作用回合
+
+                // 如果不是自己施展的
+                if (pair.Value.nCastIdent > 0 && (pair.Value.nCastIdent != Owner.n_Ident )) {
+                    cUnitData unit =   pair.Value.GetCastUnit();
+                    if (unit != null)
+                    {
+                        if (unit.eCampID != ecamp) {
+                            continue; // 不是 計數 回合， 不扣除次數
+                        }
+                    }
+                }
+
+                //  以下判斷 是否要移除
                 if (--pair.Value.nTime == 0) //移除結束的BUFF
                 {
                     Pool.Remove(pair.Key);

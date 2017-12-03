@@ -2076,7 +2076,8 @@ public class cUnitData{
 
         AddTired(-3);           //降低疲勞
 
-        Buffs.BuffRoundEnd();
+    //    Buffs.BuffRoundEnd();  // 傷害型buff 與 輔助型buff 在 跨陣營施放時 。有取消順位錯誤。想修正就必須更改作法
+
         CDs.DecAll();       // CD 降低
 
         uAction act =  ActionManager.Instance.CreateWeakUpAction ( this.n_Ident );
