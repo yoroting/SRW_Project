@@ -606,7 +606,22 @@ public class cUnitData{
 
 	}
 
-	
+    public int GetSchoolNum( int nType )
+    {
+        int c = 0;
+        foreach (KeyValuePair<int, int> pair in SchoolPool)
+        {
+            SCHOOL school = ConstDataManager.Instance.GetRow<SCHOOL>(pair.Key);
+            if (school == null)
+                continue;
+            if (school.n_TYPE == nType)
+            {
+                c++;
+            }
+        }
+
+        return c;
+    }
 	public void AddSkill( int nSkillID )
 	{
 		SKILL  skl = ConstDataManager.Instance.GetRow< SKILL>( nSkillID );

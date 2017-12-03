@@ -12,9 +12,9 @@ public class Panel_Win : MonoBehaviour {
     public UISprite     m_SpritOver;
     bool m_bIsAllReady = false;
     void OnEnable()
-	{
-		Panel_StageUI.Instance.EndStage ( 1 ); // 馬上呼叫關閉旗標，是為了防止其他事件觸發，卻觸發了 通用 事件Lost() .. 因為全物件刪除( 改用旗標方法)
-                                               //Panel_StageUI.Instance.bIsStageEnd = true;
+    {
+        Panel_StageUI.Instance.EndStage(1); // 馬上呼叫關閉旗標，是為了防止其他事件觸發，卻觸發了 通用 事件Lost() .. 因為全物件刪除( 改用旗標方法)
+                                            //Panel_StageUI.Instance.bIsStageEnd = true;
 
         // GameDataManager.Instance.EndStage ();   // 處理戰場結束的資料回存
 
@@ -24,9 +24,21 @@ public class Panel_Win : MonoBehaviour {
 
         m_lbl_Money.text = "0";
 
-        GameSystem.PlayBGM ( 5 ); // 勝利 BGM
+        GameSystem.PlayBGM(5); // 勝利 BGM
 
         MyTool.DestoryGridItem(m_gridReward);
+
+        // change face
+        
+        int nFaceID = 1; // 預設
+        STAGE_DATA stage = ConstDataManager.Instance.GetRow<STAGE_DATA>(GameDataManager.Instance.nStageID);
+        if (stage != null) {
+            if (stage.n_MVP > 0) {
+                nFaceID = stage.n_MVP;
+            }
+        }
+        
+        m_texFace.mainTexture = MyTool.GetCharTexture(nFaceID , 1  ) ;
 
         m_bIsAllReady = false;
     }

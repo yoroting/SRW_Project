@@ -2,6 +2,8 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using MyClassLibrary;
+using System.Linq;
+
 //using _SRW;
 
 public class cBuffData
@@ -386,28 +388,44 @@ public class cBuffs
 	// run 1 round .  buff time-1 with all >= 1 . remove buff if time become 0
 	public bool BuffRoundEnd( )
 	{
-		// 作用一次 buff
-		//OnDo( null , ref act.HitResult);
+        // 作用一次 buff
+        //OnDo( null , ref act.HitResult);
+        bool bUpdate = false;
 
-		//移除結束的BUFF
-		foreach( KeyValuePair<int , cBuffData>  pair in Pool )
-		{
+        for (int i = 0; i < Pool.Count; i++)
+        {
+            KeyValuePair<int, cBuffData> pair = Pool.ElementAt(i);
+            if (pair.Value.nTime > 0)
+            {
+                if (--pair.Value.nTime == 0) //移除結束的BUFF
+                {
+                    Pool.Remove(pair.Key);
+                    i--;  // 重新判斷 當前 index 
+                    bUpdate = true;
+                }
+            }
+        }
 
-			//if( pair.Value.nCastIdent == castid )
-			if( pair.Value.nTime > 0 )
-			{
-				if( --pair.Value.nTime == 0 ){
-					RemoveList.Add( pair.Key );
-				}
-			}
-		}
 
-		foreach( int id in RemoveList ){
-			Pool.Remove( id );
-		}
+  //      //移除結束的BUFF
+  //      foreach ( KeyValuePair<int , cBuffData>  pair in Pool )
+		//{
 
-		bool bUpdate = RemoveList.Count > 0;
-		RemoveList.Clear ();
+		//	//if( pair.Value.nCastIdent == castid )
+		//	if( pair.Value.nTime > 0 )
+		//	{
+		//		if( --pair.Value.nTime == 0 ){
+		//			RemoveList.Add( pair.Key );
+		//		}
+		//	}
+		//}
+
+		//foreach( int id in RemoveList ){
+		//	Pool.Remove( id );
+		//}
+
+		//// bool bUpdate = RemoveList.Count > 0;
+		//RemoveList.Clear ();
 		return bUpdate;
 	}
 

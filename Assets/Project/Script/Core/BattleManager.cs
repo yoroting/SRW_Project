@@ -1944,8 +1944,8 @@ public partial class BattleManager
             if (Atker.eCampID == _CAMP._PLAYER)
             {
                 int nDiffLv = Defer.n_Lv - Atker.n_Lv;
-                exp += (nDiffLv);
-                exp = MyTool.ClampInt(exp, 1, 10);
+                exp += ((nDiffLv)*3) ;
+                exp = MyTool.ClampInt(exp, 0, 20);
 
                 // kill 時 經驗 3 倍
                 if (Defer.IsStates(_FIGHTSTATE._DEAD))
@@ -1956,6 +1956,7 @@ public partial class BattleManager
 
                 exp = (int)(exp * fdroprate * fExpRation);
                 exp = MyTool.ClampInt(exp, 0, exp);
+                
                 if (nDropExpPool.ContainsKey(Atker.n_Ident))
                 {
                     nDropExpPool[ Atker.n_Ident ] += exp;

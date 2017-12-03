@@ -235,7 +235,14 @@ public class Panel_CMDUnitUI : MonoBehaviour
       //  UIGrid grid = NGuiGrids.GetComponent<UIGrid>();
 
         foreach ( _CMD_ID id in cmdList )
-		{	
+		{
+            if (id == _CMD_ID._SCHOOL)
+            {                
+                if (pCmder.pUnitData.GetSchoolNum(1) <= 1) {
+                    continue; // 只有一個武學的不顯示
+                }
+            }
+
 			//GameObject obj = ResourcesManager.CreatePrefabGameObj( this.NGuiGrids , "Prefab/CMD_BTN" ); // create cmd and add to grid
             //GameObject obj = Resources.Load("Prefab/CMD_BTN") as GameObject;           
 

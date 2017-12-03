@@ -184,6 +184,7 @@ public class Panel_SchoolList : MonoBehaviour {
                     {
 
                         pUnitData.ActiveSchool(schid);
+                        pUnitData.n_CP = 0 ; // CP 歸零
                         GameSystem.PlaySound(201);
                     }
                     // 有命令UI 要 關閉

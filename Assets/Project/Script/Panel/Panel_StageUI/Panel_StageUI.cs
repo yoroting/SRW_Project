@@ -4453,15 +4453,24 @@ public class Panel_StageUI : MonoBehaviour
                     MoveToGameObj(pair.Value.gameObject, false);
                     TraceUnit(pair.Value);
 
-                    tmpScriptMoveEnd.Add(last ); // avoid double pos
-                                                 // add to tmp 
+                    tmpScriptMoveEnd.Add(last); // avoid double pos
+                                                // add to tmp 
                     ActionManager.Instance.CreateEvtAttackAction(pair.Value.Ident(), nDefId, nSkillID, nResult);// 登錄一個攻擊動作
-                    
-                    return;
+                   
+                    //       return;  no return here for num
                 }
             }
-            // skill hit effect
-            pair.Value.ScriptAttack(nDefId, nSkillID, nResult, Evt.nVar1, Evt.nVar2);
+            else
+            {
+                // skill hit effect
+                pair.Value.ScriptAttack(nDefId, nSkillID, nResult, Evt.nVar1, Evt.nVar2);
+            }
+
+            // 防止算錯
+            if (nNum == 0 || nNum == 1)
+            {
+                return;
+            }
 
             //List<cUnitData> pool = new List<cUnitData>();
             //BattleManager.GetAffectPool(pAtker, pDefer, nSkillID, 0, 0, ref pool); // will convert inside
@@ -4527,7 +4536,7 @@ public class Panel_StageUI : MonoBehaviour
             //    }
             //}
             // check break;
-            if (count++ >= nNum && nNum > 0) // nNum = -1 is all
+            if (++count >= nNum && nNum > 0) // nNum = -1 is all
             {
                 break;
             }
