@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Enum = System.Enum;
 using System.Text;
+using System.Linq;
 using JsonFx.Json;
 //using _SRW;
 using MYGRIDS;
@@ -254,7 +255,7 @@ private static GameDataManager instance;
 	// Camp
 	public _CAMP nActiveCamp{ get; set; }  // 
 
-    int GetCampNum(_CAMP eCampID) // game data 用，不考慮 stage animate，外部應使用 stage 的 getcampnum
+    public int GetCampNum(_CAMP eCampID) // game data 用，不考慮 stage animate，外部應使用 stage 的 getcampnum
     {
         int cout = 0;
         foreach (KeyValuePair<int, cUnitData> pair in UnitPool)
@@ -275,26 +276,29 @@ private static GameDataManager instance;
     // switch to next Camp. return true if round change
     public bool NextCamp()
 	{
-		// weakup current camp first for remove unit mask
-//		StageWeakUpCampEvent cmd = new StageWeakUpCampEvent ();
-//		cmd.nCamp = nActiveCamp;
-//		GameEventManager.DispatchEvent ( cmd );
+        // 換陣營動作
+        Panel_StageUI.Instance.OnStageNextCamp();
 
-		// 
-		bool bRoundChange = false;
+        // weakup current camp first for remove unit mask
+        //		StageWeakUpCampEvent cmd = new StageWeakUpCampEvent ();
+        //		cmd.nCamp = nActiveCamp;
+        //		GameEventManager.DispatchEvent ( cmd );
+
+        // 
+        bool bRoundChange = false;
 		if( nActiveCamp == _CAMP._PLAYER )
 		{
 
 			// check for ally
 			//cCamp camp = GameDataManager.Instance.GetCamp( _CAMP._FRIEND );
-			int nCount = GetCampNum(_CAMP._FRIEND );
-			if( nCount > 0 )
-			{
+			//int nCount = GetCampNum(_CAMP._FRIEND );
+			//if( nCount > 0 )
+			//{
 				nActiveCamp = _CAMP._FRIEND;  
-			}
-			else {
-				nActiveCamp = _CAMP._ENEMY; // set to enemy if no friend
-			}
+			//}
+			//else {
+			//	nActiveCamp = _CAMP._ENEMY; // set to enemy if no friend
+			//}
 
 			bRoundChange = false;
 		}
@@ -315,6 +319,15 @@ private static GameDataManager instance;
 
 			bRoundChange =  true;
 		}
+
+        // bypass friend if need 
+        if (nActiveCamp == _CAMP._FRIEND) {
+            int nCount = GetCampNum(_CAMP._FRIEND );
+            if (nCount <= 0)
+            {
+                return bRoundChange;
+            }
+        }
 
         // open . round change panel ui
         PanelManager.Instance.OpenUI(Panel_Round.Name); // pop ui first to block event check
@@ -998,18 +1011,22 @@ private static GameDataManager instance;
 
     public void ReLiveUndeadUnit( _CAMP camp ) // all  undead
 	{
-        List<int> list = new List<int>();
+        //List<int> list = new List<int>();
 
+        for( int i = 0; i < UnitPool.Count; i++) {
+            //foreach (KeyValuePair< int , cUnitData > pair in UnitPool) {
+            KeyValuePair<int, cUnitData> pair = UnitPool.ElementAt(i);
 
-        foreach (KeyValuePair< int , cUnitData > pair in UnitPool) {
-			if( camp != pair.Value.eCampID )
+            if ( camp != pair.Value.eCampID )
 				continue;
 			// relive
 			cUnitData p = pair.Value;
 			if( p.n_HP == 0 ){
                 // 判斷是否還有重生旗標
                 if ( p.IsTag( _UNITTAG._UNDEAD ) == false ) {
-                    list.Add(pair.Key);
+                    UnitPool.Remove(pair.Key);
+                    --i;
+                    //list.Add(pair.Key);
                     continue;
                 }
 
@@ -1018,7 +1035,9 @@ private static GameDataManager instance;
                     cUnitData pLeader = GetUnitDateByIdent(p.n_LeaderIdent);
                     if (pLeader == null || pLeader.IsDead())
                     {
-                        list.Add(pair.Key);
+                        UnitPool.Remove(pair.Key);
+                        //list.Add(pair.Key);
+                        --i;
                        // p.n_LeaderIdent = 0; // 清空 leader
                         continue; // leader 死亡，不重生
                     }
@@ -1033,10 +1052,10 @@ private static GameDataManager instance;
 		}
 
         // clear  no use undead
-        foreach (int id in list)
-        {
-            UnitPool.Remove( id ); 
-        }
+        //foreach (int id in list)
+        //{
+        //    UnitPool.Remove( id ); 
+        //}
 	}
 	/// <summary>
 	///  AI

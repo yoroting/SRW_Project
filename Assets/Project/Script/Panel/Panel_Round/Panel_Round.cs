@@ -16,7 +16,7 @@ public class Panel_Round : MonoBehaviour {
 		if( GameDataManager.Instance.nRound == 0 )
 			GameDataManager.Instance.nRound = 1;
 
-		UILabel lblcont = ContentObj.GetComponent< UILabel >();
+        UILabel lblcont = ContentObj.GetComponent< UILabel >();
 		if( lblcont != null )
 		{
 
@@ -47,8 +47,17 @@ public class Panel_Round : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-	
-	}
+        //// 如果沒 友方，直接關閉
+        //if (GameDataManager.Instance.nActiveCamp == _CAMP._FRIEND)
+        //{
+        //    int nCount = GameDataManager.Instance.GetCampNum(_CAMP._FRIEND);
+        //    if (nCount <= 0)
+        //    {
+        //        PanelManager.Instance.DestoryUI(Name); // can't destory in enable
+        //        return;
+        //    }
+        //}
+    }
 
 	// Update is called once per frame
 	void Update () {	

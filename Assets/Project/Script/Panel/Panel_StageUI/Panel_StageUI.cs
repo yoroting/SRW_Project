@@ -554,13 +554,11 @@ public class Panel_StageUI : MonoBehaviour
 
         //===================		// this will throw unit action or trig Event
         if (RunCampAI(GameDataManager.Instance.nActiveCamp) == false)
-        {
+        {         
             // no ai to run. go to next faction
             if (GameDataManager.Instance.NextCamp())
-            {
-                // 回和變更時，各 buff -1
+            {                
                 OnStageRoundEnd();    
-
             }
         }
 
@@ -3715,10 +3713,10 @@ public class Panel_StageUI : MonoBehaviour
 
         // re build done event 
         GameDataManager.Instance.EvtDonePool = MyTool.ConvetToIntInt( save.EvtDonePool );
-		
-		
-		// check if in the same stage
-		if (StageData != null && StageData.n_ID != save.n_StageID ) {
+        // GameDataManager.Instance.FlagPool =  save.FlagPool;
+        GameDataManager.Instance.FlagPool = save.FlagPool.ToDictionary( k => k.Key, k => k.Value );  ;
+        // check if in the same stage
+        if (StageData != null && StageData.n_ID != save.n_StageID ) {
 			// re load scene
 			GameDataManager.Instance.nStageID = save.n_StageID ;
 			// load const data
@@ -4334,7 +4332,7 @@ public class Panel_StageUI : MonoBehaviour
             if (pair.Value != null)
             {
                 // 全單位的buff 作用
-                pair.Value.pUnitData.Buffs.BuffTimeToDel( Evt.nCamp );
+            //    pair.Value.pUnitData.Buffs.BuffTimeToDel( Evt.nCamp );
 
                 // 指定陣營 才 weakup
                 if (pair.Value.eCampID == Evt.nCamp)
@@ -5393,19 +5391,25 @@ public class Panel_StageUI : MonoBehaviour
        
     }
 
+    public void OnStageNextCamp()
+    {
+        // call when camp change
+        foreach (KeyValuePair<int, Panel_unit> pair in IdentToUnit)
+        {
+            if (pair.Value != null)
+            {
+                // Buff time -1
+                if (pair.Value.pUnitData.Buffs.BuffNextCamp())
+                {
+                    pair.Value.pUnitData.SetUpdate(cAttrData._BUFF);
+                }
+         
+            }
+        }
+    }
     public void OnStageRoundEnd()
     {
-        //foreach (KeyValuePair<int, Panel_unit> pair in IdentToUnit)
-        //{
-        //    if (pair.Value != null)
-        //    {
-        //        // Buff time -1
-        //        pair.Value.pUnitData.Buffs.BuffRoundEnd();
-        //        // CD -1
-        //        pair.Value.pUnitData.CDs.DecAll();
-
-        //    }
-        //}
+        // call when round change
     }
     // add star
     public void AddStar( int nStar=1 )
@@ -5438,7 +5442,7 @@ public class Panel_StageUI : MonoBehaviour
         {
             if (pair.Value != null)
             {
-                //pair.Value.pUnitData.Buffs.BuffRoundEnd();
+                
                 if (bCheckCamp)
                 {
                     if (pair.Value.eCampID != eCamp)

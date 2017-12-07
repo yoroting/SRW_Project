@@ -68,7 +68,7 @@ public class mini_unitinfo : MonoBehaviour {
                 continue;
 
 
-            MyTool.SetBuffIcon(go, pair.Value.nID, pair.Value.nTime, pair.Value.nNum);
+            MyTool.SetBuffIcon(go, pair.Value.nID, pair.Value.GetUITime() , pair.Value.nNum );
            
         }
         //==============

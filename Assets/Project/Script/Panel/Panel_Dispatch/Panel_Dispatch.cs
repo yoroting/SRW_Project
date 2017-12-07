@@ -215,6 +215,7 @@ public class Panel_Dispatch : MonoBehaviour
 
         // release all unit
         //foreach (var pair in GameDataManager.Instance.StoragePool)
+        int nCount = 0;
         foreach (var pair in items)
         {
             if (pair.Value == null)
@@ -242,8 +243,14 @@ public class Panel_Dispatch : MonoBehaviour
                     unit.ReSize();
                     unit.SetData(pair.Value,2);  //設定為 待機
                 }
+                nCount++;
             }
         }
+        // 倉庫人數太少，以倉庫人數為最大值
+        if (nCount < nDispatchNum ) {
+            nDispatchNum = nCount;
+        }
+
 
         grid.repositionNow = true;  // for re pos
         grid.Reposition();

@@ -424,11 +424,11 @@ public class cSaveData{
         //			GameDataManager.Instance.nFriendBGM = nFriendBGM;	// 友方
 
 
-        GameDataManager.Instance.ItemPool = ItemPool ;			// item list
+        GameDataManager.Instance.ItemPool = ItemPool.ToList<int>()  ;			// item list
 		GameDataManager.Instance.ImportEventPool = ImportEventPool;
 		GameDataManager.Instance.ImportStoragePool( StoragePool );
         
-        GameDataManager.Instance.FlagPool = FlagPool;           // flag
+        GameDataManager.Instance.FlagPool = FlagPool.ToDictionary(k => k.Key, k => k.Value);   //  clone pool to avoid smart pool fail
         // 由phase 決定目前該切到哪個場僅. this should need a 
         if (GameDataManager.Instance.FlagPool == null)
         {

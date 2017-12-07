@@ -94,7 +94,7 @@ public class Panel_MiniUnitInfo : MonoBehaviour {
 				continue;
 
 
-            MyTool.SetBuffIcon( go , pair.Value.nID, pair.Value.nTime, pair.Value.nNum );
+            MyTool.SetBuffIcon( go , pair.Value.nID, pair.Value.nTime, pair.Value.GetUITime() );
 			//BuffIcon icon = go.GetComponent< BuffIcon >();
 			//if( icon != null )
 			//	icon.SetBuffData( pair.Value.nID , pair.Value.nTime , pair.Value.nNum  );

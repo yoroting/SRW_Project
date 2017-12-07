@@ -91,6 +91,19 @@ public class cBuffData
 		}
 		return null;
 	}
+    public int GetUITime()
+    {
+        int n = nTime;
+        if (nTime > 0)
+        {
+            n = nTime / 3;
+            if ( (nTime%3) !=0 )  {
+                n++;
+            }
+        }
+
+        return n;
+    }
 }
 
 // for unit to manage buff
@@ -99,12 +112,12 @@ public class cBuffs
 	cUnitData Owner;		// owner
 	public cBuffs( cUnitData unit ){
 		Pool = new Dictionary< int , cBuffData > ();
-		RemoveList = new List< int >();
+		//RemoveList = new List< int >();
 		Owner = unit;
 	}
 
 	public Dictionary< int , cBuffData > Pool;
-	List< int > RemoveList ;
+	//List< int > RemoveList ;
     
     // clear all buff
     public void Reset()
@@ -134,6 +147,7 @@ public class cBuffs
 		// always re cal next update
 		Owner.SetUpdate ( cAttrData._BUFF );
 
+        
         // 預設為增加 1 stack
         if (nNum == 0)
             nNum = 1;
@@ -154,7 +168,7 @@ public class cBuffs
                     }
                 }
                 else {
-                    olddata.nNum = 1; // no stack data always = 1
+                    olddata.nNum = 1 ; // no stack data always = 1
                 }
 				// refresh time
 				olddata.nCastIdent = nCastIdent;
@@ -162,9 +176,6 @@ public class cBuffs
 				olddata.nTargetIdent = nTargetId;
 				olddata.nTime = buff.n_DURATION;
 				data = olddata;
-
-				//olddata.nTime =buff.n_DURATION;
-				//return olddata;
 			}
 			else{
 				// diff buff. check which id high lv
@@ -184,6 +195,13 @@ public class cBuffs
 			data = CreateData(buff, nCastIdent , nSkillID ,nTargetId  , nNum);
 			Pool.Add( buff.n_STACK ,  data );
 		}
+        // 特別機制， 讓時間* 陣營數量，然後 每次 換陣營 都全部運算
+        if (data != null) {
+            if (data.nTime > 0)
+            {
+                data.nTime *= Config.CampNum;
+            }
+        }
 
 		// play buff fx
 		if (buff.n_BUFF_FXS > 0) {
@@ -214,32 +232,29 @@ public class cBuffs
 	}
 
 	public void DelBuffBySkillID( int skillid ){
-		foreach( KeyValuePair<int , cBuffData>  pair in Pool )
-		{
-			if( pair.Value.nSkillID == skillid ){
-				RemoveList.Add( pair.Key );
-			}
+        for (int i = 0; i < Pool.Count; i++)
+        {
+            KeyValuePair<int, cBuffData> pair = Pool.ElementAt(i);
+            if ( pair.Value.nSkillID == skillid ){
+                Pool.Remove(pair.Key);
+                i--;
+            }
 		}
-
-		foreach( int id in RemoveList ){
-			Pool.Remove( id );
-		}
-		RemoveList.Clear ();
 	}
 
 	public void DelBuffByCastID( int castid ){
 
-		foreach( KeyValuePair<int , cBuffData>  pair in Pool )
-		{
+        for (int i = 0; i < Pool.Count; i++)
+        {
+            KeyValuePair<int, cBuffData> pair = Pool.ElementAt(i);
 			if( pair.Value.nCastIdent == castid ){
-				RemoveList.Add( pair.Key );
-			}
+                Pool.Remove(pair.Key);
+                i--;
+                //RemoveList.Add( pair.Key );
+            }
 		}
 		
-		foreach( int id in RemoveList ){
-			Pool.Remove( id );
-		}
-		RemoveList.Clear ();
+
 	}
 
 
@@ -289,11 +304,14 @@ public class cBuffs
 		return null;
 	}
 
-    public bool BuffCheckCancel() {       
-        cUnitData unit_e = GameDataManager.Instance.GetUnitDateByIdent(Owner.FightAttr.TarIdent);
+    public bool BuffCheckCancel() {
 
-        foreach (KeyValuePair<int, cBuffData> pair in Pool)
+        bool bUpdate = false;
+
+        cUnitData unit_e = GameDataManager.Instance.GetUnitDateByIdent(Owner.FightAttr.TarIdent);        
+        for (int i = 0; i < Pool.Count; i++)
         {
+            KeyValuePair<int, cBuffData> pair = Pool.ElementAt(i);
             // condition
             cUnitData unit = null;
             if (pair.Value.nTargetIdent > 0)
@@ -311,18 +329,14 @@ public class cBuffs
 
             //if( MyScript.Instance.CheckSkillCond( pair.Value.tableData.s_BUFF_CONDITON , this.Owner , unit_e ) == true )
             if (pair.Value.CancelCondition.Check(pair.Value, this.Owner, unit, pair.Value.nSkillID, pair.Value.nID))
-            {
-                RemoveList.Add( pair.Key );
+            {               
+                Pool.Remove(pair.Key);
+                i--;  // 重新判斷 當前 index 
+                bUpdate = true;
             }
         }
         // have buff need clear
-        foreach (int id in RemoveList)
-        {
-            Pool.Remove(id);
-        }
 
-        bool bUpdate = RemoveList.Count > 0;
-        RemoveList.Clear();
         return bUpdate;
     }
 
@@ -385,8 +399,45 @@ public class cBuffs
 		return 0;
 	}
 
-	// run 1 round .  buff time-1 with all >= 1 . remove buff if time become 0
-	public bool BuffTimeToDel( _CAMP ecamp )
+    public bool BuffNextCamp()
+    {
+        bool bUpdate = false;
+
+        for (int i = 0; i < Pool.Count; i++)
+        {
+            KeyValuePair<int, cBuffData> pair = Pool.ElementAt(i);
+            if (pair.Value.nTime > 0) // 新作法， 一回合 3 tick
+            {
+                // 以下判斷 是否為 作用回合
+
+                //// 如果不是自己施展的
+                //if (pair.Value.nCastIdent > 0 && (pair.Value.nCastIdent != Owner.n_Ident))
+                //{
+                //    cUnitData unit = pair.Value.GetCastUnit();
+                //    if (unit != null)
+                //    {
+                //        if (unit.eCampID != ecamp)
+                //        {
+                //            continue; // 不是 計數 回合， 不扣除次數
+                //        }
+                //    }
+                //}
+
+                //  以下判斷 是否要移除
+                if (--pair.Value.nTime == 0) //移除結束的BUFF
+                {
+                    // 只能移除一層
+
+                    Pool.Remove(pair.Key);
+                    i--;  // 重新判斷 當前 index 
+                    bUpdate = true;
+                }
+            }
+        }
+        return bUpdate;
+    }
+    // run 1 round .  buff time-1 with all >= 1 . remove buff if time become 0
+    public bool BuffTimeToDel( _CAMP ecamp )
 	{
         // 作用一次 buff
         //OnDo( null , ref act.HitResult);
@@ -446,13 +497,16 @@ public class cBuffs
 	// remove all buff that time = -1 
 	public bool BuffFightEnd(  )
 	{
-		// del buff when fight end
-		//List< int > lst = new List< int >();
-		cUnitData unit_e = GameDataManager.Instance.GetUnitDateByIdent ( Owner.FightAttr.TarIdent );
-		foreach( KeyValuePair<int , cBuffData>  pair in Pool )
-		{
-			//if( pair.Value.nCastIdent == castid )
-			if( pair.Value.nTime == 0 )
+        // del buff when fight end
+        //List< int > lst = new List< int >();
+        bool bUpdate = false;
+
+        cUnitData unit_e = GameDataManager.Instance.GetUnitDateByIdent ( Owner.FightAttr.TarIdent );
+        for (int i = 0; i < Pool.Count; i++)
+        {
+            KeyValuePair<int, cBuffData> pair = Pool.ElementAt(i);
+            //if( pair.Value.nCastIdent == castid )
+            if ( pair.Value.nTime == 0 )
 			{
 				cUnitData unit = null ;
 				if( pair.Value.nTargetIdent > 0 ){
@@ -466,16 +520,20 @@ public class cBuffs
 				}
 				// check buff end
 				if( pair.Value.CancelCondition.Check( pair.Value , this.Owner , unit , pair.Value.nSkillID , pair.Value.nID ) )
-				{				
-					RemoveList.Add( pair.Key );
-				}
+				{
+                    Pool.Remove(pair.Key);// 到零了要刪除
+                    i--;
+                    bUpdate = true;
+                }
 			}
 			else if( pair.Value.nTime == -1 ){ 
 				if( Owner.IsStates( _FIGHTSTATE._DAMAGE ) ){// 本次戰鬥有實際造成傷害
                     //數量減少一次
                     if ( -- pair.Value.nNum <= 0)
                     {
-                        RemoveList.Add( pair.Key );// 到零了要刪除
+                        Pool.Remove(pair.Key);// 到零了要刪除
+                        i--;
+                        bUpdate = true;
                     }
 
 
@@ -485,39 +543,37 @@ public class cBuffs
 				if( Owner.IsStates( _FIGHTSTATE._BEDAMAGE ) == true ){
                     if ( -- pair.Value.nNum <= 0)
                     {
-                        RemoveList.Add(pair.Key);// 到零了要刪除
+                        Pool.Remove(pair.Key);// 到零了要刪除
+                        i--;
+                        bUpdate = true;                       
                     }
                 }
 			}
 		}		
 		
-		foreach( int id in RemoveList ){
-			Pool.Remove( id );
-		}
-		bool bUpdate = RemoveList.Count > 0;
-		RemoveList.Clear ();
+		
 		return bUpdate;
 	}
 
 	// clear when relive / stage end
 	public bool BuffRelive()
 	{
-		// del buff when fight end
-//		List< int > lst = new List< int >();
-		foreach( KeyValuePair<int , cBuffData>  pair in Pool )
-		{
-			//if( pair.Value.nCastIdent == castid )
-			if( pair.Value.nTime != 0 )
+        // del buff when fight end
+        //		List< int > lst = new List< int >();
+        bool bUpdate = false;
+        for (int i = 0; i < Pool.Count; i++)
+        {
+            KeyValuePair<int, cBuffData> pair = Pool.ElementAt(i);
+            //if( pair.Value.nCastIdent == castid )
+            if ( pair.Value.nTime != 0 )
 			{
-				RemoveList.Add( pair.Key );
+                Pool.Remove(pair.Key);// 到零了要刪除
+                i--;
+                bUpdate = true;
+                
 			}
-		}		
+		}				
 		
-		foreach( int id in RemoveList ){
-			Pool.Remove( id );
-		}
-		bool bUpdate = RemoveList.Count > 0;
-		RemoveList.Clear ();
 		return bUpdate;
 	}
 

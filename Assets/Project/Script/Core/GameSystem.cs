@@ -189,8 +189,8 @@ public class GameSystem : MonoBehaviour {
 #endif
 #if UNITY_EDITOR
 
-        isPaused = !hasFocus;
-        System.GC.Collect();			// Free memory resource here
+//        isPaused = !hasFocus;  // no pause for develop esay
+        //System.GC.Collect();			// Free memory resource here
 #endif      
     }
 

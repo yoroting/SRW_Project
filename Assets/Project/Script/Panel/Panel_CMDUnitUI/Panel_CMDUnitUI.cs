@@ -552,7 +552,9 @@ public class Panel_CMDUnitUI : MonoBehaviour
     }
 	public void  RoundEndCmd(  )
 	{
-		GameDataManager.Instance.NextCamp();
+        
+
+        GameDataManager.Instance.NextCamp();
 
 		// restore all allay cmd times;
 		EndCMDUI (); // really close
