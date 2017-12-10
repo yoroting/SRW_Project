@@ -63,9 +63,10 @@ public class Panel_SaveLoad : MonoBehaviour {
 	{
         n_Mode = 0; // save mode
         ePhase = phase;
+        UIGrid grid = GridObj.GetComponent<UIGrid>();
         
         MyTool.SetLabelText (lblTitleObj, "紀錄");
-		MyTool.DestoryGridItem ( GridObj );
+		MyTool.DestoryGridItem (grid);
         Reload();
         //for (int i = 1; i <= 4; i++) {
         //	GameObject go = ResourcesManager.CreatePrefabGameObj( GridObj , "Prefab/Item_SaveData" ); 
@@ -79,20 +80,20 @@ public class Panel_SaveLoad : MonoBehaviour {
         //		obj.SetData( i );
         //	}
         //}
-
+        MyTool.ResetScrollView(grid);
 
     }
 	public void SetLoad (  _SAVE_PHASE phase )
 	{
         n_Mode = 1; // Load mode
         ePhase = phase;
-        
+        UIGrid grid = GridObj.GetComponent<UIGrid>();
         MyTool.SetLabelText (lblTitleObj, "讀取");
-		MyTool.DestoryGridItem ( GridObj );
+		MyTool.DestoryGridItem (grid);
         Reload();
-        
-  //      for (int i = 1; i <= 4; i++) {
-  //	GameObject go = ResourcesManager.CreatePrefabGameObj( GridObj , "Prefab/Item_SaveData" ); 
+
+        //      for (int i = 1; i <= 4; i++) {
+        //	GameObject go = ResourcesManager.CreatePrefabGameObj( GridObj , "Prefab/Item_SaveData" ); 
 
         //	if( go == null )
         //		continue;
@@ -105,7 +106,7 @@ public class Panel_SaveLoad : MonoBehaviour {
         //		obj.SetData( i );
         //	}
         //}
-
+        MyTool.ResetScrollView(grid);
     }
 	void OnCancelClick(GameObject go)
 	{
@@ -178,7 +179,8 @@ public class Panel_SaveLoad : MonoBehaviour {
         string spage = string.Format( "{0}/{1}", n_Page+1 , n_MaxPage );
         MyTool.SetLabelText(lblPageObj, spage);
         //  n_MaxPage;
-        MyTool.DestoryGridItem(GridObj);
+        UIGrid grid = GridObj.GetComponent<UIGrid>();
+        MyTool.DestoryGridItem(grid);
         int nShift = n_Page * n_MaxRecords;
         for (int i = 1; i <= n_MaxRecords; i++)
         {
@@ -201,5 +203,6 @@ public class Panel_SaveLoad : MonoBehaviour {
                 obj.SetData( nIdx );
             }
         }
+        MyTool.ResetScrollView(grid);
     }
 }

@@ -564,10 +564,7 @@ public class MyTool {
         }
         UIScrollView sv = grid.transform.parent.GetComponent<UIScrollView>();
         if (sv != null) {
-            sv.ResetPosition();
-            //if (sv.verticalScrollBar != null) {
-            //    sv.verticalScrollBar.value = 0.0f;
-            //}
+            sv.ResetPosition();  // call before repop            
         }
 
 
@@ -644,8 +641,26 @@ public class MyTool {
 		}
 	}
 
+
+    public static void ResetScrollView(UIGrid grid)
+    {
+        if (grid == null)
+            return;
+        grid.repositionNow = true;
+
+        UIScrollView sv = grid.transform.parent.GetComponent<UIScrollView>();
+        if (sv != null)
+        {
+            sv.ResetPosition();
+        }
+    }
+
+
     public static void ResetScrollView(GameObject go)
     {
+        if (go == null)
+            return;
+
         UIScrollView sv = go.GetComponent<UIScrollView>();
         if ( sv != null ) {
             sv.ResetPosition();

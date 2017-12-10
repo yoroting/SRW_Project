@@ -72,10 +72,16 @@ public class Panel_SchoolList : MonoBehaviour {
         // create school data item
         ItemObj.RecycleAll();
         // clear
-        while (GridObj.transform.childCount > 0)
+        //while (GridObj.transform.childCount > 0)
+        //{
+        //    DestroyImmediate(GridObj.transform.GetChild(0).gameObject);
+        //}
+        UIGrid grid = GridObj.GetComponent<UIGrid>();
+        if (grid != null)
         {
-            DestroyImmediate(GridObj.transform.GetChild(0).gameObject);
+            grid.repositionNow = true;
         }
+        MyTool.DestoryGridItem( grid );
         // create list
         if (pUnitData == null)
             return;
@@ -146,17 +152,10 @@ public class Panel_SchoolList : MonoBehaviour {
                 nCount++;
             }
         }
-        // rescroll 
-        UIGrid grid = GridObj.GetComponent<UIGrid>();
-        if (grid != null)
-        {
-            grid.repositionNow = true;
-        }
+
         // show active school
-        if (svSchList != null)
-        {
-            svSchList.ResetPosition();
-        }
+        MyTool.ResetScrollView(grid);
+      
 
         MyTool.SetLabelText(ContentObj, "");
 

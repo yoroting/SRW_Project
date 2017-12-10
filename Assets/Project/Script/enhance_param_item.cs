@@ -109,7 +109,21 @@ public class enhance_param_item : MonoBehaviour {
 
     public bool CheckCanEnhance()
     {
-        return ( (m_nMaxLv == 0) || (m_nMaxLv > m_nCurLv) );
+        if ((m_nMaxLv > 0) && (m_nMaxLv <= m_nCurLv)) {
+            return false;
+        }
+
+        // 確認關卡修練上限
+        STAGE_DATA stage = ConstDataManager.Instance.GetRow<STAGE_DATA>(GameDataManager.Instance.nStageID);
+        if (stage != null)
+        {
+            if (stage.n_ENHANCE_LIMIT > 0 && m_nCurLv >= stage.n_ENHANCE_LIMIT)
+            {                
+                return false;
+            }
+        }
+
+        return true;
     }
 
 
@@ -120,7 +134,17 @@ public class enhance_param_item : MonoBehaviour {
         {
             return;
         }
-
+        // 確認關卡修練上限
+        //STAGE_DATA stage = ConstDataManager.Instance.GetRow<STAGE_DATA>(GameDataManager.Instance.nStageID);
+        //if (stage != null)
+        //{
+        //    if (stage.n_ENHANCE_LIMIT > 0 && m_nCurLv >= stage.n_ENHANCE_LIMIT)
+        //    {
+        //        Panel_Tip.OpenUI("強化上限未開放");
+        //        GameSystem.BtnSound(2); // error
+        //        return;
+        //    }
+        //}
 
         m_nCurLv++;
 

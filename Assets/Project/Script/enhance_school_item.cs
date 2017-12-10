@@ -119,16 +119,30 @@ public class enhance_school_item : MonoBehaviour {
 
     public bool CheckCanEnhance()
     {
+        if ((m_nMaxLv > 0) && (m_nMaxLv <= m_nCurLv))
+        {
+            return false;
+        }
+
         // 被角色誤性卡住
         if (m_pLinkUnit != null) {
             if ( m_pLinkUnit.cCharData.n_RANK != 0 && m_pLinkUnit.cCharData.n_RANK<= m_nCurLv)
             {
                 return false;
             }
-
         }
 
-        return ((m_nMaxLv == 0) || (m_nMaxLv > m_nCurLv));
+        // 確認關卡修練上限
+        STAGE_DATA stage = ConstDataManager.Instance.GetRow<STAGE_DATA>(GameDataManager.Instance.nStageID);
+        if (stage != null)
+        {
+            if (stage.n_ENHANCE_LIMIT > 0 && m_nCurLv >= stage.n_ENHANCE_LIMIT)
+            {
+                return false;
+            }
+        }
+        // 
+        return true;
     }
 
     public void OnEnhanceClick(GameObject go)
@@ -138,7 +152,15 @@ public class enhance_school_item : MonoBehaviour {
         {
             return;
         }
-
+        //// 確認關卡修練上限
+        //STAGE_DATA stage = ConstDataManager.Instance.GetRow<STAGE_DATA>(GameDataManager.Instance.nStageID);
+        //if( stage != null ) {
+        //    if (stage.n_ENHANCE_LIMIT > 0 && m_nCurLv >= stage.n_ENHANCE_LIMIT ) {                
+        //        Panel_Tip.OpenUI( "強化上限未開放" );
+        //        GameSystem.BtnSound(2); // error
+        //        return;
+        //    }
+        //}
 
         m_nCurLv++;
 

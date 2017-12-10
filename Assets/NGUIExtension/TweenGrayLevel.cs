@@ -5,19 +5,22 @@ using System.Collections;
 public class TweenGrayLevel : UITweener {
 	public float from;
 	public float to;
-	
+    public float fPoint; 
+
 	UITexture mUITexture;
 	public UITexture CachedUITexture { get { if (mUITexture == null) mUITexture = GetComponent<UITexture>(); return mUITexture; } }
 	public Material material { get { return CachedUITexture.drawCall.dynamicMaterial; } }
 	override protected void OnUpdate (float factor, bool isFinished) {		
 		float newPoint = from * (1f - factor) + to * factor;
+        fPoint = newPoint;
 
-		if(CachedUITexture == null) return;
+        if (CachedUITexture == null) return;
 		if(CachedUITexture.drawCall == null) return;
 		if(material == null) return;
 
-		material.SetFloat("_GrayLevelScale", newPoint);
-	}
+       
+    	material.SetFloat("_GrayLevelScale", newPoint);
+    }
 	
 	/// <summary>
 	/// Start the tweening operation.

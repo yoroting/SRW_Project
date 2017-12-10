@@ -378,6 +378,10 @@ public class Panel_Mainten : MonoBehaviour {
         }
 
         grid.repositionNow = true;  // for re pos
+
+        // show active school
+        MyTool.ResetScrollView(grid);
+
     }
 
 }

@@ -71,6 +71,8 @@ public class mini_unitinfo : MonoBehaviour {
             MyTool.SetBuffIcon(go, pair.Value.nID, pair.Value.GetUITime() , pair.Value.nNum );
            
         }
+
+        MyTool.ResetScrollView(BuffGrid );
         //==============
         //UIGrid grid = BuffGrid.GetComponent<UIGrid>();
         //if (grid != null)

@@ -105,8 +105,9 @@ public class Panel_MiniUnitInfo : MonoBehaviour {
 		if (grid != null) {
 			grid.repositionNow = true ;
 			grid.Reposition();
-		}
-
+            MyTool.ResetScrollView(grid);
+        }
+        
 
 	}
 

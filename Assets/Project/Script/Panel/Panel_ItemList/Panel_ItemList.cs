@@ -57,15 +57,21 @@ public class Panel_ItemList : MonoBehaviour
 
     public void ReloadList()
     {
+        UIGrid grid = GridObj.GetComponent<UIGrid>();
+        if (grid != null)
+        {
+            grid.repositionNow = true;
+        }
         // create school data item
         ItemObj.RecycleAll();
 
         // clear
-        while (GridObj.transform.childCount > 0)
-        {
+        MyTool.DestoryGridItem(grid );
+        //while (GridObj.transform.childCount > 0)
+        //{
 
-            DestroyImmediate(GridObj.transform.GetChild(0).gameObject);
-        }
+        //    DestroyImmediate(GridObj.transform.GetChild(0).gameObject);
+        //}
 
         // 先整理各 item pool
        // Dictionary < int , int > tmpItems = new Dictionary<int, int>();
@@ -118,12 +124,8 @@ public class Panel_ItemList : MonoBehaviour
 
         // rescroll 
         m_SB_Ver.value = 0.0f;
-        UIGrid grid = GridObj.GetComponent<UIGrid>();
-        if ( grid!= null ) {
-            grid.repositionNow = true;
-        }
-        
 
+        MyTool.ResetScrollView(grid);
 
     }
 

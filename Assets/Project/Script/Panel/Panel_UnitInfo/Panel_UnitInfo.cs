@@ -382,8 +382,8 @@ public class Panel_UnitInfo : MonoBehaviour {
     void UpdateAbility()
 	{
 		int nCharlv = pUnitData.n_Lv;
-
-		MyTool.DestoryGridItem ( AbilityGrid );
+        UIGrid grid = AbilityGrid.GetComponent<UIGrid>();
+        MyTool.DestoryGridItem ( AbilityGrid );
 
 		foreach (KeyValuePair< int , int > pair in pUnitData.AbilityPool ) {
 			if( pair.Value > nCharlv )
@@ -405,9 +405,9 @@ public class Panel_UnitInfo : MonoBehaviour {
             }
 			
 		}
-	//	UIGrid grid = AbilityGrid.GetComponent<UIGrid>(); 
-	//	grid.repositionNow = true;		// need this for second pop to re pos
-
+        //	UIGrid grid = AbilityGrid.GetComponent<UIGrid>(); 
+        //	grid.repositionNow = true;		// need this for second pop to re pos
+        MyTool.ResetScrollView( grid);
 	}
 
  
@@ -504,8 +504,8 @@ public class Panel_UnitInfo : MonoBehaviour {
 	{
         if (BuffGrid == null)
             return;
-
-		MyTool.DestoryGridItem ( BuffGrid );
+        UIGrid grid = BuffGrid.GetComponent<UIGrid>();
+        MyTool.DestoryGridItem (grid);
 
 		foreach ( KeyValuePair< int , cBuffData > pair in pUnitData.Buffs.Pool ) {
 			if( pair.Value.nTime == 0 ) // never 0  
@@ -524,11 +524,15 @@ public class Panel_UnitInfo : MonoBehaviour {
 		//	UIEventListener.Get(go).onClick += OnBuffClick; // 
 
 		}
+        MyTool.ResetScrollView( grid );
+
 	}
 
 	void UpdatePass ()
 	{
-		MyTool.DestoryGridItem ( PassGrid );
+        UIGrid grid = PassGrid.GetComponent<UIGrid>();
+
+        MyTool.DestoryGridItem ( PassGrid );
 
 		foreach ( KeyValuePair< int , cBuffData > pair in pUnitData.Buffs.Pool ) {
 			if( pair.Value.nTime != 0 ) // only 0  
@@ -564,7 +568,7 @@ public class Panel_UnitInfo : MonoBehaviour {
             }			
 		}
 
-        MyTool.ResetScrollView(ScrollViewPass);
+        MyTool.ResetScrollView(grid);
 
     }
 

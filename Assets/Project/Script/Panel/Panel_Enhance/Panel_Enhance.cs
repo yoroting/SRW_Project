@@ -17,10 +17,13 @@ public class Panel_Enhance : MonoBehaviour
     public item_param[] lbl_param_list;
     public enhance_param_item [] enhance_param_list;
 
+
+    public GameObject lblRank;
+    public GameObject lblLimit;
     //  public GameObject GridExt; // GRID obj
     //  public GameObject GridInt;
 
-//    public GameObject SchItemObj;  // school item
+    //    public GameObject SchItemObj;  // school item
 
     //public GameObject lblOrgMar;
     //public GameObject lblOrgHp;
@@ -213,7 +216,14 @@ public class Panel_Enhance : MonoBehaviour
     // Uidate UI
     public void Reload()
     {
-    //    sprSchList.SetActive(false);
+        // 確認關卡修練上限
+        STAGE_DATA stage = ConstDataManager.Instance.GetRow<STAGE_DATA>(GameDataManager.Instance.nStageID);
+        if (stage != null)
+        {            
+            MyTool.SetLabelInt(lblLimit, stage.n_ENHANCE_LIMIT);
+        }
+       
+        //    sprSchList.SetActive(false);
         if (pTmpData != null)
         {
             // remove item?
@@ -221,6 +231,9 @@ public class Panel_Enhance : MonoBehaviour
             pTmpData.UpdateAttr();
             pTmpData.UpdateBuffConditionAttr();
             pTmpData.UpdateBuffConditionEffect();
+
+            MyTool.SetLabelInt(lblRank, pTmpData.cCharData.n_RANK);
+
         }
 
         // create school data item

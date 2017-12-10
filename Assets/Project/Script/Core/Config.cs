@@ -69,7 +69,7 @@ public class Config
 	public static float CiritRatio	=1.5f;          // 150 %
     public static int   CampNum = 3;   // 陣營數
 
-    public static bool GOD = true;
+    public static bool GOD = false;
 	public static bool MOBAI = true;				// all mob no atk 
 	public static bool DRAWGRID = false;
 	public static bool KILL_MODE = false;

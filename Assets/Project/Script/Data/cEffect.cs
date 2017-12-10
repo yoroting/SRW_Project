@@ -510,8 +510,11 @@ public class HITBUFF_E: cEffect
 	
 	override public void _Hit( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ 
 		if (Defer != null) {
-			if( Defer.IsStates( _FIGHTSTATE._DODGE ) )
-				return ;
+            if (Defer.IsStates(_FIGHTSTATE._DODGE))
+            {
+                if( MyTool.IsDamageSkill(nSkillID) ) // 傷害型技能才能躲
+                    return;
+            }
 			//	list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF ,Defer.n_Ident , nBuffID ) );
 			int nAtkId = 0;			if( Atker != null )nAtkId = Atker.n_Ident;
 			list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF , Defer.n_Ident , iValue, nAtkId , nSkillID ,Defer.n_Ident  ) );

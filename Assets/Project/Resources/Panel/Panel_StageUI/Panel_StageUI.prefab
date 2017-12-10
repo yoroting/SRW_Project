@@ -1082,6 +1082,7 @@ MonoBehaviour:
   m_bIsSkipMode: 0
   m_bWaitSoundFile: 
   nEventTriggerIdent: 0
+  m_tmpCampList: []
 --- !u!114 &11402340
 MonoBehaviour:
   m_ObjectHideFlags: 1

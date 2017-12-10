@@ -19,8 +19,17 @@ public class SRW_AVGObj : MonoBehaviour {
     // Use this for initialization
 
     void SetMaterialParamCB(Material mat)
-    {
-      //  mat.SetFloat("_xx", 1.0f);
+    {       
+        //  mat.SetFloat("_xx", 1.0f);
+        TweenGrayLevel tw = _FaceTexObj.GetComponent<TweenGrayLevel>();
+        if (tw)
+        {
+            mat.SetFloat("_GrayLevelScale", tw.fPoint); // 防止 tranform move 後，NGUI reset mat 而沒有  graylevel
+        }
+        else {
+    //        mat.SetFloat("_GrayLevelScale", 0 ); // no gray
+        }
+      //  mat.SetFloat("_GrayLevelScale", 0.5f );
     }
 
     void Awake(){ // construct
@@ -39,7 +48,17 @@ public class SRW_AVGObj : MonoBehaviour {
         transform.localScale = Vector3.one;
 		if (_FaceTexObj != null) {
 			_FaceTexObj.alpha = 1.0f;
-		}
+            // clear face tween com
+            // 由於 是 create new prefab 。所以 mat 都是 新的
+        //    UITexture texture = _FaceTexObj.GetComponent<UITexture>();
+      //      texture.drawCall.dynamicMaterial.SetFloat("_GrayLevelScale", 0.0f);
+
+            //UITweener[] tws = _FaceTexObj.GetComponents<UITweener>();
+            //foreach (UITweener tw in tws)
+            //{
+            //    Destroy(tw);
+            //}
+        }
 
         ClearFlag();
 	}
@@ -310,7 +329,7 @@ public class SRW_AVGObj : MonoBehaviour {
 	public void SetDead(  )
 	{
        // TweenGrayLevel tw = TweenGrayLevel.Begin<TweenGrayLevel>( _FaceTexObj.gameObject , 2.0f);
-        TweenGrayLevel tw = GrayLevelHelper.StartTweenGrayLevel(_FaceTexObj, 2.0f);
+        TweenGrayLevel tw = GrayLevelHelper.StartTweenGrayLevel(_FaceTexObj, 2.0f );
         if (tw) {
 			bIsDeading = true;
 			tw.from = 0.0f;
@@ -328,8 +347,12 @@ public class SRW_AVGObj : MonoBehaviour {
     }
     public void SetGray( int nDisable )
     {
+        // 灰階在 GO移動時會變回彩色的原因是 NGUI 內部在 tranform 改變時，會偷換 material 來整理 drawcall
+        // 連帶使 shader 還原。
+
         UITexture texture = _FaceTexObj.GetComponent<UITexture>();
-        texture.material = new Material(Shader.Find("Custom/GrayLevel"));
+//        texture.drawCall.dynamicMaterial.SetFloat("_GrayLevelScale", 1.0f);
+        texture.material = new Material(Shader.Find("Custom/GrayLevel")); // 更換shader
         texture.material.SetFloat("_GrayLevelScale", 1.0f );
 
         return;

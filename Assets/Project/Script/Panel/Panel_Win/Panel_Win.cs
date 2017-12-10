@@ -37,7 +37,10 @@ public class Panel_Win : MonoBehaviour {
                 nFaceID = stage.n_MVP;
             }
         }
-        
+
+        // show active school
+        MyTool.ResetScrollView(m_gridReward);
+
         m_texFace.mainTexture = MyTool.GetCharTexture(nFaceID , 1  ) ;
 
         m_bIsAllReady = false;

@@ -355,18 +355,11 @@ public class Panel_Skill : MonoBehaviour {
 
 		// for grid re pos
 		UIGrid grid = SkillGrid.GetComponent<UIGrid>(); 
-		grid.repositionNow = true;		// need this for second pop to re pos
-		
-		//CastNote.SetActive( false ); 
+		grid.repositionNow = true;      // need this for second pop to re pos
 
-		UIScrollView uiScrollView = ScrollView.GetComponent<UIScrollView> ();
-		if (uiScrollView != null) {
-            grid.Reposition();             // need this for reset grid pos            v
-            uiScrollView.ResetPosition();
-          //  uiScrollView.Scroll(1.0f);
-
-
-        }
+        //CastNote.SetActive( false ); 
+        MyTool.ResetScrollView(grid);
+       
 
         // 無技能
         ShowMpCost( 0 );

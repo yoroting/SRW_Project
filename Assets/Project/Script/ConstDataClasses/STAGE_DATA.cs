@@ -10,6 +10,7 @@ public class STAGE_DATA : ConstDataRow<STAGE_DATA>
 	public string s_LOST_CONDITION;
 	public int n_MOB_LV;
 	public int n_MOB_ENHANCE;
+	public int n_ENHANCE_LIMIT;
 	public int n_MVP;
 	public int n_MONEY;
 	public int n_NEXT_STORY;
