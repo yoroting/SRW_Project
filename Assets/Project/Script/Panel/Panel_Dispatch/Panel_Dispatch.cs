@@ -9,7 +9,7 @@ public class Panel_Dispatch : MonoBehaviour
 {
     public const string Name = "Panel_Dispatch";
 
-    public GameObject btnDispatch;
+    public UIButton btnDispatch;
     public GameObject lblNum;
     public GameObject GridUnitList;
     public GameObject CharUnit;
@@ -28,7 +28,7 @@ public class Panel_Dispatch : MonoBehaviour
     void Start()
     {
        // DispatchList = new List<int>();
-        UIEventListener.Get(btnDispatch).onClick = OnDispatch; // cheat
+        UIEventListener.Get(btnDispatch.gameObject).onClick = OnDispatch; // cheat
         CharUnit.CreatePool(5);
 
         if (CharUnit != null)
@@ -60,6 +60,10 @@ public class Panel_Dispatch : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        if (btnDispatch != null) {
+            btnDispatch.isEnabled = (DispatchList.Count >= nDispatchNum );
+        }
 
     }
 

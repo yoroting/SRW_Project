@@ -5,6 +5,9 @@ public class Mainten_Unit : MonoBehaviour
 {
 
     public GameObject EnhanceBtn;
+    public GameObject GoBtn;
+    public GameObject CancelBtn;
+
     public GameObject InfoBtn;
 
     private cUnitData pUnitData;
@@ -26,7 +29,7 @@ public class Mainten_Unit : MonoBehaviour
     public GameObject HpObj;
     public GameObject MpObj;
 
-
+    public GameObject GoObj;  // 出擊label
     public GameObject FuncObj;  // 功能名稱
 
     public int m_nType = 0;
@@ -35,7 +38,11 @@ public class Mainten_Unit : MonoBehaviour
     void Start()
     {
 
-        UIEventListener.Get(InfoBtn).onClick = OnUnitInfoClick;
+        // UIEventListener.Get(InfoBtn).onClick = OnUnitInfoClick;
+        UIEventListener.Get(this.gameObject).onClick = OnUnitInfoClick;
+        UIEventListener.Get(EnhanceBtn).onClick = OnUnitEnhanceClick;
+        UIEventListener.Get(GoBtn).onClick = OnUnitFight;
+        UIEventListener.Get(CancelBtn).onClick = OnUnitWaiting;
 
     }
 
@@ -49,7 +56,9 @@ public class Mainten_Unit : MonoBehaviour
     {
 
         ReSize();
-
+        //if ( GoObj ) {
+        //    GoObj.SetActive(false);
+        //}
     }
     private void OnDisable()
     {
@@ -81,21 +90,38 @@ public class Mainten_Unit : MonoBehaviour
 
     public void SetType(int nType)
     {
+        EnhanceBtn.SetActive(nType == 0);
+        CancelBtn.SetActive(nType == 1);
+        GoBtn.SetActive(nType == 2); 
+        
+        if (GoObj)
+        {
+            GoObj.SetActive(nType == 1);
+        }
+
         if (nType == 0) // 強化
         {
-            MyTool.SetLabelText(FuncObj, "修練");
-            UIEventListener.Get(EnhanceBtn).onClick = OnUnitEnhanceClick;
+    //    MyTool.SetLabelText(FuncObj, "修練");
+            UIEventListener.Get(EnhanceBtn).onClick = OnUnitEnhanceClick;            
+
         }
         else if (nType == 1) // 出擊
         {
-            MyTool.SetLabelText(FuncObj, "出擊");
+        //    MyTool.SetLabelText(FuncObj, "取消");
             UIEventListener.Get(EnhanceBtn).onClick = OnUnitWaiting; // 點擊後 待機
+            //if (GoObj)
+            //{
+            //    GoObj.SetActive(true);
+            //}
         }
         else if (nType == 2) // 待機
         {
-            MyTool.SetLabelText(FuncObj, "待機");
+         //   MyTool.SetLabelText(FuncObj, "出擊");
             UIEventListener.Get(EnhanceBtn).onClick = OnUnitFight;// 點擊後  出擊
-
+            //if (GoObj)
+            //{
+            //    GoObj.SetActive(false);
+            //}
         }
     }
 
@@ -219,6 +245,7 @@ public class Mainten_Unit : MonoBehaviour
         Panel_Dispatch panel = MyTool.GetPanel<Panel_Dispatch>(PanelManager.Instance.OpenUI(Panel_Dispatch.Name));
         if (panel != null)
         {
+          
             if (panel.DelUnit(pUnitData.n_CharID))
             {
                 SetType(2);
