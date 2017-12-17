@@ -550,8 +550,12 @@ public class Panel_UnitInfo : MonoBehaviour {
                 wiget.width = m_nPassAbilityWidth; // set width
             }
 
+            // 掛上 拖易事件
+            UIDragScrollView dsv = go.GetComponent<UIDragScrollView>();
+            if (dsv == null) {
+                dsv = go.AddComponent<UIDragScrollView>();
+            }
 
-            UIDragScrollView dsv = this.GetComponent<UIDragScrollView>();
             if (dsv != null)
             {
                 dsv.scrollView =  ScrollViewPass.GetComponent<UIScrollView>();
@@ -675,7 +679,7 @@ public class Panel_UnitInfo : MonoBehaviour {
 	{
 		Skill_Simple obj = go.GetComponent<Skill_Simple >();
 		if (obj != null) {
-			Panel_Tip.OpenBuffTip( obj.nID );
+			Panel_Tip.OpenBuffTip( obj.nID , 0 );
 			//Panel_Tip.OpenUI( MyTool.GetSkillName( obj.nID )   ); 
 		}
 	}

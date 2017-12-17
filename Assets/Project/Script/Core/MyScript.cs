@@ -1700,7 +1700,7 @@ public class MyScript {
             {
                 Panel_Dispatch panel = MyTool.GetPanel<Panel_Dispatch>(PanelManager.Instance.OpenUI(Panel_Dispatch.Name));
                 if (panel != null)
-                {
+                {                    
                     panel.BornBlock(func.I(0), func.I(1), func.I(2), func.I(3));
 
                 }
@@ -1923,7 +1923,14 @@ public class MyScript {
                 {
                     pool.Add(new AURA_CP_E(func.I(0), func.I(1)));
                 }
-
+                else if (func.sFunc == "AURA_HP_I")
+                {
+                    pool.Add(new AURA_HP_I(func.I(0), func.F(1), func.I(2) ));
+                }
+                else if (func.sFunc == "AURA_HP_E")
+                {
+                    pool.Add(new AURA_HP_E(func.I(0), func.F(1), func.I(2) ));
+                }
 
                 else if (func.sFunc == "BATTLE_ARRAY")
                 {

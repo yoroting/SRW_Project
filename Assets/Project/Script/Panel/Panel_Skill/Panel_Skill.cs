@@ -315,7 +315,7 @@ public class Panel_Skill : MonoBehaviour {
             GameObject go = SkillItemUnit.Spawn(SkillGrid.transform);
             if ( go == null )
 				continue;
-          
+            go.SetActive(true); // 由於 CharUnit 被 disable。所以copy 出來的會變成disable 。需手動 active
 
             Skill_unit  unit= go.GetComponent<Skill_unit>();
             unit.SetUnitSkillData( data , skl.n_ID);

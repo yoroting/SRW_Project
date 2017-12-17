@@ -249,6 +249,7 @@ public class Panel_CMDUnitUI : MonoBehaviour
             GameObject obj = CmdButton.Spawn(NGuiGrids.transform ) ;
             if ( obj != null )
 			{
+                obj.SetActive(true); // 由於 CharUnit 被 disable。所以copy 出來的會變成disable 。需手動 active
                 //CMD_BTN cmdBtn = obj.GetComponent<CMD_BTN>();
                 //if (cmdBtn != null) {
                 //    cmdBtn.ReSize();

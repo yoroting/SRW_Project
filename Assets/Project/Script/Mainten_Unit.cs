@@ -69,6 +69,7 @@ public class Mainten_Unit : MonoBehaviour
 
     public void ReSize()
     {
+        this.gameObject.SetActive( true );
 
         transform.localScale = Vector3.one;
 

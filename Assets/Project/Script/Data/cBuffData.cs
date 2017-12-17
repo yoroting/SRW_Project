@@ -231,10 +231,20 @@ public class cBuffs
 		return false;
 	}
 
-	public void DelBuffBySkillID( int skillid ){
+	public void DelBuffBySkillID( int skillid , bool bSelfOnly= false ){
         for (int i = 0; i < Pool.Count; i++)
         {
             KeyValuePair<int, cBuffData> pair = Pool.ElementAt(i);
+
+            // 只能刪除自己施展的
+            if (bSelfOnly == true)
+            {
+                if (pair.Value.nCastIdent > 0)
+                {
+                    continue; // 不是自己施展的不能刪除
+                }
+            }
+
             if ( pair.Value.nSkillID == skillid ){
                 Pool.Remove(pair.Key);
                 i--;

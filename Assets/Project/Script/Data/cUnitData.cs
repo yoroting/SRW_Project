@@ -643,7 +643,7 @@ public class cUnitData{
 	{
 		if( SkillPool.Contains( nSkillID ) )
 		{
-			Buffs.DelBuffBySkillID( nSkillID );
+			Buffs.DelBuffBySkillID( nSkillID , true );
 
 			SkillPool.Remove( nSkillID );
 		}
@@ -1997,7 +1997,10 @@ public class cUnitData{
 
         if (tarunit != null && tarunit.IsStates(_FIGHTSTATE._DODGE))
         {
-            return;
+            if (MyTool.IsDamageSkill(nSkillID))
+            {
+                return;
+            }
         }
 
         //   if (tarunit == this)

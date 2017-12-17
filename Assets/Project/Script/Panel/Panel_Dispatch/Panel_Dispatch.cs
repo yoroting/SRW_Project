@@ -51,11 +51,24 @@ public class Panel_Dispatch : MonoBehaviour
         {
             PanelManager.Instance.CloseUI(Panel_Dispatch.Name); // close ui
             return;
-        }    
+        }
 
         ReloadUnitList();
+        // scale
+        //transform.localScale = Vector3.zero;
+
+
+        //TweenScale tws = TweenScale.Begin<TweenScale>( this.gameObject , 0.1f );
+        //tws.from = Vector3.zero;
+        //tws.to = Vector3.one;
+        //tws.PlayForward();
+        //MyTool.TweenSetOneShotOnFinish(tws, OnTwAtkRotateEnd); // for once only       
     }
 
+    public void OnTwAtkRotateEnd()
+    {
+        ReloadUnitList();
+    }
 
     // Update is called once per frame
     void Update()
@@ -201,15 +214,9 @@ public class Panel_Dispatch : MonoBehaviour
         // clear all
         CharUnit.RecycleAll();
         
-        UIGrid grid = GridUnitList.GetComponent<UIGrid>();
-        //if (grid != null)
-        //{
-        //    while (grid.transform.childCount > 0)
-        //    {
-        //        DestroyImmediate(grid.transform.GetChild(0).gameObject);
-        //    }
-        //}
+        UIGrid grid = GridUnitList.GetComponent<UIGrid>();     
         MyTool.DestoryGridItem(grid );
+
         //grid.repositionNow = true;  // for re pos
         //grid.Reposition();
         // sort by mar
@@ -243,6 +250,7 @@ public class Panel_Dispatch : MonoBehaviour
             GameObject obj = CharUnit.Spawn(GridUnitList.transform);
             if (obj != null)
             {
+                obj.SetActive(true); // 由於 CharUnit 被 disable。所以copy 出來的會變成disable 。需手動 active
                 Mainten_Unit unit = obj.GetComponent<Mainten_Unit>();
                 if (unit != null)
                 {

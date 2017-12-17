@@ -149,11 +149,12 @@ public class StoryUIPanel : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		//	Debug.Log("StoryUIPanel:update");
+        //	Debug.Log("StoryUIPanel:update");
+        if (GameSystem.IsPause())
+            return;
+        // block when animate
 
-		// block when animate
-
-		if ( IsAllEnd () == false)
+        if ( IsAllEnd () == false)
 			return; 
 
 		// skip script when end

@@ -7,7 +7,10 @@ public class Item_School : MonoBehaviour {
     public GameObject RankObj;
     public GameObject NameObj;    
     public GameObject LvObj;
-    public CMD_BTN chbtn;
+    public GameObject ChangeObj;
+
+    public GameObject InfoObj;
+    //public CMD_BTN chbtn;
 
 
     public int m_nMode = 0; // 0 - 察看 , 1 - 切換 , 2- 強化
@@ -18,10 +21,19 @@ public class Item_School : MonoBehaviour {
     public int nSchLv;
     public int nSchType;
 
+    myUiTip m_Tip;
     cUnitData m_pUnitdata=null;
     // Use this for initialization
     void Start () {
-        UIEventListener.Get(this.gameObject).onClick = OnSchoolClick; // for trig next line
+        UIEventListener.Get(this.gameObject).onClick = OnSKillClick; // for trig next line
+
+        if (InfoObj != null) {            
+            m_Tip = InfoObj.GetComponent<myUiTip>();
+            if (m_Tip == null)
+            {
+                m_Tip = InfoObj.AddComponent<myUiTip>();
+            }
+        }
     }
 	
 	// Update is called once per frame
@@ -39,6 +51,30 @@ public class Item_School : MonoBehaviour {
     public void SetMode( int nMode )
     {
         m_nMode = nMode;
+
+        // 除了整備畫面外，不顯示
+        if (nMode == 1)
+        {
+            if (m_pUnitdata.GetSchoolNum(nSchType) > 1)
+            {
+                ChangeObj.SetActive(true);
+                InfoObj.SetActive(false);
+            }
+            else {
+                ChangeObj.SetActive(false);
+                InfoObj.SetActive(true);
+            }            
+        }
+        else {
+            ChangeObj.SetActive(false);
+            InfoObj.SetActive(true);
+        }
+
+        // 開發版
+        if (Config.GOD) {
+         //   ChangeObj.SetActive(true);
+        }
+
     }
 
     public void SetData(cUnitData pUnit, int SchID, int SchLV =0 )
@@ -58,7 +94,24 @@ public class Item_School : MonoBehaviour {
 
         nSchType = sch.n_TYPE;
         MyTool.SetLabelFloat(RankObj, sch.f_RANK );
-        
+
+        // 掛上武學能力
+        UIButton btn = InfoObj.GetComponent<UIButton>();
+        if (btn != null)
+        {
+            btn.isEnabled = (sch.n_BUFF > 0);
+        }
+       
+        if (m_Tip != null)
+        {
+            m_Tip.SetTip(sch.n_BUFF, myUiTip._TIP_TYPE._BUFF);
+        }
+        // 判斷可否使用 換武學
+        UIButton chbtn = ChangeObj.GetComponent<UIButton>();
+        chbtn.isEnabled = (m_pUnitdata.GetSchoolNum(nSchType) > 1);
+
+       
+
     }
 
     public void SetScrollView(GameObject go)
@@ -88,3 +141,4 @@ public class Item_School : MonoBehaviour {
         Panel_Skill.OpenSchoolUI(m_pUnitdata, _SKILL_TYPE._SCHOOL, nSchID);
     }
 }
+

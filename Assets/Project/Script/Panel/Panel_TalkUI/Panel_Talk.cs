@@ -243,6 +243,8 @@ public class Panel_Talk : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (GameSystem.IsPause())
+            return;
 
         if (m_bIsClosing)
             return;
@@ -984,7 +986,10 @@ public class Panel_Talk : MonoBehaviour
 
             }
         }
-        else if (nCharID <0 ) // both 
+        else if (nCharID == 0 ) {
+            NameObj.SetActive(false);
+        }
+        else if (nCharID < 0) // both 
         {
             SpeakAll(true);          // speak all
         }

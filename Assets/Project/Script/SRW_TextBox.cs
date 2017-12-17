@@ -470,7 +470,7 @@ public class SRW_TextBox : MonoBehaviour
 
                 break;
             default:
-                sptalkbox.width = 960;                  // only this is more big
+                sptalkbox.width = Config.WIDTH + 100;                  // only this is more big
                 sptalkbox.spriteName = "01017"; break;
         }
 

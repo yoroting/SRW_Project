@@ -501,26 +501,33 @@ public partial class BattleManager
 			break;
 		case 6: // 受擊表演結束
 			    Panel_StageUI.Instance.ClearAVGObj();
-                //被暈不能反擊
-                if (Defer.IsStates(_FIGHTSTATE._DEAD) || Defer.IsStun())
-                {
-                    bCanCounter = false;
-                }
-                // 判斷 射程   
-                int nRange = 1; // default range
-                SKILL defskill = ConstDataManager.Instance.GetRow<SKILL>(nDeferSkillID);
-                if (defskill != null)
-                {
-                    nRange = defskill.n_RANGE;
-                }
+                
+
+                // 是否為傷害技能
                 if (MyTool.IsDamageSkill(nDeferSkillID))
                 {
+                    //被暈不能反擊
+                    if (Defer.IsStates(_FIGHTSTATE._DEAD) || Defer.IsStun())
+                    {
+                        bCanCounter = false;
+                    }
+                    // 判斷 射程   
+                    int nRange = 1; // default range
+                    SKILL defskill = ConstDataManager.Instance.GetRow<SKILL>(nDeferSkillID);
+                    if (defskill != null)
+                    {
+                        nRange = defskill.n_RANGE;
+                    }
                     if (iVec2.Dist(Atker.n_X, Atker.n_Y, Defer.n_X, Defer.n_Y) > nRange)
                     {
                         bCanCounter = false;
                     }
                 }
+                else {
+                    bCanCounter = false;        // 不是傷害技能，絕不能反擊
+                }
 
+                // 能反擊才有的運算
                 if (bCanCounter){                   
                     // 判斷 反擊者是否還能反擊
                     ShowAtkAssist( nDeferID , nAtkerID );

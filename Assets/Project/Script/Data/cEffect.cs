@@ -391,6 +391,66 @@ public class AURA_DELSTACK_E : cEffect
     }
 }
 
+public class AURA_HP_I : cEffect
+{
+    public int nRange;
+    public AURA_HP_I(int range, float f , int i ) { nRange = range; fValue = f;  iValue = i; }
+    //public int iValue ;
+    override public void _Do(cUnitData Atker, cUnitData Defer, ref List<cHitResult> list)
+    {
+        if (Atker != null)
+        {
+            if (GameDataManager.Instance != null)
+            {
+                foreach (KeyValuePair<int, cUnitData> pair in GameDataManager.Instance.UnitPool)
+                {
+                    if (BattleManager.CanPK(Atker, pair.Value) == false)
+                    {
+                        if (pair.Value.IsTriggr())
+                            continue; // 機關不上 aura buff
+                        if (Atker.Dist(pair.Value) <= nRange)
+                        {
+                            int hp = (int)(pair.Value.GetMaxHP() * fValue) + iValue;
+                            list.Add(new cHitResult(cHitResult._TYPE._HP, pair.Key, hp, Atker.n_Ident, nSkillID, pair.Key));
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+public class AURA_HP_E : cEffect
+{
+    public int nRange;
+    public AURA_HP_E(int range, float f, int i) { nRange = range; fValue = f; iValue = i; }
+
+    //public int iValue ;
+    override public void _Do(cUnitData Atker, cUnitData Defer, ref List<cHitResult> list)
+    {
+        if (Atker != null)
+        {
+            if (GameDataManager.Instance != null)
+            {
+                foreach (KeyValuePair<int, cUnitData> pair in GameDataManager.Instance.UnitPool)
+                {
+                    if (BattleManager.CanPK(Atker, pair.Value) == true)
+                    {
+                        if (pair.Value.IsTriggr())
+                            continue; // 機關不上 aura buff
+
+                        if (Atker.Dist(pair.Value) <= nRange)
+                        {
+                            int hp = (int)(pair.Value.GetMaxHP() * fValue) + iValue;
+                            list.Add(new cHitResult(cHitResult._TYPE._HP, pair.Key, hp, Atker.n_Ident, nSkillID, pair.Key));
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 public class AURA_CP_I : cEffect
 {
     public int nRange;
@@ -1456,7 +1516,7 @@ public class cEffectCondition
             }
             else if (func.sFunc == "HP_I")
             {
-                float f1 = data_I.n_HP / data_I.GetMaxHP();
+                float f1 = (float)data_I.n_HP / (float)data_I.GetMaxHP();
                 float f2 = func.F(1);
                 if (MyScript.Instance.ConditionFloat(f1, func.S(0), f2) == false)
                 {
@@ -1465,7 +1525,7 @@ public class cEffectCondition
             }
             else if (func.sFunc == "HP_E")
             {
-                float f1 = data_E.n_HP / data_E.GetMaxHP();
+                float f1 = (float)data_E.n_HP / (float)data_E.GetMaxHP();
                 float f2 = func.F(1);
                 if (MyScript.Instance.ConditionFloat(f1, func.S(0), f2) == false)
                 {
@@ -1474,7 +1534,7 @@ public class cEffectCondition
             }
             else if (func.sFunc == "MP_I")
             {
-                float f1 = data_I.n_MP / data_I.GetMaxMP();
+                float f1 = (float)data_I.n_MP / (float)data_I.GetMaxMP();
                 float f2 = func.F(1);
                 if (MyScript.Instance.ConditionFloat(f1, func.S(0), f2) == false)
                 {
@@ -1483,7 +1543,7 @@ public class cEffectCondition
             }
             else if (func.sFunc == "MP_E")
             {
-                float f1 = data_E.n_MP / data_E.GetMaxMP();
+                float f1 = (float)data_E.n_MP / (float)data_E.GetMaxMP();
                 float f2 = func.F(1);
                 if (MyScript.Instance.ConditionFloat(f1, func.S(0), f2) == false)
                 {

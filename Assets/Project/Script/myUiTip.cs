@@ -17,7 +17,7 @@ public class myUiTip : MonoBehaviour
     public _TIP_TYPE m_nTipType;
     public int nTipID=0;
     public string nTipString="";
-
+    public int nTipVar1 = 0;
     // Use this for initialization
     void Start()
     {
@@ -29,10 +29,11 @@ public class myUiTip : MonoBehaviour
     {
 
     }
-    public void SetTip( int id , _TIP_TYPE type )
+    public void SetTip( int id , _TIP_TYPE type , int nVar1=0 )
     {
         nTipID = id;
         m_nTipType = type;
+        nTipVar1 = nVar1;
     }
 
     void OnTipPress(GameObject go, bool pressed)
@@ -51,9 +52,14 @@ public class myUiTip : MonoBehaviour
 
     public void ShowTip()
     {
+        if (nTipID == 0 && nTipString == "") {
+            return; // no tip
+        }
+
+
         switch (m_nTipType ) {
             case _TIP_TYPE._UI: { ShowUITip(); } break;
-            case _TIP_TYPE._BUFF: { Panel_Tip.OpenBuffTip(nTipID);  } break;
+            case _TIP_TYPE._BUFF: { Panel_Tip.OpenBuffTip(nTipID, nTipVar1);  } break;
             case _TIP_TYPE._ITEM: { Panel_Tip.OpenItemTip(nTipID); } break;
             case _TIP_TYPE._SKILL: { Panel_Tip.OpenSkillTip(nTipID); } break;
             case _TIP_TYPE._SCHOOL: { Panel_Tip.OpenSchoolTip(nTipID); } break;

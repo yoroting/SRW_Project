@@ -59,15 +59,19 @@ public class Skill_Simple : MonoBehaviour {
                 sname += " " + skl.n_SP;
             }
             MyTool.SetLabelText(lblName, sname); // set
-            
-            m_Tip.SetTip(id, myUiTip._TIP_TYPE._SKILL);
+            if (m_Tip != null)
+            {
+                m_Tip.SetTip(id, myUiTip._TIP_TYPE._SKILL);
+            }
 
         }
         else {
             string sname = MyTool.GetBuffName(nID);
             MyTool.SetLabelText(lblName, sname); // set
-
-            m_Tip.SetTip(id, myUiTip._TIP_TYPE._BUFF);
+            if (m_Tip != null)
+            {
+                m_Tip.SetTip(id, myUiTip._TIP_TYPE._BUFF);
+            }
         }
        
     }

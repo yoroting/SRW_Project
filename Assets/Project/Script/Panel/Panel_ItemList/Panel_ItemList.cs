@@ -95,6 +95,7 @@ public class Panel_ItemList : MonoBehaviour
         GameObject nullobj = ItemObj.Spawn(GridObj.transform);
         if (nullobj != null)
         {
+            nullobj.SetActive(true); // 由於 CharUnit 被 disable。所以copy 出來的會變成disable 。需手動 active
             ItemList_Item item = nullobj.GetComponent<ItemList_Item>();
             if (item != null)
             {
@@ -110,6 +111,7 @@ public class Panel_ItemList : MonoBehaviour
             GameObject obj = ItemObj.Spawn(GridObj.transform);
             if (obj != null)
             {
+                obj.SetActive(true); // 由於 CharUnit 被 disable。所以copy 出來的會變成disable 。需手動 active
                 ItemList_Item item = obj.GetComponent<ItemList_Item>();
                 if (item != null)
                 {

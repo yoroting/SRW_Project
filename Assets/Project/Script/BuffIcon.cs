@@ -74,7 +74,7 @@ public class BuffIcon : MonoBehaviour {
 
 		MyTool.SetLabelText (NameObj, MyTool.GetBuffName (nBuffID));
 
-        m_Tip.SetTip(nBuffID , myUiTip._TIP_TYPE._BUFF );
+        m_Tip.SetTip(nBuffID , myUiTip._TIP_TYPE._BUFF , nTime );
 
 
     }
@@ -92,7 +92,7 @@ public class BuffIcon : MonoBehaviour {
 //		{				
 //			sTip = row.Field<string>( "s_TIP");		
 //		}
-		Panel_Tip.OpenBuffTip ( nBuffID );
+		Panel_Tip.OpenBuffTip ( nBuffID , nBuffTime );
 	}
 
 }

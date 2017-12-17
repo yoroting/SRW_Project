@@ -367,7 +367,7 @@ public class Panel_Mainten : MonoBehaviour {
             GameObject obj = CharUnit.Spawn(GridUnitList.transform);
             if (obj != null)
             {
-                obj.SetActive(true);
+                obj.SetActive(true); // 由於 CharUnit 被 disable。所以copy 出來的會變成disable 。需手動 active
                 Mainten_Unit unit = obj.GetComponent<Mainten_Unit>();
                 if (unit != null)
                 {

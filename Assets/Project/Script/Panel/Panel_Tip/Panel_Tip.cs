@@ -20,26 +20,33 @@ public class Panel_Tip : MonoBehaviour {
 
 	public static int nTipID=0;
 
-	public GameObject spBG;
+	public UISprite spBG;
 	public GameObject lblTitle;
 	public GameObject lblText;
 
+    public UILabel lblSubText;
+
 	// Use this for initialization
 	void Start () {
-		UIEventListener.Get(spBG).onClick += OnClick; // 
+		UIEventListener.Get(spBG.gameObject).onClick += OnClick; // 
 	}
-	
-	// Update is called once per frame
-	void Update () {
+
+    private void OnEnable()
+    {
+        lblSubText.gameObject.SetActive( false ); // default is close
+    }
+
+    // Update is called once per frame
+    void Update () {
 
         // 底圖 size 修正
-        UISprite s = spBG.GetComponent<UISprite>();
-        if ( s != null ) {
+        
+        if (spBG != null ) {
             if ( lblTitle.activeSelf == false ) {
-                s.topAnchor.target = lblText.transform;
+                spBG.topAnchor.target = lblText.transform;
             }
             else {
-                s.topAnchor.target = lblTitle.transform;
+                spBG.topAnchor.target = lblTitle.transform;
             }
         }
         //UIAnchor anc = spBG.GetComponent<UIAnchor>();
@@ -47,6 +54,12 @@ public class Panel_Tip : MonoBehaviour {
         //{
         //    anc
         //}
+        if (lblSubText.gameObject.activeSelf ) {
+            Vector3 vpos = new Vector3();
+            vpos.x = (spBG.width - lblSubText.width - 20) / 2;
+            vpos.y = lblTitle.transform.localPosition.y;
+            lblSubText.gameObject.transform.localPosition = vpos;
+        }
 
     }
 
@@ -97,7 +110,22 @@ public class Panel_Tip : MonoBehaviour {
 
     }
 
-	static public void OpenUI( string str )
+    public void SetTime(int nTime)
+    {
+        if (nTime > 0)
+        {
+            lblSubText.gameObject.SetActive(true); // default is close
+            //string sTime = string.Format("持續：{0}", nTime);
+            lblSubText.text = string.Format("持續：{0}回合", nTime); ;
+
+          
+
+            //lblSubText.height = 30;
+        }
+    }
+
+
+    static public void OpenUI( string str )
 	{
         GameSystem.PlaySound("Tap");
         Panel_Tip pTip = MyTool.GetPanel< Panel_Tip > (PanelManager.Instance.OpenUI (Name));
@@ -111,7 +139,7 @@ public class Panel_Tip : MonoBehaviour {
 
 	}
 	
-	static public void OpenUI( string strTitle , string strContext )
+	static public Panel_Tip OpenUI( string strTitle , string strContext )
 	{
 
         GameSystem.PlaySound("Tap");
@@ -121,43 +149,10 @@ public class Panel_Tip : MonoBehaviour {
             MyTool.SetLabelText(pTip.lblTitle, strTitle);
 
             pTip.SetContent(strContext);
-
-   //         UILabel lbl = pTip.lblText.GetComponent<UILabel>();
-   //         UIWidget wid = pTip.lblText.GetComponent<UIWidget>();
-   //         lbl.overflowMethod = UILabel.Overflow.ResizeFreely;
-   //         MyTool.SetLabelText(pTip.lblText, ""); // 清空來確保每次 文字都異動
-   //         lbl.width = 240;
-
-   //         // 設定文字
-           
-			//MyTool.SetLabelText ( pTip.lblText , strContext );  //文字必須有異動，才能觸發 寬度重算
-
-   //         // 如果寬度太少，則放大    
-
-   //         if (wid.width <= 240)
-   //         {
-   //             //wid.width = 480;
-   //             lbl.overflowMethod = UILabel.Overflow.ResizeHeight;
-   //             lbl.width = 240;
-   //         }else if (wid.width <= 480) {
-   //             //wid.width = 480;
-                
-   //             lbl.overflowMethod = UILabel.Overflow.ResizeHeight;
-   //             lbl.width = 480;
-   //         }
-   //         else if (wid.width > 900)
-   //         {
-   //             //wid.width = 480;
-
-   //             lbl.overflowMethod = UILabel.Overflow.ResizeHeight;
-   //             lbl.width = 900;
-   //         }
-
-   //         // 座標修正
-   //         lbl.transform.localPosition = Vector3.zero;
         }
-		
-	}
+        return pTip;
+
+    }
 
     static public void OpenUITip(int nTipID)
     {
@@ -189,7 +184,7 @@ public class Panel_Tip : MonoBehaviour {
     }
 
 
-    static public void OpenBuffTip( int nBuffID )
+    static public void OpenBuffTip( int nBuffID  , int nTime )
 	{
 		if (nBuffID == nTipID  && nTipType == _TIPTYPE._BUFF ) {
 			CloseUI();
@@ -217,7 +212,10 @@ public class Panel_Tip : MonoBehaviour {
 		nTipType = _TIPTYPE._BUFF;
 		nTipID = nBuffID ;
 
-		Panel_Tip.OpenUI( nBuffName , sTip );
+        Panel_Tip pTip =  Panel_Tip.OpenUI( nBuffName , sTip );
+        if ( pTip != null ) {
+            pTip.SetTime( nTime );
+        }
 
 	}
 	static public void OpenSkillTip( int nSkillID )

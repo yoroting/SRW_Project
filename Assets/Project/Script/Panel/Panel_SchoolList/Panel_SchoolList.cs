@@ -124,6 +124,7 @@ public class Panel_SchoolList : MonoBehaviour {
             GameObject obj = ItemObj.Spawn(GridObj.transform);
             if (obj != null)
             {
+                obj.SetActive(true); // 由於 CharUnit 被 disable。所以copy 出來的會變成disable 。需手動 active
                 UIDragScrollView drag = obj.GetComponent<UIDragScrollView>();
                 if (drag != null)
                 {
