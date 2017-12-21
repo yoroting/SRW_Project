@@ -712,9 +712,12 @@ public partial class BattleManager
 
 				GetAtkHitResult( nAtkerID , nDeferID , Atker , Defer , Atker.FightAttr.SkillID ,  nTarGridX , nTarGridY , ref pAct , ref AtkAffectPool );
 
-
-			
-			}
+               
+               if (Atker.IsDead() == false && MyTool.IsSkillTag(nAtkerSkillID, _SKILLTAG._HEAL))
+               {
+                        CalDropResult(Atker , Defer , true );
+               }
+            }
 			nPhase++;
 			break;
          case 2: 	{// atker twice atk
@@ -728,7 +731,8 @@ public partial class BattleManager
                             GetAtkHitResult(nAtkerID, nDeferID, Atker, Defer, nAtkerSkillID , nTarGridX, nTarGridY, ref pAtkTwice, ref AtkAffectPool);
 					}
 				}
-			//}
+                   
+
 			nPhase++;
 		}break;
 		case 3:			
@@ -1907,13 +1911,16 @@ public partial class BattleManager
 
 	}
 
-    public void CalDropResult( cUnitData Atker , cUnitData Defer )
+    public void CalDropResult( cUnitData Atker , cUnitData Defer , bool bHeal = false )
 	{   
         if (Defer == null){
             return;
         }
         if (Defer.eCampID != _CAMP._ENEMY) {
-            return;
+            if (bHeal != true) // 治療技能不中斷 掉落計算
+            {
+                return;
+            }
         }
         // 避免重複掉
         if (Defer.IsTag(_UNITTAG._DROP))
@@ -1942,8 +1949,13 @@ public partial class BattleManager
         }
 
 		
-            fMoneyRatio *= Defer.cCharData.f_DROP_MONEY;
-            fExpRation *= Defer.cCharData.f_DROP_EXP;
+        fMoneyRatio *= Defer.cCharData.f_DROP_MONEY;
+        fExpRation *= Defer.cCharData.f_DROP_EXP;
+
+        if (bHeal == true) // 治療技能固定為 2 倍
+        {
+            fExpRation = 2.0f;
+        }
 
         if (Atker != null) {
 

@@ -1502,18 +1502,29 @@ public class cEffectCondition
                 
             }
             else if (func.sFunc == "MRATE")  // 必須比兩者武功差值
-            {
+            {                
                 if (data_E == null || data_I == null)
                     return false;
                 int Rate = func.I(0);
                 Rate += (int)((data_I.GetMar() - data_E.GetMar()) * 0.5f);
                 int nRoll = Random.Range(0, 100);
-                if(Rate < nRoll)
+                if (Rate < nRoll)
                 {
                     return false;
                 }
 
             }
+            else if (func.sFunc == "DIST")  // 兩者間距離
+            {
+                if (data_E == null || data_I == null)
+                    return false;                
+                int nDist = data_E.Dist(data_I);
+                if (MyScript.Instance.ConditionInt(nDist, func.S(0), func.I(1)) == false)
+                {
+                    return false;       //  fail
+                }
+            }
+
             else if (func.sFunc == "HP_I")
             {
                 float f1 = (float)data_I.n_HP / (float)data_I.GetMaxHP();

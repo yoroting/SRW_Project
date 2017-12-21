@@ -19,37 +19,37 @@ public class MobAI  {
         int ident = mob.Ident ();
 		cUnitData mobdata = GameDataManager.Instance.GetUnitDateByIdent ( ident );
 
-		int nSkillID = -1;		// -1 - no attack
-		// select a skill
-		if( mobdata.eComboAI == _AI_COMBO._NORMAL ){
-            nSkillID = 0; //  SelSkill( mob.pUnitData );
-		}
+		//int nSkillID = -1;		// -1 - no attack
+		//// select a skill
+		//if( mobdata.eComboAI == _AI_COMBO._NORMAL ){
+  //          nSkillID = 0; //  SelSkill( mob.pUnitData );
+		//}
 
 		int nMove = mobdata.GetMov ()  ; 
 		switch( mobdata.eSearchAI )
 		{
 			case _AI_SEARCH._NORMAL:{ //主動攻擊 - 優先打血少
-				_AI_NormalAttack( mob , nSkillID ,  nMove ) ;
+				_AI_NormalAttack( mob  ,  nMove ) ;
 			}break;
 			case _AI_SEARCH._PASSIVE:{ //被動攻擊 - 有人在範圍內 優先打近的
-				_AI_PassiveAttack( mob , nSkillID ,  nMove ) ;
+				_AI_PassiveAttack( mob  ,  nMove ) ;
 			}break;
 			case _AI_SEARCH._DEFENCE:{ //堅守原地
                     if (mobdata.eComboAI == _AI_COMBO._DEFENCE)
                     {
-                        _AI_Defence( mob , nSkillID ,  0 ) ;
+                        _AI_Defence( mob  ,  0 ) ;
                     }                    
                     else
                     {                                       
-                        _AI_PassiveAttack(mob, nSkillID, 0); // 還是會攻擊
+                        _AI_PassiveAttack(mob, 0); // 還是會攻擊。但是不移動
                     }
             }
                 break;
 			case _AI_SEARCH._TARGET:{ //前往指定目標
-				_AI_TargetAttack( mob , nSkillID ,  nMove ) ;
+				_AI_TargetAttack( mob  ,  nMove ) ;
 			}break;	
 			case _AI_SEARCH._POSITION:{ //不在目標地點前往目標
-				_AI_PositionAttack( mob , nSkillID ,  nMove ) ;
+				_AI_PositionAttack( mob,  nMove ) ;
 			}break;	
 			default:
                 _AI_MakeWaitCmd(mob);
@@ -94,7 +94,7 @@ public class MobAI  {
         }
          
         int nDist = mob.Loc.Dist(taget.Loc);
-        if (CreateSkilTmpList(mob.pUnitData, taget.pUnitData , nDist - nMove , bCounterMode)) // create skill pool to atl
+        if (CreateSkilTmpList(mob.pUnitData, taget.pUnitData , nDist ,  nMove , bCounterMode)) // create skill pool to atl
         {
             foreach (SKILL skl in tmpSklList)
             {
@@ -295,7 +295,7 @@ public class MobAI  {
     {
 
         //int ident = mob.Ident();
-        int nMaxRange = _AI_GetMaxSkillRange( mob.pUnitData );
+        int nMaxRange = _AI_GetMaxSkillRange( mob.pUnitData);
 
         Panel_StageUI.Instance.GetUnitHpPool(mob, true, (nMove + nMaxRange)); // all unit in 
         Dictionary<Panel_unit, int> pool = Panel_StageUI.Instance.m_tmpHpPool  ; // all unit in 
@@ -688,7 +688,7 @@ public class MobAI  {
     }
 
 
-    static void _AI_NormalAttack(Panel_unit mob, int nSkillID, int nMove)
+    static void _AI_NormalAttack(Panel_unit mob, int nMove)
     {
        
         // 範圍內 優先找 血少
@@ -711,7 +711,7 @@ public class MobAI  {
 
     }
 
-    static  void _AI_PassiveAttack( Panel_unit mob , int nSkillID , int nMove )
+    static  void _AI_PassiveAttack( Panel_unit mob , int nMove )
 	{
         if (_AI_LowstAttack2(mob, nMove, false ))
         {
@@ -830,7 +830,7 @@ public class MobAI  {
 		//ActionManager.Instance.CreateWaitingAction (ident);
 	}
 
-	static void _AI_Defence(Panel_unit mob , int nSkillID , int nMove ) 
+	static void _AI_Defence(Panel_unit mob  , int nMove ) 
 	{
 		int ident = mob.Ident();
         _AI_MakeWaitCmd(mob);
@@ -838,7 +838,7 @@ public class MobAI  {
     }
 
     // 攻擊指定目標
-	static void _AI_TargetAttack(Panel_unit mob , int nSkillID , int nMove ) 
+	static void _AI_TargetAttack(Panel_unit mob  , int nMove ) 
 	{
 		int ident = mob.Ident();
 		cUnitData data = GameDataManager.Instance.GetUnitDateByIdent ( ident ); 
@@ -846,17 +846,17 @@ public class MobAI  {
 		//cUnitData tar = GameDataManager.Instance.GetUnitDateByIdent ( data.n_AITarget ); 
 		if( target == null) {
 			// 目標死亡，切回正常模式
-			_AI_NormalAttack( mob , nSkillID ,nMove  );
+			_AI_NormalAttack( mob ,nMove  );
 			return ;
 		}
         //如果目標隱藏，改用正常AI
         if (target.IsHide())
         {
-            _AI_NormalAttack(mob, nSkillID, nMove);
+            _AI_NormalAttack(mob, nMove);
             return;
         }
 
-
+        int nSkillID=0;
         //int nSkillID;
         List<iVec2> path; ;
         if (_FindToAttackTarget(mob, target, nMove, out nSkillID, out path, false, true))
@@ -890,7 +890,7 @@ public class MobAI  {
                 return;
             }
             //
-            _AI_NormalAttack(mob, nSkillID, nMove);
+            _AI_NormalAttack(mob, nMove);
 
             //  ActionManager.Instance.CreateWaitingAction(ident); // 與其待機，不如正常攻擊
         }
@@ -901,7 +901,7 @@ public class MobAI  {
 	}
 
     // only move
-	static void _AI_PositionAttack(Panel_unit mob , int nSkillID , int nMove ) 
+	static void _AI_PositionAttack(Panel_unit mob  , int nMove ) 
 	{
 		int ident = mob.Ident();
 		cUnitData data = GameDataManager.Instance.GetUnitDateByIdent ( ident ); 
@@ -967,7 +967,7 @@ public class MobAI  {
             Panel_unit target = pair.Key;
             int nDist = pos.Dist(target.Loc);
 
-            if (CreateSkilTmpList(mob.pUnitData, target.pUnitData, nDist, false)) // create skill pool to atk
+            if (CreateSkilTmpList(mob.pUnitData, target.pUnitData, nDist, 0,  false)) // create skill pool to atk
             {
                 foreach (SKILL skl in tmpSklList)
                 {
@@ -1362,7 +1362,7 @@ public class MobAI  {
             nTarY = pTarget.n_Y;
             nDist = iVec2.Dist(pMob.n_X, pMob.n_Y, pTarget.n_X, pTarget.n_Y);
         }
-        if (CreateSkilTmpList(pMob, pTarget, nDist, true))
+        if (CreateSkilTmpList(pMob, pTarget, nDist, 0, true))
         {
             // roll a skill?
             foreach (SKILL skl in tmpSklList)
@@ -1370,7 +1370,7 @@ public class MobAI  {
                 int nMinRange = skl.n_MINRANGE;
                 int nSkillRange = skl.n_RANGE;
 
-                if ((nDist <= nSkillRange) && (nDist >= nMinRange)) // 可以直接攻擊
+                if ( (skl.n_TARGET==0) ||( (nDist <= nSkillRange) && (nDist >= nMinRange)) ) // 可以直接攻擊
                 {
                     return skl.n_ID;
                 }
@@ -1553,12 +1553,12 @@ public class MobAI  {
 	}
 
 
-    static public bool CreateSkilTmpList( cUnitData pData , cUnitData pTarget,  int nDist, bool bCounterMode = false )
+    static public bool CreateSkilTmpList( cUnitData pData , cUnitData pTarget,  int nDist, int nMove ,  bool bCounterMode = false )
     {
         if (pData == null)
             return false;     
         
-        int nRealDist = nDist;
+        int nRealDist = nDist- nMove; // 實際距離
         if (nRealDist < 1)
             nRealDist = 1;
 
@@ -1572,10 +1572,25 @@ public class MobAI  {
                 continue;
             }
 
-            if (CheckSkillCanCast(pData, pTarget, nSkillID, nRealDist , bCounterMode) == false)
+            // 不可移動攻擊技能。不能考慮移動力
+            if (MyTool.IsSkillTag(nSkillID, _SKILLTAG._NOMOVE))
             {
-                continue;
+                if (CheckSkillCanCast(pData, pTarget, nSkillID, nDist, bCounterMode) == false)
+                {
+                    continue;
+                }
             }
+            else
+            {
+                // 一般技能
+                if (CheckSkillCanCast(pData, pTarget, nSkillID, nRealDist, bCounterMode) == false)
+                {
+                    continue;
+                }
+            }
+            
+
+
 
             SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(nSkillID);
             // 必須不是 精神 技能
@@ -1729,8 +1744,8 @@ public class MobAI  {
         //    }
         //}
         // 防招只在破防時使用
-        if (skl.f_DEF > 0.0f && pData.n_DEF > 0)
-            return false;
+    //    if (skl.f_DEF > 0.0f && pData.n_DEF > 0)
+    //        return false;
 
         //牽制招不對小怪物用
         cSkillData skldata = GameDataManager.Instance.GetSkillData(nSkillID);
@@ -1749,23 +1764,28 @@ public class MobAI  {
                 return false;       // defence no use dmg skill
             }
         }
-                                //=======
-                                // counter mode
+
+        // 射程判斷
+        if (skl.n_TARGET != 0) // 除了自我施法外，要判斷距離
+        {
+            int nRange;
+            int nMinRange;
+            MyTool.GetSkillRange(nSkillID, out nRange, out nMinRange);
+
+            if (nMinRange > nDist)
+                return false; // too near can't cast
+
+            // counter can't move
+            if (nRange >= 0 && nRange < nDist)
+                return false;
+        }
+
+
+        // counter mode
         if ( bCounterMode){
 			if (skldata.IsTag (_SKILLTAG._BANDEF )) { // 反擊禁用
 				return false;
 			}
-
-			int nRange ;
-			int nMinRange;
-			MyTool.GetSkillRange( nSkillID , out nRange , out nMinRange );
-			
-			if( nMinRange > nDist )
-				return false; // too near can't cast
-			
-			// counter can't move
-			if( nRange >=0 &&  nRange < nDist )
-				return false;
 
 			//反擊禁用點地
 			if( (skl.n_TARGET==3) || (skl.n_TARGET==4) || (skl.n_TARGET==5) ){
@@ -1785,9 +1805,9 @@ public class MobAI  {
 			}
 		}
 		// range check
-		if( ( skl.n_RANGE>= 0 && skl.n_RANGE < nDist) || ( skl.n_MINRANGE > nDist ) ){
-			return false;
-		}
+		//if( ( skl.n_RANGE>= 0 && skl.n_RANGE < nDist) || ( skl.n_MINRANGE > nDist ) ){
+		//	return false;
+		//}
 
         // 敵我判斷
         if (pTarget != null)
@@ -1810,7 +1830,7 @@ public class MobAI  {
         return true;
 	}
 
-    static public int _AI_GetMaxSkillRange(cUnitData pData)
+    static public int _AI_GetMaxSkillRange(cUnitData pData )
     {        
         if (pData == null)
             return 0;
@@ -1832,6 +1852,13 @@ public class MobAI  {
             // 看 MP 能不能施展
             if (pData.CheckSkillCanUse(skl) == false)
                 continue;
+
+            //if (bMove) {
+            //    if (MyTool.IsSkillTag(nSkillID, _SKILLTAG._NOMOVE))
+            //    {
+            //        continue; // 不能移動攻擊的技能 計算
+            //    }
+            //}
 
             if (skl.n_RANGE > nRange) {
                 nRange = skl.n_RANGE;
