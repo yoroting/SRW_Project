@@ -328,22 +328,40 @@ namespace MYGRIDS
         public List<iVec2> AdjacentList( int nRadius = 1 )
         {
             List<iVec2> lst = new List<iVec2>();
-			if( nRadius <= 1){
-            	lst.Add(new iVec2(X - 1, Y));
-            	lst.Add(new iVec2(X, Y - 1));
-            	lst.Add(new iVec2(X + 1, Y));
-            	lst.Add(new iVec2(X, Y + 1));
-				return lst;
-			}
-			// expan size
-			// 正向
-			for (int i = 0; i <= nRadius; i++) // 0 不用計算
+			
+
+            // default 
+            lst.Add(new iVec2(X - 1, Y));
+            lst.Add(new iVec2(X, Y - 1));
+            lst.Add(new iVec2(X + 1, Y));
+            lst.Add(new iVec2(X, Y + 1));
+            if (nRadius <= 1) {
+                return lst; // range 1
+            }
+            // range2  // 為了方圓的特別規則( 先塞斜角)，所以需要特別寫
+            lst.Add(new iVec2(X - 1, Y + 1));
+            lst.Add(new iVec2(X - 1, Y - 1));
+            lst.Add(new iVec2(X + 1, Y + 1));
+            lst.Add(new iVec2(X + 1, Y - 1));
+            lst.Add(new iVec2(X - 2, Y    ));
+            lst.Add(new iVec2(X    , Y - 2));
+            lst.Add(new iVec2(X + 2, Y    ));
+            lst.Add(new iVec2(X    , Y + 2));
+            if (nRadius == 2) {
+                return lst;
+            }
+
+            //range > 3
+            int filled = 3;  // range 0-2 已經處理過，要3 以上才需要處理
+            // expan size
+            // 正向
+            for (int i = 0; i <= nRadius; i++) // 0 不用計算
 			{
 				int x1 = X + i;           // 正
 				for (int j = 0; j <= nRadius; j++) // 0 不用計算
 				{
 					int tmp = i + j;
-					if (tmp > nRadius || tmp < 1)
+					if (tmp > nRadius || tmp < filled )
 						continue;					
 						
 					int y1 = Y + j;           // 正
@@ -361,7 +379,7 @@ namespace MYGRIDS
 				for (int j = 0; j <= nRadius; j++) // 0 不用計算
 				{
 					int tmp = i + j;
-					if (tmp > nRadius || tmp < 1)
+					if (tmp > nRadius || tmp < filled)
 						continue;          // over dist 						
 					int y1 = Y + j;           // 正
 					lst.Add(new iVec2(x2, y1));							

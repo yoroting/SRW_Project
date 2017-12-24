@@ -9,8 +9,7 @@ public class MobAI  {
 
     public static List<SKILL> tmpSklList  =  new List<SKILL>();
     static Dictionary<iVec2, int> distpool = new Dictionary<iVec2, int>();
-    static Dictionary<int, int> sklPool = new Dictionary<int, int>();
-    
+    static Dictionary<int, int> sklPool = new Dictionary<int, int>();    
 
     public static void Run( Panel_unit mob )
 	{
@@ -319,6 +318,8 @@ public class MobAI  {
                 {   
                         return true; // 能施展下一個技能的話 先中斷並 重新收尋
                 }
+
+                // 判斷是否有被敵軍正面阻擋
 
                 _AI_MakeCmd(mob, pair.Key, nSkillID, ref path );
                 // wait 
@@ -904,51 +905,71 @@ public class MobAI  {
 	static void _AI_PositionAttack(Panel_unit mob  , int nMove ) 
 	{
 		int ident = mob.Ident();
-		cUnitData data = GameDataManager.Instance.GetUnitDateByIdent ( ident ); 
-		// move to pos
-		//iVec2 pos = new iVec2 ( data.n_AIX , data.n_AIY  );        
+		cUnitData data = GameDataManager.Instance.GetUnitDateByIdent ( ident );
+        // move to pos
+        //iVec2 pos = new iVec2 ( data.n_AIX , data.n_AIY  );        
         //List< iVec2> path = Panel_StageUI.Instance.PathFinding ( mob, mob.Loc, pos , 999); // get a vaild path to run
 
-        List<iVec2> path = FindPathToPos(mob, data.n_AIX, data.n_AIY, nMove, 999);
-        //// 由於底層搜尋 有快 A-str 兩種>
-        //int nLimit = nMove;
-        //if (path != null && path.Count > 0)
-        //{
-        //    iVec2 loc = path[0];
-        //    if (mob.Loc.Collision(loc))
-        //    {
-        //        nLimit++;
-        //    }
-        //    else
-        //    {
-        //        nLimit = nMove;  // this will happen?
-        //    }
-        //}
+        // range
+        bool bFind = false;
+        iVec2 vTar = new iVec2(data.n_AIX , data.n_AIY );
+//        vTar.X = data.n_AIX;
+//        vTar.Y = data.n_AIY;
+        List<iVec2> path = null;
+        iVec2 last = null;
+        if (Panel_StageUI.Instance.CheckIsEmptyPos(vTar) == true)
+        {
+            // 正常可以移動
+             path = FindPathToPos(mob, vTar.X , vTar.Y, nMove, 999);
+            if (path != null && (path.Count > 0))
+            {
+                last = path[path.Count - 1];
+                if (last != null)
+                {
+                  
+                    bFind = true;
 
-        //path = MyTool.CutList<iVec2>(path, nLimit);// mob movement; .. A-star 運算時自己原座標也算一個點所以這邊加給他
+                }
+            }
 
+        }
+        else { // 目標上面有障礙，找周圍點
+            List<iVec2> nearList = vTar.AdjacentList(3); // the 4 pos can't stand ally
+            foreach (iVec2 v in nearList)
+            {
+                path = null;  // clear data
+                if (Panel_StageUI.Instance.CheckIsEmptyPos(v) == true)
+                {
+                     path = FindPathToPos(mob, v.X, v.Y, nMove, 999);
+                    if (path != null && (path.Count > 0))
+                    {
+                        last = path[path.Count - 1];
+                        if (last != null)
+                        {
+                            bFind = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+       
+        if (bFind)
+        {
+            if (last != null)
+            {
+                // send a move event					
+                mob.SetPath(path);
+                // check if last pos is attack able pos
+                ActionManager.Instance.CreateMoveAction(ident, last.X, last.Y);
+            }
 
-        if ( path == null || (path.Count ==0) )
-		{
-			//continue; // can't find path try next target
-		}
-		else
-		{
-			iVec2 last = path[ path.Count -1 ];
-			if( last != null  ){
-				// send a move event					
-				mob.SetPath (path); 
-				// check if last pos is attack able pos
-				ActionManager.Instance.CreateMoveAction (ident, last.X, last.Y);	
-				
-				if (Config.GOD == true) {
-					Panel_StageUI.Instance.CreatePathOverEffect (path); // draw path
-				}
-				
-			}
-		}
-        _AI_MakeWaitCmd(mob);
-        //ActionManager.Instance.CreateWaitingAction (ident);
+            if (Config.GOD == true)
+            {
+                Panel_StageUI.Instance.CreatePathOverEffect(path); // draw path
+            }
+        }
+        _AI_MakeWaitCmd(mob);       
     }
 
     static bool _AI_FindTargetAttackbyPos(Panel_unit mob, iVec2 pos , ref int nSkillID  , ref Panel_unit Tar )

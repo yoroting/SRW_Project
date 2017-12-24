@@ -1206,7 +1206,7 @@ public class MyScript {
                     // 看看 隊伍內 有沒有 
                     if (GameDataManager.Instance.IsCharInParty(charid) == false) // 0 - 檢查角色
                     {
-                        return;
+                        continue;
                     }
                 }
 
@@ -1220,6 +1220,35 @@ public class MyScript {
 
                 GameEventManager.DispatchEvent(evt);
             }
+            else if (func.sFunc == "NOESAY") // 指定角色不存在時說
+            {
+                // check unit in party
+                int charid = func.I(0);
+                // 檢查 場上有沒有該人物
+                if (Panel_StageUI.Instance.GetUnitByCharID(charid) != null) // 場上有
+                {
+                    continue;
+                }
+                else
+                {
+                    // 看看 隊伍內 有沒有 
+                    if (GameDataManager.Instance.IsCharInParty(charid)) // 
+                    {
+                        continue;
+                    }
+                }
+
+                TalkSayEvent evt = new TalkSayEvent();
+                //evt.nType  = func.I(0);
+                evt.nChar = func.I(1);          // 1- 說話角色
+                evt.nSayID = func.I(2);
+                evt.nReplaceID = func.I(3);
+                evt.nReplaceType = func.I(4);
+                //Say( func.I(0), func.I(1) );
+
+                GameEventManager.DispatchEvent(evt);
+            }
+
             else if (func.sFunc == "SETCHAR")
             {
                 TalkSetCharEvent evt = new TalkSetCharEvent();

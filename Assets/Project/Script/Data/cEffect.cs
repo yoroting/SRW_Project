@@ -1561,6 +1561,87 @@ public class cEffectCondition
                     return false;       //  fail
                 }
             }
+            else if (func.sFunc == "ATK_I")
+            {
+                int i1 = data_I.GetAtk();
+                int i2 = 0;
+
+
+                string s1 = func.S(1);  // s1 
+                if (s1 == "E")
+                {
+                    if (data_E != null)
+                    {
+                        i2 = data_E.GetAtk();
+                    }
+                    else
+                    {
+                        return false; // no enemy is false
+                    }
+                }
+                else if (s1 == "I")
+                {
+                    if (data_I != null)
+                    {
+                        i2 = data_I.GetAtk();
+                    }
+                    else
+                    {
+                        return false; // no enemy is false
+                    }
+                }
+                else
+                {
+                    i2 = func.I(1);
+                }
+                //
+                if (MyScript.Instance.ConditionInt(i1, func.S(0), i2) == false)
+                {
+                    return false;       // always fail
+                }
+
+            }
+
+            else if (func.sFunc == "ATK_E")
+            {
+                int i1 = data_E.GetAtk();
+                int i2 = 0;
+
+
+                string s1 = func.S(1);  // s1 
+                if (s1 == "E")
+                {
+                    if (data_E != null)
+                    {
+                        i2 = data_E.GetAtk();
+                    }
+                    else
+                    {
+                        return false; // no enemy is false
+                    }
+                }
+                else if (s1 == "I")
+                {
+                    if (data_I != null)
+                    {
+                        i2 = data_I.GetPow();
+                    }
+                    else
+                    {
+                        return false; // no enemy is false
+                    }
+                }
+                else
+                {
+                    i2 = func.I(1);
+                }
+                //
+                if (MyScript.Instance.ConditionInt(i1, func.S(0), i2) == false)
+                {
+                    return false;       // always fail
+                }
+
+            }
             else if (func.sFunc == "POW_I")
             {
                 int i1 = data_I.GetPow();
@@ -1601,6 +1682,7 @@ public class cEffectCondition
                 }
 
             }
+
             else if (func.sFunc == "POW_E")
             {
                 int i1 = data_E.GetPow();

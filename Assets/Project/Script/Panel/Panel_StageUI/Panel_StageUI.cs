@@ -2908,10 +2908,14 @@ public class Panel_StageUI : MonoBehaviour
 	{
         //change to del all unit with char
 
-        int nCount = 0;
-        List<int> mlist = new List<int>();
-		//Dictionary< _CAMP , cCamp > CampPool = GameDataManager.Instance.GetCamp;			// add Camp
-		foreach (KeyValuePair< int , Panel_unit > pair in IdentToUnit) {
+        int nCount = 0;// 指定刪除多少人， 0- 全刪
+     //   List<int> mlist = new List<int>();
+        //Dictionary< _CAMP , cCamp > CampPool = GameDataManager.Instance.GetCamp;			// add Camp
+        for (int i = 0; i < IdentToUnit.Count; i++)
+        {
+            KeyValuePair<int, Panel_unit> pair = IdentToUnit.ElementAt(i);
+
+           // foreach (KeyValuePair< int , Panel_unit > pair in IdentToUnit) {
 			if( pair.Value == null ){
 				Debug.LogErrorFormat( "DelUnit with null unit at charid {0} ",nCharid );
 				continue;
@@ -2921,7 +2925,11 @@ public class Panel_StageUI : MonoBehaviour
 
 			pair.Value.FreeUnitData();
 			pair.Value.Recycle();
-			mlist.Add( pair.Key );
+
+            // remove
+            IdentToUnit.Remove(pair.Key);
+            i--;
+          //  mlist.Add( pair.Key );
 
             // num
             nCount ++;
@@ -2933,10 +2941,10 @@ public class Panel_StageUI : MonoBehaviour
 
 
 		///
-		foreach( int id in mlist )
-		{
-			IdentToUnit.Remove( id );
-		}
+		//foreach( int id in mlist )
+		//{
+		//	IdentToUnit.Remove( id );
+		//}
 
         // 是否在 game data 中再找一次
     }
@@ -3443,7 +3451,7 @@ public class Panel_StageUI : MonoBehaviour
                 pool.Add(to.MoveXY(2, 0)); pool.Add(to.MoveXY(0, 2)); pool.Add(to.MoveXY(-2, 0)); pool.Add(to.MoveXY(0, -2));
                 
 			}
-			else {
+			else {             
 				pool = Grids.GetRangePool( to , i , i-1 );
 			}
 			// start sort 
@@ -5298,8 +5306,10 @@ public class Panel_StageUI : MonoBehaviour
         //foreach (KeyValuePair<int, Panel_unit> pair in IdentToUnit)
 
         // 必須包含 已經在死亡儲列的人
-        foreach (KeyValuePair<int, cUnitData> pair in GameDataManager.Instance.UnitPool )
+      //  foreach (KeyValuePair<int, cUnitData> pair in GameDataManager.Instance.UnitPool )
+        for (int i = 0; i < GameDataManager.Instance.UnitPool.Count; i++)
         {
+            KeyValuePair<int, cUnitData> pair = GameDataManager.Instance.UnitPool.ElementAt(i);
             if (pair.Value != null)
             {
                 if (pair.Value.n_CharID == nCharID)
@@ -5313,7 +5323,10 @@ public class Panel_StageUI : MonoBehaviour
                         else
                         {
                             pair.Value.RemoveTag(_UNITTAG._UNDEAD);
-                            
+                            if (pair.Value.IsDead() ) { // 如果已經死亡，則移除
+                                GameDataManager.Instance.UnitPool.Remove(pair.Key); // 由於已經free 過，所以只需要 remove
+                                i--;
+                            }                            
                         }
                    // }
                     
