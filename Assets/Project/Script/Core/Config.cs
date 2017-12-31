@@ -62,7 +62,7 @@ public class Config
 	public static float AssistRate = 8.0f;
 
     public static int CharMaxTired = 100;       // 最大疲勞
-
+    public static int RoundRestoreTired =  3;       // 每回合回復疲勞
 
     public static float BaseDodge	=5.0f;
 	public static float BaseCirit	=5.0f;

@@ -18,6 +18,12 @@ public class MobAI  {
         int ident = mob.Ident ();
 		cUnitData mobdata = GameDataManager.Instance.GetUnitDateByIdent ( ident );
 
+
+        if (mobdata.IsStun()) {
+            // 行動力歸零
+            mobdata.nActionTime = 0;
+            return;
+        }
 		//int nSkillID = -1;		// -1 - no attack
 		//// select a skill
 		//if( mobdata.eComboAI == _AI_COMBO._NORMAL ){
