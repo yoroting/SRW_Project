@@ -105,8 +105,8 @@ public class MobAI  {
             {
                 int nMinRange = skl.n_MINRANGE;
                 int nSkillRange = skl.n_RANGE;          // -1 代表 無距離限制
-
-                if ((nSkillRange== -1) || (  (nDist <= nSkillRange) && (nDist >= nMinRange) ) ) // 可以直接攻擊
+                bool bAll = (skl.n_TARGET == 9|| skl.n_TARGET == 10|| skl.n_TARGET == 11);
+                if ( bAll || (nSkillRange== -1) || (  (nDist <= nSkillRange) && (nDist >= nMinRange) ) ) // 可以直接攻擊
                 {
                     nSKillID = skl.n_ID;
                     return true; // tmpSklList
@@ -249,21 +249,22 @@ public class MobAI  {
                 return;   
             }
         }
+        // 基本上到這邊，應該都已經通過檢查了。不再看距離
+        ActionManager.Instance.CreateAttackCMD(mob.Ident(), Tar.Ident(), nSkillID); // create Attack CMD . need battle manage to run				
 
-
-        // check send atk cmd
-        if ((nDist <= nSkillRange) && (nDist >= nMinRange) ) // 可以攻擊
-        {
-            // check can atk or not 
-            ActionManager.Instance.CreateAttackCMD(mob.Ident(), Tar.Ident(), nSkillID); // create Attack CMD . need battle manage to run				
-          //  return true;
-        }
-        else
-        {
-            //將來修正， 如果還能移動，則降低移動力，重新收尋
-            _AI_MakeWaitCmd(mob , Tar  );
-            //ActionManager.Instance.CreateWaitingAction(mob.Ident());
-        }       
+        //// check send atk cmd
+        //if (  ( (nDist <= nSkillRange) && (nDist >= nMinRange) ) || (skl.n_TARGET == 9 || skl.n_TARGET == 10 || skl.n_TARGET == 11)  ) // 可以攻擊
+        //{
+        //    // check can atk or not 
+        //    ActionManager.Instance.CreateAttackCMD(mob.Ident(), Tar.Ident(), nSkillID); // create Attack CMD . need battle manage to run				
+        //  //  return true;
+        //}
+        //else
+        //{
+        //    //將來修正， 如果還能移動，則降低移動力，重新收尋
+        //    _AI_MakeWaitCmd(mob , Tar  );
+        //    //ActionManager.Instance.CreateWaitingAction(mob.Ident());
+        //}       
     }
 
     static void _AI_MakeWaitCmd(Panel_unit mob, Panel_unit Tar=null)
@@ -1795,16 +1796,23 @@ public class MobAI  {
         // 射程判斷
         if (skl.n_TARGET != 0) // 除了自我施法外，要判斷距離
         {
-            int nRange;
-            int nMinRange;
-            MyTool.GetSkillRange(nSkillID, out nRange, out nMinRange);
+            if (skl.n_TARGET == 9 || skl.n_TARGET == 10 || skl.n_TARGET == 11)
+            {
+                // 全畫面攻擊
+            }
+            else    // 正常距離判斷
+            {
+                int nRange;
+                int nMinRange;
+                MyTool.GetSkillRange(nSkillID, out nRange, out nMinRange);
 
-            if (nMinRange > nDist)
-                return false; // too near can't cast
+                if (nMinRange > nDist)
+                    return false; // too near can't cast
 
-            // counter can't move
-            if (nRange >= 0 && nRange < nDist)
-                return false;
+                // counter can't move
+                if (nRange >= 0 && nRange < nDist)
+                    return false;
+            }
         }
 
 

@@ -98,7 +98,7 @@ public class cSkillData
 
 		}
 
-
+     
 	}
 //	public List< cBuffCondition > ConditionPool;
 
@@ -107,21 +107,32 @@ public class cSkillData
 	// cast 
 	public List< cEffect > 	  EffPool;				// normal
 	public cEffectCondition	  EffCond;				// condition
-	public List< cEffect > 	  CondEffPool;	// Trig Effect
+	public List< cEffect > 	  CondEffPool;  // Trig Effect
 
 
-//	public List< cEffect > 	  CastPool;				// normal
-//	public cEffectCondition	  CastCond;				// condition
-//	public List< cEffect > 	  CastCondEffectPool;	// Trig Effect
-//
-//	// 
-//	public List< cEffect > 	  HitPool;				// normal
-//	public cEffectCondition	  HitCond;				// condition
-//	public List< cEffect > 	  HitCondEffectPool;	// Trig Effect
+    //	public List< cEffect > 	  CastPool;				// normal
+    //	public cEffectCondition	  CastCond;				// condition
+    //	public List< cEffect > 	  CastCondEffectPool;	// Trig Effect
+    //
+    //	// 
+    //	public List< cEffect > 	  HitPool;				// normal
+    //	public cEffectCondition	  HitCond;				// condition
+    //	public List< cEffect > 	  HitCondEffectPool;	// Trig Effect
+    public bool IsMapSkill()
+    {
+        if (skill != null )
+        {
+            //if (skill.n_TARGET == 8 || skill.n_TARGET == 9 || skill.n_TARGET == 10) {
+            if (skill.n_TARGET >= 3 )
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 
-
-	// Tag arrag
-	List< _SKILLTAG > TAGS;
+    // Tag arrag
+    List< _SKILLTAG > TAGS;
 	
 	List< _SKILLTAG > GetTags()
 	{

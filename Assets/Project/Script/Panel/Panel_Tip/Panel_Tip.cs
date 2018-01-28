@@ -79,16 +79,17 @@ public class Panel_Tip : MonoBehaviour {
         UIWidget wid = lblText.GetComponent<UIWidget>();
         lbl.overflowMethod = UILabel.Overflow.ResizeFreely;
         MyTool.SetLabelText(lblText, ""); // 清空來確保每次 文字都異動
-        lbl.width = 240;
+        lbl.width = 480;
 
         MyTool.SetLabelText(lblText, str);
-        if (wid.width <= 240)
-        {
-            //wid.width = 480;
-            lbl.overflowMethod = UILabel.Overflow.ResizeHeight;
-            lbl.width = 240;
-        }
-        else if (wid.width <= 480)
+        //if (wid.width <= 240)
+        //{
+        //    //wid.width = 480;
+        //    lbl.overflowMethod = UILabel.Overflow.ResizeHeight;
+        //    lbl.width = 240;
+        //}
+        //else
+        if (wid.width <= 480)
         {
             //wid.width = 480;
 
@@ -118,7 +119,7 @@ public class Panel_Tip : MonoBehaviour {
             //string sTime = string.Format("持續：{0}", nTime);
             lblSubText.text = string.Format("持續：{0}回合", nTime); ;
 
-          
+         
 
             //lblSubText.height = 30;
         }

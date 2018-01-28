@@ -293,10 +293,11 @@ public partial class BattleManager
 			Panel_StageUI.Instance.ClearAVGObj();
 			// open CMD UI for def player
 			if ( Defer.eCampID  == _CAMP._PLAYER) {
-				// set open CMD 
-				// need set a range
-				Panel_CMDUnitUI.OpenCMDUI( _CMD_TYPE._COUNTER , nDeferID  , nAtkerID );
-				
+                    // set open CMD 
+                    // need set a range
+                    if (IsMapSkill(nAtkerSkillID ) == false) {
+                        Panel_CMDUnitUI.OpenCMDUI(_CMD_TYPE._COUNTER, nDeferID, nAtkerID);
+                    }
 			}
 			else{ 
 				// mob need a method to get skill
@@ -321,15 +322,17 @@ public partial class BattleManager
                         // special process for def is player+
                         if (Defer.eCampID == _CAMP._PLAYER)
                         {
-
-                            // check to reopen counter CMD UI	
-                            if (!IsCounterMode() && !IsDefMode())
+                            if (IsMapSkill(nAtkerSkillID) == false)
                             {
-                                if (PanelManager.Instance.CheckUIIsOpening(Panel_Skill.Name) == false)
-                                { // don't pop if skill ui is opening
-                                    Panel_CMDUnitUI.OpenCMDUI(_CMD_TYPE._COUNTER, nDeferID, nAtkerID);
+                                // check to reopen counter CMD UI	
+                                if (!IsCounterMode() && !IsDefMode())
+                                {
+                                    if (PanelManager.Instance.CheckUIIsOpening(Panel_Skill.Name) == false)
+                                    { // don't pop if skill ui is opening
+                                        Panel_CMDUnitUI.OpenCMDUI(_CMD_TYPE._COUNTER, nDeferID, nAtkerID);
+                                    }
+                                    return; // break when counter don't start
                                 }
-                                return; // break when counter don't start
                             }
                         }
                         //ShowBattleMsg( nAtkerID , "attack" );
@@ -1730,6 +1733,18 @@ public partial class BattleManager
 	{
 		return ( eDefCmdID == _CMD_ID._DEF );
 	}
+    // 攻方是 不可反擊 技能
+    public bool IsMapSkill( int nSkillID )
+    {
+        if (nSkillID > 0) {
+            cSkillData SkillData = MyTool.GetSkillData(nSkillID);
+            if (SkillData != null) {
+                return SkillData.IsMapSkill();
+            }
+        }
+        return false;
+    }
+
 
 	public void GetThroughPool( cUnitData Atker , cUnitData Defer , int SkillID , int nTarX , int nTarY  , ref List< cUnitData> pool, int nLen=1  )
 	{
