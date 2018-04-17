@@ -18,6 +18,7 @@ public class Panel_StageUI : MonoBehaviour
         _STAGE_BEFORE,
         _STAGE_BATTLE,
         _STAGE_AFTER,
+        _STAGE_ENDGAME,  // 結束遊戲，回到開始選單
     };
 
 

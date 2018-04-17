@@ -1747,6 +1747,10 @@ public class MyScript {
             {
                 GameDataManager.Instance.ReGame();
             }
+            else if (func.sFunc == "ENDGAME")  // 遊戲結束
+            {
+                GameDataManager.Instance.EndGame();
+            }
             else
             {
                 Debug.LogError(string.Format("Error-Can't find script func '{0}'", func.sFunc));

@@ -504,6 +504,35 @@ private static GameDataManager instance;
 
     }
 
+    public void EndGame()
+    {
+        // 
+        if (PanelManager.Instance.CheckUIIsOpening(Panel_StageUI.Name))
+        {     
+            // entry endstage
+            Panel_StageUI.Instance.EndStage();
+
+            Panel_StageUI.Instance.ShowStage(false);
+            // free here waill cause some  StartCoroutine of stageUI break 
+            PanelManager.Instance.DestoryUI(Panel_StageUI.Name);
+
+            // reopen main UI
+            PanelManager.Instance.OpenUI(MainUIPanel.Name);
+
+            Panel_StageUI.Instance.m_StagePhase = Panel_StageUI._STATEPHASE._STAGE_ENDGAME; // 設定為結束遊戲（ 不會再跳到 mainten )
+
+        }
+        else if (PanelManager.Instance.CheckUIIsOpening(Panel_Mainten.Name))
+        {
+
+            PanelManager.Instance.OpenUI(MainUIPanel.Name);
+
+            PanelManager.Instance.CloseUI(Panel_Mainten.Name);
+
+        }
+      
+    }
+    
     // 目前的紀錄狀態
     //public PLAYER_DATA			cPlayerData;
     //	public cSaveData				SaveData;		
