@@ -76,6 +76,8 @@ public class Config
 	public static bool DebugInfo = true;			// 
 	public static bool FREE_MP = false;
     public static bool SHOW_LEAVE = false;          // 顯示離隊成員
+    public static bool Roll100 = false;  // 一定 Roll 100
+
 
     // Setting
     public static int TextSpeed = 0;			    // 0 is very fast

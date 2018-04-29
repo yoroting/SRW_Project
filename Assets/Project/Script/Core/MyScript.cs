@@ -397,6 +397,9 @@ public class MyScript {
     //====================================================
     public bool ConditionRate( int Rate )
 	{
+        if (Config.Roll100 == true)
+            return true;
+
 		int nRoll = Random.Range (0, 100);
 
 		return ( Rate > nRoll );

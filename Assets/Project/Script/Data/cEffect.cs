@@ -1493,6 +1493,9 @@ public class cEffectCondition
             }
             else if (func.sFunc == "RATE")
             {
+                if (Config.Roll100 == true)
+                    continue;
+
                 int Rate = func.I(0);
                 int nRoll = Random.Range(0, 100);
                 if (Rate < nRoll)
@@ -1502,7 +1505,10 @@ public class cEffectCondition
                 
             }
             else if (func.sFunc == "MRATE")  // 必須比兩者武功差值
-            {                
+            {
+                if (Config.Roll100 == true)
+                    continue;
+
                 if (data_E == null || data_I == null)
                     return false;
                 int Rate = func.I(0);

@@ -15,7 +15,7 @@ public class Panel_SysCheat : MonoBehaviour {
 	public GameObject KillChk;           // Kill mode
 	public GameObject MobAIChk;           // mob aI
     public GameObject ShowLeaveChk;           // show leave aI
-
+    public GameObject Roll100;           // 機率 100%
     // Money
     public GameObject MoneyInput;           // Kill mode
 	public GameObject MoneyBtn;           // Set money
@@ -52,6 +52,8 @@ public class Panel_SysCheat : MonoBehaviour {
 		UIEventListener.Get(KillChk).onClick = OnKillClick; 
 		UIEventListener.Get(MobAIChk).onClick = OnMobAIClick;
         UIEventListener.Get(ShowLeaveChk).onClick = OnShowLeaveClick;
+        UIEventListener.Get(Roll100).onClick = OnRoll100Click;
+
         UIEventListener.Get(CloseBtn).onClick = OnCloseClick; 
 		UIEventListener.Get(WinBtn).onClick = OnWinClick; 
 		UIEventListener.Get(LostBtn).onClick = OnLostClick; 
@@ -176,6 +178,10 @@ public class Panel_SysCheat : MonoBehaviour {
 
         UIToggle showleave = ShowLeaveChk.GetComponent<UIToggle>();
         showleave.value = Config.SHOW_LEAVE;
+
+        UIToggle roll100 = Roll100.GetComponent<UIToggle>();
+        roll100.value = Config.Roll100;
+
 
         UIInput min = MoneyInput.GetComponent<UIInput> ();
 		min.value = GameDataManager.Instance.nMoney.ToString();
@@ -325,7 +331,14 @@ public class Panel_SysCheat : MonoBehaviour {
         }
     }
 
-	public void OnMoneyClick(GameObject go)
+    public void OnRoll100Click(GameObject go)
+    {
+        UIToggle ui = go.GetComponent<UIToggle>();
+        Config.Roll100 = ui.value;
+        
+    }
+
+    public void OnMoneyClick(GameObject go)
 	{
 		UIInput min = MoneyInput.GetComponent<UIInput> ();
 		int money = 0;
