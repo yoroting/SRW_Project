@@ -1271,8 +1271,6 @@ public class Panel_unit : MonoBehaviour {
             GhostAttack(skillid, nTarX, nTarY);
             return;
         }
-
-
         else if (MyTool.IsSkillTag(skillid, _SKILLTAG._FLASH))
         { // 
             int nTarX = defer.Loc.X;
@@ -1281,12 +1279,19 @@ public class Panel_unit : MonoBehaviour {
             return;
 
         }
+        else if (MyTool.IsSkillTag(skillid, _SKILLTAG._BACKKILL))
+        {
+            int nTarX = defer.Loc.X;
+            int nTarY = defer.Loc.Y;
+            BackAttack(nTarX, nTarY);
+            return;
+        }
         //  非攻擊型技能，跳過攻擊動作
         else if (MyTool.IsSkillTag(skillid, _SKILLTAG._DAMAGE) == false) {
             OnTwAtkHit();
             return;
         }
-
+      
 
         //Vector3 vOrg = this.transform.localPosition;
         //Vector3 vTar = defer.transform.localPosition;
@@ -1382,19 +1387,24 @@ public class Panel_unit : MonoBehaviour {
             return;
         }
         else if (MyTool.IsSkillTag(skillid, _SKILLTAG._GHOSTKILL))  // 同一人打多下
-        { // 
-
+        { 
             GhostAttack(skillid, GridX, GridY);
             return;
         }
-
         else if (MyTool.IsSkillTag(skillid, _SKILLTAG._FLASH))
-        { // 
-
+        { 
             FlashAttack(GridX, GridY);
             return;
-
         }
+        else if (MyTool.IsSkillTag(skillid, _SKILLTAG._BACKKILL))
+        {
+            BackAttack(GridX, GridY);
+            return;
+        }
+
+
+
+
         // exec result directly
         // play FX 
         ShowSkillCastHitFX(ActionSkillID, 0, GridX, GridY);
@@ -2033,6 +2043,164 @@ public class Panel_unit : MonoBehaviour {
             }
 
         }
+    }
+
+
+    public void BackAttack(int GridX, int GridY)
+    {
+        bIsAtking = true;
+
+        float fdelay = 0.0f;
+        Vector3 vTar = MyTool.SnyGridtoLocalPos(GridX, GridY, ref GameScene.Instance.Grids);
+
+        Vector3 diff = vTar - this.transform.localPosition;
+        float mag = diff.magnitude;
+        if (mag > 100.0f)
+        {
+            diff.x *= (100.0f / mag);
+            diff.y *= (100.0f / mag);
+        }
+        Vector3 v = this.transform.localPosition - diff; // back
+
+        // 後退消失
+        TweenPosition tw = TweenPosition.Begin<TweenPosition>(this.gameObject, 0.5f); // always move back to start pos
+        if (tw != null)
+        {
+            tw.SetStartToCurrentValue();
+            tw.to = v;
+        }
+
+        // 縮放
+        TweenScale tws = TweenScale.Begin<TweenScale>(this.gameObject, 0.4f);
+        if (tws != null) {
+            tws.from = this.transform.localScale;
+            tws.to = new Vector3(1.0f, 0.0f, 1.0f);
+        }        
+
+        //TweenHeight twh = TweenHeight.Begin<TweenHeight >(FaceObj, 0.4f, 0.10f);
+        //if (twh != null) {
+        //    twh.from = Config.UnitH;
+        //    twh.to = 0;
+        //}
+
+        TweenAlpha twa = TweenAlpha.Begin<TweenAlpha>(this.gameObject, 0.4f , 0.10f );
+        if (twa != null) {
+            twa.from = 1.0f;
+            twa.to = 0.0f;
+        }
+
+        fdelay += 0.5f;
+
+        UISprite p = this.gameObject.GetComponent<UISprite>();
+        if (p != null)
+        {
+//            p.width = 0;
+//            p.height = Config.UnitH;
+            SetDepth(p.depth + 1);
+            //p.depth--; // move to hight then other
+        }
+
+
+        //UIWidget widget = FaceObj.GetComponent< UIWidget>();
+        //if (widget != null) {
+        //    widget.width = 0;
+        //    widget.height = Config.UnitH;
+        //}
+
+
+        // 在目標頭上出現
+        //   this.gameObject.transform.localPosition = MyTool.SnyGridtoLocalPos(GridX, GridY + 1, ref GameScene.Instance.Grids);
+
+
+        //TweenWidth tww = FaceObj.AddComponent<TweenWidth>(); 
+        //if (tww != null)
+        //{
+        //    tww.from = 0;
+        //    tww.to = Config.UnitW;
+        //    tww.delay = fdelay;
+        //    tww.duration = fdelay + 0.2f;
+        //}
+
+
+        // 縮放
+        TweenScale tws2 = this.gameObject.AddComponent<TweenScale>();
+        if (tws2 != null)
+        {
+            tws2.from = new Vector3(0.0f, 1.0f, 1.0f);
+            tws2.to = Vector3.one;
+            tws2.delay = fdelay;
+            tws2.duration =  0.2f;
+        }
+
+
+
+
+        TweenAlpha twa2 = this.gameObject.AddComponent<TweenAlpha>();
+        if (twa2 != null)
+        {
+            twa2.from = 0.0f;
+            twa2.to = 1.0f;
+            twa2.delay = fdelay;
+            twa2.duration =  0.2f;
+        }
+
+        TweenPosition tw1 = this.gameObject.AddComponent<TweenPosition>(); //  TweenPosition.Begin<TweenPosition>(this.gameObject, fdelay + 0.2f);
+        if (tw1 != null)
+        {
+            tw1.from =  MyTool.SnyGridtoLocalPos(GridX , GridY + 1, ref GameScene.Instance.Grids);
+            tw1.to = MyTool.SnyGridtoLocalPos(GridX , GridY - 1, ref GameScene.Instance.Grids);
+
+            tw1.delay = fdelay;
+            tw1.duration = 0.2f;
+
+            MyTool.TweenSetOneShotOnFinish(tw1, OnTwAtkBackEnd); // for once only
+        }
+
+       // fdelay += 0.4f;
+        // 回到原處
+
+
+    }
+
+
+    public void OnTwAtkBackEnd()
+    {
+
+        // clear all move tw
+        TweenScale[] tws = gameObject.GetComponents<TweenScale>();
+        foreach (TweenScale tw in tws)
+        {
+            Destroy(tw);
+        }
+
+        //iVec2 v = MyTool.SnyLocalPostoGrid(transform.localPosition, ref GameScene.Instance.Grids);
+
+        //ShowSkillCastHitFX(ActionSkillID, 0, v.X, v.Y);
+
+
+        //// reset pos
+        //this.gameObject.transform.localPosition = MyTool.SnyGridtoLocalPos(Loc.X, Loc.Y, ref GameScene.Instance.Grids);
+        //ActionManager.Instance.ExecActionHitResult(CurAction);   // perform sm hit action
+
+        //bIsAtking = false;
+
+        TweenRotation twr = TweenRotation.Begin<TweenRotation>(gameObject, 0.2f);
+        if (twr != null)
+        {
+            twr.SetStartToCurrentValue();
+            twr.to = new Vector3(0.0f, 0.0f, 360.0f);//Math.PI
+          //  MyTool.TweenSetOneShotOnFinish(twr, OnTwAtkRotateEnd); // for once only
+        }
+
+        UIWidget widget = FaceObj.GetComponent<UIWidget>();
+        if (widget != null)
+        {
+            widget.width = Config.UnitW;
+            widget.height = Config.UnitH;
+        }
+
+
+        OnTwAtkHit();
     }
 
     //==============Tween CAll back
