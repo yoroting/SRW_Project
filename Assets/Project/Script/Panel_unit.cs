@@ -123,18 +123,21 @@ public class Panel_unit : MonoBehaviour {
     void Init()
     {
         if (FaceObj != null)
-        {
+        {            
             FaceObj.transform.localPosition = Vector3.zero;
+            FaceObj.transform.localRotation = Quaternion.identity;
+            FaceObj.transform.localScale = Vector3.one;
             UITexture tex = FaceObj.GetComponent<UITexture>();
             if (tex != null)
             {
+                tex.color = Color.white;
                 tex.width = Config.UnitW;
                 tex.height = Config.UnitH;
             }
         }
 
-        transform.localRotation = new Quaternion();
-        transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+        transform.localRotation = Quaternion.identity;  //new Quaternion();
+        transform.localScale = Vector3.one;
 
         bOnSelected = false;
         bIsDead = false;
@@ -2335,14 +2338,11 @@ public class Panel_unit : MonoBehaviour {
         }
         return false;
     }
-    public void SetDead()
+    public void SetDead( int nType =0 )
     {
         // avoid double run
         if (bIsDead == true)
             return;
-
-
-
 
         // check if ant event need to run?
         //
@@ -2350,32 +2350,76 @@ public class Panel_unit : MonoBehaviour {
                                   //	BGObj.SetActive (false); // why this?
         bIsDead = true; // set dead
         bIsDeading = true;
-        // shake
-        TweenShake tws = TweenShake.Begin(FaceObj, 1.0f, 15);
-        if (tws)
+
+
+        switch (nType)
         {
-            tws.shakeX = true;
-            tws.shakeY = true;
+            case 1:
+                {
+                    //// 變白
+                    //TweenColor twc = TweenColor.Begin(FaceObj, 1.0f, Color.white  );
+                    //if (twc != null){
+                    //    Destroy(twc, 1.0f); // 
+                    //}
+                    float deadtime = 2.0f;
 
-            Destroy(tws, 1.0f); // 
+                    // 縮放
+                    TweenScale tws = TweenScale.Begin(FaceObj, deadtime, new Vector3(0.0f, 10.0f, 1.0f));
+                    if (tws != null)
+                    {
+                        Destroy(tws, 2.0f); // 
+                    }
+                    
+                    TweenGrayLevel tw = GrayLevelHelper.StartTweenGrayLevel(FaceObj, deadtime / 2.0f );
+                    if (tw)
+                    {
+                        tw.from = 0.0f;
+                        tw.to = 1.0f;
+                    }
+
+                    TweenAlpha twa = TweenAlpha.Begin(FaceObj, deadtime, 0.0f);
+                    if (twa != null)
+                    {
+                        MyTool.TweenSetOneShotOnFinish(twa, OnDead);
+                    }
+
+                    // 死亡音效
+                    GameSystem.PlaySound(159);
+
+                }
+                break;
+            default:
+                {
+                    // shake
+                    TweenShake tws = TweenShake.Begin(FaceObj, 1.0f, 15);
+                    if (tws)
+                    {
+                        tws.shakeX = true;
+                        tws.shakeY = true;
+
+                        Destroy(tws, 1.0f); // 
+                    }
+                    //TweenGrayLevel
+                    //Vector2 vfrom = new Vector3( 1.0f , 1.0f , 1.0f );
+                    //Vector2 vto   = new Vector3( 0.0f , 10.0f, 1.0f );
+                    TweenGrayLevel tw = GrayLevelHelper.StartTweenGrayLevel(FaceObj, 1.0f);
+                    if (tw)
+                    {
+
+                        tw.from = 0.0f;
+                        tw.to = 1.0f;
+                        MyTool.TweenSetOneShotOnFinish(tw, OnDead);
+
+                    }
+
+                    // 死亡音效
+                    GameSystem.PlaySound("Se16");
+
+                }
+                break;
+
         }
-
-        //TweenGrayLevel
-        //Vector2 vfrom = new Vector3( 1.0f , 1.0f , 1.0f );
-        //Vector2 vto   = new Vector3( 0.0f , 10.0f, 1.0f );
-        TweenGrayLevel tw = GrayLevelHelper.StartTweenGrayLevel(FaceObj, 1.0f);
-        if (tw) {
-
-            tw.from = 0.0f;
-            tw.to = 1.0f;
-            MyTool.TweenSetOneShotOnFinish(tw, OnDead);
-            //			tw.style = UITweener.Style.Once; // PLAY ONCE
-            //			tw.SetOnFinished( OnDead );
-
-        }
-
-        // 死亡音效
-        GameSystem.PlaySound("Se16");
+        
 
         // free data here
         //FreeUnitData ();

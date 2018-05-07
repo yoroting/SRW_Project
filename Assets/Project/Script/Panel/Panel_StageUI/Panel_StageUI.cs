@@ -5338,7 +5338,7 @@ public class Panel_StageUI : MonoBehaviour
 
     
     // 單位死亡
-    public void OnStageUnitDeadEvent( int nCharID , int nNum = 0)
+    public void OnStageUnitDeadEvent( int nCharID , int nNum = 0 , int nDeadType = 0)
 	{
 		// auto close all say window. 
         // bug .. auto close in dead end
@@ -5360,7 +5360,7 @@ public class Panel_StageUI : MonoBehaviour
 				{
 					if( pair.Value.bIsDead == false )
 					{
-						pair.Value.SetDead();
+						pair.Value.SetDead( nDeadType );
                         nCount++;
                     }
                     if (nNum > 0 && nCount >= nNum) {

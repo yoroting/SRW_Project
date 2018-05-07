@@ -1563,7 +1563,7 @@ public class MyScript {
             else if (func.sFunc == "UNITDEAD")
             {
                 //int nCharID = func.I( 0 );		
-                Panel_StageUI.Instance.OnStageUnitDeadEvent(func.I(0), func.I(1));
+                Panel_StageUI.Instance.OnStageUnitDeadEvent(func.I(0), func.I(1), func.I(2));
 
                 // dont close auto.
                 //	TalkDeadEvent evt = new TalkDeadEvent();			
