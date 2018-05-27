@@ -335,40 +335,44 @@ public class MyTool {
 		//			pool.Add ( st );
 		
 		AOE aoe = ConstDataManager.Instance.GetRow<AOE> ( nAoe ) ;
-		if (aoe != null) {
-			// add extra first
-			cTextArray TA = new cTextArray();
-			TA.SetText ( aoe.s_EXTRA );
-			for( int i = 0 ; i < TA.GetMaxCol(); i++ )
-			{
-				CTextLine line  = TA.GetTextLine( i );
-				for( int j = 0 ; j < line.GetRowNum() ; j++ )
-				{
-					string s = line.m_kTextPool[ j ];
-					
-					string [] arg = s.Split( ",".ToCharArray() );
-					if( arg.Length < 2 )
-						continue;
+        if (aoe != null)
+        {
+            // add extra first
+            cTextArray TA = new cTextArray();
+            TA.SetText(aoe.s_EXTRA);
+            for (int i = 0; i < TA.GetMaxCol(); i++)
+            {
+                CTextLine line = TA.GetTextLine(i);
+                for (int j = 0; j < line.GetRowNum(); j++)
+                {
+                    string s = line.m_kTextPool[j];
 
-					if( arg[0] != null && arg[1] != null )
-					{
-						int x = 0;
-						int.TryParse( arg[0] , out x);
-						int y = 0;
-						int.TryParse( arg[1] , out y );
-						iVec2 t = new iVec2( x , y );
-						t.Rotate( dir );
-						iVec2 v = st + t; 
+                    string[] arg = s.Split(",".ToCharArray());
+                    if (arg.Length < 2)
+                        continue;
 
-						if( GameScene.Instance.Grids.Contain( v ) == false )
-							continue;
-						tmp.Add(  v );
-					}
-				}
-			}
-			// get range pool	
-			pool = GameScene.Instance.Grids.GetRangePool( st , aoe.n_MAX , aoe.n_MIN );
-		}
+                    if (arg[0] != null && arg[1] != null)
+                    {
+                        int x = 0;
+                        int.TryParse(arg[0], out x);
+                        int y = 0;
+                        int.TryParse(arg[1], out y);
+                        iVec2 t = new iVec2(x, y);
+                        t.Rotate(dir);
+                        iVec2 v = st + t;
+
+                        if (GameScene.Instance.Grids.Contain(v) == false)
+                            continue;
+                        tmp.Add(v);
+                    }
+                }
+            }
+            // get range pool	
+            pool = GameScene.Instance.Grids.GetRangePool(st, aoe.n_MAX, aoe.n_MIN);
+        }
+        else {
+            tmp.Add(st);
+        }
 
 		// merge two pool
 		if (pool == null) {

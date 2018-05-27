@@ -92,7 +92,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 128810}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -69, y: -226, z: 0}
+  m_LocalPosition: {x: -87, y: -226, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 499638}
@@ -105,7 +105,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 128812}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 19, y: -226, z: 0}
+  m_LocalPosition: {x: 18, y: -234, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 499638}
@@ -199,6 +199,8 @@ MonoBehaviour:
   updateAnchors: 1
   showInPanelTool: 1
   generateNormals: 0
+  generateUV2: 0
+  shadowMode: 0
   widgetsAreStatic: 0
   cullWhileDragging: 1
   alwaysOnScreen: 0
@@ -213,7 +215,9 @@ MonoBehaviour:
   mClipSoftness: {x: 4, y: 4}
   mDepth: 14
   mSortingOrder: 0
+  mSortingLayerName: 
   mClipOffset: {x: 0, y: 0}
+  useSortingOrder: 0
 --- !u!114 &11418822
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -226,6 +230,31 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lblName: {fileID: 119894}
+  save:
+    nVersion: 1
+    n_IDX: 0
+    n_StoryID: 0
+    n_StageID: 0
+    e_Camp: 0
+    n_Round: 0
+    n_Money: 0
+    n_Stars: 0
+    n_StagePhase: 0
+    n_EarnMoney: 0
+    n_SpendMoney: 0
+    ePhase: 2
+    sPlayerFirst: 
+    sPlayerName: 
+    nPlayerBGM: 0
+    nEnemyBGM: 0
+    nFriendBGM: 0
+    StoragePool: []
+    CharPool: []
+    ItemPool: 
+    ImportEventPool: 
+    sBackJson: 
+    EvtBlockPool: []
+  m_Type: 0
 --- !u!114 &11428810
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -242,18 +271,24 @@ MonoBehaviour:
   animationCurve:
     serializedVersion: 2
     m_Curve:
-    - serializedVersion: 2
+    - serializedVersion: 3
       time: 0
       value: 0
       inSlope: 0
       outSlope: 1
       tangentMode: 0
-    - serializedVersion: 2
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
       time: 1
       value: 1
       inSlope: 1
       outSlope: 0
       tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
@@ -262,6 +297,7 @@ MonoBehaviour:
   duration: 1
   steeperCurves: 0
   tweenGroup: 0
+  useFixedUpdate: 0
   onFinished: []
   eventReceiver: {fileID: 0}
   callWhenFinished: 
@@ -301,6 +337,7 @@ MonoBehaviour:
   mWidth: 46
   mHeight: 46
   mDepth: 2
+  mMat: {fileID: 0}
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
@@ -310,13 +347,16 @@ MonoBehaviour:
   mFillAmount: 1
   mInvert: 0
   mFlip: 0
+  mApplyGradient: 0
+  mGradientTop: {r: 1, g: 1, b: 1, a: 1}
+  mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
   centerType: 1
   leftType: 1
   rightType: 1
   bottomType: 1
   topType: 1
-  mAtlas: {fileID: 11400000, guid: 62adb30369acbf943a67cee0f69267a3, type: 2}
-  mSpriteName: Window
+  mAtlas: {fileID: 11491776, guid: 25576dd4c299fef4f9fc244f1e89bb8b, type: 2}
+  mSpriteName: taijitu
   mFillCenter: 1
 --- !u!114 &11428814
 MonoBehaviour:
@@ -348,17 +388,18 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 134
+  mWidth: 114
   mHeight: 30
   mDepth: 1
+  mMat: {fileID: 0}
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 4.3333335
+  aspectRatio: 2.8
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   mFont: {fileID: 0}
-  mText: Loading...
+  mText: "\u8B80\u53D6\u4E2D..."
   mFontSize: 30
   mFontStyle: 0
   mAlignment: 0
@@ -369,7 +410,6 @@ MonoBehaviour:
   mSymbols: 1
   mEffectDistance: {x: 2, y: 2}
   mOverflow: 2
-  mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
   mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
@@ -379,6 +419,8 @@ MonoBehaviour:
   mFloatSpacingX: 0
   mFloatSpacingY: 0
   mOverflowEllipsis: 0
+  mOverflowWidth: 0
+  mModifier: 0
   mShrinkToFit: 0
   mMaxLineWidth: 0
   mMaxLineHeight: 0
@@ -417,6 +459,7 @@ MonoBehaviour:
   mWidth: 78
   mHeight: 48
   mDepth: 3
+  mMat: {fileID: 0}
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
@@ -435,7 +478,6 @@ MonoBehaviour:
   mSymbols: 1
   mEffectDistance: {x: 1, y: 1}
   mOverflow: 2
-  mMaterial: {fileID: 0}
   mApplyGradient: 1
   mGradientTop: {r: 1, g: 1, b: 1, a: 1}
   mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
@@ -445,6 +487,8 @@ MonoBehaviour:
   mFloatSpacingX: 0
   mFloatSpacingY: 0
   mOverflowEllipsis: 0
+  mOverflowWidth: 0
+  mModifier: 0
   mShrinkToFit: 0
   mMaxLineWidth: 0
   mMaxLineHeight: 0
@@ -517,6 +561,7 @@ MonoBehaviour:
   mWidth: 960
   mHeight: 640
   mDepth: 0
+  mMat: {fileID: 0}
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 1
@@ -526,6 +571,9 @@ MonoBehaviour:
   mFillAmount: 1
   mInvert: 0
   mFlip: 0
+  mApplyGradient: 0
+  mGradientTop: {r: 1, g: 1, b: 1, a: 1}
+  mGradientBottom: {r: 0.7, g: 0.7, b: 0.7, a: 1}
   centerType: 1
   leftType: 1
   rightType: 1
@@ -538,7 +586,6 @@ MonoBehaviour:
     width: 1
     height: 1
   mTexture: {fileID: 2800000, guid: 3803bb99dfa214d4dbe943b5959ac09e, type: 3}
-  mMat: {fileID: 0}
   mShader: {fileID: 4800000, guid: e75727d9555d9d14ca51d91908c681bc, type: 3}
   mBorder: {x: 0, y: 0, z: 0, w: 0}
   mFixedAspect: 0

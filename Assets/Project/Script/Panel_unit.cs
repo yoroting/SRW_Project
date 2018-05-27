@@ -2383,6 +2383,7 @@ public class Panel_unit : MonoBehaviour {
                         MyTool.TweenSetOneShotOnFinish(twa, OnDead);
                     }
 
+                    MoveToTop();
                     // 死亡音效
                     GameSystem.PlaySound(159);
 

@@ -10,7 +10,7 @@ GameObject:
   - component: {fileID: 400000}
   - component: {fileID: 19800000}
   - component: {fileID: 19900000}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: CFXM4 Stars
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -27,7 +27,7 @@ GameObject:
   - component: {fileID: 400002}
   - component: {fileID: 19800002}
   - component: {fileID: 19900002}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: CFXM4 Rays 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 400004}
   - component: {fileID: 19800004}
   - component: {fileID: 19900004}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: CFXM4 Rays 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -63,7 +63,7 @@ GameObject:
   - component: {fileID: 19900006}
   - component: {fileID: 11488314}
   - component: {fileID: 11433412}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: CFXM4 Magic Drain Fast Black
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -17575,7 +17575,7 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 1
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 2100000, guid: 0053b65302e6f7649b1c013c4c41906b, type: 2}
+  - {fileID: 2100000, guid: 47a0edac84ae53847af23cb854fabffe, type: 2}
   - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -17743,7 +17743,7 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 1
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 2100000, guid: ab5c3b9228336964c861ddf1140cf53c, type: 2}
+  - {fileID: 2100000, guid: 96f83f99145ba8b408478aa4db6deaf2, type: 2}
   - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
