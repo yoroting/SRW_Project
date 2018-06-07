@@ -318,32 +318,25 @@ public class GameSystem : MonoBehaviour {
 		}
 
         // no use
-       
 
-//        ParticleSystem ps = instance.GetComponent<ParticleSystem>();
-//        if ( ps != null )
-//        {          
-//            ps.simulationSpace = ParticleSystemSimulationSpace.World; // always world mode to avoid issue
+
+        //        ParticleSystem ps = instance.GetComponent<ParticleSystem>();
+        //        if ( ps != null )
+        //        {          
+        //            ps.simulationSpace = ParticleSystemSimulationSpace.World; // always world mode to avoid issue
         //}
 
-        //SetParticleRenderLayer(instance, "UI");
-        //	SetParticleRenderLayer ( instance ,sortLayer  );
+        SetParticleRenderLayer(instance, "FX");  // 統一在 FX layer
+       
 
-        //		ParticleSystemRenderer psr =instance.GetComponent< ParticleSystemRenderer>();
-        //		if (psr != null) {
-        //			psr.sortingLayerName =sortLayer;
-        //		}
-        //		// for child
-        //		ParticleSystemRenderer[] psrs = instance.GetComponentsInChildren<ParticleSystemRenderer>();
-        //		foreach (ParticleSystemRenderer psr2 in psrs) {
-        //			psr2.sortingLayerName = sortLayer;
-        //		}
-        AutoParticleQueue autoquene = instance.GetComponent<AutoParticleQueue>();
-        if (autoquene == null)
-        {
-            autoquene = instance.AddComponent<AutoParticleQueue>();
-            autoquene.SetQueueOffset(nOffset);
-        }
+
+        // 停止不斷變更 RQ 的作法
+        //AutoParticleQueue autoquene = instance.GetComponent<AutoParticleQueue>();
+        //if (autoquene == null)
+        //{
+        //    autoquene = instance.AddComponent<AutoParticleQueue>();
+        //    autoquene.SetQueueOffset(nOffset);
+        //}
 
         //check auto destory
         CFX_AutoDestructShuriken des = instance.GetComponent< CFX_AutoDestructShuriken > ();
