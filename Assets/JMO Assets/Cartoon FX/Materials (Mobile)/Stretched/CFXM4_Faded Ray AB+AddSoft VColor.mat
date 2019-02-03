@@ -4,8 +4,9 @@
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_Name: CFXM4_Faded Ray AB+AddSoft VColor
   m_Shader: {fileID: 4800000, guid: 9eced5b8a4173204b8826c6bb83eea20, type: 3}
   m_ShaderKeywords: 
