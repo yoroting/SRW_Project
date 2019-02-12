@@ -43,25 +43,25 @@ public class UIScrollablePopupListInspector : UIWidgetContainerEditor
 
 		if (mList.atlas == null)
 		{
-			mList.atlas = NGUISettings.atlas;
-			mList.backgroundSprite = NGUISettings.selectedSprite;
-			mList.highlightSprite = NGUISettings.selectedSprite;
-			EditorUtility.SetDirty(mList);
+            mList.atlas = NGUISettings.atlas as UIAtlas;
+            mList.backgroundSprite = NGUISettings.selectedSprite;
+            mList.highlightSprite = NGUISettings.selectedSprite;
+            EditorUtility.SetDirty(mList);
 		}
 
 		// Lumos: add the scrollbar's atlas, set up the colours
 		if (mList.scrollbarAtlas == null) {
-			mList.scrollbarAtlas = NGUISettings.atlas;
-			mList.scrollbarSpriteName = NGUISettings.selectedSprite;
-			mList.scrollbarForegroundName = NGUISettings.selectedSprite;
-			mList.scrollbarBgDefColour = mList.gameObject.GetComponent<UISprite>().color;
-			mList.scrollbarBgHovColour = mList.highlightColor;
-			mList.scrollbarBgPrsColour = mList.backgroundColor;
-			mList.scrollbarFgDefColour = mList.backgroundColor;
-			mList.scrollbarFgHovColour = mList.highlightColor;
-			mList.scrollbarFgPrsColour = mList.backgroundColor;
+            mList.scrollbarAtlas = NGUISettings.atlas as UIAtlas;
+            mList.scrollbarSpriteName = NGUISettings.selectedSprite;
+            mList.scrollbarForegroundName = NGUISettings.selectedSprite;
+            mList.scrollbarBgDefColour = mList.gameObject.GetComponent<UISprite>().color;
+            mList.scrollbarBgHovColour = mList.highlightColor;
+            mList.scrollbarBgPrsColour = mList.backgroundColor;
+            mList.scrollbarFgDefColour = mList.backgroundColor;
+            mList.scrollbarFgHovColour = mList.highlightColor;
+            mList.scrollbarFgPrsColour = mList.backgroundColor;
 
-			EditorUtility.SetDirty(mList);
+            EditorUtility.SetDirty(mList);
 		}
 	}
 

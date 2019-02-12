@@ -35,11 +35,11 @@ public class PrefabCheck : MonoBehaviour
                             Debug.Log(label.trueTypeFont.name);
                             Debug.Log(path.Substring(path.IndexOf("Assets")));
                         }
-                        if (label.bitmapFont != null && label.bitmapFont.name.Contains("Lucida"))
-                        {
-                            Debug.Log(label.bitmapFont.name);
-                            Debug.Log(path.Substring(path.IndexOf("Assets")));
-                        }
+                        //if (label.bitmapFont != null && label.bitmapFont.name.Contains("Lucida"))
+                        //{
+                        //    Debug.Log(label.bitmapFont.name);
+                        //    Debug.Log(path.Substring(path.IndexOf("Assets")));
+                        //}
                     }
                     DestroyImmediate(instance);
                 }
