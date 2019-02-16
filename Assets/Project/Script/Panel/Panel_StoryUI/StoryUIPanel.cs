@@ -98,28 +98,13 @@ public class StoryUIPanel : MonoBehaviour {
 		Debug.Log("StoryUIPanel:start");
 		//StartCoroutine("StoryLoading");
 		// load const stage data
-		// 播放  mian BGM
-		m_StoryData =ConstDataManager.Instance.GetRow< STAGE_STORY> ( GameDataManager.Instance.nStoryID );
-		if( m_StoryData != null )
-		{
-			GameSystem.PlayBGM ( m_StoryData.n_BGM );
-			
-			m_cScript = new cTextArray( );
-			m_cScript.SetText( m_StoryData.s_CONTEXT );			
+		
 
-		}
-
-		// close prefab face		
-		SRW_TextBox pBox = PanelStoryText.GetComponent<SRW_TextBox>();
-		if (pBox != null) {
-			pBox.ChangeFace( 0 );
-            PanelStoryText.SetActive(false);
-        }
-
-		bIsLoading = false;
+//		bIsLoading = false;
 
 
-        GameSystem.PlaySound(0); // stop current wav
+        // 會關到 打鑼聲
+  //      GameSystem.PlaySound(0); // stop current wav
 		// end
 	//	PanelManager.Instance.CloseUI( "Panel_Loading");
 	}
@@ -161,8 +146,11 @@ public class StoryUIPanel : MonoBehaviour {
 		if (m_bIsEnd)
 			return;
 
-		// move cur flow to target flow
-		if( m_nFlowIdx < m_nTargetIdx )
+        // check story start
+        CheckStoryStart();
+
+        // move cur flow to target flow
+        if ( m_nFlowIdx < m_nTargetIdx )
 		{
 			if( m_cScript != null )
 			{
@@ -173,11 +161,59 @@ public class StoryUIPanel : MonoBehaviour {
 		}
 	}
 
-	void OnDestroy()
+    private void OnEnable()
+    {
+        bIsLoading = true;
+
+        // 播放  mian BGM
+        m_StoryData = ConstDataManager.Instance.GetRow<STAGE_STORY>(GameDataManager.Instance.nStoryID);
+
+        if (m_StoryData != null)
+        {
+            m_cScript = new cTextArray();
+            m_cScript.SetText(m_StoryData.s_CONTEXT);
+        }
+
+
+        // close prefab face		
+        SRW_TextBox pBox = PanelStoryText.GetComponent<SRW_TextBox>();
+        if (pBox != null)
+        {
+            pBox.ChangeFace(0);
+            PanelStoryText.SetActive(false);
+        }
+    }
+
+    void OnDestroy()
 	{
 	//	GameEventManager.RemoveEventListener(  StoryStartStageEvent.Name , OnStoryStartStageEvent );
 	}
 
+    // 等待場景 UI結束
+    void CheckStoryStart()
+    {
+        if (bIsLoading)
+        {
+            if (PanelManager.Instance.CheckUIIsOpening( Panel_Loading.Name))
+            {
+                return;
+            }
+            else {
+                bIsLoading = false;
+                // play bgm
+                if (m_StoryData != null)
+                {
+                    GameSystem.PlayBGM(m_StoryData.n_BGM);
+                    GameSystem.PlaySound(0); // stop current wav
+
+
+                }
+            }
+        }
+
+
+
+    }
 	// Base Panel click
 	void OnPanelButtonClick(GameObject go)
 	{

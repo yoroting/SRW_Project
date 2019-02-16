@@ -28,9 +28,10 @@ public class Panel_Loading : MonoBehaviour {
 		}
         m_LoadComplete = false;
         GameSystem.bFXPlayMode = false;
-    //    m_fLoadingTime = 0.0f;
+        //    m_fLoadingTime = 0.0f;
 
-
+//        GameSystem.PlaySound(0); // stop current wav
+        GameSystem.PlayBGM(0,false); // stop current bgm
     }
 
     void OnDisable()

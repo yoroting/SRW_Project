@@ -248,7 +248,7 @@ public class Skill_unit : MonoBehaviour {
         {
             case 0: // 特
                 sp.color = Color.yellow;
-                MyTool.SetLabelText(lbl_Skl, "特");
+                MyTool.SetLabelText(lbl_Skl, "精");
                 break;
             case 1: // 攻
                 sp.color = Color.red;

@@ -444,10 +444,10 @@ public class GameSystem : MonoBehaviour {
         
     }
 
-    public static void PlayBGM( int nBGMIdx )
+    public static void PlayBGM( int nBGMIdx ,bool cleanCacne = true)
 	{
 		if( nBGMIdx <=0 ){
-			AudioManager.Instance.Stop(AudioChannelType.BGM);
+			AudioManager.Instance.Stop(AudioChannelType.BGM, cleanCacne);
 		}
 
 		if (m_nCurBGMIdx == nBGMIdx)
