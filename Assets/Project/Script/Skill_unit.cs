@@ -25,9 +25,9 @@ public class Skill_unit : MonoBehaviour {
     public GameObject spr_MP;
     public GameObject spr_SP;
     public GameObject spr_CP;
-    public GameObject spr_Atk;
-    public GameObject spr_Pow;
-    public GameObject spr_Def;
+    public UISprite spr_Atk;
+    public UISprite spr_Pow;
+    public UISprite spr_Def;
 
     public GameObject spr_Target;
     public GameObject spr_Range;
@@ -43,7 +43,8 @@ public class Skill_unit : MonoBehaviour {
     public GameObject lbl_Range_value;
     public GameObject lbl_CD_value;
 
-
+    static string m_arrow_up = "arrow_up";
+    static string m_arrow_down = "arrow_down";
 
     // Use this for initialization
     void Start () {
@@ -71,13 +72,16 @@ public class Skill_unit : MonoBehaviour {
         lbl_Ban.SetActive(false);
         spr_Aoe.SetActive(false);
 
+        
         spr_MP.SetActive( false );
         spr_SP.SetActive(false);
         spr_CP.SetActive(false);
 
-        spr_Atk.SetActive( false );
-        spr_Pow.SetActive( false );
-        spr_Def.SetActive( false );
+        
+        spr_Atk.gameObject.SetActive( false );
+        spr_Pow.gameObject.SetActive( false );
+        spr_Def.gameObject.SetActive( false );
+
         spr_Range.SetActive( false );
         spr_CD.SetActive(false);
 
@@ -119,6 +123,13 @@ public class Skill_unit : MonoBehaviour {
         }
         else if(conSkl.n_HITBACK < 0) {
             strTip += string.Format("，拉近目標{0}格", Mathf.Abs(conSkl.n_HITBACK));
+        }
+
+        if (conSkl.f_DEF > 0)
+        {
+           // float defratio = Mathf.RoundToInt(Mathf.Abs(conSkl.f_DEF - 1.0f) * 100.0f);
+            strTip += string.Format("，防禦回復{0}％", Mathf.RoundToInt(Mathf.Abs(conSkl.f_DEF - 1.0f) * 100.0f));
+            //}
         }
 
 
@@ -181,16 +192,68 @@ public class Skill_unit : MonoBehaviour {
         // 一般技能
         if (conSkl.n_SCHOOL > 0)
         {
-            spr_Atk.SetActive( true );
+            if (conSkl.f_ATK != 1)
+            {
+                spr_Atk.gameObject.SetActive(true);
+                float atkratio = Mathf.RoundToInt(Mathf.Abs(conSkl.f_ATK - 1.0f) * 100.0f);
+                MyTool.SetLabelText(lbl_Atk_value, (atkratio).ToString() + "％");
 
-            MyTool.SetLabelText(lbl_Atk_value , ((conSkl.f_ATK - 1.0f)*100.0f).ToString() + "％"  ); 
-            spr_Pow.SetActive( true );
-            MyTool.SetLabelText(lbl_Pow_value, ((conSkl.f_POW - 1.0f) * 100.0f).ToString() + "％");
 
-            if (conSkl.f_DEF != 0 ) {
-                spr_Def.SetActive(true);
-                MyTool.SetLabelText(lbl_Def_value, ((conSkl.f_DEF) * 100.0f).ToString() + "％");
+                //UISprite spatk = spr_Atk.GetComponent<UISprite>();
+                //if (spatk != null)
+                //{
+                if (conSkl.f_ATK >= 1)
+                {
+                    spr_Atk.spriteName = m_arrow_up;
+                }
+                else
+                {
+                    spr_Atk.spriteName = m_arrow_down;
+                }
+                //}
             }
+
+            if (conSkl.f_POW != 1)
+            {
+                spr_Pow.gameObject.SetActive(true);
+                float powratio = Mathf.RoundToInt(Mathf.Abs(conSkl.f_POW - 1.0f) * 100.0f);
+                MyTool.SetLabelText(lbl_Pow_value, (powratio).ToString() + "％");
+
+                //UISprite sppow = spr_Pow.GetComponent<UISprite>();
+                //if (sppow != null)
+                //{
+                if (conSkl.f_POW >= 1)
+                {
+                    spr_Pow.spriteName = m_arrow_up;
+                }
+                else
+                {
+                    spr_Pow.spriteName = m_arrow_down;
+                }
+                //}
+            }
+
+
+            // 防禦改成描述
+            //if (conSkl.f_DEF != 0)
+            //{
+            //    float defratio = Mathf.RoundToInt(Mathf.Abs(conSkl.f_DEF - 1.0f) * 100.0f);
+
+            //    spr_Def.gameObject.SetActive(true);
+            //    MyTool.SetLabelText(lbl_Def_value, (defratio).ToString() + "％");
+
+            //    //UISprite spdef = spr_Def.GetComponent<UISprite>();
+            //    //if (spdef != null)
+            //    //{
+            //        if (conSkl.f_DEF >= 1){
+            //            spr_Def.spriteName = m_arrow_up;
+            //        }
+            //        else{
+            //            spr_Def.spriteName = m_arrow_down;
+            //        }
+            //    //}
+            //}
+           
 
             // set cd
             if (conSkl.n_CD > 0) {
@@ -201,7 +264,6 @@ public class Skill_unit : MonoBehaviour {
                     if (cd != 0) {
                         MyTool.SetLabelText(lbl_CD_value, ( (conSkl.n_CD-cd).ToString() +"/"+ conSkl.n_CD.ToString())  );
                     }
-
                 }
             }
             // BAN
