@@ -43,23 +43,23 @@ public class Panel_Tip : MonoBehaviour {
         
         if (spBG != null ) {
             if ( lblTitle.activeSelf == false ) {
-                spBG.topAnchor.target = lblText.transform;
+             //   spBG.topAnchor = lblText.transform.up;
             }
-            else {
-                spBG.topAnchor.target = lblTitle.transform;
-            }
+            //else {
+            //    spBG.topAnchor.target = lblTitle.transform;
+            //}
         }
         //UIAnchor anc = spBG.GetComponent<UIAnchor>();
         //if (anc != null)
         //{
         //    anc
         //}
-        if (lblSubText.gameObject.activeSelf ) {
-            Vector3 vpos = new Vector3();
-            vpos.x = (spBG.width - lblSubText.width - 20) / 2;
-            vpos.y = lblTitle.transform.localPosition.y;
-            lblSubText.gameObject.transform.localPosition = vpos;
-        }
+        //if (lblSubText.gameObject.activeSelf ) {
+        //    Vector3 vpos = new Vector3();
+        //    vpos.x = (spBG.width - lblSubText.width - 20) / 2;
+        //    vpos.y = lblTitle.transform.localPosition.y;
+        //    lblSubText.gameObject.transform.localPosition = vpos;
+        //}
 
     }
 
@@ -107,8 +107,18 @@ public class Panel_Tip : MonoBehaviour {
         // 座標修正
         lbl.transform.localPosition = Vector3.zero;
 
-       
 
+        if (spBG != null)
+        {
+            spBG.height = lbl.height + 100;
+            spBG.width = lbl.width + 100;
+
+            // 是否有 title
+            if (lblTitle.activeSelf == true)
+            {
+                spBG.height += 50;
+            }
+        }
     }
 
     public void SetTime(int nTime)
@@ -117,7 +127,7 @@ public class Panel_Tip : MonoBehaviour {
         {
             lblSubText.gameObject.SetActive(true); // default is close
             //string sTime = string.Format("持續：{0}", nTime);
-            lblSubText.text = string.Format("持續：{0}回合", nTime); ;
+            lblSubText.text = string.Format("剩餘：{0}回合", nTime); ;
 
          
 
@@ -196,13 +206,24 @@ public class Panel_Tip : MonoBehaviour {
 		string nBuffName = MyTool.GetBuffName ( nBuffID );
 
         string sTip = MyTool.GetBuffTip( nBuffID );
-		// get content
-		//DataRow row = ConstDataManager.Instance.GetRow( (int)ConstDataTables.BUFF_TIP , nBuffID );
-		//if( row != null )
-		//{				
-		//	sTip = row.Field<string>( "s_TIP");		
-		//}
-  //      sTip = sTip.Replace( "\\n" , System.Environment.NewLine );
+
+        // get buff time
+        BUFF buff = ConstDataManager.Instance.GetRow<BUFF>(nBuffID);
+        if (buff != null)
+        {
+            if (buff.n_DURATION > 0)
+            {
+                sTip += string.Format(",持續{0}回合", buff.n_DURATION);
+            }
+        }
+
+        // get content
+        //DataRow row = ConstDataManager.Instance.GetRow( (int)ConstDataTables.BUFF_TIP , nBuffID );
+        //if( row != null )
+        //{				
+        //	sTip = row.Field<string>( "s_TIP");		
+        //}
+        //      sTip = sTip.Replace( "\\n" , System.Environment.NewLine );
 
 
         if (Config.GOD) {

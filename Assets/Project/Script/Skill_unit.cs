@@ -43,6 +43,8 @@ public class Skill_unit : MonoBehaviour {
     public GameObject lbl_Range_value;
     public GameObject lbl_CD_value;
 
+    public GameObject m_cBuffIcon;
+
     static string m_arrow_up = "arrow_up";
     static string m_arrow_down = "arrow_down";
 
@@ -85,7 +87,7 @@ public class Skill_unit : MonoBehaviour {
         spr_Range.SetActive( false );
         spr_CD.SetActive(false);
 
-
+        m_cBuffIcon.SetActive(false);
 
     }
 
@@ -297,8 +299,16 @@ public class Skill_unit : MonoBehaviour {
          
 
         }
-        
 
+        int nBiffid = skl.GetUI_BuffID();
+        if (nBiffid > 0) {
+            m_cBuffIcon.SetActive(true);
+            BuffIcon icon =  m_cBuffIcon.GetComponent<BuffIcon>();
+            if (icon != null) {
+                icon.SetBuffData(nBiffid , 0 , 0 );
+            }
+
+        }
 
     }
 

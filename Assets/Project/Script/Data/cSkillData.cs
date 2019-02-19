@@ -338,5 +338,24 @@ public class cSkillData
 		return false;
 	}
 
+    // get buffid from hit/add
+    public int GetUI_BuffID()
+    {
+        foreach (cEffect eft in EffPool)
+        {
+            //  System.Type t = eft.GetType();
+            int id = eft._UI_BuffID();
+            if (id != 0)    return id;
+           // eft.SetBaseParam(nID, 0); // skill id 
+        }
+        foreach (cEffect eft in CondEffPool)
+        {
+            //   eft.SetBaseParam(nID, 0); // skill id 
+            //   System.Type t = eft.GetType();
+            int id = eft._UI_BuffID();
+            if (id != 0) return id;
+        }
+        return 0;
+    }
 }
 

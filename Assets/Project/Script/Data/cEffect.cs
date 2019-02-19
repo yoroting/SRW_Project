@@ -35,9 +35,7 @@ public class cEffect
 	}
 
 
-	public virtual void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr, int nNum = 1) { }
-	
-																											// SKill
+	public virtual void _Attr( cUnitData Atker , cUnitData Defer, ref cAttrData attr, int nNum = 1) { }	// SKill
 	public virtual void _Do( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ }				//  casr/ hit event will run this
 
 
@@ -45,8 +43,13 @@ public class cEffect
 	public virtual void _Hit( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ }			// BUFF 專用.命中後　額外效果
 	public virtual void _BeHit( cUnitData Atker , cUnitData Defer , ref List<cHitResult> list ){ }			// BUFF 專用.受擊後　額外效果 
 
-	// cost
-	public virtual bool _IsImmune(  int nBuffType ){		return false;	}				// check user in one status		
+    // check
+    public virtual int _UI_BuffID() { return 0; }      // Get 所增加的BUFFID
+    
+
+
+    // cost
+    public virtual bool _IsImmune(  int nBuffType ){		return false;	}				// check user in one status		
     public virtual bool _IsCharImmune(int nCharID ) { return false; }				// check user in one status		
     
 
@@ -70,6 +73,10 @@ public class ADDBUFF_I: cEffect
             list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF , Atker.n_Ident , iValue ,defid, nSkillID ,defid , nNum ) );
 		}
 	}
+    override public  int _UI_BuffID() {
+        return iValue;
+    }      // Get 所增加的BUFFID
+
 }
 public class ADDBUFF_E: cEffect
 {
@@ -90,6 +97,10 @@ public class ADDBUFF_E: cEffect
 			list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF , Defer.n_Ident , iValue, nAtkId , nSkillID , Defer.n_Ident, nNum) );
 		}
 	}
+    override public int _UI_BuffID()
+    {
+        return iValue;
+    }      // Get 所增加的BUFFID
 }
 
 public class ADDACTTIME_I: cEffect
@@ -224,6 +235,11 @@ public class AURABUFF_I: cEffect
 			}
 		}
 	}
+
+    override public int _UI_BuffID()
+    {
+        return iValue;
+    }      // Get 所增加的BUFFID
 }
 
 public class AURABUFF_E: cEffect
@@ -253,6 +269,11 @@ public class AURABUFF_E: cEffect
 			}
 		}
 	}
+
+    override public int _UI_BuffID()
+    {
+        return iValue;
+    }      // Get 所增加的BUFFID
 }
 
 public class AURA_DELBUFF_I : cEffect
@@ -561,6 +582,11 @@ public class HITBUFF_I: cEffect
 			list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF , Atker.n_Ident , iValue , Atker.n_Ident, nSkillID ,nDefId  ) );
 		}
 	}
+
+    override public int _UI_BuffID()
+    {
+        return iValue;
+    }      // Get 所增加的BUFFID
 }
 
 public class HITBUFF_E: cEffect
@@ -580,6 +606,11 @@ public class HITBUFF_E: cEffect
 			list.Add( new cHitResult( cHitResult._TYPE._ADDBUFF , Defer.n_Ident , iValue, nAtkId , nSkillID ,Defer.n_Ident  ) );
 		}
 	}
+
+    override public int _UI_BuffID()
+    {
+        return iValue;
+    }      // Get 所增加的BUFFID
 }
 
 // Hit effect
@@ -746,6 +777,11 @@ public class BEHITBUFF_I : cEffect
             list.Add(new cHitResult(cHitResult._TYPE._ADDBUFF, Defer.n_Ident, iValue, nDefId, nSkillID, nDefId));
         }
     }
+
+    override public int _UI_BuffID()
+    {
+        return iValue;
+    }      // Get 所增加的BUFFID
 }
 
 public class BEHITBUFF_E : cEffect
@@ -774,6 +810,11 @@ public class BEHITBUFF_E : cEffect
             list.Add(new cHitResult(cHitResult._TYPE._ADDBUFF, Atker.n_Ident, iValue, nDefId, nSkillID, nDefId));
         }
     }
+
+    override public int _UI_BuffID()
+    {
+        return iValue;
+    }      // Get 所增加的BUFFID
 }
 
 public class BEHITCP_I : cEffect
