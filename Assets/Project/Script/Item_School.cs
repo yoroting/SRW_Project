@@ -10,6 +10,7 @@ public class Item_School : MonoBehaviour {
     public GameObject ChangeObj;
 
     public GameObject InfoObj;
+    public GameObject SkillObj;
     //public CMD_BTN chbtn;
 
 
@@ -25,7 +26,9 @@ public class Item_School : MonoBehaviour {
     cUnitData m_pUnitdata=null;
     // Use this for initialization
     void Start () {
-        UIEventListener.Get(this.gameObject).onClick = OnSKillClick; // for trig next line
+        //  UIEventListener.Get(this.gameObject).onClick = OnSKillClick; // for trig next line
+
+        UIEventListener.Get(this.gameObject).onClick = OnSchoolClick; // for trig next line
 
         if (InfoObj != null) {            
             m_Tip = InfoObj.GetComponent<myUiTip>();
@@ -34,6 +37,10 @@ public class Item_School : MonoBehaviour {
                 m_Tip = InfoObj.AddComponent<myUiTip>();
             }
         }
+
+        //
+      
+
     }
 	
 	// Update is called once per frame
@@ -53,23 +60,26 @@ public class Item_School : MonoBehaviour {
         m_nMode = nMode;
 
         // 除了整備畫面外，不顯示
-        if (nMode == 1)
-        {
-            if (m_pUnitdata.GetSchoolNum(nSchType) > 1)
-            {
-                ChangeObj.SetActive(true);
-                InfoObj.SetActive(false);
-            }
-            else {
-                ChangeObj.SetActive(false);
-                InfoObj.SetActive(true);
-            }            
-        }
-        else {
-            ChangeObj.SetActive(false);
-            InfoObj.SetActive(true);
-        }
-
+        //if (nMode == 1)
+        //{
+        //    if (m_pUnitdata.GetSchoolNum(nSchType) > 1)
+        //    {
+        //        ChangeObj.SetActive(true);
+        //        InfoObj.SetActive(false);
+        //    }
+        //    else {
+        //        ChangeObj.SetActive(false);
+        //        InfoObj.SetActive(true);
+        //    }            
+        //}
+        //else {// stage
+        //    ChangeObj.SetActive(false);
+        //    InfoObj.SetActive(true);
+        //}
+        // 改變作法
+        ChangeObj.SetActive(false);
+        InfoObj.SetActive(false); // 永遠只顯示 info -> skill
+        SkillObj.SetActive(true); // 永遠只顯示  skill
         // 開發版
         if (Config.GOD) {
          //   ChangeObj.SetActive(true);
@@ -96,21 +106,24 @@ public class Item_School : MonoBehaviour {
         MyTool.SetLabelFloat(RankObj, sch.f_RANK );
 
         // 掛上武學能力
-        UIButton btn = InfoObj.GetComponent<UIButton>();
-        if (btn != null)
-        {
-            btn.isEnabled = (sch.n_BUFF > 0);
-        }
-       
-        if (m_Tip != null)
-        {
-            m_Tip.SetTip(sch.n_BUFF, myUiTip._TIP_TYPE._BUFF);
-        }
-        // 判斷可否使用 換武學
-        UIButton chbtn = ChangeObj.GetComponent<UIButton>();
-        chbtn.isEnabled = (m_pUnitdata.GetSchoolNum(nSchType) > 1);
+        //UIButton btn = InfoObj.GetComponent<UIButton>();
+        //if (btn != null)
+        //{
+        //    btn.isEnabled = (sch.n_BUFF > 0);
+        //}
 
-       
+        //if (m_Tip != null)
+        //{
+        //    m_Tip.SetTip(sch.n_BUFF, myUiTip._TIP_TYPE._BUFF);
+        //}
+
+        // 判斷可否使用 換武學
+        //UIButton chbtn = ChangeObj.GetComponent<UIButton>();
+        //chbtn.isEnabled = (m_pUnitdata.GetSchoolNum(nSchType) > 1);
+
+        // 判斷可否顯示 技能扭
+        //UIButton skillbtn = SkillObj.GetComponent<UIButton>();
+        //skillbtn.isEnabled = MyTool.GetSkillNumBySvhool(SchID)>0;
 
     }
 

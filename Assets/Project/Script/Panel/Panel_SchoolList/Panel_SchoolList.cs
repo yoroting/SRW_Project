@@ -135,17 +135,19 @@ public class Panel_SchoolList : MonoBehaviour {
                 if (item != null)
                 {
                     item.ReSize();
-                    item.SetData(schoolid , lv );
-                    // 判斷是否為 裝備中武學
-                    if (pUnitData != null) {
-                        if (schoolid == pUnitData.GetSchIDbyType(sch.n_TYPE))
-                        {
-                            item.SetChecked(true);
-                        }
-                        else {
-                            item.SetChecked(false);
-                        }
-                    }
+                    item.SetData(schoolid , lv , pUnitData );
+
+                   // item.ShowDiff();
+                    //// 判斷是否為 裝備中武學
+                    //if (pUnitData != null) {
+                    //    if (schoolid == pUnitData.GetSchIDbyType(sch.n_TYPE)) // 本次的內外功類型
+                    //    {
+                    //        item.SetChecked(true);
+                    //    }
+                    //    else {
+                    //        item.SetChecked(false);
+                    //    }
+                    //}
 
                     //  UIEventListener.Get(obj).onClick = OnItemClick; //
                     UIEventListener.Get(obj).onClick = OnOKClick;

@@ -104,11 +104,11 @@ public class Skill_unit : MonoBehaviour {
         SetUnitSkillData(unit , nSkillID);
     }
 
-    public void SetUnitSkillData(cUnitData unit, int nSkillID )
+    public void SetUnitSkillData(cUnitData unit, int nSkillID)
     {
-        Initialized();        
-        cSkillData skl =  GameDataManager.Instance.GetSkillData(nSkillID);
-       
+        Initialized();
+        cSkillData skl = GameDataManager.Instance.GetSkillData(nSkillID);
+
         // 開始設定資料
         SKILL conSkl = skl.skill;
         if (conSkl == null) {
@@ -117,25 +117,25 @@ public class Skill_unit : MonoBehaviour {
         m_nSKillID = nSkillID;
         m_nIdent = unit.n_Ident;
 
-        MyTool.SetLabelText( lbl_Name , MyTool.GetSkillName(nSkillID) );
+        MyTool.SetLabelText(lbl_Name, MyTool.GetSkillName(nSkillID));
 
         string strTip = MyTool.GetSkillTip(nSkillID);
-        if (conSkl.n_HITBACK > 0  ) {
-            strTip += string.Format( "，震退目標{0}格", conSkl.n_HITBACK );
+        if (conSkl.n_HITBACK > 0) {
+            strTip += string.Format("，震退目標{0}格", conSkl.n_HITBACK);
         }
-        else if(conSkl.n_HITBACK < 0) {
+        else if (conSkl.n_HITBACK < 0) {
             strTip += string.Format("，拉近目標{0}格", Mathf.Abs(conSkl.n_HITBACK));
         }
 
         if (conSkl.f_DEF > 0)
         {
-           // float defratio = Mathf.RoundToInt(Mathf.Abs(conSkl.f_DEF - 1.0f) * 100.0f);
+            // float defratio = Mathf.RoundToInt(Mathf.Abs(conSkl.f_DEF - 1.0f) * 100.0f);
             strTip += string.Format("，防禦回復{0}％", Mathf.RoundToInt(Mathf.Abs(conSkl.f_DEF - 1.0f) * 100.0f));
             //}
         }
 
 
-        MyTool.SetLabelText( lbl_Comm, strTip );
+        MyTool.SetLabelText(lbl_Comm, strTip);
 
         //target
         switch (conSkl.n_TARGET) {
@@ -155,15 +155,15 @@ public class Skill_unit : MonoBehaviour {
 
         // check AOE
         if (conSkl.n_AREA > 0) {
-        //    spr_Aoe.SetActive( true );
+            //    spr_Aoe.SetActive( true );
         }
 
         // set cost
         spr_MP.SetActive(conSkl.n_MP != 0);
-        MyTool.SetLabelInt(lbl_MP_value , conSkl.n_MP );
+        MyTool.SetLabelInt(lbl_MP_value, conSkl.n_MP);
 
         spr_SP.SetActive(conSkl.n_SP != 0);
-        MyTool.SetLabelInt(lbl_SP_value , conSkl.n_SP);
+        MyTool.SetLabelInt(lbl_SP_value, conSkl.n_SP);
 
         spr_CP.SetActive(conSkl.n_CP != 0);
         MyTool.SetLabelInt(lbl_CP_value, conSkl.n_CP);
@@ -178,8 +178,8 @@ public class Skill_unit : MonoBehaviour {
         else if (-1 == conSkl.n_RANGE)
         {
             MyTool.SetLabelText(lbl_Range_value, "無限");
-        }        
-        else if ((conSkl.n_MINRANGE == conSkl.n_RANGE) || (conSkl.n_MINRANGE==0))
+        }
+        else if ((conSkl.n_MINRANGE == conSkl.n_RANGE) || (conSkl.n_MINRANGE == 0))
         {
             MyTool.SetLabelInt(lbl_Range_value, conSkl.n_RANGE);
         }
@@ -189,7 +189,8 @@ public class Skill_unit : MonoBehaviour {
         }
 
         // 變更 skill Ico
-        SetSkillIcon(conSkl.n_TYPE);
+      
+            SetSkillIcon(conSkl.n_TYPE);
 
         // 一般技能
         if (conSkl.n_SCHOOL > 0)
@@ -300,14 +301,19 @@ public class Skill_unit : MonoBehaviour {
 
         }
 
-        int nBiffid = skl.GetUI_BuffID();
-        if (nBiffid > 0) {
-            m_cBuffIcon.SetActive(true);
-            BuffIcon icon =  m_cBuffIcon.GetComponent<BuffIcon>();
-            if (icon != null) {
-                icon.SetBuffData(nBiffid , 0 , 0 );
-            }
+        if (conSkl.n_SCHOOL > 0)
+        {  //精神指令不秀 ico
+            int nBiffid = skl.GetUI_BuffID();
+            if (nBiffid > 0)
+            {
+                m_cBuffIcon.SetActive(true);
+                BuffIcon icon = m_cBuffIcon.GetComponent<BuffIcon>();
+                if (icon != null)
+                {
+                    icon.SetBuffData(nBiffid, 0, 0);
+                }
 
+            }
         }
 
     }

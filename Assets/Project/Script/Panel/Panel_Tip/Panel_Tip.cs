@@ -33,6 +33,7 @@ public class Panel_Tip : MonoBehaviour {
 
     private void OnEnable()
     {
+        lblTitle.gameObject.SetActive(false);
         lblSubText.gameObject.SetActive( false ); // default is close
     }
 
@@ -107,17 +108,37 @@ public class Panel_Tip : MonoBehaviour {
         // 座標修正
         lbl.transform.localPosition = Vector3.zero;
 
+        // 背景高度修正
+        //spBG.height = lbl.height + 56;
+        spBG.height = (int)(lbl.drawingDimensions.w-lbl.drawingDimensions.y) + 48;
+    }
 
-        if (spBG != null)
+    public void SetTitle(string str)
+    {  
+        MyTool.SetLabelText(lblTitle, str);
+        if (lblTitle.activeSelf == false)
         {
-            spBG.height = lbl.height + 100;
-            spBG.width = lbl.width + 100;
+            lblTitle.SetActive(true);
 
-            // 是否有 title
-            if (lblTitle.activeSelf == true)
-            {
-                spBG.height += 50;
-            }
+            UILabel lbl = lblTitle.GetComponent<UILabel>();
+            spBG.height += (lbl.fontSize+(int)lbl.floatSpacingY)*2;
+            //// 背景高度
+            //if (spBG != null)
+            //{
+
+            //    //    spBG.width = lbl.width + 100;
+
+            //    // 是否有 title
+            //    if (lblTitle.activeSelf == true)
+            //    {
+            //        spBG.height += (lbl.finalFontSize) * 2;
+            //        UIWidget title_wid = lblTitle.GetComponent<UIWidget>();
+            //        if (title_wid != null)
+            //        {
+            //            title_wid.height = lbl.finalFontSize;
+            //        }
+            //    }
+            //}
         }
     }
 
@@ -156,10 +177,11 @@ public class Panel_Tip : MonoBehaviour {
         GameSystem.PlaySound("Tap");
         Panel_Tip pTip = MyTool.GetPanel< Panel_Tip > (PanelManager.Instance.OpenUI (Name));
 		if (pTip) {
-            pTip.lblTitle.SetActive(true);
-            MyTool.SetLabelText(pTip.lblTitle, strTitle);
-
             pTip.SetContent(strContext);
+            if (strTitle != "")
+            {
+                pTip.SetTitle(strTitle);                
+            }
         }
         return pTip;
 

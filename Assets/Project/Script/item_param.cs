@@ -7,8 +7,14 @@ public class item_param : MonoBehaviour {
     public _ePARAMIDX m_eParam_idx;
     public int m_nType;
     public int m_nVar1;
+    public float m_fVar1;
+    
+
     public UILabel m_lblname;
     public UILabel m_lblvalue;
+
+  //  public UISprite m_spArrow;
+   // public UILabel m_lbldiff;
 
 
     // Use this for initialization
@@ -23,13 +29,17 @@ public class item_param : MonoBehaviour {
 
     public void SetName( string sName , int nValue=0)
     {
+     //   m_spArrow.gameObject.SetActive(false);
+        m_lblvalue.gameObject.SetActive(true);
+
         m_lblname.text = sName;
         m_lblvalue.text = nValue.ToString();
-
     }
 
-    public void SetValue( int nValue , int nType=0 )
+    public void SetValue( int nValue , int nType=0  )
     {
+        m_nVar1 = nValue;
+     
         string sValue = nValue.ToString();
         // 要顯示 正負號
         if (nType == 1) {
@@ -47,6 +57,7 @@ public class item_param : MonoBehaviour {
 
     public void SetValue(float fValue, int nType = 0)
     {
+        m_fVar1 = fValue;
         string sValue = fValue.ToString();
         // 要顯示 正負號
         if (nType == 1)
@@ -68,6 +79,42 @@ public class item_param : MonoBehaviour {
     {
         m_lblvalue.text = sValue;
     }
+
+
+    //顯示差異
+    //public void ShowArrow( bool bUp= true)
+    //{
+    //    m_lblvalue.gameObject.SetActive(false);
+    //    m_spArrow.gameObject.SetActive(true);
+    //    if (bUp)
+    //    {
+    //        m_spArrow.spriteName = "arrow_up";
+    //    }
+    //    else {
+    //        m_spArrow.spriteName = "arrow_down";
+    //    }
+    //}
+
+    //public void ShowDiffValue(int nValue, bool bUp=true)
+    //{       
+    //    SetValue(nValue);
+    //    ShowArrow(nValue > 0);
+    //}
+
+    //public void ShowDiffValue(float fValue, bool bUp = true)
+    //{
+    //    SetValue(fValue);
+    //    ShowArrow(fValue > 0);
+    //}
+
+    //public void ShowDiffValue(string sValue, bool bUp = true)
+    //{
+    //    //m_lblvalue.text = sValue;
+    //    SetValue(sValue);
+    // //   ShowArrow(fValue > 0);
+    //}
+
+
 
 
     public void SetUnit(cUnitData unit, int nType = 0)

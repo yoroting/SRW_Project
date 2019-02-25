@@ -21,11 +21,18 @@ public class Panel_Skill : MonoBehaviour {
     public GameObject SelOverObj; // 標示選擇
 
 
+    public UISprite   sprPassive;  // 被動能力
+    
+
+
+
     public UILabel lblMP;  //玩家能量
     public UILabel lblSP;
     public UILabel lblCP;  // 玩家真氣
 
     public UILabel lblCondition;  // 技能禁止條件
+
+    public UILabel lblPassive;  // 被動能力
 
     public UIProgressBar progMP;  // MP 進度
     public UIProgressBar progSP;  // SP 進度
@@ -275,6 +282,18 @@ public class Panel_Skill : MonoBehaviour {
             }
             else if (eType == _SKILL_TYPE._SCHOOL) // 察看指定 school
             {
+                sprPassive.gameObject.active = true; // 一定顯示被動來蓋過去
+
+                SCHOOL sch = ConstDataManager.Instance.GetRow<SCHOOL>(schoolid);   //GameDataManager.Instance.GetConstSchoolData ( nSchool );
+                if (sch == null)
+                    return;
+
+                lblPassive.text = "無特殊能力";
+                if (sch.n_BUFF > 0)
+                {
+                    lblPassive.text = MyTool.GetBuffTip(sch.n_BUFF); // 學習buff
+                }
+
                 DataTable pTable = ConstDataManager.Instance.GetTable<SKILL>();
                 if (pTable == null)
                     return;
@@ -383,7 +402,8 @@ public class Panel_Skill : MonoBehaviour {
         SkillItemUnit.RecycleAll(); 
 
         MyTool.DestoryGridItem(SkillGrid);// 回收完畢， 清空
-
+        
+        sprPassive.gameObject.active = false;
         //		UIGrid grid = SkillGrid.GetComponent<UIGrid>(); 
         //		if (grid == null) {
         //			return ;

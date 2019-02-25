@@ -2338,6 +2338,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Panel - Tip
       objectReference: {fileID: 0}
+    - target: {fileID: 162992, guid: daab65faa0fd56d4581bad702aad57c0, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 481164, guid: daab65faa0fd56d4581bad702aad57c0, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -2381,6 +2385,49 @@ PrefabInstance:
     - target: {fileID: 481164, guid: daab65faa0fd56d4581bad702aad57c0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 499500, guid: daab65faa0fd56d4581bad702aad57c0, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 260
+      objectReference: {fileID: 0}
+    - target: {fileID: 11429664, guid: daab65faa0fd56d4581bad702aad57c0, type: 3}
+      propertyPath: mWidth
+      value: 882
+      objectReference: {fileID: 0}
+    - target: {fileID: 11429664, guid: daab65faa0fd56d4581bad702aad57c0, type: 3}
+      propertyPath: aspectRatio
+      value: 5.5125
+      objectReference: {fileID: 0}
+    - target: {fileID: 11480186, guid: daab65faa0fd56d4581bad702aad57c0, type: 3}
+      propertyPath: mWidth
+      value: 357
+      objectReference: {fileID: 0}
+    - target: {fileID: 11480186, guid: daab65faa0fd56d4581bad702aad57c0, type: 3}
+      propertyPath: aspectRatio
+      value: 3.57
+      objectReference: {fileID: 0}
+    - target: {fileID: 11471724, guid: daab65faa0fd56d4581bad702aad57c0, type: 3}
+      propertyPath: mWidth
+      value: 42
+      objectReference: {fileID: 0}
+    - target: {fileID: 11471724, guid: daab65faa0fd56d4581bad702aad57c0, type: 3}
+      propertyPath: aspectRatio
+      value: 0.23333333
+      objectReference: {fileID: 0}
+    - target: {fileID: 114890906644731048, guid: daab65faa0fd56d4581bad702aad57c0,
+        type: 3}
+      propertyPath: aspectRatio
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 114985566232382436, guid: daab65faa0fd56d4581bad702aad57c0,
+        type: 3}
+      propertyPath: mWidth
+      value: 32
+      objectReference: {fileID: 0}
+    - target: {fileID: 114985566232382436, guid: daab65faa0fd56d4581bad702aad57c0,
+        type: 3}
+      propertyPath: aspectRatio
+      value: 0.1882353
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: daab65faa0fd56d4581bad702aad57c0, type: 3}
