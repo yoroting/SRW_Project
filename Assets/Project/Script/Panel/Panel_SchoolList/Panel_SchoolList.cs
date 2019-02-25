@@ -8,8 +8,8 @@ public class Panel_SchoolList : MonoBehaviour {
 
 
     public GameObject GridObj;
-    public GameObject sprSchList;
-    UIScrollView svSchList;
+    //public GameObject sprSchList;
+    public UIScrollView svSchList;
     public GameObject ItemObj;
     public GameObject SelectSchObj;
     public GameObject ContentObj;
@@ -34,7 +34,7 @@ public class Panel_SchoolList : MonoBehaviour {
     }
 
     void Start () {
-        svSchList = sprSchList.GetComponent<UIScrollView>();
+       // svSchList = sprSchList.GetComponent<UIScrollView>();
         SelectSchObj.SetActive(false);
     }
 	
@@ -69,6 +69,8 @@ public class Panel_SchoolList : MonoBehaviour {
 
     public void ReloadList()
     {
+        //reopen 後會需要重抓
+      //  svSchList = sprSchList.GetComponent<UIScrollView>();
         // create school data item
         ItemObj.RecycleAll();
         // clear

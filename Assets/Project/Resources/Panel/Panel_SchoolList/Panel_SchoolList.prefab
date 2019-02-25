@@ -963,7 +963,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GridObj: {fileID: 130004}
-  sprSchList: {fileID: 1691042867039472}
+  svSchList: {fileID: 11470890}
   ItemObj: {fileID: 4019287588449076103}
   SelectSchObj: {fileID: 1589241885111610}
   ContentObj: {fileID: 112442}
@@ -1375,7 +1375,7 @@ MonoBehaviour:
   bottomType: 1
   topType: 1
   mAtlas: {fileID: 0}
-  mSpriteName: cell2
+  mSpriteName: unit_border
   mFillCenter: 1
 --- !u!1001 &1282467719527694611
 PrefabInstance:
@@ -1388,6 +1388,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Item_School_detail (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 114839878267446384, guid: 5b92540ff357d824b9b643fa50ad5194,
+        type: 3}
+      propertyPath: m_lbl_WeaponType
+      value: 
+      objectReference: {fileID: 1074676818615837459}
     - target: {fileID: 4480573373133258, guid: 5b92540ff357d824b9b643fa50ad5194, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1432,11 +1437,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 114839878267446384, guid: 5b92540ff357d824b9b643fa50ad5194,
-        type: 3}
-      propertyPath: m_lbl_WeaponType
-      value: 
-      objectReference: {fileID: 1074676818615837459}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5b92540ff357d824b9b643fa50ad5194, type: 3}
 --- !u!4 &1280102660213649625 stripped
@@ -1468,6 +1468,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Item_School_detail (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 114839878267446384, guid: 5b92540ff357d824b9b643fa50ad5194,
+        type: 3}
+      propertyPath: m_lbl_WeaponType
+      value: 
+      objectReference: {fileID: 4568264631115823772}
     - target: {fileID: 4480573373133258, guid: 5b92540ff357d824b9b643fa50ad5194, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1512,11 +1517,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 114839878267446384, guid: 5b92540ff357d824b9b643fa50ad5194,
-        type: 3}
-      propertyPath: m_lbl_WeaponType
-      value: 
-      objectReference: {fileID: 4568264631115823772}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5b92540ff357d824b9b643fa50ad5194, type: 3}
 --- !u!4 &2327356273944897878 stripped
@@ -1552,6 +1552,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114839878267446384, guid: 5b92540ff357d824b9b643fa50ad5194,
+        type: 3}
+      propertyPath: m_lbl_WeaponType
+      value: 
+      objectReference: {fileID: 2947470814094059205}
     - target: {fileID: 4480573373133258, guid: 5b92540ff357d824b9b643fa50ad5194, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.6
@@ -1596,11 +1601,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 114839878267446384, guid: 5b92540ff357d824b9b643fa50ad5194,
-        type: 3}
-      propertyPath: m_lbl_WeaponType
-      value: 
-      objectReference: {fileID: 2947470814094059205}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5b92540ff357d824b9b643fa50ad5194, type: 3}
 --- !u!1 &4019287588449076103 stripped

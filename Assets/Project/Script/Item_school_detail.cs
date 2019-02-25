@@ -77,7 +77,7 @@ public class Item_school_detail : MonoBehaviour {
 
         m_lbl_star.text = sch.f_RANK.ToString();
         m_lbl_name.text = MyTool.GetSchoolName( SchID );
-        m_lbl_lv.text = "Lv " + SchLV.ToString();
+        m_lbl_lv.text =  SchLV.ToString();
 
         // 武器類型
         switch (sch.n_RELATIVE)
