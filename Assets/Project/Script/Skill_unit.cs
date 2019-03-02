@@ -42,6 +42,7 @@ public class Skill_unit : MonoBehaviour {
     public GameObject lbl_Target_value;
     public GameObject lbl_Range_value;
     public GameObject lbl_CD_value;
+    public GameObject lbl_Learn_value;
 
     public GameObject m_cBuffIcon;
 
@@ -114,6 +115,18 @@ public class Skill_unit : MonoBehaviour {
         if (conSkl == null) {
             return;
         }
+        int nLearnLv = conSkl.n_LEVEL_LEARN;
+        // 切換升級技能
+        if (unit != null)
+        {
+            int nskillid = unit.Buffs.GetUpgradeSkill(nSkillID); // Get upgrade skill
+            if (nskillid != 0) {
+                nSkillID = nskillid;
+                conSkl = ConstDataManager.Instance.GetRow<SKILL>(nskillid);
+            }
+        }
+
+
         m_nSKillID = nSkillID;
         m_nIdent = unit.n_Ident;
 
@@ -151,6 +164,11 @@ public class Skill_unit : MonoBehaviour {
             case 9: MyTool.SetLabelText(lbl_Target_value, "我全體"); break;
             case 10: MyTool.SetLabelText(lbl_Target_value, "敵全體"); break;
             case 11: MyTool.SetLabelText(lbl_Target_value, "全全體"); break;
+        }
+
+        // learn lv
+        if (nLearnLv > 0 ) {
+            MyTool.SetLabelInt(lbl_Learn_value, nLearnLv);
         }
 
         // check AOE
@@ -349,6 +367,13 @@ public class Skill_unit : MonoBehaviour {
                 MyTool.SetLabelText(lbl_Skl, "暗");
                 break;
         }
+        // 文字顏色跟 ui 一樣
+        UILabel lbl = lbl_Skl.GetComponent<UILabel>();
+        if (lbl != null) {
+            lbl.color = sp.color;
+        }
+
+
 
     }
 

@@ -300,6 +300,7 @@ MonoBehaviour:
   LvObj: {fileID: 1507401180476204}
   ChangeObj: {fileID: 1904424917612142}
   InfoObj: {fileID: 1849045322845524}
+  SkillObj: {fileID: 1450928801988032}
   m_nMode: 0
   bEnable: 1
   nSchID: 0
@@ -351,7 +352,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &4366706003680344
 Transform:
   m_ObjectHideFlags: 0
@@ -932,7 +933,7 @@ MonoBehaviour:
   pixelSnap: 0
   onClick:
   - mTarget: {fileID: 114522594656176196}
-    mMethodName: OnSchoolClick
+    mMethodName: OnSchoolListClick
     mParameters:
     - obj: {fileID: 0}
       field: 

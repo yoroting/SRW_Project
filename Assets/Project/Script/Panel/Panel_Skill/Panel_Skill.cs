@@ -22,13 +22,14 @@ public class Panel_Skill : MonoBehaviour {
 
 
     public UISprite   sprPassive;  // 被動能力
-    
+    public UISprite   sprChar;  // 
 
+  
 
-
-    public UILabel lblMP;  //玩家能量
+    // cost
+    public UILabel lblMP;  //能量
     public UILabel lblSP;
-    public UILabel lblCP;  // 玩家真氣
+    public UILabel lblCP;  // 真氣
 
     public UILabel lblCondition;  // 技能禁止條件
 
@@ -42,7 +43,7 @@ public class Panel_Skill : MonoBehaviour {
 	public int 	nOpSkillID;			// current select skill ID
 	int nOpIdent;
 	int nOpCharID;
-
+    int nOpSchoolID;
 	cUnitData pData;
 	Dictionary<GameObject  , SKILL > sklPool;
 
@@ -195,7 +196,7 @@ public class Panel_Skill : MonoBehaviour {
         //
         nOpIdent = 0;
         nOpCharID = 0;
-
+        nOpSchoolID = 0;
         pData = data;
         if (pData != null)
         {
@@ -235,14 +236,17 @@ public class Panel_Skill : MonoBehaviour {
 
             if (eType == _SKILL_TYPE._SKILL)
             {
+                sprPassive.gameObject.SetActive(false);
+                sprChar.gameObject.SetActive(true);
+
                 foreach (int nID in pData.SkillPool)
                 {
                     int nSkillID = nID;
-                    nSkillID = pData.Buffs.GetUpgradeSkill(nSkillID); // Get upgrade skill
+  //                  nSkillID = pData.Buffs.GetUpgradeSkill(nSkillID); // Get upgrade skill
                     SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(nSkillID);
                     if (skl.n_SCHOOL == 0)  // == 0 is ability
                         continue;
-                    if (skl.n_PASSIVE == 1)
+                    if (skl.n_PASSIVE == 1) // 目前無被動技能
                         continue;
 
                     int nSLv = data.GetSchoolLv(skl.n_SCHOOL ); // 
@@ -259,6 +263,8 @@ public class Panel_Skill : MonoBehaviour {
             }
             else if (eType == _SKILL_TYPE._ABILITY)
             {
+                sprPassive.gameObject.SetActive(false); // 一定顯示被動來蓋過去
+                sprChar.gameObject.SetActive(true);
                 int CLv = pData.n_Lv;
 
                 foreach (KeyValuePair<int, int> pair in pData.AbilityPool)
@@ -282,12 +288,14 @@ public class Panel_Skill : MonoBehaviour {
             }
             else if (eType == _SKILL_TYPE._SCHOOL) // 察看指定 school
             {
-                sprPassive.gameObject.active = true; // 一定顯示被動來蓋過去
+                sprPassive.gameObject.SetActive(true); // 一定顯示被動來蓋過去
+                sprChar.gameObject.SetActive( false );
 
                 SCHOOL sch = ConstDataManager.Instance.GetRow<SCHOOL>(schoolid);   //GameDataManager.Instance.GetConstSchoolData ( nSchool );
                 if (sch == null)
                     return;
 
+                nOpSchoolID = schoolid;
                 lblPassive.text = "無特殊能力";
                 if (sch.n_BUFF > 0)
                 {
@@ -311,12 +319,12 @@ public class Panel_Skill : MonoBehaviour {
                     }
                     // 取得進階技能
                     int nSkillID = sklrow.n_ID;
-                    nSkillID = pData.Buffs.GetUpgradeSkill(nSkillID); // Get upgrade skill
-                    SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(nSkillID);
-                    if (skl.n_SCHOOL == 0)  // == 0 is ability
-                        continue;
-                    if (skl.n_PASSIVE == 1)
-                        continue;
+                    //nSkillID = pData.Buffs.GetUpgradeSkill(nSkillID); // Get upgrade skill
+                    //SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(nSkillID);
+                    //if (skl.n_SCHOOL == 0)  // == 0 is ability
+                    //    continue;
+                    //if (skl.n_PASSIVE == 1)
+                    //    continue;
                     sklLst.Add(ConstDataManager.Instance.GetRow<SKILL>(nSkillID));
                 }
             }
@@ -742,5 +750,21 @@ public class Panel_Skill : MonoBehaviour {
 		// check condition
 		return true;
 	}
+
+
+    public void OnBackClick(GameObject go)
+    {
+        // always back to school check
+        SCHOOL sch = ConstDataManager.Instance.GetRow<SCHOOL>(nOpSchoolID);   //GameDataManager.Instance.GetConstSchoolData ( nSchool );
+        if (sch == null)
+            return;
+        GameSystem.BtnSound( 1 );
+
+        Panel_SchoolList.Open(0, pData, nOpSchoolID, 0, sch.n_TYPE);
+
+        // close skill ui
+        PanelManager.Instance.CloseUI(Name); // change school
+    }
+
 }
 

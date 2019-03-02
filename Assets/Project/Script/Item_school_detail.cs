@@ -30,12 +30,13 @@ public class Item_school_detail : MonoBehaviour {
     //public item_param m_DiffDef;
     //public item_param m_DiffPow;
 
-
+  //  public UIButton m_btnSkill;
 
     public UILabel m_lbl_content;
 
     public GameObject m_Checked;
 
+    public cUnitData m_pUnitData;
     // Use this for initialization
     void Start () {
 		
@@ -80,22 +81,23 @@ public class Item_school_detail : MonoBehaviour {
         m_lbl_lv.text =  SchLV.ToString();
 
         // 武器類型
-        switch (sch.n_RELATIVE)
-        {
-            case 0: m_lbl_WeaponType.text = "內"; break;
-            case 1: m_lbl_WeaponType.text = "劍"; break;
-            case 2: m_lbl_WeaponType.text = "刀"; break;
-            case 3: m_lbl_WeaponType.text = "槍"; break;
-            case 4: m_lbl_WeaponType.text = "掌"; break;
-            case 5: m_lbl_WeaponType.text = "拳"; break;
-            case 6: m_lbl_WeaponType.text = "棍"; break;
-            case 7: m_lbl_WeaponType.text = "暗"; break;
-            case 8: m_lbl_WeaponType.text = "毒"; break;
-            case 9: m_lbl_WeaponType.text = "兵"; break;
-            case 10: m_lbl_WeaponType.text = "弓"; break;
-            case 11: m_lbl_WeaponType.text = "扇"; break;
-            default: m_lbl_WeaponType.text = "無";  break;
-        }
+        m_lbl_WeaponType.text = MyTool.GetWeaponTypeString(sch.n_RELATIVE);
+        //switch (sch.n_RELATIVE)
+        //{
+        //    case 0: m_lbl_WeaponType.text = "內"; break;
+        //    case 1: m_lbl_WeaponType.text = "劍"; break;
+        //    case 2: m_lbl_WeaponType.text = "刀"; break;
+        //    case 3: m_lbl_WeaponType.text = "槍"; break;
+        //    case 4: m_lbl_WeaponType.text = "掌"; break;
+        //    case 5: m_lbl_WeaponType.text = "拳"; break;
+        //    case 6: m_lbl_WeaponType.text = "棍"; break;
+        //    case 7: m_lbl_WeaponType.text = "暗"; break;
+        //    case 8: m_lbl_WeaponType.text = "毒"; break;
+        //    case 9: m_lbl_WeaponType.text = "兵"; break;
+        //    case 10: m_lbl_WeaponType.text = "弓"; break;
+        //    case 11: m_lbl_WeaponType.text = "扇"; break;
+        //    default: m_lbl_WeaponType.text = "無";  break;
+        //}
     
 //    
 
@@ -106,6 +108,8 @@ public class Item_school_detail : MonoBehaviour {
          //   m_lbl_content.gameObject.SetActive(true);
         }
 
+        //
+        m_pUnitData = pUnitData;
 
         cAttrData attr = new cAttrData();
         attr.Reset();
@@ -124,8 +128,10 @@ public class Item_school_detail : MonoBehaviour {
 
 
 
-
-
+      //  m_btnSkill.gameObject.SetActive(false);
+        // 判斷是否顯示招式
+      //  m_btnSkill.gameObject.SetActive(MyTool.GetSkillNumBySchool(SchID) > 0);
+      //  m_btnSkill.isEnabled = MyTool.GetSkillNumBySchool(SchID) > 0;
         //MyTool.SetLabelFloat(RankObj, sch.f_RANK);
         //MyTool.SetLabelText(NameObj, MyTool.GetSchoolName(nSchID));
         //MyTool.SetLabelInt(LvObj, nSchLv);
@@ -158,6 +164,9 @@ public class Item_school_detail : MonoBehaviour {
 
             //}
         }
+        else {
+         
+        }
              
 
     }
@@ -188,6 +197,13 @@ public class Item_school_detail : MonoBehaviour {
     public void SetChecked( bool check )
     {
         m_Checked.SetActive( check );
+    }
+
+    public void ShowSchoolSkill()
+    {
+        //open school ui
+        GameSystem.BtnSound();
+        Panel_Skill.OpenSchoolUI(m_pUnitData, _SKILL_TYPE._SCHOOL, m_nSchId);
     }
 }
 

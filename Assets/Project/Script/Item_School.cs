@@ -54,32 +54,38 @@ public class Item_School : MonoBehaviour {
         transform.localScale = Vector3.one;
         transform.localRotation = Quaternion.identity;
     }
-
+   
     public void SetMode( int nMode )
     {
         m_nMode = nMode;
 
         // 除了整備畫面外，不顯示
-        //if (nMode == 1)
-        //{
-        //    if (m_pUnitdata.GetSchoolNum(nSchType) > 1)
-        //    {
-        //        ChangeObj.SetActive(true);
-        //        InfoObj.SetActive(false);
-        //    }
-        //    else {
-        //        ChangeObj.SetActive(false);
-        //        InfoObj.SetActive(true);
-        //    }            
-        //}
-        //else {// stage
-        //    ChangeObj.SetActive(false);
-        //    InfoObj.SetActive(true);
-        //}
+        if (nMode == 1)
+        {
+            if (m_pUnitdata.GetSchoolNum(nSchType) > 1)
+            {
+                ChangeObj.SetActive(true);
+                InfoObj.SetActive(false);
+            }
+            else
+            {
+                ChangeObj.SetActive(false);
+                InfoObj.SetActive(true);
+            }
+        }
+        else
+        {// stage
+            ChangeObj.SetActive(false);
+            InfoObj.SetActive(true);
+        }
+
+        // 改變，永不顯示 info,skill
+        InfoObj.SetActive(false);
+        SkillObj.SetActive(false); // 永遠只顯示  skill
         // 改變作法
-        ChangeObj.SetActive(false);
-        InfoObj.SetActive(false); // 永遠只顯示 info -> skill
-        SkillObj.SetActive(true); // 永遠只顯示  skill
+        //ChangeObj.SetActive(false);
+        //InfoObj.SetActive(false); // 永遠只顯示 info -> skill
+        //SkillObj.SetActive(false); // 永遠只顯示  skill
         // 開發版
         if (Config.GOD) {
          //   ChangeObj.SetActive(true);
@@ -96,7 +102,7 @@ public class Item_School : MonoBehaviour {
         nSchType = -1;
         LvObj.SetActive((SchLV > 0)); // 有傳值要 顯示
         MyTool.SetLabelText(NameObj, MyTool.GetSchoolName(nSchID));
-        MyTool.SetLabelText(LvObj, "Lv "+ nSchLv.ToString() );
+        MyTool.SetLabelText(LvObj, "等級 "+ nSchLv.ToString() );
 
         SCHOOL sch = ConstDataManager.Instance.GetRow<SCHOOL>(SchID);   //GameDataManager.Instance.GetConstSchoolData ( nSchool );
         if (sch == null)
@@ -122,8 +128,8 @@ public class Item_School : MonoBehaviour {
         //chbtn.isEnabled = (m_pUnitdata.GetSchoolNum(nSchType) > 1);
 
         // 判斷可否顯示 技能扭
-        //UIButton skillbtn = SkillObj.GetComponent<UIButton>();
-        //skillbtn.isEnabled = MyTool.GetSkillNumBySvhool(SchID)>0;
+      //  SkillObj.SetActive( MyTool.GetSkillNumBySchool(SchID) > 0); // 永遠只顯示  skill
+        
 
     }
 
@@ -139,12 +145,15 @@ public class Item_School : MonoBehaviour {
 
     public void OnSchoolClick(GameObject go)
     {
-        int schid = nSchID;
-        if (m_nMode != 0 ) { // 如果是 檢視 以外 都是可以切換的
-            schid = 0;
-        }
+   
         GameSystem.BtnSound();
-        Panel_SchoolList.Open(m_nMode, m_pUnitdata , schid, nSchLv , nSchType); 
+        Panel_SchoolList.Open(0, m_pUnitdata , nSchID, nSchLv , nSchType); // single school
+    }
+
+    public void OnSchoolListClick(GameObject go)
+    {   
+        GameSystem.BtnSound();
+        Panel_SchoolList.Open(1, m_pUnitdata, 0, nSchLv, nSchType);  //  school list
     }
 
     // on change

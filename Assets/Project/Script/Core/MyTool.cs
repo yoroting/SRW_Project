@@ -246,25 +246,71 @@ public class MyTool {
 
         return sch.s_NAME;             
     }
-    //public static string GetUnitSchoolFullName( int nIdent , int nSchool )
-    //{
-    //	cUnitData data = GameDataManager.Instance.GetUnitDateByIdent (nIdent);
-    //	if (data == null)
-    //		return "Error-No Unit";
 
-    //	SCHOOL sch = ConstDataManager.Instance.GetRow<SCHOOL>(nSchool);   //GameDataManager.Instance.GetConstSchoolData ( nSchool );
-    //	if (sch == null)
-    //		return "Error-No Skill";
+    static public int GetSkillNumBySchool(int schoolid)
+    {
 
-    //	int nLv = 0;
-    //	if (data.SchoolPool.TryGetValue (nSchool, out nLv) == true ) {
-    //		return sch.s_NAME + "(" +nLv.ToString() + ")";
-    //	}
-    //	return "Error- No Leran School" + nSchool.ToString();
-    //}
+        DataTable pTable = ConstDataManager.Instance.GetTable<SKILL>();
+        if (pTable == null)
+            return 0;
+        int nNum = 0;
+        foreach (SKILL sklrow in pTable)
+        {
+            if (sklrow.n_PASSIVE == 1)
+                continue;
+
+            if (sklrow.n_SCHOOL != schoolid)  // == 0 is ability
+                continue;
+            if (sklrow.n_LEVEL_LEARN < 0) // 進階技能不處理
+            {
+                continue;
+            }
+
+            nNum++;
+        }
+
+        return nNum;
+    }
+
+    public static string GetWeaponTypeString(int nType)
+    {
+        // 武器類型
+        switch (nType)
+        {
+            case 0: return "氣"; 
+            case 1: return "劍";
+            case 2: return "刀";
+            case 3: return "槍"; 
+            case 4: return "掌"; 
+            case 5: return "拳"; 
+            case 6: return "棍"; 
+            case 7: return "暗"; 
+            case 8: return "毒"; 
+            case 9: return "兵";
+            case 10: return "弓";
+            case 11: return "扇";            
+            default: return "無";
+        }        
+    }
+        //public static string GetUnitSchoolFullName( int nIdent , int nSchool )
+        //{
+        //	cUnitData data = GameDataManager.Instance.GetUnitDateByIdent (nIdent);
+        //	if (data == null)
+        //		return "Error-No Unit";
+
+        //	SCHOOL sch = ConstDataManager.Instance.GetRow<SCHOOL>(nSchool);   //GameDataManager.Instance.GetConstSchoolData ( nSchool );
+        //	if (sch == null)
+        //		return "Error-No Skill";
+
+        //	int nLv = 0;
+        //	if (data.SchoolPool.TryGetValue (nSchool, out nLv) == true ) {
+        //		return sch.s_NAME + "(" +nLv.ToString() + ")";
+        //	}
+        //	return "Error- No Leran School" + nSchool.ToString();
+        //}
 
 
-    public static string GetUIText( int nID )
+        public static string GetUIText( int nID )
 	{
         DataRow row = ConstDataManager.Instance.GetRow("UI_MESSAGE", nID);
         if (row != null)

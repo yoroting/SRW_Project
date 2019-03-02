@@ -159,7 +159,6 @@ public class GameSystem : MonoBehaviour {
         //ResourcesManager.LoadLevel(Application.loadedLevel + 1);
 
         // 讀入config data
-
         Panel_SystemSetting.LoadConfig();
     }
 	
@@ -444,6 +443,11 @@ public class GameSystem : MonoBehaviour {
         
     }
 
+    public static void StopAllSound()
+    {
+        AudioManager.Instance.Stop(AudioChannelType.SoundFX, false);
+    }
+
     public static void PlayBGM( int nBGMIdx ,bool cleanCacne = true)
 	{
 		if( nBGMIdx <=0 ){
@@ -538,7 +542,8 @@ public class GameSystem : MonoBehaviour {
 	}
 
     public static void BtnSound( int nType = 0 )
-    {
+    {   
+
         if (nType == 0) { // 確定
             PlaySound( 137 );
         }

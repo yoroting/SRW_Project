@@ -1176,8 +1176,8 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 900
-  mHeight: 600
+  mWidth: 960
+  mHeight: 640
   mDepth: 0
   mMat: {fileID: 0}
   autoResizeBoxCollider: 0

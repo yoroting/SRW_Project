@@ -20,7 +20,7 @@ public class Panel_SchoolList : MonoBehaviour {
     public int nVar3;  // sch type
     public int nVar4;
 
-    public cUnitData pUnitData;
+    public cUnitData m_pUnitData;
 
   //  public int nSelectID;
 
@@ -58,7 +58,7 @@ public class Panel_SchoolList : MonoBehaviour {
     public void SetMode(int mode, cUnitData pData, int var1 = 0, int var2 = 0, int var3 = 0, int var4 = 0)
     {
         nMode = mode;
-        pUnitData = pData;
+        m_pUnitData = pData;
         nVar1 = var1; // schoool type
         nVar2 = var2;
         nVar3 = var3;
@@ -85,11 +85,11 @@ public class Panel_SchoolList : MonoBehaviour {
         }
         MyTool.DestoryGridItem( grid );
         // create list
-        if (pUnitData == null)
+        if (m_pUnitData == null)
             return;
 
         int nCount=0;
-        foreach ( KeyValuePair< int , int > pair in pUnitData.SchoolPool)
+        foreach ( KeyValuePair< int , int > pair in m_pUnitData.SchoolPool)
         {
             int schoolid = pair.Key;
             int lv = pair.Value;
@@ -137,7 +137,7 @@ public class Panel_SchoolList : MonoBehaviour {
                 if (item != null)
                 {
                     item.ReSize();
-                    item.SetData(schoolid , lv , pUnitData );
+                    item.SetData(schoolid , lv , m_pUnitData);
 
                    // item.ShowDiff();
                     //// 判斷是否為 裝備中武學
@@ -182,13 +182,29 @@ public class Panel_SchoolList : MonoBehaviour {
         int schid = item.m_nSchId;
         switch (nMode)
         {
+            case 0:// sheck skill
+                {
+                    if (MyTool.GetSkillNumBySchool(schid) > 0)
+                    {
+                        GameSystem.BtnSound(0);
+                        Panel_Skill.OpenSchoolUI(m_pUnitData, _SKILL_TYPE._SCHOOL, schid);
+                        PanelManager.Instance.CloseUI(Name); // change school
+                    }
+                    else {
+                        GameSystem.BtnSound(2);
+                        Panel_Tip.OpenUI("本武學無特殊招式");
+                    }
+                    
+                }
+
+                break;
             case 1: // equip
                 {
-                    if (schid > 0 && (pUnitData != null))
+                    if (schid > 0 && (m_pUnitData != null))
                     {
 
-                        pUnitData.ActiveSchool(schid);
-                        pUnitData.n_CP = 0 ; // CP 歸零
+                        m_pUnitData.ActiveSchool(schid);
+                        m_pUnitData.n_CP = 0 ; // CP 歸零
                         GameSystem.PlaySound(201);
                     }
                     // 有命令UI 要 關閉

@@ -78,6 +78,7 @@ public class Panel_StageUI : MonoBehaviour
 	// For flag
 	bool	bIsLoading	;
 	bool	bIsReady;
+    bool    bIsSoundMute;
     public bool    bIsAutoPopRoundCheck;               // 每回合只自動彈一次
     public _STATEPHASE m_StagePhase;
     public bool	bIsStageEnd;								// this stage is end
@@ -148,6 +149,7 @@ public class Panel_StageUI : MonoBehaviour
 
         bIsStageEnd = false;
 		m_bIsSkipMode = false;
+        bIsSoundMute = false;
         //UIRoot mRoot = NGUITools.FindInParents<UIRoot>(gameObject);	
         //fUIRatio = (float)mRoot.activeHeight / Screen.height;
 
@@ -279,17 +281,23 @@ public class Panel_StageUI : MonoBehaviour
         RegeditGameEvent(true);
         // create sub panel?
 
-        //preload ui
-		Panel_UnitInfo.OpenUI (0);
 
+        // 先關閉音效，避免 preload 時播放
+        bIsSoundMute = AudioManager.Instance.IsChannelMute( AudioChannelType.SoundFX );
+      
+     //   AudioManager.Instance.SetChannelMute(AudioChannelType.SoundFX , true);
+        
+        //preload ui
+        Panel_UnitInfo.OpenUI (0);
         Panel_Skill.OpenSchoolUI( null, _SKILL_TYPE._ABILITY , 0  );
+
         //PanelManager.Instance.OpenUI(Panel_UnitInfo.Name);
         //Panel_MiniUnitInfo.OpenUI (null);
 
 
-
-
-
+        // 設定回去
+       
+    //    AudioManager.Instance.SetChannelMute(AudioChannelType.SoundFX , bmutosound);
         bIsLoading = false;     // debug mode no coror to close loading
 
         //      long during = System.DateTime.Now.Ticks - tick;
@@ -302,6 +310,9 @@ public class Panel_StageUI : MonoBehaviour
     void OnEnable()
     {
         // start the loading panel
+    //    AudioManager.Instance.SetChannelMute(AudioChannelType.SoundFX, bIsSoundMute);
+     // bool b = AudioManager.Instance.IsChannelMute(AudioChannelType.SoundFX);
+
     }
 
     public void EnterBeforePhase()
@@ -338,7 +349,8 @@ public class Panel_StageUI : MonoBehaviour
         TilePlaneObj.SetActive(false); // plane of all tiles sprite
         m_StagePhase = _STATEPHASE._STAGE_BEFORE;
 
-    
+
+        GameSystem.StopAllSound();  // 停止播放 preload 的音效
         // inst run event
         //if (WaitPool.Count > 0)
         //{
@@ -4209,7 +4221,7 @@ public class Panel_StageUI : MonoBehaviour
 //			}
 		}
 		else{
-			Debug.LogErrorFormat( " Err! OnStageCharMoveEvent with null unit({0}) - {1} " , nIdent, Evt.nCharID );
+			Debug.LogWarningFormat( " Err! OnStageCharMoveEvent with null unit({0}) - {1} " , nIdent, Evt.nCharID );
 		}
 		//DelChar( _CAMP._ENEMY , nCharid );
 

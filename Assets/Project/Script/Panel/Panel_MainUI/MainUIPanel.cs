@@ -58,10 +58,10 @@ public class MainUIPanel : BasicPanel {
 	{
 		GameDataManager.Instance.ePhase = _SAVE_PHASE._STARTUP;
 
-
+        // 先關閉音效
 
         // pre load FX
-
+        
 
         // pre load music 
         GameSystem.PlayBGM(5); // 勝利 BGM
