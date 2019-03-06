@@ -327,6 +327,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Panel - SystemSetting
       objectReference: {fileID: 0}
+    - target: {fileID: 1292570706230316, guid: 9089ae8689925944082ede3964183d91, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4920199957790726, guid: 9089ae8689925944082ede3964183d91, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -574,7 +578,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 156318, guid: cfa057b5163a60741bb67ec2db63f91c, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 447770, guid: cfa057b5163a60741bb67ec2db63f91c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1617,7 +1621,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1749160210461682, guid: 083476e58142f30419164b37a608fcae, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4536651601679858, guid: 083476e58142f30419164b37a608fcae, type: 3}
       propertyPath: m_LocalPosition.x

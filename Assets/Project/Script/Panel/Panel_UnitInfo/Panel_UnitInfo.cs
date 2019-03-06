@@ -671,7 +671,14 @@ public class Panel_UnitInfo : MonoBehaviour {
         Item_Unit obj = go.GetComponentInParent<Item_Unit>();
         if (obj != null) {
             GameSystem.BtnSound();
-            Panel_ItemList.Open(1, obj.nIndex);
+            int itemid = 0;
+            if (obj.nIndex >= (int)_ITEMSLOT._SLOT0 && obj.nIndex < (int)_ITEMSLOT._SLOTMAX)
+            {
+                itemid = pUnitData.Items[obj.nIndex];
+            }
+
+
+            Panel_ItemList.Open(1, obj.nIndex, itemid);
         }
     }
 

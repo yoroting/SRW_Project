@@ -10,11 +10,16 @@ public class ItemList_Item : MonoBehaviour {
     public UILabel lblContent;
     public UILabel lblType;
 
+    public GameObject sprNum; // 數字
+    public GameObject sprEquip; // 裝備中
+
+
 
     public int m_nItemID;
     public int m_nCount;
     public int m_nType;
 
+    bool m_bRefresh;
     // Use this for initialization
     void Start () {
 	
@@ -27,15 +32,23 @@ public class ItemList_Item : MonoBehaviour {
 
     void OnEnable()
     {
-        m_nItemID = 0;
-        m_nCount = 0;
-        m_nType = 0;
+        if (m_bRefresh == false)
+        {
+            m_nItemID = 0;
+            m_nCount = 0;
+            m_nType = 0;
 
-        MyTool.SetLabelText(lblName , "——— 空 ———" );
-        MyTool.SetLabelInt(lblCount, m_nCount);
+            // MyTool.SetLabelText(lblType, "——");
+            MyTool.SetLabelText(lblName, "——— 空 ———");
+            MyTool.SetLabelInt(lblCount, m_nCount);
 
-        lblContent.text = "";
+            lblContent.text = "";
+            lblType.text = "";
 
+            sprEquip.SetActive(false);
+            this.gameObject.SetActive(true);
+        }
+        m_bRefresh = false;
         ReSize();
     }
 
@@ -77,4 +90,29 @@ public class ItemList_Item : MonoBehaviour {
 
     }
 
+    public void CheckEquip(int itemid)
+    {
+        if ( (m_nItemID == itemid) && (itemid != 0) )
+        {
+            sprNum.SetActive( false); // 數字
+            sprEquip.SetActive(true); // 裝備中
+}
+        else {
+            sprNum.SetActive(true); // 數字
+            sprEquip.SetActive(false); // 裝備中
+        }
+    }
+    public void CheckShow(int type)
+    {
+        if (type == m_nType || type == 0 || m_nType == 0 )
+        {
+            // 避免enable 後的清除
+            m_bRefresh = true; // mark as refresh
+            this.gameObject.SetActive(true);
+        }
+        else {
+            this.gameObject.SetActive(false);
+        }
+
+    }
 }

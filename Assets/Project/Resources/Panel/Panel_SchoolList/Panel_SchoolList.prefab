@@ -472,7 +472,7 @@ MonoBehaviour:
   cellHeight: 245
   animateSmoothly: 0
   hideInactive: 0
-  keepWithinPanel: 0
+  keepWithinPanel: 1
   sorted: 0
 --- !u!1 &144042
 GameObject:

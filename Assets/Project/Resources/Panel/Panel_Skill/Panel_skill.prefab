@@ -53,9 +53,9 @@ MonoBehaviour:
   maxPerLine: 0
   cellWidth: 760
   cellHeight: 160
-  animateSmoothly: 0
+  animateSmoothly: 1
   hideInactive: 0
-  keepWithinPanel: 0
+  keepWithinPanel: 1
   sorted: 0
 --- !u!114 &11482962
 MonoBehaviour:
@@ -3835,6 +3835,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 451272, guid: cc8086d50827d7b4e8977cb0e8dbd0fc, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 451272, guid: cc8086d50827d7b4e8977cb0e8dbd0fc, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 11460624, guid: cc8086d50827d7b4e8977cb0e8dbd0fc, type: 3}
       propertyPath: onClick.Array.size
       value: 1
@@ -3855,14 +3863,6 @@ PrefabInstance:
       propertyPath: onClick.Array.data[0].mParameters.Array.data[0].obj
       value: 
       objectReference: {fileID: 8672712886385455861}
-    - target: {fileID: 451272, guid: cc8086d50827d7b4e8977cb0e8dbd0fc, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 451272, guid: cc8086d50827d7b4e8977cb0e8dbd0fc, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 11417708, guid: cc8086d50827d7b4e8977cb0e8dbd0fc, type: 3}
       propertyPath: mText
       value: "\u8FD4\u56DE"

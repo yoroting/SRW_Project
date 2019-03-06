@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class Panel_ItemList : MonoBehaviour
 {
@@ -16,11 +17,15 @@ public class Panel_ItemList : MonoBehaviour
     public int nVar2;
     public int nVar3;
     public int nVar4;
+
+    public int m_nType;
+  //  cUnitData m_pUnitData;
     // Use this for initialization
     void Awake()
     {
         ItemObj.CreatePool(8);
         ItemObj.SetActive(false);
+        m_nType = 0;
     }
 
     void Start()
@@ -34,7 +39,7 @@ public class Panel_ItemList : MonoBehaviour
 
     }
 
-    static public Panel_ItemList Open(int mode, int var1 = 0, int var2 = 0, int var3 = 0, int var4 = 0)
+    static public Panel_ItemList Open(int mode, int var1 = 0, int var2 = 0, int var3 = 0,int var4 = 0)
     {
         Panel_ItemList pList = MyTool.GetPanel<Panel_ItemList>(PanelManager.Instance.OpenUI(Name));
         if (pList != null)
@@ -76,12 +81,22 @@ public class Panel_ItemList : MonoBehaviour
         // 先整理各 item pool
        // Dictionary < int , int > tmpItems = new Dictionary<int, int>();
         Dictionary<int, int> items = new Dictionary<int, int>();
+
+        List<ITEM_MISC> itemsort = new List<ITEM_MISC>();       // 排序
+
+      // 建立數量表與 const data 陣列
         foreach (int itemid in GameDataManager.Instance.ItemPool)
         {
             if (items.ContainsKey(itemid) == false)
             {
                 // insert
                 items.Add(itemid , 1 );
+
+                ITEM_MISC item = ConstDataManager.Instance.GetRow<ITEM_MISC>(itemid);   //GameDataManager.Instance.GetConstSchoolData ( nSchool );
+                if (item != null)
+                {
+                    itemsort.Add(item);
+                }
             }
             else {
                 // update
@@ -104,10 +119,26 @@ public class Panel_ItemList : MonoBehaviour
                 UIEventListener.Get(nullobj).onClick = OnItemClick; //
             }
         }
+        // how to sort it
+        List<ITEM_MISC> itemlist = itemsort.OrderBy(o=> o.n_TAG_LOOT).ThenBy(o => o.n_QUALITY).ThenByDescending(o => o.n_ITEMLV).ToList(); ;
+
+        //        List<Order> objListOrder =
+        //source.OrderBy(order => order.OrderDate).ThenBy(order => order.OrderId).ToList();
+        //itemsort.Sort(
+        //    delegate (ITEM_MISC p1, ITEM_MISC p2)
+        //    {
 
 
-        foreach (KeyValuePair<int, int> pair in items)
-            {
+
+        //        return p1.OrderDate.CompareTo(p2.OrderDate);
+        //    }
+        //);
+
+
+        // create normal item
+        //foreach (KeyValuePair<int, int> pair in items)
+        foreach (ITEM_MISC misc in itemlist)
+        {
             GameObject obj = ItemObj.Spawn(GridObj.transform);
             if (obj != null)
             {
@@ -116,7 +147,15 @@ public class Panel_ItemList : MonoBehaviour
                 if (item != null)
                 {
                     item.ReSize();
-                    item.SetData(pair.Key, pair.Value );
+                    int itemid = misc.n_ID;
+                    int itemcount = 0;
+
+                    items.TryGetValue(itemid,out itemcount);
+
+                    item.SetData(itemid, itemcount);
+                    //item.SetData(pair.Key, pair.Value );
+
+                    item.CheckEquip(nVar2); // 檢查有無裝備
 
                     UIEventListener.Get(obj).onClick = OnItemClick; //
                 }
@@ -125,7 +164,7 @@ public class Panel_ItemList : MonoBehaviour
 
 
         // rescroll 
-        m_SB_Ver.value = 0.0f;
+    //    m_SB_Ver.value = 0.0f;
 
         MyTool.ResetScrollView(grid);
 
@@ -188,5 +227,36 @@ public class Panel_ItemList : MonoBehaviour
 
                 break;
         }
+    }
+
+    public void OnTypeClick(GameObject go)
+    {
+       CMD_BTN cmd = go.GetComponent<CMD_BTN>();
+        if (cmd != null)
+        {
+            int nType = cmd.m_nVar1;
+            m_nType = nType;
+            RefreshList(nType);
+        }
+        // ReloadList();
+    }
+
+    public void RefreshList(int nType)
+    {
+        m_nType = nType;
+        // 判斷所有的 item 並決定是否顯示，再由 grid 排序
+        UIGrid grid = GridObj.GetComponent<UIGrid>();
+        if (grid != null)
+        {
+            ItemList_Item[] itemlist = grid.GetComponentsInChildren<ItemList_Item>(true); // includeInactive
+            foreach (ItemList_Item item in itemlist)
+            {
+                item.CheckShow( m_nType );
+            }
+            // re
+            grid.repositionNow = true;
+            
+        }
+
     }
 }
