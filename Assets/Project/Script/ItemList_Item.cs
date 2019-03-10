@@ -81,10 +81,10 @@ public class ItemList_Item : MonoBehaviour {
         string sType = "";
         switch (m_nType)
         {
-            case 1:  sType = "武"; break;
-            case 2: sType = "防"; break;
-            case 3: sType = "飾"; break;
-            default: sType = "無"; break;
+            case 1:  sType = "武器"; break;
+            case 2: sType = "防具"; break;
+            case 3: sType = "飾品"; break;
+            default: sType = ""; break;
         }
         lblType.text = sType;
 

@@ -10,6 +10,8 @@ public class Panel_ItemList : MonoBehaviour
 
     public GameObject GridObj;
     public GameObject ItemObj;
+    public UIButton m_btnCancel;
+
     public UISlider m_SB_Ver;
 
     public int nMode;
@@ -57,6 +59,8 @@ public class Panel_ItemList : MonoBehaviour
         nVar2 = var2;
         nVar3 = var3;
         nVar4 = var4;
+
+        m_btnCancel.gameObject.SetActive( nVar2 > 0 ); // 有裝備的才能卸下
     }
 
 
@@ -107,18 +111,18 @@ public class Panel_ItemList : MonoBehaviour
 
         // create list
         //create a empty null 
-        GameObject nullobj = ItemObj.Spawn(GridObj.transform);
-        if (nullobj != null)
-        {
-            nullobj.SetActive(true); // 由於 CharUnit 被 disable。所以copy 出來的會變成disable 。需手動 active
-            ItemList_Item item = nullobj.GetComponent<ItemList_Item>();
-            if (item != null)
-            {
-                item.ReSize();
-                item.SetData(0, 0);
-                UIEventListener.Get(nullobj).onClick = OnItemClick; //
-            }
-        }
+        //GameObject nullobj = ItemObj.Spawn(GridObj.transform);
+        //if (nullobj != null)
+        //{
+        //    nullobj.SetActive(true); // 由於 CharUnit 被 disable。所以copy 出來的會變成disable 。需手動 active
+        //    ItemList_Item item = nullobj.GetComponent<ItemList_Item>();
+        //    if (item != null)
+        //    {
+        //        item.ReSize();
+        //        item.SetData(0, 0);
+        //        UIEventListener.Get(nullobj).onClick = OnItemClick; //
+        //    }
+        //}
         // how to sort it
         List<ITEM_MISC> itemlist = itemsort.OrderBy(o=> o.n_TAG_LOOT).ThenBy(o => o.n_QUALITY).ThenByDescending(o => o.n_ITEMLV).ToList(); ;
 
@@ -178,11 +182,8 @@ public class Panel_ItemList : MonoBehaviour
 
     public void OnItemClick(GameObject go)
     {
-        ItemList_Item item = go.GetComponent<ItemList_Item>();
-        if (item == null)
-            return;
         
-        int itemid = item.m_nItemID;
+        int itemid = 0; // itemid = 卸下裝備
 
         switch (nMode) {
             case 0:// list
@@ -192,16 +193,32 @@ public class Panel_ItemList : MonoBehaviour
 
             case 1: // equip
                 {
-                    if(PanelManager.Instance.CheckUIIsOpening(Panel_UnitInfo.Name) ) {
 
-                        Panel_UnitInfo panel = MyTool.GetPanel<Panel_UnitInfo>( Panel_UnitInfo.Name ); //PanelManager.Instance.OpenUI( Panel_UnitInfo.Name );
-                        if (panel != null) {
-                            GameSystem.PlaySound(146);
-                            panel.EquipItem(nVar1 , itemid  ); // syn bag
+                    ItemList_Item item = go.GetComponent<ItemList_Item>();
+                    if (item != null) {
+                        itemid = item.m_nItemID;
+                    }
+
+                    if (PanelManager.Instance.CheckUIIsOpening(Panel_UnitInfo.Name))
+                    {
+
+                        //Panel_UnitInfo panel = MyTool.GetPanel<Panel_UnitInfo>(Panel_UnitInfo.Name); //PanelManager.Instance.OpenUI( Panel_UnitInfo.Name );
+
+                        Panel_UnitInfo panel = PanelManager.Instance.JustGetUI<Panel_UnitInfo>(Panel_UnitInfo.Name);
+                        if (panel != null)
+                        {
+                            if (panel.EquipItem(nVar1, itemid)) // syn bag
+                            {
+                                GameSystem.PlaySound(146);          // 有成功裝備才撥音效關UI
+                                PanelManager.Instance.CloseUI(Name);
+                            }
                         }
                     }
+                    else {
+                        PanelManager.Instance.CloseUI(Name);
+                    }
                 }
-                PanelManager.Instance.CloseUI(Name);
+                
                 break;
             case 2: // enhance - 本操作取消
                 {

@@ -2141,10 +2141,24 @@ public partial class BattleManager
 
         float AtkPow = fAtkPowFactor * (pAtker.GetPow() + AtkPowPlus);
         float DefPow = fDefPowFactor * (pDefer.GetPow() + DefPowPlus);
+
         float fAtkBrust = pAtker.GetMulBurst();  //攻方爆發
         float fDefReduce = pDefer.GetMulDamage();  //守方減免
 
-        // 氣勁
+        // 攻擊係數
+        float Atk = (pAtker.GetAtk() + AtkPlus) * fAtkFactor;        
+
+
+        // 功方為氣功劍，則轉換為氣傷
+        if ( pAtker.IsStates(_FIGHTSTATE._POWER) )
+        {
+            // 物理攻擊轉為 氣勁傷害
+            AtkPow += Atk;
+            Atk = 0;
+        }
+
+
+        // 氣勁傷害
         float fPowDmg = (HitRate * (AtkPow - DefPow)); //  氣勁傷害
         
         if (fPowDmg > 0) {
@@ -2175,13 +2189,11 @@ public partial class BattleManager
         }
 
         // buff effect
-        // 攻擊係數
-        float Atk = (pAtker.GetAtk() + AtkPlus) * fAtkFactor;
+
+        // 物理傷害
         float fAtkDmg = (HitRate * Atk) * fAtkBrust * fDefReduce; //物理傷害
 
-
         // 計算物理護甲減傷
-
         fAtkDmg = (fAtkDmg < 0) ? 0 : fAtkDmg;
         // 防禦..
         if (bDefMode  )
@@ -2287,6 +2299,7 @@ public partial class BattleManager
                 pDefer.AddStates(_FIGHTSTATE._DEAD);  // dead
             }
         }
+
         // check parry / block
         //  if (pDefer.IsStates(_FIGHTSTATE._BLOCK))// 格檔
         if (fPowDmg > 0 )

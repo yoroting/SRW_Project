@@ -66,6 +66,7 @@ public enum _FIGHTSTATE
     _SHIELD     ,  // 真氣盾
     _PARRY      ,       // 招架
     _BLOCK      ,       // 格檔
+    _POWER,       // 氣功劍
                   // 
     _KILL		,  //本次戰鬥有殺人
 }
@@ -1016,21 +1017,81 @@ public class cUnitData{
 
 	}
 
-	public bool CheckItemCanEquip( int nItemID )
+	public bool CheckItemCanEquip(_ITEMSLOT slot , int nItemID )
 	{
-		ITEM_MISC newitem = ConstDataManager.Instance.GetRow< ITEM_MISC > ( nItemID );
-		if (newitem == null) {
-			return false;
-		}
-		// check gender
+        // check gender
+        ITEM_MISC itemData = ConstDataManager.Instance.GetRow<ITEM_MISC>(nItemID);       
+        //check lv
+        //檢查是否可以裝備
+        if (IsTag(_UNITTAG._BLOCKITEM))
+        {            
+            if (itemData == null || (itemData.n_ITEMLV < 5))
+            {
+                string smsg = MyTool.GetMsgText(11);
+                smsg = smsg.Replace("$V1", MyTool.GetCharName(n_CharID));
+                Panel_Tip.OpenUI(smsg);
+                return false;
+            }
+        }
 
-		//check lv
+        // 卸下裝備一定可以
+        if (itemData == null)
+        {
+            return true;
+        }
+
+        // 不能裝備雙武器，雙防具
+        if (itemData.n_TAG_LOOT == 1) // 武器
+        {
+            int other = (slot == _ITEMSLOT._SLOT0) ? (int)_ITEMSLOT._SLOT1 : (int)_ITEMSLOT._SLOT0;
+            int otherid = Items[other];
+            if (otherid > 0)
+            {
+                ITEM_MISC itemOther = ConstDataManager.Instance.GetRow<ITEM_MISC>(otherid);
+                if (itemOther != null)
+                {
+                    if (itemOther.n_TAG_LOOT == 1 ) { // 已經裝備武器了，判斷有無雙持技能
+                        if (Buffs.CheckStatus(_FIGHTSTATE._TWICE) == false)
+                        {
+                            string smsg = "不能裝備兩把武器";//MyTool.GetMsgText(11);                            
+                            Panel_Tip.OpenUI(smsg);
+                            return false;
+                        }
+                    }
+                }
+            }
 
 
-		return true;
+        }
+        else if (itemData.n_TAG_LOOT == 2) // 防具
+        {
+            int other = (slot == _ITEMSLOT._SLOT0) ? (int)_ITEMSLOT._SLOT1 : (int)_ITEMSLOT._SLOT0;
+            int otherid = Items[other];
+            if (otherid > 0)
+            {
+                ITEM_MISC itemOther = ConstDataManager.Instance.GetRow<ITEM_MISC>(otherid);
+                if (itemOther != null)
+                {
+                    if (itemOther.n_TAG_LOOT == 2)
+                    { // 已經裝備武器了，判斷有無雙持技能
+                       
+                       
+                            string smsg = "不能裝備兩件防具";//MyTool.GetMsgText(11);                            
+                            Panel_Tip.OpenUI(smsg);
+                        return false;
+                    }
+                }
+            }
+        }
+
+
+
+
+        return true;
 	}
 
     //
+
 	public int EquipItem( _ITEMSLOT slot, int nItemID , bool synbag = false )
 	{
 		if (slot > _ITEMSLOT._SLOTMAX )

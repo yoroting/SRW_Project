@@ -161,6 +161,28 @@ public class ADD_DEF_E : cEffect
     }
 }
 
+public class ADDTIRED_I : cEffect
+{
+    public ADDTIRED_I( int i) { iValue = i; }
+
+    override public void _Do(cUnitData Atker, cUnitData Defer, ref List<cHitResult> list)
+    {       
+        int defid = (Defer != null) ? Defer.n_Ident : 0;
+        list.Add(new cHitResult(cHitResult._TYPE._TIRED, Atker.n_Ident, iValue, defid, nSkillID, nBuffID));
+    }
+}
+public class ADDTIRED_E : cEffect
+{
+    public ADDTIRED_E( int i) {  iValue = i; }
+
+    override public void _Do(cUnitData Atker, cUnitData Defer, ref List<cHitResult> list)
+    {
+        if (Defer != null)
+        {          
+            list.Add(new cHitResult(cHitResult._TYPE._TIRED, Defer.n_Ident, iValue, Atker.n_Ident, nSkillID, nBuffID));
+        }
+    }
+}
 //public class SKILL_EFFECT : cEffect
 //{
 //    public SKILL_EFFECT(int nSkillID) { iValue = nSkillID; }
@@ -189,7 +211,7 @@ public class ADD_DEF_E : cEffect
 //            //{
 //            //    skilldata.DoCastEffect(Atker, Defer, ref list );
 //            //}
-           
+
 //            //list.Add(new cHitResult(cHitResult._TYPE._ACTTIME, Defer.n_Ident, iValue, nAtkId, nSkillID, Defer.n_Ident));
 //        }
 //    }
@@ -1442,7 +1464,7 @@ public class IS_ANTIFLY : cEffect
     }				// check user in one status		
 }
 
-public class IS_SHIELD : cEffect
+public class IS_SHIELD : cEffect // 氣功盾
 {
     public IS_SHIELD() { }
 
@@ -1452,6 +1474,15 @@ public class IS_SHIELD : cEffect
     }				// check user in one status		
 }
 
+public class IS_POWER : cEffect // 氣功劍
+{
+    public IS_POWER() { }
+
+    override public bool _IsStatus(_FIGHTSTATE st)
+    {
+        return (_FIGHTSTATE._POWER == st);
+    }				// check user in one status		
+}
 
 //==========================================================================
 // use to cache condition sctipr parser result

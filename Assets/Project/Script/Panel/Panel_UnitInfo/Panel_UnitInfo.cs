@@ -254,24 +254,30 @@ public class Panel_UnitInfo : MonoBehaviour {
         return obj.GetComponent<Item_Unit>();
     }
      
-    public void EquipItem(int nIdx, int nItemID)
+    public bool EquipItem(int nIdx, int nItemID)
     {
         //檢查是否可以裝備
-        if(pUnitData.IsTag(_UNITTAG._BLOCKITEM) )
-        {
-            ITEM_MISC itemData = ConstDataManager.Instance.GetRow<ITEM_MISC>(nItemID);
-            if (itemData == null || (itemData.n_ITEMLV < 5))
-            {
-                string smsg = MyTool.GetMsgText(11);
-                smsg = smsg.Replace("$V1", MyTool.GetCharName(pUnitData.n_CharID));
-                Panel_CheckBox chkBox = GameSystem.OpenCheckBox();
-                if (chkBox != null)
-                {
-                    chkBox.SetMessageCheck(smsg);
-                }
-                return;
-            }
+        //if(pUnitData.IsTag(_UNITTAG._BLOCKITEM) )
+        //{
+        //    ITEM_MISC itemData = ConstDataManager.Instance.GetRow<ITEM_MISC>(nItemID);
+        //    if (itemData == null || (itemData.n_ITEMLV < 5))
+        //    {
+        //        string smsg = MyTool.GetMsgText(11);
+        //        smsg = smsg.Replace("$V1", MyTool.GetCharName(pUnitData.n_CharID));
+        //        Panel_Tip.OpenUI( smsg );
+
+        //        //Panel_CheckBox chkBox = GameSystem.OpenCheckBox();
+        //        //if (chkBox != null)
+        //        //{
+        //        //    chkBox.SetMessageCheck(smsg);
+        //        //}
+        //        return false;
+        //    }
+        //}
+        if (pUnitData.CheckItemCanEquip((_ITEMSLOT)nIdx, nItemID) == false) {
+            return false;
         }
+
 
         pUnitData.EquipItem( (_ITEMSLOT) nIdx, nItemID , true );
 
@@ -284,7 +290,7 @@ public class Panel_UnitInfo : MonoBehaviour {
 
         pUnitData.UpdateAllAttr();
         UpdateBase();
-
+        return true;
     }
 
 	void OnCloseClick( GameObject go )

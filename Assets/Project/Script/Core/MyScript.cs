@@ -2100,6 +2100,14 @@ public class MyScript {
                 {
                     pool.Add(new ADDACTTIME_E(func.I(0)));
                 }
+                else if (func.sFunc == "ADDTIRED_I")
+                {
+                    pool.Add(new ADDTIRED_I(func.I(0)));
+                }
+                else if (func.sFunc == "ADDTIRED_E")
+                {
+                    pool.Add(new ADDTIRED_E(func.I(0)));
+                }
                 // Attr
                 else if (func.sFunc == "ADD_MAR")
                 {
@@ -2307,6 +2315,10 @@ public class MyScript {
                 else if (func.sFunc == "IS_SHIELD")
                 { // 真氣盾
                     pool.Add(new IS_SHIELD());
+                }
+                else if (func.sFunc == "IS_POWER")
+                { // 氣功劍
+                    pool.Add(new IS_POWER());
                 }
                 else {
 
