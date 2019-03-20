@@ -79,8 +79,9 @@ public class Panel_Loading : MonoBehaviour {
     public void ShowStoryName()
 	{
 		if (lblName != null) {
-			MyTool.SetLabelText( lblName , MyTool.GetStoryName( GameDataManager.Instance.nStageID )  );
-		}
+            //MyTool.SetLabelText( lblName , MyTool.GetStoryName( GameDataManager.Instance.nStageID )  );
+            MyTool.SetLabelText(lblName, MyTool.GetStoryName(GameDataManager.Instance.nStoryID));
+        }
 
 	}
 
@@ -108,6 +109,13 @@ public class Panel_Loading : MonoBehaviour {
         yield return new WaitForEndOfFrame();
      
         GameDataManager.Instance.nStoryID = nStoryID;
+
+        Panel_Loading ploading = PanelManager.Instance.JustGetUI<Panel_Loading>(Panel_Loading.Name);
+        if (ploading != null)
+        {
+            ploading.ShowStoryName();
+        }
+
         yield return new WaitForEndOfFrame();
      
         PanelManager.Instance.OpenUI(StoryUIPanel.Name);        
@@ -126,11 +134,11 @@ public class Panel_Loading : MonoBehaviour {
         GameObject obj = PanelManager.Instance.OpenUI("Panel_Loading");
         if (obj != null)
         {
-            Panel_Loading ploading = MyTool.GetPanel<Panel_Loading>(obj);
-            if (ploading != null)
-            {
-                ploading.ShowStoryName();
-            }
+           // Panel_Loading ploading = MyTool.GetPanel<Panel_Loading>(obj);
+           // if (ploading != null)
+           // {
+           ////     ploading.ShowStoryName();
+           // }
         }
 
 

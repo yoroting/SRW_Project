@@ -98,10 +98,10 @@ public class Panel_SchoolList : MonoBehaviour {
                 continue;
             }
             // 不是指定的 sch id
-            if (nVar1 > 0 && (nVar1!= schoolid) )
-            {
-                continue;
-            }
+            //if (nVar1 > 0 && (nVar1!= schoolid) )
+            //{
+            //    continue;
+            //}
             // 不用管等級
 
             // 不是指定的 sch type
