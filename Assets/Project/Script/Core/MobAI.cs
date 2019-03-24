@@ -140,7 +140,8 @@ public class MobAI  {
                     if (last != null)
                     {
                         int nDist2 = last.Dist(taget.Loc);
-                        if ( ative || ((nDist2 <= nSkillRange) && (nDist2 >= nMinRange)) ) // 可以攻擊
+                        if ( ative || ((nDist2 <= nSkillRange) && (nDist2 >= nMinRange)) ) // （active 必須通過，不然永遠不會追擊） 可以攻擊
+                        //if ( ((nDist2 <= nSkillRange) && (nDist2 >= nMinRange))) // 可以攻擊
                         {
                             pathList = path;
                             nSKillID = skl.n_ID; // assign skill id
@@ -231,40 +232,52 @@ public class MobAI  {
             }
         }
 
-
+        int nTarget = 0;
         // check is cast cmd
         SKILL skl = ConstDataManager.Instance.GetRow<SKILL>(nSkillID);
         if (skl != null)
         {
             // self , 6→自我AOE我方7→自我AOE敵方8→自我AOEALL
-            if (skl.n_TARGET == 0 || skl.n_TARGET == 6 || skl.n_TARGET == 7||  skl.n_TARGET == 8  )
+            if (skl.n_TARGET == 0 || skl.n_TARGET == 6 || skl.n_TARGET == 7 || skl.n_TARGET == 8)
             {
                 int nTarX = 0;
                 int nTarY = 0;
                 //
-                BattleManager.ConvertSkillTargetXY(mob.pUnitData, nSkillID , Tar.Ident() , ref  nTarX , ref nTarY );
+                BattleManager.ConvertSkillTargetXY(mob.pUnitData, nSkillID, Tar.Ident(), ref nTarX, ref nTarY);
                 // check can atk or not 
-                ActionManager.Instance.CreateCastCMD(mob.Ident(), nTarX, nTarY , nSkillID); // create Attack CMD . need battle manage to run				
+                ActionManager.Instance.CreateCastCMD(mob.Ident(), nTarX, nTarY, nSkillID); // create Attack CMD . need battle manage to run				
 
-                return;   
+                return;
+            }
+            else if (skl.n_TARGET == 9 || skl.n_TARGET == 10 || skl.n_TARGET == 11)
+            {
+                ActionManager.Instance.CreateAttackCMD(mob.Ident(), Tar.Ident(), nSkillID); // create Attack CMD . need battle manage to run
+                return;
             }
         }
-        // 基本上到這邊，應該都已經通過檢查了。不再看距離
-        ActionManager.Instance.CreateAttackCMD(mob.Ident(), Tar.Ident(), nSkillID); // create Attack CMD . need battle manage to run				
+        // 基本上到這邊，應該都已經通過檢查了。（ 還是需要距離檢查，主動怪需要靠這邊決定是否攻擊）
 
-        //// check send atk cmd
-        //if (  ( (nDist <= nSkillRange) && (nDist >= nMinRange) ) || (skl.n_TARGET == 9 || skl.n_TARGET == 10 || skl.n_TARGET == 11)  ) // 可以攻擊
+
+        //if (((nDist <= nSkillRange) && (nDist >= nMinRange)))
         //{
-        //    // check can atk or not 
-        //    ActionManager.Instance.CreateAttackCMD(mob.Ident(), Tar.Ident(), nSkillID); // create Attack CMD . need battle manage to run				
-        //  //  return true;
+        //    ActionManager.Instance.CreateAttackCMD(mob.Ident(), Tar.Ident(), nSkillID); 			
         //}
-        //else
-        //{
-        //    //將來修正， 如果還能移動，則降低移動力，重新收尋
-        //    _AI_MakeWaitCmd(mob , Tar  );
-        //    //ActionManager.Instance.CreateWaitingAction(mob.Ident());
-        //}       
+     
+       
+        // check send atk cmd ... // create Attack CMD . need battle manage to run	
+        if (((nDist <= nSkillRange) && (nDist >= nMinRange))  ) // 可以攻擊
+//            if (((nDist <= nSkillRange) && (nDist >= nMinRange)) || (skl.n_TARGET == 9 || skl.n_TARGET == 10 || skl.n_TARGET == 11)) // 可以攻擊
+        {
+            // check can atk or not 
+            ActionManager.Instance.CreateAttackCMD(mob.Ident(), Tar.Ident(), nSkillID); // create Attack CMD . need battle manage to run				
+                                                                                        //  return true;
+        }
+        else
+        {
+            //將來修正， 如果還能移動，則降低移動力，重新收尋
+            _AI_MakeWaitCmd(mob, Tar);
+            //ActionManager.Instance.CreateWaitingAction(mob.Ident());
+        }
     }
 
     static void _AI_MakeWaitCmd(Panel_unit mob, Panel_unit Tar=null)

@@ -295,7 +295,7 @@ public partial class BattleManager
 			if ( Defer.eCampID  == _CAMP._PLAYER) {
                     // set open CMD 
                     // need set a range
-                    if (IsMapSkill(nAtkerSkillID ) == false) {
+                    if (IsMapSkill(nAtkerSkillID) == false && (Defer.IsTag(_UNITTAG._STUN) == false) ) {
                         Panel_CMDUnitUI.OpenCMDUI(_CMD_TYPE._COUNTER, nDeferID, nAtkerID);
                     }
 			}
@@ -322,7 +322,7 @@ public partial class BattleManager
                         // special process for def is player+
                         if (Defer.eCampID == _CAMP._PLAYER)
                         {
-                            if (IsMapSkill(nAtkerSkillID) == false)
+                            if (IsMapSkill(nAtkerSkillID) == false && (Defer.IsTag(_UNITTAG._STUN) == false) )
                             {
                                 // check to reopen counter CMD UI	
                                 if (!IsCounterMode() && !IsDefMode())

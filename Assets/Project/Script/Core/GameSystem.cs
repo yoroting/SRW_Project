@@ -119,7 +119,7 @@ public class GameSystem : MonoBehaviour {
 
 #if DEBUG && UNITY_EDITOR
         GameDataManager.Instance.nStageID = 3;
-        Config.GOD = true;
+    //    Config.GOD = true;
 
 #endif
         bFXPlayMode = true;

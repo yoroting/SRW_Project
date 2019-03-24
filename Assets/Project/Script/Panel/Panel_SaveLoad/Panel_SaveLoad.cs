@@ -18,7 +18,7 @@ public class Panel_SaveLoad : MonoBehaviour {
 	int  n_MaxRecords = 4; // 一頁多少資料
 
     int n_Page = 0;  // current
-    int n_MaxPage = 10;
+    int n_MaxPage = 99;
 
     
 

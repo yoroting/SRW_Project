@@ -170,7 +170,7 @@ public class cCMD{
 		idx = (int)_CMD_TYPE._COUNTER;
 		CmdlistArray [idx] = new List<_CMD_ID> (); // 反及
 		CmdlistArray [idx].Add ( _CMD_ID._COUNTER ); 
-		CmdlistArray [idx].Add ( _CMD_ID._ABILITY ); 
+	//	CmdlistArray [idx].Add ( _CMD_ID._ABILITY );  // 反擊不可放 精神指令。避免麻煩
 		CmdlistArray [idx].Add ( _CMD_ID._SKILL ); 
 		CmdlistArray [idx].Add ( _CMD_ID._DEF ); 
 		//CmdlistArray [idx].Add ( _CMD_ID._CANCEL ); 
