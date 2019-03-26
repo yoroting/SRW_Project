@@ -97,6 +97,7 @@ public class Item_Skill : MonoBehaviour {
             MyTool.SetLabelColor(CDObj, c);
 
         }
+       
 	}
 }
 

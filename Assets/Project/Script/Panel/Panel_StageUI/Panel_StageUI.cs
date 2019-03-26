@@ -2680,9 +2680,20 @@ public class Panel_StageUI : MonoBehaviour
 	}
 
 //	// Widget func	 
-	public void CheckMissionComplete()
+	public int CheckMissionComplete()
 	{
-		return;
+        int nStar = 0;        
+        foreach (KeyValuePair<int, int> pair in GameDataManager.Instance.EvtDonePool )
+        {
+            int nEventID = pair.Key;
+            STAGE_EVENT evt = ConstDataManager.Instance.GetRow<STAGE_EVENT>(nEventID);
+            if (evt != null) {
+                if (  IsMissionEvent( evt ) ) {
+                    nStar++;
+                }
+            }
+        }
+        return nStar;
 
 //		foreach (KeyValuePair< int ,STAGE_EVENT > pair in EvtPool) {
 //			if( (pair.Value.n_TYPE & 2) != 2  ){
@@ -3160,7 +3171,7 @@ public class Panel_StageUI : MonoBehaviour
             return true;
         }
 
-
+        // 這邊才有正常的死亡判斷
         foreach ( KeyValuePair<int , cUnitData > pair in GameDataManager.Instance.UnitPool) {
 			if( pair.Value != null )
 			{
@@ -3172,7 +3183,14 @@ public class Panel_StageUI : MonoBehaviour
 					if( punit!= null ){
 						if( punit.bIsDead == false )
 						{
-							punit.SetDead();
+
+                            // 如果是 我方， 死亡數 +1
+                            if (punit.eCampID == _CAMP._PLAYER)
+                            {
+                                GameDataManager.Instance.n_DeadCount++;
+                            }
+                            // 死亡流程
+                            punit.SetDead();
 							if( !bAll ){
 								return true;
 							}
@@ -3730,6 +3748,7 @@ public class Panel_StageUI : MonoBehaviour
 		GameDataManager.Instance.nRound   = save.n_Round;
 		GameDataManager.Instance.nActiveCamp = save.e_Camp ;
 		GameDataManager.Instance.nMoney = save.n_Money ;
+        GameDataManager.Instance.n_DeadCount = save.n_DeadCount;
         GameDataManager.Instance.n_StagePhase = save.n_StagePhase;
 
         // re build done event 

@@ -33,8 +33,18 @@ public class Panel_StageInfo : MonoBehaviour {
 	}
 
 	public void SetData(){
-		// set round , money, star
-		MyTool.SetLabelInt ( lblRoundValueObj , GameDataManager.Instance.nRound );
+        // set round , money, star
+        string sround = GameDataManager.Instance.nRound.ToString();
+
+        STAGE_DATA stage = ConstDataManager.Instance.GetRow<STAGE_DATA>(GameDataManager.Instance.nStageID);
+        if (stage != null)
+        {
+            sround = string.Format(" {0}/{1}" , GameDataManager.Instance.nRound , stage.n_ROUND );            
+        }
+
+        //MyTool.SetLabelInt ( lblRoundValueObj , GameDataManager.Instance.nRound );
+        MyTool.SetLabelText(lblRoundValueObj , sround );
+
 		MyTool.SetLabelInt ( lblStarValueObj  , GameDataManager.Instance.nStars );
 		MyTool.SetLabelInt ( lblMoneyValueObj , GameDataManager.Instance.nMoney );
 

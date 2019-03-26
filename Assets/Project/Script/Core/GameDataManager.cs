@@ -133,7 +133,8 @@ public partial class GameDataManager
 
         nMoney = 0;
         nStars = 0;
-        
+
+        n_DeadCount = 0;
         // start from 1
         nStoryID = 1;
         nStageID = 1;
@@ -168,6 +169,7 @@ private static GameDataManager instance;
 	//	nMoney = 0;  // don't reset money
 		nRound = 0;
         n_StagePhase = 0;
+        n_DeadCount = 0;
         nActiveCamp = _CAMP._PLAYER;
 		UnitPool.Clear ();
 		//CampPool.Clear ();
@@ -244,6 +246,7 @@ private static GameDataManager instance;
 	public int nStars{ get; set; }
     public int n_StagePhase { get; set; }
 
+    public int n_DeadCount { get; set; } //撤退
     // Debug 用
     public int nEarnMoney { get; set; } // 賺多少
     public int nSpendMoney { get; set; }// 花 多少

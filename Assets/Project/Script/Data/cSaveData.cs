@@ -268,6 +268,8 @@ public class cSaveData{
 	[JsonName("round")] [DefaultValue(0)] public int n_Round;
 	[JsonName("money")] [DefaultValue(0)] public int n_Money;
 	[JsonName("stars")] [DefaultValue(0)] public int n_Stars;			//熟練度
+    [JsonName("DeadCount")] [DefaultValue(0)] public int n_DeadCount;			//撤退數
+    
     [JsonName("stagephase")] [DefaultValue(0)] public int n_StagePhase;			//關卡階段
     
 
@@ -331,6 +333,7 @@ public class cSaveData{
 		e_Camp = GameDataManager.Instance.nActiveCamp;
 		n_Money = GameDataManager.Instance.nMoney;
 		n_Stars = GameDataManager.Instance.nStars;
+        n_DeadCount = GameDataManager.Instance.n_DeadCount;
         n_StagePhase = GameDataManager.Instance.n_StagePhase;
 
         nPlayerBGM = GameDataManager.Instance.nPlayerBGM;   //我方
@@ -410,6 +413,7 @@ public class cSaveData{
 		GameDataManager.Instance.nStageID = n_StageID;
 		GameDataManager.Instance.nMoney = n_Money;
 		GameDataManager.Instance.nStars = n_Stars;
+        GameDataManager.Instance.n_DeadCount = n_DeadCount;
         GameDataManager.Instance.n_StagePhase = n_StagePhase;
         // stage data  set in stage load
         //		GameDataManager.Instance.nRound   = n_Round;

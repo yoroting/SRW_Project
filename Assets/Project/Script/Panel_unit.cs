@@ -2352,6 +2352,7 @@ public class Panel_unit : MonoBehaviour {
         bIsDeading = true;
 
 
+
         switch (nType)
         {
             case 1:
