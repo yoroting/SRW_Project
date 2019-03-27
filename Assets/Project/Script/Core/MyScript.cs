@@ -281,8 +281,13 @@ public class MyScript {
                     {
                         return false;
                     }
-                  
-
+                }
+                else if (func.sFunc == "DEADCOUNT") // 我方撤退數
+                {
+                    if (ConditionDeadCount(func.S(0), func.I(1)) == false)
+                    {
+                        return false;
+                    }
                 }
                 else if (func.sFunc == "STAR")
                 {                    
@@ -890,6 +895,18 @@ public class MyScript {
         //return false;// always fail
     }
 
+
+    public bool ConditionDeadCount( string op, int nNum )
+    {
+        int count = GameDataManager.Instance.n_DeadCount;  // Panel_StageUI.Instance.GetCampNum((_CAMP)campid, nCharid);
+        //int nNum = func.I(2);
+        if (MyScript.Instance.ConditionInt(count, op, nNum) == true)
+        {
+            return true;       // 
+        }
+
+        return false;
+    }
 
     //============================================================
     public bool ConditionFloat( float fVal_I , string op , float fVal_E )
