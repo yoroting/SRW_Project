@@ -4949,7 +4949,7 @@ MonoBehaviour:
   scrollbarFgPrsColour: {r: 1, g: 1, b: 1, a: 1}
   isAnimated: 1
   isLocalized: 0
-  maxHeight: 400
+  maxHeight: 300
   onChange:
   - mTarget: {fileID: 11496076}
     mMethodName: SetCurrentSelection

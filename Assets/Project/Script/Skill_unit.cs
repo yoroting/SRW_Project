@@ -143,7 +143,7 @@ public class Skill_unit : MonoBehaviour {
         if (conSkl.f_DEF > 0)
         {
             // float defratio = Mathf.RoundToInt(Mathf.Abs(conSkl.f_DEF - 1.0f) * 100.0f);
-            strTip += string.Format("，防禦回復{0}％", Mathf.RoundToInt(Mathf.Abs(conSkl.f_DEF - 1.0f) * 100.0f));
+            strTip += string.Format("，防禦回復{0}％", Mathf.RoundToInt(Mathf.Abs(conSkl.f_DEF) * 100.0f));
             //}
         }
 
