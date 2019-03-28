@@ -289,6 +289,7 @@ public class MyScript {
                         return false;
                     }
                 }
+
                 else if (func.sFunc == "STAR")
                 {                    
                     if (MyScript.Instance.ConditionStar(func.S(0), func.I(1)) == false)

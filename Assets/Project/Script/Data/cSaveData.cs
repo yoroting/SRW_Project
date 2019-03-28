@@ -268,7 +268,7 @@ public class cSaveData{
 	[JsonName("round")] [DefaultValue(0)] public int n_Round;
 	[JsonName("money")] [DefaultValue(0)] public int n_Money;
 	[JsonName("stars")] [DefaultValue(0)] public int n_Stars;			//熟練度
-    [JsonName("DeadCount")] [DefaultValue(0)] public int n_DeadCount;			//撤退數
+    [JsonName("deadcount")] [DefaultValue(0)] public int n_DeadCount;			//撤退數
     
     [JsonName("stagephase")] [DefaultValue(0)] public int n_StagePhase;			//關卡階段
     
