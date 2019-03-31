@@ -1614,11 +1614,17 @@ public class cEffectCondition
             }
             else if (func.sFunc == "HP_E")
             {
-                float f1 = (float)data_E.n_HP / (float)data_E.GetMaxHP();
-                float f2 = func.F(1);
-                if (MyScript.Instance.ConditionFloat(f1, func.S(0), f2) == false)
+                if (data_E != null)
                 {
-                    return false;       //  fail
+                    float f1 = (float)data_E.n_HP / (float)data_E.GetMaxHP();
+                    float f2 = func.F(1);
+                    if (MyScript.Instance.ConditionFloat(f1, func.S(0), f2) == false)
+                    {
+                        return false;       //  fail
+                    }
+                }
+                else {
+                    return false;       // no enemp always fail
                 }
             }
             else if (func.sFunc == "MP_I")
