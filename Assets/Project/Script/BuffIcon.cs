@@ -9,6 +9,7 @@ public class BuffIcon : MonoBehaviour {
 	public GameObject NameObj;
     public GameObject TimeObj;
 
+
     public int 	nBuffID;
     public int nBuffTime;
     public int nBuffNum;
@@ -40,16 +41,35 @@ public class BuffIcon : MonoBehaviour {
         nBuffNum = nNum;
 
         // Set Icon Pic
-        SKILL skl = ConstDataManager.Instance.GetRow< SKILL >( nID ); 
-		if(skl != null  ){
-			// change sprite
-			UISprite spr = GetComponent<UISprite>(); 
+        BUFF buff = ConstDataManager.Instance.GetRow<BUFF>( nID ); 
+		if(buff != null  ){
+            // change sprite
+            // 切換顏色
+            UISprite spr = GetComponent<UISprite>(); 
 			if( spr != null ){
+                switch (buff.n_BUFF_TYPE) {
+                    case 2:     //中毒
+                    case 3:     //流血
+                    case 4:     //點穴，麻痺
+                    case 5:    //混亂，精神
+                    case 6:     //奇癢
+                    case 7:     //緩速
+                    case 8:     //不可抗力（懷孕，目盲
+                    case 9:     // 內傷
+                        spr.color = Color.red;  // 敵對的是紅色
+                        break;
+                        
+                    default:
+                       // spr.color = Color.blue;  // 友善是藍色
+
+                        break;
+                }
+
 				//spr.spriteName = skl.s_ICON ;
 			}
 		}
         // time
-        if (nTime <= 0 )
+        if (nTime <= 1 )  // 剩一回合也不顯示
         {
             TimeObj.SetActive(false);
         }
@@ -68,9 +88,8 @@ public class BuffIcon : MonoBehaviour {
 			NumObj.SetActive( true );
 			MyTool.SetLabelInt( NumObj , nNum );
 		}
-
-
-
+       
+       
 
 		MyTool.SetLabelText (NameObj, MyTool.GetBuffName (nBuffID));
 

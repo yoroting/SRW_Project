@@ -2149,12 +2149,14 @@ public partial class BattleManager
         float Atk = (pAtker.GetAtk() + AtkPlus) * fAtkFactor;        
 
 
-        // 功方為氣功劍，則轉換為氣傷
+        // 功方為氣功劍，則轉換 30% 氣傷
         if ( pAtker.IsStates(_FIGHTSTATE._POWER) )
         {
             // 物理攻擊轉為 氣勁傷害
-            AtkPow += Atk;
-            Atk = 0;
+            float fconvAtk = Atk*0.3f;
+
+            AtkPow += fconvAtk;
+            Atk -= fconvAtk;
         }
 
 

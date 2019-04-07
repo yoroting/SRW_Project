@@ -140,6 +140,11 @@ public class Panel_Cheat : MonoBehaviour {
 
     void OnEnable()
     {
+        if (Debug.isDebugBuild == false)
+        {
+            // close ui
+            PanelManager.Instance.CloseUI(Name);
+        }
 
         //		UIToggle god = GodChk.GetComponent<UIToggle> ();
         //		god.value =Config.GOD;
@@ -151,7 +156,7 @@ public class Panel_Cheat : MonoBehaviour {
         //		UIInput min = MoneyInput.GetComponent<UIInput> ();
         //		min.value = GameDataManager.Instance.nMoney.ToString();
 
-       
+
     }
 	public void SetData( cUnitData data ){
 		pData = data;

@@ -166,7 +166,14 @@ public class Panel_SysCheat : MonoBehaviour {
         //		}; 
     }
 
-	void OnEnable () {      
+	void OnEnable () {
+        if (Debug.isDebugBuild == false)
+        {
+            // close ui
+            PanelManager.Instance.CloseUI(Name);
+        }
+
+
         UIToggle god = GodChk.GetComponent<UIToggle> ();
 		god.value =Config.GOD;
 

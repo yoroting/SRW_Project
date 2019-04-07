@@ -71,9 +71,10 @@ public class Panel_Mainten : MonoBehaviour {
         UIEventListener.Get(btnItem).onClick += OnItemClick; //
         //UIEventListener.Get(btnGameEnd).onClick += OnEndClick; // for trig next lineev
         UIEventListener.Get(btnGameEnd).onClick += OnSetupClick; // for trig next lineev
-
-        UIEventListener.Get(btnCheat).onClick += OnCheatClick; // cheat
-
+        if (Debug.isDebugBuild)
+        {
+            UIEventListener.Get(btnCheat).onClick += OnCheatClick; // cheat
+        }
         CharUnit.CreatePool(5);
 
         if (CharUnit != null)
@@ -210,8 +211,11 @@ public class Panel_Mainten : MonoBehaviour {
 
 	void OnCheatClick( GameObject go )
 	{
-		PanelManager.Instance.OpenUI( Panel_SysCheat.Name );
-        GameSystem.BtnSound();
+        if (Debug.isDebugBuild == true)
+        {
+            PanelManager.Instance.OpenUI(Panel_SysCheat.Name);
+            GameSystem.BtnSound();
+        }
 
     }
 

@@ -13,7 +13,9 @@ public class MainUIPanel : BasicPanel {
 	public GameObject GalleryButton;
 	public GameObject SetUpButton;
 	public GameObject GameEndButton;
-	void Awake(){
+
+    public GameObject PopListButton;
+    void Awake(){
 #if DEBUG && UNITY_EDITOR
         // Avoid Const data null for debug
 #endif
@@ -87,6 +89,11 @@ public class MainUIPanel : BasicPanel {
         Debug.Log("Screen Height : " + Screen.height);
         Debug.Log("Screen Width : " + Screen.width);
 
+        if (Debug.isDebugBuild == false)
+        {
+            // 關閉 Debug 按鈕
+            PopListButton.SetActive(false);
+        }
     }
 
 	// release game event 
