@@ -58,7 +58,7 @@ public class item_param : MonoBehaviour {
     public void SetValue(float fValue, int nType = 0)
     {
         m_fVar1 = fValue;
-        string sValue = fValue.ToString();
+        string sValue = ((int)fValue).ToString();
         // 要顯示 正負號
         if (nType == 1)
         {
